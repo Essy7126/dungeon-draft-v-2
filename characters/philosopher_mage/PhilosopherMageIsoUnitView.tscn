@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://characters/philosopher_mage/philosopher_mage_iso_unit_view.gd" id="1_view"]
+[ext_resource type="Resource" path="res://data/visuals/philosopher_mage/philosopher_mage_sprite_profile_v1.tres" id="2_profile"]
+
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_philosopher_mage.tres" id="3_painted"]
+
+[node name="PhilosopherMageIsoUnitView" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1_view")
+sprite_profile = ExtResource("2_profile")
+painted_visual_profile = ExtResource("3_painted")

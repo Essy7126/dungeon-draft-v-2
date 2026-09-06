@@ -9,6 +9,7 @@ const MOVEMENT_SETTLE_SECONDS := 0.06
 const DIRECTIONS := ["N", "E", "S", "W"]
 
 @export var sprite_profile: SpectreSpriteVisualProfile
+@export var painted_visual_profile: UnitVisualProfile
 
 ## Exposed for previews and validation; never plays itself on the engine clock.
 var animated_sprite: AnimatedSprite2D
@@ -53,6 +54,10 @@ func _ready() -> void:
 	_reset_clock()
 	if is_instance_valid(_unit) and not _unit.is_alive:
 		play_death()
+
+
+func get_painted_visual_profile() -> UnitVisualProfile:
+	return painted_visual_profile
 
 
 func configure_profile(profile: SpectreSpriteVisualProfile) -> bool:

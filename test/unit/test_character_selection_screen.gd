@@ -33,7 +33,7 @@ func before_each() -> void:
 func test_catalog_exposes_real_run_stats_and_resolved_spell_kits() -> void:
 	var entries := screen.get_entries()
 	assert_eq(entries.map(func(entry): return entry["id"]), [
-		&"achilles", &"elf", &"mage", &"warrior",
+		&"achilles", &"elf", &"mage", &"warrior", &"achilles",
 	])
 	for entry in entries:
 		var unit := entry["unit"] as UnitData

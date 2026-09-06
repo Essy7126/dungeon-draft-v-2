@@ -1130,13 +1130,15 @@ func add_sourced_shield(
 	var previous_source_value := existing.value if existing != null else 0
 	var expiry_policy := _shield_expiry_policy_from_options(options)
 	var created_at := maxi(0, int(options.get("created_activation", activation_index)))
+	var expires_at := created_at + int(options.get("expires_after_activations", 0)) \
+		if expiry_policy == ShieldInstance.ExpiryPolicy.START_OF_ACTIVATION else -1
 	var priority := int(options.get("priority", 0))
 	var tags := _shield_tags_from_options(options)
 	if existing == null:
 		existing = ShieldInstance.new()
 		_shield_instances.append(existing)
 	if not existing.configure(
-			source_id, amount, created_at, expiry_policy, priority, tags
+			source_id, amount, created_at, expiry_policy, priority, tags, expires_at
 		):
 		_shield_instances.erase(existing)
 		return null
@@ -1214,7 +1216,11 @@ func restore_shield_instances_snapshot(snapshot: Variant) -> bool:
 				or expiry_policy not in [
 					ShieldInstance.ExpiryPolicy.NEVER,
 					ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION,
+					ShieldInstance.ExpiryPolicy.START_OF_ACTIVATION,
 				]:
+			return false
+		var expires_at := int(data.get("expires_activation", -1))
+		if expiry_policy == ShieldInstance.ExpiryPolicy.START_OF_ACTIVATION and expires_at <= created_at:
 			return false
 		var tags := _shield_tags_from_options({"tags": data.get("tags", [])})
 		var instance := ShieldInstance.new()
@@ -1225,6 +1231,7 @@ func restore_shield_instances_snapshot(snapshot: Variant) -> bool:
 				expiry_policy,
 				int(data.get("priority", 0)),
 				tags,
+				expires_at,
 			):
 			return false
 		instance.value = shield_value
@@ -1303,6 +1310,8 @@ func _shield_expiry_policy_from_options(
 	) -> int:
 	if bool(options.get("expires_next_activation", false)):
 		return ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION
+	if int(options.get("expires_after_activations", 0)) > 1:
+		return ShieldInstance.ExpiryPolicy.START_OF_ACTIVATION
 	if int(options.get("expires_after_activations", 0)) == 1:
 		return ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION
 	var policy := int(options.get(

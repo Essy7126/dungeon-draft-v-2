@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="RunData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room_type"]
+[ext_resource type="Resource" path="res://data/runs/profiles/odyssey_content_profile.tres" id="3_content"]
+[ext_resource type="Resource" path="res://data/runs/economy/odyssey_economy_profile.tres" id="4_economy"]
+[ext_resource type="Resource" path="res://data/rooms/philosopher_trial.tres" id="5_room"]
+
+[ext_resource type="Resource" path="res://data/characters/philosopher_mage/attack_classifications.tres" id="6_actions"]
+
+[resource]
+script = ExtResource("1_run")
+run_name = "L’Épreuve du Dialecticien"
+default_seed = 906
+randomize_seed_each_run = false
+target_duration_minutes = 6
+extended_duration_minutes = 10
+room_flow_mode = 0
+maximum_waves_per_room = 1
+content_profile = ExtResource("3_content")
+economy_profile = ExtResource("4_economy")
+action_classification_catalog = ExtResource("6_actions")
+hub_room_selection_enabled = false
+hub_forced_start_room_index = 0
+rooms = Array[ExtResource("2_room_type")]([ExtResource("5_room")])

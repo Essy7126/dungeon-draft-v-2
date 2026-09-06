@@ -86,6 +86,36 @@ func _wait_process_frame_safe(generation: int, enemy: Unit = null) -> bool:
 	return _can_continue(generation, enemy)
 
 
+## Wait for the actual overlay rather than duplicating its UI animation time.
+## The fallback closes a stuck overlay; no action starts beneath an opaque banner.
+func _wait_for_turn_intro_safe(
+		generation: int,
+		enemy: Unit,
+		timeout_seconds: float = 4.0
+	) -> bool:
+	var elapsed := 0.0
+	var last_tick := Time.get_ticks_usec()
+	while _can_continue(generation, enemy):
+		var tree := get_tree()
+		var now := Time.get_ticks_usec()
+		if not tree.paused:
+			elapsed += maxf(0.0, float(now - last_tick) / 1000000.0) * Engine.time_scale
+			var hud: Variant = _battle.get("_hud_port")
+			var banner := hud.get_turn_intro_banner() as Control \
+				if is_instance_valid(hud) and hud.has_method("get_turn_intro_banner") else null
+			if not is_instance_valid(banner) or not banner.is_visible_in_tree():
+				return true
+			if elapsed >= maxf(0.0, timeout_seconds):
+				if banner.has_method("hide_immediately"):
+					banner.call("hide_immediately")
+				banner.hide()
+				return _can_continue(generation, enemy)
+		last_tick = now
+		if not await _wait_process_frame_safe(generation, enemy):
+			return false
+	return false
+
+
 # Exécute le tour complet de l'unité ennemie : décision d'IA puis déroulé des
 # actions, en s'interrompant dès que la salle ferme ou que l'unité disparaît.
 func run(enemy: Unit) -> void:
@@ -93,6 +123,8 @@ func run(enemy: Unit) -> void:
 		return
 	var generation := _operation_generation
 	if not await _wait_seconds_safe(0.3, generation, enemy):
+		return
+	if not await _wait_for_turn_intro_safe(generation, enemy):
 		return
 	var plan: EnemyActionPlan = _battle.enemy_ai.build_action_plan(
 		enemy,

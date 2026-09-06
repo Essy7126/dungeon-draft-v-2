@@ -5,12 +5,14 @@ extends RefCounted
 
 const CATABASE_RUN_PATH := "res://data/runs/odyssey.tres"
 const TRIO_RUN_PATH := "res://data/runs/first_run.tres"
+const PHILOSOPHER_TRIAL_RUN_PATH := "res://data/runs/philosopher_trial.tres"
 
 
 static func get_entries() -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
 	_append_run_entries(entries, CATABASE_RUN_PATH)
 	_append_run_entries(entries, TRIO_RUN_PATH)
+	_append_run_entries(entries, PHILOSOPHER_TRIAL_RUN_PATH)
 	return entries
 
 
@@ -35,9 +37,9 @@ static func _append_run_entries(entries: Array[Dictionary], run_path: String) ->
 			"id": hero.get_effective_unit_id(),
 			"unit": hero,
 			"run": run,
-			"chapter": "Catabase" if run_path == CATABASE_RUN_PATH else "L’Odyssée du trio",
+			"chapter": run.run_name if run_path == PHILOSOPHER_TRIAL_RUN_PATH else ("Catabase" if run_path == CATABASE_RUN_PATH else "L’Odyssée du trio"),
 			"party_note": party_note,
-			"description": _description_for(hero),
+			"description": "Défiez le mage et son spectre au Gué du Léthé. Utilisez l’eau, la glace, la lave et les vortex pour contrer ses soins et ses protections." if run_path == PHILOSOPHER_TRIAL_RUN_PATH else _description_for(hero),
 			"accent": _accent_for(hero.get_effective_unit_id()),
 		})
 

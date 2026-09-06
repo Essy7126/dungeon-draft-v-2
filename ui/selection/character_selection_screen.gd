@@ -101,27 +101,29 @@ func _build_screen() -> void:
 
 func _build_roster() -> void:
 	_label(_canvas, "Choisissez votre héros", Rect2(42, 130, 305, 38), 23, TEXT, HEADING)
-	_label(_canvas, "Quatre destins à découvrir", Rect2(43, 171, 300, 25), 15, MUTED)
+	_label(_canvas, "Votre héros, votre aventure", Rect2(43, 171, 300, 25), 15, MUTED)
 	for index in range(_entries.size()):
 		var entry: Dictionary = _entries[index]
 		var unit: UnitData = entry["unit"]
-		var button := _button(_canvas, "", Rect2(42, 218 + index * 113, 280, 98))
-		button.name = "Hero_%s" % entry["id"]
+		var button := _button(_canvas, "", Rect2(42, 218 + index * 92, 280, 82))
+		button.name = "Hero_%d_%s" % [index, entry["id"]]
 		button.toggle_mode = true
-		button.tooltip_text = "%s\n%s" % [unit.role, entry["party_note"]]
+		button.tooltip_text = "%s\n%s\n%s" % [entry["chapter"], unit.role, entry["party_note"]]
 		button.pressed.connect(select_character.bind(index))
 		_roster_buttons.append(button)
-		var emblem := _panel(button, Rect2(13, 17, 58, 63), Color("243637"), LINE, 5)
+		var emblem := _panel(button, Rect2(13, 13, 56, 56), Color("243637"), LINE, 5)
 		var thumb := _portrait_for(unit)
 		if thumb != null:
-			_texture(emblem, thumb, Rect2(3, 2, 52, 60))
+			_texture(emblem, thumb, Rect2(2, 2, 52, 52))
 		else:
-			_label(emblem, unit.unit_name.left(1), Rect2(0, 5, 58, 50), 30, entry["accent"], HEADING, HORIZONTAL_ALIGNMENT_CENTER)
-		_label(button, unit.unit_name, Rect2(85, 13, 173, 30), 23, TEXT, HEADING)
-		var note := "CATABASE · SOLO" if index == 0 else "L’ODYSSÉE · TRIO"
-		_label(button, note, Rect2(85, 46, 183, 22), 11, entry["accent"], BOLD)
-		_label(button, _short_role(unit), Rect2(85, 69, 180, 19), 13, MUTED)
+			_label(emblem, unit.unit_name.left(1), Rect2(0, 3, 56, 50), 30, entry["accent"], HEADING, HORIZONTAL_ALIGNMENT_CENTER)
+		_label(button, unit.unit_name, Rect2(82, 8, 180, 28), 22, TEXT, HEADING)
+		var chapter := str(entry["chapter"]).to_upper()
+		var journey := _label(button, chapter, Rect2(82, 35, 183, 19), 10 if chapter.length() > 24 else 11, entry["accent"], BOLD)
+		journey.name = "Journey"
+		_label(button, _short_role(unit), Rect2(82, 55, 183, 19), 12, MUTED)
 	var note_panel := _panel(_canvas, Rect2(42, 691, 280, 66), Color("172427"), LINE, 6)
+	note_panel.name = "RosterNote"
 	_label(note_panel, "UNE AVENTURE, UN GROUPE", Rect2(14, 9, 254, 20), 11, GOLD, BOLD)
 	_label(note_panel, "Chaque héros appartient à son récit.", Rect2(14, 32, 254, 24), 14, MUTED)
 

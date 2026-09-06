@@ -2,6 +2,7 @@ class_name EnemyAI
 extends RefCounted
 
 const LogDefinitions = preload("res://debug/log_definitions.gd")
+const SupportMageDecision = preload("res://core/ai/support_mage_decision.gd")
 
 var _grid: GridData
 var _pathfinder: Pathfinder
@@ -34,6 +35,8 @@ func decide(enemy: Unit, all_units: Array) -> Array:
 func _decide_with_prepared_paths(enemy: Unit, all_units: Array) -> Array:
 	if enemy.ai_profile != null:
 		match enemy.ai_profile.strategy:
+			EnemyAIProfile.Strategy.SUPPORT_MAGE:
+				return SupportMageDecision.decide(self, enemy, all_units)
 			EnemyAIProfile.Strategy.FORMATION_MELEE:
 				return _decide_formation_melee(enemy, all_units)
 			EnemyAIProfile.Strategy.GUARDIAN_CHIEF:

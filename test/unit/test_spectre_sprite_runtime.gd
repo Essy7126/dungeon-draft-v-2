@@ -227,3 +227,34 @@ func _watch_actions(view: Node) -> Dictionary:
 		events.order.append("finish")
 	)
 	return events
+
+
+func test_painted_map_without_spectre_profile_preserves_scale_ratio_and_ground_anchor() -> void:
+	var presentation := BattlePresentationProfile.new()
+	presentation.global_unit_scale_multiplier = 1.08
+	presentation.unit_profiles.assign([
+		load("res://data/maps/painted/unit_profile_achilles.tres") as UnitVisualProfile])
+	assert_null(presentation.profile_for_unit(&"spectre_greatsword"))
+	var unit_view_script := load("res://battle/unit_view.gd") as Script
+	var spectre := unit_view_script.new() as Node2D
+	var hero := unit_view_script.new() as Node2D
+	add_child_autofree(spectre)
+	add_child_autofree(hero)
+	spectre.position = Vector2(240, 310)
+	hero.position = Vector2(160, 270)
+	spectre.setup(Unit.from_data(load("res://data/units/enemies/spectre_greatsword.tres") as UnitData), false)
+	hero.setup(Unit.from_data(load("res://data/units/allies/achilles.tres") as UnitData), false)
+	spectre.apply_painted_presentation(presentation)
+	hero.apply_painted_presentation(presentation)
+	var visual := spectre.get_optional_visual() as Node2D
+	var sprite := _sprite(visual)
+	var profile := visual.get("sprite_profile") as SpectreSpriteVisualProfile
+	var scale_ratio := float(spectre.get_painted_visual_scale()) / float(hero.get_painted_visual_scale())
+	assert_almost_eq(float(spectre.get_painted_visual_scale()), 1.7064, 0.001)
+	assert_almost_eq(scale_ratio, 1.0, 0.001)
+	assert_eq((spectre.get("_painted_family_profile") as UnitVisualProfile).resource_path,
+		"res://data/maps/painted/unit_profile_spectre_greatsword.tres")
+	assert_almost_eq(sprite.to_global(sprite.offset + profile.foot_anchor),
+		spectre.global_position, Vector2(0.001, 0.001))
+	spectre.apply_painted_presentation(presentation)
+	assert_almost_eq(visual.scale.x, 1.7064, 0.001, "Repeated binding cannot enlarge the spectre again")

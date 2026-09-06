@@ -3,6 +3,8 @@ extends Control
 
 signal finished(instance)
 
+const APORIA_STATUS: StatusData = preload("res://data/status/enemies/philosopher_aporia.tres")
+
 @onready var _badge: Label = %Badge
 @onready var _icon: Label = %Icon
 @onready var _amount: Label = %Amount
@@ -61,7 +63,7 @@ static func describe_fact(
 		&"hp_damage_taken":
 			amount_text = "−%d" % fact.amount_applied
 			if fact.is_periodic and fact.status_id != &"":
-				detail = String(fact.status_id).replace("_", " ").capitalize()
+				detail = _status_detail(fact.status_id)
 		&"heal_received":
 			amount_text = "+%d" % fact.amount_applied
 		&"shield_absorbed":
@@ -75,7 +77,7 @@ static func describe_fact(
 			amount_text = label
 			label = ""
 			if fact.status_id != &"":
-				detail = String(fact.status_id).replace("_", " ").capitalize()
+				detail = _status_detail(fact.status_id)
 	if legacy_preset:
 		return _legacy_payload(fact, amount_text)
 	return {
@@ -91,6 +93,12 @@ static func describe_fact(
 		"emphasis_scale": style.emphasis_scale,
 		"style_id": String(style.style_id),
 	}
+
+
+static func _status_detail(status_id: StringName) -> String:
+	if status_id == APORIA_STATUS.get_effective_status_id():
+		return APORIA_STATUS.status_name
+	return String(status_id).replace("_", " ").capitalize()
 
 
 static func _translated_label(style: CombatFeedbackStyle) -> String:

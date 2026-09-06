@@ -1,0 +1,7387 @@
+{
+  "schema": 1,
+  "asset": "The Dialectician",
+  "generator": "OpenAI built-in imagegen",
+  "complete": true,
+  "canvas": [
+    512,
+    384
+  ],
+  "foot_anchor": [
+    256,
+    320
+  ],
+  "animation_count": 32,
+  "total_authored_frames": 128,
+  "sprite_frames_sha256": "6b2dd0597ebe3926dd1730eb565517c10406f41a46b26d8ae9c7094908c7ee89",
+  "alignment_sha256": "346da9f3a039dd0c39caf1f1384ca032d8f0f2afa09808941a0e6b9f48e7bd0a",
+  "clips": {
+    "base": {
+      "rows": 4,
+      "count": 16,
+      "clips": {
+        "idle": {
+          "indices": [
+            0
+          ],
+          "duration": 1,
+          "loop": true
+        },
+        "walk": {
+          "indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "duration": 0.8,
+          "loop": true
+        },
+        "attack": {
+          "indices": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "duration": 0.64,
+          "release": 0.32
+        },
+        "heal": {
+          "indices": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "duration": 0.8,
+          "release": 0.4
+        }
+      }
+    },
+    "extra": {
+      "rows": 4,
+      "count": 16,
+      "clips": {
+        "control": {
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 0.72,
+          "release": 0.36
+        },
+        "shield": {
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "duration": 0.64,
+          "release": 0.32
+        },
+        "hit": {
+          "indices": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "duration": 0.24
+        },
+        "death": {
+          "indices": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "duration": 0.52
+        }
+      }
+    }
+  },
+  "clip_overrides": {
+    "heal_N": {
+      "2": "base_N_13"
+    },
+    "control_S": {
+      "2": "extra_S_1"
+    },
+    "control_N": {
+      "2": "extra_N_1"
+    },
+    "control_W": {
+      "2": "extra_W_1"
+    }
+  },
+  "policy": "Mechanical crop, fixed sheet scale, explicit ground anchors; genuine source RGBA; no mirroring or redraw; exact atlas scanline verification.",
+  "sheets": [
+    {
+      "key": "base_N",
+      "group": "base",
+      "direction": "N",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_base_N.png",
+      "source_sha256": "b5bc5f78c47f41ef85b24061eb8bf6c6ebd7a793b03e68b8a9331de2c451371c",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1048331,
+        "full": 1572,
+        "partial": 522613,
+        "removed_pixels": 75658,
+        "removed_alpha_sum": 107660,
+        "max_removed_alpha": 13,
+        "transparent_fraction": 0.666658
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": []
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.827,
+      "explicit_roots": [
+        [
+          183,
+          298
+        ],
+        [
+          493,
+          304
+        ],
+        [
+          792,
+          305
+        ],
+        [
+          1088,
+          302
+        ],
+        [
+          193,
+          612
+        ],
+        [
+          484,
+          608
+        ],
+        [
+          796,
+          610
+        ],
+        [
+          1099,
+          608
+        ],
+        [
+          159,
+          905
+        ],
+        [
+          460,
+          904
+        ],
+        [
+          766,
+          905
+        ],
+        [
+          1083,
+          907
+        ],
+        [
+          175,
+          1205
+        ],
+        [
+          470,
+          1212
+        ],
+        [
+          777,
+          1214
+        ],
+        [
+          1080,
+          1212
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_base_N.png",
+      "atlas_sha256": "4bac9861ea848fdff4295c0e0ad3b9221b32a4728166dc1d25221cc3d69560bb",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            121,
+            23,
+            282,
+            296
+          ],
+          "source_preserved_bbox": [
+            119,
+            21,
+            284,
+            298
+          ],
+          "source_root": [
+            183,
+            298
+          ],
+          "source_core_pixels": 26458,
+          "output_core_pixels": 18132,
+          "output_core_bbox": [
+            204,
+            92,
+            337,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            203,
+            91,
+            136,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            255.751515,
+            320
+          ],
+          "root_quantization_error": [
+            -0.248485,
+            0
+          ],
+          "preserved_source_rgba_sha256": "3548e8ff47b4a5f114df06637fd0ac6f804307f24e3f5ff66e4f5cde30f2aee5",
+          "frame_png_sha256": "5251fbfb19ebbe2bf61bfc122836b7f31db17d88f9141e5d4c236b0a10aa0425",
+          "frame_rgba_sha256": "221d9e0573c948499672a613be69ae1a524aa9dfb8955aa5cfa7ff0b6c788159",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            409,
+            25,
+            581,
+            302
+          ],
+          "source_preserved_bbox": [
+            407,
+            23,
+            583,
+            304
+          ],
+          "source_root": [
+            493,
+            304
+          ],
+          "source_core_pixels": 25094,
+          "output_core_pixels": 17304,
+          "output_core_bbox": [
+            186,
+            89,
+            330,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            185,
+            88,
+            146,
+            232
+          ],
+          "quantized_source_root_in_canvas": [
+            256.340909,
+            320
+          ],
+          "root_quantization_error": [
+            0.340909,
+            0
+          ],
+          "preserved_source_rgba_sha256": "ea96821401bfbe400f1320632ccb4fbb8ae2d18c2b3f1a4b8950eea2c36b0d27",
+          "frame_png_sha256": "cb5df76d339634dbeff1e9debae71ed5273febbff81767371d3d4b1fa898df67",
+          "frame_rgba_sha256": "614cd52fe2b06ed7d1bcc24215bd3ffb39f6afce77a3ce07063b8ba5ef9be39b",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            716,
+            25,
+            884,
+            303
+          ],
+          "source_preserved_bbox": [
+            714,
+            23,
+            886,
+            305
+          ],
+          "source_root": [
+            792,
+            305
+          ],
+          "source_core_pixels": 24884,
+          "output_core_pixels": 17040,
+          "output_core_bbox": [
+            193,
+            89,
+            331,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            191,
+            87,
+            142,
+            233
+          ],
+          "quantized_source_root_in_canvas": [
+            255.395349,
+            320
+          ],
+          "root_quantization_error": [
+            -0.604651,
+            0
+          ],
+          "preserved_source_rgba_sha256": "0b7e304a750abfd29194fad68cf6efcdf8dedacf774b65983c36e3e13ac4225d",
+          "frame_png_sha256": "261e03f993b13e42ea9c2dc2baabaeb6057a9c113b761b0ad9edff64d5198cee",
+          "frame_rgba_sha256": "13a9cbc05401eff5d883cb47e6dd7cbb1135b0479486b48989e9b49d2be8b2d5",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1004,
+            27,
+            1181,
+            300
+          ],
+          "source_preserved_bbox": [
+            1002,
+            25,
+            1183,
+            302
+          ],
+          "source_root": [
+            1088,
+            302
+          ],
+          "source_core_pixels": 24646,
+          "output_core_pixels": 16957,
+          "output_core_bbox": [
+            187,
+            92,
+            333,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            185,
+            91,
+            150,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            256.270718,
+            320
+          ],
+          "root_quantization_error": [
+            0.270718,
+            0
+          ],
+          "preserved_source_rgba_sha256": "56716dbd416a1e0098fb99d739516306fae2fd64287d6b4c01cac34ac726335b",
+          "frame_png_sha256": "6eb193a46e6b38596b7304d1d4988730c96e2c108fd40f198f27a273016d4731",
+          "frame_rgba_sha256": "1545211182acec03e2c57ce7c46badb8e47628d58186463afd595d215fedb3b5",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            93,
+            332,
+            278,
+            610
+          ],
+          "source_preserved_bbox": [
+            91,
+            330,
+            280,
+            612
+          ],
+          "source_root": [
+            193,
+            612
+          ],
+          "source_core_pixels": 25182,
+          "output_core_pixels": 17236,
+          "output_core_bbox": [
+            173,
+            89,
+            326,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            172,
+            87,
+            156,
+            233
+          ],
+          "quantized_source_root_in_canvas": [
+            256.190476,
+            320
+          ],
+          "root_quantization_error": [
+            0.190476,
+            0
+          ],
+          "preserved_source_rgba_sha256": "5c467d218c346f3cd8594abc46302cc389eeef1fc5f6be6246edeb7a70de94bf",
+          "frame_png_sha256": "103fa6b4681c1f39b330d4b39ab72368f65514531b6acde2e22f8a91062ad86f",
+          "frame_rgba_sha256": "09c187c33012548b0d2919a3b5636e72011535920d67e811321c8de89650972a",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            422,
+            335,
+            582,
+            604
+          ],
+          "source_preserved_bbox": [
+            420,
+            333,
+            584,
+            606
+          ],
+          "source_root": [
+            484,
+            608
+          ],
+          "source_core_pixels": 25102,
+          "output_core_pixels": 17322,
+          "output_core_bbox": [
+            205,
+            95,
+            337,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            203,
+            93,
+            136,
+            226
+          ],
+          "quantized_source_root_in_canvas": [
+            256.073171,
+            320.655678
+          ],
+          "root_quantization_error": [
+            0.073171,
+            0.655678
+          ],
+          "preserved_source_rgba_sha256": "741e8e36aef1506d664a1975a1a34a154591e44c646430e422e04285a0e2cba4",
+          "frame_png_sha256": "7cf00ee9676d6bf3ebe0fd82ee3d0d31d40666b9ba5e2894ca0715495efba5c3",
+          "frame_rgba_sha256": "147fa87807580d38aa1ffe4f5959e0b4673a6db3b5c9f228e35059c15f9a7e3e",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            716,
+            328,
+            896,
+            606
+          ],
+          "source_preserved_bbox": [
+            714,
+            326,
+            898,
+            608
+          ],
+          "source_root": [
+            796,
+            610
+          ],
+          "source_core_pixels": 25486,
+          "output_core_pixels": 17471,
+          "output_core_bbox": [
+            190,
+            87,
+            338,
+            317
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            188,
+            85,
+            152,
+            233
+          ],
+          "quantized_source_root_in_canvas": [
+            255.73913,
+            319.652482
+          ],
+          "root_quantization_error": [
+            -0.26087,
+            -0.347518
+          ],
+          "preserved_source_rgba_sha256": "96a4c14446117d2a616d77425baa123faedb65d6601c4cde4e2471cb1c8b84be",
+          "frame_png_sha256": "643b35f7b6e232af7e4d729fcaebca3bb6a4815b8cdfc28f5380f1e1556f236f",
+          "frame_rgba_sha256": "15322d38f67d6b4c23822a38e79860fedcae5f2b9e945e85ae6b68fb5e88f235",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1024,
+            334,
+            1187,
+            606
+          ],
+          "source_preserved_bbox": [
+            1022,
+            332,
+            1189,
+            608
+          ],
+          "source_root": [
+            1099,
+            608
+          ],
+          "source_core_pixels": 24696,
+          "output_core_pixels": 16900,
+          "output_core_bbox": [
+            194,
+            93,
+            329,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            192,
+            92,
+            138,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            255.628743,
+            320
+          ],
+          "root_quantization_error": [
+            -0.371257,
+            0
+          ],
+          "preserved_source_rgba_sha256": "55606af8221c243b058085c57529410a3e6a7625b3bb2a1a27199bd3ca079623",
+          "frame_png_sha256": "cf74e5915f0d88228ebbac82c035ee70a3bc207ca968ea16f66a6cd067204720",
+          "frame_rgba_sha256": "36d0f09559c06cd3971a6555b0c8ef266a39e6db84c987a0d9b247c76be71f0a",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            101,
+            642,
+            281,
+            903
+          ],
+          "source_preserved_bbox": [
+            99,
+            640,
+            283,
+            905
+          ],
+          "source_root": [
+            159,
+            905
+          ],
+          "source_core_pixels": 25504,
+          "output_core_pixels": 17478,
+          "output_core_bbox": [
+            208,
+            102,
+            356,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            206,
+            101,
+            152,
+            219
+          ],
+          "quantized_source_root_in_canvas": [
+            255.565217,
+            320
+          ],
+          "root_quantization_error": [
+            -0.434783,
+            0
+          ],
+          "preserved_source_rgba_sha256": "e9088b63636ba793add24f27323069f5d289fd91a8ac9d1451ae70863a0be89b",
+          "frame_png_sha256": "59b87b5ad89478ae13e9202536831f046259d49d3108087a4f4f797fe5567927",
+          "frame_rgba_sha256": "222811ca47efb6c90c43222f61a2a9671d3b00611c6571300a8ad92ba18d4783",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            386,
+            645,
+            630,
+            902
+          ],
+          "source_preserved_bbox": [
+            384,
+            643,
+            632,
+            904
+          ],
+          "source_root": [
+            460,
+            904
+          ],
+          "source_core_pixels": 27171,
+          "output_core_pixels": 18641,
+          "output_core_bbox": [
+            195,
+            105,
+            397,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            193,
+            104,
+            205,
+            216
+          ],
+          "quantized_source_root_in_canvas": [
+            255.822581,
+            320
+          ],
+          "root_quantization_error": [
+            -0.177419,
+            0
+          ],
+          "preserved_source_rgba_sha256": "3d1adbbd893b5d8a04e65718359897dfff7769b3f966e74914a6f4fd30659900",
+          "frame_png_sha256": "cdf894202b03aaf03f8f2a5852ffbd159b73015906c0b3c701790d100d16d196",
+          "frame_rgba_sha256": "9a6e515bb788998af1deabbf03ed0240cc23edfa86e81387e053e1d97fa5afb5",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            697,
+            620,
+            934,
+            903
+          ],
+          "source_preserved_bbox": [
+            695,
+            618,
+            936,
+            905
+          ],
+          "source_root": [
+            766,
+            905
+          ],
+          "source_core_pixels": 24458,
+          "output_core_pixels": 16714,
+          "output_core_bbox": [
+            198,
+            84,
+            394,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            197,
+            83,
+            199,
+            237
+          ],
+          "quantized_source_root_in_canvas": [
+            255.626556,
+            320
+          ],
+          "root_quantization_error": [
+            -0.373444,
+            0
+          ],
+          "preserved_source_rgba_sha256": "f53e163e942d945f62eec831749010a181de3ce155074412c5a604782dfd3096",
+          "frame_png_sha256": "c38aecbc3339384dfd3e782462ab3012bb21350fc99a901f37580f82092f53b8",
+          "frame_rgba_sha256": "e57210227fdb7ec39d584b25516e22bf53c5f9005c46890a258f986fe2e4748a",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1018,
+            641,
+            1175,
+            905
+          ],
+          "source_preserved_bbox": [
+            1016,
+            639,
+            1177,
+            907
+          ],
+          "source_root": [
+            1083,
+            907
+          ],
+          "source_core_pixels": 26602,
+          "output_core_pixels": 18290,
+          "output_core_bbox": [
+            202,
+            99,
+            333,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            201,
+            98,
+            133,
+            222
+          ],
+          "quantized_source_root_in_canvas": [
+            256.347826,
+            320
+          ],
+          "root_quantization_error": [
+            0.347826,
+            0
+          ],
+          "preserved_source_rgba_sha256": "50e3b0b377b8d1c75e5f5ba8c67a12a03e1930c0274d2e6dccc1c9c7643c58ed",
+          "frame_png_sha256": "99e97bc83930aa7c23cace6a8a7da269f5d543a41da9efb3254b7902417f9c61",
+          "frame_rgba_sha256": "722d3cc6de0b9777075ca84709c65910dec56d480b7f1aba583b74346c371210",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            121,
+            936,
+            270,
+            1203
+          ],
+          "source_preserved_bbox": [
+            119,
+            934,
+            272,
+            1205
+          ],
+          "source_root": [
+            175,
+            1205
+          ],
+          "source_core_pixels": 25201,
+          "output_core_pixels": 17361,
+          "output_core_bbox": [
+            212,
+            97,
+            335,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            210,
+            96,
+            127,
+            224
+          ],
+          "quantized_source_root_in_canvas": [
+            256.48366,
+            320
+          ],
+          "root_quantization_error": [
+            0.48366,
+            0
+          ],
+          "preserved_source_rgba_sha256": "9664b932f7a6dd4f4bfeba40eec14949e490a46f3cadde145c6c13827d40b7ce",
+          "frame_png_sha256": "566ab5d9109710d7377edcf936f90c0391b927e6012a2150ab60182d754d1839",
+          "frame_rgba_sha256": "efd5a336954db2a7ff266b1303dd654ad63120cf67ce18bafed72ba0515dcd09",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            418,
+            941,
+            565,
+            1210
+          ],
+          "source_preserved_bbox": [
+            416,
+            939,
+            567,
+            1212
+          ],
+          "source_root": [
+            470,
+            1212
+          ],
+          "source_core_pixels": 26014,
+          "output_core_pixels": 17879,
+          "output_core_bbox": [
+            212,
+            96,
+            334,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            211,
+            94,
+            125,
+            226
+          ],
+          "quantized_source_root_in_canvas": [
+            255.701987,
+            320
+          ],
+          "root_quantization_error": [
+            -0.298013,
+            0
+          ],
+          "preserved_source_rgba_sha256": "1f8f1ee803a04e67a059acfbfaddee81c5e4455fd312acd178351805564219f8",
+          "frame_png_sha256": "2201b57d1103449a97ded18fabca906692d753c2a8ba154781293ae851dd0655",
+          "frame_rgba_sha256": "5aae94c26a6047a86b59a904c288e8ad4cff64a76cb6d6c758f7f3f608546c58",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            715,
+            934,
+            890,
+            1212
+          ],
+          "source_preserved_bbox": [
+            713,
+            932,
+            892,
+            1214
+          ],
+          "source_root": [
+            777,
+            1214
+          ],
+          "source_core_pixels": 26533,
+          "output_core_pixels": 18195,
+          "output_core_bbox": [
+            205,
+            88,
+            350,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            203,
+            87,
+            148,
+            233
+          ],
+          "quantized_source_root_in_canvas": [
+            255.916201,
+            320
+          ],
+          "root_quantization_error": [
+            -0.083799,
+            0
+          ],
+          "preserved_source_rgba_sha256": "ec547ccc573c25a7d22a4e4f7dcf15d27b5c8343930a04266710a56b3320832c",
+          "frame_png_sha256": "c23e96f5f552528df2186febae4ba720cf611ec6ad2b0d0a5ca6f9b1f395879d",
+          "frame_rgba_sha256": "4901256d5c8ebcf262e8c376d1e523452943e6a5fd912dff62386158132869ed",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            1008,
+            940,
+            1174,
+            1210
+          ],
+          "source_preserved_bbox": [
+            1006,
+            938,
+            1176,
+            1212
+          ],
+          "source_root": [
+            1080,
+            1212
+          ],
+          "source_core_pixels": 25815,
+          "output_core_pixels": 17784,
+          "output_core_bbox": [
+            196,
+            95,
+            335,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            195,
+            93,
+            141,
+            227
+          ],
+          "quantized_source_root_in_canvas": [
+            256.376471,
+            320
+          ],
+          "root_quantization_error": [
+            0.376471,
+            0
+          ],
+          "preserved_source_rgba_sha256": "4f663901b1dbff2981a3d3a07c8ca488439aaf25d7bf83244e5c8a6963b5e25f",
+          "frame_png_sha256": "3fbf60b7a66b64854cd18a86a6d861b21a8698b4237c5f64731e06620eac385f",
+          "frame_rgba_sha256": "5ecd3ed40f9f716dcd25b29b3552d6552fbf4636131562f8719e6ccb606e3527",
+          "crosses_nominal_source_cell": true
+        }
+      ]
+    },
+    {
+      "key": "base_E",
+      "group": "base",
+      "direction": "E",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_base_E.png",
+      "source_sha256": "b017c6cef3e6e1b5f69bff8ca1f6badb4918ca90173ab7a3299ea3fd32cb2396",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 971097,
+        "full": 1719,
+        "partial": 599700,
+        "removed_pixels": 76145,
+        "removed_alpha_sum": 127391,
+        "max_removed_alpha": 20,
+        "transparent_fraction": 0.617543
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": []
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.773,
+      "explicit_roots": [
+        [
+          165,
+          300
+        ],
+        [
+          495,
+          303
+        ],
+        [
+          806,
+          303
+        ],
+        [
+          1118,
+          304
+        ],
+        [
+          161,
+          617
+        ],
+        [
+          497,
+          614
+        ],
+        [
+          808,
+          610
+        ],
+        [
+          1107,
+          613
+        ],
+        [
+          174,
+          919
+        ],
+        [
+          472,
+          905
+        ],
+        [
+          789,
+          904
+        ],
+        [
+          1124,
+          913
+        ],
+        [
+          169,
+          1223
+        ],
+        [
+          479,
+          1222
+        ],
+        [
+          790,
+          1226
+        ],
+        [
+          1118,
+          1222
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_base_E.png",
+      "atlas_sha256": "ff9206343e6b6f9c36b0d23fdc01ee4386981c2fddf60f681a6ff84b41c18ec2",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            66,
+            7,
+            237,
+            298
+          ],
+          "source_preserved_bbox": [
+            64,
+            5,
+            239,
+            300
+          ],
+          "source_root": [
+            165,
+            300
+          ],
+          "source_core_pixels": 31946,
+          "output_core_pixels": 19138,
+          "output_core_bbox": [
+            179,
+            93,
+            312,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            178,
+            92,
+            135,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            255.914286,
+            320
+          ],
+          "root_quantization_error": [
+            -0.085714,
+            0
+          ],
+          "preserved_source_rgba_sha256": "0002b73f3656aa44e0cd7f77b84227d1cb8c9ba217c4990f80c2734d5648e69e",
+          "frame_png_sha256": "06313c2b2a5783bd0451dcdc61695995342825a944b1ea5786ec305ec9d59390",
+          "frame_rgba_sha256": "0d516665bd585d48794f1d3159c30807c6836b6643902366c7389ddec765ab74",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            390,
+            15,
+            569,
+            302
+          ],
+          "source_preserved_bbox": [
+            388,
+            13,
+            571,
+            304
+          ],
+          "source_root": [
+            495,
+            303
+          ],
+          "source_core_pixels": 29490,
+          "output_core_pixels": 17703,
+          "output_core_bbox": [
+            174,
+            97,
+            313,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            173,
+            96,
+            141,
+            225
+          ],
+          "quantized_source_root_in_canvas": [
+            255.442623,
+            320.226804
+          ],
+          "root_quantization_error": [
+            -0.557377,
+            0.226804
+          ],
+          "preserved_source_rgba_sha256": "b3d590eb11024995aa3114ed2cd7b42e4622c154981c28800ea04487caf8054f",
+          "frame_png_sha256": "268eb53a6ef75ee7836322947c343114eb338411e6ac91b89299fa877a55591c",
+          "frame_rgba_sha256": "1dd0f1663d97f8d6ed054b384c8840710b9c7600251bf6b59fc3c285de9e6aaa",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            704,
+            17,
+            882,
+            302
+          ],
+          "source_preserved_bbox": [
+            702,
+            15,
+            884,
+            304
+          ],
+          "source_root": [
+            806,
+            303
+          ],
+          "source_core_pixels": 28932,
+          "output_core_pixels": 17415,
+          "output_core_bbox": [
+            177,
+            98,
+            315,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            97,
+            141,
+            223
+          ],
+          "quantized_source_root_in_canvas": [
+            256.571429,
+            319.228374
+          ],
+          "root_quantization_error": [
+            0.571429,
+            -0.771626
+          ],
+          "preserved_source_rgba_sha256": "06c0eb6ca8b1c78a9cb8e152fdbb7dae8363e11391a49188e7197d462735c729",
+          "frame_png_sha256": "55d703b5874b9178556347c5f6f64d56fd3fe42697faaa523566f982d7049794",
+          "frame_rgba_sha256": "21f576f10d6772130336a0a5ab859e95ef4ff84379e64e7f2eb48d8911f7ba09",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1010,
+            11,
+            1191,
+            303
+          ],
+          "source_preserved_bbox": [
+            1008,
+            9,
+            1193,
+            305
+          ],
+          "source_root": [
+            1118,
+            304
+          ],
+          "source_core_pixels": 29369,
+          "output_core_pixels": 17644,
+          "output_core_bbox": [
+            172,
+            93,
+            313,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            171,
+            92,
+            143,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            256.027027,
+            320.226351
+          ],
+          "root_quantization_error": [
+            0.027027,
+            0.226351
+          ],
+          "preserved_source_rgba_sha256": "3249016b552e018ebf3dc5e0d125c53aa1264c9f8ed4fa01014b61d4417809c6",
+          "frame_png_sha256": "61c8c6073a106606428cf61995291195e61bcd20339108ebfd2a0401571b0e04",
+          "frame_rgba_sha256": "64d596a468b8233c0ee903dcca0bf875eedb7853a0707c05c541c2f9a0364630",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            81,
+            330,
+            244,
+            616
+          ],
+          "source_preserved_bbox": [
+            79,
+            328,
+            246,
+            618
+          ],
+          "source_root": [
+            161,
+            617
+          ],
+          "source_core_pixels": 28192,
+          "output_core_pixels": 16862,
+          "output_core_bbox": [
+            194,
+            98,
+            320,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            193,
+            97,
+            129,
+            224
+          ],
+          "quantized_source_root_in_canvas": [
+            256.341317,
+            320.227586
+          ],
+          "root_quantization_error": [
+            0.341317,
+            0.227586
+          ],
+          "preserved_source_rgba_sha256": "6100badfa916b4b84c643f4d8e1d24513b1262a25d23fd7af93a9dae7dd6a2de",
+          "frame_png_sha256": "a20ae833ae555aa4921aad459780aabbb69d4555c34a8241ace0ad26e0cc91ae",
+          "frame_rgba_sha256": "e438dce5ec391755f8d605bd4183650cdfed0930921c0769aecc7cfbc4b920e7",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            393,
+            320,
+            572,
+            612
+          ],
+          "source_preserved_bbox": [
+            391,
+            318,
+            574,
+            614
+          ],
+          "source_root": [
+            497,
+            614
+          ],
+          "source_core_pixels": 29177,
+          "output_core_pixels": 17548,
+          "output_core_bbox": [
+            175,
+            92,
+            313,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            174,
+            91,
+            141,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            255.672131,
+            320
+          ],
+          "root_quantization_error": [
+            -0.327869,
+            0
+          ],
+          "preserved_source_rgba_sha256": "a0cf688c980f1861443f02e4fa36431a4b77491fb968b97760b6c070b3f10817",
+          "frame_png_sha256": "4f61365c801d797cc4ca1b8a1ce2796e01e9ba48f046c4691e91e57d77874db1",
+          "frame_rgba_sha256": "a0729bfc9ce94c8189ec94f872e9d64707c3627ab707bb714873a8147ec5d12d",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            713,
+            332,
+            887,
+            606
+          ],
+          "source_preserved_bbox": [
+            711,
+            330,
+            889,
+            608
+          ],
+          "source_root": [
+            808,
+            610
+          ],
+          "source_core_pixels": 28780,
+          "output_core_pixels": 17366,
+          "output_core_bbox": [
+            183,
+            105,
+            318,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            181,
+            104,
+            138,
+            215
+          ],
+          "quantized_source_root_in_canvas": [
+            256.202247,
+            320.546763
+          ],
+          "root_quantization_error": [
+            0.202247,
+            0.546763
+          ],
+          "preserved_source_rgba_sha256": "20ba851f4e51377bb80c3b025013368cf2b2267638db87fa682f6eebc189b94c",
+          "frame_png_sha256": "4902206a08ca66e0e92872c107db1a97dfb9c1ea4450e976a006b1782272fa80",
+          "frame_rgba_sha256": "83aab2dacbd2107c12a4430e31ad928784740d221280c9d485ef9d571c478ad3",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1021,
+            328,
+            1203,
+            611
+          ],
+          "source_preserved_bbox": [
+            1019,
+            326,
+            1205,
+            613
+          ],
+          "source_root": [
+            1107,
+            613
+          ],
+          "source_core_pixels": 28319,
+          "output_core_pixels": 17035,
+          "output_core_bbox": [
+            190,
+            100,
+            331,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            188,
+            98,
+            144,
+            222
+          ],
+          "quantized_source_root_in_canvas": [
+            256.129032,
+            320
+          ],
+          "root_quantization_error": [
+            0.129032,
+            0
+          ],
+          "preserved_source_rgba_sha256": "cfc3d7cd0dede999b98c66411407c95243dcb884bf3ed8e0b59b636d6f860c57",
+          "frame_png_sha256": "ab5e49cfeb3196bbc0ebe5775c38217f1799b19c53277db586adc648a8e87aa5",
+          "frame_rgba_sha256": "0987a1b2b076f6be9e3208249e582557a12285d710687625d103fd860c20cc4b",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            49,
+            624,
+            263,
+            917
+          ],
+          "source_preserved_bbox": [
+            47,
+            622,
+            265,
+            919
+          ],
+          "source_root": [
+            174,
+            919
+          ],
+          "source_core_pixels": 29919,
+          "output_core_pixels": 18040,
+          "output_core_bbox": [
+            160,
+            91,
+            325,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            158,
+            90,
+            169,
+            230
+          ],
+          "quantized_source_root_in_canvas": [
+            256.454128,
+            320
+          ],
+          "root_quantization_error": [
+            0.454128,
+            0
+          ],
+          "preserved_source_rgba_sha256": "aa8e1b2a8fc0c5107daa386a860ac5f09238ed28865330a8a87997596f7b37cc",
+          "frame_png_sha256": "e66cd3630c4a8278156b6505a1c7d19cf5651d7c3ec2e7ee58c46878b0c3cada",
+          "frame_rgba_sha256": "9f8f644db5bb1ae46d797b217b6f45af52acb35f00c6791274fbef69faf9662e",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            371,
+            640,
+            624,
+            903
+          ],
+          "source_preserved_bbox": [
+            369,
+            638,
+            626,
+            905
+          ],
+          "source_root": [
+            472,
+            905
+          ],
+          "source_core_pixels": 30347,
+          "output_core_pixels": 18262,
+          "output_core_bbox": [
+            177,
+            114,
+            374,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            114,
+            199,
+            206
+          ],
+          "quantized_source_root_in_canvas": [
+            255.754864,
+            320
+          ],
+          "root_quantization_error": [
+            -0.245136,
+            0
+          ],
+          "preserved_source_rgba_sha256": "5154743abb6f3ee65e34a21a44f72e5bd803257066db17b79259e425a30faa1d",
+          "frame_png_sha256": "3b524d500dcf2998c6b2452573df706387912e1df64f366ce5da8f8f1aebd368",
+          "frame_rgba_sha256": "81d7420cace764da4341a46f566d6bdd02d309ce562caea01a1f380886f8647d",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            679,
+            643,
+            985,
+            902
+          ],
+          "source_preserved_bbox": [
+            677,
+            641,
+            987,
+            904
+          ],
+          "source_root": [
+            789,
+            904
+          ],
+          "source_core_pixels": 32467,
+          "output_core_pixels": 19526,
+          "output_core_bbox": [
+            170,
+            118,
+            407,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            169,
+            117,
+            240,
+            203
+          ],
+          "quantized_source_root_in_canvas": [
+            255.709677,
+            320
+          ],
+          "root_quantization_error": [
+            -0.290323,
+            0
+          ],
+          "preserved_source_rgba_sha256": "722d038c12d50addd3191c1403681cdcc104652542c57ede3f2b19dfab8cf8c3",
+          "frame_png_sha256": "1a5f6babfd441e7a446a736f5df4451033f13d69c47fb1bc65bdc842d792eb5a",
+          "frame_rgba_sha256": "6586b4993672935361214d169f71f7548cd6b9b962fcf043263aca93b9f49a13",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1026,
+            636,
+            1207,
+            911
+          ],
+          "source_preserved_bbox": [
+            1024,
+            634,
+            1209,
+            913
+          ],
+          "source_root": [
+            1124,
+            913
+          ],
+          "source_core_pixels": 29848,
+          "output_core_pixels": 17967,
+          "output_core_bbox": [
+            180,
+            105,
+            321,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            179,
+            104,
+            143,
+            216
+          ],
+          "quantized_source_root_in_canvas": [
+            256.297297,
+            320
+          ],
+          "root_quantization_error": [
+            0.297297,
+            0
+          ],
+          "preserved_source_rgba_sha256": "b1fad66ba3093c758477fe47fb5682b5fc06708a496187081dabb58ae9027a49",
+          "frame_png_sha256": "d065d2b6597e5ccb1eff3b841e1c68cc10a16ebc6687bc3a6004b9433959a3ad",
+          "frame_rgba_sha256": "22755f02a4d51feffc03081ff63e6fa4f065716a3d7076c499270c11b3a98fa0",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            85,
+            932,
+            233,
+            1221
+          ],
+          "source_preserved_bbox": [
+            83,
+            930,
+            235,
+            1223
+          ],
+          "source_root": [
+            169,
+            1223
+          ],
+          "source_core_pixels": 28997,
+          "output_core_pixels": 17315,
+          "output_core_bbox": [
+            192,
+            95,
+            306,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            94,
+            117,
+            226
+          ],
+          "quantized_source_root_in_canvas": [
+            256.197368,
+            320
+          ],
+          "root_quantization_error": [
+            0.197368,
+            0
+          ],
+          "preserved_source_rgba_sha256": "ddda2c463529c704a21fb41a79acf8c881ee0ec2a9061f005d96e3c9ea4f67eb",
+          "frame_png_sha256": "7e42caf45e51d1278432107b0dd43d22916e4b8937dfe8f655d67f2c1c74bc21",
+          "frame_rgba_sha256": "52a5f737a4ee1580ab0023e6445ef5eb3b304bac7b4eb0ff44994de5d67bae06",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            389,
+            929,
+            546,
+            1220
+          ],
+          "source_preserved_bbox": [
+            387,
+            927,
+            548,
+            1222
+          ],
+          "source_root": [
+            479,
+            1222
+          ],
+          "source_core_pixels": 30527,
+          "output_core_pixels": 18287,
+          "output_core_bbox": [
+            186,
+            93,
+            308,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            185,
+            92,
+            124,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            255.857143,
+            320
+          ],
+          "root_quantization_error": [
+            -0.142857,
+            0
+          ],
+          "preserved_source_rgba_sha256": "629e9c54a606876ddef43994642d1828e5b3bfe22e71eb98da08152e91bb3def",
+          "frame_png_sha256": "0a9815ee408889ae933c18cc41708f0ba6b5b10a11c2603ac146d86adaaa2ba3",
+          "frame_rgba_sha256": "5bd811e4026bb2c02304793d83d493ca5f2dfbe597522a9aefd808f1c565960d",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            699,
+            931,
+            905,
+            1224
+          ],
+          "source_preserved_bbox": [
+            697,
+            929,
+            907,
+            1226
+          ],
+          "source_root": [
+            790,
+            1226
+          ],
+          "source_core_pixels": 32598,
+          "output_core_pixels": 19605,
+          "output_core_bbox": [
+            185,
+            91,
+            345,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            184,
+            90,
+            162,
+            230
+          ],
+          "quantized_source_root_in_canvas": [
+            255.742857,
+            320
+          ],
+          "root_quantization_error": [
+            -0.257143,
+            0
+          ],
+          "preserved_source_rgba_sha256": "f1f9a0f746b080bfa1b985e216c54735fcbf947cde47a7f67bb63ec79cb5bf1f",
+          "frame_png_sha256": "31394f056ae037a861a4f6b152c911ec740a3a7cbda859fceea6d0df03a5f6b6",
+          "frame_rgba_sha256": "218e18f474387dfe0b5bcd80b79301c9931229e0acb514904147ff7d259c29e5",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            1026,
+            933,
+            1191,
+            1220
+          ],
+          "source_preserved_bbox": [
+            1024,
+            931,
+            1193,
+            1222
+          ],
+          "source_root": [
+            1118,
+            1222
+          ],
+          "source_core_pixels": 30721,
+          "output_core_pixels": 18553,
+          "output_core_bbox": [
+            184,
+            96,
+            313,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            183,
+            95,
+            131,
+            225
+          ],
+          "quantized_source_root_in_canvas": [
+            255.863905,
+            320
+          ],
+          "root_quantization_error": [
+            -0.136095,
+            0
+          ],
+          "preserved_source_rgba_sha256": "66256f7dea70dc5912a546095ca0fa0c1be595176976dfa6d9287d0399f8febf",
+          "frame_png_sha256": "c5de7ecc4e1fbdf3701b992665ef8b468d8f4c29a8334584ea3513497ed7e931",
+          "frame_rgba_sha256": "58581ae12a2c073fd0709e4afe0871e37440d00156f4fc3bca3d4b51b21d108e",
+          "crosses_nominal_source_cell": true
+        }
+      ]
+    },
+    {
+      "key": "base_S",
+      "group": "base",
+      "direction": "S",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_base_S.png",
+      "source_sha256": "96998e9611bc54319630da9c85161b87196a8674c907475619dd8d6ab8f9bc7a",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 952858,
+        "full": 2091,
+        "partial": 617567,
+        "removed_pixels": 95611,
+        "removed_alpha_sum": 151768,
+        "max_removed_alpha": 17,
+        "transparent_fraction": 0.605945
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": []
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.789,
+      "explicit_roots": [
+        [
+          193,
+          304
+        ],
+        [
+          492,
+          304
+        ],
+        [
+          799,
+          303
+        ],
+        [
+          1090,
+          304
+        ],
+        [
+          194,
+          612
+        ],
+        [
+          502,
+          612
+        ],
+        [
+          797,
+          609
+        ],
+        [
+          1093,
+          611
+        ],
+        [
+          187,
+          910
+        ],
+        [
+          511,
+          897
+        ],
+        [
+          817,
+          896
+        ],
+        [
+          1115,
+          906
+        ],
+        [
+          197,
+          1213
+        ],
+        [
+          500,
+          1216
+        ],
+        [
+          790,
+          1214
+        ],
+        [
+          1109,
+          1216
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_base_S.png",
+      "atlas_sha256": "539307ba832d2fa3dbfbdb616a9fc4f3ff57873555e826c1f6c203d98204a2ff",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            92,
+            16,
+            261,
+            302
+          ],
+          "source_preserved_bbox": [
+            90,
+            14,
+            263,
+            304
+          ],
+          "source_root": [
+            193,
+            304
+          ],
+          "source_core_pixels": 29654,
+          "output_core_pixels": 18518,
+          "output_core_bbox": [
+            176,
+            92,
+            309,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            175,
+            91,
+            136,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            255.971098,
+            320
+          ],
+          "root_quantization_error": [
+            -0.028902,
+            0
+          ],
+          "preserved_source_rgba_sha256": "5e2f511fe99d4ca80e9e7cd164fd7da357d0d035d91f6469d576dcdec5ec91ff",
+          "frame_png_sha256": "56247090f88d3ca67e5870c6e5f74fbbc5aaab0b7e416dfec1688c975ef74446",
+          "frame_rgba_sha256": "50a0d1f6d66f155f1fbc3c388a0982681646db27f0c10617d69522a94d8e196e",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            387,
+            17,
+            576,
+            302
+          ],
+          "source_preserved_bbox": [
+            385,
+            15,
+            578,
+            304
+          ],
+          "source_root": [
+            492,
+            304
+          ],
+          "source_core_pixels": 28861,
+          "output_core_pixels": 18052,
+          "output_core_bbox": [
+            173,
+            94,
+            323,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            172,
+            92,
+            152,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            256.26943,
+            320
+          ],
+          "root_quantization_error": [
+            0.26943,
+            0
+          ],
+          "preserved_source_rgba_sha256": "b45fa5a0fd05c4c2f7b318b9d487d7073ef0c4425ecd2e3c315f0c008f44a37d",
+          "frame_png_sha256": "37ac91386a8d39b81c7429455eb76a58d7c30d2b70ad125dd97f34b40584a421",
+          "frame_rgba_sha256": "d74e056caf04ec7d45297aadd0cd0d2b060f39a85aadce738cf7e920cfe2d078",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            670,
+            18,
+            859,
+            301
+          ],
+          "source_preserved_bbox": [
+            668,
+            16,
+            861,
+            303
+          ],
+          "source_root": [
+            799,
+            303
+          ],
+          "source_core_pixels": 26609,
+          "output_core_pixels": 16543,
+          "output_core_bbox": [
+            155,
+            95,
+            303,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            153,
+            94,
+            152,
+            226
+          ],
+          "quantized_source_root_in_canvas": [
+            256.170984,
+            320
+          ],
+          "root_quantization_error": [
+            0.170984,
+            0
+          ],
+          "preserved_source_rgba_sha256": "599c6a0855f2d0e96e1b7337c2e91f581fe1dbe23e05814bd9c0bed3fcb59942",
+          "frame_png_sha256": "28f998e2bc0cb04c2fc8ef8e160e099b7f3815bac1091903efa9e751a0c1af13",
+          "frame_rgba_sha256": "5e226cfb41de2b0e3c29e07df85654c740eeb730fb84a35a8ccea6ea4b419e8e",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            977,
+            16,
+            1177,
+            302
+          ],
+          "source_preserved_bbox": [
+            975,
+            14,
+            1179,
+            304
+          ],
+          "source_root": [
+            1090,
+            304
+          ],
+          "source_core_pixels": 28980,
+          "output_core_pixels": 18156,
+          "output_core_bbox": [
+            166,
+            92,
+            324,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            165,
+            91,
+            161,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            255.759804,
+            320
+          ],
+          "root_quantization_error": [
+            -0.240196,
+            0
+          ],
+          "preserved_source_rgba_sha256": "e3e8c4377b7ead203e8fe94ad61a7d0e5362dea627eb8eb1ccbfa0c5d09955db",
+          "frame_png_sha256": "89c4c6b912c91f3ceda7ae063075310499b1c88c7c7629217f24fbc2b7a51719",
+          "frame_rgba_sha256": "4f33b9e56397ae931aae0c77a202c669418bf2f3f5391a8891b2d2c9758837c6",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            91,
+            320,
+            291,
+            610
+          ],
+          "source_preserved_bbox": [
+            89,
+            318,
+            293,
+            612
+          ],
+          "source_root": [
+            194,
+            612
+          ],
+          "source_core_pixels": 29991,
+          "output_core_pixels": 18674,
+          "output_core_bbox": [
+            174,
+            90,
+            333,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            173,
+            88,
+            161,
+            232
+          ],
+          "quantized_source_root_in_canvas": [
+            255.867647,
+            320
+          ],
+          "root_quantization_error": [
+            -0.132353,
+            0
+          ],
+          "preserved_source_rgba_sha256": "8df2db8a40ba0f8dc429adc52ccdabd37de972225444661b73efd2b932fed2fc",
+          "frame_png_sha256": "e7db4667467122d9ff80b779ed0d5e038ede0910c7983dc8c00f7dbdbe9f6646",
+          "frame_rgba_sha256": "4d2fad4096c818ead964d155490e2f95f2f3e6709b3fba70b87eec2d4dcf8cfb",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            383,
+            321,
+            565,
+            610
+          ],
+          "source_preserved_bbox": [
+            381,
+            319,
+            567,
+            612
+          ],
+          "source_root": [
+            502,
+            612
+          ],
+          "source_core_pixels": 27873,
+          "output_core_pixels": 17490,
+          "output_core_bbox": [
+            162,
+            90,
+            306,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            161,
+            89,
+            147,
+            231
+          ],
+          "quantized_source_root_in_canvas": [
+            256.629032,
+            320
+          ],
+          "root_quantization_error": [
+            0.629032,
+            0
+          ],
+          "preserved_source_rgba_sha256": "7cad66e239d2b298e204fb953b70aff46c784ffd83898fbd3efd32b5a103999b",
+          "frame_png_sha256": "f6f4be873addad0247cac51fdfe2357480fadde42521cd5eea59535350f1f61e",
+          "frame_rgba_sha256": "49f1a680225d2e46dc2efe0217624070e4eb903fb2c37fe5e9ae322f45c4272c",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            687,
+            322,
+            894,
+            605
+          ],
+          "source_preserved_bbox": [
+            685,
+            320,
+            896,
+            607
+          ],
+          "source_root": [
+            797,
+            609
+          ],
+          "source_core_pixels": 28950,
+          "output_core_pixels": 18012,
+          "output_core_bbox": [
+            169,
+            93,
+            333,
+            316
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            168,
+            92,
+            166,
+            226
+          ],
+          "quantized_source_root_in_canvas": [
+            256.113744,
+            319.574913
+          ],
+          "root_quantization_error": [
+            0.113744,
+            -0.425087
+          ],
+          "preserved_source_rgba_sha256": "f56424ea87438aef9da0b5d370559b18fc9799babc8de49b27c2d352ea76322e",
+          "frame_png_sha256": "94ab627eb7a96c41ecfdee1c2b683d997c5e875d456a836d7714d9b00c2f5cbd",
+          "frame_rgba_sha256": "3a1bfaa899a14efd870c9d7bcf2b93fb1ba063a1ce63465a22beb979e1e45178",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            993,
+            320,
+            1166,
+            608
+          ],
+          "source_preserved_bbox": [
+            991,
+            318,
+            1168,
+            610
+          ],
+          "source_root": [
+            1093,
+            611
+          ],
+          "source_core_pixels": 30601,
+          "output_core_pixels": 19239,
+          "output_core_bbox": [
+            178,
+            90,
+            314,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            89,
+            140,
+            230
+          ],
+          "quantized_source_root_in_canvas": [
+            256.677966,
+            319.787671
+          ],
+          "root_quantization_error": [
+            0.677966,
+            -0.212329
+          ],
+          "preserved_source_rgba_sha256": "ada7b2f145ac7d3c00eb07d91286e551a1fee273a21dfb9f0527507cb1c88658",
+          "frame_png_sha256": "709225b11b1f4e4391550dcd16c88650faadf2d1f04a2279c38a3fc7336a8ebf",
+          "frame_rgba_sha256": "5608bb4c58e8bf094a4ded258d8d470ece889c4808707947368219f4f6b46365",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            36,
+            621,
+            275,
+            908
+          ],
+          "source_preserved_bbox": [
+            34,
+            619,
+            277,
+            910
+          ],
+          "source_root": [
+            187,
+            910
+          ],
+          "source_core_pixels": 33337,
+          "output_core_pixels": 20874,
+          "output_core_bbox": [
+            137,
+            91,
+            326,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            135,
+            90,
+            192,
+            230
+          ],
+          "quantized_source_root_in_canvas": [
+            255.888889,
+            320
+          ],
+          "root_quantization_error": [
+            -0.111111,
+            0
+          ],
+          "preserved_source_rgba_sha256": "09e648e38b81c252fbb6369a5c41a014b2446ef439a19213c757d7809e1569d8",
+          "frame_png_sha256": "1d2fb0c60a4c352aed9b9827c88c23970770e5facd0d89611d3cacc97470426d",
+          "frame_rgba_sha256": "167c9ba6af36046847989b8f962a5742052c4960ca868fa58c40da9cab28ba0c",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            341,
+            634,
+            591,
+            895
+          ],
+          "source_preserved_bbox": [
+            339,
+            632,
+            593,
+            897
+          ],
+          "source_root": [
+            511,
+            897
+          ],
+          "source_core_pixels": 30761,
+          "output_core_pixels": 19188,
+          "output_core_bbox": [
+            122,
+            112,
+            319,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            120,
+            111,
+            200,
+            209
+          ],
+          "quantized_source_root_in_canvas": [
+            255.433071,
+            320
+          ],
+          "root_quantization_error": [
+            -0.566929,
+            0
+          ],
+          "preserved_source_rgba_sha256": "acd2442b4eaca68e961b2f6f0e225ed881fba9852925a751e8cc15fa8c513cf7",
+          "frame_png_sha256": "d00f9da867eb25c592ff12e1133fa37651d4cee24c7fec5519e8edd79c06f6e1",
+          "frame_rgba_sha256": "202c6c5b5fd97accddc52e61e3d365e89c9cb9eed6b491a09d33f9b8e4ded341",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            617,
+            641,
+            908,
+            894
+          ],
+          "source_preserved_bbox": [
+            615,
+            639,
+            910,
+            896
+          ],
+          "source_root": [
+            817,
+            896
+          ],
+          "source_core_pixels": 31323,
+          "output_core_pixels": 19578,
+          "output_core_bbox": [
+            98,
+            118,
+            328,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            97,
+            117,
+            233,
+            203
+          ],
+          "quantized_source_root_in_canvas": [
+            256.545763,
+            320
+          ],
+          "root_quantization_error": [
+            0.545763,
+            0
+          ],
+          "preserved_source_rgba_sha256": "f3e17219b508c38850fe92b73548d3357dbfb6fa4d8ddc007998fbd04cb5037d",
+          "frame_png_sha256": "32b403b5299c432f08a334e5ed280db45fd59dce172a5fa56804f06d78c78ad8",
+          "frame_rgba_sha256": "68159e3aa4857b2e2184a9f12f9cab784a11e1788620a6f37d0ce684d2e60dcf",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1009,
+            627,
+            1206,
+            904
+          ],
+          "source_preserved_bbox": [
+            1007,
+            625,
+            1208,
+            906
+          ],
+          "source_root": [
+            1115,
+            906
+          ],
+          "source_core_pixels": 30579,
+          "output_core_pixels": 19210,
+          "output_core_bbox": [
+            173,
+            99,
+            329,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            171,
+            98,
+            159,
+            222
+          ],
+          "quantized_source_root_in_canvas": [
+            256.432836,
+            320
+          ],
+          "root_quantization_error": [
+            0.432836,
+            0
+          ],
+          "preserved_source_rgba_sha256": "40ad52fb3b232c679d1052cd96ae815a3f7ec3fae47b17ad3db02a87d11e9268",
+          "frame_png_sha256": "be0514e737d56b3512721439e39f175818f59d5701ee7a27bede5f6e86350454",
+          "frame_rgba_sha256": "2dfc2aa97b834d8a3f3ef3a25b86e9686167c06004e7ffcc8e8f2e0edbc8c654",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            99,
+            921,
+            263,
+            1211
+          ],
+          "source_preserved_bbox": [
+            97,
+            919,
+            265,
+            1213
+          ],
+          "source_root": [
+            197,
+            1213
+          ],
+          "source_core_pixels": 29308,
+          "output_core_pixels": 18432,
+          "output_core_bbox": [
+            178,
+            89,
+            308,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            177,
+            88,
+            133,
+            232
+          ],
+          "quantized_source_root_in_canvas": [
+            256.166667,
+            320
+          ],
+          "root_quantization_error": [
+            0.166667,
+            0
+          ],
+          "preserved_source_rgba_sha256": "f0390c3871eaacb9c8a205c162fe6cd00e941116077b40aeea07d8c85864052c",
+          "frame_png_sha256": "c7be3f7d3b0e6f2b82ccdd5e58d4afb894885b95fe527fc901ac59e9f9ca3879",
+          "frame_rgba_sha256": "e034a9e72cf2ed6d8766d0c89870fae4b7d93a68fd49b44001dcfa2e0cb1ca89",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            403,
+            921,
+            563,
+            1214
+          ],
+          "source_preserved_bbox": [
+            401,
+            919,
+            565,
+            1216
+          ],
+          "source_root": [
+            500,
+            1216
+          ],
+          "source_core_pixels": 29559,
+          "output_core_pixels": 18443,
+          "output_core_bbox": [
+            179,
+            88,
+            306,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            178,
+            86,
+            129,
+            234
+          ],
+          "quantized_source_root_in_canvas": [
+            255.871951,
+            320
+          ],
+          "root_quantization_error": [
+            -0.128049,
+            0
+          ],
+          "preserved_source_rgba_sha256": "9e6c577ee4616a409b2f82f1a80e2298048e4b62dc57792680f62c11f206a36c",
+          "frame_png_sha256": "3a57513b8a5cea895ddf50f18a52475822dfb26c1c53e80ddd1b92e3dcc14ff9",
+          "frame_rgba_sha256": "930a70c7514e3bd0c9fe3f175ab35a869c89ead8541deee0428979915ceb890e",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            688,
+            917,
+            894,
+            1212
+          ],
+          "source_preserved_bbox": [
+            686,
+            915,
+            896,
+            1214
+          ],
+          "source_root": [
+            790,
+            1214
+          ],
+          "source_core_pixels": 32528,
+          "output_core_pixels": 20379,
+          "output_core_bbox": [
+            176,
+            85,
+            338,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            174,
+            84,
+            166,
+            236
+          ],
+          "quantized_source_root_in_canvas": [
+            256.209524,
+            320
+          ],
+          "root_quantization_error": [
+            0.209524,
+            0
+          ],
+          "preserved_source_rgba_sha256": "02e3646346e8e54a10d6bc9a90cfa59522023c57f7f26ec82ccc253370043a77",
+          "frame_png_sha256": "20d6a98657c067b89685f5364e98bfb5c2fe6b9da9d102a22246441d7e11643c",
+          "frame_rgba_sha256": "29271d2920460b54eded65a415bd837dfa250962bbed393749556031ea52b07e",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            1011,
+            925,
+            1178,
+            1214
+          ],
+          "source_preserved_bbox": [
+            1009,
+            923,
+            1180,
+            1216
+          ],
+          "source_root": [
+            1109,
+            1216
+          ],
+          "source_core_pixels": 30764,
+          "output_core_pixels": 19235,
+          "output_core_bbox": [
+            179,
+            90,
+            311,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            177,
+            89,
+            135,
+            231
+          ],
+          "quantized_source_root_in_canvas": [
+            255.947368,
+            320
+          ],
+          "root_quantization_error": [
+            -0.052632,
+            0
+          ],
+          "preserved_source_rgba_sha256": "e4faa7700f8dc037e3efeb587b97fdcedba55e9f4ed62b2f5bb3385c562434a2",
+          "frame_png_sha256": "6afc6b57f3f82897d61bc97baa7444916c0ead4c8ad7e9feeea01f2ae112af7f",
+          "frame_rgba_sha256": "a86ac721fa51427f0623d19e0319902b8d7d2bee4ff2c388f678a080ea41a261",
+          "crosses_nominal_source_cell": true
+        }
+      ]
+    },
+    {
+      "key": "base_W",
+      "group": "base",
+      "direction": "W",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_base_W.png",
+      "source_sha256": "ad0743a143b2c9e438053b0fa865d1ff26ecb78c48af05eb26fee405e7448c61",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1021719,
+        "full": 1551,
+        "partial": 549246,
+        "removed_pixels": 106283,
+        "removed_alpha_sum": 164317,
+        "max_removed_alpha": 23,
+        "transparent_fraction": 0.649735
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": []
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.869,
+      "explicit_roots": [
+        [
+          184,
+          301
+        ],
+        [
+          493,
+          305
+        ],
+        [
+          813,
+          305
+        ],
+        [
+          1121,
+          304
+        ],
+        [
+          193,
+          615
+        ],
+        [
+          512,
+          612
+        ],
+        [
+          810,
+          614
+        ],
+        [
+          1124,
+          610
+        ],
+        [
+          200,
+          911
+        ],
+        [
+          510,
+          919
+        ],
+        [
+          843,
+          926
+        ],
+        [
+          1138,
+          911
+        ],
+        [
+          193,
+          1220
+        ],
+        [
+          508,
+          1212
+        ],
+        [
+          825,
+          1220
+        ],
+        [
+          1133,
+          1221
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_base_W.png",
+      "atlas_sha256": "eb882606f02e4f36e9269917745022f36b8c9ed6f2dc9a25fa4c21458287bdae",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            78,
+            25,
+            240,
+            299
+          ],
+          "source_preserved_bbox": [
+            76,
+            23,
+            242,
+            301
+          ],
+          "source_root": [
+            184,
+            301
+          ],
+          "source_core_pixels": 24353,
+          "output_core_pixels": 18467,
+          "output_core_bbox": [
+            163,
+            80,
+            304,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            162,
+            78,
+            144,
+            242
+          ],
+          "quantized_source_root_in_canvas": [
+            255.686747,
+            320
+          ],
+          "root_quantization_error": [
+            -0.313253,
+            0
+          ],
+          "preserved_source_rgba_sha256": "fb3f5ef258ed5cbb7a783a1db19ca3f9c74ad4bb0aea376f71175c6663f38388",
+          "frame_png_sha256": "5a47e8a8ffe95cb0db48bed93ac445f6d1856ceef4c4caeb949433099a8a6da1",
+          "frame_rgba_sha256": "23751d2a77db1d7a9a6795b0dfbe2fe26ba57b893cb838213161e9d7c759b006",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            389,
+            20,
+            558,
+            303
+          ],
+          "source_preserved_bbox": [
+            387,
+            18,
+            560,
+            305
+          ],
+          "source_root": [
+            493,
+            305
+          ],
+          "source_core_pixels": 23763,
+          "output_core_pixels": 17968,
+          "output_core_bbox": [
+            166,
+            73,
+            312,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            164,
+            71,
+            150,
+            249
+          ],
+          "quantized_source_root_in_canvas": [
+            255.907514,
+            320
+          ],
+          "root_quantization_error": [
+            -0.092486,
+            0
+          ],
+          "preserved_source_rgba_sha256": "23c8d1f37f9a5c89db565d502c119b4c8d3e6bfa3ce8e25dc12c4064d8706e5c",
+          "frame_png_sha256": "e76070424e7c0834de24c3a20f70302c564ab2e927cb5c2fc316f8bab1dfea19",
+          "frame_rgba_sha256": "93d42d694591ee1e0a9d47b15bbc49d29b8d6a4e3d95bf649c4d827a65909626",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            700,
+            22,
+            884,
+            303
+          ],
+          "source_preserved_bbox": [
+            698,
+            20,
+            886,
+            305
+          ],
+          "source_root": [
+            813,
+            305
+          ],
+          "source_core_pixels": 24937,
+          "output_core_pixels": 18904,
+          "output_core_bbox": [
+            157,
+            73,
+            317,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            156,
+            72,
+            163,
+            248
+          ],
+          "quantized_source_root_in_canvas": [
+            255.707447,
+            320
+          ],
+          "root_quantization_error": [
+            -0.292553,
+            0
+          ],
+          "preserved_source_rgba_sha256": "faeba03efce438c95e0e165ceba1b4f39f0d5fb93d7ff8f5ac7f076b94da9bfc",
+          "frame_png_sha256": "fc8e096452f1227374e2de603eedc1b8d7c9bd71e278ba7a49f2687dbcf4a58a",
+          "frame_rgba_sha256": "f1490f4076f0c20e6162ae2d7aa2cb7dae83f31094dda958fb9ac26885a26cb6",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1021,
+            25,
+            1194,
+            302
+          ],
+          "source_preserved_bbox": [
+            1019,
+            23,
+            1196,
+            304
+          ],
+          "source_root": [
+            1121,
+            304
+          ],
+          "source_core_pixels": 24118,
+          "output_core_pixels": 18311,
+          "output_core_bbox": [
+            169,
+            77,
+            319,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            167,
+            76,
+            154,
+            244
+          ],
+          "quantized_source_root_in_canvas": [
+            255.745763,
+            320
+          ],
+          "root_quantization_error": [
+            -0.254237,
+            0
+          ],
+          "preserved_source_rgba_sha256": "6c132eb965270b3f2b2cdb3cc66fc71131a3b706dd9ff3f850780dc62aaa5e02",
+          "frame_png_sha256": "34e1eb14d75422110043edba0a1e65cb2ec0f5ce4f9af210ec68fb12b120ada9",
+          "frame_rgba_sha256": "2fabee45fcab34a70ce88a0b33d54a0c9eb76533e3a59676aa3bd2160424362b",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            76,
+            329,
+            255,
+            613
+          ],
+          "source_preserved_bbox": [
+            74,
+            327,
+            257,
+            615
+          ],
+          "source_root": [
+            193,
+            615
+          ],
+          "source_core_pixels": 24563,
+          "output_core_pixels": 18568,
+          "output_core_bbox": [
+            155,
+            72,
+            311,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            153,
+            70,
+            159,
+            250
+          ],
+          "quantized_source_root_in_canvas": [
+            256.393443,
+            320
+          ],
+          "root_quantization_error": [
+            0.393443,
+            0
+          ],
+          "preserved_source_rgba_sha256": "9432b9956ba66e95a62472fcc370435a2393d580f8c52b990ab0876a4654cff5",
+          "frame_png_sha256": "75758d8098457ef887f6c7d84ca3f7bf043b47d480a59e63d5c1a22c7f8bbda7",
+          "frame_rgba_sha256": "7e05871e94f85b1284d56934805b050a7fcb4f08f42acdb05b471cfb4b1a8ece",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            394,
+            330,
+            588,
+            608
+          ],
+          "source_preserved_bbox": [
+            392,
+            328,
+            590,
+            610
+          ],
+          "source_root": [
+            512,
+            612
+          ],
+          "source_core_pixels": 23623,
+          "output_core_pixels": 17879,
+          "output_core_bbox": [
+            153,
+            75,
+            322,
+            316
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            152,
+            73,
+            172,
+            245
+          ],
+          "quantized_source_root_in_canvas": [
+            256.242424,
+            319.737589
+          ],
+          "root_quantization_error": [
+            0.242424,
+            -0.262411
+          ],
+          "preserved_source_rgba_sha256": "73ec4afe4a221f7810a09d835dfb60947e35e0e49700f888a7820bc49dd9902c",
+          "frame_png_sha256": "2b4aa23f1697939da065ebd404b7e24382d0de9b3a1fe57b273952777ee775e5",
+          "frame_rgba_sha256": "4197408c038bd659be989b73e789ed9f3a4340bb80a648d611226bae04859dcb",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            704,
+            330,
+            878,
+            612
+          ],
+          "source_preserved_bbox": [
+            702,
+            328,
+            880,
+            614
+          ],
+          "source_root": [
+            810,
+            614
+          ],
+          "source_core_pixels": 23654,
+          "output_core_pixels": 17974,
+          "output_core_bbox": [
+            164,
+            73,
+            315,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            162,
+            71,
+            155,
+            249
+          ],
+          "quantized_source_root_in_canvas": [
+            256.044944,
+            320
+          ],
+          "root_quantization_error": [
+            0.044944,
+            0
+          ],
+          "preserved_source_rgba_sha256": "98aa9270852c7b99d013c83525e478f4fba010100d464d9f436c266a621a5407",
+          "frame_png_sha256": "21ca8cca3c905fcb300df643c37274c472694bbc2096d3eb7083827a5c896311",
+          "frame_rgba_sha256": "810fd37c6a47241940c1ff8d9a996f016cb86131cba452f9a4f26778d363a098",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1016,
+            330,
+            1193,
+            607
+          ],
+          "source_preserved_bbox": [
+            1014,
+            328,
+            1195,
+            609
+          ],
+          "source_root": [
+            1124,
+            610
+          ],
+          "source_core_pixels": 24564,
+          "output_core_pixels": 18630,
+          "output_core_bbox": [
+            162,
+            77,
+            316,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            160,
+            75,
+            157,
+            244
+          ],
+          "quantized_source_root_in_canvas": [
+            255.414365,
+            319.868327
+          ],
+          "root_quantization_error": [
+            -0.585635,
+            -0.131673
+          ],
+          "preserved_source_rgba_sha256": "7ae3c99691fdf990d22092bd577e2db347837fea731bb01b016cf755e66b8392",
+          "frame_png_sha256": "4141fa4668c8828359e5b1c5117791163f62f5529d8a5af29fa246ea31301f09",
+          "frame_rgba_sha256": "0bc1abd98de132ef017e76f8cde97515eee2ed2cb2cce0d9eefab2863803f484",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            48,
+            626,
+            278,
+            909
+          ],
+          "source_preserved_bbox": [
+            46,
+            624,
+            280,
+            911
+          ],
+          "source_root": [
+            200,
+            911
+          ],
+          "source_core_pixels": 26146,
+          "output_core_pixels": 19706,
+          "output_core_bbox": [
+            124,
+            73,
+            323,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            122,
+            71,
+            203,
+            249
+          ],
+          "quantized_source_root_in_canvas": [
+            255.598291,
+            320
+          ],
+          "root_quantization_error": [
+            -0.401709,
+            0
+          ],
+          "preserved_source_rgba_sha256": "bbb14e4d551481d67f42b0748435ce797047c383a8ca1251314d53179ac8a339",
+          "frame_png_sha256": "9b5ec333c4c93628fec15eebe83603b614fdcbda867561fd48602cee02e4aa21",
+          "frame_rgba_sha256": "0e5c9f6932961c1cc3931768b2f4a459c3819ea24e885aefe72b2de840019ec0",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            371,
+            626,
+            590,
+            917
+          ],
+          "source_preserved_bbox": [
+            369,
+            624,
+            592,
+            919
+          ],
+          "source_root": [
+            510,
+            919
+          ],
+          "source_core_pixels": 27132,
+          "output_core_pixels": 20566,
+          "output_core_bbox": [
+            134,
+            65,
+            325,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            133,
+            64,
+            194,
+            256
+          ],
+          "quantized_source_root_in_canvas": [
+            255.663677,
+            320
+          ],
+          "root_quantization_error": [
+            -0.336323,
+            0
+          ],
+          "preserved_source_rgba_sha256": "62c3c42daa05c19cd8cd29c61c737ed5f10d42c84eec9e2c679804f0757d46fa",
+          "frame_png_sha256": "2504e0df442d9b8c3140c6aa621d7f5157c822c3bbba6942682e2b60eb590017",
+          "frame_rgba_sha256": "af950564d0b37f97877bd34ece0b76689cd237adf22dd1f550ba4d0097dc72e4",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            664,
+            626,
+            927,
+            924
+          ],
+          "source_preserved_bbox": [
+            662,
+            624,
+            929,
+            926
+          ],
+          "source_root": [
+            843,
+            926
+          ],
+          "source_core_pixels": 27140,
+          "output_core_pixels": 20523,
+          "output_core_bbox": [
+            101,
+            59,
+            329,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            99,
+            58,
+            232,
+            262
+          ],
+          "quantized_source_root_in_canvas": [
+            256.273408,
+            320
+          ],
+          "root_quantization_error": [
+            0.273408,
+            0
+          ],
+          "preserved_source_rgba_sha256": "ab50d6d69eac629a7fb2ed964acee5400c2d89183df20d73945976ebf4677397",
+          "frame_png_sha256": "07fd193521dfa1c6334b1f9adc5fa412599c1ed2c999d815ff75a409c37b07f3",
+          "frame_rgba_sha256": "1d59bd349c8d1feb1f444cd9cb2a8c2230643c192f9bbcf4eea9ce42f1b4fd8f",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1027,
+            636,
+            1207,
+            909
+          ],
+          "source_preserved_bbox": [
+            1025,
+            634,
+            1209,
+            911
+          ],
+          "source_root": [
+            1138,
+            911
+          ],
+          "source_core_pixels": 24886,
+          "output_core_pixels": 18868,
+          "output_core_bbox": [
+            159,
+            80,
+            316,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            158,
+            79,
+            160,
+            241
+          ],
+          "quantized_source_root_in_canvas": [
+            256.26087,
+            320
+          ],
+          "root_quantization_error": [
+            0.26087,
+            0
+          ],
+          "preserved_source_rgba_sha256": "c31dd8bf019e5585cd9b732b3643c0e49698ecac17c3da41029ac7d65107289d",
+          "frame_png_sha256": "e1d8c534e2922d60aac22e78a0e16f8c5c95f209bc9c22d83761021586c9c140",
+          "frame_rgba_sha256": "0033ed95d30ab4773efe94564a6792d19041caa59523a14d5778357581f4365f",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            84,
+            933,
+            242,
+            1218
+          ],
+          "source_preserved_bbox": [
+            82,
+            931,
+            244,
+            1220
+          ],
+          "source_root": [
+            193,
+            1220
+          ],
+          "source_core_pixels": 23943,
+          "output_core_pixels": 18167,
+          "output_core_bbox": [
+            162,
+            70,
+            299,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            160,
+            69,
+            141,
+            251
+          ],
+          "quantized_source_root_in_canvas": [
+            256.611111,
+            320
+          ],
+          "root_quantization_error": [
+            0.611111,
+            0
+          ],
+          "preserved_source_rgba_sha256": "b79e1b031f081f5384e44c95febe58e62160687bfc7d63abc389870efab4385d",
+          "frame_png_sha256": "0cd485b4ad8bd24acabaa3b320d72221186b765fc5061b40330c40df55e10e96",
+          "frame_rgba_sha256": "7cb4436f0d10884042ed74bea8a52e2bcebac711f38e3846e71ac17dae109ed7",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            396,
+            933,
+            560,
+            1210
+          ],
+          "source_preserved_bbox": [
+            394,
+            931,
+            562,
+            1212
+          ],
+          "source_root": [
+            508,
+            1212
+          ],
+          "source_core_pixels": 24929,
+          "output_core_pixels": 18907,
+          "output_core_bbox": [
+            158,
+            77,
+            301,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            157,
+            76,
+            146,
+            244
+          ],
+          "quantized_source_root_in_canvas": [
+            256.071429,
+            320
+          ],
+          "root_quantization_error": [
+            0.071429,
+            0
+          ],
+          "preserved_source_rgba_sha256": "60a4b1323fcd2a3a383f86cd28a07065e30cf10a1807916f60f4cd3ff0a6f0fe",
+          "frame_png_sha256": "6e307880f3832f3bec32bd7dafd2ef5e72bd8539a0ecfc13784c8dab30df39b5",
+          "frame_rgba_sha256": "3634851d20787f2762bd34c6c4c23e6ccd22e68f547e4eed8d6231dc2376e708",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            707,
+            935,
+            897,
+            1218
+          ],
+          "source_preserved_bbox": [
+            705,
+            933,
+            899,
+            1220
+          ],
+          "source_root": [
+            825,
+            1220
+          ],
+          "source_core_pixels": 27185,
+          "output_core_pixels": 20689,
+          "output_core_bbox": [
+            154,
+            71,
+            319,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            152,
+            71,
+            169,
+            249
+          ],
+          "quantized_source_root_in_canvas": [
+            256.536082,
+            320
+          ],
+          "root_quantization_error": [
+            0.536082,
+            0
+          ],
+          "preserved_source_rgba_sha256": "634d318a2b18f2a7e740c29913708b4f8a0e79479f7d4786f8058ad7db4e9375",
+          "frame_png_sha256": "706e4b8bcc975743770d255209f0eadcbc4e190b0a1578a117ca7a4ade18f9a0",
+          "frame_rgba_sha256": "d7b971c2588b6f51c1d1e662e264bbacda42ccffd169a6c24bfa878f11023c62",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            1025,
+            934,
+            1191,
+            1219
+          ],
+          "source_preserved_bbox": [
+            1023,
+            932,
+            1193,
+            1221
+          ],
+          "source_root": [
+            1133,
+            1221
+          ],
+          "source_core_pixels": 25118,
+          "output_core_pixels": 19129,
+          "output_core_bbox": [
+            162,
+            70,
+            306,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            160,
+            69,
+            148,
+            251
+          ],
+          "quantized_source_root_in_canvas": [
+            255.764706,
+            320
+          ],
+          "root_quantization_error": [
+            -0.235294,
+            0
+          ],
+          "preserved_source_rgba_sha256": "d657861d17e6acfec28ae8da5d74c56e38744331b5d4a47603b9f4cbafbe6c42",
+          "frame_png_sha256": "df8288f9a67412016619ddfd50ff914963cc5d3f47a99dc1cc749ae4f08fe0de",
+          "frame_rgba_sha256": "b538fd9d2b2fccf5106e6b1bae460a2e26c802b82624b2d92a412767cd6930e8",
+          "crosses_nominal_source_cell": true
+        }
+      ]
+    },
+    {
+      "key": "extra_N",
+      "group": "extra",
+      "direction": "N",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_extra_N.png",
+      "source_sha256": "601a583df6f04b8dab75240fbf161ac51d4bc3b3ed53cec6f7a4ef7ab064ac47",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 991962,
+        "full": 1356,
+        "partial": 579198,
+        "removed_pixels": 89480,
+        "removed_alpha_sum": 141656,
+        "max_removed_alpha": 17,
+        "transparent_fraction": 0.630812
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": [
+          {
+            "pixels": 1,
+            "bbox": [
+              498,
+              389,
+              499,
+              390
+            ]
+          }
+        ]
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.809,
+      "explicit_roots": [
+        [
+          160,
+          311
+        ],
+        [
+          450,
+          311
+        ],
+        [
+          758,
+          304
+        ],
+        [
+          1079,
+          315
+        ],
+        [
+          161,
+          617
+        ],
+        [
+          463,
+          617
+        ],
+        [
+          763,
+          623
+        ],
+        [
+          1086,
+          622
+        ],
+        [
+          155,
+          927
+        ],
+        [
+          470,
+          927
+        ],
+        [
+          763,
+          926
+        ],
+        [
+          1081,
+          936
+        ],
+        [
+          147,
+          1222
+        ],
+        [
+          462,
+          1206
+        ],
+        [
+          741,
+          1172
+        ],
+        [
+          1094,
+          1168
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_extra_N.png",
+      "atlas_sha256": "672438c3d065a5faa8d6e2c975db515597b94bc2884c93a4302b70f80383906a",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            88,
+            11,
+            270,
+            309
+          ],
+          "source_preserved_bbox": [
+            86,
+            9,
+            272,
+            311
+          ],
+          "source_root": [
+            160,
+            311
+          ],
+          "source_core_pixels": 31244,
+          "output_core_pixels": 20455,
+          "output_core_bbox": [
+            198,
+            78,
+            344,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            196,
+            76,
+            150,
+            244
+          ],
+          "quantized_source_root_in_canvas": [
+            255.677419,
+            320
+          ],
+          "root_quantization_error": [
+            -0.322581,
+            0
+          ],
+          "preserved_source_rgba_sha256": "63188a64ebdc0bd0d0adc9ebff7b3c209dd030db24b88a2c6c135ce1c42d5197",
+          "frame_png_sha256": "a068a78258ba02c251c7b11dcdc19508cc5f3867e168cce22438bd0dd5d390c2",
+          "frame_rgba_sha256": "2d67119f8dae002e67d3cf07d02e482cf20f385d789c518b93874bfb7bb8c798",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            383,
+            20,
+            580,
+            309
+          ],
+          "source_preserved_bbox": [
+            381,
+            18,
+            582,
+            311
+          ],
+          "source_root": [
+            450,
+            311
+          ],
+          "source_core_pixels": 32441,
+          "output_core_pixels": 21374,
+          "output_core_bbox": [
+            201,
+            84,
+            361,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            200,
+            83,
+            163,
+            237
+          ],
+          "quantized_source_root_in_canvas": [
+            255.955224,
+            320
+          ],
+          "root_quantization_error": [
+            -0.044776,
+            0
+          ],
+          "preserved_source_rgba_sha256": "ece2ae3fd3e38930770e21c7ba1ac4c6c4d9a5ad24c9d92d07cfbdbec3e9d85f",
+          "frame_png_sha256": "87fd84317a60d7d75cd996053f28d65db24bc608362ae15cf9fa76cca119bfac",
+          "frame_rgba_sha256": "710d8eca13bf5b9a9ef50d628df8f5663fbe7261df161d76852ada719474386b",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            680,
+            24,
+            927,
+            302
+          ],
+          "source_preserved_bbox": [
+            678,
+            22,
+            929,
+            304
+          ],
+          "source_root": [
+            758,
+            304
+          ],
+          "source_core_pixels": 31421,
+          "output_core_pixels": 20599,
+          "output_core_bbox": [
+            192,
+            93,
+            392,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            191,
+            92,
+            203,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            255.701195,
+            320
+          ],
+          "root_quantization_error": [
+            -0.298805,
+            0
+          ],
+          "preserved_source_rgba_sha256": "89b35f386db3e354df94a33edb903df0d82f3ae7c4495f0071546cf3be95e7e0",
+          "frame_png_sha256": "cb1bb317113b3e778007bbd04a99671474e7e2f99271a84fb2339f17d1c3d1e7",
+          "frame_rgba_sha256": "c9d4bf924adcf00f00a5276dcf1f7d8d2ac2f9b837fbb00df680e4420b321157",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1010,
+            20,
+            1183,
+            313
+          ],
+          "source_preserved_bbox": [
+            1008,
+            18,
+            1185,
+            315
+          ],
+          "source_root": [
+            1079,
+            315
+          ],
+          "source_core_pixels": 29914,
+          "output_core_pixels": 19568,
+          "output_core_bbox": [
+            200,
+            82,
+            340,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            199,
+            80,
+            143,
+            240
+          ],
+          "quantized_source_root_in_canvas": [
+            256.361582,
+            320
+          ],
+          "root_quantization_error": [
+            0.361582,
+            0
+          ],
+          "preserved_source_rgba_sha256": "2b21cb6cb275aac560ba45c9da945fde437ddc391c45404151ae48742aa6aab7",
+          "frame_png_sha256": "c8150cace729332ce7ed09155733caa631abe5f649e1f35f035ba9716b0cd3db",
+          "frame_rgba_sha256": "eaa6f0aec212d2f008674727dc968335401fd12ac56dfdca5703d96176536430",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            90,
+            330,
+            247,
+            615
+          ],
+          "source_preserved_bbox": [
+            88,
+            328,
+            249,
+            617
+          ],
+          "source_root": [
+            161,
+            617
+          ],
+          "source_core_pixels": 28960,
+          "output_core_pixels": 19056,
+          "output_core_bbox": [
+            198,
+            88,
+            326,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            197,
+            86,
+            130,
+            234
+          ],
+          "quantized_source_root_in_canvas": [
+            255.944099,
+            320
+          ],
+          "root_quantization_error": [
+            -0.055901,
+            0
+          ],
+          "preserved_source_rgba_sha256": "7c619145061286b757f69792e20bb2df4f67c5e20ce21c94622f64ba49f30bb7",
+          "frame_png_sha256": "29d93de9268c9377ebc7a962bd41eec847dd2bdb9066b6a6494db99360e3b35d",
+          "frame_rgba_sha256": "64a3e8d51fb88513aafbb5bf46478b9f8224906b516f8be2e592f98951af95ae",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            384,
+            343,
+            549,
+            615
+          ],
+          "source_preserved_bbox": [
+            382,
+            341,
+            551,
+            617
+          ],
+          "source_root": [
+            463,
+            617
+          ],
+          "source_core_pixels": 29689,
+          "output_core_pixels": 19558,
+          "output_core_bbox": [
+            191,
+            98,
+            326,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            97,
+            137,
+            223
+          ],
+          "quantized_source_root_in_canvas": [
+            255.662722,
+            320
+          ],
+          "root_quantization_error": [
+            -0.337278,
+            0
+          ],
+          "preserved_source_rgba_sha256": "54af6f3591b5020725c23880a2b6658592d4b588c0c25218afb40d25bc63b3f7",
+          "frame_png_sha256": "9a14b6340207b49c5dc40423a76c92dbb524c583ea5558b68ab1bcd3ed158123",
+          "frame_rgba_sha256": "96a8895442e7e4357bf8fbd67e670a2a7bf08baf4ae967b6fb2379573a7d731a",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            684,
+            357,
+            892,
+            621
+          ],
+          "source_preserved_bbox": [
+            682,
+            355,
+            894,
+            623
+          ],
+          "source_root": [
+            763,
+            623
+          ],
+          "source_core_pixels": 26599,
+          "output_core_pixels": 17535,
+          "output_core_bbox": [
+            192,
+            105,
+            360,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            103,
+            172,
+            217
+          ],
+          "quantized_source_root_in_canvas": [
+            255.716981,
+            320
+          ],
+          "root_quantization_error": [
+            -0.283019,
+            0
+          ],
+          "preserved_source_rgba_sha256": "40761cb15b409fbe50d263c25d211980569105f9d580c01d2e0ff95b17a812f5",
+          "frame_png_sha256": "43f41df711df8892235f7d8918fd0bea09e5e218b21262023eef98edc91a96e0",
+          "frame_rgba_sha256": "919b8f971ccc71219aa9d3228a7c968c645054a877e9f2fb6b5e747fe15a6e31",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1009,
+            330,
+            1170,
+            620
+          ],
+          "source_preserved_bbox": [
+            1007,
+            328,
+            1172,
+            622
+          ],
+          "source_root": [
+            1086,
+            622
+          ],
+          "source_core_pixels": 29042,
+          "output_core_pixels": 19090,
+          "output_core_bbox": [
+            193,
+            84,
+            323,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            192,
+            82,
+            133,
+            238
+          ],
+          "quantized_source_root_in_canvas": [
+            255.678788,
+            320
+          ],
+          "root_quantization_error": [
+            -0.321212,
+            0
+          ],
+          "preserved_source_rgba_sha256": "04d577041c9c40236b6b6e4d6ae4cf7b2db48c9c3748737c773b1ba3adb035ff",
+          "frame_png_sha256": "7d9de9e74a140833112bc87f1532aa660b15482ed5337b6ea3b0d32b8f24d256",
+          "frame_rgba_sha256": "7745b6a1d8d5c442b5ae7082396e2ca715f3f29c77c059ea1188334fe6b4441b",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            80,
+            637,
+            236,
+            925
+          ],
+          "source_preserved_bbox": [
+            78,
+            635,
+            238,
+            927
+          ],
+          "source_root": [
+            155,
+            927
+          ],
+          "source_core_pixels": 27902,
+          "output_core_pixels": 18291,
+          "output_core_bbox": [
+            195,
+            86,
+            321,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            194,
+            84,
+            129,
+            236
+          ],
+          "quantized_source_root_in_canvas": [
+            256.08125,
+            320
+          ],
+          "root_quantization_error": [
+            0.08125,
+            0
+          ],
+          "preserved_source_rgba_sha256": "22a3c7c12263e0a21f7a07bbeae7f37ed5b662b3a1a53abb8249fb6df1d43f41",
+          "frame_png_sha256": "bbc22ac8ddf1f4d471b29a452cb6a80b6b6c2a4fd5bd0708d67bd14ee760c128",
+          "frame_rgba_sha256": "09200d0f7c8a0e4ba27b867ac6869c41c4bf727025aecc6cbec367f94062b29e",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            393,
+            668,
+            566,
+            925
+          ],
+          "source_preserved_bbox": [
+            391,
+            666,
+            568,
+            927
+          ],
+          "source_root": [
+            470,
+            927
+          ],
+          "source_core_pixels": 27555,
+          "output_core_pixels": 18056,
+          "output_core_bbox": [
+            194,
+            111,
+            334,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            192,
+            109,
+            143,
+            211
+          ],
+          "quantized_source_root_in_canvas": [
+            255.824859,
+            320
+          ],
+          "root_quantization_error": [
+            -0.175141,
+            0
+          ],
+          "preserved_source_rgba_sha256": "a74f7d0b7bf48ca0b86909c0d91ace63f6572ea92a3411559cc94c9bed16cbac",
+          "frame_png_sha256": "ecc1aaab6935cc6fe747bb3e291a3f8a95ff554b56bfacd49a5a4ab2d43d63b6",
+          "frame_rgba_sha256": "2f49cb9758fe7fa4a7ce479ac0f8b6e95b2f7c950a0b0df2a3d475940cf78e56",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            671,
+            646,
+            875,
+            924
+          ],
+          "source_preserved_bbox": [
+            669,
+            644,
+            877,
+            926
+          ],
+          "source_root": [
+            763,
+            926
+          ],
+          "source_core_pixels": 29023,
+          "output_core_pixels": 19031,
+          "output_core_bbox": [
+            182,
+            94,
+            346,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            180,
+            92,
+            168,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            255.923077,
+            320
+          ],
+          "root_quantization_error": [
+            -0.076923,
+            0
+          ],
+          "preserved_source_rgba_sha256": "a38ba4669b5120f6dcf3938391860a497c9394c4b5f078ddf2f2ae2ae84ca11c",
+          "frame_png_sha256": "67917ac5e5e53ffe69c2e1f2af3e59ad030b92c0053ec89d9606c5b29620cb5f",
+          "frame_rgba_sha256": "68ed3c89a2ad9004bb173a1c08fde14871f320d7be014fc05a81662908e03ac7",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1011,
+            640,
+            1165,
+            934
+          ],
+          "source_preserved_bbox": [
+            1009,
+            638,
+            1167,
+            936
+          ],
+          "source_root": [
+            1081,
+            936
+          ],
+          "source_core_pixels": 28710,
+          "output_core_pixels": 18882,
+          "output_core_bbox": [
+            199,
+            80,
+            324,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            198,
+            79,
+            128,
+            241
+          ],
+          "quantized_source_root_in_canvas": [
+            256.329114,
+            320
+          ],
+          "root_quantization_error": [
+            0.329114,
+            0
+          ],
+          "preserved_source_rgba_sha256": "7f50b86e49812ed94c79e9d3cee1dcd3a8859cd50636b8a15dac11ba148ec9dd",
+          "frame_png_sha256": "1cd34916cb2e39c07228ccffc04ebbd7fc73d428e47a0837669112def20d1132",
+          "frame_rgba_sha256": "3f2179f9462c9c25fb783723f259d44fb66171e2f8b88019cb652af7779b8d07",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            78,
+            954,
+            276,
+            1220
+          ],
+          "source_preserved_bbox": [
+            76,
+            952,
+            278,
+            1222
+          ],
+          "source_root": [
+            147,
+            1222
+          ],
+          "source_core_pixels": 28005,
+          "output_core_pixels": 18302,
+          "output_core_bbox": [
+            201,
+            104,
+            360,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            199,
+            102,
+            163,
+            218
+          ],
+          "quantized_source_root_in_canvas": [
+            256.292079,
+            320
+          ],
+          "root_quantization_error": [
+            0.292079,
+            0
+          ],
+          "preserved_source_rgba_sha256": "f1b8bc4987d0b50494bf5d4777c0a1751f6bc96269c5648e42086d6a422f2d9a",
+          "frame_png_sha256": "f631d00705b242d23cf3511e99c62265377c7f67ed00260481d576eb87066525",
+          "frame_rgba_sha256": "9472cd4d64d21fc7a5bf89908f9927843036c260dbc77e45f31265cbab28d094",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            373,
+            960,
+            570,
+            1217
+          ],
+          "source_preserved_bbox": [
+            371,
+            958,
+            572,
+            1219
+          ],
+          "source_root": [
+            462,
+            1206
+          ],
+          "source_core_pixels": 25425,
+          "output_core_pixels": 16761,
+          "output_core_bbox": [
+            184,
+            120,
+            344,
+            329
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            182,
+            119,
+            163,
+            211
+          ],
+          "quantized_source_root_in_canvas": [
+            255.79602,
+            319.490421
+          ],
+          "root_quantization_error": [
+            -0.20398,
+            -0.509579
+          ],
+          "preserved_source_rgba_sha256": "e6f7d4ed6b429dd3cfb18ef51ecfb5027144c254fcd1c02816d58cd3bb6392a9",
+          "frame_png_sha256": "d719d65f5c779692ee4880cdcfbfca0ab21dc97555d635b43f78d26107caa904",
+          "frame_rgba_sha256": "70f7256a1aad176828fdfb3be44222a94be953fe3daed4983560c36b4ba2e0fa",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            644,
+            1035,
+            928,
+            1225
+          ],
+          "source_preserved_bbox": [
+            642,
+            1033,
+            930,
+            1227
+          ],
+          "source_root": [
+            741,
+            1172
+          ],
+          "source_core_pixels": 24808,
+          "output_core_pixels": 16285,
+          "output_core_bbox": [
+            177,
+            210,
+            408,
+            363
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            208,
+            233,
+            157
+          ],
+          "quantized_source_root_in_canvas": [
+            256.09375,
+            320.489691
+          ],
+          "root_quantization_error": [
+            0.09375,
+            0.489691
+          ],
+          "preserved_source_rgba_sha256": "6a747961582c1fcc8336f0850620826ada877d01658db5e0f39c5f8b01bac4f1",
+          "frame_png_sha256": "60fe2dce53bd9d3d80f315af4619549561347d6d0947796327045c59d0670c21",
+          "frame_rgba_sha256": "bb343d3aea251b2b16786d9c1a86c9db04daefe944b702efc2752d0290aefe1f",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            966,
+            1076,
+            1238,
+            1209
+          ],
+          "source_preserved_bbox": [
+            964,
+            1074,
+            1240,
+            1211
+          ],
+          "source_root": [
+            1094,
+            1168
+          ],
+          "source_core_pixels": 19556,
+          "output_core_pixels": 12869,
+          "output_core_bbox": [
+            152,
+            246,
+            372,
+            353
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            151,
+            244,
+            223,
+            111
+          ],
+          "quantized_source_root_in_canvas": [
+            256.036232,
+            320.160584
+          ],
+          "root_quantization_error": [
+            0.036232,
+            0.160584
+          ],
+          "preserved_source_rgba_sha256": "6eca435aaebafaad35e62384617ac0c51069d584a758ceab8f67246fa26631ba",
+          "frame_png_sha256": "a6d51d1706cfef06dfe145dbf20bac4a32120987d87645fc0f676646e6d9f219",
+          "frame_rgba_sha256": "e240845b43c9ed5a9a1835c25fd4953026828cdf6b46e305189252d6feeca848",
+          "crosses_nominal_source_cell": false
+        }
+      ]
+    },
+    {
+      "key": "extra_E",
+      "group": "extra",
+      "direction": "E",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_extra_E.png",
+      "source_sha256": "f3bbc7c98ec1153a3c3ac9d286bebff92c0ea7f2303cbd5c57a7eaca73ed07cd",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1013040,
+        "full": 1759,
+        "partial": 557717,
+        "removed_pixels": 50924,
+        "removed_alpha_sum": 79277,
+        "max_removed_alpha": 16,
+        "transparent_fraction": 0.644216
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": []
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.773,
+      "explicit_roots": [
+        [
+          191,
+          309
+        ],
+        [
+          485,
+          308
+        ],
+        [
+          795,
+          309
+        ],
+        [
+          1107,
+          307
+        ],
+        [
+          188,
+          623
+        ],
+        [
+          502,
+          621
+        ],
+        [
+          808,
+          623
+        ],
+        [
+          1111,
+          621
+        ],
+        [
+          208,
+          929
+        ],
+        [
+          518,
+          918
+        ],
+        [
+          817,
+          924
+        ],
+        [
+          1116,
+          930
+        ],
+        [
+          195,
+          1222
+        ],
+        [
+          503,
+          1194
+        ],
+        [
+          842,
+          1181
+        ],
+        [
+          1154,
+          1180
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_extra_E.png",
+      "atlas_sha256": "bfe1a459c67bc4ae2d9f0a8107da60f95a270d1084ff479ad6a1db7c3026a402",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            101,
+            16,
+            256,
+            307
+          ],
+          "source_preserved_bbox": [
+            99,
+            14,
+            258,
+            309
+          ],
+          "source_root": [
+            191,
+            309
+          ],
+          "source_core_pixels": 29434,
+          "output_core_pixels": 17665,
+          "output_core_bbox": [
+            187,
+            93,
+            306,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            185,
+            92,
+            123,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            256.169811,
+            320
+          ],
+          "root_quantization_error": [
+            0.169811,
+            0
+          ],
+          "preserved_source_rgba_sha256": "d23c3ca0dd5232c04993120fc4f74f8b752bbde1e940723472a0ce6f2fce0d6f",
+          "frame_png_sha256": "477f06a434e3e757f69a7c21afc19bc93012c355e363dae4dafa9ec2ad36a96a",
+          "frame_rgba_sha256": "8db913f8fd4fb73c1bcc404f4f2a34d6d857bb19daf519eee3012efd8ea45234",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            389,
+            16,
+            582,
+            306
+          ],
+          "source_preserved_bbox": [
+            387,
+            14,
+            584,
+            308
+          ],
+          "source_root": [
+            485,
+            308
+          ],
+          "source_core_pixels": 32289,
+          "output_core_pixels": 19360,
+          "output_core_bbox": [
+            181,
+            94,
+            330,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            180,
+            93,
+            152,
+            227
+          ],
+          "quantized_source_root_in_canvas": [
+            255.614213,
+            320
+          ],
+          "root_quantization_error": [
+            -0.385787,
+            0
+          ],
+          "preserved_source_rgba_sha256": "7abc4723a6911261b0ea241a5eaa5c5b078f9d38fa7fec141bfd3e9305e19d92",
+          "frame_png_sha256": "72b8d33208a5398f0edf83b6520ac954161726c5817bf695c441b5d882103701",
+          "frame_rgba_sha256": "41f84998ce45312e27590a5245b8959a7a52e723e502910c556d7558c5e93f5d",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            705,
+            45,
+            936,
+            307
+          ],
+          "source_preserved_bbox": [
+            703,
+            43,
+            938,
+            309
+          ],
+          "source_root": [
+            795,
+            309
+          ],
+          "source_core_pixels": 33484,
+          "output_core_pixels": 20133,
+          "output_core_bbox": [
+            187,
+            116,
+            365,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            185,
+            114,
+            182,
+            206
+          ],
+          "quantized_source_root_in_canvas": [
+            256.251064,
+            320
+          ],
+          "root_quantization_error": [
+            0.251064,
+            0
+          ],
+          "preserved_source_rgba_sha256": "c72477c52b6c51af931741d5161201092bb083ebc8f31b90edc26d3c1a6e3f46",
+          "frame_png_sha256": "eb475838b4f9eef1226e03badcf57e4543671c4e663714303fb79f9cfce22742",
+          "frame_rgba_sha256": "a5663f1b084947ea16396b101b306cf8624bb3a90d5cfe15356c6863b99afae8",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1007,
+            16,
+            1174,
+            305
+          ],
+          "source_preserved_bbox": [
+            1005,
+            14,
+            1176,
+            307
+          ],
+          "source_root": [
+            1107,
+            307
+          ],
+          "source_core_pixels": 30492,
+          "output_core_pixels": 18250,
+          "output_core_bbox": [
+            179,
+            95,
+            307,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            177,
+            94,
+            132,
+            226
+          ],
+          "quantized_source_root_in_canvas": [
+            255.736842,
+            320
+          ],
+          "root_quantization_error": [
+            -0.263158,
+            0
+          ],
+          "preserved_source_rgba_sha256": "6fada1e340e86cccde0ba1e41412db0406ded9d8d972e86ac3eb05c6d8b7fe4e",
+          "frame_png_sha256": "e21bb506fa7719d9404784728e676003d5b92f19768afc1a97b975d8bc775230",
+          "frame_rgba_sha256": "89864a405f6785f82fab395ff449e0b0478be40cea3605312d9ac2dfc3763626",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            87,
+            320,
+            264,
+            621
+          ],
+          "source_preserved_bbox": [
+            85,
+            318,
+            266,
+            623
+          ],
+          "source_root": [
+            188,
+            623
+          ],
+          "source_core_pixels": 31175,
+          "output_core_pixels": 18719,
+          "output_core_bbox": [
+            177,
+            85,
+            314,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            84,
+            140,
+            236
+          ],
+          "quantized_source_root_in_canvas": [
+            255.668508,
+            320
+          ],
+          "root_quantization_error": [
+            -0.331492,
+            0
+          ],
+          "preserved_source_rgba_sha256": "22503018aa4d0e14e991f30a8612d81b860a0ac4ec4627902d8f8645378dea7b",
+          "frame_png_sha256": "06f45da543eacc4fbe20cde6493d35ac7443a810bcd07df021637623870cae7a",
+          "frame_rgba_sha256": "306973c317da3fbf9d22f8dcc270aa14e8ffbf9dc6675d194c24fac0d57778f0",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            370,
+            324,
+            584,
+            619
+          ],
+          "source_preserved_bbox": [
+            368,
+            322,
+            586,
+            621
+          ],
+          "source_root": [
+            502,
+            621
+          ],
+          "source_core_pixels": 31798,
+          "output_core_pixels": 19173,
+          "output_core_bbox": [
+            154,
+            90,
+            320,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            152,
+            89,
+            169,
+            231
+          ],
+          "quantized_source_root_in_canvas": [
+            255.880734,
+            320
+          ],
+          "root_quantization_error": [
+            -0.119266,
+            0
+          ],
+          "preserved_source_rgba_sha256": "56479edb05141674416873f5d84512cbad57e81c550f7a355b05e7d822303098",
+          "frame_png_sha256": "7d46b1a5404c0b01b019a31a9d7c3abdfdfd4dc7addcb95bbb27afd2c0f0960c",
+          "frame_rgba_sha256": "9f7a90a9d4ca50d7dc0137525100654a0c47b1a81e214ae37500a10884df93b8",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            668,
+            368,
+            914,
+            621
+          ],
+          "source_preserved_bbox": [
+            666,
+            366,
+            916,
+            623
+          ],
+          "source_root": [
+            808,
+            623
+          ],
+          "source_core_pixels": 31626,
+          "output_core_pixels": 19012,
+          "output_core_bbox": [
+            146,
+            122,
+            337,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            146,
+            121,
+            193,
+            199
+          ],
+          "quantized_source_root_in_canvas": [
+            255.624,
+            320
+          ],
+          "root_quantization_error": [
+            -0.376,
+            0
+          ],
+          "preserved_source_rgba_sha256": "077c88a81222298ec967dfd62205e01cc00d0358c85994d7d6d4fd0f7806b713",
+          "frame_png_sha256": "10af7950bf9a2b23dade2ae6b6d12b4dd48458295876c6230963b3671140f5a5",
+          "frame_rgba_sha256": "1b5d61662dee09c9e1b8fb4b73164cead823cd861983bf5879afebc50795340a",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1023,
+            332,
+            1180,
+            619
+          ],
+          "source_preserved_bbox": [
+            1021,
+            330,
+            1182,
+            621
+          ],
+          "source_root": [
+            1111,
+            621
+          ],
+          "source_core_pixels": 29945,
+          "output_core_pixels": 17947,
+          "output_core_bbox": [
+            187,
+            97,
+            308,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            186,
+            95,
+            124,
+            225
+          ],
+          "quantized_source_root_in_canvas": [
+            255.31677,
+            320
+          ],
+          "root_quantization_error": [
+            -0.68323,
+            0
+          ],
+          "preserved_source_rgba_sha256": "e0540ce0b20d52b93020506a16b573c1d3802f98d1a50f79bb3a0523dc01df13",
+          "frame_png_sha256": "d84df8350f40c96ccc15d0393eb9cc1325609b333655c6f4c3d67b6ff13b245b",
+          "frame_rgba_sha256": "a7a3fd2b2293fbbf0be8ecf3679b19e9e3255f5669d84818ecd11028068806bf",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            83,
+            642,
+            277,
+            927
+          ],
+          "source_preserved_bbox": [
+            81,
+            640,
+            279,
+            929
+          ],
+          "source_root": [
+            208,
+            929
+          ],
+          "source_core_pixels": 32979,
+          "output_core_pixels": 19752,
+          "output_core_bbox": [
+            160,
+            98,
+            309,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            158,
+            97,
+            153,
+            223
+          ],
+          "quantized_source_root_in_canvas": [
+            256.136364,
+            320
+          ],
+          "root_quantization_error": [
+            0.136364,
+            0
+          ],
+          "preserved_source_rgba_sha256": "8d2fd30e51d5223a648fb171c8f6ad007e15641de32ac29ab6da7ebd85bd0c45",
+          "frame_png_sha256": "13b047790083149d383b4ba2e1664cbf2772d2d5040316f8536756c6408f06aa",
+          "frame_rgba_sha256": "f220414eb7da439e250263cbb52770a1d80d04ad135030937fce0026b962da78",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            361,
+            672,
+            585,
+            926
+          ],
+          "source_preserved_bbox": [
+            359,
+            670,
+            587,
+            928
+          ],
+          "source_root": [
+            518,
+            918
+          ],
+          "source_core_pixels": 29742,
+          "output_core_pixels": 17796,
+          "output_core_bbox": [
+            135,
+            129,
+            308,
+            326
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            133,
+            128,
+            176,
+            199
+          ],
+          "quantized_source_root_in_canvas": [
+            255.736842,
+            319.286822
+          ],
+          "root_quantization_error": [
+            -0.263158,
+            -0.713178
+          ],
+          "preserved_source_rgba_sha256": "97297fd43109131052715d388d3280ec0112512b3accd57cddc9042cc6e118da",
+          "frame_png_sha256": "900faf6367e65cf643b0bf82a4c7381e32c67fd37268b5affc63538c8c4b5c2f",
+          "frame_rgba_sha256": "e019857e5f911888ae761262f9fc2ea770450216b40eba512692f497667aeaf9",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            701,
+            662,
+            901,
+            920
+          ],
+          "source_preserved_bbox": [
+            699,
+            660,
+            903,
+            922
+          ],
+          "source_root": [
+            817,
+            924
+          ],
+          "source_core_pixels": 32276,
+          "output_core_pixels": 19422,
+          "output_core_bbox": [
+            167,
+            117,
+            322,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            165,
+            116,
+            158,
+            203
+          ],
+          "quantized_source_root_in_canvas": [
+            256.392157,
+            320.549618
+          ],
+          "root_quantization_error": [
+            0.392157,
+            0.549618
+          ],
+          "preserved_source_rgba_sha256": "fc5bab3b6f98d413fcbe3c1e79ffe43bfab71e0daa239df12fe31373f20caaa8",
+          "frame_png_sha256": "3b9ba935a01f4e5b93993f839cb0b946c8eb9576251f72c14f63d001daf91906",
+          "frame_rgba_sha256": "ddab82acf6b5414200370b6457a783a05fcdedb307d7b782a66e619bb678aa81",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1016,
+            642,
+            1179,
+            928
+          ],
+          "source_preserved_bbox": [
+            1014,
+            640,
+            1181,
+            930
+          ],
+          "source_root": [
+            1116,
+            930
+          ],
+          "source_core_pixels": 30333,
+          "output_core_pixels": 18178,
+          "output_core_bbox": [
+            179,
+            97,
+            305,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            177,
+            96,
+            129,
+            224
+          ],
+          "quantized_source_root_in_canvas": [
+            255.790419,
+            320
+          ],
+          "root_quantization_error": [
+            -0.209581,
+            0
+          ],
+          "preserved_source_rgba_sha256": "14318f94966091e2f6925dc5db9d4077e6c89830f38015d8884c6e1f3b226ec1",
+          "frame_png_sha256": "e51cbec749b9da718345a3dbf9796544a74e911117b4cefe3ca6f3155d83ef65",
+          "frame_rgba_sha256": "571892cd2a49fcdd6c072fa14c208b26d124e6b42b3394c094a308c421d82faa",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            112,
+            970,
+            264,
+            1220
+          ],
+          "source_preserved_bbox": [
+            110,
+            968,
+            266,
+            1222
+          ],
+          "source_root": [
+            195,
+            1222
+          ],
+          "source_core_pixels": 25867,
+          "output_core_pixels": 15588,
+          "output_core_bbox": [
+            192,
+            125,
+            309,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            124,
+            121,
+            196
+          ],
+          "quantized_source_root_in_canvas": [
+            255.929487,
+            320
+          ],
+          "root_quantization_error": [
+            -0.070513,
+            0
+          ],
+          "preserved_source_rgba_sha256": "1843302be572053b1998e21789ed9f08ec14bad066bc9c6f32fd99e205d8f39d",
+          "frame_png_sha256": "9b45dafe2ca390519de1efe2a379ff0b34a1f22b87259ba5a16a6c1e9ba289cd",
+          "frame_rgba_sha256": "8418420e8feef7bb4065a866ccadaa130e07a2784f9dedd8779c6d7a4dfc8270",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            407,
+            973,
+            582,
+            1207
+          ],
+          "source_preserved_bbox": [
+            405,
+            971,
+            584,
+            1209
+          ],
+          "source_root": [
+            503,
+            1194
+          ],
+          "source_core_pixels": 24212,
+          "output_core_pixels": 14527,
+          "output_core_bbox": [
+            181,
+            150,
+            317,
+            331
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            180,
+            148,
+            138,
+            184
+          ],
+          "quantized_source_root_in_canvas": [
+            255.553073,
+            320.403361
+          ],
+          "root_quantization_error": [
+            -0.446927,
+            0.403361
+          ],
+          "preserved_source_rgba_sha256": "e17ec785abba8ce7aad65e74d5f5675d6cb6b57b41580174a3a7b376bf7ccfae",
+          "frame_png_sha256": "daf39a38136bbd2468b98cdc3683338b47c716f0a079d3b6fee270920215184f",
+          "frame_rgba_sha256": "ae4a75517b1ee86b7db0a6b54e898ef9bb666a001ecf4d3097145de428dd2f76",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            661,
+            1053,
+            926,
+            1216
+          ],
+          "source_preserved_bbox": [
+            659,
+            1051,
+            928,
+            1218
+          ],
+          "source_root": [
+            842,
+            1181
+          ],
+          "source_core_pixels": 22505,
+          "output_core_pixels": 13496,
+          "output_core_bbox": [
+            116,
+            221,
+            321,
+            348
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            115,
+            220,
+            208,
+            129
+          ],
+          "quantized_source_root_in_canvas": [
+            256.501859,
+            320.419162
+          ],
+          "root_quantization_error": [
+            0.501859,
+            0.419162
+          ],
+          "preserved_source_rgba_sha256": "a4d8c6de1fce7f377427fd775c880c6e0d2125197b4334881782a5d0a4618fa2",
+          "frame_png_sha256": "7c8359a31ecf81c411a2a692877830b9d76fdd3539fbdea07094b07224a87e4d",
+          "frame_rgba_sha256": "7879e21e8715b071b71b6b141aec6762a0ba6b6dedcaf73aef9de72da32fa693",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            960,
+            1080,
+            1223,
+            1217
+          ],
+          "source_preserved_bbox": [
+            958,
+            1078,
+            1225,
+            1219
+          ],
+          "source_root": [
+            1154,
+            1180
+          ],
+          "source_core_pixels": 21805,
+          "output_core_pixels": 13065,
+          "output_core_bbox": [
+            105,
+            243,
+            309,
+            349
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            104,
+            241,
+            206,
+            109
+          ],
+          "quantized_source_root_in_canvas": [
+            255.220974,
+            319.851064
+          ],
+          "root_quantization_error": [
+            -0.779026,
+            -0.148936
+          ],
+          "preserved_source_rgba_sha256": "6cdc6a207fb2638a7ec9bd81b0751a988e4046fec83cf7160de1597c3a1decf6",
+          "frame_png_sha256": "8690f6f0e528f81cde6e2d9c69215d10b843f4eb8c0789cb9607268c0f33fe9d",
+          "frame_rgba_sha256": "9e97965012a1f7ff25b6869e67753dc5982f4a8e4c7de0b208d48f43b12c0d37",
+          "crosses_nominal_source_cell": false
+        }
+      ]
+    },
+    {
+      "key": "extra_S",
+      "group": "extra",
+      "direction": "S",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_extra_S.png",
+      "source_sha256": "8c76e8014385fdfbb278a5d101fe709862cf8be92a7cfcbc5178460967e6f6d7",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 973969,
+        "full": 1432,
+        "partial": 597115,
+        "removed_pixels": 75682,
+        "removed_alpha_sum": 122520,
+        "max_removed_alpha": 16,
+        "transparent_fraction": 0.61937
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": []
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.781,
+      "explicit_roots": [
+        [
+          181,
+          299
+        ],
+        [
+          482,
+          299
+        ],
+        [
+          803,
+          299
+        ],
+        [
+          1102,
+          299
+        ],
+        [
+          173,
+          602
+        ],
+        [
+          494,
+          603
+        ],
+        [
+          801,
+          599
+        ],
+        [
+          1116,
+          602
+        ],
+        [
+          171,
+          916
+        ],
+        [
+          510,
+          913
+        ],
+        [
+          814,
+          903
+        ],
+        [
+          1108,
+          918
+        ],
+        [
+          180,
+          1208
+        ],
+        [
+          515,
+          1180
+        ],
+        [
+          833,
+          1153
+        ],
+        [
+          1135,
+          1154
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_extra_S.png",
+      "atlas_sha256": "0de12a5c67db76a7c0e22d3f70f7b78c496dbede577acf7ee2b6b93ba7c946fd",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            68,
+            9,
+            248,
+            297
+          ],
+          "source_preserved_bbox": [
+            66,
+            7,
+            250,
+            299
+          ],
+          "source_root": [
+            181,
+            299
+          ],
+          "source_core_pixels": 31017,
+          "output_core_pixels": 19054,
+          "output_core_bbox": [
+            168,
+            93,
+            308,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            166,
+            92,
+            144,
+            228
+          ],
+          "quantized_source_root_in_canvas": [
+            256,
+            320
+          ],
+          "root_quantization_error": [
+            0,
+            0
+          ],
+          "preserved_source_rgba_sha256": "44a296ab7711cce21472bb4cb53fd62201adcaf21c8e77d6a2cf8f247ddaf551",
+          "frame_png_sha256": "d461a0452ccb721a21956618cac6dc931a669405d1fd241b9267553b6a58aee9",
+          "frame_rgba_sha256": "b4e99bc54815394a010ff8c62126d6b53994fbd55b4720e9b737d015801356d3",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            381,
+            10,
+            580,
+            297
+          ],
+          "source_preserved_bbox": [
+            379,
+            8,
+            582,
+            299
+          ],
+          "source_root": [
+            482,
+            299
+          ],
+          "source_core_pixels": 31694,
+          "output_core_pixels": 19522,
+          "output_core_bbox": [
+            177,
+            93,
+            333,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            93,
+            159,
+            227
+          ],
+          "quantized_source_root_in_canvas": [
+            256.674877,
+            320
+          ],
+          "root_quantization_error": [
+            0.674877,
+            0
+          ],
+          "preserved_source_rgba_sha256": "25f30f0dd906495756a1860affc035b159a28d46c249200978a329a78ed31343",
+          "frame_png_sha256": "b32a9ddf29f0e9d1c9878e6e0f535655a58a33029254616014d4761eee28a60d",
+          "frame_rgba_sha256": "77f56617338d9c20f984e9dff5d53cc7512ab3d09ec7eaedcb1ff4e173df40da",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            655,
+            32,
+            882,
+            297
+          ],
+          "source_preserved_bbox": [
+            653,
+            30,
+            884,
+            299
+          ],
+          "source_root": [
+            803,
+            299
+          ],
+          "source_core_pixels": 31272,
+          "output_core_pixels": 19100,
+          "output_core_bbox": [
+            140,
+            112,
+            318,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            139,
+            110,
+            180,
+            210
+          ],
+          "quantized_source_root_in_canvas": [
+            255.883117,
+            320
+          ],
+          "root_quantization_error": [
+            -0.116883,
+            0
+          ],
+          "preserved_source_rgba_sha256": "948758e5d287adc52ec136b6d0ec22c9e37b725579b98c527275c7fb1bb29863",
+          "frame_png_sha256": "43da0320889b9a947f08b36734a4ca4ae4427dbff5e3ed7e3975604efc33c4a6",
+          "frame_rgba_sha256": "8c7a15150021e94b2b72bde039c3912faf9d0e4b2d28a977532625fea73fbc6e",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1004,
+            10,
+            1170,
+            297
+          ],
+          "source_preserved_bbox": [
+            1002,
+            8,
+            1172,
+            299
+          ],
+          "source_root": [
+            1102,
+            299
+          ],
+          "source_core_pixels": 30223,
+          "output_core_pixels": 18587,
+          "output_core_bbox": [
+            179,
+            94,
+            310,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            178,
+            93,
+            133,
+            227
+          ],
+          "quantized_source_root_in_canvas": [
+            256.235294,
+            320
+          ],
+          "root_quantization_error": [
+            0.235294,
+            0
+          ],
+          "preserved_source_rgba_sha256": "d6fefc9ef4e5bc66f787d0dacd08d414edeb08969b4b289d2a433f85dd20ab41",
+          "frame_png_sha256": "f1b4ba6b07bfe46ba74e6246bc9af534a996cb020b01d3c2d5f890f4ad819fac",
+          "frame_rgba_sha256": "1f68367c00999d3e23412505b750a31e92d1b6ced154216061e52a8b46194e8f",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            90,
+            293,
+            252,
+            600
+          ],
+          "source_preserved_bbox": [
+            88,
+            291,
+            254,
+            602
+          ],
+          "source_root": [
+            173,
+            602
+          ],
+          "source_core_pixels": 31343,
+          "output_core_pixels": 19261,
+          "output_core_bbox": [
+            191,
+            77,
+            319,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            77,
+            130,
+            243
+          ],
+          "quantized_source_root_in_canvas": [
+            256.566265,
+            320
+          ],
+          "root_quantization_error": [
+            0.566265,
+            0
+          ],
+          "preserved_source_rgba_sha256": "c29702d702c5f8c420a08b268d0fc6e6819ba78ce8d4d43698ebcd6499c69b81",
+          "frame_png_sha256": "822a3f7f6cb6072001b9f352e0984ddc19bd81e2f046c831a6615e2be7dcd658",
+          "frame_rgba_sha256": "34019bdf09517547b3cd45198ee15b876620e239cc8aedec026239ccbd83d717",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            401,
+            324,
+            568,
+            601
+          ],
+          "source_preserved_bbox": [
+            399,
+            322,
+            570,
+            603
+          ],
+          "source_root": [
+            494,
+            603
+          ],
+          "source_core_pixels": 28965,
+          "output_core_pixels": 17820,
+          "output_core_bbox": [
+            183,
+            101,
+            314,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            182,
+            101,
+            134,
+            219
+          ],
+          "quantized_source_root_in_canvas": [
+            256.444444,
+            320
+          ],
+          "root_quantization_error": [
+            0.444444,
+            0
+          ],
+          "preserved_source_rgba_sha256": "a357233cb7129898aaf20ed888328b23a68e78b9a322c89b583a7e761b121665",
+          "frame_png_sha256": "a7bd717ac44ad6e8bc9cdef755f6829bc93464f1683cc910b20bbd2af13b5880",
+          "frame_rgba_sha256": "b417171ce4cc583924ac016474af0e0f5d243cf56bd9629007744e9b6dcb5d40",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            667,
+            348,
+            895,
+            595
+          ],
+          "source_preserved_bbox": [
+            665,
+            346,
+            897,
+            597
+          ],
+          "source_root": [
+            801,
+            599
+          ],
+          "source_core_pixels": 31968,
+          "output_core_pixels": 19540,
+          "output_core_bbox": [
+            151,
+            124,
+            330,
+            317
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            150,
+            122,
+            181,
+            196
+          ],
+          "quantized_source_root_in_canvas": [
+            256.103448,
+            319.561753
+          ],
+          "root_quantization_error": [
+            0.103448,
+            -0.438247
+          ],
+          "preserved_source_rgba_sha256": "d4ff9034c603a63f7a249002331fb8b5f80993984e84fa94c1b9c6b909d5c3ad",
+          "frame_png_sha256": "f40bcca746865d47ad654458e8596dc953e4eaaf5c06e4682e096527747234e1",
+          "frame_rgba_sha256": "9422ebb78dd5f3ad3f6909ed9610f8398f31c2e60057d74399626c44f27376d0",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1016,
+            320,
+            1189,
+            600
+          ],
+          "source_preserved_bbox": [
+            1014,
+            318,
+            1191,
+            602
+          ],
+          "source_root": [
+            1116,
+            602
+          ],
+          "source_core_pixels": 30723,
+          "output_core_pixels": 18832,
+          "output_core_bbox": [
+            177,
+            100,
+            313,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            98,
+            138,
+            222
+          ],
+          "quantized_source_root_in_canvas": [
+            255.525424,
+            320
+          ],
+          "root_quantization_error": [
+            -0.474576,
+            0
+          ],
+          "preserved_source_rgba_sha256": "58b265d828601c75f2328cddfa3fdaca1df2f05cd9eeef93e5259357a49c2883",
+          "frame_png_sha256": "835613e1c10928dfb9ece7030f4f7ec77105b188e6f7f3ed78fe3c9c1fb62ad4",
+          "frame_rgba_sha256": "78819ce57af7a91261963ca49a57ae4bf1e1da5ffa6d49f33bf703a1de45271b",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            76,
+            612,
+            257,
+            914
+          ],
+          "source_preserved_bbox": [
+            74,
+            610,
+            259,
+            916
+          ],
+          "source_root": [
+            171,
+            916
+          ],
+          "source_core_pixels": 35901,
+          "output_core_pixels": 21939,
+          "output_core_bbox": [
+            181,
+            82,
+            323,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            180,
+            81,
+            144,
+            239
+          ],
+          "quantized_source_root_in_canvas": [
+            255.502703,
+            320
+          ],
+          "root_quantization_error": [
+            -0.497297,
+            0
+          ],
+          "preserved_source_rgba_sha256": "15dc07b925e8a222433b0f6426c9d21ac34f50986d5fb6db126eb02f4a3fcd47",
+          "frame_png_sha256": "763a207796d597c28db2f9ddc84262ad0562dbb739b6ffe99af4c3508fcc1c21",
+          "frame_rgba_sha256": "ec08b99c0d35861577124b3063f216af8003a411f61e80e68c7824b4640ef290",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            362,
+            636,
+            586,
+            911
+          ],
+          "source_preserved_bbox": [
+            360,
+            634,
+            588,
+            913
+          ],
+          "source_root": [
+            510,
+            913
+          ],
+          "source_core_pixels": 35248,
+          "output_core_pixels": 21591,
+          "output_core_bbox": [
+            140,
+            103,
+            315,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            139,
+            102,
+            178,
+            218
+          ],
+          "quantized_source_root_in_canvas": [
+            256.105263,
+            320
+          ],
+          "root_quantization_error": [
+            0.105263,
+            0
+          ],
+          "preserved_source_rgba_sha256": "09eb51e354d36ddab985ca2063c53e8db7a93cf23b0ebafc296e2bbb44b0313b",
+          "frame_png_sha256": "f70f046d98a075da076e4d94566885de310272bcfdba11a817fb4d760a4325aa",
+          "frame_rgba_sha256": "389f41f1d0d3681ca0400e1a0d9f10f52f2cfb1de0ac923b9fc0bc72c0ced62d",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            696,
+            628,
+            886,
+            900
+          ],
+          "source_preserved_bbox": [
+            694,
+            626,
+            888,
+            902
+          ],
+          "source_root": [
+            814,
+            903
+          ],
+          "source_core_pixels": 31486,
+          "output_core_pixels": 19391,
+          "output_core_bbox": [
+            163,
+            105,
+            312,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            162,
+            104,
+            152,
+            216
+          ],
+          "quantized_source_root_in_canvas": [
+            256.020619,
+            320.782609
+          ],
+          "root_quantization_error": [
+            0.020619,
+            0.782609
+          ],
+          "preserved_source_rgba_sha256": "8573504b312b8beffb1a5accdc0fa7c73e8fae8af478b3c381b45093012b198f",
+          "frame_png_sha256": "bf5a97cd26068bb560ee3cc876d1ad4190902cb10266c41a08b1edee2f28000d",
+          "frame_rgba_sha256": "3ad002d0aff14a040adfd06ee8c7f8e9a8180860b6ddc75b9228e3c51001c539",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1006,
+            624,
+            1185,
+            916
+          ],
+          "source_preserved_bbox": [
+            1004,
+            622,
+            1187,
+            918
+          ],
+          "source_root": [
+            1108,
+            918
+          ],
+          "source_core_pixels": 32180,
+          "output_core_pixels": 19740,
+          "output_core_bbox": [
+            177,
+            90,
+            316,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            175,
+            89,
+            143,
+            231
+          ],
+          "quantized_source_root_in_canvas": [
+            256.26776,
+            320
+          ],
+          "root_quantization_error": [
+            0.26776,
+            0
+          ],
+          "preserved_source_rgba_sha256": "cadd9d8cccf910125a7ae30620d91866ed1db2a123e82f0c24bdbfcbed7a224e",
+          "frame_png_sha256": "1d2045a44679af0cc357aebec85bf696249e19953a43b7ee7fa19faffd4772a3",
+          "frame_rgba_sha256": "3f1035aff43820e3368cbbb1658a3e33fabec7efddc162d192e8b1f73366860c",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            58,
+            931,
+            258,
+            1206
+          ],
+          "source_preserved_bbox": [
+            56,
+            929,
+            260,
+            1208
+          ],
+          "source_root": [
+            180,
+            1208
+          ],
+          "source_core_pixels": 29593,
+          "output_core_pixels": 18110,
+          "output_core_bbox": [
+            160,
+            104,
+            317,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            159,
+            102,
+            159,
+            218
+          ],
+          "quantized_source_root_in_canvas": [
+            255.647059,
+            320
+          ],
+          "root_quantization_error": [
+            -0.352941,
+            0
+          ],
+          "preserved_source_rgba_sha256": "61dbf25dd5b879da2e5459a345653c01d491e7bbc67dbdd6cc74db96090e5202",
+          "frame_png_sha256": "25c5a363e117fb1cee6b4fad491c5c8bf7f6c7c9c43f36568148e4f65ed59e00",
+          "frame_rgba_sha256": "0c9113f4d54c7f710d606eaa407db877f357bc00d684be8578343e42c1ba2435",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            380,
+            958,
+            579,
+            1195
+          ],
+          "source_preserved_bbox": [
+            378,
+            956,
+            581,
+            1197
+          ],
+          "source_root": [
+            515,
+            1180
+          ],
+          "source_core_pixels": 26521,
+          "output_core_pixels": 16311,
+          "output_core_bbox": [
+            151,
+            146,
+            307,
+            331
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            149,
+            145,
+            159,
+            188
+          ],
+          "quantized_source_root_in_canvas": [
+            256.305419,
+            319.738589
+          ],
+          "root_quantization_error": [
+            0.305419,
+            -0.261411
+          ],
+          "preserved_source_rgba_sha256": "6d48d67e41a9e5a95a0f62d614c1b9f86df428c38d3fc2160e8e3457bcbc1030",
+          "frame_png_sha256": "b58c449c8609812fd860f1790d18e6b9ff020d7680b37d9f64ff34212a2c4886",
+          "frame_rgba_sha256": "45989cd4da6c42fec7deac7de90ab8890e76ecb705b430c9b75d2b0e0c0a1372",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            658,
+            1021,
+            924,
+            1179
+          ],
+          "source_preserved_bbox": [
+            656,
+            1019,
+            926,
+            1181
+          ],
+          "source_root": [
+            833,
+            1153
+          ],
+          "source_core_pixels": 22533,
+          "output_core_pixels": 13879,
+          "output_core_bbox": [
+            119,
+            217,
+            327,
+            340
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            118,
+            215,
+            211,
+            127
+          ],
+          "quantized_source_root_in_canvas": [
+            256.322222,
+            320.049383
+          ],
+          "root_quantization_error": [
+            0.322222,
+            0.049383
+          ],
+          "preserved_source_rgba_sha256": "5458fe0bd4328238a4a0ea1997f0400ba0ac308d1a2d2013feb823ef834e83e5",
+          "frame_png_sha256": "f944f3ca00bd22b64e5da0f6b2e46ec49a2d8387dddf22e8947cd3a386ea1fcf",
+          "frame_rgba_sha256": "902778e02d043e72643951ac031c54f719cc7b3a4d8168211637265bcb6aadab",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            980,
+            1059,
+            1224,
+            1202
+          ],
+          "source_preserved_bbox": [
+            978,
+            1057,
+            1226,
+            1204
+          ],
+          "source_root": [
+            1135,
+            1154
+          ],
+          "source_core_pixels": 21331,
+          "output_core_pixels": 13095,
+          "output_core_bbox": [
+            134,
+            246,
+            326,
+            358
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            133,
+            244,
+            194,
+            115
+          ],
+          "quantized_source_root_in_canvas": [
+            255.814516,
+            319.884354
+          ],
+          "root_quantization_error": [
+            -0.185484,
+            -0.115646
+          ],
+          "preserved_source_rgba_sha256": "1862948186725833ab26378a8a23e28268cdf4b663bc7e662b583228705ca252",
+          "frame_png_sha256": "44068e2aaccda5a01e352b98092d0b7f62e39df5debd438a46ad980472ff0914",
+          "frame_rgba_sha256": "562943a82d96b740b061bca36f3a529cd98989b6261f3c0e0a72e444b19cd3d8",
+          "crosses_nominal_source_cell": false
+        }
+      ]
+    },
+    {
+      "key": "extra_W",
+      "group": "extra",
+      "direction": "W",
+      "source_grid": [
+        4,
+        4
+      ],
+      "source": "art/source/characters/philosopher_mage/sprites_v1/source_extra_W.png",
+      "source_sha256": "acc1b58de2ebbdc2330d7d21fe8837253a12c8d233b3f838ff347351eac30ff5",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1019714,
+        "full": 1434,
+        "partial": 551368,
+        "removed_pixels": 83776,
+        "removed_alpha_sum": 132422,
+        "max_removed_alpha": 20,
+        "transparent_fraction": 0.64846
+      },
+      "segmentation": {
+        "alpha_threshold": 32,
+        "min_component_pixels": 2000,
+        "edge_preservation_radius": 2,
+        "discarded_core_components": [
+          {
+            "pixels": 1,
+            "bbox": [
+              152,
+              883,
+              153,
+              884
+            ]
+          }
+        ]
+      },
+      "valid": true,
+      "errors": [],
+      "fixed_scale": 0.849,
+      "explicit_roots": [
+        [
+          198,
+          297
+        ],
+        [
+          507,
+          299
+        ],
+        [
+          818,
+          295
+        ],
+        [
+          1103,
+          297
+        ],
+        [
+          191,
+          602
+        ],
+        [
+          507,
+          605
+        ],
+        [
+          814,
+          602
+        ],
+        [
+          1116,
+          609
+        ],
+        [
+          204,
+          918
+        ],
+        [
+          522,
+          917
+        ],
+        [
+          830,
+          921
+        ],
+        [
+          1112,
+          917
+        ],
+        [
+          211,
+          1204
+        ],
+        [
+          512,
+          1206
+        ],
+        [
+          825,
+          1184
+        ],
+        [
+          1138,
+          1175
+        ]
+      ],
+      "atlas": "assets/characters/philosopher_mage/sprites_v1/atlas_extra_W.png",
+      "atlas_sha256": "691c48374b94b737d349b0d158bc2fed4e35e69a749be5521f1b94b68eda07da",
+      "atlas_regions_verified": 16,
+      "atlas_packing": "Direct straight RGBA scanline copies; no compositing or alpha roundtrip.",
+      "frames": [
+        {
+          "index": 0,
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            78,
+            25,
+            252,
+            295
+          ],
+          "source_preserved_bbox": [
+            76,
+            23,
+            254,
+            297
+          ],
+          "source_root": [
+            198,
+            297
+          ],
+          "source_core_pixels": 27250,
+          "output_core_pixels": 19750,
+          "output_core_bbox": [
+            153,
+            88,
+            301,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            152,
+            87,
+            151,
+            233
+          ],
+          "quantized_source_root_in_canvas": [
+            255.494382,
+            320
+          ],
+          "root_quantization_error": [
+            -0.505618,
+            0
+          ],
+          "preserved_source_rgba_sha256": "9796a0937ffb245612d616975ff9082b517a445a52bbb7ab4061f02e2ef106ae",
+          "frame_png_sha256": "2726faf1afcb3fea8c618b5ce2d5521b7afcb2662ee616e1e273dc9921d40e3f",
+          "frame_rgba_sha256": "7b7af14919a5f76373b658235562c270ae3c72919dda93f7d6d894036bacaa87",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 1,
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            372,
+            39,
+            566,
+            297
+          ],
+          "source_preserved_bbox": [
+            370,
+            37,
+            568,
+            299
+          ],
+          "source_root": [
+            507,
+            299
+          ],
+          "source_core_pixels": 26229,
+          "output_core_pixels": 18955,
+          "output_core_bbox": [
+            142,
+            99,
+            306,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            140,
+            98,
+            168,
+            222
+          ],
+          "quantized_source_root_in_canvas": [
+            256.242424,
+            320
+          ],
+          "root_quantization_error": [
+            0.242424,
+            0
+          ],
+          "preserved_source_rgba_sha256": "8caca64854a28a7de6c53fb38b199b408cf2168e2dca9eb5a3cfdee027e571d7",
+          "frame_png_sha256": "1cbbfd25f0a69fc7bfd5efce16caf8b565ee8701f0dbb0d90c16b09f8853db55",
+          "frame_rgba_sha256": "9b458507aa91be35b6697f04fa539048f2d3ce50b151a1dedf54ce0771b113d3",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 2,
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            642,
+            34,
+            879,
+            293
+          ],
+          "source_preserved_bbox": [
+            640,
+            32,
+            881,
+            295
+          ],
+          "source_root": [
+            818,
+            295
+          ],
+          "source_core_pixels": 24433,
+          "output_core_pixels": 17706,
+          "output_core_bbox": [
+            107,
+            98,
+            308,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            105,
+            97,
+            205,
+            223
+          ],
+          "quantized_source_root_in_canvas": [
+            256.410788,
+            320
+          ],
+          "root_quantization_error": [
+            0.410788,
+            0
+          ],
+          "preserved_source_rgba_sha256": "21fd8bf9d7392ab5e8da6d6ebb39e4cb1225f22a8ce8a3ce3bcf2809c4c871f9",
+          "frame_png_sha256": "192b3273dd5b6384a0b2231b8537b350e53cfebad99128320adb13cf53a6ed27",
+          "frame_rgba_sha256": "5e96ce9dbeb65b078c8af8cb4dd77db1f9f507d6bd1e11bca66eb71af7768c1a",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 3,
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            982,
+            32,
+            1153,
+            295
+          ],
+          "source_preserved_bbox": [
+            980,
+            30,
+            1155,
+            297
+          ],
+          "source_root": [
+            1103,
+            297
+          ],
+          "source_core_pixels": 25335,
+          "output_core_pixels": 18410,
+          "output_core_bbox": [
+            154,
+            94,
+            299,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            152,
+            93,
+            149,
+            227
+          ],
+          "quantized_source_root_in_canvas": [
+            256.725714,
+            320
+          ],
+          "root_quantization_error": [
+            0.725714,
+            0
+          ],
+          "preserved_source_rgba_sha256": "744e6d124f1a8a0151d55cc981731d50076f9476a388d553045360fa6364da0a",
+          "frame_png_sha256": "6e163e745cb47d25003627d41d09ecd170251afdba776e6eb947a60f96d0f70c",
+          "frame_rgba_sha256": "cc882d58d78fc76a947811f14a35461e40076024480fc3682077a2b94688a6f0",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 4,
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            79,
+            312,
+            250,
+            600
+          ],
+          "source_preserved_bbox": [
+            77,
+            310,
+            252,
+            602
+          ],
+          "source_root": [
+            191,
+            602
+          ],
+          "source_core_pixels": 27779,
+          "output_core_pixels": 20148,
+          "output_core_bbox": [
+            161,
+            73,
+            307,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            159,
+            72,
+            149,
+            248
+          ],
+          "quantized_source_root_in_canvas": [
+            256.062857,
+            320
+          ],
+          "root_quantization_error": [
+            0.062857,
+            0
+          ],
+          "preserved_source_rgba_sha256": "c7940185a734cbb47156a07576764b27d73382f7b9895983f33c83b711dc2b62",
+          "frame_png_sha256": "43f1aa91fe802ae6dc50a20126fc537460dc5667b7e1adc022d2bd0d210f14fc",
+          "frame_rgba_sha256": "15502cfcbd23d1a8b6f6b16f3bd11a38bd5fa3f3382b5dc7b6125c4e9d78ded3",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 5,
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            385,
+            315,
+            578,
+            603
+          ],
+          "source_preserved_bbox": [
+            383,
+            313,
+            580,
+            605
+          ],
+          "source_root": [
+            507,
+            605
+          ],
+          "source_core_pixels": 27860,
+          "output_core_pixels": 20139,
+          "output_core_bbox": [
+            152,
+            74,
+            317,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            151,
+            72,
+            167,
+            248
+          ],
+          "quantized_source_root_in_canvas": [
+            256.116751,
+            320
+          ],
+          "root_quantization_error": [
+            0.116751,
+            0
+          ],
+          "preserved_source_rgba_sha256": "540c8a007163ae4cebb81a8cef388cf235da42191fae2e10bfd3fec6cab6500e",
+          "frame_png_sha256": "d7ef5365d3267eb7f1c7641013cdab5c314d076161f6e9f54ea22095aba6209e",
+          "frame_rgba_sha256": "59666bf5f2a3792226f9813611898e333f5a635ff499ca49f092c9ff04b99e71",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 6,
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            681,
+            334,
+            885,
+            600
+          ],
+          "source_preserved_bbox": [
+            679,
+            332,
+            887,
+            602
+          ],
+          "source_root": [
+            814,
+            602
+          ],
+          "source_core_pixels": 27780,
+          "output_core_pixels": 20147,
+          "output_core_bbox": [
+            143,
+            92,
+            316,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            141,
+            91,
+            177,
+            229
+          ],
+          "quantized_source_root_in_canvas": [
+            255.879808,
+            320
+          ],
+          "root_quantization_error": [
+            -0.120192,
+            0
+          ],
+          "preserved_source_rgba_sha256": "10087c9950b9e003ed0916b7f7030e9bebfb3cb8c8f7f2353dfba3e8fd9f45a7",
+          "frame_png_sha256": "80a2e00af84658654383811118fbdbf7671581ab02d3364b0136847b03e78e1d",
+          "frame_rgba_sha256": "092fccc7dc33e58650464dabc7986d08aef08d654f69e87b72d9cfb7d2d6ba19",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 7,
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            984,
+            330,
+            1170,
+            607
+          ],
+          "source_preserved_bbox": [
+            982,
+            328,
+            1172,
+            609
+          ],
+          "source_root": [
+            1116,
+            609
+          ],
+          "source_core_pixels": 27406,
+          "output_core_pixels": 19876,
+          "output_core_bbox": [
+            143,
+            83,
+            301,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            142,
+            81,
+            161,
+            239
+          ],
+          "quantized_source_root_in_canvas": [
+            255.547368,
+            320
+          ],
+          "root_quantization_error": [
+            -0.452632,
+            0
+          ],
+          "preserved_source_rgba_sha256": "7e6b206a1624b4c623d8ba5428b6be5ba00451be682db099be5c9d3b9bb29c65",
+          "frame_png_sha256": "f578b313b8d0550931cbe802686df3f9d7fe35821bca2b2be374adf8a4ce1165",
+          "frame_rgba_sha256": "8d1207a0f2e33b5d0398609e61737f6f0dac1a64b7e07629742bf1e50e5d0a73",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 8,
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            93,
+            623,
+            271,
+            916
+          ],
+          "source_preserved_bbox": [
+            91,
+            621,
+            273,
+            918
+          ],
+          "source_root": [
+            204,
+            918
+          ],
+          "source_core_pixels": 29296,
+          "output_core_pixels": 21259,
+          "output_core_bbox": [
+            161,
+            69,
+            313,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            160,
+            68,
+            155,
+            252
+          ],
+          "quantized_source_root_in_canvas": [
+            256.236264,
+            320
+          ],
+          "root_quantization_error": [
+            0.236264,
+            0
+          ],
+          "preserved_source_rgba_sha256": "7ed3aa340fa4ae5d39fe235b8bd65a111d48357b2a54700938ddcaa3d35f167e",
+          "frame_png_sha256": "090024b4399b59753fe9b53858a58fd4aae460611103d92f744132fd6bdcd4aa",
+          "frame_rgba_sha256": "d45c662f9ab576b7a7bd1d76c06986b22f62a6ad49f1365f26670af177003be2",
+          "crosses_nominal_source_cell": true
+        },
+        {
+          "index": 9,
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            369,
+            642,
+            600,
+            915
+          ],
+          "source_preserved_bbox": [
+            367,
+            640,
+            602,
+            917
+          ],
+          "source_root": [
+            522,
+            917
+          ],
+          "source_core_pixels": 31272,
+          "output_core_pixels": 22687,
+          "output_core_bbox": [
+            126,
+            86,
+            323,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            124,
+            85,
+            200,
+            235
+          ],
+          "quantized_source_root_in_canvas": [
+            255.914894,
+            320
+          ],
+          "root_quantization_error": [
+            -0.085106,
+            0
+          ],
+          "preserved_source_rgba_sha256": "01eeeb305e06c72008876b4d9793564f6f0b6b964199fb5477a3e7492f888910",
+          "frame_png_sha256": "46047ace8adc9a041b515607e14783de13882ef03f076a7b80ed64fdf7b787f6",
+          "frame_rgba_sha256": "b1d89b8da4fe70117fab47b356ba23497fd46b0d2d8efd8a75db413b81a31280",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 10,
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            674,
+            643,
+            893,
+            919
+          ],
+          "source_preserved_bbox": [
+            672,
+            641,
+            895,
+            921
+          ],
+          "source_root": [
+            830,
+            921
+          ],
+          "source_core_pixels": 28747,
+          "output_core_pixels": 20815,
+          "output_core_bbox": [
+            123,
+            83,
+            309,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            122,
+            82,
+            189,
+            238
+          ],
+          "quantized_source_root_in_canvas": [
+            255.910314,
+            320
+          ],
+          "root_quantization_error": [
+            -0.089686,
+            0
+          ],
+          "preserved_source_rgba_sha256": "a82acd8c83064f68426f8e3a4d5f5006eb1f11a1af5e201f0c41b00594d9b51b",
+          "frame_png_sha256": "096e034f8d562108c06ab2de10b6697569adea4fe116a647039037558dbe63cd",
+          "frame_rgba_sha256": "b0694e0dc5c622dd48183f0eda6bcc59f3e865f65c30c49c8095e7d82c4da5d3",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 11,
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            989,
+            636,
+            1165,
+            915
+          ],
+          "source_preserved_bbox": [
+            987,
+            634,
+            1167,
+            917
+          ],
+          "source_root": [
+            1112,
+            917
+          ],
+          "source_core_pixels": 27666,
+          "output_core_pixels": 20048,
+          "output_core_bbox": [
+            152,
+            81,
+            301,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            150,
+            80,
+            153,
+            240
+          ],
+          "quantized_source_root_in_canvas": [
+            256.25,
+            320
+          ],
+          "root_quantization_error": [
+            0.25,
+            0
+          ],
+          "preserved_source_rgba_sha256": "a93f4d2b6fc5a18137de61acd13de5a8d7c03a13ca80bcc545bce259b0f5b962",
+          "frame_png_sha256": "a833c27ee112a3522ab114108b206037209678acbba662f553d94b760c58e2d1",
+          "frame_rgba_sha256": "e28ee48cb76977962f4c4e370163cde7e9bb4d4842880024d11a3a1cea29c9d6",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 12,
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            75,
+            943,
+            274,
+            1202
+          ],
+          "source_preserved_bbox": [
+            73,
+            941,
+            276,
+            1204
+          ],
+          "source_root": [
+            211,
+            1204
+          ],
+          "source_core_pixels": 26628,
+          "output_core_pixels": 19170,
+          "output_core_bbox": [
+            141,
+            98,
+            310,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            139,
+            97,
+            172,
+            223
+          ],
+          "quantized_source_root_in_canvas": [
+            255.926108,
+            320
+          ],
+          "root_quantization_error": [
+            -0.073892,
+            0
+          ],
+          "preserved_source_rgba_sha256": "53d92a3585eff477f9b0c8eb0608d1491d2a4a2df579348b8d04267798d60581",
+          "frame_png_sha256": "4102285a47235a9d8d7fbc6fb11be0180db42cdca56eb0e0988cde0f23eb5a1d",
+          "frame_rgba_sha256": "2634b126a8d4e70fb1d132cd81a115e6745a087a685f1950178c00f33ac5fbff",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 13,
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            370,
+            957,
+            590,
+            1216
+          ],
+          "source_preserved_bbox": [
+            368,
+            955,
+            592,
+            1218
+          ],
+          "source_root": [
+            512,
+            1206
+          ],
+          "source_core_pixels": 26039,
+          "output_core_pixels": 18770,
+          "output_core_bbox": [
+            136,
+            108,
+            322,
+            329
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            134,
+            107,
+            190,
+            223
+          ],
+          "quantized_source_root_in_canvas": [
+            256.142857,
+            319.825095
+          ],
+          "root_quantization_error": [
+            0.142857,
+            -0.174905
+          ],
+          "preserved_source_rgba_sha256": "382bd86503115730463e40385e378cb1268641801254aff34ee60e6b3b04f03c",
+          "frame_png_sha256": "bc25e9496d255fa610d07ff86469660d4513d8293086b4fc5c509cbc9ebd3f66",
+          "frame_rgba_sha256": "c0b760817207df3f64ce0a21e7b8be04ccf29ddf07057b53d6f7f03fed9c8f37",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 14,
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            636,
+            1028,
+            908,
+            1198
+          ],
+          "source_preserved_bbox": [
+            634,
+            1026,
+            910,
+            1200
+          ],
+          "source_root": [
+            825,
+            1184
+          ],
+          "source_core_pixels": 23168,
+          "output_core_pixels": 16785,
+          "output_core_bbox": [
+            95,
+            187,
+            327,
+            332
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            94,
+            186,
+            234,
+            148
+          ],
+          "quantized_source_root_in_canvas": [
+            255.934783,
+            320.390805
+          ],
+          "root_quantization_error": [
+            -0.065217,
+            0.390805
+          ],
+          "preserved_source_rgba_sha256": "7cad43a095268e78c5bcfe9e42c81e47fac373cb7557734f2d46340fb909e9b6",
+          "frame_png_sha256": "498185fc3c795b1c302a57622dd8f7e9495c96783e65dee0858e86cb8b953ef3",
+          "frame_rgba_sha256": "5f8f6c6a2cca583d0b055f38428f3b55c2b3dfe3a68c71ba156004cf69928fcf",
+          "crosses_nominal_source_cell": false
+        },
+        {
+          "index": 15,
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            954,
+            1042,
+            1224,
+            1196
+          ],
+          "source_preserved_bbox": [
+            952,
+            1040,
+            1226,
+            1198
+          ],
+          "source_root": [
+            1138,
+            1175
+          ],
+          "source_core_pixels": 20093,
+          "output_core_pixels": 14570,
+          "output_core_bbox": [
+            100,
+            207,
+            330,
+            338
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            98,
+            205,
+            233,
+            134
+          ],
+          "quantized_source_root_in_canvas": [
+            256.167883,
+            319.493671
+          ],
+          "root_quantization_error": [
+            0.167883,
+            -0.506329
+          ],
+          "preserved_source_rgba_sha256": "8bd1d6ef010b996347731abc1d42ee87374707fa3b9b998456f40cfe96befc7a",
+          "frame_png_sha256": "cb35ce554d72748234169f9c52860eb0ecf5abe9ff20a8272fb1a510a02efbf6",
+          "frame_rgba_sha256": "f0459955ba5059680fd07d01d6c1a4bbaf4868556b28cd826f77631d932fe5a6",
+          "crosses_nominal_source_cell": false
+        }
+      ]
+    }
+  ]
+}

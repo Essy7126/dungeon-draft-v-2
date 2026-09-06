@@ -13,6 +13,7 @@ const TERRAIN_COMPOSITION := preload("res://battle/painted/registered_terrain/te
 signal registered_terrain_configured(report: Dictionary)
 var registered_terrain_ready := false
 var limestone_tile_count := 0
+var registered_floor_tile_count := 0
 var combat_band_active := false
 var combat_band_width_cells := 0.42
 var _registered_plan: Dictionary = {}
@@ -71,14 +72,14 @@ func _ready() -> void:
 	for definition in arena.cells:
 		if definition != null and definition.defined and definition.cell_type != GridData.CellType.HOLE:
 			expected_floor_count += 1
-	if limestone_tile_count != expected_floor_count:
-		_initialization_failed("registered_terrain_palette_count:%d_expected:%d" % [limestone_tile_count,expected_floor_count])
+	if registered_floor_tile_count != expected_floor_count:
+		_initialization_failed("registered_terrain_palette_count:%d_expected:%d" % [registered_floor_tile_count,expected_floor_count])
 		return
 	registered_terrain_ready = true
 	set_meta("registered_terrain_ready", true)
-	set_meta("registered_terrain_initialization", {"ok":true,"plan_path":registered_terrain_plan_path,"floor_tiles":limestone_tile_count})
+	set_meta("registered_terrain_initialization", {"ok":true,"plan_path":registered_terrain_plan_path,"floor_tiles":registered_floor_tile_count})
 	set_meta("registered_terrain_plan", registered_terrain_plan_path)
-	registered_terrain_configured.emit({"ok":true,"plan_path":registered_terrain_plan_path,"floor_tiles":limestone_tile_count})
+	registered_terrain_configured.emit({"ok":true,"plan_path":registered_terrain_plan_path,"floor_tiles":registered_floor_tile_count})
 
 func _apply_floor_palette(arena: ArenaDefinition, platform: Node2D) -> void:
 	var terrain := get_node("GreekTerrainComposition")
@@ -115,6 +116,7 @@ func _apply_floor_palette(arena: ArenaDefinition, platform: Node2D) -> void:
 		palette_materials.append(material)
 	var floor_parent := arena_assembly.get("floor_parent") as Node2D
 	limestone_tile_count = 0
+	registered_floor_tile_count = 0
 	if floor_parent == null:
 		return
 	for tile in floor_parent.get_children():
@@ -122,6 +124,11 @@ func _apply_floor_palette(arena: ArenaDefinition, platform: Node2D) -> void:
 			continue
 		var visual := tile.get_node_or_null("Visual") as Sprite2D
 		if visual == null:
+			continue
+		registered_floor_tile_count += 1
+		# The palette remaps stone luminance to the room colors. Applying it
+		# to water, lava or ice would erase their authored gameplay identity.
+		if StringName(tile.get_meta("terrain_id", &"")) != &"stone":
 			continue
 		var cell: Vector2i = tile.get_meta("arena_cell", Vector2i.ZERO)
 		var cell_hash: int = (cell.x*73856093) ^ (cell.y*19349663)
@@ -144,6 +151,7 @@ func _apply_floor_palette(arena: ArenaDefinition, platform: Node2D) -> void:
 		visual.material = material
 		limestone_tile_count += 1
 	set_meta("greek_limestone_tile_count", limestone_tile_count)
+	set_meta("registered_floor_tile_count", registered_floor_tile_count)
 
 func _floor_palette_shader() -> Shader:
 	return LIMESTONE_SHADER

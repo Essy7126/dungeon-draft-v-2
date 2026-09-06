@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/characters/character_animation_set_data.gd" id="1_animation_set"]
+
+[resource]
+script = ExtResource("1_animation_set")
+animation_names = {
+&"cast": &"attack",
+&"cast:philosopher_axiom": &"attack",
+&"cast:philosopher_refutation": &"control",
+&"cast:philosopher_mending": &"heal",
+&"cast:philosopher_aporia": &"control",
+&"cast:philosopher_aegis": &"shield",
+&"cast_end": &"idle",
+&"cast_start": &"attack",
+&"death": &"death",
+&"hit": &"hit",
+&"idle": &"idle",
+&"run": &"walk",
+&"walk": &"walk"
+}

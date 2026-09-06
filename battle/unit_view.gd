@@ -278,9 +278,17 @@ func apply_painted_presentation(
 		profile.profile_for_unit(unit.unit_id)
 		if profile != null and unit != null else null
 	)
+	# Room overrides stay authoritative. A visual may opt in to a family default
+	# so newly authored rooms preserve its proportions without copying profiles.
+	if _painted_family_profile == null and profile != null and unit != null \
+			and is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("get_painted_visual_profile"):
+		var fallback := _optional_visual.get_painted_visual_profile() as UnitVisualProfile
+		if fallback != null and fallback.matches(unit.unit_id):
+			_painted_family_profile = fallback
 	_painted_visual_scale = (
-		profile.final_visual_scale(unit.unit_id)
-		if apply_visual_scale and profile != null and unit != null else 1.0
+		_painted_family_profile.final_visual_scale(profile.global_unit_scale_multiplier)
+		if apply_visual_scale and profile != null and _painted_family_profile != null else 1.0
 	)
 	_painted_readability_enabled = apply_readability and profile != null
 	if is_instance_valid(_optional_visual):

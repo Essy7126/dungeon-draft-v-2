@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Resource" path="res://data/status/enemies/philosopher_aporia.tres" id="2_status"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/philosopher_mage/sprites_v1/icons/aporia.tres" id="20_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("20_icon")
+spell_id = &"philosopher_aporia"
+spell_name = "Aporie"
+description = "Ralentit un adversaire : −2 PM à sa prochaine activation, sans lui retirer son tour."
+ap_cost = 2
+visual_action = 1
+minimum_range = 2
+spell_range = 4
+can_target_enemy = true
+cooldown_activations = 2
+applied_status = ExtResource("2_status")

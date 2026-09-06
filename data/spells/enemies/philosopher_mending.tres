@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/philosopher_mage/sprites_v1/icons/mending.tres" id="20_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("20_icon")
+spell_id = &"philosopher_mending"
+spell_name = "Maïeutique"
+description = "Rend 22 PV au philosophe ou à un allié à portée. Disponible une activation sur deux."
+ap_cost = 2
+visual_action = 1
+minimum_range = 0
+spell_range = 4
+heal = 22
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
+cooldown_activations = 2

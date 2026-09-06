@@ -1,0 +1,435 @@
+{
+  "input": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\artifacts\\philosopher_sprite_validation_v1\\terrain_capture_temple\\black_oath_temple_v1_push_ice_E\\clip\\clip_manifest.json",
+  "output": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\docs\\design\\philosopher_mage\\media\\philosopher_ice_v1.gif",
+  "frames": 73,
+  "source_manifest_sha256": "055cc74c628d770e45d0331f6af569de969f835e6679a973d21b4b249c1716e4",
+  "gif_sha256": "cda06e056f570ca53628d8fa42db268b776aedbde46a63d5f74fdcfea5976cd6",
+  "encoded_frames": 51,
+  "distinct_source_states": 51,
+  "merged_capture_frames": 22,
+  "source_images_checked_in_order": 73,
+  "image_order_signature_size": [
+    96,
+    91
+  ],
+  "maximum_palette_mean_error": 0.4536782661782662,
+  "encoded_timeline": [
+    {
+      "encoded_frame": 0,
+      "first_source_frame": 0,
+      "last_source_frame": 0,
+      "start_ms": 0,
+      "end_ms": 60
+    },
+    {
+      "encoded_frame": 1,
+      "first_source_frame": 1,
+      "last_source_frame": 1,
+      "start_ms": 60,
+      "end_ms": 120
+    },
+    {
+      "encoded_frame": 2,
+      "first_source_frame": 2,
+      "last_source_frame": 16,
+      "start_ms": 120,
+      "end_ms": 1030
+    },
+    {
+      "encoded_frame": 3,
+      "first_source_frame": 17,
+      "last_source_frame": 17,
+      "start_ms": 1030,
+      "end_ms": 1090
+    },
+    {
+      "encoded_frame": 4,
+      "first_source_frame": 18,
+      "last_source_frame": 18,
+      "start_ms": 1090,
+      "end_ms": 1140
+    },
+    {
+      "encoded_frame": 5,
+      "first_source_frame": 19,
+      "last_source_frame": 19,
+      "start_ms": 1140,
+      "end_ms": 1200
+    },
+    {
+      "encoded_frame": 6,
+      "first_source_frame": 20,
+      "last_source_frame": 22,
+      "start_ms": 1200,
+      "end_ms": 1400
+    },
+    {
+      "encoded_frame": 7,
+      "first_source_frame": 23,
+      "last_source_frame": 25,
+      "start_ms": 1400,
+      "end_ms": 1600
+    },
+    {
+      "encoded_frame": 8,
+      "first_source_frame": 26,
+      "last_source_frame": 26,
+      "start_ms": 1600,
+      "end_ms": 1660
+    },
+    {
+      "encoded_frame": 9,
+      "first_source_frame": 27,
+      "last_source_frame": 27,
+      "start_ms": 1660,
+      "end_ms": 1720
+    },
+    {
+      "encoded_frame": 10,
+      "first_source_frame": 28,
+      "last_source_frame": 28,
+      "start_ms": 1720,
+      "end_ms": 1790
+    },
+    {
+      "encoded_frame": 11,
+      "first_source_frame": 29,
+      "last_source_frame": 29,
+      "start_ms": 1790,
+      "end_ms": 1850
+    },
+    {
+      "encoded_frame": 12,
+      "first_source_frame": 30,
+      "last_source_frame": 30,
+      "start_ms": 1850,
+      "end_ms": 1910
+    },
+    {
+      "encoded_frame": 13,
+      "first_source_frame": 31,
+      "last_source_frame": 31,
+      "start_ms": 1910,
+      "end_ms": 1970
+    },
+    {
+      "encoded_frame": 14,
+      "first_source_frame": 32,
+      "last_source_frame": 32,
+      "start_ms": 1970,
+      "end_ms": 2030
+    },
+    {
+      "encoded_frame": 15,
+      "first_source_frame": 33,
+      "last_source_frame": 33,
+      "start_ms": 2030,
+      "end_ms": 2090
+    },
+    {
+      "encoded_frame": 16,
+      "first_source_frame": 34,
+      "last_source_frame": 34,
+      "start_ms": 2090,
+      "end_ms": 2150
+    },
+    {
+      "encoded_frame": 17,
+      "first_source_frame": 35,
+      "last_source_frame": 35,
+      "start_ms": 2150,
+      "end_ms": 2200
+    },
+    {
+      "encoded_frame": 18,
+      "first_source_frame": 36,
+      "last_source_frame": 36,
+      "start_ms": 2200,
+      "end_ms": 2260
+    },
+    {
+      "encoded_frame": 19,
+      "first_source_frame": 37,
+      "last_source_frame": 37,
+      "start_ms": 2260,
+      "end_ms": 2320
+    },
+    {
+      "encoded_frame": 20,
+      "first_source_frame": 38,
+      "last_source_frame": 38,
+      "start_ms": 2320,
+      "end_ms": 2390
+    },
+    {
+      "encoded_frame": 21,
+      "first_source_frame": 39,
+      "last_source_frame": 39,
+      "start_ms": 2390,
+      "end_ms": 2450
+    },
+    {
+      "encoded_frame": 22,
+      "first_source_frame": 40,
+      "last_source_frame": 40,
+      "start_ms": 2450,
+      "end_ms": 2510
+    },
+    {
+      "encoded_frame": 23,
+      "first_source_frame": 41,
+      "last_source_frame": 41,
+      "start_ms": 2510,
+      "end_ms": 2560
+    },
+    {
+      "encoded_frame": 24,
+      "first_source_frame": 42,
+      "last_source_frame": 42,
+      "start_ms": 2560,
+      "end_ms": 2620
+    },
+    {
+      "encoded_frame": 25,
+      "first_source_frame": 43,
+      "last_source_frame": 43,
+      "start_ms": 2620,
+      "end_ms": 2680
+    },
+    {
+      "encoded_frame": 26,
+      "first_source_frame": 44,
+      "last_source_frame": 44,
+      "start_ms": 2680,
+      "end_ms": 2740
+    },
+    {
+      "encoded_frame": 27,
+      "first_source_frame": 45,
+      "last_source_frame": 45,
+      "start_ms": 2740,
+      "end_ms": 2800
+    },
+    {
+      "encoded_frame": 28,
+      "first_source_frame": 46,
+      "last_source_frame": 46,
+      "start_ms": 2800,
+      "end_ms": 2860
+    },
+    {
+      "encoded_frame": 29,
+      "first_source_frame": 47,
+      "last_source_frame": 47,
+      "start_ms": 2860,
+      "end_ms": 2920
+    },
+    {
+      "encoded_frame": 30,
+      "first_source_frame": 48,
+      "last_source_frame": 48,
+      "start_ms": 2920,
+      "end_ms": 3020
+    },
+    {
+      "encoded_frame": 31,
+      "first_source_frame": 49,
+      "last_source_frame": 49,
+      "start_ms": 3020,
+      "end_ms": 3080
+    },
+    {
+      "encoded_frame": 32,
+      "first_source_frame": 50,
+      "last_source_frame": 50,
+      "start_ms": 3080,
+      "end_ms": 3140
+    },
+    {
+      "encoded_frame": 33,
+      "first_source_frame": 51,
+      "last_source_frame": 51,
+      "start_ms": 3140,
+      "end_ms": 3200
+    },
+    {
+      "encoded_frame": 34,
+      "first_source_frame": 52,
+      "last_source_frame": 52,
+      "start_ms": 3200,
+      "end_ms": 3260
+    },
+    {
+      "encoded_frame": 35,
+      "first_source_frame": 53,
+      "last_source_frame": 53,
+      "start_ms": 3260,
+      "end_ms": 3320
+    },
+    {
+      "encoded_frame": 36,
+      "first_source_frame": 54,
+      "last_source_frame": 54,
+      "start_ms": 3320,
+      "end_ms": 3390
+    },
+    {
+      "encoded_frame": 37,
+      "first_source_frame": 55,
+      "last_source_frame": 55,
+      "start_ms": 3390,
+      "end_ms": 3450
+    },
+    {
+      "encoded_frame": 38,
+      "first_source_frame": 56,
+      "last_source_frame": 56,
+      "start_ms": 3450,
+      "end_ms": 3510
+    },
+    {
+      "encoded_frame": 39,
+      "first_source_frame": 57,
+      "last_source_frame": 57,
+      "start_ms": 3510,
+      "end_ms": 3570
+    },
+    {
+      "encoded_frame": 40,
+      "first_source_frame": 58,
+      "last_source_frame": 58,
+      "start_ms": 3570,
+      "end_ms": 3630
+    },
+    {
+      "encoded_frame": 41,
+      "first_source_frame": 59,
+      "last_source_frame": 59,
+      "start_ms": 3630,
+      "end_ms": 3690
+    },
+    {
+      "encoded_frame": 42,
+      "first_source_frame": 60,
+      "last_source_frame": 60,
+      "start_ms": 3690,
+      "end_ms": 3750
+    },
+    {
+      "encoded_frame": 43,
+      "first_source_frame": 61,
+      "last_source_frame": 61,
+      "start_ms": 3750,
+      "end_ms": 3810
+    },
+    {
+      "encoded_frame": 44,
+      "first_source_frame": 62,
+      "last_source_frame": 62,
+      "start_ms": 3810,
+      "end_ms": 3870
+    },
+    {
+      "encoded_frame": 45,
+      "first_source_frame": 63,
+      "last_source_frame": 63,
+      "start_ms": 3870,
+      "end_ms": 3930
+    },
+    {
+      "encoded_frame": 46,
+      "first_source_frame": 64,
+      "last_source_frame": 65,
+      "start_ms": 3930,
+      "end_ms": 4050
+    },
+    {
+      "encoded_frame": 47,
+      "first_source_frame": 66,
+      "last_source_frame": 66,
+      "start_ms": 4050,
+      "end_ms": 4110
+    },
+    {
+      "encoded_frame": 48,
+      "first_source_frame": 67,
+      "last_source_frame": 67,
+      "start_ms": 4110,
+      "end_ms": 4170
+    },
+    {
+      "encoded_frame": 49,
+      "first_source_frame": 68,
+      "last_source_frame": 68,
+      "start_ms": 4170,
+      "end_ms": 4240
+    },
+    {
+      "encoded_frame": 50,
+      "first_source_frame": 69,
+      "last_source_frame": 72,
+      "start_ms": 4240,
+      "end_ms": 4460
+    }
+  ],
+  "size": [
+    608,
+    574
+  ],
+  "source_duration_ms": 4458.066,
+  "encoded_duration_ms": 4460,
+  "delays_ms": [
+    60,
+    60,
+    910,
+    60,
+    50,
+    60,
+    200,
+    200,
+    60,
+    60,
+    70,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    50,
+    60,
+    60,
+    70,
+    60,
+    60,
+    50,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    100,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    120,
+    60,
+    60,
+    70,
+    220
+  ],
+  "note": "Real game capture, fixed crop enlarged 2x. Original timestamps rounded to GIF centiseconds; identical holds may merge without changing duration. Dimensions, total duration, transition timestamps and nearest captured image in chronological order are checked after decoding. GPU capture may perturb playback; use the separate timing report for measurements."
+}

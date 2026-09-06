@@ -3,6 +3,10 @@ extends Node
 
 const ACHILLES_EFFECTS_PATH := "res://assets/vfx/achilles_kit_v2/effects.tres"
 const AchillesFX := preload("res://vfx/achilles_kit/achilles_spell_sprite_vfx.gd")
+const PHILOSOPHER_EFFECTS_PATH := "res://assets/vfx/philosopher_mage/sprites_v1/effects.tres"
+const PhilosopherFX := preload("res://vfx/philosopher_mage/philosopher_spell_sprite_vfx.gd")
+const PHILOSOPHER_SPELLS := [&"philosopher_axiom", &"philosopher_refutation",
+	&"philosopher_mending", &"philosopher_aporia", &"philosopher_aegis"]
 
 var _battle_view : Node = null
 var _achilles_frames: SpriteFrames
@@ -10,19 +14,28 @@ var _achilles_flights: Dictionary = {}
 var _achilles_arrivals: Dictionary = {}
 var _achilles_effects: Array[Node] = []
 var _barrier_bindings: Dictionary = {}
+var _philosopher_frames: SpriteFrames
+var _philosopher_effects: Array[Node] = []
+var _philosopher_flights: Dictionary = {}
+var _philosopher_holds: Dictionary = {}
+var _philosopher_resolved_actions: Array[String] = []
 
 func register_battle_view(view: Node) -> void:
 	if _battle_view != view:
 		_clear_achilles_effects()
+		_clear_philosopher_effects()
 	_battle_view = view
 	# Load outside the release frame so a first disk read cannot consume most
 	# of the short projectile delay before the player sees frame zero.
 	if _achilles_frames == null and ResourceLoader.exists(ACHILLES_EFFECTS_PATH):
 		_achilles_frames = load(ACHILLES_EFFECTS_PATH) as SpriteFrames
+	if _philosopher_frames == null and ResourceLoader.exists(PHILOSOPHER_EFFECTS_PATH):
+		_philosopher_frames = load(PHILOSOPHER_EFFECTS_PATH) as SpriteFrames
 
 func unregister_battle_view(view: Node = null) -> void:
 	if view == null or _battle_view == view:
 		_clear_achilles_effects()
+		_clear_philosopher_effects()
 		_battle_view = null
 
 func _ready() -> void:
@@ -34,6 +47,9 @@ func _ready() -> void:
 	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
+	if _is_philosopher_spell(caster, spell):
+		_resolve_philosopher_vfx(caster, spell, report)
+		return
 	if caster == null or spell == null or bool(report.get("failed", false)):
 		return
 	var presentation := _achilles_presentation(caster, spell, report)
@@ -52,6 +68,10 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 
 func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 	if caster == null or spell == null:
+		return null
+	if _is_philosopher_spell(caster, spell):
+		if spell.get_effective_spell_id() == &"philosopher_axiom" and spell.impact_delay_seconds > 0.0:
+			return _launch_philosopher_projectile(caster, spell, cell)
 		return null
 	var presentation := _achilles_presentation(caster, spell)
 	if _is_achilles_presentation(presentation) and presentation.action_family == &"shot" \
@@ -430,6 +450,7 @@ func _has_battle_view() -> bool:
 
 func _on_combat_ended(_victory: bool) -> void:
 	_clear_achilles_effects()
+	_clear_philosopher_effects()
 
 
 func _clear_achilles_effects() -> void:
@@ -444,3 +465,153 @@ func _clear_achilles_effects() -> void:
 	_achilles_effects.clear()
 	_achilles_flights.clear()
 	_achilles_arrivals.clear()
+
+
+func _is_philosopher_spell(caster: Unit, spell: Spell) -> bool:
+	return caster != null and caster.unit_id == &"philosopher_mage" and spell != null \
+		and spell.get_effective_spell_id() in PHILOSOPHER_SPELLS
+
+
+func _launch_philosopher_projectile(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
+	if not _has_battle_view():
+		return null
+	var key := _flight_key(caster, spell)
+	var previous: Variant = _philosopher_flights.get(key)
+	if is_instance_valid(previous) and not previous.get_debug_state().closed:
+		return previous
+	var origin := _caster_effect_origin(caster)
+	var targets: Array[Vector2] = [_impact_cell_position(cell)]
+	var effect := _new_philosopher_effect(spell.spell_id, origin, targets, _cell_visual_width() * 0.58)
+	if effect == null:
+		return null
+	_philosopher_flights[key] = effect
+	effect.start_flight(spell.impact_delay_seconds)
+	return effect
+
+
+func _resolve_philosopher_vfx(caster: Unit, spell: Spell, report: Dictionary) -> void:
+	var flight_key := _flight_key(caster, spell)
+	var flight: Variant = _philosopher_flights.get(flight_key)
+	if bool(report.get("failed", false)):
+		if is_instance_valid(flight):
+			flight.cancel()
+		_philosopher_flights.erase(flight_key)
+		return
+	if not _has_battle_view():
+		return
+	var action_id := str(report.get("action_id", ""))
+	var resolved_key := "%s:%s:%s" % [caster.get_instance_id(), spell.spell_id, action_id]
+	if action_id != "" and _philosopher_resolved_actions.has(resolved_key):
+		return
+	if action_id != "":
+		_philosopher_resolved_actions.append(resolved_key)
+		if _philosopher_resolved_actions.size() > 128:
+			_philosopher_resolved_actions.pop_front()
+	var origin := _caster_effect_origin(caster)
+	# All five canonical spells are SINGLE. report.cell is captured by
+	# SpellCaster before impacts and push, unlike the victim's current cell.
+	var cell: Vector2i = report.get("cell", caster.grid_pos)
+	var impact_position := _impact_cell_position(cell)
+	var impacted: Array[Vector2] = []
+	if not (report.get("damaged_enemies", []) as Array).is_empty():
+		impacted.append(impact_position)
+	match spell.get_effective_spell_id():
+		&"philosopher_axiom":
+			_philosopher_flights.erase(flight_key)
+			if is_instance_valid(flight):
+				flight.confirm_impact(impacted)
+			elif not impacted.is_empty():
+				_philosopher_burst(spell, &"impact", origin, impacted, 0.60, 0.24)
+		&"philosopher_refutation":
+			if bool(report.get("pushed", false)) or bool(report.get("collision", false)):
+				_philosopher_burst(spell, &"repel", origin, [impact_position], 1.12, 0.34)
+			if not impacted.is_empty():
+				_philosopher_burst(spell, &"impact", origin, impacted, 0.55, 0.24)
+		&"philosopher_mending":
+			if not (report.get("healed_units", []) as Array).is_empty():
+				_philosopher_burst(spell, &"heal", origin, [impact_position], 0.90, 0.48)
+		&"philosopher_aegis":
+			for value in report.get("shielded_units", []):
+				var target := value as Unit
+				if is_instance_valid(target) and target.get_shield_value(spell.spell_id) > 0:
+					_bind_philosopher_effect(spell, target, &"shield", &"shield", spell.spell_id)
+		&"philosopher_aporia":
+			if spell.applied_status == null:
+				return
+			var status_id := spell.applied_status.get_effective_status_id()
+			for value in report.get("status_changed_units", []):
+				var target := value as Unit
+				if is_instance_valid(target) and target.has_status(status_id):
+					_bind_philosopher_effect(spell, target, &"control", &"status", status_id)
+
+
+func _philosopher_burst(spell: Spell, animation: StringName, origin: Vector2,
+		targets: Array[Vector2], width_ratio: float, duration: float) -> Node:
+	var effect := _new_philosopher_effect(spell.spell_id, origin, targets, _cell_visual_width() * width_ratio)
+	if effect != null:
+		effect.start_burst(animation, duration)
+	return effect
+
+
+func _bind_philosopher_effect(spell: Spell, target: Unit, animation: StringName,
+		kind: StringName, source_id: StringName) -> Node:
+	var target_view := _find_unit_view(target)
+	if target_view == null:
+		return null
+	var key := "%s:%s:%s" % [target.get_instance_id(), kind, source_id]
+	var previous: Variant = _philosopher_holds.get(key)
+	if is_instance_valid(previous):
+		previous.cancel()
+	var width := _cell_visual_width()
+	var offset := Vector2(0.0, -width * 0.28) if kind == &"shield" else Vector2(0.0, -width * 0.04)
+	var position := target_view.global_position + offset
+	var targets: Array[Vector2] = [position]
+	var effect := _new_philosopher_effect(spell.spell_id, position, targets, width * 0.94)
+	if effect == null:
+		return null
+	effect.start_bound(animation, target, target_view, kind, source_id, offset)
+	_philosopher_holds[key] = effect
+	return effect
+
+
+func _new_philosopher_effect(spell_id: StringName, origin: Vector2,
+		targets: Array[Vector2], width: float) -> Node:
+	if not _has_battle_view() or targets.is_empty():
+		return null
+	if _philosopher_frames == null and ResourceLoader.exists(PHILOSOPHER_EFFECTS_PATH):
+		_philosopher_frames = load(PHILOSOPHER_EFFECTS_PATH) as SpriteFrames
+	if _philosopher_frames == null:
+		return null
+	var parent := _vfx_parent()
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return null
+	var effect := PhilosopherFX.new()
+	parent.add_child(effect)
+	effect.configure(_philosopher_frames, spell_id, origin, targets, width)
+	_prune_philosopher_effects()
+	_philosopher_effects.append(effect)
+	return effect
+
+
+func _prune_philosopher_effects() -> void:
+	for index in range(_philosopher_effects.size() - 1, -1, -1):
+		if not is_instance_valid(_philosopher_effects[index]):
+			_philosopher_effects.remove_at(index)
+	for registry in [_philosopher_holds, _philosopher_flights]:
+		for key in registry.keys():
+			if not is_instance_valid(registry[key]):
+				registry.erase(key)
+
+
+func _clear_philosopher_effects() -> void:
+	for index in range(_philosopher_effects.size() - 1, -1, -1):
+		if is_instance_valid(_philosopher_effects[index]):
+			_philosopher_effects[index].cancel()
+	_philosopher_effects.clear()
+	_philosopher_flights.clear()
+	_philosopher_holds.clear()
+	_philosopher_resolved_actions.clear()
+
+
+func _exit_tree() -> void:
+	_clear_philosopher_effects()
