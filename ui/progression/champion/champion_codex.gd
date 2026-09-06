@@ -9,6 +9,7 @@ const GOLD := Color("c5aa86")
 const TEXT := Color("ebe0d2")
 const MUTED := Color("b7aa9c")
 const GREEN := Color("b8d5ac")
+const ART := preload("res://ui/progression/champion/mastery_atlas_art.gd")
 const GRAPH := preload("res://ui/progression/champion/champion_mastery_graph.gd")
 const DOCTRINE_ART := [preload("res://asset/ui/progression/mastery_atlas/wrath_v1.tres"), preload("res://asset/ui/progression/mastery_atlas/chiron_v1.tres"), preload("res://asset/ui/progression/mastery_atlas/aeacus_v1.tres")]
 
@@ -49,6 +50,8 @@ var _feedback_tween: Tween
 var _entry_tween: Tween
 var _main: VBoxContainer
 var _xp_text: Label
+var _legend: HBoxContainer
+var _feedback_panel: PanelContainer
 
 
 func _ready() -> void:
@@ -286,6 +289,7 @@ func _build() -> void:
 	_zoom_label = _label("100 %", 12, GOLD)
 	_zoom_label.custom_minimum_size.x = 45
 	_graph_controls.add_child(_zoom_label)
+	_build_state_legend(canvas_box)
 	_detail_panel = _panel(Color("201913"), 14)
 	_detail_panel.name = "MasteryInspector"
 	_detail_panel.custom_minimum_size.x = 336
@@ -307,10 +311,14 @@ func _build() -> void:
 	_action.custom_minimum_size.y = 48
 	_action.pressed.connect(_purchase_selected)
 	detail_box.add_child(_action)
+	_feedback_panel = _panel(Color("221e17"), 10)
+	_feedback_panel.name = "MasteryFeedbackPanel"
+	_feedback_panel.visible = false
+	detail_box.add_child(_feedback_panel)
 	_feedback = _wrapped("", 13, GREEN)
 	_feedback.name = "MasteryFeedback"
 	_feedback.visible = false
-	detail_box.add_child(_feedback)
+	_feedback_panel.add_child(_feedback)
 	_notice = _label("", 12, MUTED)
 	_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_main.add_child(_notice)
@@ -325,7 +333,16 @@ func _build_navigation() -> void:
 		_section_id = catalog.doctrines[0].discipline_id
 	for index in range(catalog.doctrines.size()):
 		var doctrine := catalog.doctrines[index]
+		var nodes := SkillTreeResolver.champion_doctrine_nodes(doctrine)
 		var points := SkillTreeResolver.champion_doctrine_selected_cost(doctrine, character_state.champion_progression.selected_node_ids)
+		var acquired := 0
+		var available := 0
+		for node in nodes:
+			if character_state.champion_progression.selected_node_ids.has(node.upgrade_id):
+				acquired += 1
+			elif bool(character_state.evaluate_mastery_node(node.upgrade_id).get("allowed", false)):
+				available += 1
+		var accent := _doctrine_accent(doctrine.discipline_id)
 		var button := _button("", 14)
 		button.name = "Doctrine_%s" % doctrine.discipline_id
 		button.custom_minimum_size = Vector2(180, 83)
@@ -341,21 +358,30 @@ func _build_navigation() -> void:
 		row.offset_bottom = -7
 		row.add_theme_constant_override("separation", 8)
 		button.add_child(row)
-		row.add_child(_icon(DOCTRINE_ART[index % DOCTRINE_ART.size()], 43))
+		row.add_child(_icon(DOCTRINE_ART[index % DOCTRINE_ART.size()], 38))
 		var lines := VBoxContainer.new()
 		lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		lines.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		lines.alignment = BoxContainer.ALIGNMENT_CENTER
 		row.add_child(lines)
-		var title := _wrapped(doctrine.display_name, 15, TEXT)
+		var title := _wrapped(doctrine.display_name, 14, TEXT)
 		lines.add_child(title)
-		var available := 0
-		for node in SkillTreeResolver.champion_doctrine_nodes(doctrine):
-			if bool(character_state.evaluate_mastery_node(node.upgrade_id).get("allowed", false)):
-				available += 1
-		lines.add_theme_constant_override("separation", 2)
-		lines.add_child(_label("%d PMa · %d dispo." % [points, available], 12, GREEN if available > 0 else GOLD))
-		button.tooltip_text = "%s\n%d points investis · %d maîtrises accessibles" % [doctrine.description, points, available]
+		lines.add_theme_constant_override("separation", 1)
+		var progress_text := _label("%d/%d acquises · %d PMa" % [acquired, nodes.size(), points], 11, accent)
+		progress_text.name = "DoctrineProgressText_%s" % doctrine.discipline_id
+		lines.add_child(progress_text)
+		lines.add_child(_label("%d accessible%s" % [available, "s" if available != 1 else ""], 11, GREEN if available > 0 else MUTED))
+		var progress := ProgressBar.new()
+		progress.name = "DoctrineProgress_%s" % doctrine.discipline_id
+		progress.custom_minimum_size.y = 3
+		progress.show_percentage = false
+		progress.max_value = maxi(nodes.size(), 1)
+		progress.value = acquired
+		progress.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		progress.add_theme_stylebox_override("background", STYLE.box(Color("100e0c"), Color.TRANSPARENT, 1))
+		progress.add_theme_stylebox_override("fill", STYLE.box(accent, Color.TRANSPARENT, 1))
+		lines.add_child(progress)
+		button.tooltip_text = "%s\n%d / %d maîtrises acquises · %d PMa investis\n%d maîtrises accessibles avec vos points et prérequis actuels." % [doctrine.description, acquired, nodes.size(), points, available]
 		_nav_buttons[doctrine.discipline_id] = button
 		STYLE.selected(button, _section_id == doctrine.discipline_id)
 	_navigation.add_child(HSeparator.new())
@@ -367,7 +393,7 @@ func _build_navigation() -> void:
 		_navigation.add_child(button)
 		_nav_buttons[entry[0]] = button
 		STYLE.selected(button, _section_id == StringName(entry[0]))
-	_navigation.add_child(_wrapped("Maîtrises : niveaux 2 à 14\nCapstones : niveaux 10 puis 13\n3 leçons achetables maximum", 12, MUTED))
+	_navigation.add_child(_wrapped("Maîtrises : niveaux 2 à 14\nUltimes : niveaux 10 puis 13\n3 leçons achetables maximum", 12, MUTED))
 
 
 func _build_spell_strip() -> void:
@@ -411,6 +437,7 @@ func _build_content() -> void:
 	_next_available_button.visible = not attributes
 	_graph.visible = not attributes
 	_graph_controls.visible = not attributes
+	_legend.visible = not attributes
 	_attribute_scroll.visible = attributes
 	_clear(_content)
 	_node_buttons.clear()
@@ -422,6 +449,7 @@ func _build_content() -> void:
 	var catalog := character_state.progression_profile.mastery_catalog
 	var doctrine := SkillTreeResolver.champion_doctrine_by_id(catalog.doctrines, _section_id)
 	_graph_title.text = doctrine.display_name if doctrine != null else "Destin héroïque"
+	_graph_title.add_theme_color_override("font_color", _doctrine_accent(_section_id).lightened(0.18))
 	_graph_subtitle.text = doctrine.description if doctrine != null else "Sommets, jonctions et apothéoses : les liens entre vos doctrines."
 	_graph.set_reduced_motion(GameManager.is_reduced_motion_enabled())
 	_graph.configure(character_state, _section_id)
@@ -509,7 +537,7 @@ func _refresh_detail() -> void:
 		return
 	var chosen := character_state.champion_progression.selected_node_ids.has(node.upgrade_id)
 	var decision := character_state.evaluate_mastery_node(node.upgrade_id)
-	_detail.add_child(_label("MAÎTRISE ACQUISE" if chosen else "MAÎTRISE · %d POINT%s" % [node.mastery_cost, "S" if node.mastery_cost > 1 else ""], 11, GREEN if chosen else GOLD))
+	_build_mastery_identity(node, chosen, decision)
 	_detail.add_child(_wrapped(node.display_name, 23, TEXT, true))
 	_detail.add_child(_wrapped(node.description, 16, TEXT))
 	_detail.add_child(HSeparator.new())
@@ -637,10 +665,16 @@ func _build_attributes() -> void:
 	_content.add_child(_label("Façonnez votre champion", 23, TEXT, true))
 	_content.add_child(_wrapped("Un point de caractéristique à chaque niveau du N2 au N10. Les points de maîtrise se gagnent jusqu’au N14.", 14, MUTED))
 	for row in character_state.get_champion_attribute_rows():
-		var panel := _panel(Color("1d3032"), 13)
+		var panel := _panel(Color("241c17"), 13)
+		panel.name = "AttributeCard_%s" % row.id
 		_content.add_child(panel)
 		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 11)
 		panel.add_child(line)
+		var art := _icon(ART.attribute_icon(StringName(row.id)), 48)
+		art.name = "AttributeIcon_%s" % row.id
+		art.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		line.add_child(art)
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		line.add_child(text_box)
@@ -673,17 +707,24 @@ func _purchase_selected() -> void:
 	if bool(result.get("purchased", false)):
 		build_changed.emit()
 		refresh()
-		_show_feedback("Maîtrise acquise : %s." % acquired.display_name)
+		_show_feedback("Maîtrise acquise : %s\n−%d PMa · %d PMa restants" % [acquired.display_name, acquired.mastery_cost, character_state.champion_progression.unspent_mastery_points])
 		_focus_inspected.call_deferred()
 
 
 func _spend_attribute(attribute_id: StringName) -> void:
 	if read_only or character_state == null:
 		return
+	var preview := {}
+	for row in character_state.get_champion_attribute_rows():
+		if StringName(row.id) == attribute_id:
+			preview = row
+			break
 	if character_state.spend_champion_attribute(attribute_id):
 		build_changed.emit()
 		refresh()
-		_show_feedback("Caractéristique augmentée · statistiques actualisées.")
+		var remaining := character_state.champion_progression.unspent_attribute_points
+		var suffix := "s" if remaining > 1 else ""
+		_show_feedback("%s augmentée\n%s → %s %s · %d point%s restant%s" % [str(preview.get("name", "Caractéristique")), str(preview.get("current", "")), str(preview.get("next", "")), str(preview.get("unit", "")), remaining, suffix, suffix])
 
 
 func _reason_text(reason: String) -> String:
@@ -818,14 +859,18 @@ func _show_feedback(text: String) -> void:
 	if is_instance_valid(_feedback_tween):
 		_feedback_tween.kill()
 	_feedback.text = text
+	_feedback_panel.visible = true
 	_feedback.visible = true
 	_feedback.modulate = Color.WHITE
 	if GameManager.is_reduced_motion_enabled():
 		return
 	_feedback_tween = create_tween()
-	_feedback_tween.tween_interval(3.0)
+	_feedback_tween.tween_interval(4.5)
 	_feedback_tween.tween_property(_feedback, "modulate:a", 0.0, 0.25)
-	_feedback_tween.tween_callback(func() -> void: _feedback.hide())
+	_feedback_tween.tween_callback(func() -> void:
+		_feedback.hide()
+		_feedback_panel.hide()
+	)
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -908,3 +953,79 @@ func _go_to_mastery(node_id: StringName) -> void:
 	inspect_node(node_id)
 	_graph.center_on_node(node_id)
 	_focus_inspected.call_deferred()
+
+
+func _build_state_legend(parent: VBoxContainer) -> void:
+	_legend = HBoxContainer.new()
+	_legend.name = "MasteryStateLegend"
+	_legend.add_theme_constant_override("separation", 10)
+	parent.add_child(_legend)
+	for entry in [
+		["Acquired", "✓ Acquise", GREEN, "Déjà intégrée à votre champion. Ses effets sont pris en compte dans vos techniques."],
+		["Available", "◇ Accessible", GOLD, "Niveau, points et prérequis remplis. Inspectez la maîtrise avant de l’acquérir."],
+		["Locked", "○ Verrouillée", MUTED, "Une condition reste à remplir. La fiche précise laquelle et permet de consulter les prérequis."],
+		["Excluded", "× Exclue", Color("c18f83"), "Un choix déjà acquis exclut cette maîtrise pour cette run."],
+	]:
+		var label := _label(str(entry[1]), 11, entry[2])
+		label.name = "Legend%s" % entry[0]
+		label.tooltip_text = str(entry[3])
+		label.mouse_filter = Control.MOUSE_FILTER_PASS
+		_legend.add_child(label)
+
+
+func _build_mastery_identity(node: SkillTreeNodeData, chosen: bool, decision: Dictionary) -> void:
+	var accent := ART.node_accent(node.upgrade_id)
+	var row := HBoxContainer.new()
+	row.name = "MasteryIdentity"
+	row.add_theme_constant_override("separation", 12)
+	_detail.add_child(row)
+	var art_frame := PanelContainer.new()
+	art_frame.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	art_frame.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	STYLE.panel(art_frame, Color("191410"), accent.darkened(0.28), 7, 5)
+	row.add_child(art_frame)
+	var art := _icon(ART.node_icon(node.upgrade_id), 72)
+	art.name = "MasteryDetailIcon"
+	art_frame.add_child(art)
+	var identity := VBoxContainer.new()
+	identity.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	identity.alignment = BoxContainer.ALIGNMENT_CENTER
+	identity.add_theme_constant_override("separation", 5)
+	row.add_child(identity)
+	identity.add_child(_wrapped(_node_kind_label(node).to_upper(), 11, accent))
+	var graph_node := _graph.get_all_node_buttons().get(node.upgrade_id) as Button
+	var excluded := str(decision.get("reason_id", "")) in ["EXCLUDED_BY_SELECTION", "EXCLUSIVE_GROUP"]
+	if graph_node != null:
+		excluded = str(graph_node.get_meta("mastery_state", "")) == "excluded"
+	var status := "MAÎTRISE ACQUISE" if chosen else "ACCESSIBLE" if bool(decision.get("allowed", false)) else "EXCLUE" if excluded else "VERROUILLÉE"
+	var status_color := GREEN if chosen else Color("c18f83") if excluded else GOLD if bool(decision.get("allowed", false)) else MUTED
+	var status_label := _wrapped(status, 12, status_color)
+	status_label.name = "MasteryIdentityState"
+	identity.add_child(status_label)
+	identity.add_child(_label("%d PMa investi%s" % [node.mastery_cost, "s" if node.mastery_cost > 1 else ""] if chosen else "Coût : %d PMa" % node.mastery_cost, 12, MUTED))
+
+
+func _node_kind_label(node: SkillTreeNodeData) -> String:
+	match node.node_type:
+		SkillTreeNodeData.NodeType.ROOT:
+			return "Fondation · palier %d" % node.tier
+		SkillTreeNodeData.NodeType.CAPSTONE:
+			return "Maîtrise ultime"
+		SkillTreeNodeData.NodeType.SPECIALIST_SUMMIT:
+			return "Sommet de doctrine"
+		SkillTreeNodeData.NodeType.MYTHIC_JUNCTION:
+			return "Jonction mythique"
+		SkillTreeNodeData.NodeType.APOTHEOSIS:
+			return "Apothéose"
+	return "Maîtrise · palier %d" % node.tier
+
+
+func _doctrine_accent(doctrine_id: StringName) -> Color:
+	match doctrine_id:
+		&"achilles_wrath_of_peleus":
+			return Color("c99b7b")
+		&"achilles_lesson_of_chiron":
+			return Color("abb79b")
+		&"achilles_aegis_of_aeacus":
+			return Color("a2b8c4")
+	return GOLD

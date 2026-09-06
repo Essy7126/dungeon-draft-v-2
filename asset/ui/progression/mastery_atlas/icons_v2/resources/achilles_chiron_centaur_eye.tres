@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://asset/ui/progression/mastery_atlas/icons_v2/chiron_sheet.png" id="sheet"]
+
+[resource]
+atlas = ExtResource("sheet")
+region = Rect2(0, 0, 418, 418)
+filter_clip = true

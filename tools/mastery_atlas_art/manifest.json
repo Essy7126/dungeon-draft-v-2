@@ -1,0 +1,401 @@
+{
+  "version": 2,
+  "generator": "OpenAI built-in imagegen",
+  "atlases": [
+    {
+      "id": "wrath",
+      "accent": "c99b70",
+      "entries": [
+        {
+          "id": "achilles_wrath_focused_fury",
+          "name": "Fureur lucide",
+          "motif": "a focused golden Greek helmet face with three rising copper sparks forming a deliberate sequence",
+          "row": 0,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_focused_fury.tres"
+        },
+        {
+          "id": "achilles_wrath_opening_slash",
+          "name": "Entaille d’ouverture",
+          "motif": "a bronze spearhead cutting a single bright diagonal breach through a dark cracked breastplate",
+          "row": 0,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_opening_slash.tres"
+        },
+        {
+          "id": "achilles_wrath_murderous_momentum",
+          "name": "Élan meurtrier",
+          "motif": "a forward-thrust bronze spear swept by one powerful crimson motion arc",
+          "row": 0,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_murderous_momentum.tres"
+        },
+        {
+          "id": "achilles_wrath_execution",
+          "name": "Exécution",
+          "motif": "a descending Greek blade above a fractured enemy helmet, decisive copper crescent, no gore",
+          "row": 1,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_execution.tres"
+        },
+        {
+          "id": "achilles_wrath_blood_for_blood",
+          "name": "Sang pour sang",
+          "motif": "a ruby blood-drop jewel held between two opposing bronze blade tips, retaliation",
+          "row": 1,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_blood_for_blood.tres"
+        },
+        {
+          "id": "achilles_wrath_victorious_step",
+          "name": "Pas victorieux",
+          "motif": "a winged Greek sandal stepping over a fallen helmet with a short golden trail",
+          "row": 1,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_victorious_step.tres"
+        },
+        {
+          "id": "achilles_wrath_break_formation",
+          "name": "Brise-formation",
+          "motif": "a wedge-shaped spear impact separating three close bronze shields",
+          "row": 2,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_break_formation.tres"
+        },
+        {
+          "id": "achilles_wrath_scourge_of_troy",
+          "name": "Fléau de Troie",
+          "motif": "an incandescent long spear piercing two dark shields in one straight line",
+          "row": 2,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_scourge_of_troy.tres"
+        },
+        {
+          "id": "achilles_wrath_irrepressible_wrath",
+          "name": "Colère irrépressible",
+          "motif": "a fierce crimson-plumed Greek helmet with a cracked ruby heart and a protective golden halo",
+          "row": 2,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_wrath_irrepressible_wrath.tres"
+        }
+      ],
+      "path": "res://asset/ui/progression/mastery_atlas/icons_v2/wrath_sheet.png",
+      "columns": 3,
+      "rows": 3,
+      "source_file": "exec-18edb5be-f284-427e-b9bd-03924d78780c.png",
+      "sha256": "88360af2a04017c8c610d009611936191772b8511abf6e20dd9bffc5a7b4ce80",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "chiron",
+      "accent": "a6b99a",
+      "entries": [
+        {
+          "id": "achilles_chiron_centaur_eye",
+          "name": "Œil du centaure",
+          "motif": "an observant amber eye framed by a carved bow and a small sage laurel sprig",
+          "row": 0,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_centaur_eye.tres"
+        },
+        {
+          "id": "achilles_chiron_pelion_reach",
+          "name": "Allonge du Pélion",
+          "motif": "one long silver arrow flying toward a distant mountain peak and tiny aiming ring",
+          "row": 0,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_pelion_reach.tres"
+        },
+        {
+          "id": "achilles_chiron_close_shot",
+          "name": "Tir rapproché",
+          "motif": "a taut recurved bow with a broad arrowhead almost touching a bronze target shield",
+          "row": 0,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_close_shot.tres"
+        },
+        {
+          "id": "achilles_chiron_impossible_angle",
+          "name": "Angle impossible",
+          "motif": "one Greek leather sandal stepping on two sage-lit stone floor tiles forming a clear right-angle path beside a small stone corner, NO arrow or projectile in this cell",
+          "row": 1,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_impossible_angle.tres"
+        },
+        {
+          "id": "achilles_chiron_stopping_arrow",
+          "name": "Flèche d’arrêt",
+          "motif": "a silver arrow pinning a leather sandal to a dark stone tile, restrained teal binding",
+          "row": 1,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_stopping_arrow.tres"
+        },
+        {
+          "id": "achilles_chiron_piercing_arrow",
+          "name": "Flèche perforante",
+          "motif": "a single luminous narrow arrow punching cleanly through two aligned bronze rings",
+          "row": 1,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_piercing_arrow.tres"
+        },
+        {
+          "id": "achilles_chiron_mobile_hunt",
+          "name": "Chasse mobile",
+          "motif": "a hunter's recurved bow above a winged sandal, flowing sage movement trail",
+          "row": 2,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_mobile_hunt.tres"
+        },
+        {
+          "id": "achilles_chiron_death_line",
+          "name": "Ligne de mort",
+          "motif": "one brilliant arrow crossing three dark target discs in a perfectly straight perspective line",
+          "row": 2,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_death_line.tres"
+        },
+        {
+          "id": "achilles_chiron_centaur_volley",
+          "name": "Volée du centaure",
+          "motif": "three silver arrows spreading into a broad fan from one elegant wooden bow",
+          "row": 2,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_chiron_centaur_volley.tres"
+        }
+      ],
+      "path": "res://asset/ui/progression/mastery_atlas/icons_v2/chiron_sheet.png",
+      "columns": 3,
+      "rows": 3,
+      "source_file": "exec-bb72ddbf-34f2-4fff-9182-102a47023a01.png",
+      "sha256": "c9bf6947472e822e79a81586d1d2ab69cbe37b9ee30d869e3cb9350724345905",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "aeacus",
+      "accent": "8eafc5",
+      "entries": [
+        {
+          "id": "achilles_aeacus_active_guard",
+          "name": "Garde active",
+          "motif": "a round embossed bronze shield absorbing a blue impact and returning one warm copper spark",
+          "row": 0,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_active_guard.tres"
+        },
+        {
+          "id": "achilles_aeacus_directional_guard",
+          "name": "Garde orientée",
+          "motif": "a round bronze shield held forward with a bright blue protective crescent on its front side only",
+          "row": 0,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_directional_guard.tres"
+        },
+        {
+          "id": "achilles_aeacus_bronze_anchor",
+          "name": "Ancrage d’airain",
+          "motif": "a heavy Greek shield anchored into dark stone by two bronze roots or spikes",
+          "row": 0,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_bronze_anchor.tres"
+        },
+        {
+          "id": "achilles_aeacus_riposte",
+          "name": "Réplique",
+          "motif": "a short Greek sword thrusting out from behind a blue-lit bronze shield",
+          "row": 1,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_riposte.tres"
+        },
+        {
+          "id": "achilles_aeacus_arrow_wall",
+          "name": "Mur aux flèches",
+          "motif": "a large bronze shield deflecting three broken arrows into a blue arc",
+          "row": 1,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_arrow_wall.tres"
+        },
+        {
+          "id": "achilles_aeacus_broken_shield",
+          "name": "Bouclier brisé",
+          "motif": "a bronze shield split into two pieces, a bright winged sandal emerging through the gap",
+          "row": 1,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_broken_shield.tres"
+        },
+        {
+          "id": "achilles_aeacus_mobile_bastion",
+          "name": "Bastion mobile",
+          "motif": "a rushing bronze shield with a blue ground shockwave pushing two stones apart",
+          "row": 2,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_mobile_bastion.tres"
+        },
+        {
+          "id": "achilles_aeacus_counter",
+          "name": "Contre d’Éaque",
+          "motif": "two crossed short swords at a round shield, one stopped and one copper-lit returning strike",
+          "row": 2,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_counter.tres"
+        },
+        {
+          "id": "achilles_aeacus_myrmidon_rampart",
+          "name": "Rempart des Myrmidons",
+          "motif": "three linked upright bronze Greek shields forming a protective blue wall",
+          "row": 2,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_aeacus_myrmidon_rampart.tres"
+        }
+      ],
+      "path": "res://asset/ui/progression/mastery_atlas/icons_v2/aeacus_sheet.png",
+      "columns": 3,
+      "rows": 3,
+      "source_file": "exec-dc514174-32bc-41c2-8dd8-2c9c25253c3f.png",
+      "sha256": "1f826bf693482ee2478b74baccfdadb147105aedb0e56c3b597fef81b2d722ba",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "heroic",
+      "accent": "d8bb79",
+      "entries": [
+        {
+          "id": "achilles_summit_wrath",
+          "name": "Sommet Colère",
+          "motif": "a grand crimson-plumed gold helmet crowned with laurel and three interlocking copper crescents",
+          "row": 0,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_summit_wrath.tres"
+        },
+        {
+          "id": "achilles_summit_chiron",
+          "name": "Sommet Chiron",
+          "motif": "a finely carved golden bow crowned with ivory laurel above a sage mountain peak",
+          "row": 0,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_summit_chiron.tres"
+        },
+        {
+          "id": "achilles_summit_aeacus",
+          "name": "Sommet Rempart",
+          "motif": "a majestic embossed bronze shield crowned with laurel and a restrained sapphire halo",
+          "row": 0,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_summit_aeacus.tres"
+        },
+        {
+          "id": "achilles_junction_battlefield_predator",
+          "name": "Prédateur du champ de bataille",
+          "motif": "a bronze spear and a recurved bow intertwined like two talons of an eagle",
+          "row": 1,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_junction_battlefield_predator.tres"
+        },
+        {
+          "id": "achilles_junction_bronze_avenger",
+          "name": "Vengeur d’airain",
+          "motif": "a heated bronze sword forged outward from the central boss of a battle-worn shield",
+          "row": 1,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_junction_bronze_avenger.tres"
+        },
+        {
+          "id": "achilles_junction_pelion_sentinel",
+          "name": "Sentinelle du Pélion",
+          "motif": "a silver arrow emerging from behind a blue bronze shield with watchful laurel wings",
+          "row": 1,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_junction_pelion_sentinel.tres"
+        },
+        {
+          "id": "achilles_apotheosis_scourge_trojans",
+          "name": "Fléau des Troyens",
+          "motif": "a radiant heroic spear above two fallen dark helmets, a sweeping imperial golden sunburst",
+          "row": 2,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_apotheosis_scourge_trojans.tres"
+        },
+        {
+          "id": "achilles_apotheosis_fate_shot",
+          "name": "Trait du destin",
+          "motif": "one luminous golden arrow connecting two small circular portals threaded by an ivory fate ribbon",
+          "row": 2,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_apotheosis_fate_shot.tres"
+        },
+        {
+          "id": "achilles_apotheosis_invincible_hero",
+          "name": "Le héros invincible",
+          "motif": "an immaculate bronze Greek shield split by light into protective blue and offensive gold halves, eternal laurel wreath",
+          "row": 2,
+          "column": 2,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/achilles_apotheosis_invincible_hero.tres"
+        }
+      ],
+      "path": "res://asset/ui/progression/mastery_atlas/icons_v2/heroic_sheet.png",
+      "columns": 3,
+      "rows": 3,
+      "source_file": "exec-19fc7c74-ae14-412c-975a-a286714f1954.png",
+      "sha256": "673dbeeddfab304828c5aa4a9e18441db30306c9be4518036f88a1d970fd3397",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "attributes",
+      "accent": "c9b493",
+      "entries": [
+        {
+          "id": "vitality",
+          "name": "Vitalité",
+          "motif": "a ruby living heart jewel cradled in an ivory laurel wreath, restrained warm red life glow",
+          "row": 0,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/vitality.tres"
+        },
+        {
+          "id": "power",
+          "name": "Puissance",
+          "motif": "a strong bronze armored fist gripping a short Greek sword, warm amber force",
+          "row": 0,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/power.tres"
+        },
+        {
+          "id": "resolve",
+          "name": "Résolution",
+          "motif": "a solid embossed bronze shield planted on dark stone, restrained sapphire resilience glow",
+          "row": 1,
+          "column": 0,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/resolve.tres"
+        },
+        {
+          "id": "wisdom",
+          "name": "Sagesse",
+          "motif": "an ancient ivory owl above an open parchment scroll and small olive sprig, soft sage insight glow",
+          "row": 1,
+          "column": 1,
+          "resource_path": "res://asset/ui/progression/mastery_atlas/icons_v2/resources/wisdom.tres"
+        }
+      ],
+      "path": "res://asset/ui/progression/mastery_atlas/icons_v2/attributes_sheet.png",
+      "columns": 2,
+      "rows": 2,
+      "source_file": "exec-263edc2e-cff6-42bf-8ff6-6c69808b9861.png",
+      "sha256": "927534562e9625396a4ce6b250d9691bcbb37176520a4e2e3b37f294e0e111c9",
+      "size": [
+        1254,
+        1254
+      ]
+    }
+  ]
+}

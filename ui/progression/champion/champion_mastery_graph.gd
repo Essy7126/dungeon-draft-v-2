@@ -5,6 +5,10 @@ extends Control
 signal node_inspected(node_id: StringName)
 signal navigation_changed(snapshot: Dictionary)
 
+const MINIMAP := preload("res://ui/progression/champion/champion_mastery_minimap.gd")
+const CREST := preload("res://ui/progression/champion/mastery_node_crest.gd")
+const REVEAL_SHADER := preload("res://ui/progression/champion/mastery_acquisition_reveal.gdshader")
+const ART := preload("res://ui/progression/champion/mastery_atlas_art.gd")
 const STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
 const ASHEN := preload("res://ui/selection/selection_ashen_surface.gd")
 const ICONS: SkillTreeIconCatalog = preload("res://data/ui/skill_tree_icon_catalog_refined.tres")
@@ -29,6 +33,9 @@ var _section_id: StringName = &""
 var _selected_id: StringName = &""
 var _query := ""
 var _canvas: Control
+var _minimap: ChampionMasteryMinimap
+var _minimap_user_override := false
+var _setting_minimap_default := false
 var _buttons: Dictionary = {}
 var _nodes: Dictionary = {}
 var _matches: Dictionary = {}
@@ -47,6 +54,7 @@ var _previous_acquired: Dictionary = {}
 var _fit_pending := true
 var _built := false
 var _has_synced_state := false
+var _has_active_links := false
 
 
 func _ready() -> void:
@@ -59,8 +67,15 @@ func _ready() -> void:
 	_canvas.name = "MasteryWorld"
 	_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_canvas)
+	_minimap = MINIMAP.new() as ChampionMasteryMinimap
+	_minimap.name = "MasteryMinimap"
+	_minimap.recenter_requested.connect(_recenter_from_minimap)
+	_minimap.collapsed_changed.connect(_on_minimap_collapsed_changed)
+	add_child(_minimap)
+	_layout_minimap()
 	_built = true
 	resized.connect(_on_resized)
+	visibility_changed.connect(_on_graph_visibility_changed)
 	_rebuild()
 
 
@@ -69,6 +84,7 @@ func configure(state: CharacterRunState, section_id: StringName) -> void:
 	_state = state
 	_section_id = section_id
 	if changed:
+		_minimap_user_override = false
 		_selected_id = &""
 		_query = ""
 		_previous_acquired.clear()
@@ -82,6 +98,8 @@ func set_reduced_motion(value: bool) -> void:
 	_reduced_motion = value
 	if value:
 		_pulse_ids.clear()
+		for button: Button in _buttons.values():
+			_set_reveal(button, 1.0, false)
 		_zoom = _target_zoom
 		_pan = _target_pan
 		_apply_transform()
@@ -108,6 +126,26 @@ func get_node_buttons() -> Dictionary:
 
 func get_all_node_buttons() -> Dictionary:
 	return _buttons.duplicate()
+
+
+func get_minimap() -> ChampionMasteryMinimap:
+	return _minimap
+
+
+func get_minimap_snapshot() -> Dictionary:
+	return _minimap.get_map_snapshot() if _minimap != null else {}
+
+
+func get_node_effect_snapshot(node_id: StringName) -> Dictionary:
+	var button := _buttons.get(node_id) as Button
+	if button == null:
+		return {}
+	var effect := button.get_node("AcquisitionReveal") as ColorRect
+	return {
+		"running": effect.visible, "progress": float(effect.get_meta("progress", 1.0)),
+		"prestige": str(button.get_meta("prestige", "mastery")),
+		"state": str(button.get_meta("mastery_state", "locked")),
+	}
 
 
 func get_zoom() -> float:
@@ -160,6 +198,7 @@ func fit_graph() -> void:
 	_zoom = _target_zoom
 	_pan = _target_pan
 	_apply_transform()
+	_apply_minimap_default()
 	_emit_navigation()
 
 
@@ -226,7 +265,7 @@ func _rebuild() -> void:
 				_labels.append({"position": button.position + Vector2(3, CARD.y + 15), "text": _advanced_requirement(node), "color": MUTED, "font_size": 11})
 		var heading := "PALIER %d" % int(tier)
 		if int(tier) == 5:
-			heading = "CAPSTONES · CHOIX EXCLUSIF"
+			heading = "MAÎTRISES ULTIMES · CHOIX EXCLUSIF"
 		elif int(tier) == 6:
 			heading = "SOMMETS · NIVEAU 13"
 		elif int(tier) == 7:
@@ -270,8 +309,8 @@ func _make_node(node: SkillTreeNodeData) -> Button:
 	button.add_child(icon_frame)
 	var icon := TextureRect.new()
 	icon.name = "MasteryIcon"
-	icon.position = Vector2(16, 18)
-	icon.size = Vector2(43, 43)
+	icon.position = Vector2(12, 14)
+	icon.size = Vector2(51, 51)
 	icon.texture = _node_icon(node)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -305,10 +344,40 @@ func _make_node(node: SkillTreeNodeData) -> Button:
 	status.add_theme_font_size_override("font_size", 11)
 	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	button.add_child(status)
+	var prestige := _prestige_for(node)
+	button.set_meta("prestige", prestige)
+	var crest := CREST.new() as MasteryNodeCrest
+	crest.name = "PrestigeFrame"
+	crest.configure(prestige, "locked", false)
+	button.add_child(crest)
+	var reveal := ColorRect.new()
+	reveal.name = "AcquisitionReveal"
+	reveal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reveal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var reveal_material := ShaderMaterial.new()
+	reveal_material.shader = REVEAL_SHADER
+	reveal_material.set_shader_parameter("surface_size", CARD)
+	reveal_material.set_shader_parameter("activation", 0.0)
+	reveal.material = reveal_material
+	reveal.visible = false
+	reveal.set_meta("progress", 1.0)
+	button.add_child(reveal)
 	return button
 
 
+func _prestige_for(node: SkillTreeNodeData) -> String:
+	match node.node_type:
+		SkillTreeNodeData.NodeType.CAPSTONE: return "capstone"
+		SkillTreeNodeData.NodeType.SPECIALIST_SUMMIT: return "summit"
+		SkillTreeNodeData.NodeType.MYTHIC_JUNCTION: return "junction"
+		SkillTreeNodeData.NodeType.APOTHEOSIS: return "apotheosis"
+	return "mastery"
+
+
 func _node_icon(node: SkillTreeNodeData) -> Texture2D:
+	var painted := ART.node_icon(node.upgrade_id) as Texture2D
+	if painted != null:
+		return painted
 	if node.node_type == SkillTreeNodeData.NodeType.ROOT and DOCTRINE_ICONS.has(node.doctrine_id):
 		return DOCTRINE_ICONS[node.doctrine_id] as Texture2D
 	if node.node_type == SkillTreeNodeData.NodeType.SPECIALIST_SUMMIT and node.requires_completed_tree_ids.size() == 1:
@@ -364,6 +433,7 @@ func _refresh_styles() -> void:
 		focus.set_border_width_all(2)
 		button.add_theme_stylebox_override("focus", focus)
 		button.set_meta("mastery_state", state_id)
+		(button.get_node("PrestigeFrame") as MasteryNodeCrest).configure(str(button.get_meta("prestige")), state_id, selected)
 		button.set_meta("decision", decision.duplicate())
 		var surface := button.get_node("AshenMaterial") as SelectionAshenSurface
 		surface.set_selected(selected or chosen, color)
@@ -373,9 +443,17 @@ func _refresh_styles() -> void:
 		button.tooltip_text = "%s\n%s\n%s" % [node.display_name, node.description, status.text]
 		if chosen and not _previous_acquired.has(id) and _has_synced_state and not _reduced_motion:
 			_pulse_ids[id] = _clock
+		var reveal_running := chosen and _pulse_ids.has(id) and not _reduced_motion
+		_set_reveal(button, clampf((_clock - float(_pulse_ids.get(id, _clock))) / 1.3, 0.0, 1.0) if reveal_running else 1.0, reveal_running)
 	for id: StringName in acquired:
 		_previous_acquired[id] = true
 	_has_synced_state = true
+	_has_active_links = false
+	for edge in _edges:
+		if acquired.has(edge.from):
+			_has_active_links = true
+			break
+	_sync_minimap()
 
 
 func _reason_text(node: SkillTreeNodeData, decision: Dictionary) -> String:
@@ -444,6 +522,7 @@ func _filter_nodes() -> void:
 		if matches:
 			_matches[id] = button
 	_wire_focus()
+	_sync_minimap()
 	queue_redraw()
 
 
@@ -557,6 +636,7 @@ func _clamp_pan() -> void:
 
 
 func _on_resized() -> void:
+	_layout_minimap()
 	if _built:
 		fit_graph()
 
@@ -572,6 +652,8 @@ func _apply_transform() -> void:
 	if _canvas != null:
 		_canvas.position = _pan
 		_canvas.scale = Vector2.ONE * _zoom
+	if _minimap != null:
+		_minimap.set_viewport(Rect2(-_pan / _zoom, size / _zoom))
 	queue_redraw()
 
 
@@ -583,7 +665,9 @@ func _process(delta: float) -> void:
 	if not is_visible_in_tree():
 		return
 	# Reduced motion snaps transform changes synchronously; idle graphs need no redraw.
-	if _reduced_motion and is_equal_approx(_zoom, _target_zoom) and _pan.is_equal_approx(_target_pan):
+	var moving := not is_equal_approx(_zoom, _target_zoom) or not _pan.is_equal_approx(_target_pan)
+	var animating := not _reduced_motion and (_has_active_links or not _pulse_ids.is_empty())
+	if not moving and not animating:
 		return
 	if not _reduced_motion:
 		_clock += delta
@@ -591,7 +675,11 @@ func _process(delta: float) -> void:
 	_zoom = lerpf(_zoom, _target_zoom, blend)
 	_pan = _pan.lerp(_target_pan, blend)
 	for id in _pulse_ids.keys():
-		if _clock - float(_pulse_ids[id]) > 1.3:
+		var progress := clampf((_clock - float(_pulse_ids[id])) / 1.3, 0.0, 1.0)
+		var button := _buttons.get(id) as Button
+		if button != null:
+			_set_reveal(button, progress, progress < 1.0)
+		if progress >= 1.0:
 			_pulse_ids.erase(id)
 	_apply_transform()
 
@@ -649,3 +737,75 @@ func _draw() -> void:
 	if not _query.is_empty() and _matches.is_empty():
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0.07, 0.06, 0.055, 0.66))
 		draw_string(STYLE.BOLD, Vector2(24, size.y * 0.5), "Aucune maîtrise ne correspond.", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, TEXT)
+
+
+
+func _set_reveal(button: Button, progress: float, running: bool) -> void:
+	var effect := button.get_node_or_null("AcquisitionReveal") as ColorRect
+	if effect == null:
+		return
+	effect.visible = running
+	effect.set_meta("progress", progress)
+	var reveal_material := effect.material as ShaderMaterial
+	reveal_material.set_shader_parameter("progress", progress)
+	reveal_material.set_shader_parameter("activation", 1.0 if running else 0.0)
+
+
+func _layout_minimap() -> void:
+	if _minimap != null:
+		var collapsed := bool(_minimap.get_map_snapshot().collapsed)
+		_minimap.position = Vector2(maxf(4, size.x - _minimap.size.x - 9), 8.0 if collapsed else maxf(4, size.y - _minimap.size.y - 9))
+
+
+func _on_minimap_collapsed_changed(_collapsed: bool) -> void:
+	if not _setting_minimap_default:
+		_minimap_user_override = true
+	_layout_minimap()
+
+
+func _apply_minimap_default() -> void:
+	if _minimap == null or _minimap_user_override or _buttons.is_empty() or size.x < 1:
+		return
+	var rightmost := 0.0
+	for button: Button in _buttons.values():
+		rightmost = maxf(rightmost, (button.position.x + button.size.x) * _target_zoom + _target_pan.x)
+	var has_clear_gutter := size.x - rightmost >= ChampionMasteryMinimap.EXPANDED_SIZE.x + 15.0
+	_setting_minimap_default = true
+	_minimap.set_collapsed(not has_clear_gutter)
+	_setting_minimap_default = false
+	_layout_minimap()
+
+
+func _recenter_from_minimap(graph_point: Vector2) -> void:
+	_panning = false
+	_target_pan = size * 0.5 - graph_point * _target_zoom
+	_clamp_pan()
+	# Direct manipulation tracks the pointer immediately, including while a zoom was settling.
+	_pan = _target_pan
+	_zoom = _target_zoom
+	_apply_transform()
+	_emit_navigation()
+
+
+func _sync_minimap() -> void:
+	if _minimap == null:
+		return
+	var entries: Array[Dictionary] = []
+	for id: StringName in _buttons:
+		var button := _buttons[id] as Button
+		entries.append({
+			"id": id, "rect": Rect2(button.position, CARD),
+			"state": str(button.get_meta("mastery_state", "locked")),
+			"matched": _matches.has(id), "prestige": str(button.get_meta("prestige", "mastery")),
+		})
+	_minimap.update_map(_bounds, entries, _edges, Rect2(-_pan / _zoom, size / _zoom), _selected_id)
+
+
+
+func _on_graph_visibility_changed() -> void:
+	if is_visible_in_tree():
+		return
+	_panning = false
+	_pulse_ids.clear()
+	for button: Button in _buttons.values():
+		_set_reveal(button, 1.0, false)

@@ -3,7 +3,8 @@ extends SceneTree
 ## Never starts a run or saves a build. Captures PNG + lightweight JPEG evidence.
 
 const OUTPUT := "res://artifacts/dynamic_mastery/"
-const CONTENT_PROFILE_PATH := "res://data/runs/profiles/odyssey_content_profile.tres"
+const CATABASE_RUN_PATH := "res://data/runs/odyssey.tres"
+const SELECTION_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
 const CODEX_PATH := "res://ui/progression/champion/champion_codex.gd"
 const SAVE_PATH := "user://inventory_equipment_v1.json"
 const FIRST := &"achilles_wrath_focused_fury"
@@ -15,6 +16,7 @@ var _profile_before := ""
 var _manager_before: Dictionary
 var _save_before := ""
 var _closed := false
+var _original_reduced_motion := false
 var failures: Array[String] = []
 var captures: Array[Dictionary] = []
 var layouts: Array[Dictionary] = []
@@ -31,6 +33,7 @@ func _run() -> void:
 	if ignore != null:
 		ignore.close()
 	_manager_before = _manager_snapshot()
+	_original_reduced_motion = root.get_node("GameManager").is_reduced_motion_enabled()
 	_save_before = _save_fingerprint()
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
 	root.content_scale_size = Vector2i.ZERO
@@ -57,10 +60,15 @@ func _run() -> void:
 	await _drag(graph.get_global_rect().get_center(), Vector2(75, 34))
 	_check(not (graph.get_navigation_snapshot().pan_offset as Vector2).is_equal_approx(pan_before), "Real middle-button drag pans the graph")
 	await _capture("pan_zoom_1280x720")
+	await _navigate_minimap()
+	await _capture("minimap_navigation_1280x720")
 	await _click_named("FitGraph")
+	await _select_section(&"achilles_lesson_of_chiron")
+	await _capture("chiron_1280x720")
 	await _select_section(&"achilles_aegis_of_aeacus")
 	await _capture("aegis_1280x720")
 	await _select_section(&"advanced")
+	_check_minimap_clear("advanced_consultation_1280x720")
 	await _capture("advanced_consultation_1280x720")
 	await _select_section(&"attributes")
 	await _capture("attributes_consultation_1280x720")
@@ -87,6 +95,10 @@ func _run() -> void:
 	_check(_codex.get_action_button().disabled, "An acquired mastery cannot be purchased twice")
 	_check(float(_codex.get_graph().get_navigation_snapshot().zoom) == float(view_before.zoom), "Purchasing preserves the current zoom")
 	_check(Vector2(_codex.get_graph().get_navigation_snapshot().pan_offset).is_equal_approx(Vector2(view_before.pan_offset)), "Purchasing preserves the current pan")
+	var acquisition_effect: Dictionary = _codex.get_graph().get_node_effect_snapshot(FIRST)
+	_check(acquisition_effect.has("running"), "Acquisition exposes its shader state")
+	_check(bool(acquisition_effect.get("running", false)) == (not _original_reduced_motion), "Real purchase triggers the acquisition shader unless reduced motion is enabled")
+	await _capture("acquisition_1280x720")
 	await _click_node(SECOND)
 	for dimensions in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
 		await _resize(dimensions)
@@ -99,18 +111,86 @@ func _run() -> void:
 	await _click_spell(0)
 	await _capture("strike_progression_1280x720")
 	await _select_section(&"advanced")
+	_check_minimap_clear("advanced_progression_1280x720")
 	await _capture("advanced_progression_1280x720")
+	await _resize(Vector2i(1920, 1080))
+	await _click_named("FitGraph")
+	_check_layout("advanced_progression_1920x1080")
+	_check_minimap_clear("advanced_progression_1920x1080")
+	await _capture("advanced_progression_1920x1080")
+	await _resize(Vector2i(1280, 720))
+	await _review_reduced_motion_purchase()
+	await _capture("reduced_motion_1280x720")
 	await _close_and_dispose()
+	root.get_node("GameManager").set_reduced_motion_enabled(_original_reduced_motion)
+	await _review_selection_host()
 	_check(_manager_snapshot() == _manager_before, "Review leaves the active run, next run, inventory and turn untouched")
 	_check(_save_fingerprint() == _save_before, "Review neither creates nor modifies the player's saved build")
 	_finish()
 
 
+func _navigate_minimap() -> void:
+	var graph = _codex.get_graph()
+	var minimap = graph.get_minimap()
+	_check(minimap != null and minimap.is_visible_in_tree(), "Minimap is present in the real graph")
+	if minimap == null or not minimap.is_visible_in_tree():
+		return
+	var before: Dictionary = graph.get_navigation_snapshot()
+	var snapshot: Dictionary = graph.get_minimap_snapshot()
+	var map_rect := Rect2(snapshot.map_rect)
+	var point: Vector2 = minimap.global_position + map_rect.position + map_rect.size * Vector2(0.72, 0.84)
+	_mouse_motion(point)
+	await process_frame
+	_mouse_button(point, MOUSE_BUTTON_LEFT, true)
+	await process_frame
+	_mouse_button(point, MOUSE_BUTTON_LEFT, false)
+	await _settle()
+	var after: Dictionary = graph.get_navigation_snapshot()
+	_check(not Vector2(after.pan_offset).is_equal_approx(Vector2(before.pan_offset)), "Real minimap click moves the graph camera")
+	_check(float(after.zoom) == float(before.zoom), "Minimap navigation preserves zoom")
+	_check(after.selected_node_id == before.selected_node_id, "Minimap navigation preserves the inspected mastery")
+
+
+func _review_reduced_motion_purchase() -> void:
+	root.get_node("GameManager").set_reduced_motion_enabled(true)
+	await _select_section(&"achilles_wrath_of_peleus")
+	await _click_node(SECOND)
+	_check(not _codex.get_action_button().disabled, "Reduced motion still permits a legal mastery investment")
+	await _click(_codex.get_action_button())
+	_check(_state.champion_progression.selected_node_ids.has(SECOND), "Reduced-motion purchase uses the same runtime rules")
+	var effect: Dictionary = _codex.get_graph().get_node_effect_snapshot(SECOND)
+	_check(effect.has("running"), "Reduced-motion acquisition exposes its shader state")
+	_check(not bool(effect.get("running", false)), "Reduced motion suppresses the acquisition shader animation")
+	_check(bool(_codex.get_graph().get_navigation_snapshot().reduced_motion), "Reduced-motion state reaches the graph")
+
+
+func _review_selection_host() -> void:
+	var selection = load(SELECTION_PATH).instantiate()
+	root.add_child(selection)
+	await _settle()
+	var selected: Dictionary = selection.get_selected_entry()
+	_check(str(selected.get("id")) == "achilles" and selected.get("run").resource_path == CATABASE_RUN_PATH, "Real selection opens Achille in the complete Catabase run")
+	var open_button := selection.find_child("ExploreMasteries", true, false) as Button
+	await _click(open_button)
+	var host = selection.get_spell_tree()
+	_check(host != null, "Actual selection button opens the mastery host")
+	if host != null:
+		var champion = host.get_champion_codex()
+		_check(champion != null and champion.read_only, "Selection-hosted Champion atlas remains consultative")
+		await _capture("selection_host_1280x720")
+		if champion != null:
+			await _click(champion.get_close_button())
+		_check(selection.get_spell_tree() == null, "Closing the actual atlas returns to selection")
+	selection.queue_free()
+	await process_frame
+	await process_frame
+
+
 func _create_fixture(xp: int) -> bool:
-	# Resolve the authored roster without loading unrelated rooms under active editing.
-	var fixture_run = load("res://data/runs/run_data.gd").new()
-	fixture_run.content_profile = load(CONTENT_PROFILE_PATH)
-	var resolution = load("res://core/run_content/run_hero_resolver.gd").resolve_runtime_hero_data(fixture_run, false)
+	# Load the complete repaired run, including all authored room dependencies.
+	var actual_run = load(CATABASE_RUN_PATH)
+	_check(actual_run != null, "Complete Catabase resource loads for the visual fixture")
+	var resolution = load("res://core/run_content/run_hero_resolver.gd").resolve_runtime_hero_data(actual_run, false)
 	_check(resolution.is_valid(), "Catabase hero data resolves")
 	if not resolution.is_valid():
 		return false
@@ -255,6 +335,17 @@ func _check_layout(label: String) -> void:
 			_check(bounds.grow(1).encloses(control.get_global_rect()), "%s: %s remains in the viewport" % [label, control.name])
 			measured.append({"name": str(control.name), "rect": str(control.get_global_rect())})
 	layouts.append({"state": label, "viewport": str(root.size), "controls": measured})
+
+
+func _check_minimap_clear(label: String) -> void:
+	var graph = _codex.get_graph()
+	var minimap = graph.get_minimap()
+	var minimap_rect: Rect2 = minimap.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, minimap.size)
+	_check(graph.get_global_rect().encloses(minimap_rect), label + ": map control remains inside the graph")
+	for button: Button in graph.get_all_node_buttons().values():
+		var card_rect: Rect2 = button.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, button.size)
+		_check(not minimap_rect.intersects(card_rect), "%s: default map does not obscure %s" % [label, button.name])
+	layouts.append({"state": label + "_minimap", "viewport": str(root.size), "collapsed": bool(minimap.get_map_snapshot().collapsed), "rect": str(minimap_rect)})
 
 
 func _manager_snapshot() -> Dictionary:
