@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "water": {
+    "color": "#111218",
+    "texture_path": "",
+    "shader_path": ""
+  },
+  "land": {
+    "color": "#444853",
+    "texture_path": "res://asset/map/painted/underworld/black_oath_temple_v1/temple_composed.png",
+    "texture_scale": [
+      1,
+      1
+    ],
+    "texture_repeat": false,
+    "tint": "#ffffff"
+  },
+  "floor_palette": {
+    "shade": "#303744",
+    "body": "#555d68",
+    "light": "#747c86",
+    "warmth": [
+      -0.02,
+      -0.006,
+      0.008,
+      0.02
+    ],
+    "painted_steps": 0.18,
+    "bevel_flatten_strength": 0.92,
+    "shader_parameters": {
+      "interior_joint_land_weight": 0
+    }
+  },
+  "props_palette": {
+    "ink": "#202531",
+    "top": "#666f7b",
+    "left": "#495563",
+    "right": "#354351",
+    "highlight": "#8c95a2",
+    "moss": [
+      0.22,
+      0.2,
+      0.29,
+      0.1
+    ],
+    "shadow": [
+      0.06,
+      0.07,
+      0.12,
+      0.25
+    ],
+    "edge_shadow": [
+      0.12,
+      0.16,
+      0.22,
+      0.25
+    ],
+    "carving": [
+      0.18,
+      0.21,
+      0.29,
+      0.56
+    ],
+    "crack": [
+      0.13,
+      0.17,
+      0.23,
+      0.4
+    ],
+    "fleck_dark": [
+      0.24,
+      0.26,
+      0.34,
+      0.22
+    ],
+    "fleck_light": [
+      0.47,
+      0.5,
+      0.59,
+      0.32
+    ],
+    "column": [
+      0.2,
+      0.24,
+      0.31,
+      0.32
+    ],
+    "bench": "#707886"
+  },
+  "pit_palette": {
+    "floor": "#0a0d17",
+    "back_wall": "#333e50",
+    "left_wall": "#242e40",
+    "depth_native_px": 16
+  },
+  "combat_ground_band": {
+    "enabled": true,
+    "width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20.0,
+    "shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+    "shader_parameters": {
+      "band_earth": "#484d59",
+      "band_light": "#535966",
+      "band_shadow": "#3f4451"
+    }
+  },
+  "world_decor": [],
+  "ground_details": {
+    "enabled": false,
+    "mode": "contacts_only"
+  },
+  "soil_patches": [],
+  "canvas_size": [
+    1920,
+    1200
+  ],
+  "geometry_manifest_path": "geometry_manifest.json",
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      1200
+    ],
+    [
+      0,
+      1200
+    ]
+  ],
+  "allowed_floor_polygon": [
+    [
+      320,
+      200
+    ],
+    [
+      1600,
+      200
+    ],
+    [
+      1600,
+      950
+    ],
+    [
+      320,
+      950
+    ]
+  ],
+  "excluded_floor_polygons": [],
+  "minimum_floor_margin_px": 60.0,
+  "shorelines": [],
+  "authoring_geometry": {
+    "source": "res://tools/registered_terrain_authoring/generate_black_oath_temple.py",
+    "art_reserve_native_rect": [
+      320.0,
+      200.0,
+      1600.0,
+      950.0
+    ],
+    "measured_band_bounds_native": [
+      349.056,
+      258.128,
+      1570.944,
+      869.072
+    ],
+    "minimum_band_to_bank_native_px": null
+  },
+  "metadata": {
+    "biome": "cursed_black_greek_temple_interior",
+    "art_method": "Built-in image_gen original painting, axonometric camera correction using the geometry guide, then rear-wall recession; whole selected image normalized mechanically to native canvas.",
+    "land_source": "exec-fcecaffc-b495-4fa1-a0ee-5bc2aa8ab042.png",
+    "readability": "Full-canvas interior. Separate quiet floor reserve; no world decor, fog, foreground layer or procedural details. Real gameplay stones and low tactical obstacles. Rear walls follow the ground axes and leave the floor clear."
+  }
+}

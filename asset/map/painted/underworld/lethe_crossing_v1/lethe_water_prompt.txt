@@ -1,0 +1,6 @@
+Use case: stylized-concept.
+Asset type: finished opaque square seamless-looking painted water material texture for a 2D tactical Greek underworld RPG.
+The quiet River Lethe outside a pale honey-sandstone clearing. Flat water surface, no perspective horizon, no land and no objects. Muted deep green-teal and desaturated jade, broad calm translucent painterly colour washes, a few delicate long pale jade ripple strokes, soft and sparse. Slight warm reflected olive-gold colour in the very broad subtle washes, overall clearly darker and cooler than warm beige stone.
+Polished French fantasy hand-painted tactical RPG scenery style: coherent broad soft shapes, purposeful simple brushwork, low contrast, no noisy detail, no photo realism or 3D material render. A calm material that can repeat over a shoreline polygon without distracting from combat.
+No bright foam, glowing runes, whirlpool, sparkling specks, dense ripple pattern, white glare, black spots, sharp circular forms, coast, rocks, weeds, reeds, islands, diamonds, grid, tile boundaries, characters, labels, text, logo, border or watermark.
+Square full opaque image; make opposite edges visually compatible for repeating.

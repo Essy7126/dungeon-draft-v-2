@@ -1,0 +1,129 @@
+{
+  "asset_id": "lethe_crossing_v1",
+  "revision": 1,
+  "created_at": "2026-09-06",
+  "title": "Le Gué du Léthé",
+  "method": "built_in_image_gen_and_shared_registered_terrain_runtime",
+  "native_canvas_size": [
+    1920,
+    1200
+  ],
+  "production_scene": "battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+  "terrain_plan": "data/arenas/lethe_crossing_v1/terrain_plan.json",
+  "geometry_manifest": "data/arenas/lethe_crossing_v1/geometry_manifest.json",
+  "campaign_room": "data/rooms/odyssey/room_04.tres",
+  "artwork": [
+    {
+      "file": "land_composed.png",
+      "prompt": "land_composed_prompt.txt",
+      "source_generated_image": "exec-97991ae8-2e98-4326-892f-18dbb099ff1a.png",
+      "source_size": [
+        1586,
+        992
+      ],
+      "output_size": [
+        1920,
+        1200
+      ],
+      "method": "Built-in image_gen original opaque landscape, mechanically resampled as a whole with bicubic interpolation. No geometry or collision derived from generated pixels.",
+      "sha256": "964da72c3e8a6aaf6cdc04333ba74bf1ee5607cc79af729571e79cae84217e41",
+      "prompt_sha256": "62050a9707cd28b59d270cfc34a9087537e75db7a172a6933d931805321c8e3c"
+    },
+    {
+      "file": "lethe_water.png",
+      "prompt": "lethe_water_prompt.txt",
+      "source_generated_image": "exec-facfa99c-a344-4cc4-839a-7fd4c5e3e36d.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "output_size": [
+        1254,
+        1254
+      ],
+      "method": "Built-in image_gen original water material copied unchanged.",
+      "sha256": "2d879156a7ce4d516352eadd3ea7fc1421036b94067b966e4032195cb9e7ba28",
+      "prompt_sha256": "58a5bc37bb01193fccb71d2732b12014132ecb47d371f47f08f8f19858a7d999"
+    }
+  ],
+  "shaders": [
+    {
+      "file": "lethe_water.gdshader",
+      "scope": "Water polygon below Land only; subtle UV drift and restrained olive reflection.",
+      "sha256": "b9878e328c59554af58ab4e46ca5c9e717b7f6203f4d44d3e817e33c8eaf728e"
+    }
+  ],
+  "readability_contract": {
+    "world_decor_count": 0,
+    "foreground_sprite_count": 0,
+    "ground_details_enabled": false,
+    "interior_joint_land_weight": 0,
+    "geometry_from_raster": false
+  },
+  "validation": {
+    "status": "map_and_catabase_flow_validated",
+    "primary_gut": {
+      "tests": 26,
+      "passed": 26,
+      "assertions": 7976,
+      "log": "artifacts/catabase_fourth_map_2026-09-06/gut_primary.log"
+    },
+    "additional_gut": {
+      "tests": 3,
+      "passed": 2,
+      "failed": 1,
+      "logs": [
+        "artifacts/catabase_fourth_map_2026-09-06/gut_hub_route.log",
+        "artifacts/catabase_fourth_map_2026-09-06/gut_solo_routes.log"
+      ],
+      "failure": "Global Studio catalog discovery loads unrelated philosopher_trial and fails because res://assets/characters/philosopher_mage/sprites_v1/philosopher_portrait.tres is missing."
+    },
+    "gpu_reports": [
+      "artifacts/catabase_fourth_map_2026-09-06/1920x1080/registered_terrain_report.json",
+      "artifacts/catabase_fourth_map_2026-09-06/1200x896/registered_terrain_report.json"
+    ],
+    "visually_reviewed_captures": [
+      "artifacts/catabase_fourth_map_2026-09-06/1920x1080/room_04_combat_1920x1080.png",
+      "artifacts/catabase_fourth_map_2026-09-06/1200x896/room_04_combat_1200x896.png"
+    ],
+    "preserved_resources_report": "artifacts/catabase_fourth_map_2026-09-06/preserved_resources_report.json",
+    "limits": [
+      "GPU movement and guard use live GridView/controller APIs, not OS mouse event injection.",
+      "GPU victories I-III are QA-forced after real actions; production rewards and transitions lead to IV, left in live combat before process exit.",
+      "GUT progression simulates four victories and verifies final completion only after IV; full gameplay victories and balance are not certified.",
+      "Godot shutdown reports retained resources; no project-wide clean-runtime claim.",
+      "Legacy complete SoloRun/theorycraft kit and economy suites not run; known outdated expectations remain outside this map scope."
+    ]
+  },
+  "geometry_contract": {
+    "grid_size": [
+      18,
+      19
+    ],
+    "origin": [
+      1000.0,
+      125.0
+    ],
+    "axis_x": [
+      51.6,
+      25.8
+    ],
+    "axis_y": [
+      -51.6,
+      25.8
+    ],
+    "floor_cells": 114,
+    "blocked_cells": 8,
+    "walkable_cells": 106,
+    "connected_walkable_cells": 106,
+    "pit_cells": 6,
+    "pit_groups": 3,
+    "passage_width_cells": 5,
+    "passage_length_cells": 4,
+    "ground_band_width_cells": 0.42,
+    "required_band_shore_clearance_native_px": 20,
+    "land_and_allowed_floor_polygon_are_distinct": true,
+    "generator": "tools/registered_terrain_authoring/generate_lethe_crossing.py",
+    "authoring_report": "data/arenas/lethe_crossing_v1/authoring_validation.json"
+  }
+}

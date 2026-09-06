@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BattlePresentationProfile" format=3]
+[ext_resource type="Script" path="res://data/maps/painted/battle_presentation_profile.gd" id="profile"]
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="unit_profile"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_elf.tres" id="elf"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_mage.tres" id="mage"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_warrior.tres" id="warrior"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_achilles.tres" id="achilles"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_standard.tres" id="standard"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_elite.tres" id="elite"]
+[resource]
+script = ExtResource("profile")
+profile_id = &"lethe_crossing_v1"
+camera_zoom_multiplier = 1.0
+global_unit_scale_multiplier = 1.08
+unit_profiles = Array[ExtResource("unit_profile")]([ExtResource("elf"), ExtResource("mage"), ExtResource("warrior"), ExtResource("achilles"), ExtResource("standard"), ExtResource("elite")])
+ally_outline_color = Color(0.63, 0.9, 1, 0.34)
+enemy_outline_color = Color(1, 0.77, 0.39, 0.38)

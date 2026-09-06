@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/encounters/encounter_definition.gd" id="1_encounter"]
+[ext_resource type="Resource" path="res://data/units/enemies/odyssey_champion.tres" id="2_champion"]
+[ext_resource type="Resource" path="res://data/units/enemies/spectre_greatsword.tres" id="3_spectre"]
+[ext_resource type="Resource" path="res://data/runs/glory/odyssey_no_consumables.tres" id="4_glory"]
+
+[resource]
+script = ExtResource("1_encounter")
+room_index = 5
+roster_units = Array[UnitData]([ExtResource("2_champion"), ExtResource("3_spectre")])
+roster_counts = PackedInt32Array(1, 2)
+formation_profiles = Array[StringName]([&"double_line", &"line"])
+living_enemy_cap = 3
+minimum_path_distance_by_role = {&"odyssey_champion": 10, &"spectre_greatsword": 10}
+maximum_path_distance_by_role = {&"odyssey_champion": 12, &"spectre_greatsword": 12}
+encounter_id = &"catabase_room_05"
+base_xp = 180
+glory_challenge = ExtResource("4_glory")

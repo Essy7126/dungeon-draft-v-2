@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "scope": "Independent Python authoring checks, not a Godot/GPU validation",
+  "floor_cells": 114,
+  "void_cells": 228,
+  "blocked_cells": 8,
+  "walkable_cells": 106,
+  "connected_walkable_cells": 106,
+  "pit_cells": 6,
+  "pit_groups": 3,
+  "domain_cells": 120,
+  "passage_width_cells": 5,
+  "passage_length_cells": 4,
+  "all_passage_cells_walkable": true,
+  "route_cells": 21,
+  "hero_to_enemy_route": [
+    [
+      4,
+      3
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      7,
+      5
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      9,
+      8
+    ],
+    [
+      10,
+      8
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      11,
+      9
+    ],
+    [
+      11,
+      10
+    ],
+    [
+      12,
+      10
+    ],
+    [
+      13,
+      10
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      13,
+      12
+    ],
+    [
+      13,
+      13
+    ],
+    [
+      13,
+      14
+    ]
+  ],
+  "boundary_edges": 58,
+  "simplified_contour_vertices": 20,
+  "floor_bounds_px": [
+    535.6,
+    228.2,
+    1412.8,
+    924.8
+  ],
+  "band_bounds_px": [
+    492.256,
+    206.528,
+    1456.144,
+    946.472
+  ],
+  "minimum_floor_land_clearance_native_px": 193.80257438392772,
+  "minimum_floor_allowed_clearance_native_px": 125.11590231626154,
+  "minimum_floor_shoreline_clearance_native_px": 193.80257438392772,
+  "minimum_band_shoreline_clearance_native_px": 152.8084079362127,
+  "minimum_band_land_clearance_native_px": 152.8084079362127,
+  "art_reserve_native_rect": [
+    240.0,
+    180.0,
+    1660.0,
+    1030.0
+  ]
+}

@@ -23,11 +23,21 @@ static func painted_framing(
 		viewport_size.x / frame_rect.size.x,
 		viewport_size.y / frame_rect.size.y
 	) * visual_data.camera_zoom * profile_zoom
+	var frame_center := frame_rect.get_center()
+	var camera_position := frame_center + visual_data.camera_offset + profile_offset
+	if presentation_profile != null and presentation_profile.camera_keep_painting_in_view:
+		var visible_size := viewport_size / zoom_factor
+		var movement_room := (frame_rect.size - visible_size) * 0.5
+		movement_room = Vector2(maxf(0.0, movement_room.x), maxf(0.0, movement_room.y))
+		camera_position = Vector2(
+			clampf(camera_position.x, frame_center.x - movement_room.x, frame_center.x + movement_room.x),
+			clampf(camera_position.y, frame_center.y - movement_room.y, frame_center.y + movement_room.y)
+		)
 	return {
 		"ok": true,
 		"strategy": &"cover",
 		"frame_rect": frame_rect,
-		"position": frame_rect.get_center() + visual_data.camera_offset + profile_offset,
+		"position": camera_position,
 		"zoom": Vector2(zoom_factor, zoom_factor),
 		"profile_offset": profile_offset,
 		"profile_zoom": profile_zoom,
