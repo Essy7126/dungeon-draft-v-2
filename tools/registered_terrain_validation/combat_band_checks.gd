@@ -80,6 +80,12 @@ static func run(battle: Node, arena: ArenaDefinition, renderer: ArenaTerrainVisu
 		errors.append("band_check_void_gained_floor_or_input:%d" % added_floor_or_input.size())
 	var screen_to_grid := view.get_global_transform_with_canvas().affine_inverse()
 	var rendered_land := _rendered_polygon(land, screen_to_grid, image)
+	var allowed_land := _polygon(raw_plan.get("allowed_floor_polygon", [])) if raw_plan.has("allowed_floor_polygon") else rendered_land
+	if allowed_land.size() < 3:
+		return {"ok": false, "errors": ["band_check_allowed_floor_polygon_invalid"]}
+	var declared_shores: Variant = raw_plan.get("shorelines")
+	if not declared_shores is Array:
+		return {"ok": false, "errors": ["band_check_shorelines_must_be_explicit_array"]}
 	var shores: Array[PackedVector2Array] = []
 	for child: Node in terrain.get_children():
 		if child is Line2D and str(child.name).begins_with("Shore_"):
@@ -90,8 +96,8 @@ static func run(battle: Node, arena: ArenaDefinition, renderer: ArenaTerrainVisu
 				points.append((screen_to_grid * screen - image.image_offset) / image.image_scale)
 			if points.size() >= 2:
 				shores.append(points)
-	if shores.is_empty():
-		errors.append("band_check_actual_shorelines_missing")
+	if shores.size() != declared_shores.size():
+		errors.append("band_check_actual_shoreline_count_differs_from_plan")
 	var exclusions: Array[PackedVector2Array] = []
 	for value: Variant in raw_plan.get("excluded_floor_polygons", []):
 		var entry: Dictionary = value if value is Dictionary else {"polygon": value}
@@ -108,6 +114,7 @@ static func run(battle: Node, arena: ArenaDefinition, renderer: ArenaTerrainVisu
 	var polygons: Array[PackedVector2Array] = []
 	var total_area := 0.0
 	var outside_land := 0.0
+	var outside_allowed := 0.0
 	var rock_overlap := 0.0
 	var native_error := 0.0
 	var width_max := 0.0
@@ -131,6 +138,10 @@ static func run(battle: Node, arena: ArenaDefinition, renderer: ArenaTerrainVisu
 		outside_land += unsupported
 		if unsupported > AREA_TOLERANCE:
 			errors.append("band_check_surface_outside_land:%s:%.3fpx2" % [surface.name, unsupported])
+		var forbidden_reserve := maxf(0.0, area - _intersection_area(polygon, allowed_land))
+		outside_allowed += forbidden_reserve
+		if forbidden_reserve > AREA_TOLERANCE:
+			errors.append("band_check_surface_outside_allowed_reserve:%s:%.3fpx2" % [surface.name, forbidden_reserve])
 		for exclusion: PackedVector2Array in exclusions:
 			var overlap := _intersection_area(polygon, exclusion)
 			rock_overlap += overlap
@@ -227,10 +238,11 @@ static func run(battle: Node, arena: ArenaDefinition, renderer: ArenaTerrainVisu
 		"pixel_tolerance": PIXEL_TOLERANCE, "area_tolerance_native_px2": AREA_TOLERANCE,
 		"expected_width_grid": expected_width, "width_tolerance_grid": WIDTH_TOLERANCE_GRID,
 		"minimum_shore_clearance_native_px": shore_clearance,
-		"measured_shore_clearance_native_px": minimum_shore_distance if is_finite(minimum_shore_distance) else -1,
+		"shoreline_clearance_applicable": not shores.is_empty(),
+		"measured_shore_clearance_native_px": minimum_shore_distance if is_finite(minimum_shore_distance) else null,
 		"rendered_shoreline_count": shores.size(), "floor_materials_with_matching_band_uniforms": matching_floor_materials,
 		"surface_count": polygons.size(), "native_transform_max_error_px": native_error,
-		"outside_land_native_px2": outside_land, "rock_overlap_native_px2": rock_overlap,
+		"outside_land_native_px2": outside_land, "outside_allowed_reserve_native_px2": outside_allowed, "rock_overlap_native_px2": rock_overlap,
 		"surface_pair_checks": pair_count, "surface_pair_overlap_native_px2": pair_overlap,
 		"rendered_underlay_area_native_px2": total_area, "exposed_collar_area_native_px2": visible_area,
 		"maximum_vertex_distance_from_core_grid_linf": width_max,

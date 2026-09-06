@@ -2,12 +2,12 @@ extends GutTest
 
 const RUN: RunData = preload("res://data/runs/odyssey.tres")
 const REGISTERED_SCENE := "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn"
-const PACKAGES := ["greek_drawn_courtyard_v1", "ashen_hell_courtyard_v1", "silent_judgment_courtyard_v1"]
+const PACKAGES := ["greek_drawn_courtyard_v1", "ashen_hell_courtyard_v1", "silent_judgment_courtyard_v1", "lethe_crossing_v1", "black_oath_temple_v1"]
 const DIRECTIONS := [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 
 
-func test_three_catabase_rooms_bind_their_registered_production_maps() -> void:
-	assert_eq(RUN.rooms.size(), 3)
+func test_five_catabase_rooms_bind_their_registered_production_maps() -> void:
+	assert_eq(RUN.rooms.size(), 5)
 	for index in range(PACKAGES.size()):
 		var room := RUN.rooms[index] as ArenaDefinition
 		assert_not_null(room)
@@ -24,9 +24,15 @@ func test_three_catabase_rooms_bind_their_registered_production_maps() -> void:
 			assert_false(FileAccess.get_file_as_string(REGISTERED_SCENE).contains("res://tools/labs/"))
 		assert_eq(room.visual_mode, ArenaDefinition.VisualMode.HYBRID)
 		assert_eq(room.source_image_size, Vector2i(1920, 1200))
-		assert_eq(room.grid_size, Vector2i(19, 18))
-		assert_eq(room.axis_x, Vector2(51.6, 25.8))
-		assert_eq(room.axis_y, Vector2(-51.6, 25.8))
+		var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(package + "geometry_manifest.json"))
+		var grid_size: Array = manifest.grid_size
+		assert_eq(room.grid_size, Vector2i(int(grid_size[0]), int(grid_size[1])))
+		assert_eq(room.axis_x, Vector2(float(manifest.axis_x[0]), float(manifest.axis_x[1])))
+		assert_eq(room.axis_y, Vector2(float(manifest.axis_y[0]), float(manifest.axis_y[1])))
+		if index < 3:
+			assert_eq(room.grid_size, Vector2i(19, 18))
+			assert_eq(room.axis_x, Vector2(51.6, 25.8))
+			assert_eq(room.axis_y, Vector2(-51.6, 25.8))
 		assert_true(room.foreground_occluder_polygon.is_empty())
 		assert_false(room.foreground_full_hide_rect.has_area())
 		for decoration in room.decorations:
@@ -58,9 +64,21 @@ func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles()
 		var pits := {}
 		for group: Dictionary in manifest.get("pits", []):
 			pits.merge(_cells(group.get("cells", [])))
-		assert_eq(floor.size(), 217)
-		assert_eq(blocked.size(), 12)
-		assert_eq(pits.size(), 16)
+		if index < 3:
+			assert_eq(floor.size(), 217)
+			assert_eq(blocked.size(), 12)
+			assert_eq(pits.size(), 16)
+		elif index == 3:
+			assert_eq(floor.size(), 114)
+			assert_eq(blocked.size(), 8)
+			assert_eq(pits.size(), 6)
+		else:
+			assert_eq(floor.size(), 152)
+			assert_eq(blocked.size(), 8)
+			assert_eq(pits.size(), 8)
+		assert_gt(floor.size(), blocked.size())
+		for cell: Vector2i in blocked:
+			assert_true(floor.has(cell), "a tactical obstacle retains its authored floor")
 		assert_eq(room.grid_layout.logical_size, room.grid_size)
 		var visual := room.painted_map_visual_data
 		assert_eq(visual.map_id, room.arena_id)
@@ -101,7 +119,7 @@ func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles()
 		if room.hero_spawn_zone.is_empty():
 			continue
 		var reachable := _reachable(grid, room.hero_spawn_zone[0])
-		assert_eq(reachable.size(), 205, "all walkable cells stay connected")
+		assert_eq(reachable.size(), floor.size() - blocked.size(), "all walkable cells stay connected")
 		for cell: Vector2i in room.hero_spawn_zone + room.enemy_spawn_zone:
 			assert_true(grid.is_walkable(cell), "spawn on free FLOOR: %s" % cell)
 			assert_true(reachable.has(cell), "spawn reachable: %s" % cell)
@@ -163,6 +181,53 @@ func test_judgment_courtyard_keeps_tactical_obstacles_without_peripheral_props()
 	assert_true(plan.get("world_decor", []).is_empty())
 	assert_eq(room.obstacles.size(), 12)
 	assert_eq(room.decorations.size(), 12, "the twelve tactical props remain on their authored floor cells")
+
+
+func test_later_maps_use_distinct_tactical_footprints_and_preserve_studio_bindings() -> void:
+	var first := RUN.rooms[0] as ArenaDefinition
+	assert_not_null(first)
+	if first == null:
+		return
+	var seen_floors: Array[Dictionary] = [_authored_floor(first)]
+	var cases := [
+		[3, Vector2i(18, 19), Vector2(1000, 125), 114, &"lethe_crossing_v1", "Catabase IV — Le Gué du Léthé"],
+		[4, Vector2i(18, 18), Vector2(960, 125), 152, &"black_oath_temple_v1", "Catabase V — Le Temple du Serment Noir"],
+	]
+	for expected: Array in cases:
+		var room := RUN.rooms[int(expected[0])] as ArenaDefinition
+		assert_not_null(room)
+		if room == null:
+			continue
+		var floor := _authored_floor(room)
+		for previous: Dictionary in seen_floors:
+			assert_ne(floor, previous, "Later rooms change the tactical footprint")
+		seen_floors.append(floor)
+		assert_eq(room.grid_size, expected[1])
+		assert_eq(room.grid_origin, expected[2])
+		assert_eq(floor.size(), expected[3])
+		assert_eq(room.obstacles.size(), 8)
+		assert_eq(room.arena_id, expected[4])
+		assert_eq(room.room_name, expected[5])
+		assert_gte(room.enemy_spawn_zone.size(), room.enemies.size())
+		var restored := ArenaDefinition.new()
+		assert_true(restored.restore_snapshot(room.to_snapshot()))
+		assert_eq(restored.registered_terrain_plan_path, room.registered_terrain_plan_path)
+		assert_eq(restored.cells.size(), room.cells.size())
+		var merged := RoomIntegrationFieldPolicy.merge_arena_into_room(restored, room)
+		assert_not_null(merged)
+		if merged != null:
+			assert_eq(merged.registered_terrain_plan_path, room.registered_terrain_plan_path)
+			assert_eq(merged.encounter_definition, room.encounter_definition)
+			assert_eq(merged.enemies, room.enemies)
+			assert_eq(merged.room_name, room.room_name)
+
+
+func _authored_floor(room: ArenaDefinition) -> Dictionary:
+	var result := {}
+	for cell in room.cells:
+		if cell != null and cell.defined and cell.cell_type != GridData.CellType.HOLE:
+			result[cell.coordinate] = true
+	return result
 
 
 func _cells(values: Array) -> Dictionary:

@@ -2,6 +2,8 @@
 
 La salle III, **Catabase III — Le Jugement de Paris**, utilise maintenant cette cour funéraire dessinée, construite avec le [modèle partagé de terrain peint](registered_terrain_pipeline.md). Le sol gris perle reste calme ; les ruines, cyprès et niches de calcaire se concentrent sur le pourtour. L'eau sombre donne une limite nette à la terre.
 
+> Depuis le 6 septembre 2026, [Le Gué du Léthé](lethe_crossing_v1.md) est ajouté en salle IV. Le Parvis reste en III avec les mêmes données et devient une salle intermédiaire ; les validations du 5 septembre ci-dessous décrivent la version antérieure à trois salles.
+
 ## Centre de combat dégagé
 
 - Les **217 vraies dalles** utilisent la projection commune ; aucune grille n'est peinte dans l'image.

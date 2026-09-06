@@ -64,3 +64,49 @@ func test_premium_timeline_exposes_compact_cards_and_persistent_turn_plate() -> 
 	assert_true(card.premium_frame.visible)
 	assert_lt(card.custom_minimum_size.x, 90.0)
 	assert_lt(timeline.cards_layer.offset_top, 24.0)
+
+
+func test_premium_turn_title_fits_compact_header_and_restores_font_size() -> void:
+	var achilles: Unit = FACTORY.make_unit("Achille", 0)
+	var timeline := TIMELINE_SCENE.instantiate() as TurnOrderTimeline
+	add_child_autofree(timeline)
+	await get_tree().process_frame
+	timeline.apply_visual_skin(PREMIUM_SKIN)
+	# Exact minimum premium header size used at 1200x896 and 1280x720.
+	timeline.turn_header.size = Vector2(360.0, 64.0) * 0.72
+	var compact_rect := timeline.turn_header.get_rect()
+	timeline._refresh_turn_header(achilles)
+	await get_tree().process_frame
+	var title := timeline.turn_header_title
+	var font := title.get_theme_font("font")
+	var compact_font_size := title.get_theme_font_size("font_size")
+	assert_eq(title.text, "TOUR D’ACHILLE")
+	assert_gte(compact_font_size, TurnOrderTimeline.TURN_TITLE_MIN_FONT_SIZE)
+	assert_lt(compact_font_size, TurnOrderTimeline.TURN_TITLE_MAX_FONT_SIZE)
+	assert_lte(
+		font.get_string_size(title.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, compact_font_size).x,
+		title.size.x - TurnOrderTimeline.TURN_TITLE_SHADOW_PADDING,
+		"The complete title must fit, rather than rely on the Label ellipsis.",
+	)
+	assert_eq(timeline.turn_header.get_rect(), compact_rect)
+	assert_eq(title.tooltip_text, "")
+	timeline.turn_header.size = Vector2(360.0, 64.0)
+	await get_tree().process_frame
+	assert_eq(title.get_theme_font_size("font_size"), TurnOrderTimeline.TURN_TITLE_MAX_FONT_SIZE)
+
+
+func test_premium_turn_title_keeps_readable_minimum_for_very_long_names() -> void:
+	var unit: Unit = FACTORY.make_unit("Gardien des portes du royaume des ombres", 1)
+	var timeline := TIMELINE_SCENE.instantiate() as TurnOrderTimeline
+	add_child_autofree(timeline)
+	await get_tree().process_frame
+	timeline.apply_visual_skin(PREMIUM_SKIN)
+	timeline.turn_header.size = Vector2(360.0, 64.0) * 0.72
+	var compact_rect := timeline.turn_header.get_rect()
+	timeline._refresh_turn_header(unit)
+	await get_tree().process_frame
+	var title := timeline.turn_header_title
+	assert_eq(title.get_theme_font_size("font_size"), TurnOrderTimeline.TURN_TITLE_MIN_FONT_SIZE)
+	assert_eq(title.tooltip_text, title.text)
+	assert_eq(title.mouse_filter, Control.MOUSE_FILTER_PASS)
+	assert_eq(timeline.turn_header.get_rect(), compact_rect)

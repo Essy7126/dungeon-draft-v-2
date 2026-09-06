@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HudVisualSkinData" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="HudVisualSkinData" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/theme/hud_visual_skin_data.gd" id="1_skin"]
 [ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf" id="2_font_regular"]
@@ -12,12 +12,20 @@
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_resolving.svg" id="10_resolving"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_valid.svg" id="11_target_valid"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_invalid.svg" id="12_target_invalid"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/materials/obsidian_bronze_v2/obsidian_bronze_tile.png" id="13_material"]
 
 [resource]
 script = ExtResource("1_skin")
 skin_id = &"hud_achilles_premium_v1"
-revision = 1
+revision = 2
 neutral_grayscale = false
+material_enabled = true
+material_texture = ExtResource("13_material")
+material_texture_strength = 0.38
+material_tile_size = 256.0
+material_edge_highlight = Color(0.94, 0.79, 0.5, 1)
+material_rim_width = 3.0
+material_corner_cut = 13.0
 surface_backdrop = Color(0.025, 0.022, 0.03, 0.97)
 surface_dock = Color(0.055, 0.048, 0.06, 0.98)
 surface_panel = Color(0.09, 0.075, 0.085, 0.99)
@@ -26,7 +34,7 @@ surface_recessed = Color(0.018, 0.017, 0.023, 1)
 surface_scrim = Color(0.012, 0.009, 0.012, 0.9)
 text_primary = Color(0.96, 0.87, 0.68, 1)
 text_secondary = Color(0.78, 0.64, 0.43, 1)
-text_muted = Color(0.49, 0.43, 0.38, 1)
+text_muted = Color(0.65, 0.58, 0.48, 1)
 text_inverse = Color(0.08, 0.055, 0.035, 1)
 minimum_body_contrast = 4.5
 minimum_large_text_contrast = 3.0
@@ -97,9 +105,9 @@ state_cooldown_background = Color(0.025, 0.022, 0.03, 1)
 state_disabled_background = Color(0.022, 0.021, 0.026, 1)
 state_unavailable_background = Color(0.09, 0.035, 0.035, 1)
 state_resolving_background = Color(0.16, 0.1, 0.045, 1)
-disabled_content_opacity = 0.48
-cooldown_content_opacity = 0.62
-locked_content_opacity = 0.7
+disabled_content_opacity = 0.64
+cooldown_content_opacity = 0.76
+locked_content_opacity = 0.84
 cue_normal = &"none"
 cue_hover = &"lift"
 cue_focus = &"outer_ring"

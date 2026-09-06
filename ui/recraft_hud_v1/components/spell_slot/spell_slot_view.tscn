@@ -78,7 +78,7 @@ corner_radius_bottom_right = 22
 corner_radius_bottom_left = 22
 
 [sub_resource type="Shader" id="Shader_icon_polish"]
-code = "shader_type canvas_item;\nuniform float saturation : hint_range(0.0, 1.2) = 0.9;\nuniform float brightness : hint_range(0.0, 1.3) = 0.96;\nvoid fragment() {\n\tvec4 source = texture(TEXTURE, UV);\n\tfloat luminance = dot(source.rgb, vec3(0.2126, 0.7152, 0.0722));\n\tsource.rgb = mix(vec3(luminance), source.rgb, saturation) * brightness;\n\tCOLOR = source * COLOR;\n}\n"
+code = "shader_type canvas_item;\nuniform float saturation : hint_range(0.0, 1.2) = 0.9;\nuniform float brightness : hint_range(0.0, 1.3) = 0.96;\nvarying vec4 icon_modulate;\nvoid vertex() {\n\ticon_modulate = COLOR;\n}\nvoid fragment() {\n\tvec4 source = texture(TEXTURE, UV);\n\tfloat luminance = dot(source.rgb, vec3(0.2126, 0.7152, 0.0722));\n\tsource.rgb = mix(vec3(luminance), source.rgb, saturation) * brightness;\n\t// Fragment COLOR already includes TEXTURE: apply vertex modulation only once.\n\tCOLOR = source * icon_modulate;\n}\n"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_icon_polish"]
 resource_local_to_scene = true
@@ -120,6 +120,7 @@ color = Color(0.04, 0.04, 0.04, 0.97)
 
 [node name="SpellIcon" type="TextureRect" parent="VisualArea"]
 unique_name_in_owner = true
+texture_filter = 2
 material = SubResource("ShaderMaterial_icon_polish")
 layout_mode = 1
 anchors_preset = 15

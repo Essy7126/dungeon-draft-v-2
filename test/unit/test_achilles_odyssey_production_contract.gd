@@ -31,7 +31,7 @@ const RETIRED_PRESENTATION_LABELS := [
 ]
 
 
-func test_catabase_keeps_one_champion_and_the_three_current_room_routes() -> void:
+func test_catabase_keeps_one_champion_and_the_five_current_room_routes() -> void:
 	# The content resolver does not require room scenes. Inspect the authored route
 	# separately so a room's imported enemy visuals cannot mask a champion regression.
 	var content := load(CONTENT_PATH) as RunContentProfile
@@ -65,6 +65,8 @@ func test_catabase_keeps_one_champion_and_the_three_current_room_routes() -> voi
 		"res://data/rooms/odyssey/room_01.tres",
 		"res://data/rooms/odyssey/room_02.tres",
 		"res://data/rooms/odyssey/room_03.tres",
+		"res://data/rooms/odyssey/room_04.tres",
+		"res://data/rooms/odyssey/room_05.tres",
 	])
 	for room_path in room_paths:
 		assert_true(FileAccess.file_exists(room_path))

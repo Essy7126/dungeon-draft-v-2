@@ -18,6 +18,10 @@ extends Control
 # Pose de reference ajoutee par l'import Godot : elle n'a aucun sens pour
 # un joueur et ne doit jamais apparaitre dans une liste de choix.
 const RESET_CLIP := &"RESET"
+const SHOWCASE_FOOT_ANCHOR := 0.96
+const SHOWCASE_HEIGHT := 0.94
+const SHOWCASE_MIN_ZOOM := 0.85
+const SHOWCASE_MAX_ZOOM := 1.1
 
 @export var unit_data: UnitData = null
 
@@ -34,15 +38,22 @@ var _sprite_instance: AnimatedSprite2D = null
 var _sprite_reference_rect := Rect2()
 var _preview_active := true
 var _sprite_play_requested := false
+# Selection-only framing. HUD, Studio and portraits keep their authored layout.
+var _showcase_mode := false
+var _showcase_zoom := 1.0
+var _authored_camera_transform := Transform3D.IDENTITY
+var _authored_camera_size := 2.75
 # Several HUD cards reuse the same texture; read its alpha bounds only once.
 static var _sprite_bounds_cache: Dictionary = {}
 
 
 func _ready() -> void:
 	camera.look_at(Vector3(0.0, 0.85, 0.0), Vector3.UP)
+	_authored_camera_transform = camera.transform
+	_authored_camera_size = camera.size
 	set_process(false)
 	clip_contents = true
-	resized.connect(_layout_sprite_preview)
+	resized.connect(_layout_preview)
 	configure(unit_data)
 
 
@@ -113,6 +124,7 @@ func configure(source) -> void:
 	viewport_container.visible = true
 	preview_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if _preview_active else SubViewport.UPDATE_DISABLED
 	fallback_panel.visible = false
+	_layout_showcase_camera()
 
 
 ## Coupe ou relance le rendu du petit monde 3D. Un aperçu qu'on ne regarde pas
@@ -134,6 +146,60 @@ func set_preview_active(active: bool) -> void:
 		else SubViewport.UPDATE_DISABLED
 	if not active:
 		stop_clip()
+
+
+## Opt-in large framing for the selection stage; safe to set before _ready().
+func set_showcase_mode(enabled: bool) -> void:
+	var was_showcase := _showcase_mode
+	_showcase_mode = enabled
+	if not enabled:
+		_showcase_zoom = 1.0
+		if was_showcase and is_instance_valid(camera):
+			camera.transform = _authored_camera_transform
+			camera.size = _authored_camera_size
+	_layout_preview()
+
+
+func is_showcase_mode() -> bool:
+	return _showcase_mode
+
+
+## Zoom pivots around the same foot anchor instead of moving the silhouette.
+func set_showcase_zoom(value: float) -> bool:
+	if not _showcase_mode or not is_finite(value):
+		return false
+	_showcase_zoom = clampf(value, SHOWCASE_MIN_ZOOM, SHOWCASE_MAX_ZOOM)
+	_layout_preview()
+	return true
+
+
+func get_showcase_zoom() -> float:
+	return _showcase_zoom
+
+
+func _layout_preview() -> void:
+	_layout_sprite_preview()
+	_layout_showcase_camera()
+
+
+func _layout_showcase_camera() -> void:
+	if not _showcase_mode or not is_instance_valid(camera):
+		return
+	camera.transform = _authored_camera_transform
+	camera.size = _authored_camera_size
+	if not is_instance_valid(_visual_instance):
+		return
+	# Preserve the model's authored orientation and lighting. This mild crop
+	# enlarges the trio while a projection-based offset keeps their origin on
+	# the same stage as the 2D champion, independently of the panel's aspect.
+	camera.size = _authored_camera_size * 0.85 / _showcase_zoom
+	var viewport_size := Vector2(preview_viewport.size)
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+	var ground := visual_root.global_position
+	var depth := maxf(0.1, -camera.to_local(ground).z)
+	var anchor := Vector2(viewport_size.x * 0.5, viewport_size.y * SHOWCASE_FOOT_ANCHOR)
+	camera.global_position += ground - camera.project_position(anchor, depth)
 
 
 func clear_preview() -> void:
@@ -352,10 +418,21 @@ func _layout_sprite_preview() -> void:
 	# Only resize changes the framing. A walk/attack pose cannot make the
 	# portrait breathe by fitting each frame's different silhouette bounds.
 	var available := Vector2(maxf(size.x, 1.0), maxf(size.y, 1.0)) * 0.9
+	if _showcase_mode:
+		available = Vector2(maxf(size.x, 1.0) * SHOWCASE_HEIGHT,
+			maxf(size.y, 1.0) * SHOWCASE_HEIGHT)
 	var fit := minf(available.x / _sprite_reference_rect.size.x,
 		available.y / _sprite_reference_rect.size.y)
+	if _showcase_mode:
+		fit *= _showcase_zoom
 	_sprite_instance.scale = Vector2.ONE * fit
-	_sprite_instance.position = size * 0.5 - _sprite_reference_rect.get_center() * fit
+	if _showcase_mode:
+		var reference_feet := Vector2(_sprite_reference_rect.get_center().x,
+			_sprite_reference_rect.end.y)
+		_sprite_instance.position = Vector2(size.x * 0.5, size.y * SHOWCASE_FOOT_ANCHOR) \
+			- reference_feet * fit
+	else:
+		_sprite_instance.position = size * 0.5 - _sprite_reference_rect.get_center() * fit
 
 
 func _sprite_clip_is_idle(clip: StringName) -> bool:

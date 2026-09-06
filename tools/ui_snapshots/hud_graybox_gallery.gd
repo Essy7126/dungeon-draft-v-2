@@ -45,6 +45,7 @@ var _backdrop: HudGrayboxBackdrop = null
 var _annotation: HudGrayboxAnnotation = null
 var _timeline: TurnOrderTimeline = null
 var _turn_queue: TurnQueue = null
+var _configuration_applied := false
 
 
 func _ready() -> void:
@@ -53,7 +54,6 @@ func _ready() -> void:
 	_build_backdrop()
 	_fixture = FIXTURE_UNIT.new() as HudGrayboxFixtureUnit
 	_fixture.configure_for_state(state_id, SPELLS)
-	add_child(_fixture)
 	_hud = HUD_SCENE.instantiate()
 	_hud.skin_variant = 2
 	_hud.layout_data = LAYOUT
@@ -106,6 +106,8 @@ func _configure_hud() -> void:
 		_hud.set_active_mode("spell", SPELLS[0])
 	_hud.apply_presentation_snapshot(_snapshot_for_state())
 	match state_id:
+		&"items":
+			_hud._set_active_bar_mode("item")
 		&"hover":
 			var hovered := _spell_slot(0)
 			if hovered != null:
@@ -122,6 +124,7 @@ func _configure_hud() -> void:
 		&"locked":
 			_hud.show_context_feedback("Garde d’airain déjà utilisée pendant cette activation", &"info")
 	_hud._apply_layout_metrics()
+	_configuration_applied = true
 
 
 func _snapshot_for_state() -> Dictionary:
@@ -181,6 +184,8 @@ func _build_annotation() -> void:
 
 
 func get_validation_metrics() -> Dictionary:
+	var setup_errors := _collect_setup_errors()
+	var tab_metrics := _premium_tab_metrics()
 	var root := _hud.get_node_or_null("Root") as Control
 	var hud_band := _hud.find_child("HudBand", true, false) as Control
 	var character_anchor := _hud.find_child("CharacterAnchor", true, false) as Control
@@ -197,6 +202,12 @@ func get_validation_metrics() -> Dictionary:
 			slot_rects.append(_rect_to_array(slot.get_global_rect()))
 	return {
 		"state": String(state_id),
+		"setup_valid": setup_errors.is_empty(),
+		"setup_errors": setup_errors,
+		"active_bar_mode": _hud.get_active_bar_mode(),
+		"item_empty_slot_count": _empty_item_slot_count(),
+		"premium_tabs_valid": tab_metrics.valid,
+		"premium_tabs": tab_metrics,
 		"viewport": [size.x, size.y],
 		"root_rect": _rect_to_array(root.get_global_rect()) if root != null else [],
 		"hud_band_rect": _rect_to_array(hud_band.get_global_rect()) if hud_band != null else [],
@@ -217,6 +228,114 @@ func get_validation_metrics() -> Dictionary:
 		"anchors_do_not_overlap": _anchors_do_not_overlap(character_anchor, spell_anchor, turn_anchor),
 		"hud_inside_viewport": _inside_viewport(hud_band),
 	}
+
+
+func _collect_setup_errors() -> PackedStringArray:
+	var errors := PackedStringArray()
+	if not _configuration_applied:
+		errors.append("HUD configuration did not reach its completion marker.")
+	if _hud == null or _fixture == null:
+		errors.append("Missing HUD or Unit fixture.")
+		return errors
+	if _hud.get("_current_unit") != _fixture:
+		errors.append("HUD is not bound to the requested Unit fixture.")
+	var identity := _hud.find_child("CharacterName", true, false) as Label
+	var expected_name := CombatGlossary.unit_display_name(_fixture)
+	if premium_skin:
+		expected_name = expected_name.to_upper()
+	if identity == null or identity.text != expected_name:
+		errors.append("Character identity was not populated by update_info().")
+	var health := _hud.find_child("HealthBar", true, false)
+	if health == null or health.get("current_value") != float(_fixture.current_hp) \
+		or health.get("maximum_value") != float(_fixture.max_hp.get_int()):
+		errors.append("Health values do not match the Unit fixture.")
+	for badge_case: Dictionary in [
+		{"node": "ActionPointsBadge", "value": _fixture.current_ap},
+		{"node": "MovementPointsBadge", "value": _fixture.current_mp},
+	]:
+		var badge := _hud.find_child(badge_case.node, true, false)
+		var value_label := badge.find_child("ValueLabel", true, false) as Label \
+			if badge != null else null
+		if value_label == null or value_label.text != str(badge_case.value):
+			errors.append("Resource badge is incomplete: %s." % badge_case.node)
+	var slot_container := _hud.find_child("SpellSlotsContainer", true, false)
+	if slot_container == null or slot_container.get_child_count() != SPELLS.size():
+		errors.append("Expected exactly four populated spell slots.")
+	else:
+		for index in SPELLS.size():
+			var slot := _spell_slot(index)
+			if slot == null or slot.spell != SPELLS[index]:
+				errors.append("Spell slot %d does not contain its fixture spell." % index)
+	if premium_skin and (_timeline == null or _timeline.get_card_count() != 2):
+		errors.append("Premium timeline does not contain both fixture units.")
+	if state_id == &"items":
+		if _hud.get_active_bar_mode() != "item":
+			errors.append("The items fixture did not switch to the item bar.")
+		if _empty_item_slot_count() != 4:
+			errors.append("The items fixture must contain four empty item slots.")
+	return errors
+
+
+func _empty_item_slot_count() -> int:
+	var container := _hud.find_child("ItemSlotsContainer", true, false)
+	if container == null:
+		return 0
+	var count := 0
+	for child in container.get_children():
+		var item_slot := child as RecraftItemSlotView
+		if item_slot != null and item_slot.is_empty_slot():
+			count += 1
+	return count
+
+
+func _premium_tab_metrics() -> Dictionary:
+	var metrics := {
+		"applicable": premium_skin,
+		"valid": true,
+		"visible": true,
+		"inside_viewport": true,
+		"do_not_overlap_each_other": true,
+		"do_not_overlap_active_slots": true,
+		"do_not_overlap_content": true,
+		"spell_tab_rect": [],
+		"item_tab_rect": [],
+	}
+	if not premium_skin:
+		return metrics
+	var spell_tab := _hud.find_child("ShowSpellsButton", true, false) as Control
+	var item_tab := _hud.find_child("ShowItemsButton", true, false) as Control
+	metrics.visible = spell_tab != null and item_tab != null \
+		and spell_tab.is_visible_in_tree() and item_tab.is_visible_in_tree()
+	if not metrics.visible:
+		metrics.valid = false
+		return metrics
+	metrics.spell_tab_rect = _rect_to_array(spell_tab.get_global_rect())
+	metrics.item_tab_rect = _rect_to_array(item_tab.get_global_rect())
+	metrics.inside_viewport = _inside_viewport(spell_tab) and _inside_viewport(item_tab)
+	metrics.do_not_overlap_each_other = not _controls_intersect(spell_tab, item_tab)
+	var active_container_name := "ItemSlotsContainer" \
+		if _hud.get_active_bar_mode() == "item" else "SpellSlotsContainer"
+	var active_container := _hud.find_child(active_container_name, true, false)
+	if active_container == null:
+		metrics.do_not_overlap_active_slots = false
+	else:
+		for child in active_container.get_children():
+			var slot := child as Control
+			if _visible_controls_intersect(spell_tab, slot) \
+				or _visible_controls_intersect(item_tab, slot):
+				metrics.do_not_overlap_active_slots = false
+	for control_name in [
+		"CharacterName", "HealthBar", "ActionPointsBadge", "MovementPointsBadge",
+		"UtilityDock", "EndTurnButton", "SelectedSpellPlate", "ContextFeedback",
+	]:
+		var control := _hud.find_child(control_name, true, false) as Control
+		if _visible_controls_intersect(spell_tab, control) \
+			or _visible_controls_intersect(item_tab, control):
+			metrics.do_not_overlap_content = false
+	metrics.valid = metrics.visible and metrics.inside_viewport \
+		and metrics.do_not_overlap_each_other and metrics.do_not_overlap_active_slots \
+		and metrics.do_not_overlap_content
+	return metrics
 
 
 func _anchors_do_not_overlap(character: Control, spells_control: Control, turn: Control) -> bool:

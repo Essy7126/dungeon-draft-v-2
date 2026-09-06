@@ -1,12 +1,12 @@
 class_name SelectionBackdrop
 extends Control
 ## Restrained architectural stage behind the character-selection interface.
-## All coordinates share the selection screen's 1440 × 900 design canvas.
+## All coordinates share the selection screen's 1600 × 900 design canvas.
 
-const CANVAS := Vector2(1440.0, 900.0)
+const CANVAS := Vector2(1600.0, 900.0)
 const INK := Color("10191b")
 const GOLD := Color("c5a16b")
-const STAGE_CENTER := Vector2(645.0, 674.0)
+const STAGE_CENTER := Vector2(742.0, 686.0)
 
 var _painted: Texture2D
 var _ambient: GradientTexture2D
@@ -16,11 +16,11 @@ var _vignette: GradientTexture2D
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if ResourceLoader.exists("res://asset/ui/character_selection/sanctuary_v1.png"):
-		_painted = load("res://asset/ui/character_selection/sanctuary_v1.png")
+	if ResourceLoader.exists("res://asset/ui/character_selection/sanctuary_v2.png"):
+		_painted = load("res://asset/ui/character_selection/sanctuary_v2.png")
 	_ambient = _radial_texture(Color(0.17, 0.33, 0.32, 0.72), Color(0.05, 0.10, 0.11, 0.0))
 	_floor_light = _radial_texture(Color(0.31, 0.43, 0.37, 0.25), Color(0.10, 0.18, 0.18, 0.0))
-	_vignette = _radial_texture(Color(0.025, 0.05, 0.06, 0.0), Color(0.025, 0.05, 0.06, 0.76))
+	_vignette = _radial_texture(Color(0.025, 0.05, 0.06, 0.0), Color(0.025, 0.05, 0.06, 0.44))
 	resized.connect(queue_redraw)
 	queue_redraw()
 
@@ -37,7 +37,7 @@ func _draw() -> void:
 	if _ambient != null:
 		draw_texture_rect(_ambient, Rect2(116.0, -112.0, 1058.0, 1058.0), false)
 	if _painted != null:
-		draw_texture_rect(_painted, Rect2(-75, -70, 1440, 900), false, Color(1, 1, 1, 0.88))
+		draw_texture_rect(_painted, Rect2(-58, 0, 1600, 900), false, Color.WHITE)
 	else:
 		_draw_architecture()
 		_draw_celestial_seal()
@@ -45,10 +45,10 @@ func _draw() -> void:
 		_draw_plinth()
 	_draw_motes()
 	if _vignette != null:
-		draw_texture_rect(_vignette, Rect2(-100.0, -170.0, 1640.0, 1210.0), false)
+		draw_texture_rect(_vignette, Rect2(-80.0, -140.0, 1760.0, 1180.0), false)
 	# Keep the header, roster and statistics silhouettes quiet and readable.
-	draw_rect(Rect2(0.0, 0.0, 1440.0, 116.0), Color(0.035, 0.060, 0.065, 0.27))
-	draw_rect(Rect2(0.0, 796.0, 1440.0, 104.0), Color(0.025, 0.045, 0.050, 0.54))
+	draw_rect(Rect2(0.0, 0.0, 1600.0, 96.0), Color(0.035, 0.060, 0.065, 0.27))
+	draw_rect(Rect2(0.0, 802.0, 1600.0, 98.0), Color(0.025, 0.045, 0.050, 0.54))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 

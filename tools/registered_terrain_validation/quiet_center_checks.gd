@@ -1,12 +1,17 @@
 extends RefCounted
 
-# Room III's deliberately stricter art contract. This proves layer absence and
+# Quiet-center art contract for the registered interior and quiet maps. This proves layer absence and
 # live joint configuration, not the visual quality of imagery baked into Land.
-const EXPECTED_FLOOR_COUNT := 217
-const EXPECTED_TACTICAL_OBSTACLES := 12
+const MANIFEST := preload("res://tools/registered_terrain_validation/manifest_expectations.gd")
 const UNIFORM_TOLERANCE := 0.000001
 
 static func run(battle: Node, arena: ArenaDefinition, grid: GridData, renderer: ArenaTerrainVisualRenderer) -> Dictionary:
+	var expected: Dictionary = MANIFEST.read(arena, battle)
+	if not bool(expected.get("ok", false)):
+		return {"ok": false, "errors": expected.get("errors", ["quiet_center_manifest_invalid"])}
+	var counts: Dictionary = expected.get("summary", {})
+	var expected_obstacles: Dictionary = expected.get("obstacles", {})
+	var expected_floor_count: int = int(counts.get("floor_count", -1))
 	var errors: Array[String] = []
 	var terrain := battle.get_node_or_null("GreekTerrainComposition") as Node2D
 	if terrain == null:
@@ -54,8 +59,11 @@ static func run(battle: Node, arena: ArenaDefinition, grid: GridData, renderer: 
 				allowed_roots.append(node)
 				observed_obstacle_cells[cell] = true
 			tactical_nodes.append({"path": str(node.get_path()), "cell": [cell.x, cell.y], "legitimate_blocking_obstacle": valid})
-	if obstacle_cells.size() != EXPECTED_TACTICAL_OBSTACLES or observed_obstacle_cells.size() != obstacle_cells.size():
-		errors.append("quiet_center_twelve_tactical_obstacles_not_preserved")
+	if obstacle_cells.size() != expected_obstacles.size() or observed_obstacle_cells.size() != obstacle_cells.size():
+		errors.append("quiet_center_manifest_tactical_obstacles_not_preserved")
+	for cell: Vector2i in expected_obstacles:
+		if not obstacle_cells.has(cell) or not observed_obstacle_cells.has(cell):
+			errors.append("quiet_center_manifest_obstacle_cell_missing:%s" % cell)
 	var external_sprites: Array[String] = []
 	_collect_unclassified_sprites(terrain, allowed_roots, external_sprites)
 	var world := battle.get_node_or_null("YSortedWorld")
@@ -96,20 +104,20 @@ static func run(battle: Node, arena: ArenaDefinition, grid: GridData, renderer: 
 			invalid_joint_cells.append([definition.coordinate.x, definition.coordinate.y])
 		if sprite != null and land != null and _effective_z(sprite) > land_z:
 			floors_above_land += 1
-	if checked != EXPECTED_FLOOR_COUNT or neutral_joints != checked:
+	if checked != expected_floor_count or neutral_joints != checked:
 		errors.append("quiet_center_live_interior_joints_not_neutral:%d_of_%d" % [neutral_joints, checked])
 	if floors_above_land != checked:
 		errors.append("quiet_center_land_not_below_all_floor_sprites")
 	return {
 		"ok": errors.is_empty(), "errors": errors,
-		"scope": "Room III only: no separate cosmetic world decor; twelve gameplay obstacles remain; live floor materials do not sample the land painting into interior joints.",
+		"scope": "Quiet-center maps: no separate cosmetic world decor; all manifest gameplay obstacles remain; live floor materials do not sample the land painting into interior joints.",
 		"art_review_limit": "The flat painting rendered by Land still requires GPU visual review. Node and uniform checks do not certify the painting's composition or quietness.",
 		"declared_world_decor_count": declared.size(), "runtime_external_decor_count": external.size(),
 		"live_cosmetic_node_paths": tagged_nodes, "unclassified_world_sprite_paths": external_sprites,
 		"tactical_obstacle_cells": obstacle_cells.size(), "tactical_obstacle_cells_with_visuals": observed_obstacle_cells.size(), "tactical_nodes": tactical_nodes,
 		"ground_details_declared_enabled": bool(detail_style.get("enabled", true)),
 		"ground_detail_fill_count": detail_fills.size() if detail_fills is Array else -1,
-		"live_floor_materials_checked": checked, "interior_joint_land_weight_expected": 0.0,
+		"expected_floor_count_from_manifest": expected_floor_count, "expected_obstacles_from_manifest": expected_obstacles.size(), "live_floor_materials_checked": checked, "interior_joint_land_weight_expected": 0.0,
 		"neutral_interior_joint_materials": neutral_joints, "invalid_joint_cells": invalid_joint_cells,
 		"land_effective_z_index": land_z, "floor_sprites_above_land": floors_above_land,
 		"land_texture_path": land.texture.resource_path if land != null and land.texture != null else "",

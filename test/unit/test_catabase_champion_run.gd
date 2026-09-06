@@ -20,8 +20,8 @@ func after_each() -> void:
 	manager.free()
 
 
-func test_current_catabase_keeps_three_actual_encounters_and_canonical_chassis() -> void:
-	assert_eq(manager.rooms.size(), 3)
+func test_current_catabase_keeps_five_actual_encounters_and_canonical_chassis() -> void:
+	assert_eq(manager.rooms.size(), 5)
 	assert_true(state.uses_champion_progression())
 	assert_eq(state.unit.max_hp.get_int(), 110)
 	assert_eq(state.unit.attack_power.get_int(), 18)
@@ -33,7 +33,7 @@ func test_current_catabase_keeps_three_actual_encounters_and_canonical_chassis()
 	var xp: Array[int] = []
 	for room in manager.rooms:
 		xp.append(room.get_encounter_for_wave(0).base_xp)
-	assert_eq(xp, [100, 120, 140])
+	assert_eq(xp, [100, 120, 140, 160, 180])
 	assert_not_null(manager.get_item_catalog().get_definition(&"minor_healing_potion"))
 
 
@@ -158,3 +158,46 @@ func test_snapshot_preserves_equipped_forge_and_rejected_restore_leaves_live_sta
 	assert_eq(state.unit.armure.get_int(), armor)
 	assert_eq(state.unit.current_hp, max_hp - 7)
 	assert_eq(JSON.parse_string(JSON.stringify(manager.get_inventory_equipment_snapshot())), JSON.parse_string(JSON.stringify(before)))
+
+
+func test_four_equipment_rewards_reach_black_temple_and_only_fifth_victory_ends_run() -> void:
+	assert_eq(manager.rooms.size(), 5)
+	var selected_ids: Array[StringName] = []
+	for index in range(manager.rooms.size()):
+		assert_eq(manager.current_room_index, index)
+		assert_eq(manager.is_final_room(), index == 4)
+		manager._room_outcome_resolved = false
+		manager.begin_combat_report()
+		manager.on_battle_won()
+		var report: CombatReport = manager.get_current_combat_report()
+		assert_not_null(report)
+		if report == null:
+			return
+		assert_true(report.finalized and report.victory)
+		if index < 4:
+			assert_false(manager.complete_post_combat_transition(report.report_id), "Each non-final room requires its equipment choice")
+			assert_true(manager.can_claim_post_combat_equipment(report.report_id))
+			var options: Array[Dictionary] = manager.get_post_combat_reward_options()
+			assert_eq(options.size(), 2, "Every non-final room must still offer two valid choices")
+			if options.size() != 2:
+				return
+			var item_id := StringName(options[0].get("item_id", &""))
+			assert_false(selected_ids.has(item_id))
+			var result: Dictionary = manager.confirm_post_combat_equipment(item_id)
+			assert_true(result.get("success", false), str(result))
+			selected_ids.append(item_id)
+		else:
+			assert_false(manager.can_claim_post_combat_equipment(report.report_id))
+			assert_true(manager.get_post_combat_reward_options().is_empty())
+			assert_eq(manager.confirm_post_combat_equipment(&"unused").get("error_code"), "FINAL_ROOM_HAS_NO_REWARD")
+		assert_true(manager.complete_post_combat_transition(report.report_id))
+		assert_eq(manager.current_room_index, index + 1)
+		assert_eq(manager.run_active, index < 4)
+		if index == 2:
+			assert_eq(manager.get_current_room().room_name, "Catabase IV — Le Gué du Léthé")
+			assert_eq(manager.get_current_encounter_definition().resource_path, "res://data/encounters/catabase_room_04_encounter.tres")
+		elif index == 3:
+			assert_eq(manager.get_current_room().room_name, "Catabase V — Le Temple du Serment Noir")
+			assert_eq(manager.get_current_encounter_definition().resource_path, "res://data/encounters/catabase_room_05_encounter.tres")
+	assert_eq(selected_ids.size(), 4)
+	assert_eq(state.champion_progression.current_xp, 700)

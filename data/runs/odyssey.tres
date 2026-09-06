@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RunData" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="RunData" load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
@@ -8,6 +8,8 @@
 [ext_resource type="Resource" path="res://data/rooms/odyssey/room_02.tres" id="6_room_02"]
 [ext_resource type="Resource" path="res://data/rooms/odyssey/room_03.tres" id="7_room_03"]
 [ext_resource type="Resource" path="res://cinematics/catabase/catabase_intro_v4.tres" id="8_intro"]
+[ext_resource type="Resource" path="res://data/rooms/odyssey/room_04.tres" id="9_room_04"]
+[ext_resource type="Resource" path="res://data/rooms/odyssey/room_05.tres" id="10_room_05"]
 
 [resource]
 script = ExtResource("1_run")
@@ -22,4 +24,4 @@ economy_profile = ExtResource("4_economy")
 intro_sequence = ExtResource("8_intro")
 hub_room_selection_enabled = false
 hub_forced_start_room_index = 0
-rooms = Array[ExtResource("2_room")]([ExtResource("5_room_01"), ExtResource("6_room_02"), ExtResource("7_room_03")])
+rooms = Array[ExtResource("2_room")]([ExtResource("5_room_01"), ExtResource("6_room_02"), ExtResource("7_room_03"), ExtResource("9_room_04"), ExtResource("10_room_05")])

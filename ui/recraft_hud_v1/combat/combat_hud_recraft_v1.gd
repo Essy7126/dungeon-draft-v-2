@@ -11,6 +11,7 @@ const ITEM_SLOT_SCENE := preload(
 	"res://ui/recraft_hud_v1/components/item_slot/item_slot_view.tscn"
 )
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+const MATERIAL_SURFACE := preload("res://ui/recraft_hud_v1/theme/hud_material_surface.gd")
 const VISUAL_THEME_FACTORY := preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
@@ -158,6 +159,8 @@ var _hierarchy_tween: Tween = null
 var _interaction_tween: Tween = null
 var _last_interaction_text := ""
 var _reduced_motion := false
+var _material_surface: ColorRect
+var _premium_bar_tabs: HBoxContainer
 
 
 func _ready() -> void:
@@ -179,6 +182,14 @@ func _ready() -> void:
 	_mp_badge_home_index = _mp_badge.get_index()
 	_resource_badges_home = _resource_badges.get_parent()
 	_resource_badges_home_index = _resource_badges.get_index()
+	_material_surface = MATERIAL_SURFACE.new()
+	_material_surface.name = "MaterialSurface"
+	_hud_band.add_child(_material_surface)
+	_hud_band.move_child(_material_surface, _neutral_background.get_index() + 1)
+	_premium_bar_tabs = HBoxContainer.new()
+	_premium_bar_tabs.name = "PremiumBarTabs"
+	_premium_bar_tabs.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bar_toggle_anchor.add_child(_premium_bar_tabs)
 	_apply_visual_skin()
 
 	_move_btn.set_label("Déplacer")
@@ -294,6 +305,36 @@ func _apply_visual_skin() -> void:
 			item_button.apply_visual_skin(visual_skin)
 	_move_btn.set_icon(visual_skin.icon_move)
 	_end_btn.set_icon(visual_skin.icon_end_turn)
+	_configure_bar_tabs()
+
+
+func _configure_bar_tabs() -> void:
+	var premium := _premium_skin_active()
+	_premium_bar_tabs.visible = premium
+	_bar_toggle.visible = not premium
+	var tab_parent: Container = _premium_bar_tabs if premium else _bar_toggle
+	for tab_button in [_show_spells_button, _show_items_button]:
+		_reparent_control(tab_button, tab_parent)
+		tab_button.toggle_mode = premium
+		tab_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		for style_name in [&"normal", &"hover", &"pressed", &"disabled", &"focus"]:
+			tab_button.remove_theme_stylebox_override(style_name)
+			if premium:
+				var tab_style := tab_button.get_theme_stylebox(style_name).duplicate() as StyleBox
+				if style_name == &"pressed":
+					tab_style = VISUAL_THEME_FACTORY.make_control_style(
+						visual_skin, &"selected", visual_skin.border_regular, visual_skin.radius_control
+					)
+				tab_style.content_margin_top = 1.0
+				tab_style.content_margin_bottom = 1.0
+				tab_style.content_margin_left = 8.0
+				tab_style.content_margin_right = 8.0
+				tab_button.add_theme_stylebox_override(style_name, tab_style)
+	_show_spells_button.text = "SORTS" if premium else "▲"
+	_show_items_button.text = "OBJETS" if premium else "▼"
+	_show_spells_button.tooltip_text = "Afficher les sorts — raccourcis 1 à 4."
+	_show_items_button.tooltip_text = "Afficher les objets — raccourcis 1 à 4."
+	_apply_bar_mode()
 
 
 func _apply_panel_variation(panel: Panel, variation: StringName) -> void:
@@ -580,7 +621,19 @@ func _build_item_slots() -> void:
 			func() -> void: _on_item_slot_pressed(button)
 		)
 		_item_buttons.append(button)
+	_apply_item_slot_theme()
 	_refresh_item_slots()
+
+
+func _apply_item_slot_theme() -> void:
+	for button_value in _item_buttons:
+		var item_button := button_value as RecraftItemSlotView
+		item_button.set_refined_style(_refined_skin_active())
+		item_button.set_frame_override(
+			_active_character_theme.spell_slot_frame_texture
+			if _active_character_theme != null and _premium_skin_active()
+			else null
+		)
 
 
 # Remplit les emplacements avec les objets que le joueur peut déclencher
@@ -636,6 +689,7 @@ func _on_active_relics_changed(_count: int) -> void:
 
 func _set_active_bar_mode(mode: String) -> void:
 	if _active_bar_mode == mode:
+		_apply_bar_mode()
 		return
 	_active_bar_mode = mode
 	_apply_bar_mode()
@@ -651,10 +705,16 @@ func _apply_bar_mode() -> void:
 	var items_visible := _active_bar_mode == BAR_MODE_ITEM
 	_spell_slots_center.visible = not items_visible
 	_item_slots_center.visible = items_visible
-	# La flèche de la vue déjà affichée reste enfoncée : le joueur voit d'un
-	# coup d'œil laquelle des deux barres il regarde.
-	_show_spells_button.disabled = not items_visible
-	_show_items_button.disabled = items_visible
+	# Une sélection n'est pas une indisponibilité : les onglets premium gardent
+	# leur focus et un état enfoncé explicite, sans aspect désactivé.
+	if _premium_skin_active():
+		_show_spells_button.disabled = false
+		_show_items_button.disabled = false
+		_show_spells_button.set_pressed_no_signal(not items_visible)
+		_show_items_button.set_pressed_no_signal(items_visible)
+	else:
+		_show_spells_button.disabled = not items_visible
+		_show_items_button.disabled = items_visible
 	_refresh_shortcut_bindings()
 	_refresh_item_slot_states()
 
@@ -1266,6 +1326,7 @@ func _resolve_character_theme(unit) -> CharacterHUDThemeData:
 
 func _apply_character_theme(unit) -> void:
 	_active_character_theme = _resolve_character_theme(unit)
+	_apply_item_slot_theme()
 	if _active_character_theme == null:
 		var refined_fallback := _refined_skin_active()
 		_character_theme_bar.texture = null
@@ -1709,6 +1770,7 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 	_neutral_background.visible = not _decorative_character_bar_enabled()
 	_character_theme_bar.visible = _decorative_character_bar_enabled()
 	_spellbar_background.visible = false
+	_material_surface.visible = false
 	if _clean_skin_active():
 		_set_control_rect(
 			_neutral_background,
@@ -1867,15 +1929,34 @@ func _apply_premium_chassis_layout(
 		panel_height: float
 	) -> void:
 	var visual_scale := _chassis_visual_scale(viewport_width)
-	var chassis_width := 1444.0 * visual_scale
-	var chassis_height := 140.0 * visual_scale
+	var chassis_width := layout_data.overall_width * visual_scale
+	var chassis_height := layout_data.overall_height * visual_scale
 	var content_left := (viewport_width - chassis_width) * 0.5
 	var content_top := panel_height - chassis_height
-	var character_width := 486.0 * visual_scale
-	var action_left := content_left + 504.0 * visual_scale
-	var turn_left := content_left + 1072.0 * visual_scale
+	var character_width := layout_data.character_identity_width * visual_scale
+	var action_left := content_left + layout_data.premium_action_offset * visual_scale
+	var turn_left := content_left + layout_data.premium_turn_offset * visual_scale
 	var visual_size := _effective_spell_visual_size(viewport_width)
-	var ability_width := 430.0 * visual_scale
+	var ability_width := layout_data.premium_ability_width * visual_scale
+	if visual_skin.material_enabled:
+		_neutral_background.visible = false
+		_character_theme_bar.visible = false
+		_set_control_rect(
+			_material_surface, Rect2(content_left, content_top, chassis_width, chassis_height)
+		)
+		var module_rects: Array[Rect2] = [
+			Rect2(0.0, 0.0, character_width, chassis_height),
+			Rect2(
+				action_left - content_left, 0.0,
+				turn_left - action_left - layout_data.block_separation * visual_scale,
+				chassis_height
+			),
+			Rect2(
+				turn_left - content_left, 0.0,
+				chassis_width - (turn_left - content_left), chassis_height
+			),
+		]
+		_material_surface.configure(visual_skin, module_rects)
 
 	_set_control_rect(
 		_character_anchor,
@@ -1893,7 +1974,7 @@ func _apply_premium_chassis_layout(
 	_set_control_rect(
 		_spell_anchor,
 		Rect2(
-			action_left + 110.0 * visual_scale,
+			action_left + layout_data.premium_ability_offset * visual_scale,
 			content_top + 4.0 * visual_scale,
 			ability_width,
 			132.0 * visual_scale
@@ -1904,12 +1985,24 @@ func _apply_premium_chassis_layout(
 		Rect2(
 			turn_left,
 			content_top,
-			373.0 * visual_scale,
+			chassis_width - (turn_left - content_left),
 			chassis_height
 		)
 	)
 	_action_resources_anchor.visible = false
-	_bar_toggle_anchor.visible = false
+	_bar_toggle_anchor.visible = true
+	_set_control_rect(
+		_bar_toggle_anchor,
+		Rect2(
+			action_left + (
+				layout_data.premium_ability_offset
+				+ (layout_data.premium_ability_width - 188.0) * 0.5
+			) * visual_scale,
+			content_top + 3.0 * visual_scale,
+			188.0 * visual_scale,
+			22.0 * visual_scale
+		)
+	)
 	_set_control_rect(
 		_basic_attack_host,
 		Rect2(0.0, 14.0 * visual_scale, visual_size, 112.0 * visual_scale)
@@ -1924,18 +2017,21 @@ func _apply_premium_chassis_layout(
 				112.0 * visual_scale
 			)
 		)
-	_set_control_rect(
-		_selected_spell_plate,
-		Rect2(
-			0.0,
-			-34.0 * visual_scale,
-			ability_width,
-			28.0 * visual_scale
-		)
-	)
 	_selected_spell_plate.add_theme_font_size_override(
 		"font_size",
 		maxi(roundi(layout_data.contextual_text_size * visual_scale), 12)
+	)
+	# Theme padding can make this label taller than its nominal 28px. Reserve
+	# its actual minimum height above the chassis so it never covers the tabs.
+	var interaction_height := maxf(
+		28.0 * visual_scale, _selected_spell_plate.get_combined_minimum_size().y
+	)
+	_set_control_rect(
+		_selected_spell_plate,
+		Rect2(
+			0.0, -interaction_height - 12.0 * visual_scale,
+			ability_width, interaction_height
+		)
 	)
 
 
@@ -2290,6 +2386,15 @@ func _apply_layout_metrics() -> void:
 
 
 func _apply_bar_toggle_layout(viewport_width: float) -> void:
+	if _premium_skin_active():
+		var tab_scale := _chassis_visual_scale(viewport_width)
+		_premium_bar_tabs.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_premium_bar_tabs.add_theme_constant_override("separation", maxi(roundi(4.0 * tab_scale), 3))
+		for tab_button in [_show_spells_button, _show_items_button]:
+			tab_button.custom_minimum_size = Vector2(90.0, 22.0) * tab_scale
+			tab_button.add_theme_font_override("font", visual_skin.font_regular)
+			tab_button.add_theme_font_size_override("font_size", maxi(roundi(11.0 * tab_scale), 10))
+		return
 	var toggle_scale := (
 		_chassis_visual_scale(viewport_width)
 		if _official_chassis_active()

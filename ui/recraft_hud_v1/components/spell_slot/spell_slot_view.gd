@@ -100,30 +100,62 @@ func apply_calibrated_layout(
 	custom_minimum_size = Vector2(visual_size, visual_size)
 	var icon_inset := roundf((visual_size - icon_size) * 0.5)
 	visual_area.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	shortcut_label.position = Vector2(4.0, 4.0)
-	shortcut_label.size = Vector2(26.0, 24.0)
+	# Keep corner metadata subordinate to the illustration at every HUD scale.
+	var badge_scale := minf(text_scale, visual_size / METRICS.SPELL_VISUAL_SIZE)
+	var badge_inset := maxf(roundf(2.0 * badge_scale), 1.0)
+	var badge_height := roundf(minf(maxf(20.0 * badge_scale, 16.0), visual_size * 0.34))
+	var shortcut_width := roundf(minf(maxf(20.0 * badge_scale, 18.0), visual_size * 0.38))
+	shortcut_label.position = Vector2.ONE * badge_inset
+	shortcut_label.size = Vector2(shortcut_width, badge_height)
 	for icon_control in [background, spell_icon, fallback_label]:
 		icon_control.offset_left = icon_inset
 		icon_control.offset_top = icon_inset
 		icon_control.offset_right = -icon_inset
 		icon_control.offset_bottom = -icon_inset
-	var cost_size := (Vector2(50.0, 24.0) * text_scale).round()
-	cost_badge.offset_left = -cost_size.x
-	cost_badge.offset_top = -cost_size.y
+	var cost_width := roundf(minf(maxf(34.0 * badge_scale, 30.0), visual_size * 0.6))
+	cost_badge.offset_left = -cost_width - badge_inset
+	cost_badge.offset_top = -badge_height - badge_inset
+	cost_badge.offset_right = -badge_inset
+	cost_badge.offset_bottom = -badge_inset
+	var cost_glyph_size := maxf(roundf(11.0 * badge_scale), 9.0)
+	var cost_glyph_inset := maxf(roundf(3.0 * badge_scale), 2.0)
+	cost_icon.anchor_left = 0.0
+	cost_icon.anchor_right = 0.0
+	cost_icon.offset_left = cost_glyph_inset
+	cost_icon.offset_right = cost_glyph_inset + cost_glyph_size
+	cost_icon.offset_top = -cost_glyph_size * 0.5
+	cost_icon.offset_bottom = cost_glyph_size * 0.5
+	cost_label.offset_left = cost_glyph_inset + cost_glyph_size + 1.0
+	cost_label.offset_right = -cost_glyph_inset
 	shortcut_label.add_theme_font_size_override(
 		"font_size",
-		METRICS.scaled_font(16, text_scale)
+		maxi(METRICS.scaled_font(12, badge_scale), 10)
 	)
 	cost_label.add_theme_font_size_override(
 		"font_size",
-		METRICS.scaled_font(15, text_scale)
+		maxi(METRICS.scaled_font(14, badge_scale), 11)
 	)
 	fallback_label.add_theme_font_size_override(
 		"font_size", METRICS.scaled_font(24, text_scale)
 	)
 	cooldown_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(17, text_scale)
+		"font_size", maxi(METRICS.scaled_font(14, badge_scale), 12)
 	)
+	var disc_radius := roundf(minf(34.0 * badge_scale, visual_size * 0.54)) * 0.5
+	cooldown_disc.offset_left = -disc_radius
+	cooldown_disc.offset_top = -disc_radius
+	cooldown_disc.offset_right = disc_radius
+	cooldown_disc.offset_bottom = disc_radius
+	cooldown_label.set_anchors_preset(Control.PRESET_CENTER)
+	cooldown_label.offset_left = -disc_radius
+	cooldown_label.offset_top = -2.0 * badge_scale
+	cooldown_label.offset_right = disc_radius
+	cooldown_label.offset_bottom = disc_radius
+	var cooldown_glyph_size := maxf(roundf(11.0 * badge_scale), 9.0)
+	cooldown_glyph.offset_left = -cooldown_glyph_size * 0.5
+	cooldown_glyph.offset_right = cooldown_glyph_size * 0.5
+	cooldown_glyph.offset_top = -disc_radius + 3.0 * badge_scale
+	cooldown_glyph.offset_bottom = cooldown_glyph.offset_top + cooldown_glyph_size
 	var cross_span := minf(46.0, visual_size * 0.72)
 	for cross_line in [unavailable_cross_a, unavailable_cross_b]:
 		cross_line.offset_left = -cross_span * 0.5
@@ -148,6 +180,7 @@ func configure(
 	)
 	cost_icon.visible = cost_icon.texture != null
 	shortcut_label.text = shortcut
+	shortcut_label.visible = not shortcut.is_empty()
 	tooltip_text = ""
 	_update_accessibility_name()
 
@@ -164,13 +197,18 @@ func get_displayed_icon() -> Texture2D:
 func set_frame_override(texture: Texture2D) -> void:
 	_has_custom_frame = texture != null
 	frame.texture = texture if texture != null else _default_frame_texture
+	_refresh_frame_visibility()
 
 
 func set_refined_style(enabled: bool) -> void:
 	_refined_style = enabled
-	frame.visible = not enabled or _has_custom_frame
-	refined_frame.visible = enabled and not _has_custom_frame
+	_refresh_frame_visibility()
 	_refresh_visuals()
+
+
+func _refresh_frame_visibility() -> void:
+	frame.visible = not _refined_style or _has_custom_frame
+	refined_frame.visible = _refined_style and not _has_custom_frame
 
 
 func set_polish_tuning(
@@ -200,12 +238,17 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 		_refresh_visuals()
 		return
 	for state_id in HudVisualSkinData.INTERACTIVE_STATE_IDS:
-		_state_styles[state_id] = VISUAL_THEME_FACTORY.make_control_style(
+		var frame_style := VISUAL_THEME_FACTORY.make_control_style(
 			skin, state_id, skin.border_thin, skin.radius_control
 		)
+		# The icon already has a background below it. Frames drawn above the
+		# artwork must not repaint an opaque control surface across its center.
+		frame_style.draw_center = false
+		_state_styles[state_id] = frame_style
 	var selection_style := VISUAL_THEME_FACTORY.make_control_style(
 		skin, &"selected", skin.border_emphasis, skin.radius_control
 	)
+	selection_style.draw_center = false
 	selection_overlay.add_theme_stylebox_override("panel", selection_style)
 	var focus_style := VISUAL_THEME_FACTORY.make_control_style(
 		skin,
@@ -248,8 +291,8 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 			skin.radius_round
 		)
 	)
-	shortcut_label.add_theme_font_override("font", skin.font_emphasis)
-	shortcut_label.add_theme_color_override("font_color", skin.text_primary)
+	shortcut_label.add_theme_font_override("font", skin.font_numeric)
+	shortcut_label.add_theme_color_override("font_color", skin.text_secondary)
 	cost_label.add_theme_font_override("font", skin.font_numeric)
 	cost_label.add_theme_color_override("font_color", skin.text_primary)
 	cooldown_label.add_theme_font_override("font", skin.font_numeric)
@@ -338,19 +381,25 @@ func _refresh_visuals() -> void:
 	state_glyph.texture = (
 		_visual_skin.icon_unavailable if _visual_skin != null else null
 	)
-	disabled_overlay.color = Color(0.04, 0.04, 0.04, 0.6)
+	disabled_overlay.color = Color(0.04, 0.04, 0.04, 0.36)
 	if _visual_skin != null:
 		var state_id := _visual_state_id()
 		background.color = _visual_skin.state_background(state_id)
 		refined_frame.add_theme_stylebox_override(
 			"panel", _state_styles.get(state_id)
 		)
-		cooldown_overlay.color = _visual_skin.surface_scrim
+		# Skin supplies hue; tuning owns opacity to retain recognizable artwork.
+		cooldown_overlay.color = Color(
+			_visual_skin.surface_scrim.r,
+			_visual_skin.surface_scrim.g,
+			_visual_skin.surface_scrim.b,
+			_cooldown_opacity
+		)
 		disabled_overlay.color = Color(
 			_visual_skin.surface_scrim.r,
 			_visual_skin.surface_scrim.g,
 			_visual_skin.surface_scrim.b,
-			0.62
+			0.36
 		)
 	frame.modulate = (
 		Color(1.08, 1.08, 1.08, 1.0)
@@ -388,17 +437,17 @@ func _refresh_visuals() -> void:
 	var brightness := 0.96
 	if visual_state == VisualState.HOVER:
 		brightness = 1.06
+	elif locked:
+		saturation *= 0.25
+		brightness = 0.8
 	elif selected:
 		brightness = 1.03
 	elif visual_state in [VisualState.DISABLED, VisualState.UNAFFORDABLE]:
 		saturation *= 1.0 - _desaturation_intensity
-		brightness = 0.68
+		brightness = 0.82
 	elif visual_state == VisualState.COOLDOWN:
-		saturation = 0.04
-		brightness = 0.76
-	elif visual_state in [VisualState.LOCKED, VisualState.SELECTED_LOCKED]:
-		saturation = 0.0
-		brightness = 0.62
+		saturation *= 0.3
+		brightness = 0.86
 	if spell_icon.material is ShaderMaterial:
 		spell_icon.material.set_shader_parameter("saturation", saturation)
 		spell_icon.material.set_shader_parameter("brightness", brightness)

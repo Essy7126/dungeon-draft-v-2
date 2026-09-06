@@ -30,6 +30,14 @@ extends Resource
 @export_category("Turn")
 @export var end_turn_size := Vector2(180.0, 54.0)
 
+@export_category("Premium chassis modules")
+## Offsets in design pixels, measured from the left of the chassis.
+## Frames and interactive controls consume the same metrics.
+@export var premium_action_offset := 504.0
+@export var premium_turn_offset := 1072.0
+@export var premium_ability_offset := 110.0
+@export var premium_ability_width := 430.0
+
 @export_category("Turn banner")
 @export var turn_banner_size := Vector2(300.0, 800.0)
 @export var turn_banner_position := Vector2.ZERO

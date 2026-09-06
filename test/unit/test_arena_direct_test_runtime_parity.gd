@@ -125,6 +125,59 @@ func test_preview_and_runtime_share_painted_camera_framing() -> void:
 		assert_true(bool((cell as Dictionary).visible))
 
 
+func test_keep_painting_in_view_clamps_wide_offset_without_zooming() -> void:
+	var visual := PaintedMapVisualData.new()
+	visual.source_image_size = Vector2i(1920, 1200)
+	var profile := BattlePresentationProfile.new()
+	profile.camera_offset_adjustment = Vector2(160, 0)
+	profile.camera_keep_painting_in_view = true
+	profile.global_unit_scale_multiplier = 1.08
+	var viewport := Vector2(1920, 1080)
+	var result := ArenaCameraFramingService.painted_framing(visual, viewport, profile)
+	assert_true(result.ok)
+	assert_eq(result.position, Vector2(960, 600))
+	assert_eq(result.zoom, Vector2.ONE)
+	var visible_size: Vector2 = viewport / result.zoom
+	var visible_rect := Rect2(result.position - visible_size * 0.5, visible_size)
+	assert_true(Rect2(0, 0, 1920, 1200).encloses(visible_rect), "No side of the viewport exposes unpainted space")
+	assert_eq(profile.camera_offset_adjustment, Vector2(160, 0), "Requested offset stays authored")
+	assert_almost_eq(profile.global_unit_scale_multiplier, 1.08, 0.000001)
+
+
+func test_keep_painting_in_view_uses_compact_slack_and_clamps_both_axes() -> void:
+	var visual := PaintedMapVisualData.new()
+	visual.source_image_size = Vector2i(1920, 1200)
+	var profile := BattlePresentationProfile.new()
+	profile.camera_offset_adjustment = Vector2(160, 90)
+	profile.camera_keep_painting_in_view = true
+	var viewport := Vector2(1200, 896)
+	var result := ArenaCameraFramingService.painted_framing(visual, viewport, profile)
+	assert_true(result.ok)
+	assert_almost_eq(result.position.x - 960.0, 156.428571, 0.001)
+	assert_almost_eq(result.position.y, 600.0, 0.001)
+	assert_almost_eq(result.zoom.x, 896.0 / 1200.0, 0.000001)
+	assert_eq(result.zoom.x, result.zoom.y)
+	var visible_size: Vector2 = viewport / result.zoom
+	var visible_rect := Rect2(result.position - visible_size * 0.5, visible_size)
+	assert_true(visible_rect.position.x >= -0.001 and visible_rect.position.y >= -0.001)
+	assert_true(visible_rect.end.x <= 1920.001 and visible_rect.end.y <= 1200.001, "Compact viewport stays within painting")
+
+
+func test_painted_camera_offset_remains_unbounded_by_default() -> void:
+	var visual := PaintedMapVisualData.new()
+	visual.source_image_size = Vector2i(1920, 1200)
+	visual.image_offset = Vector2(35, 70)
+	visual.camera_offset = Vector2(25, -30)
+	var profile := BattlePresentationProfile.new()
+	assert_false(profile.camera_keep_painting_in_view)
+	profile.camera_offset_adjustment = Vector2(160, 90)
+	var result := ArenaCameraFramingService.painted_framing(visual, Vector2(1920, 1080), profile)
+	assert_eq(result.position, Vector2(1180, 730), "Legacy offsets remain additive when disabled")
+	assert_eq(result.zoom, Vector2.ONE)
+	var without_profile := ArenaCameraFramingService.painted_framing(visual, Vector2(1920, 1080))
+	assert_eq(without_profile.position, Vector2(1020, 640), "No-profile framing keeps the image origin and visual offset")
+
+
 func test_game_manager_allows_empty_roster_only_for_direct_visual_test() -> void:
 	var arena := _hybrid_working_copy()
 	assert_not_null(arena)

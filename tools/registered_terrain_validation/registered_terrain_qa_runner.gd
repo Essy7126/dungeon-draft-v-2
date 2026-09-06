@@ -1,7 +1,7 @@
 extends Node
 
 ## Production Catabase traversal. This runner owns no map and changes no resource.
-## Movement/guard are verified in all three rooms; only rooms I and II end by QA force.
+## Movement/guard are verified in all five rooms; only rooms I-IV end by QA force.
 var _run_data: RunData
 const REGISTERED_SCENE := "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn"
 const GEOMETRY := preload("res://tools/registered_terrain_validation/geometry_checks.gd")
@@ -11,23 +11,31 @@ const BAND := preload("res://tools/registered_terrain_validation/combat_band_che
 const DECOR := preload("res://tools/registered_terrain_validation/quiet_center_checks.gd")
 const INTERACTIONS := preload("res://tools/registered_terrain_validation/interaction_checks.gd")
 const PATHS := preload("res://tools/registered_terrain_validation/validation_paths.gd")
+const MANIFEST := preload("res://tools/registered_terrain_validation/manifest_expectations.gd")
+const FRAMING := preload("res://tools/registered_terrain_validation/framing_proportion_checks.gd")
+const QA_TIMEOUT_SECONDS := 300.0
 const EXPECTED_PLANS := [
 	"res://data/arenas/greek_drawn_courtyard_v1/terrain_plan.json",
 	"res://data/arenas/ashen_hell_courtyard_v1/terrain_plan.json",
 	"res://data/arenas/silent_judgment_courtyard_v1/terrain_plan.json",
+	"res://data/arenas/lethe_crossing_v1/terrain_plan.json",
+	"res://data/arenas/black_oath_temple_v1/terrain_plan.json",
 ]
 const EXPECTED_ENCOUNTERS := [
 	"res://data/encounters/catabase_frail_hellspawn_encounter.tres",
 	"res://data/encounters/odyssey_room_02_encounter.tres",
 	"res://data/encounters/odyssey_room_03_encounter.tres",
+	"res://data/encounters/catabase_room_04_encounter.tres",
+	"res://data/encounters/catabase_room_05_encounter.tres",
 ]
-# The run definition is fixed; room I/II bytes are instead observed at run start/end.
-const PRESERVED_FILES := {
-	"res://data/runs/odyssey.tres": "901232e1c07062fc1eb62ab2483f4cc6fdf29e4397458eefe3a018b94b41b992",
-}
-const STABLE_ROOM_FILES := [
+# Ordered room additions are authorized. Assert structure, then byte stability
+# during this QA pass instead of comparing against a former run hash.
+const EXPECTED_ROOMS := [
 	"res://data/rooms/odyssey/room_01.tres",
 	"res://data/rooms/odyssey/room_02.tres",
+	"res://data/rooms/odyssey/room_03.tres",
+	"res://data/rooms/odyssey/room_04.tres",
+	"res://data/rooms/odyssey/room_05.tres",
 ]
 # Informational only: concurrent content work added encounter fields and the room-II spectre.
 # Live rosters and paths are asserted; encounter bytes must remain stable during this run.
@@ -43,7 +51,7 @@ var _finished := false
 var _report: Dictionary = {
 	"ok": true,
 	"scope": "Catabase real production scenes, movement/guard and guarded room transitions",
-	"combat_completion": "QA-forced Battle._end_battle(true) in rooms I and II only; room III remains in combat after its actions. No complete combat or balancing claim",
+	"combat_completion": "QA-forced Battle._end_battle(true) in rooms I-IV only; room V remains in combat after its actions. No complete combat or balancing claim",
 	"input_scope": "Actual GridView hover/click endpoints and Battle controllers; no OS pointer injection",
 	"run_path": "res://data/runs/odyssey.tres",
 	"rooms": [], "transitions": [], "captures": [], "errors": [],
@@ -75,10 +83,10 @@ func _run() -> void:
 	get_window().size = _requested_resolution
 	_report["requested_resolution"] = [_requested_resolution.x, _requested_resolution.y]
 	_report["started_at_utc"] = Time.get_datetime_string_from_system(true)
-	_report["preserved_resources"] = _preserved_resources()
+	_report["run_resource"] = _observe_run_resource()
 	_report["encounter_resources"] = _observe_encounter_resources()
 	_report["stable_room_resources"] = _observe_room_resources()
-	get_tree().create_timer(180.0).timeout.connect(_on_timeout)
+	get_tree().create_timer(QA_TIMEOUT_SECONDS).timeout.connect(_on_timeout)
 	# Keep this observer attached to root while GameManager replaces current_scene.
 	get_tree().current_scene = null
 	_run_data = load("res://data/runs/odyssey.tres") as RunData
@@ -86,8 +94,11 @@ func _run() -> void:
 		_fail("Catabase resource or a referenced dependency could not load")
 		_finish()
 		return
+	if not _check_run_structure():
+		_finish()
+		return
 	GameManager.cleanup_run_state()
-	if _run_data.rooms.size() != 3 or not GameManager.configure_next_run(_run_data, 0) or not GameManager.start_configured_run():
+	if not GameManager.configure_next_run(_run_data, 0) or not GameManager.start_configured_run():
 		_fail("Catabase could not start through the normal GameManager pipeline")
 		_finish()
 		return
@@ -98,7 +109,7 @@ func _run() -> void:
 		_fail("Catabase did not begin in room I")
 		_finish()
 		return
-	for room_index in range(3):
+	for room_index in range(EXPECTED_ROOMS.size()):
 		if _finished:
 			return
 		if GameManager.current_room_index != room_index:
@@ -117,6 +128,10 @@ func _run() -> void:
 		var room_result: Dictionary = _room_contract(battle, room_index)
 		_report.rooms.append(room_result)
 		_validate_registered_room(battle, room_index, room_result)
+		if room_index == 4:
+			var frame_before: Dictionary = await FRAMING.run(battle)
+			room_result["framing_before_actions"] = frame_before
+			_merge_errors(frame_before, "room_5_framing_before_actions")
 		if not await _capture("room_%02d_combat" % (room_index + 1)):
 			break
 		var hero: Unit = _first_hero(battle)
@@ -134,18 +149,22 @@ func _run() -> void:
 		room_result["interactions"] = interaction
 		_merge_errors(interaction, "room_%d_interactions" % (room_index + 1))
 		probe.queue_free()
+		if room_index == 4:
+			var frame_after: Dictionary = await FRAMING.run(battle)
+			room_result["framing_after_actions"] = frame_after
+			_merge_errors(frame_after, "room_5_framing_after_actions")
 		if not await _capture("room_%02d_after_move_guard" % (room_index + 1)):
 			break
 		_write_report()
 		if not bool(interaction.get("ok", false)):
 			break
-		if room_index < 2:
+		if room_index < EXPECTED_ROOMS.size() - 1:
 			if not await _advance_room(battle, room_index):
 				break
 		else:
 			room_result["left_in_live_combat"] = get_tree().current_scene == battle and GameManager.current_room_index == room_index and bool(battle.call("_can_accept_player_intent"))
 			if not bool(room_result["left_in_live_combat"]):
-				_fail("Room III did not remain in live combat after movement and guard")
+				_fail("Room V did not remain in live combat after movement and guard")
 		_write_report()
 	_finish()
 
@@ -217,7 +236,7 @@ func _room_contract(battle: Node, room_index: int) -> Dictionary:
 	actual_ids.sort()
 	var encounter_path: String = encounter.resource_path if encounter != null else ""
 	var passed: bool = expected_ids == actual_ids and not hero_ids.is_empty() and invalid_anchors.is_empty() and encounter_path == EXPECTED_ENCOUNTERS[room_index]
-	passed = passed and battle.scene_file_path == REGISTERED_SCENE
+	passed = passed and battle.scene_file_path == REGISTERED_SCENE and room.resource_path == EXPECTED_ROOMS[room_index]
 	if not passed:
 		_fail("Room %d production scene/encounter/deployment contract failed" % (room_index + 1))
 	return {
@@ -256,8 +275,15 @@ func _validate_registered_room(battle: Node, room_index: int, result: Dictionary
 	result["combat_ground_band"] = band
 	for key: String in ["geometry", "terrain_support", "terrain_material", "combat_ground_band"]:
 		_merge_errors(result[key], "room_%d_%s" % [room_index + 1, key])
-	if int(geometry.get("floor_cells", -1)) != 217 or int(geometry.get("platform", {}).get("expected_annotation_groups", -1)) != 5:
-		_fail("Room %d does not preserve the 217-floor/five-pit template" % (room_index + 1))
+	var expected: Dictionary = MANIFEST.read(arena, battle)
+	_merge_errors(expected, "room_%d_manifest" % (room_index + 1))
+	var counts: Dictionary = expected.get("summary", {})
+	result["manifest_expectations"] = counts
+	var platform_counts: Dictionary = geometry.get("platform", {})
+	if int(geometry.get("floor_cells", -1)) != int(counts.get("floor_count", -2)) or int(geometry.get("void_cells", -1)) != int(counts.get("void_count", -2)) or int(platform_counts.get("expected_annotation_groups", -1)) != int(counts.get("pit_group_count", -2)) or int(platform_counts.get("pit_cells", -1)) != int(counts.get("pit_cell_count", -2)):
+		_fail("Room %d live floor/void/pit geometry differs from its manifest cell lists" % (room_index + 1))
+	if int(geometry.get("prop_anchor_cases", -1)) != int(counts.get("blocked_count", -2)):
+		_fail("Room %d tactical obstacle visuals differ from its manifest" % (room_index + 1))
 	if bool(band.get("skipped", false)) or not bool(battle.get("combat_band_active")):
 		_fail("Room %d requires a visible combat ground band" % (room_index + 1))
 	var terrain := battle.get_node_or_null("GreekTerrainComposition")
@@ -266,10 +292,10 @@ func _validate_registered_room(battle: Node, room_index: int, result: Dictionary
 	result["water_texture_path"] = str(plan.get("water", {}).get("texture_path", ""))
 	result["world_decor_count"] = plan.get("world_decor", []).size()
 	result["manifest_path"] = PATHS.manifest_path(arena, battle)
-	if room_index == 2:
+	if room_index >= 2:
 		var quiet_center: Dictionary = DECOR.run(battle, arena, grid, renderer)
 		result["quiet_center_layers"] = quiet_center
-		_merge_errors(quiet_center, "room_3_quiet_center_layers")
+		_merge_errors(quiet_center, "room_%d_quiet_center_layers" % (room_index + 1))
 
 func _advance_room(battle: Node, from_index: int) -> bool:
 	var transition: Dictionary = {
@@ -326,24 +352,43 @@ func _advance_room(battle: Node, from_index: int) -> bool:
 	await _settle(12)
 	transition["actual_next_room_index"] = GameManager.current_room_index
 	transition["next_room_path"] = GameManager.get_current_room().resource_path
-	transition["ok"] = GameManager.current_room_index == from_index + 1
+	transition["ok"] = GameManager.current_room_index == from_index + 1 and transition["next_room_path"] == EXPECTED_ROOMS[from_index + 1]
 	if not bool(transition.ok):
 		_fail("GameManager did not advance to the expected next room")
 	return bool(transition.ok)
 
-func _preserved_resources() -> Array:
-	var result: Array = []
-	for path: String in PRESERVED_FILES:
-		var actual := FileAccess.get_sha256(path).to_lower()
-		var matches: bool = actual == PRESERVED_FILES[path]
-		result.append({"path": path, "sha256": actual, "unchanged": matches})
-		if not matches:
-			_fail("Preserved Catabase resource changed: " + path)
-	return result
+func _observe_run_resource() -> Dictionary:
+	var path := "res://data/runs/odyssey.tres"
+	var actual: String = FileAccess.get_sha256(path).to_lower()
+	if actual.is_empty():
+		_fail("Cannot observe Catabase run resource at start")
+	return {"path": path, "observed_at_run_start": actual}
+
+func _check_run_structure() -> bool:
+	var actual_paths: Array[String] = []
+	for room: RoomData in _run_data.rooms:
+		actual_paths.append(room.resource_path if room != null else "")
+	var matches: bool = actual_paths.size() == EXPECTED_ROOMS.size()
+	for index in range(mini(actual_paths.size(), EXPECTED_ROOMS.size())):
+		matches = matches and actual_paths[index] == EXPECTED_ROOMS[index]
+	_report["run_ordered_room_paths"] = actual_paths
+	_report["run_ordered_room_paths_ok"] = matches
+	if not matches:
+		_fail("Catabase must contain exactly rooms I, II, III, IV and V in that order")
+	return matches
+
+func _check_run_stability() -> void:
+	var record: Dictionary = _report.get("run_resource", {})
+	var current: String = FileAccess.get_sha256("res://data/runs/odyssey.tres").to_lower()
+	var stable: bool = not current.is_empty() and current == str(record.get("observed_at_run_start", ""))
+	record["observed_after_run"] = current
+	record["stable_during_run"] = stable
+	if not stable:
+		_fail("Catabase run resource changed during the QA pass")
 
 func _observe_room_resources() -> Array:
 	var result: Array = []
-	for path: String in STABLE_ROOM_FILES:
+	for path: String in EXPECTED_ROOMS:
 		var actual: String = FileAccess.get_sha256(path).to_lower()
 		if actual.is_empty():
 			_fail("Cannot observe unchanged room resource at run start: " + path)
@@ -358,7 +403,7 @@ func _check_room_stability() -> void:
 		record["observed_after_run"] = current
 		record["stable_during_run"] = stable
 		if not stable:
-			_fail("Room I/II resource changed during the QA run: " + path)
+			_fail("Room resource changed during the QA run: " + path)
 
 func _observe_encounter_resources() -> Array:
 	var result: Array = []
@@ -370,7 +415,7 @@ func _observe_encounter_resources() -> Array:
 		result.append({
 			"path": path, "observed_at_run_start": actual,
 			"historical_pre_promotion_sha256": historical,
-			"historical_baseline_changed": actual != historical,
+			"historical_baseline_changed": not historical.is_empty() and actual != historical,
 			"historical_change_scope": "Informational: concurrent progression fields and room-II spectre integration; current paths and rosters are verified against live units",
 		})
 	return result
@@ -384,6 +429,31 @@ func _check_encounter_stability() -> void:
 		record["stable_during_run"] = stable
 		if not stable:
 			_fail("Encounter resource changed during the QA run: " + path)
+
+func _compare_framing_reference() -> void:
+	var path: String = _argument("--compare-report=")
+	if path.is_empty():
+		_report["cross_resolution_framing"] = {
+			"status": "not_requested", "ok": true,
+			"scope": "Per-resolution V framing measured; use --compare-report=FIRST_REPORT_JSON on the second resolution to prove stable unit/tile proportions across both runs.",
+		}
+		return
+	var previous: Variant = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
+	if not previous is Dictionary or not bool(previous.get("ok", false)) or previous.get("rooms", []).size() != EXPECTED_ROOMS.size() or _report.rooms.size() != EXPECTED_ROOMS.size():
+		_fail("Cross-resolution comparison requires a successful five-room reference report and a complete current traversal")
+		return
+	var previous_room: Dictionary = previous["rooms"][4]
+	var current_room: Dictionary = _report.rooms[4]
+	if previous_room.get("registered_plan_path", "") != current_room.get("registered_plan_path", ""):
+		_fail("Cross-resolution comparison requires the same room V registered plan")
+		return
+	var comparison: Dictionary = FRAMING.compare_cross_resolution(
+		current_room.get("framing_before_actions", {}),
+		previous_room.get("framing_before_actions", {}))
+	comparison["reference_report_path"] = path
+	comparison["status"] = "compared"
+	_report["cross_resolution_framing"] = comparison
+	_merge_errors(comparison, "room_5_cross_resolution_framing")
 
 func _first_hero(battle: Node) -> Unit:
 	var units: Array = battle.get("units")
@@ -483,28 +553,36 @@ func _write_report() -> void:
 
 func _on_timeout() -> void:
 	if not _finished:
-		_fail("Global QA timeout after 180 seconds")
+		_fail("Global QA timeout after %.0f seconds" % QA_TIMEOUT_SECONDS)
 		_finish()
 
 func _finish() -> void:
 	if _finished:
 		return
 	_finished = true
-	if _report.rooms.size() != 3 or _report.transitions.size() != 2:
-		_fail("Incomplete traversal: expected three loaded rooms and two guarded transitions")
-	if _report.captures.size() != 6:
-		_fail("Incomplete GPU captures: expected combat and after-move/guard images in each of three rooms")
+	if _report.rooms.size() != EXPECTED_ROOMS.size() or _report.transitions.size() != EXPECTED_ROOMS.size() - 1:
+		_fail("Incomplete traversal: expected five loaded rooms and four guarded transitions")
+	if _report.captures.size() != EXPECTED_ROOMS.size() * 2:
+		_fail("Incomplete GPU captures: expected combat and after-move/guard images in each of five rooms")
+	if _report.rooms.size() == EXPECTED_ROOMS.size():
+		var previous: Dictionary = _report.rooms[2].get("manifest_expectations", {})
+		var final_map: Dictionary = _report.rooms[3].get("manifest_expectations", {})
+		var different_floor: bool = not str(final_map.get("floor_cell_signature", "")).is_empty() and final_map.get("floor_cell_signature") != previous.get("floor_cell_signature")
+		_report["room_iv_floor_topology_differs_from_room_iii"] = different_floor
+		if not different_floor:
+			_fail("Room IV must have a distinct combat-floor topology from room III")
 	var successful_action_rooms := 0
 	for room_result: Dictionary in _report.rooms:
 		var interactions: Dictionary = room_result.get("interactions", {})
 		if bool(interactions.get("ok", false)):
 			successful_action_rooms += 1
 	_report["rooms_with_successful_movement_and_guard"] = successful_action_rooms
-	if successful_action_rooms != 3:
-		_fail("Movement and guard must succeed independently in all three rooms")
+	if successful_action_rooms != EXPECTED_ROOMS.size():
+		_fail("Movement and guard must succeed independently in all five rooms")
 	_check_encounter_stability()
 	_check_room_stability()
-	_report["preserved_resources_after_run"] = _preserved_resources()
+	_check_run_stability()
+	_compare_framing_reference()
 	_report["finished_at_utc"] = Time.get_datetime_string_from_system(true)
 	_write_report()
 	print("REGISTERED_TERRAIN_QA=" + JSON.stringify(_report))

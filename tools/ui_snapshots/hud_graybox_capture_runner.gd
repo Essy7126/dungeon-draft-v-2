@@ -10,6 +10,7 @@ const RESOLUTIONS := [
 ]
 const STATES: Array[StringName] = [
 	&"idle",
+	&"items",
 	&"hover",
 	&"selected",
 	&"unavailable",
@@ -130,8 +131,13 @@ func _capture_state(state_id: StringName, resolution: Vector2i) -> void:
 	var resource_path := directory.path_join(file_name)
 	var absolute_path := ProjectSettings.globalize_path(resource_path)
 	var error := image.save_png(absolute_path) if image != null else ERR_CANT_CREATE
-	var valid := error == OK and _image_has_visual_range(image)
 	var metrics := gallery.get_validation_metrics()
+	var valid := error == OK and _image_has_visual_range(image) \
+		and bool(metrics.get("setup_valid", false)) \
+		and bool(metrics.get("anchors_do_not_overlap", false)) \
+		and bool(metrics.get("hud_inside_viewport", false)) \
+		and bool(metrics.get("interaction_plate_text_fits", false)) \
+		and bool(metrics.get("premium_tabs_valid", false))
 	metrics["resolution"] = [resolution.x, resolution.y]
 	_metrics.append(metrics)
 	_manifest.append({
@@ -141,9 +147,14 @@ func _capture_state(state_id: StringName, resolution: Vector2i) -> void:
 		"absolute_path": absolute_path,
 		"sha256": FileAccess.get_sha256(absolute_path) if error == OK else "",
 		"result": "success" if valid else "failure",
+		"setup_valid": metrics.get("setup_valid", false),
+		"setup_errors": metrics.get("setup_errors", []),
 		"anchors_do_not_overlap": metrics.get("anchors_do_not_overlap", false),
 		"hud_inside_viewport": metrics.get("hud_inside_viewport", false),
 		"interaction_plate_text_fits": metrics.get("interaction_plate_text_fits", false),
+		"premium_tabs_valid": metrics.get("premium_tabs_valid", false),
+		"active_bar_mode": metrics.get("active_bar_mode", ""),
+		"item_empty_slot_count": metrics.get("item_empty_slot_count", 0),
 	})
 	gallery.queue_free()
 	await get_tree().process_frame
@@ -229,6 +240,11 @@ func _write_validation_report() -> void:
 		"",
 		"États : `%s`." % "`, `".join(STATES.map(func(value): return String(value))),
 		"",
+		"Une capture échoue si le setup est incomplet, si les ancres se chevauchent, ",
+		"si le HUD déborde, si le texte contextuel ne tient pas ou si les onglets ",
+		"premium sont masqués, hors écran ou en collision avec les contrôles visibles.",
+		"L’état `items` vérifie la barre d’objets avec quatre emplacements vides.",
+		"",
 		"| Résolution | Captures | Échecs | Texte contextuel tronqué | Ancres en collision | Bandeau / tour | Feedback / bandeau | Fin de tour / dock | Hors viewport |",
 		"|---|---:|---:|---:|---:|---:|---:|---:|---:|",
 	]
@@ -251,6 +267,20 @@ func _write_validation_report() -> void:
 			metrics.filter(func(entry): return entry.context_feedback_intersects_interaction).size(),
 			metrics.filter(func(entry): return entry.end_turn_intersects_utility_dock).size(),
 			metrics.filter(func(entry): return not entry.hud_inside_viewport).size(),
+		])
+	lines.append_array([
+		"",
+		"| Résolution | Setup incomplet | Onglets premium invalides |",
+		"|---|---:|---:|",
+	])
+	for resolution in RESOLUTIONS:
+		var checks := _metrics.filter(func(entry):
+			return entry.resolution == [resolution.x, resolution.y]
+		)
+		lines.append("| %dx%d | %d | %d |" % [
+			resolution.x, resolution.y,
+			checks.filter(func(entry): return not entry.setup_valid).size(),
+			checks.filter(func(entry): return not entry.premium_tabs_valid).size(),
 		])
 	var sheet_prefix := "contact_sheet_achilles_premium" if _premium_skin else "contact_sheet"
 	var sheet_names: Array[String] = []
