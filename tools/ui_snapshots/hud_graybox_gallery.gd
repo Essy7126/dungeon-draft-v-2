@@ -17,7 +17,9 @@ const PREMIUM_VISUAL_SKIN: HudVisualSkinData = preload(
 const PREMIUM_CHARACTER_THEME: CharacterHUDThemeData = preload(
 	"res://data/ui/achilles_hud_theme_refined.tres"
 )
-const ACHILLES_UNIT_DATA: UnitData = preload("res://data/units/allies/achilles.tres")
+const PREMIUM_RUN: RunData = preload("res://data/runs/odyssey.tres")
+# Preserve the original damaged-health art state, not a claimed live combat value.
+const PREMIUM_SYNTHETIC_HEALTH_RATIO := 86.0 / 110.0
 const SKELETON_UNIT_DATA: UnitData = preload(
 	"res://data/units/ennemie/skeleton_melee.tres"
 )
@@ -46,14 +48,19 @@ var _annotation: HudGrayboxAnnotation = null
 var _timeline: TurnOrderTimeline = null
 var _turn_queue: TurnQueue = null
 var _configuration_applied := false
+var _fixture_spells: Array[Spell] = []
+var _source_errors := PackedStringArray()
+var _premium_hero_data: UnitData = null
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_backdrop()
+	_load_fixture_spells()
 	_fixture = FIXTURE_UNIT.new() as HudGrayboxFixtureUnit
-	_fixture.configure_for_state(state_id, SPELLS)
+	_fixture.configure_for_state(state_id, _fixture_spells)
+	_configure_premium_fixture_stats()
 	_hud = HUD_SCENE.instantiate()
 	_hud.skin_variant = 2
 	_hud.layout_data = LAYOUT
@@ -75,11 +82,55 @@ func _ready() -> void:
 	gallery_ready.emit()
 
 
+func _load_fixture_spells() -> void:
+	_fixture_spells.clear()
+	_source_errors.clear()
+	_premium_hero_data = null
+	if not premium_skin:
+		_fixture_spells.assign(SPELLS)
+		return
+	# Premium captures must use the same resolved loadout as the actual run,
+	# not the historical four spells whose IDs no longer match production.
+	var resolution := RunHeroResolver.resolve_runtime_hero_data(PREMIUM_RUN, false)
+	_source_errors.append_array(resolution.errors)
+	for hero_data in resolution.heroes:
+		if hero_data.get_effective_unit_id() == &"achilles":
+			_premium_hero_data = hero_data
+			_fixture_spells.assign(hero_data.spells)
+			break
+	if _fixture_spells.size() != 4:
+		_source_errors.append("Catabase must resolve four canonical Achilles spells.")
+
+
+func _configure_premium_fixture_stats() -> void:
+	if not premium_skin or _premium_hero_data == null:
+		return
+	_fixture.character_data = _premium_hero_data
+	_fixture.unit_id = _premium_hero_data.get_effective_unit_id()
+	_fixture.unit_name = _premium_hero_data.unit_name
+	_fixture.sprite_frames = _premium_hero_data.sprite_frames
+	_fixture.sprite_scale = _premium_hero_data.sprite_scale
+	_fixture.idle_animation = _premium_hero_data.idle_animation
+	_fixture.visual_scene = _premium_hero_data.visual_scene
+	_fixture.preview_visual_scene = _premium_hero_data.preview_visual_scene
+	_fixture.basic_attack_enabled = _premium_hero_data.basic_attack_enabled
+	_fixture.max_hp.base_value = _premium_hero_data.max_hp
+	_fixture.max_ap.base_value = _premium_hero_data.max_ap
+	_fixture.max_mp.base_value = _premium_hero_data.max_mp
+	_fixture.current_hp = roundi(_fixture.max_hp.get_int() * PREMIUM_SYNTHETIC_HEALTH_RATIO)
+	_fixture.current_ap = _fixture.max_ap.get_int()
+	_fixture.current_mp = _fixture.max_mp.get_int()
+	if state_id == &"unavailable":
+		_fixture.current_ap = mini(1, _fixture.current_ap)
+
+
 func _build_premium_timeline() -> void:
+	if _premium_hero_data == null:
+		return
 	_timeline = TURN_ORDER_TIMELINE_SCENE.instantiate() as TurnOrderTimeline
 	_timeline.visual_skin = PREMIUM_VISUAL_SKIN
 	add_child(_timeline)
-	var achilles := Unit.from_data(ACHILLES_UNIT_DATA)
+	var achilles := Unit.from_data(_premium_hero_data)
 	var skeleton := Unit.from_data(SKELETON_UNIT_DATA)
 	_turn_queue = TurnQueue.new()
 	_turn_queue.setup([achilles, skeleton])
@@ -97,13 +148,15 @@ func _build_backdrop() -> void:
 
 
 func _configure_hud() -> void:
+	if _fixture_spells.size() != 4:
+		return
 	_hud.set_reduced_motion(true)
 	_hud.set_ui_mode(0)
 	_hud.update_info(_fixture)
 	_hud.build_spell_buttons(_fixture)
 	_hud.set_active_mode("", null)
 	if state_id in [&"targeting_valid", &"targeting_invalid", &"resolving"]:
-		_hud.set_active_mode("spell", SPELLS[0])
+		_hud.set_active_mode("spell", _fixture_spells[0])
 	_hud.apply_presentation_snapshot(_snapshot_for_state())
 	match state_id:
 		&"items":
@@ -116,13 +169,13 @@ func _configure_hud() -> void:
 			# A selection exists just before the presentation authority enters
 			# PLAYER_TARGETING. Apply it after the idle snapshot so the fixture can
 			# isolate the persistent selected cue from the targeting hierarchy.
-			_hud.set_active_mode("spell", SPELLS[1])
+			_hud.set_active_mode("spell", _fixture_spells[1])
 		&"unavailable":
-			_hud.show_context_feedback("PA insuffisants · 1 disponible / 3 requis", &"error")
+			_hud.show_context_feedback("PA insuffisants · 1 disponible / %d requis" % _fixture_spells[0].ap_cost, &"error")
 		&"cooldown":
-			_hud.show_context_feedback("Percée en recharge · encore 2 activations", &"warning")
+			_hud.show_context_feedback("%s en recharge · encore 2 activations" % _fixture_spells[2].spell_name, &"warning")
 		&"locked":
-			_hud.show_context_feedback("Garde d’airain déjà utilisée pendant cette activation", &"info")
+			_hud.show_context_feedback("%s déjà utilisée pendant cette activation" % _fixture_spells[3].spell_name, &"info")
 	_hud._apply_layout_metrics()
 	_configuration_applied = true
 
@@ -134,13 +187,13 @@ func _snapshot_for_state() -> Dictionary:
 			snapshot["phase_name"] = &"PLAYER_TARGETING"
 			snapshot["selection_mode"] = &"spell"
 			snapshot["focus_active"] = true
-			snapshot["feedback_text"] = "Cible valide · portée 2 · 2 PA"
+			snapshot["feedback_text"] = "Cible valide · portée %d · %d PA" % [_fixture_spells[0].spell_range, _fixture_spells[0].ap_cost]
 			snapshot["feedback_kind"] = &"info"
 		&"targeting_invalid":
 			snapshot["phase_name"] = &"PLAYER_TARGETING"
 			snapshot["selection_mode"] = &"spell"
 			snapshot["focus_active"] = true
-			snapshot["feedback_text"] = "Cible hors de portée · choisissez une case à 1–2"
+			snapshot["feedback_text"] = "Cible hors de portée · choisissez une case à %d–%d" % [_fixture_spells[0].minimum_range, _fixture_spells[0].spell_range]
 			snapshot["feedback_kind"] = &"error"
 		&"resolving":
 			snapshot = {
@@ -150,7 +203,7 @@ func _snapshot_for_state() -> Dictionary:
 				"selection_mode": &"spell",
 				"resolution_kind": &"spell",
 				"focus_active": true,
-				"feedback_text": "Frappe de lance · résolution en cours",
+				"feedback_text": "%s · résolution en cours" % _fixture_spells[0].spell_name,
 				"feedback_kind": &"info",
 			}
 		&"enemy_turn":
@@ -202,6 +255,21 @@ func get_validation_metrics() -> Dictionary:
 			slot_rects.append(_rect_to_array(slot.get_global_rect()))
 	return {
 		"state": String(state_id),
+		"loadout_source": PREMIUM_RUN.resource_path if premium_skin else "legacy_component_fixture",
+		"stats_source": PREMIUM_RUN.resource_path if premium_skin else "legacy_component_fixture",
+		"synthetic_availability": true,
+		"synthetic_current_hp": true,
+		"synthetic_health_ratio": PREMIUM_SYNTHETIC_HEALTH_RATIO if premium_skin else 86.0 / 110.0,
+		"fixture_stats": {
+			"max_hp": _fixture.max_hp.get_int(),
+			"current_hp": _fixture.current_hp,
+			"max_ap": _fixture.max_ap.get_int(),
+			"current_ap": _fixture.current_ap,
+			"max_mp": _fixture.max_mp.get_int(),
+			"current_mp": _fixture.current_mp,
+			"basic_attack_enabled": _fixture.basic_attack_enabled,
+		},
+		"spell_ids": _fixture_spells.map(func(spell: Spell): return String(spell.get_effective_spell_id())),
 		"setup_valid": setup_errors.is_empty(),
 		"setup_errors": setup_errors,
 		"active_bar_mode": _hud.get_active_bar_mode(),
@@ -231,7 +299,7 @@ func get_validation_metrics() -> Dictionary:
 
 
 func _collect_setup_errors() -> PackedStringArray:
-	var errors := PackedStringArray()
+	var errors := _source_errors.duplicate()
 	if not _configuration_applied:
 		errors.append("HUD configuration did not reach its completion marker.")
 	if _hud == null or _fixture == null:
@@ -259,13 +327,17 @@ func _collect_setup_errors() -> PackedStringArray:
 		if value_label == null or value_label.text != str(badge_case.value):
 			errors.append("Resource badge is incomplete: %s." % badge_case.node)
 	var slot_container := _hud.find_child("SpellSlotsContainer", true, false)
-	if slot_container == null or slot_container.get_child_count() != SPELLS.size():
+	if slot_container == null or slot_container.get_child_count() != _fixture_spells.size():
 		errors.append("Expected exactly four populated spell slots.")
 	else:
-		for index in SPELLS.size():
+		for index in _fixture_spells.size():
 			var slot := _spell_slot(index)
-			if slot == null or slot.spell != SPELLS[index]:
+			if slot == null or slot.spell != _fixture_spells[index]:
 				errors.append("Spell slot %d does not contain its fixture spell." % index)
+			elif premium_skin:
+				var expected_icon := PREMIUM_CHARACTER_THEME.get_spell_icon(_fixture_spells[index].get_effective_spell_id())
+				if expected_icon == null or slot.get_displayed_icon() != expected_icon:
+					errors.append("Canonical spell %d is missing its explicit premium icon binding." % index)
 	if premium_skin and (_timeline == null or _timeline.get_card_count() != 2):
 		errors.append("Premium timeline does not contain both fixture units.")
 	if state_id == &"items":

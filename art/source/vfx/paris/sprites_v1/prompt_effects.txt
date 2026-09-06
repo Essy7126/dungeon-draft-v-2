@@ -1,0 +1,11 @@
+Use case: stylized-concept. A production TRANSPARENT PNG SPRITESHEET of magical spell VFX for an isometric2D Greek tactical RPG. Genuine RGBA alpha background.
+EXACTLY4 columns×8 rows,32 isolated effect drawings. Every row is a four-frame animation, left to right start/build/apex/fade. Wide transparent gutters, same center and fixed scale within row, no cropping. All drawings fully inside cell. Hand-painted bold readable2D fantasy effect art, clean edges, restrained glow.
+Row1: cyan spectral Greek arrow pointing horizontally RIGHT, bronze slim shaft with cyan head; four shimmering projectile-flight frames, arrowhead same point andlength.
+Row2: ice arrow projectile RIGHT, sharp icy blue arrowhead, small cold shards flowing behind, fourflightframes.
+Row3: fire arrow projectile RIGHT, orange-gold fire tip andshortflame tail, fourflightframes.
+Row4: turquoise/violet vortex spiral ground ellipse inisometricperspective; opens, expands, spins, dissipates, clockwise readable centre.
+Row5: compact turquoise spectral impact burst; small crossspark, strong pointedstarburst, brokenarcs, fadingwisps.
+Row6: FIRE WHIP LASH horizontally LEFT-TO-RIGHT; thinwhip beginsatleft, curls upward in anticipation, extends right in bright S-shapedlineatpeak, recoils intoarc, fades. No hand/character, start andendcoordinatesconsistent.
+Row7: orange-gold HELLFIRE ring viewedisometrically; first lowflames, second eruptioncrown, third largeflamering, fourth dyingembers. Hollowcentreclear.
+Row8: blue-to-orange TRANSFORMATION aura risingfromisometricbase; faint bluewisps, blueorangeintertwinedspiral, orangeflamecolumn, smallfallingembers. Nocharactercorpse/face/arms.
+No icons borders, letters, numbers, gridlines, black/white fills, checkerboardbackground, scene, floor, characters or weapons otherthanprojectilearrows. Native transparent pixels outsideeach isolatedeffect. No visualcrossoverbetweencells.

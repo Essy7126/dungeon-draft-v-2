@@ -15,7 +15,7 @@
 [ext_resource type="Resource" path="res://data/encounters/odyssey_room_03_encounter.tres" id="8_encounter"]
 [ext_resource type="Script" path="res://data/unit_data.gd" id="9_unit"]
 [ext_resource type="Resource" path="res://data/units/enemies/odyssey_champion.tres" id="10_champion"]
-[ext_resource type="Resource" path="res://data/units/enemies/catabase_shadow_paris.tres" id="11_paris"]
+[ext_resource type="Resource" path="res://data/units/enemies/spectre_greatsword.tres" id="11_spectre"]
 [ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="13_27mea"]
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_objective_definition.gd" id="15_cdeoo"]
 [ext_resource type="Resource" path="res://data/arenas/silent_judgment_courtyard_v1/presentation.tres" id="17_vbyu1"]
@@ -1203,7 +1203,7 @@ layer = &"y_sorted_props"
 [sub_resource type="Resource" id="Resource_8a0sr"]
 script = ExtResource("13_27mea")
 layout_id = &"silent_judgment_courtyard_v1"
-debug_name = "Catabase III — Le Jugement de Paris"
+debug_name = "Catabase III — Le Jugement silencieux"
 logical_size = Vector2i(19, 18)
 layout_rows = PackedStringArray("XXX.....XXXXXXXXXXX", "XXX......XXXXXXXXXX", "XXXX......XXXXXXXXX", "XX..........XX...XX", ".............X...XX", "........XX.......XX", "....XX..XX.........", "....X#..X..........", "....XX......XXX....", "............XXX....", "..............X....", "XXX.....XXX........", "XXXXX...X..........", "XXXXX.............X", "XXXXX.........XX..X", "XXXXXXXXXXXX......X", "XXXXXXXXXXXX......X", "XXXXXXXXXXXX...XXXX")
 cell_type_overrides = {
@@ -3060,7 +3060,7 @@ blocks_projectiles = false
 [sub_resource type="Resource" id="Resource_wfyy7"]
 script = ExtResource("18_xt6gp")
 map_id = &"silent_judgment_courtyard_v1"
-debug_name = "Catabase III — Le Jugement de Paris"
+debug_name = "Catabase III — Le Jugement silencieux"
 background_texture_path = "res://data/arenas/silent_judgment_courtyard_v1/grid_reference.png"
 source_image_size = Vector2i(1920, 1200)
 logical_grid_size = Vector2i(19, 18)
@@ -3109,7 +3109,7 @@ cell = Vector2i(15, 5)
 [resource]
 script = ExtResource("1_arena")
 arena_id = &"silent_judgment_courtyard_v1"
-display_name = "Catabase III — Le Jugement de Paris"
+display_name = "Catabase III — Le Jugement silencieux"
 visual_mode = 2
 theme_id = &"forest"
 modular_visual_profile = SubResource("ModularProfile")
@@ -3130,7 +3130,7 @@ calibration_pixels = Array[Vector2]([Vector2(830.6768, 252.92894), Vector2(1346.
 presentation_profile_path = "res://data/arenas/silent_judgment_courtyard_v1/presentation.tres"
 source_room_path = "res://data/rooms/odyssey/room_03.tres"
 production_notes = "Quiet Judgment courtyard built on the accepted 217-cell registered topology. Current Catabase finale encounter, no gameplay hazards from painted surroundings. Shared production renderer and props."
-room_name = "Catabase III — Le Jugement de Paris"
+room_name = "Catabase III — Le Jugement silencieux"
 battle_scene = ExtResource("7_battle")
 arena_visual_profile = SubResource("Resource_j16oy")
 grid_layout = SubResource("Resource_8a0sr")
@@ -3139,6 +3139,6 @@ encounter_definition = ExtResource("8_encounter")
 ultimate_reward_base_chance = 0
 ultimate_reward_min_gain_per_wave = 0
 ultimate_reward_max_gain_per_wave = 0
-enemies = Array[ExtResource("9_unit")]([ExtResource("10_champion"), ExtResource("11_paris")])
+enemies = Array[ExtResource("9_unit")]([ExtResource("10_champion"), ExtResource("11_spectre")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(7, 12), Vector2i(7, 13), Vector2i(6, 12), Vector2i(6, 13)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(14, 5), Vector2i(15, 5)])

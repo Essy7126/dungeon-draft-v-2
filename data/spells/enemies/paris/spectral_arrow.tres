@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/spectral_arrow.tres" id="paris_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("paris_icon")
+spell_id = &"paris_spectral_arrow"
+spell_name = "Flèche des ombres"
+description = "16 dégâts spectraux à longue portée."
+ap_cost = 2
+minimum_range = 2
+spell_range = 7
+required_combat_form = &"spectral"
+damage = 16
+damage_type = 1
+element = 4
+impact_delay_seconds = 0.2
+once_per_activation = false

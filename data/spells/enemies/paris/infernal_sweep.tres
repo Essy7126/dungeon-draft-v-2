@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/terrain/paris/fire.tres" id="terrain_effect"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/infernal_sweep.tres" id="paris_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("paris_icon")
+spell_id = &"paris_infernal_sweep"
+spell_name = "Couronne de braises"
+description = "14 dégâts de feu aux ennemis en croix autour de la cible. Enflamme les cases touchées pendant deux rounds : 8 dégâts de pose aux occupants, alliés compris, sauf réaction de surface."
+ap_cost = 2
+minimum_range = 1
+spell_range = 3
+required_combat_form = &"infernal"
+damage = 14
+damage_type = 1
+element = 1
+impact_delay_seconds = 0
+once_per_activation = false
+cooldown_activations = 2
+aoe_shape = 1
+aoe_size = 1
+exclude_allies_from_area_effects = true
+terrain_effect = ExtResource("terrain_effect")

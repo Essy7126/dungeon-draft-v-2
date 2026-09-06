@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=19 format=3]
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
 [ext_resource type="Texture2D" path="res://assets/characters/Achilles/sprites_cour_des_sources_v1/achilles_hud_portrait.tres" id="2_portrait"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v2/ability_achilles_sweep.png" id="19_sweep"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v2/ability_achilles_advance.png" id="20_advance"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v2/ability_achilles_guard.png" id="21_guard"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v2/ability_achilles_pelion_shot.png" id="22_pelion_shot"]
 
 [resource]
 script = ExtResource("1_theme")
@@ -44,7 +45,11 @@ secondary_color = Color(0.78, 0.58, 0.24, 1)
 text_color = Color(0.98, 0.90, 0.72, 1)
 spell_icon_mapping = {
 &"achilles_advance": ExtResource("20_advance"),
+&"achilles_bronze_guard": ExtResource("21_guard"),
+&"achilles_fulminant_dash": ExtResource("20_advance"),
 &"achilles_guard": ExtResource("21_guard"),
+&"achilles_peleid_strike": ExtResource("18_spear_thrust"),
+&"achilles_pelion_shot": ExtResource("22_pelion_shot"),
 &"achilles_spear_thrust": ExtResource("18_spear_thrust"),
 &"achilles_sweep": ExtResource("19_sweep"),
 &"basic_attack": ExtResource("18_spear_thrust")

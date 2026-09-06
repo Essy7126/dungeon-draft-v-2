@@ -3,6 +3,7 @@ extends Button
 
 signal unit_requested(unit: Unit)
 
+const UNIT_PRESENTATION := preload("res://ui/combat/combat_unit_presentation.gd")
 const VISUAL_THEME_FACTORY := preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
@@ -29,8 +30,11 @@ func _ready() -> void:
 
 
 func configure(source: Unit) -> void:
+	_disconnect_combat_form_signal()
 	unit = source
-	tooltip_text = unit.unit_name if unit != null else "Combattant indisponible"
+	if is_instance_valid(unit):
+		unit.combat_form_changed.connect(_on_combat_form_changed)
+	_refresh_identity()
 	if not is_node_ready():
 		return
 	_configure_portrait()
@@ -91,7 +95,7 @@ func _configure_portrait() -> void:
 	fallback_portrait.visible = false
 	if unit == null:
 		return
-	var data := unit.character_data
+	var data := _portrait_unit_data()
 	if data != null and (data.preview_sprite_frames != null or data.preview_visual_scene != null):
 		preview.visible = true
 		preview.configure(data)
@@ -258,3 +262,30 @@ func _make_style(border_color: Color, opacity: float) -> StyleBoxFlat:
 func _on_pressed() -> void:
 	if unit != null and is_instance_valid(unit):
 		unit_requested.emit(unit)
+
+
+func _portrait_unit_data() -> UnitData:
+	return UNIT_PRESENTATION.portrait_unit_data(unit)
+
+func _refresh_identity() -> void:
+	tooltip_text = unit.unit_name if is_instance_valid(unit) else "Combattant indisponible"
+	if is_instance_valid(unit) and unit.combat_form_change != null \
+			and unit.combat_form_id == unit.combat_form_change.target_form:
+		tooltip_text += " · " + String(unit.combat_form_id).capitalize()
+
+
+func _on_combat_form_changed(changed_unit: Unit, _old_form: StringName, _new_form: StringName) -> void:
+	if changed_unit != unit:
+		return
+	_refresh_identity()
+	if is_node_ready():
+		_configure_portrait()
+
+
+func _disconnect_combat_form_signal() -> void:
+	if is_instance_valid(unit) and unit.combat_form_changed.is_connected(_on_combat_form_changed):
+		unit.combat_form_changed.disconnect(_on_combat_form_changed)
+
+
+func _exit_tree() -> void:
+	_disconnect_combat_form_signal()

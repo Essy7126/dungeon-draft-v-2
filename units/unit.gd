@@ -137,6 +137,10 @@ var taunt_turns: int = 0
 # en lecture seule cote combat : les statistiques runtime continuent de vivre
 # sur Unit, tandis que les visuels de presentation gardent une source unique.
 var character_data: UnitData = null
+var combat_form_change: CombatFormChangeData = null
+var combat_form_id: StringName = &""
+var _combat_form_changed: bool = false
+var _combat_form_base_hp: int = 0
 var sprite_frames: SpriteFrames = null
 var sprite_scale: float = 3.0
 var idle_animation: String = "default"
@@ -175,6 +179,7 @@ signal moved(from_pos: Vector2i, to_pos: Vector2i)
 signal hp_changed(unit)
 signal stats_changed(unit)
 signal shield_changed(unit)
+signal combat_form_changed(unit, old_form, new_form)
 ## Rupture d'une source individuelle. Le signal global EventBus.shield_broken
 ## reste reserve a la disparition du total agrege pour compatibilite.
 signal shield_source_broken(unit, source_id)
@@ -223,6 +228,10 @@ static func from_data(data: UnitData) -> Unit:
 	)
 	u.unit_id = data.get_effective_unit_id()
 	u.character_data = data
+	u.combat_form_change = data.combat_form_change
+	u._combat_form_base_hp = maxi(1, data.max_hp)
+	if u.combat_form_change != null and u.combat_form_change.is_valid():
+		u.combat_form_id = u.combat_form_change.initial_form
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
@@ -301,6 +310,8 @@ func get_spell_availability_reason(spell: Spell) -> StringName:
 		return &"spell"
 	if not is_alive:
 		return &"caster_dead"
+	if spell.required_combat_form != &"" and spell.required_combat_form != combat_form_id:
+		return &"combat_form"
 	var state := _ensure_ability_state(spell)
 	if activation_index < int(state.get("ready_activation", 0)):
 		return &"cooldown"
@@ -1708,6 +1719,8 @@ func _apply_damage_result(
 	if damage_to_hp > 0:
 		health_loss = mini(current_hp, damage_to_hp)
 		current_hp -= health_loss
+		result.hp_damage_applied = health_loss
+		result.shield_damage_absorbed = absorbed
 		if health_loss > 0:
 			_last_hp_loss_activation_index = activation_index
 		if current_hp <= 0 and impact_origin_cell != Vector2i(-1, -1):
@@ -1735,6 +1748,8 @@ func _apply_damage_result(
 			EventBus.status_tick.emit(health_fact)
 		hp_changed.emit(self)
 	else:
+		result.hp_damage_applied = 0
+		result.shield_damage_absorbed = absorbed
 		# Tout absorbÃ© : les PV n'ont pas bougÃ©, mais on notifie pour l'UI.
 		hp_changed.emit(self)
 
@@ -1764,6 +1779,42 @@ func _apply_damage_result(
 	if current_hp <= 0:
 		current_hp = 0
 		_die(attacker)
+	elif health_loss > 0:
+		_try_combat_form_change()
+
+
+func _try_combat_form_change() -> bool:
+	var change := combat_form_change
+	if not is_alive or current_hp <= 0 or _combat_form_changed or change == null \
+			or not change.is_valid() or combat_form_id != change.initial_form:
+		return false
+	# Integer comparison makes exactly 20% unambiguous. Temporary max-HP
+	# modifiers never move the original encounter threshold.
+	if current_hp * 100 >= _combat_form_base_hp * change.below_hp_percent:
+		return false
+	_combat_form_changed = true
+	var old_form := combat_form_id
+	combat_form_id = change.target_form
+	if not pending_ability.is_empty():
+		var cancelled := pending_ability.duplicate()
+		pending_ability.clear()
+		EventBus.pending_ability_cancelled.emit(self, cancelled, &"combat_form")
+	spells.clear()
+	for spell in change.spells:
+		add_spell(spell)
+	preferred_range = change.preferred_range
+	minimum_range = change.minimum_range
+	maximum_range = change.maximum_range
+	keep_distance = change.keep_distance
+	if change.shield_grant > 0:
+		add_sourced_shield(change.shield_source_id, change.shield_grant, self, {
+			"spell_id": change.ability_id, "tags": [&"transformation"],
+		})
+	stats_changed.emit(self)
+	combat_form_changed.emit(self, old_form, combat_form_id)
+	DebugLogger.info(CAT_COMBAT, "%s : métamorphose en %s (%d PV, %d bouclier)" % [
+		unit_name, combat_form_id, current_hp, current_shield])
+	return true
 
 
 func _resolve_hit_origin_cell(attacker, options: Dictionary) -> Vector2i:

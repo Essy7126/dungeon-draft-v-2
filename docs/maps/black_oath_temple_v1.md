@@ -2,6 +2,8 @@
 
 La salle V ajoute un temple grec noir après le Gué du Léthé. Une nef centrale et deux ailes forment un nouveau plateau, avec un sol gris bleuté lisible dans une architecture de basalte sombre. La carte emploie les vraies dalles du jeu et la [pipeline partagée](registered_terrain_pipeline.md).
 
+Paris est désormais le boss final de cette cinquième salle, accompagné de deux spectres à l’épée. Le groupe représente 248 PV, avec une carapace conditionnelle de 30 pour sa métamorphose ; la topologie et les zones de déploiement du temple sont conservées. Voir les [règles de Paris](../design/paris_gameplay_v1.md).
+
 ## Géométrie et combat
 
 | Élément | Valeur |

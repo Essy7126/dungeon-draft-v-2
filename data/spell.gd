@@ -39,6 +39,8 @@ enum CasterMovement { NONE, TARGET_CELL }
 @export var needs_line_of_sight: bool = true
 
 @export_group("Disponibilite")
+## Empty permits every form. Old queued actions cannot execute after a transition.
+@export var required_combat_form: StringName = &""
 ## Convention : utilise a l'activation N avec 3 -> indisponible N+1/N+2,
 ## de nouveau disponible a N+3.
 @export var cooldown_activations: int = 0
@@ -59,6 +61,8 @@ enum CasterMovement { NONE, TARGET_CELL }
 ## Opt-in pour les zones centrees sur le lanceur qui utilisent sa case comme
 ## point de ciblage sans devoir lui appliquer les impacts de la zone.
 @export var exclude_caster_from_area_effects: bool = false
+## Opt-in for enemy-only area impacts. Ground hazards still affect every team.
+@export var exclude_allies_from_area_effects: bool = false
 
 @export_group("Effet de combat")
 @export var damage: int = 0

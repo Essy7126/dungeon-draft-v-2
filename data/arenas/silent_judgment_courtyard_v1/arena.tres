@@ -11,7 +11,7 @@
 
 [ext_resource type="Script" path="res://data/unit_data.gd" id="9_unit"]
 [ext_resource type="Resource" path="res://data/units/enemies/odyssey_champion.tres" id="10_champion"]
-[ext_resource type="Resource" path="res://data/units/enemies/catabase_shadow_paris.tres" id="11_paris"]
+[ext_resource type="Resource" path="res://data/units/enemies/spectre_greatsword.tres" id="11_spectre"]
 
 [sub_resource type="Resource" id="ModularProfile"]
 script = ExtResource("3_modular")
@@ -1357,6 +1357,6 @@ spawns = Array[ExtResource("5_spawn")]([SubResource("Spawn_0"), SubResource("Spa
 ultimate_reward_base_chance = 0
 ultimate_reward_min_gain_per_wave = 0
 ultimate_reward_max_gain_per_wave = 0
-enemies = Array[ExtResource("9_unit")]([ExtResource("10_champion"), ExtResource("11_paris")])
+enemies = Array[ExtResource("9_unit")]([ExtResource("10_champion"), ExtResource("11_spectre")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(7, 12), Vector2i(7, 13), Vector2i(6, 12), Vector2i(6, 13)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(14, 5), Vector2i(15, 5)])

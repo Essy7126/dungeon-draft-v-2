@@ -12,6 +12,7 @@ enum Strategy {
 	GUARDIAN_CHIEF,
 	RANGED_COMMANDER,
 	SUPPORT_MAGE,
+	SPECTRAL_ARCHER,
 }
 
 @export var profile_id: StringName = &""

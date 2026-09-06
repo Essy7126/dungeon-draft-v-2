@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://data/unit_data.gd" id="9_unit"]
 [ext_resource type="Resource" path="res://data/units/enemies/spectre_greatsword.tres" id="10_spectre"]
 [ext_resource type="Resource" path="res://data/units/enemies/odyssey_skirmisher.tres" id="11_skirmisher"]
+[ext_resource type="Resource" path="res://data/units/enemies/philosopher_mage.tres" id="12_mage"]
 [ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="13_jaoxg"]
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_objective_definition.gd" id="15_arppi"]
 [ext_resource type="Resource" path="res://data/arenas/lethe_crossing_v1/presentation.tres" id="17_nvqs0"]
@@ -1746,6 +1747,6 @@ encounter_definition = ExtResource("8_encounter")
 ultimate_reward_base_chance = 0
 ultimate_reward_min_gain_per_wave = 0
 ultimate_reward_max_gain_per_wave = 0
-enemies = Array[ExtResource("9_unit")]([ExtResource("10_spectre"), ExtResource("10_spectre"), ExtResource("11_skirmisher")])
+enemies = Array[ExtResource("9_unit")]([ExtResource("12_mage"), ExtResource("10_spectre"), ExtResource("11_skirmisher")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(4, 3), Vector2i(5, 3), Vector2i(4, 4), Vector2i(5, 4)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(13, 14), Vector2i(14, 14), Vector2i(13, 13), Vector2i(14, 15)])

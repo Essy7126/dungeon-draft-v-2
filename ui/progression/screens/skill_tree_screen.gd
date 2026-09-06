@@ -67,6 +67,7 @@ var _last_inspected_by_discipline: Dictionary = {}
 var _layout_profile: StringName = &"large"
 var _active_theme: CharacterHUDThemeData = null
 var _pan_active := false
+var _recenter_tween: Tween
 var _pan_mouse_origin := Vector2.ZERO
 var _pan_scroll_origin := Vector2.ZERO
 var _evolution_mode := false
@@ -89,6 +90,8 @@ func _ready() -> void:
 	_center_graph_button.pressed.connect(center_on_inspected_node)
 	_graph.node_inspected.connect(_on_node_inspected)
 	_graph_scroll.gui_input.connect(_on_graph_scroll_gui_input)
+	_graph_scroll.follow_focus = true
+	_tabs_scroll.follow_focus = true
 	_build_catalog_tools()
 	_apply_codex_chrome()
 	resized.connect(_on_resized)
@@ -212,6 +215,8 @@ func _force_close_screen() -> void:
 	if not visible:
 		return
 	_pan_active = false
+	_graph_scroll.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	_stop_recenter()
 	hide()
 	screen_closed.emit()
 	if is_instance_valid(_previous_focus_owner):
@@ -381,21 +386,46 @@ func center_on_inspected_node() -> void:
 	if view == null:
 		view = _graph.get_first_node_view()
 	if view == null:
-		_graph_scroll.scroll_horizontal = 0
-		_graph_scroll.scroll_vertical = 0
+		_stop_recenter()
+		_set_graph_scroll(Vector2.ZERO)
 		return
-	var target := view.position + view.size * 0.5
-	_graph_scroll.scroll_horizontal = maxi(
-		int(target.x - _graph_scroll.size.x * 0.5), 0
-	)
-	_graph_scroll.scroll_vertical = maxi(
-		int(target.y - _graph_scroll.size.y * 0.5), 0
-	)
+	var target := view.position + view.size * 0.5 - _graph_scroll.size * 0.5
+	target.x = clampf(target.x, 0.0, maxf(_graph.size.x - _graph_scroll.size.x, 0.0))
+	target.y = clampf(target.y, 0.0, maxf(_graph.size.y - _graph_scroll.size.y, 0.0))
+	_stop_recenter()
+	if GameManager.is_reduced_motion_enabled():
+		_set_graph_scroll(target)
+		return
+	var start := Vector2(_graph_scroll.scroll_horizontal, _graph_scroll.scroll_vertical)
+	_recenter_tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_recenter_tween.tween_method(_set_graph_scroll, start, target, 0.24)
+
+
+func _set_graph_scroll(value: Vector2) -> void:
+	_graph_scroll.scroll_horizontal = roundi(value.x)
+	_graph_scroll.scroll_vertical = roundi(value.y)
+
+
+func _stop_recenter() -> void:
+	if _recenter_tween != null and _recenter_tween.is_valid():
+		_recenter_tween.kill()
+	_recenter_tween = null
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
+	var champion_visible := is_instance_valid(_champion_codex) and _champion_codex.visible
+	if not champion_visible and event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_F and event.ctrl_pressed and not _evolution_mode:
+			_search_field.grab_focus()
+			_search_field.select_all()
+			get_viewport().set_input_as_handled()
+			return
+		if event.physical_keycode == KEY_F and not event.ctrl_pressed and not get_viewport().gui_get_focus_owner() is LineEdit:
+			center_on_inspected_node()
+			get_viewport().set_input_as_handled()
+			return
 	var closes_with_shortcut: bool = (
 		event is InputEventKey
 		and event.pressed
@@ -459,6 +489,7 @@ func _show_discipline(discipline_id: StringName) -> void:
 	var progress := character_state.get_discipline_progress(discipline_id)
 	if discipline == null or progress == null:
 		return
+	_stop_recenter()
 	current_discipline_id = discipline_id
 	_empty_state.hide()
 	_graph_scroll.show()
@@ -842,14 +873,20 @@ func _apply_graph_layout() -> void:
 
 
 func _on_graph_scroll_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+		_stop_recenter()
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
 		_pan_active = event.pressed
 		if _pan_active:
+			_stop_recenter()
+			_graph_scroll.mouse_default_cursor_shape = Control.CURSOR_DRAG
 			_pan_mouse_origin = event.position
 			_pan_scroll_origin = Vector2(
 				_graph_scroll.scroll_horizontal,
 				_graph_scroll.scroll_vertical
 			)
+		else:
+			_graph_scroll.mouse_default_cursor_shape = Control.CURSOR_ARROW
 		_graph_scroll.accept_event()
 	elif event is InputEventMouseMotion and _pan_active:
 		var delta: Vector2 = event.position - _pan_mouse_origin
@@ -1029,6 +1066,7 @@ func _build_catalog_tools() -> void:
 	_search_field = LineEdit.new()
 	_search_field.name = "SpellSearch"
 	_search_field.placeholder_text = "Rechercher un sort…"
+	_search_field.tooltip_text = "Rechercher un sort ou une discipline · Ctrl + F"
 	_search_field.clear_button_enabled = true
 	_search_field.custom_minimum_size = Vector2(0, 38)
 	_search_field.add_theme_font_override("font", CODEX_STYLE.BODY)
@@ -1064,7 +1102,7 @@ func _build_catalog_tools() -> void:
 	var canvas_content := _canvas_title_label.get_parent().get_parent() as VBoxContainer
 	_spell_banner = PanelContainer.new()
 	_spell_banner.name = "ActiveSpellBanner"
-	_spell_banner.add_theme_stylebox_override("panel", CODEX_STYLE.box(Color("20322f"), Color("4d5e50"), 7, 15))
+	CODEX_STYLE.panel(_spell_banner, Color("30271f"), CODEX_STYLE.BORDER, 7, 15)
 	canvas_content.add_child(_spell_banner)
 	canvas_content.move_child(_spell_banner, 0)
 	var row := HBoxContainer.new()
@@ -1105,10 +1143,34 @@ func _apply_codex_chrome() -> void:
 	for node in find_children("*Ornament", "Control", true, false):
 		node.hide()
 	var frame := _outer_margin.get_node("Frame") as PanelContainer
-	frame.add_theme_stylebox_override("panel", CODEX_STYLE.box(Color("0e191c"), Color("607065"), 12))
-	_character_header.add_theme_stylebox_override("panel", CODEX_STYLE.box(CODEX_STYLE.INK, Color("394b47"), 7))
-	_branch_navigation.add_theme_stylebox_override("panel", CODEX_STYLE.box(CODEX_STYLE.SURFACE, Color("394b47"), 7))
-	_canvas_surface.add_theme_stylebox_override("panel", CODEX_STYLE.box(Color("142225"), Color("394b47"), 7))
+	CODEX_STYLE.panel(frame, Color("171411"), Color("8c7252"), 12)
+	CODEX_STYLE.panel(_character_header, CODEX_STYLE.INK)
+	CODEX_STYLE.panel(_branch_navigation)
+	CODEX_STYLE.panel(_canvas_surface, Color("1b1714"))
+	# Keep branch structure in ash/bronze; semantic acquired states keep their own accent.
+	var graph_colors := {
+		&"branch_eagle": Color(0.28, 0.23, 0.17, 0.24),
+		&"branch_repel": Color(0.23, 0.19, 0.16, 0.22),
+		&"branch_eagle_accent": Color("b6996d"),
+		&"branch_repel_accent": Color("9e8268"),
+		&"connection_compatible": Color("9a8770"),
+		&"rank_title": CODEX_STYLE.TEXT,
+	}
+	for key in graph_colors:
+		_graph.add_theme_color_override(key, graph_colors[key])
+	for scroll in [_graph_scroll, _tabs_scroll]:
+		CODEX_STYLE.scroll(scroll)
+	var graph_stage := _graph_scroll.get_parent() as Control
+	var atmosphere := TextureRect.new()
+	atmosphere.name = "GraphAtmosphere"
+	atmosphere.texture = preload("res://asset/ui/progression/mastery_atlas/canvas_v1.png")
+	atmosphere.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	atmosphere.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	atmosphere.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	atmosphere.modulate = Color(0.82, 0.75, 0.65, 0.18)
+	graph_stage.add_child(atmosphere)
+	graph_stage.move_child(atmosphere, 0)
+	atmosphere.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_header_accent.hide()
 	_identity_badge.hide()
 	for label in [_discipline_summary_label, _header_summary_label, _consultative_label, _branch_title_label, _canvas_title_label, _canvas_hint_label, _footer_label]:
@@ -1118,10 +1180,11 @@ func _apply_codex_chrome() -> void:
 	_branch_title_label.add_theme_color_override("font_color", CODEX_STYLE.GOLD)
 	_canvas_title_label.add_theme_color_override("font_color", CODEX_STYLE.GOLD)
 	_consultative_label.text = "GRIMOIRE\nApprenez par l’action"
-	_canvas_hint_label.text = "Sélectionnez un choix pour l’inspecter"
+	_canvas_hint_label.text = "Glisser : clic central  ·  F : recentrer"
 	_close_button.text = "Fermer  ×"
 	_close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_center_graph_button.text = "Recentrer"
+	_center_graph_button.tooltip_text = "Recentrer sur le choix inspecté · F"
 	CODEX_STYLE.button(_close_button)
 	CODEX_STYLE.button(_center_graph_button)
 

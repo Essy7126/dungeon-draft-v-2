@@ -5,10 +5,12 @@ signal close_requested
 signal build_changed
 
 const STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
-const GOLD := Color("d6b77c")
-const TEXT := Color("f0ebdc")
-const MUTED := Color("a6b4ad")
-const GREEN := Color("95c6a8")
+const GOLD := Color("c5aa86")
+const TEXT := Color("ebe0d2")
+const MUTED := Color("b7aa9c")
+const GREEN := Color("b8d5ac")
+const GRAPH := preload("res://ui/progression/champion/champion_mastery_graph.gd")
+const DOCTRINE_ART := [preload("res://asset/ui/progression/mastery_atlas/wrath_v1.tres"), preload("res://asset/ui/progression/mastery_atlas/chiron_v1.tres"), preload("res://asset/ui/progression/mastery_atlas/aeacus_v1.tres")]
 
 var character_state: CharacterRunState = null
 var read_only := false
@@ -30,12 +32,31 @@ var _node_buttons: Dictionary = {}
 var _nav_buttons: Dictionary = {}
 var _close_button: Button
 var _built := false
+var _graph: ChampionMasteryGraph
+var _attribute_scroll: ScrollContainer
+var _graph_title: Label
+var _graph_subtitle: Label
+var _graph_status: Label
+var _zoom_label: Label
+var _next_available_button: Button
+var _graph_controls: HBoxContainer
+var _detail_scroll: ScrollContainer
+var _nav_panel: PanelContainer
+var _detail_panel: PanelContainer
+var _last_node_by_section: Dictionary = {}
+var _feedback: Label
+var _feedback_tween: Tween
+var _entry_tween: Tween
+var _main: VBoxContainer
+var _xp_text: Label
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build()
 	refresh()
+	resized.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
 
 
 func configure(state: CharacterRunState, p_read_only: bool = false) -> void:
@@ -47,6 +68,7 @@ func configure(state: CharacterRunState, p_read_only: bool = false) -> void:
 	if is_node_ready():
 		refresh()
 		_focus_close.call_deferred()
+		_animate_entry()
 
 
 func _exit_tree() -> void:
@@ -63,15 +85,16 @@ func refresh() -> void:
 		return
 	var champion := character_state.champion_progression
 	var profile := champion.profile
-	_title.text = "%s · Codex des maîtrises" % character_state.unit.unit_name
+	_title.text = "%s · Atlas des maîtrises" % character_state.unit.unit_name
 	_summary.text = "NIVEAU %d / %d     ·     %d / %d PV     ·     %d Prouesse     ·     %d PA / %d PM" % [champion.current_level, profile.level_cap, character_state.unit.current_hp, character_state.unit.max_hp.get_int(), character_state.unit.attack_power.get_int(), character_state.unit.max_ap.get_int(), character_state.unit.max_mp.get_int()]
-	_points.text = "%d points de maîtrise    ·    %d caractéristiques" % [champion.unspent_mastery_points, champion.unspent_attribute_points]
+	_points.text = "%d PMa disponibles  ·  %d caractéristiques" % [champion.unspent_mastery_points, champion.unspent_attribute_points]
 	var threshold := profile.xp_for_level(champion.current_level)
 	var next_threshold := profile.xp_for_level(mini(champion.current_level + 1, profile.level_cap))
 	_xp.max_value = maxi(1, next_threshold - threshold)
 	_xp.value = champion.current_xp - threshold if champion.current_level < profile.level_cap else _xp.max_value
 	_xp.tooltip_text = "%d XP / %d · XP accordée à la victoire" % [champion.current_xp, next_threshold]
-	_notice.text = "CONSULTATION · Explorez les effets et les prérequis" if read_only else "Les investissements sont définitifs pour cette run. Sélectionnez une maîtrise avant de l’acquérir."
+	_xp_text.text = "Niveau maximum atteint" if champion.current_level >= profile.level_cap else "%d / %d XP  ·  Prochain niveau %d" % [champion.current_xp - threshold, next_threshold - threshold, champion.current_level + 1]
+	_notice.text = "CONSULTATION · Explorez les effets et les prérequis" if read_only else "Choisissez une maîtrise, comparez ses effets, puis investissez vos points. Les choix sont définitifs pour cette run."
 	_build_navigation()
 	_build_spell_strip()
 	_build_content()
@@ -80,6 +103,10 @@ func refresh() -> void:
 
 func get_node_buttons() -> Dictionary:
 	return _node_buttons.duplicate()
+
+
+func get_graph() -> ChampionMasteryGraph:
+	return _graph
 
 
 func get_action_button() -> Button:
@@ -95,24 +122,31 @@ func select_section(section_id: StringName) -> void:
 		var catalog := character_state.progression_profile.mastery_catalog
 		if SkillTreeResolver.champion_doctrine_by_id(catalog.doctrines, section_id) == null:
 			section_id = catalog.doctrines[0].discipline_id
+	if _selected_node_id != &"":
+		_last_node_by_section[_section_id] = _selected_node_id
 	_section_id = section_id
-	_selected_node_id = &""
+	_selected_node_id = _last_node_by_section.get(section_id, &"")
 	_selected_spell = null
 	_search.text = ""
+	_detail_scroll.scroll_vertical = 0
 	refresh()
+	if _selected_node_id != &"" and _graph.visible:
+		_graph.center_on_node(_selected_node_id)
 	_focus_navigation.call_deferred()
 
 
 func inspect_node(node_id: StringName) -> void:
 	_selected_node_id = node_id
+	_last_node_by_section[_section_id] = node_id
 	_selected_spell = null
+	_detail_scroll.scroll_vertical = 0
 	_refresh_node_styles()
 	_refresh_detail()
 
 
 func set_search_query(query: String) -> void:
 	_search.text = query
-	_build_content()
+	_on_search_changed(query)
 
 
 func _build() -> void:
@@ -123,132 +157,217 @@ func _build() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	var background := Panel.new()
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.add_theme_stylebox_override("panel", STYLE.box(Color("101b1e"), GOLD, 9))
 	add_child(background)
+	STYLE.panel(background, Color("171310"), Color("8d7557"), 9)
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 20)
+		margin.add_theme_constant_override("margin_" + side, 16)
 	add_child(margin)
-	var main := VBoxContainer.new()
-	main.add_theme_constant_override("separation", 12)
-	margin.add_child(main)
+	_main = VBoxContainer.new()
+	_main.add_theme_constant_override("separation", 10)
+	margin.add_child(_main)
 	var header := HBoxContainer.new()
-	main.add_child(header)
+	header.add_theme_constant_override("separation", 16)
+	_main.add_child(header)
 	var identity := VBoxContainer.new()
 	identity.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(identity)
-	identity.add_child(_label("LE LIVRE DU CHAMPION", 11, GOLD))
-	_title = _label("Codex des maîtrises", 26, TEXT, true)
+	identity.add_child(_label("LES VOIES DU CHAMPION", 12, GOLD))
+	_title = _label("Atlas des maîtrises", 28, TEXT, true)
 	identity.add_child(_title)
-	_summary = _label("", 14, MUTED)
+	_summary = _label("", 13, MUTED)
 	identity.add_child(_summary)
 	var status := VBoxContainer.new()
-	status.custom_minimum_size.x = 295
+	status.custom_minimum_size.x = 320
 	header.add_child(status)
-	_points = _label("", 15, GOLD)
+	_points = _label("", 16, GOLD)
 	_points.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	status.add_child(_points)
 	_xp = ProgressBar.new()
-	_xp.custom_minimum_size.y = 6
+	_xp.custom_minimum_size.y = 7
 	_xp.show_percentage = false
-	_xp.add_theme_stylebox_override("background", STYLE.box(Color("283431"), Color("283431"), 3))
-	_xp.add_theme_stylebox_override("fill", STYLE.box(GOLD, GOLD, 3))
+	_xp.add_theme_stylebox_override("background", STYLE.box(Color("29231e"), Color("4c4034"), 3))
+	_xp.add_theme_stylebox_override("fill", STYLE.box(Color("b7a076"), GOLD, 3))
 	status.add_child(_xp)
-	_close_button = _button("Fermer  ×", 13)
-	_close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_xp_text = _label("", 12, MUTED)
+	_xp_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	status.add_child(_xp_text)
+	_close_button = _button("Fermer  ×", 14)
+	_close_button.custom_minimum_size = Vector2(110, 42)
+	_close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_close_button.pressed.connect(func() -> void: close_requested.emit())
-	status.add_child(_close_button)
+	header.add_child(_close_button)
 	_spells = HBoxContainer.new()
-	_spells.add_theme_constant_override("separation", 10)
-	main.add_child(_spells)
+	_spells.add_theme_constant_override("separation", 8)
+	_main.add_child(_spells)
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 14)
-	main.add_child(body)
-	var nav_panel := _panel(Color("142125"), 14)
-	nav_panel.custom_minimum_size.x = 205
-	body.add_child(nav_panel)
+	body.add_theme_constant_override("separation", 10)
+	_main.add_child(body)
+	_nav_panel = _panel(Color("1c1713"), 12)
+	_nav_panel.custom_minimum_size.x = 212
+	body.add_child(_nav_panel)
+	var nav_scroll := ScrollContainer.new()
+	nav_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_nav_panel.add_child(nav_scroll)
+	STYLE.scroll(nav_scroll)
 	_navigation = VBoxContainer.new()
+	_navigation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_navigation.add_theme_constant_override("separation", 8)
-	nav_panel.add_child(_navigation)
-	var canvas := _panel(Color("17272a"), 16)
+	nav_scroll.add_child(_navigation)
+	var canvas := _panel(Color("181511"), 10)
+	canvas.name = "MasteryCanvas"
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(canvas)
 	var canvas_box := VBoxContainer.new()
-	canvas_box.add_theme_constant_override("separation", 12)
+	canvas_box.add_theme_constant_override("separation", 8)
 	canvas.add_child(canvas_box)
+	_graph_title = _label("", 22, TEXT, true)
+	canvas_box.add_child(_graph_title)
+	_graph_subtitle = _wrapped("", 13, MUTED)
+	canvas_box.add_child(_graph_subtitle)
+	var tools := HBoxContainer.new()
+	tools.add_theme_constant_override("separation", 6)
+	canvas_box.add_child(tools)
 	_search = LineEdit.new()
+	_search.name = "MasterySearch"
 	_search.placeholder_text = "Rechercher une maîtrise…"
-	_search.custom_minimum_size.y = 36
+	_search.custom_minimum_size.y = 38
+	_search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_search.clear_button_enabled = true
 	_search.add_theme_font_override("font", STYLE.BODY)
-	_search.add_theme_font_size_override("font_size", 14)
-	_search.add_theme_stylebox_override("normal", STYLE.box(STYLE.INK, STYLE.BORDER, 5, 9))
-	_search.text_changed.connect(func(_query: String) -> void: _build_content())
-	canvas_box.add_child(_search)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	canvas_box.add_child(scroll)
+	_search.add_theme_font_size_override("font_size", 15)
+	_search.add_theme_stylebox_override("normal", STYLE.box(Color("100e0c"), Color("615247"), 5, 9))
+	_search.add_theme_stylebox_override("focus", STYLE.box(Color("1b1612"), GOLD, 5, 9))
+	_search.add_theme_color_override("font_color", TEXT)
+	_search.add_theme_color_override("font_placeholder_color", MUTED)
+	_search.text_changed.connect(_on_search_changed)
+	tools.add_child(_search)
+	_next_available_button = _button("Accessible  ›", 14)
+	_next_available_button.name = "NextAvailable"
+	_next_available_button.tooltip_text = "Centrer la prochaine maîtrise que vos points et prérequis permettent d’acquérir"
+	_next_available_button.pressed.connect(_select_next_available)
+	tools.add_child(_next_available_button)
+	_graph = GRAPH.new() as ChampionMasteryGraph
+	_graph.name = "MasteryGraph"
+	_graph.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_graph.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_graph.custom_minimum_size = Vector2(280, 200)
+	_graph.node_inspected.connect(inspect_node)
+	_graph.navigation_changed.connect(_on_graph_navigation_changed)
+	canvas_box.add_child(_graph)
+	_attribute_scroll = ScrollContainer.new()
+	_attribute_scroll.name = "AttributesScroll"
+	_attribute_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_attribute_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	canvas_box.add_child(_attribute_scroll)
+	STYLE.scroll(_attribute_scroll)
 	_content = VBoxContainer.new()
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_content.add_theme_constant_override("separation", 8)
-	scroll.add_child(_content)
-	var detail_panel := _panel(Color("122024"), 17)
-	detail_panel.custom_minimum_size.x = 318
-	body.add_child(detail_panel)
+	_content.add_theme_constant_override("separation", 10)
+	_attribute_scroll.add_child(_content)
+	_graph_controls = HBoxContainer.new()
+	_graph_controls.add_theme_constant_override("separation", 6)
+	canvas_box.add_child(_graph_controls)
+	_graph_status = _label("", 12, MUTED)
+	_graph_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_graph_controls.add_child(_graph_status)
+	for entry in [["ZoomOut", "−", "Réduire"], ["ZoomIn", "+", "Agrandir"], ["FitGraph", "Recentrer", "Retrouver un cadrage lisible de l’arbre"]]:
+		var button := _button(entry[1], 14)
+		button.name = entry[0]
+		button.custom_minimum_size = Vector2(33, 32)
+		button.tooltip_text = entry[2]
+		if entry[0] == "FitGraph":
+			button.pressed.connect(func() -> void: _graph.fit_graph())
+		else:
+			button.pressed.connect(func() -> void: _graph.zoom_by(1.15 if entry[0] == "ZoomIn" else 1.0 / 1.15))
+		_graph_controls.add_child(button)
+	_zoom_label = _label("100 %", 12, GOLD)
+	_zoom_label.custom_minimum_size.x = 45
+	_graph_controls.add_child(_zoom_label)
+	_detail_panel = _panel(Color("201913"), 14)
+	_detail_panel.name = "MasteryInspector"
+	_detail_panel.custom_minimum_size.x = 336
+	body.add_child(_detail_panel)
 	var detail_box := VBoxContainer.new()
-	detail_box.add_theme_constant_override("separation", 12)
-	detail_panel.add_child(detail_box)
-	var detail_scroll := ScrollContainer.new()
-	detail_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	detail_box.add_child(detail_scroll)
+	detail_box.add_theme_constant_override("separation", 10)
+	_detail_panel.add_child(detail_box)
+	_detail_scroll = ScrollContainer.new()
+	_detail_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	detail_box.add_child(_detail_scroll)
+	STYLE.scroll(_detail_scroll)
 	_detail = VBoxContainer.new()
 	_detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_detail.add_theme_constant_override("separation", 12)
-	detail_scroll.add_child(_detail)
-	_action = _button("Sélectionnez une maîtrise", 15)
-	_action.custom_minimum_size.y = 46
+	_detail.add_theme_constant_override("separation", 11)
+	_detail_scroll.add_child(_detail)
+	_action = _button("Sélectionnez une maîtrise", 16)
+	_action.name = "AcquireMastery"
+	_action.custom_minimum_size.y = 48
 	_action.pressed.connect(_purchase_selected)
 	detail_box.add_child(_action)
+	_feedback = _wrapped("", 13, GREEN)
+	_feedback.name = "MasteryFeedback"
+	_feedback.visible = false
+	detail_box.add_child(_feedback)
 	_notice = _label("", 12, MUTED)
 	_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	main.add_child(_notice)
+	_main.add_child(_notice)
 
 
 func _build_navigation() -> void:
 	_clear(_navigation)
 	_nav_buttons.clear()
-	_navigation.add_child(_label("LES TROIS DOCTRINES", 11, GOLD))
+	_navigation.add_child(_label("DOCTRINES", 12, GOLD))
 	var catalog := character_state.progression_profile.mastery_catalog
 	if _section_id == &"":
 		_section_id = catalog.doctrines[0].discipline_id
-	for doctrine in catalog.doctrines:
+	for index in range(catalog.doctrines.size()):
+		var doctrine := catalog.doctrines[index]
 		var points := SkillTreeResolver.champion_doctrine_selected_cost(doctrine, character_state.champion_progression.selected_node_ids)
-		var button := _button("%s\n%d point%s investi%s" % [doctrine.display_name, points, "s" if points > 1 else "", "s" if points > 1 else ""], 14)
-		button.custom_minimum_size = Vector2(176, 60)
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var button := _button("", 14)
+		button.name = "Doctrine_%s" % doctrine.discipline_id
+		button.custom_minimum_size = Vector2(180, 83)
 		button.tooltip_text = doctrine.description
 		button.pressed.connect(select_section.bind(doctrine.discipline_id))
 		_navigation.add_child(button)
+		var row := HBoxContainer.new()
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		row.offset_left = 8
+		row.offset_right = -8
+		row.offset_top = 7
+		row.offset_bottom = -7
+		row.add_theme_constant_override("separation", 8)
+		button.add_child(row)
+		row.add_child(_icon(DOCTRINE_ART[index % DOCTRINE_ART.size()], 43))
+		var lines := VBoxContainer.new()
+		lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		lines.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lines.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_child(lines)
+		var title := _wrapped(doctrine.display_name, 15, TEXT)
+		lines.add_child(title)
+		var available := 0
+		for node in SkillTreeResolver.champion_doctrine_nodes(doctrine):
+			if bool(character_state.evaluate_mastery_node(node.upgrade_id).get("allowed", false)):
+				available += 1
+		lines.add_theme_constant_override("separation", 2)
+		lines.add_child(_label("%d PMa · %d dispo." % [points, available], 12, GREEN if available > 0 else GOLD))
+		button.tooltip_text = "%s\n%d points investis · %d maîtrises accessibles" % [doctrine.description, points, available]
 		_nav_buttons[doctrine.discipline_id] = button
 		STYLE.selected(button, _section_id == doctrine.discipline_id)
 	_navigation.add_child(HSeparator.new())
 	for entry in [[&"advanced", "Destin héroïque", "Sommets · Jonctions · Apothéoses"], [&"attributes", "Caractéristiques", "Vitalité · Puissance · Résolution · Sagesse"]]:
 		var button := _button(str(entry[1]), 14)
-		button.custom_minimum_size.y = 38
+		button.custom_minimum_size.y = 40
 		button.tooltip_text = str(entry[2])
 		button.pressed.connect(select_section.bind(StringName(entry[0])))
 		_navigation.add_child(button)
 		_nav_buttons[entry[0]] = button
 		STYLE.selected(button, _section_id == StringName(entry[0]))
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_navigation.add_child(spacer)
-	var capstone_hint := _label("CAPSTONES : N10 PUIS N13\nMaîtrises du N2 au N14\n3 leçons achetables maximum", 12, MUTED)
-	capstone_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_navigation.add_child(capstone_hint)
+	_navigation.add_child(_wrapped("Maîtrises : niveaux 2 à 14\nCapstones : niveaux 10 puis 13\n3 leçons achetables maximum", 12, MUTED))
 
 
 func _build_spell_strip() -> void:
@@ -272,7 +391,7 @@ func _build_spell_strip() -> void:
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.add_theme_constant_override("separation", 9)
 		margin.add_child(row)
-		row.add_child(_icon(spell.icon, 38))
+		row.add_child(_icon(_spell_icon(spell), 38))
 		var lines := VBoxContainer.new()
 		lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		lines.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -287,103 +406,73 @@ func _build_spell_strip() -> void:
 func _build_content() -> void:
 	if not _built or character_state == null:
 		return
+	var attributes := _section_id == &"attributes"
+	_search.visible = not attributes
+	_next_available_button.visible = not attributes
+	_graph.visible = not attributes
+	_graph_controls.visible = not attributes
+	_attribute_scroll.visible = attributes
 	_clear(_content)
 	_node_buttons.clear()
-	_search.visible = _section_id != &"attributes"
-	if _section_id == &"attributes":
+	if attributes:
+		_graph_title.text = "Caractéristiques"
+		_graph_subtitle.text = "Comparez l’impact d’un point avant de l’investir."
 		_build_attributes()
 		return
 	var catalog := character_state.progression_profile.mastery_catalog
 	var doctrine := SkillTreeResolver.champion_doctrine_by_id(catalog.doctrines, _section_id)
-	_content.add_child(_label(doctrine.display_name if doctrine != null else "Destin héroïque", 23, TEXT, true))
-	var subtitle := _label(doctrine.description if doctrine != null else "Les sommets récompensent une doctrine complète. Les jonctions relient deux doctrines.", 14, MUTED)
-	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_content.add_child(subtitle)
-	var nodes: Array[SkillTreeNodeData] = SkillTreeResolver.champion_doctrine_nodes(doctrine) if doctrine != null else catalog.get_advanced_nodes()
-	var query := _search.text.strip_edges().to_lower()
-	var tiers: Dictionary = {}
-	for node in nodes:
-		if not query.is_empty() and not node.display_name.to_lower().contains(query):
-			continue
-		if not tiers.has(node.tier):
-			tiers[node.tier] = []
-		(tiers[node.tier] as Array).append(node)
-	var tier_ids: Array = tiers.keys()
-	tier_ids.sort()
-	for tier_value in tier_ids:
-		var tier := int(tier_value)
-		var heading := "PALIER %d" % tier
-		if tier == 5:
-			heading = "CAPSTONE · CHOIX EXCLUSIF"
-		elif tier == 6:
-			heading = "NIVEAU 13 · SOMMET DE SPÉCIALISTE"
-		elif tier == 7:
-			heading = "NIVEAU 14 · JONCTION MYTHIQUE"
-		elif tier == 8:
-			heading = "NIVEAU 14 · APOTHÉOSE"
-		_content.add_child(_label(heading, 11, GOLD))
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 10)
-		_content.add_child(row)
-		for value in tiers[tier]:
-			var node := value as SkillTreeNodeData
-			# Three advanced alternatives remain readable as independent rows.
-			var parent: Container = row if (tiers[tier] as Array).size() <= 2 else _content
-			parent.add_child(_node_card(node, doctrine))
-		if tier < 5 and query.is_empty():
-			var connector := _label("↓", 14, Color("728f80"))
-			connector.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			_content.add_child(connector)
-	if tiers.is_empty():
-		_content.add_child(_label("Aucune maîtrise ne correspond à cette recherche.", 15, MUTED))
+	_graph_title.text = doctrine.display_name if doctrine != null else "Destin héroïque"
+	_graph_subtitle.text = doctrine.description if doctrine != null else "Sommets, jonctions et apothéoses : les liens entre vos doctrines."
+	_graph.set_reduced_motion(GameManager.is_reduced_motion_enabled())
+	_graph.configure(character_state, _section_id)
+	_graph.set_search_query(_search.text)
+	_node_buttons = _graph.get_node_buttons()
 	_refresh_node_styles()
-
-
-func _node_card(node: SkillTreeNodeData, _doctrine: DisciplineData) -> Button:
-	var button := _button("", 14)
-	button.name = str(node.upgrade_id)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	button.custom_minimum_size = Vector2(160, 68)
-	button.tooltip_text = node.description
-	button.pressed.connect(inspect_node.bind(node.upgrade_id))
-	var margin := MarginContainer.new()
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 10)
-	button.add_child(margin)
-	var box := VBoxContainer.new()
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_child(box)
-	var title := _label(node.display_name, 15, TEXT)
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_child(title)
-	var chosen := character_state.champion_progression.selected_node_ids.has(node.upgrade_id)
-	var decision := character_state.evaluate_mastery_node(node.upgrade_id)
-	var available := bool(decision.get("allowed", false))
-	var requirement := "DISPONIBLE" if available else "PRÉREQUIS"
-	if str(decision.get("reason_id", "")) == "LEVEL_GATE":
-		var level := node.required_champion_level
-		if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE and not character_state.champion_progression.selected_capstone_ids.is_empty():
-			level = maxi(level, character_state.champion_progression.profile.second_capstone_level)
-		requirement = "NIVEAU %d" % level
-	elif str(decision.get("reason_id", "")) == "INSUFFICIENT_MASTERY":
-		requirement = "POINTS REQUIS"
-	elif str(decision.get("reason_id", "")) in ["EXCLUDED_BY_SELECTION", "EXCLUSIVE_GROUP"]:
-		requirement = "CHOIX EXCLU"
-	var badge := "ACQUIS" if chosen else "%d PMa · %s" % [node.mastery_cost, requirement]
-	box.add_child(_label(badge, 11, GREEN if chosen or available else MUTED))
-	_node_buttons[node.upgrade_id] = button
-	return button
+	_update_available_count()
 
 
 func _refresh_node_styles() -> void:
+	if is_instance_valid(_graph):
+		_graph.inspect_node(_selected_node_id)
+
+
+func _on_search_changed(_query: String) -> void:
+	if not _built or _graph == null:
+		return
+	_graph.set_search_query(_search.text)
+	_node_buttons = _graph.get_node_buttons()
+	_update_available_count()
+
+
+func _update_available_count() -> void:
+	var available := 0
+	var acquired := 0
 	for node_id in _node_buttons:
-		var button := _node_buttons[node_id] as Button
-		STYLE.selected(button, node_id == _selected_node_id)
-		if character_state.champion_progression.selected_node_ids.has(node_id) and node_id != _selected_node_id:
-			button.add_theme_stylebox_override("normal", STYLE.box(Color("223b31"), Color("618c73"), 5, 9))
+		if character_state.champion_progression.selected_node_ids.has(node_id):
+			acquired += 1
+		elif bool(character_state.evaluate_mastery_node(node_id).get("allowed", false)):
+			available += 1
+	_next_available_button.disabled = available == 0
+	_next_available_button.text = "Accessible%s  %d ›" % ["s" if available != 1 else "", available]
+	_graph_status.text = "%d / %d acquises · Glisser / molette" % [acquired, _node_buttons.size()]
+
+
+func _select_next_available() -> void:
+	var available: Array[StringName] = []
+	for node_id in _node_buttons:
+		if bool(character_state.evaluate_mastery_node(node_id).get("allowed", false)):
+			available.append(StringName(node_id))
+	if available.is_empty():
+		return
+	var index := (available.find(_selected_node_id) + 1) % available.size()
+	inspect_node(available[index])
+	_graph.center_on_node(available[index])
+	_focus_inspected.call_deferred()
+
+
+func _on_graph_navigation_changed(snapshot: Dictionary) -> void:
+	if is_instance_valid(_zoom_label):
+		_zoom_label.text = "%d %%" % roundi(float(snapshot.get("zoom", 1.0)) * 100.0)
 
 
 func _refresh_detail() -> void:
@@ -395,13 +484,25 @@ func _refresh_detail() -> void:
 	if _selected_spell != null:
 		_show_spell_detail(_selected_spell)
 		return
+	if _section_id == &"attributes":
+		_detail.add_child(_label("DÉVELOPPER SON CHAMPION", 11, GOLD))
+		_detail.add_child(_wrapped("Chaque point compte", 24, TEXT, true))
+		var attribute_points := character_state.champion_progression.unspent_attribute_points
+		var plural := "s" if attribute_points > 1 else ""
+		_detail.add_child(_wrapped("%d point%s de caractéristique disponible%s." % [attribute_points, plural, plural], 16, GREEN))
+		_detail.add_child(_wrapped("Chaque carte compare vos statistiques actuelles avec celles obtenues en investissant un point. Les effets sur vos techniques sont calculés avec votre équipement et vos maîtrises.", 15, MUTED))
+		_detail.add_child(_wrapped("Sélectionnez une technique dans le bandeau pour consulter ses valeurs détaillées.", 14, GOLD))
+		_detail.add_child(_wrapped("Les investissements sont désactivés dans cet aperçu." if read_only else "Le bouton + de chaque carte investit un point. Ce choix est définitif pour cette run.", 14, MUTED))
+		_action.text = "Consultation" if read_only else "Investissez depuis une carte"
+		return
 	var node := character_state.progression_profile.mastery_catalog.node_catalog().get(_selected_node_id) as SkillTreeNodeData
 	if node == null:
-		_detail.add_child(_label("COMPRENDRE SON BUILD", 11, GOLD))
-		_detail.add_child(_label("Un héros, trois voies", 24, TEXT, true))
-		var intro := _label("Sélectionnez une maîtrise pour découvrir ses effets, ses conditions d’accès et ce qu’elle change sur vos techniques.", 16, MUTED)
+		_detail.add_child(_label("TRACER SA VOIE", 11, GOLD))
+		_detail.add_child(_label("Votre prochain choix", 24, TEXT, true))
+		var intro := _label("Parcourez les nœuds reliés, puis sélectionnez une maîtrise. Ses conditions et son effet sur vos techniques apparaissent ici.", 16, MUTED)
 		intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_detail.add_child(intro)
+		_detail.add_child(_wrapped("Molette : zoom · Glisser : déplacer\nRecentrer : retrouver les maîtrises\nAccessible : trouver votre prochain choix", 14, GOLD))
 		_detail.add_child(_label("Les quatre techniques ci-dessus affichent leurs valeurs calculées avec vos statistiques actuelles.", 14, MUTED))
 		(_detail.get_child(_detail.get_child_count() - 1) as Label).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_action.text = "Consultation" if read_only else "Choisissez une maîtrise"
@@ -413,8 +514,7 @@ func _refresh_detail() -> void:
 	_detail.add_child(_wrapped(node.description, 16, TEXT))
 	_detail.add_child(HSeparator.new())
 	_detail.add_child(_label("CONDITIONS D’ACCÈS", 11, GOLD))
-	for line in _requirements(node):
-		_detail.add_child(_wrapped(line, 13, MUTED))
+	_append_requirements(node, chosen)
 	_detail.add_child(HSeparator.new())
 	_detail.add_child(_label("APERÇU DES TECHNIQUES", 11, GOLD))
 	var before := character_state.get_selected_mastery_nodes()
@@ -470,6 +570,7 @@ func _node_names(ids: Array[StringName]) -> String:
 
 
 func _inspect_spell(spell: Spell) -> void:
+	_detail_scroll.scroll_vertical = 0
 	_selected_spell = spell
 	_selected_node_id = &""
 	_refresh_node_styles()
@@ -478,7 +579,7 @@ func _inspect_spell(spell: Spell) -> void:
 
 func _show_spell_detail(spell: Spell) -> void:
 	var profile := MasteryStaticModifierResolver.resolve_spell_profile(spell, character_state.get_selected_mastery_nodes())
-	_detail.add_child(_icon(spell.icon, 64))
+	_detail.add_child(_icon(_spell_icon(spell), 64))
 	_detail.add_child(_label("TECHNIQUE DU CHAMPION", 11, GOLD))
 	_detail.add_child(_wrapped(spell.spell_name, 24, TEXT, true))
 	_detail.add_child(_wrapped(spell.description, 16, TEXT))
@@ -567,10 +668,12 @@ func _build_attributes() -> void:
 func _purchase_selected() -> void:
 	if read_only or character_state == null:
 		return
+	var acquired := character_state.progression_profile.mastery_catalog.node_catalog().get(_selected_node_id) as SkillTreeNodeData
 	var result := character_state.purchase_mastery_node(_selected_node_id)
 	if bool(result.get("purchased", false)):
 		build_changed.emit()
 		refresh()
+		_show_feedback("Maîtrise acquise : %s." % acquired.display_name)
 		_focus_inspected.call_deferred()
 
 
@@ -580,6 +683,7 @@ func _spend_attribute(attribute_id: StringName) -> void:
 	if character_state.spend_champion_attribute(attribute_id):
 		build_changed.emit()
 		refresh()
+		_show_feedback("Caractéristique augmentée · statistiques actualisées.")
 
 
 func _reason_text(reason: String) -> String:
@@ -603,7 +707,7 @@ func _range_text(minimum: int, maximum: int) -> String:
 
 func _panel(fill: Color, padding: int) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", STYLE.box(fill, STYLE.BORDER, 7, padding))
+	STYLE.panel(panel, Color("211a15"), Color("64513e"), 7, padding)
 	return panel
 
 
@@ -621,6 +725,9 @@ func _label(text: String, font_size: int, color: Color, display: bool = false) -
 	label.add_theme_font_override("font", STYLE.DISPLAY if display else STYLE.BODY)
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", color)
+	if display:
+		label.add_theme_color_override("font_shadow_color", Color("0b0806"))
+		label.add_theme_constant_override("shadow_offset_y", 1)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 
@@ -631,9 +738,18 @@ func _wrapped(text: String, font_size: int, color: Color, display: bool = false)
 	return label
 
 
+func _spell_icon(spell: Spell) -> Texture2D:
+	if spell == null:
+		return null
+	var unit := character_state.unit if character_state != null else null
+	var hud_theme := CharacterHUDThemeCatalog.resolve_refined(unit)
+	return hud_theme.get_spell_icon_for(spell) if hud_theme != null else spell.icon
+
+
 func _icon(texture: Texture2D, extent: float) -> TextureRect:
 	var icon := TextureRect.new()
 	icon.texture = texture
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.custom_minimum_size = Vector2(extent, extent)
@@ -675,3 +791,120 @@ func _target_values_text(values, fallback: int) -> String:
 	for value in values:
 		labels.append(str(value))
 	return " / ".join(labels) if not labels.is_empty() else str(fallback)
+
+
+func _apply_responsive_layout() -> void:
+	if not _built:
+		return
+	var compact := size.x < 1400
+	_nav_panel.custom_minimum_size.x = 202 if compact else 230
+	_detail_panel.custom_minimum_size.x = 310 if compact else 365
+	_title.add_theme_font_size_override("font_size", 24 if compact else 30)
+	_summary.add_theme_font_size_override("font_size", 12 if compact else 14)
+
+
+func _animate_entry() -> void:
+	if is_instance_valid(_entry_tween):
+		_entry_tween.kill()
+	modulate = Color.WHITE
+	if GameManager.is_reduced_motion_enabled():
+		return
+	modulate.a = 0.0
+	_entry_tween = create_tween()
+	_entry_tween.tween_property(self, "modulate:a", 1.0, 0.18)
+
+
+func _show_feedback(text: String) -> void:
+	if is_instance_valid(_feedback_tween):
+		_feedback_tween.kill()
+	_feedback.text = text
+	_feedback.visible = true
+	_feedback.modulate = Color.WHITE
+	if GameManager.is_reduced_motion_enabled():
+		return
+	_feedback_tween = create_tween()
+	_feedback_tween.tween_interval(3.0)
+	_feedback_tween.tween_property(_feedback, "modulate:a", 0.0, 0.25)
+	_feedback_tween.tween_callback(func() -> void: _feedback.hide())
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or not event is InputEventKey or not event.pressed or event.echo:
+		return
+	if event.ctrl_pressed and event.keycode == KEY_F:
+		_search.grab_focus()
+		_search.select_all()
+		get_viewport().set_input_as_handled()
+	elif event.keycode == KEY_HOME and not _search.has_focus() and _section_id != &"attributes":
+		_graph.fit_graph()
+		get_viewport().set_input_as_handled()
+
+
+func _append_requirements(node: SkillTreeNodeData, chosen: bool) -> void:
+	var progress := character_state.champion_progression
+	var selected := progress.selected_node_ids
+	var catalog := character_state.progression_profile.mastery_catalog
+	var level := node.required_champion_level
+	if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE and not progress.selected_capstone_ids.is_empty() and not chosen:
+		level = maxi(level, progress.profile.second_capstone_level)
+	_requirement_row("Niveau %d · vous : %d" % [level, progress.current_level], progress.current_level >= level)
+	_requirement_row("%d PMa investis" % node.mastery_cost if chosen else "%d PMa nécessaires · disponibles : %d" % [node.mastery_cost, progress.unspent_mastery_points], chosen or progress.unspent_mastery_points >= node.mastery_cost)
+	for prerequisite in node.prerequisite_node_ids:
+		_requirement_row("Requiert : " + _node_names([prerequisite]), selected.has(prerequisite))
+		_requirement_link(prerequisite)
+	if not node.requires_any_node_ids.is_empty():
+		var satisfied := false
+		for prerequisite in node.requires_any_node_ids:
+			satisfied = satisfied or selected.has(prerequisite)
+		_requirement_row("Au moins une : " + _node_names(node.requires_any_node_ids), satisfied)
+		for prerequisite in node.requires_any_node_ids:
+			if not selected.has(prerequisite):
+				_requirement_link(prerequisite)
+	for doctrine_id in node.requires_completed_tree_ids:
+		var doctrine := SkillTreeResolver.champion_doctrine_by_id(catalog.doctrines, doctrine_id)
+		if doctrine != null:
+			_requirement_row("Doctrine complète : " + doctrine.display_name, SkillTreeResolver.champion_doctrine_is_complete(doctrine, selected))
+	for requirement in node.doctrine_point_requirements:
+		var doctrine := SkillTreeResolver.champion_doctrine_by_id(catalog.doctrines, requirement.tree_id)
+		if doctrine != null:
+			var points := SkillTreeResolver.champion_doctrine_selected_cost(doctrine, selected)
+			_requirement_row("%s : %d / %d PMa" % [doctrine.display_name, points, requirement.minimum_points], points >= requirement.minimum_points)
+	if not node.excluded_node_ids.is_empty():
+		var compatible := true
+		for excluded in node.excluded_node_ids:
+			compatible = compatible and not selected.has(excluded)
+		_requirement_row("Exclusif avec : " + _node_names(node.excluded_node_ids), compatible)
+
+
+func _requirement_row(caption: String, met: bool) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	_detail.add_child(row)
+	row.add_child(_label("✓" if met else "◇", 15, GREEN if met else GOLD))
+	var text := _wrapped(caption, 13, TEXT if met else MUTED)
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(text)
+
+
+func _requirement_link(node_id: StringName) -> void:
+	var button := _button("Voir : %s  ›" % _node_names([node_id]), 12)
+	button.name = "Prerequisite_%s" % node_id
+	button.custom_minimum_size.y = 30
+	button.clip_text = true
+	button.tooltip_text = "Afficher cette maîtrise dans l’arbre"
+	button.pressed.connect(_go_to_mastery.bind(node_id))
+	_detail.add_child(button)
+
+
+func _go_to_mastery(node_id: StringName) -> void:
+	var node := character_state.progression_profile.mastery_catalog.node_catalog().get(node_id) as SkillTreeNodeData
+	if node == null:
+		return
+	var section: StringName = node.doctrine_id if node.doctrine_id != &"" else &"advanced"
+	if section != _section_id:
+		select_section(section)
+	if not _search.text.is_empty():
+		set_search_query("")
+	inspect_node(node_id)
+	_graph.center_on_node(node_id)
+	_focus_inspected.call_deferred()

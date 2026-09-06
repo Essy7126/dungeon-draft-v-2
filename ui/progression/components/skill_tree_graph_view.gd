@@ -3,6 +3,8 @@ extends Control
 
 signal node_inspected(node_view)
 
+const CODEX_STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
+
 const NODE_SCENE := preload(
 	"res://ui/progression/components/skill_tree_node_view.tscn"
 )
@@ -260,8 +262,8 @@ func _draw() -> void:
 		var branch_rect := _branch_rects[index]
 		if _uses_short_tree_layout():
 			var band := StyleBoxFlat.new()
-			band.bg_color = Color("18272a")
-			band.border_color = Color("314448")
+			band.bg_color = Color("241e18")
+			band.border_color = Color("514231")
 			band.set_border_width_all(1)
 			band.set_corner_radius_all(7)
 			draw_style_box(band, branch_rect)
@@ -1315,6 +1317,7 @@ func _neighbor_path(
 
 func _add_rank_header(rank_number: int, threshold: int) -> void:
 	var header := Label.new()
+	CODEX_STYLE.label(header)
 	header.text = (
 		("SORT INITIAL\nRang 1" if rank_number == 1 else "ÉVOLUTIONS\nRang %d · %d XP" % [rank_number, threshold])
 		if _uses_short_tree_layout()
@@ -1355,6 +1358,7 @@ func _add_branch_header(
 	) -> void:
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = &"SkillTreeBranchTitle"
+	panel.add_theme_stylebox_override("panel", CODEX_STYLE.box(Color("2b231b"), CODEX_STYLE.BORDER, 4, 7))
 	panel.position = band_rect.position + Vector2(16.0, 9.0)
 	panel.size = Vector2(
 		minf(band_rect.size.x - 32.0, 310.0 if _layout_profile == PROFILE_LARGE else 276.0),
@@ -1362,6 +1366,7 @@ func _add_branch_header(
 	)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var label := Label.new()
+	CODEX_STYLE.label(label)
 	label.text = title
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.add_theme_font_size_override(

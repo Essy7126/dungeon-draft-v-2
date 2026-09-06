@@ -8,7 +8,7 @@ const EXPECTED_MIDDLE_ROSTER: Array[StringName] = [
 ]
 const EXPECTED_JUDGMENT_ROSTER: Array[StringName] = [
 	&"odyssey_champion",
-	&"catabase_shadow_paris",
+	&"spectre_greatsword",
 ]
 
 
@@ -20,7 +20,7 @@ func test_catabase_keeps_five_distinct_ordered_arenas() -> void:
 	)
 	assert_eq(
 		CATABASE_RUN.rooms[2].room_name,
-		"Catabase III — Le Jugement de Paris",
+		"Catabase III — Le Jugement silencieux",
 	)
 	var names := {}
 	var map_ids := {}
@@ -45,20 +45,13 @@ func test_middle_room_is_the_melee_formation_escalation() -> void:
 	assert_eq(_room_enemy_ids(room), EXPECTED_MIDDLE_ROSTER)
 
 
-func test_shadow_paris_stays_in_the_third_room_with_a_melee_anchor() -> void:
+func test_judgment_precedes_the_boss_with_champion_and_spectre() -> void:
 	var judgment := CATABASE_RUN.rooms[2]
 	assert_eq(_roster_ids(judgment), EXPECTED_JUDGMENT_ROSTER)
 	assert_eq(_room_enemy_ids(judgment), EXPECTED_JUDGMENT_ROSTER)
 	assert_eq(judgment.encounter_definition.room_index, 3)
 	assert_eq(judgment.encounter_definition.living_enemy_cap, 2)
 	assert_true(judgment.encounter_definition.formation_profiles.has(&"split"))
-	var paris := judgment.enemies[1]
-	assert_eq(paris.unit_name, "L’Ombre de Paris")
-	assert_eq(paris.ai_behavior, EnemyAI.BEHAVIOR_RANGED)
-	assert_true(paris.keep_distance)
-	assert_eq(paris.spells.size(), 1)
-	assert_eq(paris.spells[0].spell_id, &"catabase_shadow_paris_arrow")
-	assert_true(paris.spells[0].needs_line_of_sight)
 	assert_eq(judgment.grid_layout.logical_size, Vector2i(19, 18))
 	assert_eq(judgment.painted_map_visual_data.logical_grid_size, Vector2i(19, 18))
 	assert_eq(
@@ -74,26 +67,20 @@ func test_shadow_paris_stays_in_the_third_room_with_a_melee_anchor() -> void:
 	assert_true(judgment.painted_map_visual_data.validation_errors().is_empty())
 	assert_true(judgment.painted_map_visual_data.foreground_occluder_polygon.is_empty())
 	assert_false(judgment.painted_map_visual_data.foreground_full_hide_rect.has_area())
-	var presentation := judgment.painted_map_visual_data.presentation_profile
-	assert_not_null(presentation.profile_for_unit(&"catabase_shadow_paris"))
-	assert_almost_eq(
-		presentation.final_visual_scale(&"catabase_shadow_paris"),
-		1.7064,
-		0.001,
-	)
 
 
-func test_encounter_durability_rises_across_the_five_rooms() -> void:
+
+func test_encounter_durability_accounts_for_paris_two_form_boss() -> void:
 	var durability: Array[int] = []
 	for room in CATABASE_RUN.rooms:
 		durability.append(_total_roster_hp(room))
 	assert_lt(durability[0], durability[1], str(durability))
 	assert_lt(durability[1], durability[2], str(durability))
-	assert_eq(durability[2], 167)
+	assert_eq(durability[2], 179)
 	assert_lt(durability[2], durability[3], str(durability))
-	assert_eq(durability[3], 173)
+	assert_eq(durability[3], 185)
 	assert_lt(durability[3], durability[4], str(durability))
-	assert_eq(durability[4], 243)
+	assert_eq(durability[4], 248, "Paris replaces the champion; no enemy receives inflated HP.")
 
 
 func test_later_room_formations_are_valid_for_twenty_seeds() -> void:
@@ -130,12 +117,12 @@ func test_later_room_formations_are_valid_for_twenty_seeds() -> void:
 					assert_lte(cell.y, 5, "The black temple's enemies deploy opposite the heroes in the north of the nave")
 
 
-func test_lethe_and_black_temple_extend_the_run_after_the_judgment_of_paris() -> void:
+func test_lethe_and_final_boss_follow_the_silent_judgment() -> void:
 	var cases := [
 		[3, "Catabase IV — Le Gué du Léthé", &"catabase_room_04", 160,
-			[&"spectre_greatsword", &"spectre_greatsword", &"odyssey_skirmisher"]],
+			[&"philosopher_mage", &"spectre_greatsword", &"odyssey_skirmisher"]],
 		[4, "Catabase V — Le Temple du Serment Noir", &"catabase_room_05", 180,
-			[&"odyssey_champion", &"spectre_greatsword", &"spectre_greatsword"]],
+			[&"catabase_shadow_paris", &"spectre_greatsword", &"spectre_greatsword"]],
 	]
 	for expected: Array in cases:
 		var index := int(expected[0])
@@ -184,3 +171,32 @@ func _total_roster_hp(room: RoomData) -> int:
 	for unit_data in room.encounter_definition.expanded_roster():
 		result += unit_data.max_hp
 	return result
+
+
+func test_paris_is_the_unique_final_boss_of_the_five_room_run() -> void:
+	var paris := load("res://data/units/enemies/catabase_shadow_paris.tres") as UnitData
+	var occurrences := 0
+	for index in range(CATABASE_RUN.rooms.size()):
+		var room := CATABASE_RUN.rooms[index]
+		for unit_data in room.encounter_definition.expanded_roster():
+			if unit_data.get_effective_unit_id() == &"catabase_shadow_paris":
+				occurrences += 1
+				assert_eq(index, CATABASE_RUN.rooms.size() - 1)
+				assert_same(unit_data, paris, "The final boss uses the canonical Paris resource.")
+		if index < CATABASE_RUN.rooms.size() - 1:
+			assert_false(_room_enemy_ids(room).has(&"catabase_shadow_paris"))
+	assert_eq(occurrences, 1)
+	var last := CATABASE_RUN.rooms.back() as ArenaDefinition
+	assert_eq(last.arena_id, &"black_oath_temple_v1")
+	assert_eq(last.encounter_definition.encounter_id, &"catabase_room_05")
+	assert_eq(last.encounter_definition.room_index, 5)
+	assert_eq(_roster_ids(last), [&"catabase_shadow_paris", &"spectre_greatsword", &"spectre_greatsword"])
+	assert_eq(_room_enemy_ids(last), _roster_ids(last))
+	assert_eq(paris.max_hp, 120)
+	assert_eq(paris.spells.size(), 5)
+	assert_eq(paris.spells[0].spell_id, &"paris_spectral_arrow")
+	assert_eq(paris.ai_profile.strategy, EnemyAIProfile.Strategy.SPECTRAL_ARCHER)
+	assert_true(paris.combat_form_change.is_valid())
+	assert_eq(paris.combat_form_change.target_form, &"infernal")
+	assert_eq(paris.combat_form_change.below_hp_percent, 20)
+	assert_eq(paris.combat_form_change.shield_grant, 30)

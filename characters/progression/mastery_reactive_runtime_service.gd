@@ -22,10 +22,12 @@ var _activation_serial: int = 0
 
 
 func _init() -> void:
-	followup_queue.request_queued.connect(
-		func(request: TacticalFollowupRequest) -> void:
-			tactical_followup_queued.emit(request)
-	)
+	# A named callable does not capture this RefCounted owner in its own queue.
+	followup_queue.request_queued.connect(_on_followup_request_queued)
+
+
+func _on_followup_request_queued(request: TacticalFollowupRequest) -> void:
+	tactical_followup_queued.emit(request)
 
 
 func configure(effects: Array[MasteryReactiveEffectData], preserve_runtime_state: bool = false) -> PackedStringArray:

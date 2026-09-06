@@ -361,7 +361,7 @@ func apply_layout_profile(profile: StringName) -> void:
 			else "Disponible dès le rang 1" if is_base_rank
 			else "Progressez pour révéler ce choix"
 		)
-		_description_label.add_theme_color_override("font_color", Color("afbbb5"))
+		_description_label.add_theme_color_override("font_color", Color("b9ad9c"))
 		_description_label.add_theme_font_size_override("font_size", 12)
 		_name_label.add_theme_font_size_override("font_size", 14 if _dense_short_tree else 15)
 		_state_text.add_theme_font_size_override("font_size", 10)
@@ -493,7 +493,7 @@ func _apply_visual_state() -> void:
 			_set_state_colors(Color("84a78b"), Color("b4d1b5"))
 		SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
 			self_modulate = Color.WHITE
-			_set_state_colors(Color("d6b77c"), Color("e9cfa0"))
+			_set_state_colors(Color("d1ae7b"), Color("e9cfa0"))
 		SkillTreeVisualPresentation.SkillTreeVisualState.LOCKED_BY_BRANCH:
 			self_modulate = Color(0.83, 0.86, 0.85, 1.0)
 			_set_state_colors(Color(0.56, 0.48, 0.48), Color(0.72, 0.48, 0.48))
@@ -523,8 +523,8 @@ func _apply_locked_reveal() -> void:
 	var opacity := config.locked_node_opacity if config != null else 0.42
 	_icon_override.modulate = Color(0.72, 0.75, 0.78, maxf(opacity, 0.32))
 	_primary_glyph.modulate = _icon_override.modulate
-	_name_label.add_theme_color_override("font_color", Color("a6b2b1"))
-	_threshold_label.add_theme_color_override("font_color", Color("859392"))
+	_name_label.add_theme_color_override("font_color", Color("b0a392"))
+	_threshold_label.add_theme_color_override("font_color", Color("988773"))
 	tooltip_text = "Compétence verrouillée — Rang %d requis" % rank
 	_apply_surface_style()
 	_refresh_inspection_frame()
@@ -555,27 +555,27 @@ func _apply_surface_style() -> void:
 	if not is_node_ready():
 		return
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("18272a")
-	style.border_color = Color("526665")
+	style.bg_color = Color("25201c")
+	style.border_color = Color("786044")
 	style.set_border_width_all(1)
 	style.corner_radius_top_left = 4
 	style.corner_radius_top_right = 4
 	style.corner_radius_bottom_left = 4
 	style.corner_radius_bottom_right = 4
 	if reveal_mode == RevealMode.RANK_GATE:
-		style.bg_color = Color("111d20")
-		style.border_color = Color("334347")
+		style.bg_color = Color("171411")
+		style.border_color = Color("44392d")
 		style.set_border_width_all(1)
 	elif reveal_mode == RevealMode.NEXT_RANK:
-		style.bg_color = Color("1d2b30")
-		style.border_color = Color("485c62")
+		style.bg_color = Color("27201a")
+		style.border_color = Color("69553f")
 	elif int(visual_presentation.get("state", -1)) == SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED:
-		style.bg_color = Color("2a4139")
-		style.border_color = Color("8dae93")
+		style.bg_color = Color("302b20")
+		style.border_color = Color("b09b6d")
 		style.set_border_width_all(2)
 	elif int(visual_presentation.get("state", -1)) == SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
-		style.bg_color = Color("354039")
-		style.border_color = Color("d6b77c")
+		style.bg_color = Color("3a2e20")
+		style.border_color = Color("d1ae7b")
 		style.set_border_width_all(2)
 	_state_backdrop.add_theme_stylebox_override("panel", style)
 	var halo := StyleBoxFlat.new()
@@ -594,18 +594,18 @@ func _apply_surface_style() -> void:
 	focus.set_corner_radius_all(5)
 	_focus_overlay.add_theme_stylebox_override("panel", focus)
 	var badge := StyleBoxFlat.new()
-	badge.bg_color = Color("18272a")
-	badge.border_color = Color("7c8b79")
+	badge.bg_color = Color("25201c")
+	badge.border_color = Color("a28a63")
 	badge.set_border_width_all(1)
 	badge.set_corner_radius_all(3)
 	_rank_badge_fallback.add_theme_stylebox_override("panel", badge)
-	_rank_label.add_theme_color_override("font_color", Color("f0ebdc"))
+	_rank_label.add_theme_color_override("font_color", Color("f2e6d3"))
 
 
 func _set_state_colors(border: Color, text_color: Color) -> void:
 	_state_text.add_theme_color_override("font_color", text_color)
-	_name_label.add_theme_color_override("font_color", Color("f0ebdc"))
-	_threshold_label.add_theme_color_override("font_color", Color("97aaa5"))
+	_name_label.add_theme_color_override("font_color", Color("f2e6d3"))
+	_threshold_label.add_theme_color_override("font_color", Color("b3a38f"))
 
 
 func _refresh_inspection_frame() -> void:

@@ -38,7 +38,7 @@ func test_five_catabase_rooms_bind_their_registered_production_maps() -> void:
 		for decoration in room.decorations:
 			assert_false(decoration.scene_path.contains("res://tools/labs/"), decoration.scene_path)
 	assert_eq(RUN.rooms[2].resource_path, "res://data/rooms/odyssey/room_03.tres")
-	assert_eq(RUN.rooms[2].room_name, "Catabase III — Le Jugement de Paris")
+	assert_eq(RUN.rooms[2].room_name, "Catabase III — Le Jugement silencieux")
 
 
 func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles() -> void:

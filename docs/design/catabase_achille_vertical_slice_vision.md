@@ -1,5 +1,7 @@
 # Vision du vertical slice — Catabase d’Achille
 
+> Mise à jour du 6 septembre 2026 : la run actuelle comporte cinq salles. Paris est le boss final du Temple du Serment Noir (V), avec deux spectres ; III devient le Jugement silencieux, avec Champion et spectre. Les sections décrivant la finale en troisième salle ci-dessous conservent le contexte du prototype d’août. Le contrat actuel est décrit dans [les règles de Paris](paris_gameplay_v1.md) et [la pipeline des cinq maps](../maps/registered_terrain_pipeline.md).
+
 **Statut :** contrat d’alignement P0 pour design, art, code et QA  
 **Slice autoritaire :** `data/runs/odyssey.tres`  
 **Source de décision :** `docs/audits/etat_espionnage_concurrentiel_2026-08-28.md`  

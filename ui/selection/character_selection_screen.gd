@@ -9,17 +9,18 @@ const CATALOG := preload("res://ui/selection/character_selection_catalog.gd")
 const BACKDROP := preload("res://ui/selection/selection_backdrop.gd")
 const PREVIEW := preload("res://ui/characters/CharacterPreview3D.tscn")
 const SPELL_TREE := preload("res://ui/progression/screens/skill_tree_screen.tscn")
-const HEADING := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf")
+const HEADING := preload("res://asset/ui/character_selection/selection_title_font.tres")
+const ASHEN_SURFACE := preload("res://ui/selection/selection_ashen_surface.gd")
 const BODY := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf")
 const BOLD := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Bold.otf")
 const REFERENCE := Vector2(1600, 900)
 const ORNAMENT := preload("res://ui/selection/selection_ornament.gd")
-const INK := Color("121d20")
-const PANEL := Color("18272a")
-const LINE := Color("42514e")
-const GOLD := Color("d6b77c")
-const TEXT := Color("f0ebdc")
-const MUTED := Color("a6b4ad")
+const INK := Color("181513")
+const PANEL := Color("211c19")
+const LINE := Color("615247")
+const GOLD := Color("c5aa86")
+const TEXT := Color("ebe0d2")
+const MUTED := Color("b7aa9c")
 const DIRECTIONS := ["N", "E", "S", "W"]
 
 var selected_index := 0
@@ -89,6 +90,7 @@ func _build_screen() -> void:
 	_canvas.size = REFERENCE
 	_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_canvas)
+	_panel(_canvas, Rect2(0, 0, 1600, 95), Color("191411"), Color("584638"), 0)
 	_ornament(_canvas, Rect2(31, 21, 51, 51), &"seal")
 	_label(_canvas, "CATABASE", Rect2(96, 24, 306, 35), 28, TEXT, HEADING)
 	_label(_canvas, "LE SEUIL DES LÉGENDES", Rect2(98, 61, 300, 19), 13, GOLD, BOLD)
@@ -121,7 +123,7 @@ func _build_roster() -> void:
 		button.tooltip_text = "%s\n%s\n%s" % [entry["chapter"], unit.role, entry["party_note"]]
 		button.pressed.connect(select_character.bind(index))
 		_roster_buttons.append(button)
-		var portrait_frame := _panel(button, Rect2(9, 9, 76, 77), Color("314240"), Color("6b7058"), 4)
+		var portrait_frame := _panel(button, Rect2(9, 9, 76, 77), Color("302924"), Color("7e6752"), 4, &"portrait")
 		var thumb := _portrait_for(unit)
 		if thumb != null:
 			_texture(portrait_frame, thumb, Rect2(2, 2, 72, 73))
@@ -130,12 +132,12 @@ func _build_roster() -> void:
 		var marker := _line(button, Rect2(0, 14, 3, 67), Color(entry["accent"], 0.28))
 		marker.name = "SelectionMarker"
 		_label(button, unit.unit_name, Rect2(101, 9, 178, 31), 25, TEXT, HEADING)
-		var journey := _label(button, str(entry["chapter"]).to_upper(), Rect2(101, 44, 180, 19), 13, entry["accent"], BOLD)
+		var journey := _label(button, str(entry["chapter"]).to_upper(), Rect2(101, 44, 180, 19), 13, Color("c7b494"), BOLD)
 		journey.name = "Journey"
 		journey.clip_text = true
 		journey.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		_label(button, _short_role(unit), Rect2(101, 67, 182, 19), 14, MUTED)
-	var note := _panel(_canvas, Rect2(32, 734, 300, 52), Color(0.06, 0.11, 0.12, 0.94), Color(LINE, 0.7), 4)
+	var note := _panel(_canvas, Rect2(32, 734, 300, 52), Color("1b1714"), Color(LINE, 0.7), 4)
 	note.name = "RosterNote"
 	_label(note, "UN HÉROS, SON AVENTURE", Rect2(14, 6, 272, 18), 13, GOLD, BOLD)
 	_label(note, "Le groupe est lié au récit choisi.", Rect2(14, 27, 272, 18), 15, MUTED)
@@ -181,7 +183,7 @@ func _build_stage() -> void:
 
 
 func _build_details() -> void:
-	var card := _panel(_canvas, Rect2(1126, 119, 442, 668), Color("182c2d"), Color("82765b"), 8)
+	var card := _panel(_canvas, Rect2(1126, 119, 442, 668), Color("211c18"), Color("806b54"), 8, &"window")
 	card.name = "CharacterFolio"
 	_ornament(card, Rect2(6, 6, 430, 656), &"corners")
 	for i in range(2):
@@ -195,9 +197,9 @@ func _build_details() -> void:
 	_details.size = Vector2(400, 566)
 	_label(_details, "À L’ENTRÉE DE L’AVENTURE", Rect2(0, 0, 399, 23), 14, GOLD, BOLD)
 	for i in range(3):
-		var stat := _panel(_details, Rect2(i * 137, 35, 126, 88), Color("dfd5b7"), Color("a89468"), 4)
-		stats_labels[["hp", "ap", "mp"][i]] = _label(stat, "", Rect2(4, 7, 118, 43), 37, Color("263b37"), BOLD, HORIZONTAL_ALIGNMENT_CENTER)
-		_label(stat, ["Vitalité", "Points d’action", "Mouvement"][i], Rect2(3, 54, 120, 23), 14, Color("4b5e53"), BOLD, HORIZONTAL_ALIGNMENT_CENTER)
+		var stat := _panel(_details, Rect2(i * 137, 35, 126, 88), Color("302720"), Color("7c6650"), 4, &"stat")
+		stats_labels[["hp", "ap", "mp"][i]] = _label(stat, "", Rect2(4, 7, 118, 43), 37, Color("ecdec8"), HEADING, HORIZONTAL_ALIGNMENT_CENTER)
+		_label(stat, ["Vitalité", "Points d’action", "Mouvement"][i], Rect2(3, 54, 120, 23), 14, Color("c4b49e"), BOLD, HORIZONTAL_ALIGNMENT_CENTER)
 	_label(_details, "Initiative", Rect2(0, 136, 120, 25), 17, MUTED)
 	stats_labels["initiative"] = _label(_details, "", Rect2(126, 136, 42, 25), 19, TEXT, BOLD)
 	_label(_details, "Armure", Rect2(239, 136, 100, 25), 17, MUTED)
@@ -255,6 +257,7 @@ func _build_details() -> void:
 
 
 func _build_footer() -> void:
+	_panel(_canvas, Rect2(0, 814, 1600, 86), Color("191411"), Color("584638"), 0)
 	_line(_canvas, Rect2(32, 814, 1536, 1), Color(GOLD, 0.35))
 	_ornament(_canvas, Rect2(37, 839, 39, 39), &"seal")
 	_chapter = _label(_canvas, "", Rect2(93, 830, 690, 31), 25, TEXT, HEADING)
@@ -593,10 +596,14 @@ func _mark_selected(button: Button, selected: bool) -> void:
 	button.set_pressed_no_signal(selected)
 	var accent: Color = button.get_meta("accent", GOLD)
 	var roster := StringName(button.get_meta("style_role", &"")) == &"roster"
-	var fill := Color("34483f") if selected else Color("122123")
-	button.add_theme_stylebox_override("normal", _style(fill, accent if selected else Color("55615a"), 5, 2 if selected else 1))
-	button.add_theme_stylebox_override("pressed", _style(fill if selected else Color("34483f"), accent, 5, 2))
-	button.add_theme_color_override("font_color", GOLD if selected else TEXT)
+	var border := Color("b89a74") if selected else LINE
+	button.add_theme_stylebox_override("normal", _frame(border, 5, 2 if selected else 1))
+	button.add_theme_stylebox_override("pressed", _frame(Color("b89a74"), 5, 2))
+	button.add_theme_stylebox_override("hover_pressed", _frame(Color("dcc5a3"), 5, 2))
+	button.add_theme_color_override("font_color", Color("f2e0c2") if selected else TEXT)
+	var surface := button.get_node_or_null("AshenSurface") as SelectionAshenSurface
+	if surface != null:
+		surface.set_selected(selected, accent)
 	if roster:
 		var marker := button.get_node_or_null("SelectionMarker") as ColorRect
 		if marker != null:
@@ -612,19 +619,35 @@ func _style(fill: Color, border: Color, radius: int = 6, width: int = 1) -> Styl
 	style.content_margin_left = 10
 	style.content_margin_right = 10
 	if fill.a > 0.5:
-		style.shadow_color = Color(0.015, 0.03, 0.03, 0.38)
+		style.shadow_color = Color(0.025, 0.018, 0.012, 0.48)
 		style.shadow_size = 6
 		style.shadow_offset = Vector2(0, 3)
 	return style
 
 
-func _panel(parent: Node, rect: Rect2, fill: Color, border: Color, radius: int) -> Panel:
+func _frame(border: Color, radius: int = 5, width: int = 1) -> StyleBoxFlat:
+	var frame := _style(Color.TRANSPARENT, border, radius, width)
+	frame.draw_center = false
+	return frame
+
+
+func _surface(parent: Control, fill: Color, border: Color, role: StringName) -> SelectionAshenSurface:
+	var surface := ASHEN_SURFACE.new() as SelectionAshenSurface
+	surface.name = "AshenSurface"
+	surface.configure(role, fill, border)
+	parent.add_child(surface)
+	parent.move_child(surface, 0)
+	return surface
+
+
+func _panel(parent: Node, rect: Rect2, fill: Color, border: Color, radius: int, role: StringName = &"panel") -> Panel:
 	var panel := Panel.new()
 	parent.add_child(panel)
 	panel.position = rect.position
 	panel.size = rect.size
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _style(fill, border, radius))
+	panel.add_theme_stylebox_override("panel", _frame(border, radius))
+	_surface(panel, fill, border, role)
 	return panel
 
 
@@ -635,23 +658,28 @@ func _button(parent: Node, caption: String, rect: Rect2, primary: bool = false) 
 	button.position = rect.position
 	button.size = rect.size
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_override("font", BOLD)
-	button.add_theme_font_size_override("font_size", 20 if primary else 17)
-	button.add_theme_color_override("font_color", INK if primary else TEXT)
-	button.add_theme_color_override("font_hover_color", INK if primary else TEXT)
-	button.add_theme_color_override("font_pressed_color", INK if primary else GOLD)
-	button.add_theme_color_override("font_focus_color", INK if primary else TEXT)
-	button.add_theme_color_override("font_disabled_color", MUTED)
-	button.add_theme_stylebox_override("normal", _style(GOLD if primary else INK, Color("efcf91") if primary else LINE, 6))
-	button.add_theme_stylebox_override("hover", _style(Color("ebce91") if primary else Color("30423e"), GOLD, 6))
-	button.add_theme_stylebox_override("pressed", _style(Color("c1a16a") if primary else Color("314237"), GOLD, 6, 2))
-	button.add_theme_stylebox_override("disabled", _style(Color("26312f"), LINE, 6))
-	var focus := _style(Color.TRANSPARENT, Color("f0dfae"), 6, 2)
+	button.add_theme_font_override("font", HEADING if primary else BOLD)
+	button.add_theme_font_size_override("font_size", 21 if primary else 17)
+	button.add_theme_color_override("font_color", Color("f3e1c2") if primary else TEXT)
+	button.add_theme_color_override("font_hover_color", Color("fff0d9"))
+	button.add_theme_color_override("font_pressed_color", Color("efdbb7"))
+	button.add_theme_color_override("font_hover_pressed_color", Color("fff0d9"))
+	button.add_theme_color_override("font_focus_color", Color("fff0d9"))
+	button.add_theme_color_override("font_disabled_color", Color("8d8277"))
+	button.add_theme_color_override("font_shadow_color", Color("0a0806"))
+	button.add_theme_constant_override("shadow_offset_y", 1)
+	button.add_theme_stylebox_override("normal", _frame(Color("b49a76") if primary else LINE, 5))
+	button.add_theme_stylebox_override("hover", _frame(Color("d0b593"), 5))
+	button.add_theme_stylebox_override("pressed", _frame(Color("a68b68"), 5, 2))
+	button.add_theme_stylebox_override("hover_pressed", _frame(Color("dcc5a3"), 5, 2))
+	button.add_theme_stylebox_override("disabled", _frame(Color("49413a"), 5))
+	var focus := _frame(Color("f0dec1"), 6, 2)
 	focus.expand_margin_left = 3
 	focus.expand_margin_top = 3
 	focus.expand_margin_right = 3
 	focus.expand_margin_bottom = 3
 	button.add_theme_stylebox_override("focus", focus)
+	_surface(button, Color("493729") if primary else Color("231d19"), Color("ab8b64") if primary else LINE, &"primary" if primary else &"button")
 	return button
 
 
@@ -664,8 +692,11 @@ func _label(parent: Node, caption: String, rect: Rect2, font_size: int, color: C
 	label.add_theme_font_override("font", font)
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_shadow_color", Color(0.02, 0.04, 0.04, 0.65) if color.get_luminance() > 0.4 else Color.TRANSPARENT)
-	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.add_theme_color_override("font_shadow_color", Color(0.025, 0.018, 0.012, 0.85) if font == HEADING else Color(0.025, 0.018, 0.012, 0.4))
+	label.add_theme_constant_override("shadow_offset_y", 2 if font == HEADING and font_size > 30 else 1)
+	if font == HEADING and font_size > 30:
+		label.add_theme_color_override("font_outline_color", Color("211912"))
+		label.add_theme_constant_override("outline_size", 2)
 	label.horizontal_alignment = align
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE

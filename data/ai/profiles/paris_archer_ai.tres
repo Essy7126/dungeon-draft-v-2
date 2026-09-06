@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EnemyAIProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/ai/enemy_ai_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+profile_id = &"paris_two_forms_v1"
+strategy = 7
+ideal_minimum_range = 3
+ideal_maximum_range = 6
+avoid_hero_adjacency = true

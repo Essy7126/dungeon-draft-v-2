@@ -84,3 +84,33 @@ func test_grimoire_host_opens_the_requested_doctrine_and_defaults_to_the_first()
 	codex.get_close_button().pressed.emit()
 	assert_signal_emitted(host, "screen_closed")
 	assert_false(host.visible)
+
+
+func test_spell_strip_and_detail_share_the_live_hud_theme() -> void:
+	var codex := _codex(true)
+	await get_tree().process_frame
+	var hud_theme := CharacterHUDThemeCatalog.resolve_refined(_state.unit)
+	assert_not_null(hud_theme)
+	var buttons := codex.get("_spells") as HBoxContainer
+	assert_eq(buttons.get_child_count(), PROFILE.spells.size())
+	for index in PROFILE.spells.size():
+		var spell := PROFILE.spells[index]
+		var expected := hud_theme.get_spell_icon_for(spell)
+		var strip_icons := buttons.get_child(index).find_children("*", "TextureRect", true, false)
+		assert_eq(strip_icons.size(), 1)
+		assert_same((strip_icons[0] as TextureRect).texture, expected)
+		codex._inspect_spell(spell)
+		var detail := codex.get("_detail") as VBoxContainer
+		var detail_icons := detail.find_children("*", "TextureRect", true, false)
+		assert_eq(detail_icons.size(), 1)
+		assert_same((detail_icons[0] as TextureRect).texture, expected)
+
+
+func test_spell_icon_fallback_does_not_modify_unthemed_content() -> void:
+	var codex := _codex(true)
+	var spell := PROFILE.spells[0]
+	var original := spell.icon
+	_state.unit.unit_id = &"unregistered_champion"
+	assert_same(codex._spell_icon(spell), original)
+	assert_same(spell.icon, original)
+	assert_null(codex._spell_icon(null))

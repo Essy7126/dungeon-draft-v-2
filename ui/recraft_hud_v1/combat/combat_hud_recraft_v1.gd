@@ -4,6 +4,7 @@ signal utility_skill_tree_requested(character_id: StringName, discipline_id: Str
 signal utility_inventory_requested(character_id: StringName)
 signal item_activation_requested(instance_id: StringName)
 
+const UNIT_PRESENTATION := preload("res://ui/combat/combat_unit_presentation.gd")
 const SPELL_SLOT_SCENE := preload(
 	"res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn"
 )
@@ -762,13 +763,15 @@ func update_info(unit) -> void:
 
 	var display_name := CombatGlossary.unit_display_name(unit)
 	_info_label.text = display_name.to_upper() if _premium_skin_active() else display_name
-	_portrait_view.set_character_data(unit.character_data)
+	_portrait_view.set_character_data(UNIT_PRESENTATION.portrait_unit_data(unit))
 	_portrait_view.set_active(true)
 	_apply_character_theme(unit)
 	if not unit.stats_changed.is_connected(_on_resource_changed):
 		unit.stats_changed.connect(_on_resource_changed)
 	if not unit.hp_changed.is_connected(_on_resource_changed):
 		unit.hp_changed.connect(_on_resource_changed)
+	if not unit.combat_form_changed.is_connected(_on_combat_form_changed):
+		unit.combat_form_changed.connect(_on_combat_form_changed)
 	_refresh_resource_bars(unit, false)
 	_refresh_button_states()
 
@@ -778,7 +781,21 @@ func _disconnect_current_unit() -> void:
 		return
 	if _current_unit.hp_changed.is_connected(_on_resource_changed):
 		_current_unit.hp_changed.disconnect(_on_resource_changed)
+	if _current_unit.combat_form_changed.is_connected(_on_combat_form_changed):
+		_current_unit.combat_form_changed.disconnect(_on_combat_form_changed)
 	super._disconnect_current_unit()
+
+
+func _on_combat_form_changed(changed_unit: Unit, _old_form: StringName, _new_form: StringName) -> void:
+	if changed_unit != _current_unit or not is_node_ready():
+		return
+	_portrait_view.set_character_data(UNIT_PRESENTATION.portrait_unit_data(changed_unit))
+	# Stats/hp signals already refresh resources. Only a new kit replaces slots.
+	if _active_spell != null and not changed_unit.spells.has(_active_spell):
+		_active_spell = null
+		_active_mode = ""
+		_refresh_interaction_plate()
+	build_spell_buttons(changed_unit)
 
 
 func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:

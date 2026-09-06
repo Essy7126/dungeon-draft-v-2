@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/infernal_pull.tres" id="paris_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("paris_icon")
+spell_id = &"paris_infernal_pull"
+spell_name = "Étreinte du Tartare"
+description = "12 dégâts de feu et attire la cible d’une case vers Paris. Les dalles d’arrivée s’appliquent normalement."
+ap_cost = 2
+minimum_range = 2
+spell_range = 4
+required_combat_form = &"infernal"
+damage = 12
+damage_type = 1
+element = 1
+impact_delay_seconds = 0
+once_per_activation = false
+cooldown_activations = 2
+pull_distance = 1

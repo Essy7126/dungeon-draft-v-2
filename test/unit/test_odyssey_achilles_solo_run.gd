@@ -159,7 +159,7 @@ func test_odyssey_enemy_stats_and_room_rosters_are_exact() -> void:
 		&"odyssey_skirmisher", &"odyssey_skirmisher", &"spectre_greatsword",
 	])
 	assert_eq(_roster_ids(run.rooms[2]), [
-		&"odyssey_champion", &"catabase_shadow_paris",
+		&"odyssey_champion", &"spectre_greatsword",
 	])
 
 

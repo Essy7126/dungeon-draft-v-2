@@ -10,11 +10,11 @@ La run [odyssey.tres](../../data/runs/odyssey.tres), nommée Catabase, comporte 
 |---|---|---|
 | I — Le Rejeton chétif | [La Cour des Sources](greek_drawn_courtyard_v1.md) | `catabase_frail_hellspawn_encounter.tres` |
 | II — La Porte des Cendres | [La Porte des Cendres](ashen_hell_courtyard_v1.md) | `odyssey_room_02_encounter.tres` |
-| III — Le Jugement de Paris | [Le Parvis du Jugement](silent_judgment_courtyard_v1.md) | `odyssey_room_03_encounter.tres` |
+| III — Le Jugement silencieux | [Le Parvis du Jugement](silent_judgment_courtyard_v1.md) | `odyssey_room_03_encounter.tres` |
 | IV — Le Gué du Léthé | [Le Gué du Léthé](lethe_crossing_v1.md) | `catabase_room_04_encounter.tres` |
 | V — Le Temple du Serment Noir | [Le Temple du Serment Noir](black_oath_temple_v1.md) | `catabase_room_05_encounter.tres` |
 
-La salle V prolonge les quatre cartes précédentes. Les rencontres sont des ressources indépendantes du terrain et le runner vérifie leurs rosters courants, sans les recopier. La fin de run dépend de la dernière entrée de `RunData.rooms` ; IV devient une salle intermédiaire avec récompense d'équipement avant V.
+La salle V clôt la run avec Paris, boss à deux formes, accompagné des deux spectres déjà présents dans cette rencontre. Paris est absent des quatre salles précédentes ; la salle III accueille un Champion et un spectre. Les rencontres sont des ressources indépendantes du terrain et le runner vérifie leurs rosters courants, sans les recopier. La fin de run dépend de la dernière entrée de `RunData.rooms` ; IV devient une salle intermédiaire avec récompense d'équipement avant V.
 
 Chaque salle est une `ArenaDefinition` avec rencontre, récompenses et zones de déploiement. `registered_terrain_plan_path` sélectionne son plan ; `battle_scene` sélectionne la scène partagée. Un override explicite du plan sur la scène reste disponible aux outils. Une salle normale porte son choix dans sa ressource persistée.
 

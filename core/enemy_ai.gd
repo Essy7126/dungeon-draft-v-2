@@ -3,6 +3,7 @@ extends RefCounted
 
 const LogDefinitions = preload("res://debug/log_definitions.gd")
 const SupportMageDecision = preload("res://core/ai/support_mage_decision.gd")
+const SpectralArcherDecision = preload("res://core/ai/spectral_archer_decision.gd")
 
 var _grid: GridData
 var _pathfinder: Pathfinder
@@ -37,6 +38,8 @@ func _decide_with_prepared_paths(enemy: Unit, all_units: Array) -> Array:
 		match enemy.ai_profile.strategy:
 			EnemyAIProfile.Strategy.SUPPORT_MAGE:
 				return SupportMageDecision.decide(self, enemy, all_units)
+			EnemyAIProfile.Strategy.SPECTRAL_ARCHER:
+				return SpectralArcherDecision.decide(self, enemy, all_units)
 			EnemyAIProfile.Strategy.FORMATION_MELEE:
 				return _decide_formation_melee(enemy, all_units)
 			EnemyAIProfile.Strategy.GUARDIAN_CHIEF:

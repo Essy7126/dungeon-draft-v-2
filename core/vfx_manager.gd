@@ -3,12 +3,14 @@ extends Node
 
 const ACHILLES_EFFECTS_PATH := "res://assets/vfx/achilles_kit_v2/effects.tres"
 const AchillesFX := preload("res://vfx/achilles_kit/achilles_spell_sprite_vfx.gd")
+const ParisRouter := preload("res://vfx/paris/paris_spell_vfx_router.gd")
 const PHILOSOPHER_EFFECTS_PATH := "res://assets/vfx/philosopher_mage/sprites_v1/effects.tres"
 const PhilosopherFX := preload("res://vfx/philosopher_mage/philosopher_spell_sprite_vfx.gd")
 const PHILOSOPHER_SPELLS := [&"philosopher_axiom", &"philosopher_refutation",
 	&"philosopher_mending", &"philosopher_aporia", &"philosopher_aegis"]
 
 var _battle_view : Node = null
+var _paris_router: ParisSpellVFXRouter
 var _achilles_frames: SpriteFrames
 var _achilles_flights: Dictionary = {}
 var _achilles_arrivals: Dictionary = {}
@@ -24,7 +26,9 @@ func register_battle_view(view: Node) -> void:
 	if _battle_view != view:
 		_clear_achilles_effects()
 		_clear_philosopher_effects()
+		_clear_paris_effects()
 	_battle_view = view
+	_get_paris_router().load_frames()
 	# Load outside the release frame so a first disk read cannot consume most
 	# of the short projectile delay before the player sees frame zero.
 	if _achilles_frames == null and ResourceLoader.exists(ACHILLES_EFFECTS_PATH):
@@ -36,6 +40,7 @@ func unregister_battle_view(view: Node = null) -> void:
 	if view == null or _battle_view == view:
 		_clear_achilles_effects()
 		_clear_philosopher_effects()
+		_clear_paris_effects()
 		_battle_view = null
 
 func _ready() -> void:
@@ -47,6 +52,9 @@ func _ready() -> void:
 	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
+	if ParisRouter.is_spell(caster, spell):
+		_get_paris_router().resolve(caster, spell, report)
+		return
 	if _is_philosopher_spell(caster, spell):
 		_resolve_philosopher_vfx(caster, spell, report)
 		return
@@ -67,6 +75,8 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 
 
 func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
+	if ParisRouter.is_spell(caster, spell):
+		return _get_paris_router().launch(caster, spell, cell)
 	if caster == null or spell == null:
 		return null
 	if _is_philosopher_spell(caster, spell):
@@ -451,6 +461,7 @@ func _has_battle_view() -> bool:
 func _on_combat_ended(_victory: bool) -> void:
 	_clear_achilles_effects()
 	_clear_philosopher_effects()
+	_clear_paris_effects()
 
 
 func _clear_achilles_effects() -> void:
@@ -615,3 +626,15 @@ func _clear_philosopher_effects() -> void:
 
 func _exit_tree() -> void:
 	_clear_philosopher_effects()
+	_clear_paris_effects()
+
+
+func _get_paris_router() -> ParisSpellVFXRouter:
+	if _paris_router == null:
+		_paris_router = ParisRouter.new(self)
+	return _paris_router
+
+
+func _clear_paris_effects() -> void:
+	if _paris_router != null:
+		_paris_router.clear()

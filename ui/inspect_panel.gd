@@ -2,6 +2,7 @@
 
 const KeywordText = preload("res://ui/keyword_rich_text_label.gd")
 const Glossary = preload("res://ui/combat_glossary.gd")
+const ParisInspection = preload("res://ui/paris_enemy_inspection.gd")
 const VisualThemeFactory = preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
@@ -19,6 +20,7 @@ var _pathfinder: Pathfinder = null
 var _grid: GridData = null
 var _last_subject_key := ""
 var _last_subject_fingerprint := ""
+var _paris_form_subject: Unit
 
 func _ready() -> void:
 	layer = 30
@@ -29,6 +31,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_watch_paris_form(null)
 	if get_viewport().size_changed.is_connected(_apply_responsive_layout):
 		get_viewport().size_changed.disconnect(_apply_responsive_layout)
 
@@ -161,6 +164,7 @@ func _on_grid_occupancy_changed(
 func show_unit(unit, locked: bool = false) -> void:
 	if _locked and not locked:
 		return
+	_watch_paris_form(unit as Unit)
 	if unit != _displayed_unit:
 		_details_expanded = false
 	if unit == null:
@@ -182,6 +186,7 @@ func show_unit(unit, locked: bool = false) -> void:
 	_title.text = Glossary.unit_display_name(unit)
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
 	_add_resources(unit)
+	_add_paris_form(unit as Unit)
 	_add_engagement(unit)
 	_add_statuses(unit)
 	_add_details_toggle(unit)
@@ -383,6 +388,7 @@ func _preview_effect_on_unit(caster, spell: Spell, _target) -> String:
 	return " | ".join(parts)
 
 func _show_empty() -> void:
+	_watch_paris_form(null)
 	_displayed_unit = null
 	_invalidate_subject_cache()
 	_clear_content()
@@ -474,6 +480,8 @@ func _spell_summary(spell: Spell, unit = null) -> String:
 		parts.append("Pose %s" % spell.terrain_effect.effect_name)
 	if spell.push_distance > 0:
 		parts.append("Pousse %d" % spell.push_distance)
+	if spell.pull_distance > 0:
+		parts.append("Attire %d" % spell.pull_distance)
 	return " | ".join(parts)
 
 func _add_section(text: String) -> void:
@@ -668,3 +676,31 @@ func _cell_type_name(cell_type: int) -> String:
 		GridData.CellType.RUNE:
 			return "Rune"
 	return "Case"
+
+
+func _watch_paris_form(unit: Unit) -> void:
+	var next: Unit = unit if unit != null and unit.unit_id == &"catabase_shadow_paris" else null
+	if next == _paris_form_subject:
+		return
+	if is_instance_valid(_paris_form_subject) and _paris_form_subject.combat_form_changed.is_connected(_on_paris_form_changed):
+		_paris_form_subject.combat_form_changed.disconnect(_on_paris_form_changed)
+	_paris_form_subject = next
+	if _paris_form_subject != null:
+		_paris_form_subject.combat_form_changed.connect(_on_paris_form_changed)
+
+
+func _on_paris_form_changed(unit: Unit, _before: StringName, _after: StringName) -> void:
+	if unit == _displayed_unit:
+		_invalidate_subject_cache()
+		show_unit(unit, _locked)
+
+
+func _add_paris_form(unit: Unit) -> void:
+	var description := ParisInspection.describe(unit)
+	if description.is_empty():
+		return
+	_subtitle.text = description.subtitle
+	_add_section(description.heading)
+	_add_paragraph(description.description)
+	if not str(description.future_spells).is_empty():
+		_add_paragraph(description.future_spells)

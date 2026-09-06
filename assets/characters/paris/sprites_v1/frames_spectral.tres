@@ -1,0 +1,192 @@
+[gd_resource type="SpriteFrames" load_steps=35 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/paris/sprites_v1/atlas_spectral_E.png" id="spectral_E"]
+[ext_resource type="Texture2D" path="res://assets/characters/paris/sprites_v1/atlas_spectral_N.png" id="spectral_N"]
+
+[sub_resource type="AtlasTexture" id="spectral_E_0"]
+atlas = ExtResource("spectral_E")
+region = Rect2(0,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_1"]
+atlas = ExtResource("spectral_E")
+region = Rect2(512,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_2"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1024,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_3"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1536,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_4"]
+atlas = ExtResource("spectral_E")
+region = Rect2(0,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_5"]
+atlas = ExtResource("spectral_E")
+region = Rect2(512,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_6"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1024,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_7"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1536,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_8"]
+atlas = ExtResource("spectral_E")
+region = Rect2(0,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_9"]
+atlas = ExtResource("spectral_E")
+region = Rect2(512,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_10"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1024,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_11"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1536,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_12"]
+atlas = ExtResource("spectral_E")
+region = Rect2(0,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_13"]
+atlas = ExtResource("spectral_E")
+region = Rect2(512,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_14"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1024,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_E_15"]
+atlas = ExtResource("spectral_E")
+region = Rect2(1536,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_0"]
+atlas = ExtResource("spectral_N")
+region = Rect2(0,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_1"]
+atlas = ExtResource("spectral_N")
+region = Rect2(512,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_2"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1024,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_3"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1536,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_4"]
+atlas = ExtResource("spectral_N")
+region = Rect2(0,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_5"]
+atlas = ExtResource("spectral_N")
+region = Rect2(512,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_6"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1024,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_7"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1536,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_8"]
+atlas = ExtResource("spectral_N")
+region = Rect2(0,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_9"]
+atlas = ExtResource("spectral_N")
+region = Rect2(512,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_10"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1024,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_11"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1536,768,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_12"]
+atlas = ExtResource("spectral_N")
+region = Rect2(0,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_13"]
+atlas = ExtResource("spectral_N")
+region = Rect2(512,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_14"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1024,1152,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="spectral_N_15"]
+atlas = ExtResource("spectral_N")
+region = Rect2(1536,1152,512,384)
+filter_clip = true
+
+[resource]
+animations = [
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_0") }], "loop": true, "name": &"idle_E", "speed": 1 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_1") }, { "duration": 1.0, "texture": SubResource("spectral_E_2") }, { "duration": 1.0, "texture": SubResource("spectral_E_3") }, { "duration": 1.0, "texture": SubResource("spectral_E_4") }], "loop": true, "name": &"walk_E", "speed": 5.555555555555555 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_5") }, { "duration": 1.0, "texture": SubResource("spectral_E_6") }, { "duration": 1.0, "texture": SubResource("spectral_E_7") }, { "duration": 1.0, "texture": SubResource("spectral_E_8") }], "loop": false, "name": &"attack_E", "speed": 5.88235294117647 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_9") }, { "duration": 1.0, "texture": SubResource("spectral_E_9") }, { "duration": 1.0, "texture": SubResource("spectral_E_11") }], "loop": false, "name": &"cast_E", "speed": 3.9473684210526314 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_12") }, { "duration": 1.0, "texture": SubResource("spectral_E_13") }], "loop": false, "name": &"hit_E", "speed": 8.333333333333334 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_14") }, { "duration": 1.0, "texture": SubResource("spectral_E_15") }], "loop": false, "name": &"death_E", "speed": 3.125 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_0") }], "loop": true, "name": &"idle_S", "speed": 1 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_1") }, { "duration": 1.0, "texture": SubResource("spectral_E_2") }, { "duration": 1.0, "texture": SubResource("spectral_E_3") }, { "duration": 1.0, "texture": SubResource("spectral_E_4") }], "loop": true, "name": &"walk_S", "speed": 5.555555555555555 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_5") }, { "duration": 1.0, "texture": SubResource("spectral_E_6") }, { "duration": 1.0, "texture": SubResource("spectral_E_7") }, { "duration": 1.0, "texture": SubResource("spectral_E_8") }], "loop": false, "name": &"attack_S", "speed": 5.88235294117647 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_9") }, { "duration": 1.0, "texture": SubResource("spectral_E_9") }, { "duration": 1.0, "texture": SubResource("spectral_E_11") }], "loop": false, "name": &"cast_S", "speed": 3.9473684210526314 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_12") }, { "duration": 1.0, "texture": SubResource("spectral_E_13") }], "loop": false, "name": &"hit_S", "speed": 8.333333333333334 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_E_14") }, { "duration": 1.0, "texture": SubResource("spectral_E_15") }], "loop": false, "name": &"death_S", "speed": 3.125 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_0") }], "loop": true, "name": &"idle_N", "speed": 1 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_1") }, { "duration": 1.0, "texture": SubResource("spectral_N_2") }, { "duration": 1.0, "texture": SubResource("spectral_N_3") }, { "duration": 1.0, "texture": SubResource("spectral_N_4") }], "loop": true, "name": &"walk_N", "speed": 5.555555555555555 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_5") }, { "duration": 1.0, "texture": SubResource("spectral_N_6") }, { "duration": 1.0, "texture": SubResource("spectral_N_6") }, { "duration": 1.0, "texture": SubResource("spectral_N_8") }], "loop": false, "name": &"attack_N", "speed": 5.88235294117647 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_9") }, { "duration": 1.0, "texture": SubResource("spectral_N_10") }, { "duration": 1.0, "texture": SubResource("spectral_N_10") }], "loop": false, "name": &"cast_N", "speed": 3.9473684210526314 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_9") }, { "duration": 1.0, "texture": SubResource("spectral_N_13") }], "loop": false, "name": &"hit_N", "speed": 8.333333333333334 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_14") }, { "duration": 1.0, "texture": SubResource("spectral_N_15") }], "loop": false, "name": &"death_N", "speed": 3.125 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_0") }], "loop": true, "name": &"idle_W", "speed": 1 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_1") }, { "duration": 1.0, "texture": SubResource("spectral_N_2") }, { "duration": 1.0, "texture": SubResource("spectral_N_3") }, { "duration": 1.0, "texture": SubResource("spectral_N_4") }], "loop": true, "name": &"walk_W", "speed": 5.555555555555555 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_5") }, { "duration": 1.0, "texture": SubResource("spectral_N_6") }, { "duration": 1.0, "texture": SubResource("spectral_N_6") }, { "duration": 1.0, "texture": SubResource("spectral_N_8") }], "loop": false, "name": &"attack_W", "speed": 5.88235294117647 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_9") }, { "duration": 1.0, "texture": SubResource("spectral_N_10") }, { "duration": 1.0, "texture": SubResource("spectral_N_10") }], "loop": false, "name": &"cast_W", "speed": 3.9473684210526314 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_9") }, { "duration": 1.0, "texture": SubResource("spectral_N_13") }], "loop": false, "name": &"hit_W", "speed": 8.333333333333334 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("spectral_N_14") }, { "duration": 1.0, "texture": SubResource("spectral_N_15") }], "loop": false, "name": &"death_W", "speed": 3.125 }
+]

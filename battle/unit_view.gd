@@ -350,6 +350,29 @@ func get_cast_effect_origin_global() -> Vector2:
 		return _optional_visual.to_global(local_origin)
 	return global_position
 
+
+## A phase reveal belongs to the actual unit, independently of a spell marker.
+## Pause does not consume the watchdog, and scene teardown ends the wait.
+func wait_for_transformation_visual_finished(timeout_seconds := 5.0) -> bool:
+	var generation := _lifecycle_generation
+	var elapsed := 0.0
+	var last_tick := Time.get_ticks_usec()
+	while _is_async_context_valid(generation) and is_instance_valid(unit) and unit.is_alive:
+		if not is_instance_valid(_optional_visual) \
+				or not _optional_visual.has_method("is_transformation_pending") \
+				or not _optional_visual.is_transformation_pending():
+			return true
+		var now := Time.get_ticks_usec()
+		if not get_tree().paused:
+			elapsed += maxf(0, float(now - last_tick) / 1000000.0) * Engine.time_scale
+		last_tick = now
+		if elapsed >= maxf(0.001, timeout_seconds):
+			_optional_visual.cancel_pending_visual_actions()
+			return _is_async_context_valid(generation) and unit.is_alive
+		if not await _wait_one_safe_process_frame(generation):
+			return false
+	return false
+
 ## Synchronisation visuelle seulement : le calcul du sort reste dans
 ## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
 func prepare_spell_visual(
@@ -358,6 +381,8 @@ func prepare_spell_visual(
 		release_timeout_msec: int = 5000
 	) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
+		return false
+	if not await wait_for_transformation_visual_finished():
 		return false
 	face_grid_direction(target_cell - unit.grid_pos)
 	if not is_instance_valid(_optional_visual):
@@ -433,6 +458,8 @@ func prepare_basic_attack_visual(
 		release_timeout_msec: int = 5000
 	) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
+		return false
+	if not await wait_for_transformation_visual_finished():
 		return false
 	face_grid_direction(target_cell - unit.grid_pos)
 	if not is_instance_valid(_optional_visual) \

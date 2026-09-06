@@ -1,32 +1,45 @@
-[gd_resource type="Resource" script_class="UnitData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="UnitData" load_steps=12 format=3]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
-[ext_resource type="Resource" path="res://data/spells/enemies/catabase/paris_shadow_arrow.tres" id="3_arrow"]
-[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn" id="4_visual"]
-[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonVisual3D.tscn" id="5_preview"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2"]
+[ext_resource type="Resource" path="res://data/spells/enemies/paris/spectral_arrow.tres" id="s0"]
+[ext_resource type="Resource" path="res://data/spells/enemies/paris/fire_arrow.tres" id="s1"]
+[ext_resource type="Resource" path="res://data/spells/enemies/paris/ice_arrow.tres" id="s2"]
+[ext_resource type="Resource" path="res://data/spells/enemies/paris/vortex_arrow.tres" id="s3"]
+[ext_resource type="Resource" path="res://data/spells/enemies/paris/vortex_step.tres" id="s4"]
+[ext_resource type="PackedScene" path="res://characters/paris/ParisIsoUnitView.tscn" id="visual"]
+[ext_resource type="Resource" path="res://data/ai/profiles/paris_archer_ai.tres" id="ai"]
+[ext_resource type="Resource" path="res://data/characters/paris/infernal_form.tres" id="form"]
+[ext_resource type="Resource" path="res://data/characters/paris/animations.tres" id="animations"]
 
 [resource]
-script = ExtResource("1_unit")
+script = ExtResource("1")
 unit_id = &"catabase_shadow_paris"
 unit_name = "L’Ombre de Paris"
-description = "PLACEHOLDER_VISUAL — silhouette d’archer spectral temporairement représentée par le visuel squelette à distance. PLACEHOLDER_BALANCE."
+description = "Archer grec spectral : flèches d’ombre, de feu, de glace et du vortex. Sous 20 % de ses PV initiaux, une seule fois, sa forme infernale remplace l’arc par un fouet de feu et gagne 30 bouclier. Aucun soin ni retour à la vie."
 team = 1
-max_hp = 52
+max_hp = 120
 initiative = 9
 max_ap = 4
 max_mp = 3
 attack_power = 9
-visual_scene = ExtResource("4_visual")
-preview_visual_scene = ExtResource("5_preview")
+visual_scene = ExtResource("visual")
+preview_sprite_frames_path = "res://assets/characters/paris/sprites_v1/paris_portrait.tres"
+preview_sprite_animation = &"idle_E"
+animation_set = ExtResource("animations")
 basic_attack_enabled = false
-spells = Array[ExtResource("2_spell_type")]([ExtResource("3_arrow")])
+active_spell_slots = 5
+spells = Array[ExtResource("2")]([ExtResource("s0"), ExtResource("s1"), ExtResource("s2"), ExtResource("s3"), ExtResource("s4")])
+combat_form_change = ExtResource("form")
 ai_behavior = 1
 combat_style = 1
-preferred_range = 6
-minimum_range = 3
+preferred_range = 4
+minimum_range = 2
 maximum_range = 7
 keep_distance = true
+ai_profile = ExtResource("ai")
 faction_id = &"catabase_shadows"
 tactical_role_id = &"catabase_shadow_paris"
-
+role = "Archer spectral · Démon au fouet"
+presentation_summary = "Brisez sa ligne de tir, exploitez les dalles, puis préparez-vous à sa métamorphose sous 20 % de PV."
+presentation_badge = "PARIS"

@@ -1,0 +1,270 @@
+[gd_resource type="SpriteFrames" load_steps=34 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/effects.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_frost_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_frost_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_frost_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_frost_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_fire_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_fire_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_fire_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_fire_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_vortex_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_vortex_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_vortex_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_vortex_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_whip_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_whip_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_whip_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_whip_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_hellfire_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1536, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_hellfire_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1536, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_hellfire_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1536, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_hellfire_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1536, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_transform_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1792, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_transform_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1792, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_transform_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1792, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_transform_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1792, 256, 256)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_3")
+}],
+"loop": false,
+"name": &"arrow",
+"speed": 20.000000
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_frost_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_frost_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_frost_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_frost_3")
+}],
+"loop": false,
+"name": &"frost",
+"speed": 20.000000
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_fire_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_fire_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_fire_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_fire_3")
+}],
+"loop": false,
+"name": &"fire",
+"speed": 20.000000
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_vortex_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_vortex_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_vortex_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_vortex_3")
+}],
+"loop": false,
+"name": &"vortex",
+"speed": 13.333333
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_impact_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_3")
+}],
+"loop": false,
+"name": &"impact",
+"speed": 13.333333
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_whip_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_whip_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_whip_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_whip_3")
+}],
+"loop": false,
+"name": &"whip",
+"speed": 11.764706
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_hellfire_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_hellfire_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_hellfire_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_hellfire_3")
+}],
+"loop": false,
+"name": &"hellfire",
+"speed": 10.000000
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_transform_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_transform_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_transform_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_transform_3")
+}],
+"loop": false,
+"name": &"transform",
+"speed": 4.444444
+}]

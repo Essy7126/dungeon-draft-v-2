@@ -28,6 +28,9 @@ const MITIGATION_K := 100.0
 # ============================================================
 
 class DamageResult:
+	# Filled only by Unit when the hit is applied. Pure previews keep -1.
+	var hp_damage_applied: int = -1
+	var shield_damage_absorbed: int = -1
 	var amount: int = 0          # dégâts finaux (après tout)
 	var raw: int = 0             # dégâts bruts d'entrée (avant mitigation)
 	var dodged: bool = false     # l'attaque a été esquivée (amount = 0)

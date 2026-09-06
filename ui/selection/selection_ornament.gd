@@ -1,7 +1,7 @@
 extends Control
 ## Resolution-independent ornament; never participates in hit testing.
 var kind: StringName = &"divider"
-var accent := Color("cfb67c")
+var accent := Color("b99d77")
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -38,8 +38,8 @@ func _draw() -> void:
 		&"primary":
 			var cut := 11.0
 			var points := PackedVector2Array([Vector2(cut, 3), Vector2(size.x - cut, 3), Vector2(size.x - 3, cut), Vector2(size.x - 3, size.y - cut), Vector2(size.x - cut, size.y - 3), Vector2(cut, size.y - 3), Vector2(3, size.y - cut), Vector2(3, cut), Vector2(cut, 3)])
-			draw_polyline(points, Color("f5e7b7"), 1.1, true)
-			draw_line(Vector2(19, 7), Vector2(size.x - 19, 7), Color(1, 0.97, 0.79, 0.45), 1.0, true)
+			draw_polyline(points, Color("bda27d"), 1.1, true)
+			draw_line(Vector2(19, 7), Vector2(size.x - 19, 7), Color(0.88, 0.74, 0.53, 0.35), 1.0, true)
 		_:
 			draw_line(Vector2(0, center.y), Vector2(center.x - 12, center.y), Color(accent, 0.32), 1.0, true)
 			draw_line(Vector2(center.x + 12, center.y), Vector2(size.x, center.y), Color(accent, 0.32), 1.0, true)

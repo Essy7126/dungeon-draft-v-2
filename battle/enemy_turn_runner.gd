@@ -118,6 +118,16 @@ func _wait_for_turn_intro_safe(
 
 # Exécute le tour complet de l'unité ennemie : décision d'IA puis déroulé des
 # actions, en s'interrompant dès que la salle ferme ou que l'unité disparaît.
+func _wait_for_transformation_safe(generation: int, enemy: Unit) -> bool:
+	if not _can_continue(generation, enemy):
+		return false
+	var view: Variant = _battle._unit_views.get(enemy)
+	if is_instance_valid(view) and view.has_method("wait_for_transformation_visual_finished"):
+		if not await view.wait_for_transformation_visual_finished():
+			return false
+	return _can_continue(generation, enemy)
+
+
 func run(enemy: Unit) -> void:
 	if _closing:
 		return
@@ -126,20 +136,32 @@ func run(enemy: Unit) -> void:
 		return
 	if not await _wait_for_turn_intro_safe(generation, enemy):
 		return
-	var plan: EnemyActionPlan = _battle.enemy_ai.build_action_plan(
-		enemy,
-		_battle.units,
-	)
-	# La planification est synchrone. Reprendre les actions a la frame suivante
-	# empeche son delta CPU d'etre consomme par le premier tween de mouvement.
+	if not await _wait_for_transformation_safe(generation, enemy):
+		return
+	var plan: EnemyActionPlan = _battle.enemy_ai.build_action_plan(enemy, _battle.units)
+	var actions := plan.to_actions()
+	var planned_form := enemy.combat_form_id
+	var action_index := 0
+	# Synchronous planning must not consume the first movement tween frame.
 	if not await _wait_process_frame_safe(generation, enemy):
 		return
 	last_action_count = 0
-	for action in plan.to_actions():
-		if last_action_count >= MAX_ACTION_STEPS:
-			break
-		if not _can_continue(generation, enemy):
+	while last_action_count < MAX_ACTION_STEPS:
+		if not await _wait_for_transformation_safe(generation, enemy):
 			return
+		# Terrain entry can change the kit mid-turn. Replan only that transition,
+		# using the remaining real AP/MP and keeping the global action bound.
+		if enemy.combat_form_id != planned_form:
+			plan = _battle.enemy_ai.build_action_plan(enemy, _battle.units)
+			actions = plan.to_actions()
+			action_index = 0
+			planned_form = enemy.combat_form_id
+			if not await _wait_process_frame_safe(generation, enemy):
+				return
+		if action_index >= actions.size():
+			break
+		var action: Dictionary = actions[action_index]
+		action_index += 1
 		match action["type"]:
 			"move":
 				await _execute_move(enemy, action["path"], generation)
@@ -150,7 +172,6 @@ func run(enemy: Unit) -> void:
 		last_action_count += 1
 		if not await _wait_seconds_safe(0.2, generation, enemy):
 			return
-
 
 func _execute_cast(
 	enemy: Unit,

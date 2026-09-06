@@ -3,13 +3,14 @@ extends PanelContainer
 
 @export var skin: SkillTreeSkinData = null
 
-const DETAIL_TEXT := Color("f0ebdc")
-const DETAIL_MUTED := Color("a6b4ad")
-const DETAIL_GOLD := Color("d6b77c")
-const DETAIL_LINE := Color("42514e")
+const CODEX_STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
+const DETAIL_TEXT := Color("f2e6d3")
+const DETAIL_MUTED := Color("b9ad9c")
+const DETAIL_GOLD := Color("d1ae7b")
+const DETAIL_LINE := Color("665344")
 const DETAIL_BODY := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf")
 const DETAIL_BOLD := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Bold.otf")
-const DETAIL_HEADING := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf")
+const DETAIL_HEADING := CODEX_STYLE.DISPLAY
 
 @onready var _frame_texture: NinePatchRect = %FrameTexture
 @onready var _safe_margin: MarginContainer = %SafeMargin
@@ -523,7 +524,7 @@ func _build_spell_metrics() -> void:
 func _metric_tile(parent: HBoxContainer, caption: String, value: String) -> Label:
 	var surface := PanelContainer.new()
 	surface.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var style := _detail_style(Color("142225"), DETAIL_LINE, 5)
+	var style := _detail_style(Color("211b16"), DETAIL_LINE, 5)
 	style.content_margin_left = 4.0
 	style.content_margin_right = 4.0
 	style.content_margin_top = 7.0
@@ -668,7 +669,8 @@ func _apply_detail_style() -> void:
 	_discipline_icon.hide()
 	_frame_texture.hide()
 	%ReadingVeil.hide()
-	add_theme_stylebox_override("panel", _detail_style(Color("18272a"), DETAIL_LINE, 8))
+	CODEX_STYLE.panel(self, Color("25201c"), DETAIL_LINE, 8)
+	CODEX_STYLE.scroll(_scroll)
 	for label in [_meta_label, _xp_label, _prerequisites_label, _reason_label]:
 		(label as Label).add_theme_font_override("font", DETAIL_BODY)
 		(label as Label).add_theme_color_override("font_color", DETAIL_MUTED)
@@ -682,21 +684,8 @@ func _apply_detail_style() -> void:
 		heading.add_theme_color_override("font_color", DETAIL_GOLD)
 	for separator in [%SeparatorA, %SeparatorB]:
 		(separator as HSeparator).add_theme_stylebox_override("separator", _detail_line())
-	var normal := _detail_style(DETAIL_GOLD, Color("efcf91"), 5)
-	var hover := _detail_style(Color("ebce91"), DETAIL_GOLD, 5)
-	var disabled := _detail_style(Color("263735"), DETAIL_LINE, 5)
-	_action_button.add_theme_stylebox_override("normal", normal)
-	_action_button.add_theme_stylebox_override("hover", hover)
-	_action_button.add_theme_stylebox_override("pressed", _detail_style(Color("b39b6c"), DETAIL_GOLD, 5))
-	_action_button.add_theme_stylebox_override("disabled", disabled)
-	var focus := _detail_style(Color.TRANSPARENT, Color("f0dfae"), 5)
-	focus.set_border_width_all(2)
-	_action_button.add_theme_stylebox_override("focus", focus)
-	_action_button.add_theme_color_override("font_color", Color("152124"))
-	_action_button.add_theme_color_override("font_hover_color", Color("152124"))
-	_action_button.add_theme_color_override("font_pressed_color", Color("152124"))
-	_action_button.add_theme_color_override("font_disabled_color", DETAIL_MUTED)
-	_action_button.add_theme_font_override("font", DETAIL_BOLD)
+	CODEX_STYLE.button(_action_button)
+
 
 
 func _detail_style(fill: Color, border: Color, radius: int) -> StyleBoxFlat:
@@ -710,7 +699,7 @@ func _detail_style(fill: Color, border: Color, radius: int) -> StyleBoxFlat:
 
 func _detail_line() -> StyleBoxLine:
 	var style := StyleBoxLine.new()
-	style.color = Color("354743")
+	style.color = Color("594936")
 	style.thickness = 1
 	style.content_margin_top = 6
 	style.content_margin_bottom = 6

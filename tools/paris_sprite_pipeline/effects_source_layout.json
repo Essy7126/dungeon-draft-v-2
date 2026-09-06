@@ -1,0 +1,491 @@
+{
+  "schema_version": 1,
+  "source_sha256": "a3da007d9334cc63f5e1ae15f61b3cdd0d9b364d62d12e7e556e7c211b0dc2f8",
+  "source_size": [
+    1024,
+    1536
+  ],
+  "review": "Native RGBA inspected on gray. Eight authored effect rows. Per-column vertical cuts follow irregular gaps, especially the tall third hellfire crown. Arrows share fixed shaft anchors; each later row retains fixed authored centers across its four stages. Source residual low-alpha pixels at reviewed boundaries are retained, never removed. The third whip/crown gap reaches alpha 36/255; this faint shared halo is split by the measured rectangle, with every source pixel assigned once. No visible opaque effect core is cut. One common anchored square and scale per animation preserves growth and extinction.",
+  "frames": [
+    {
+      "animation": "arrow",
+      "frame": 0,
+      "window": [
+        0,
+        0,
+        252,
+        200
+      ],
+      "anchor": [
+        128,
+        110
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "arrow",
+      "frame": 1,
+      "window": [
+        252,
+        0,
+        260,
+        199
+      ],
+      "anchor": [
+        384,
+        110
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "arrow",
+      "frame": 2,
+      "window": [
+        512,
+        0,
+        268,
+        190
+      ],
+      "anchor": [
+        640,
+        110
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "arrow",
+      "frame": 3,
+      "window": [
+        780,
+        0,
+        244,
+        182
+      ],
+      "anchor": [
+        896,
+        110
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "frost",
+      "frame": 0,
+      "window": [
+        0,
+        200,
+        252,
+        134
+      ],
+      "anchor": [
+        128,
+        268
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "frost",
+      "frame": 1,
+      "window": [
+        252,
+        199,
+        260,
+        139
+      ],
+      "anchor": [
+        384,
+        268
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "frost",
+      "frame": 2,
+      "window": [
+        512,
+        190,
+        268,
+        148
+      ],
+      "anchor": [
+        640,
+        268
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "frost",
+      "frame": 3,
+      "window": [
+        780,
+        182,
+        244,
+        156
+      ],
+      "anchor": [
+        896,
+        268
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "fire",
+      "frame": 0,
+      "window": [
+        0,
+        334,
+        252,
+        160
+      ],
+      "anchor": [
+        128,
+        430
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "fire",
+      "frame": 1,
+      "window": [
+        252,
+        338,
+        260,
+        155
+      ],
+      "anchor": [
+        384,
+        430
+      ],
+      "reviewed_boundary_alpha_max": 2
+    },
+    {
+      "animation": "fire",
+      "frame": 2,
+      "window": [
+        512,
+        338,
+        268,
+        158
+      ],
+      "anchor": [
+        640,
+        430
+      ],
+      "reviewed_boundary_alpha_max": 2
+    },
+    {
+      "animation": "fire",
+      "frame": 3,
+      "window": [
+        780,
+        338,
+        244,
+        175
+      ],
+      "anchor": [
+        896,
+        430
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "vortex",
+      "frame": 0,
+      "window": [
+        0,
+        494,
+        252,
+        224
+      ],
+      "anchor": [
+        128,
+        626
+      ],
+      "reviewed_boundary_alpha_max": 0
+    },
+    {
+      "animation": "vortex",
+      "frame": 1,
+      "window": [
+        252,
+        493,
+        260,
+        226
+      ],
+      "anchor": [
+        384,
+        626
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "vortex",
+      "frame": 2,
+      "window": [
+        512,
+        496,
+        268,
+        223
+      ],
+      "anchor": [
+        640,
+        626
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "vortex",
+      "frame": 3,
+      "window": [
+        780,
+        513,
+        244,
+        205
+      ],
+      "anchor": [
+        896,
+        626
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "impact",
+      "frame": 0,
+      "window": [
+        0,
+        718,
+        252,
+        168
+      ],
+      "anchor": [
+        128,
+        824
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "impact",
+      "frame": 1,
+      "window": [
+        252,
+        719,
+        260,
+        196
+      ],
+      "anchor": [
+        384,
+        824
+      ],
+      "reviewed_boundary_alpha_max": 2
+    },
+    {
+      "animation": "impact",
+      "frame": 2,
+      "window": [
+        512,
+        719,
+        268,
+        201
+      ],
+      "anchor": [
+        640,
+        824
+      ],
+      "reviewed_boundary_alpha_max": 2
+    },
+    {
+      "animation": "impact",
+      "frame": 3,
+      "window": [
+        780,
+        718,
+        244,
+        204
+      ],
+      "anchor": [
+        896,
+        824
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "whip",
+      "frame": 0,
+      "window": [
+        0,
+        886,
+        252,
+        181
+      ],
+      "anchor": [
+        128,
+        984
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "whip",
+      "frame": 1,
+      "window": [
+        252,
+        915,
+        260,
+        146
+      ],
+      "anchor": [
+        384,
+        984
+      ],
+      "reviewed_boundary_alpha_max": 3
+    },
+    {
+      "animation": "whip",
+      "frame": 2,
+      "window": [
+        512,
+        920,
+        268,
+        128
+      ],
+      "anchor": [
+        640,
+        984
+      ],
+      "reviewed_boundary_alpha_max": 36
+    },
+    {
+      "animation": "whip",
+      "frame": 3,
+      "window": [
+        780,
+        922,
+        244,
+        156
+      ],
+      "anchor": [
+        896,
+        984
+      ],
+      "reviewed_boundary_alpha_max": 11
+    },
+    {
+      "animation": "hellfire",
+      "frame": 0,
+      "window": [
+        0,
+        1067,
+        252,
+        211
+      ],
+      "anchor": [
+        128,
+        1166
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "hellfire",
+      "frame": 1,
+      "window": [
+        252,
+        1061,
+        260,
+        210
+      ],
+      "anchor": [
+        384,
+        1166
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "hellfire",
+      "frame": 2,
+      "window": [
+        512,
+        1048,
+        268,
+        223
+      ],
+      "anchor": [
+        640,
+        1166
+      ],
+      "reviewed_boundary_alpha_max": 32
+    },
+    {
+      "animation": "hellfire",
+      "frame": 3,
+      "window": [
+        780,
+        1078,
+        244,
+        194
+      ],
+      "anchor": [
+        896,
+        1166
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "transform",
+      "frame": 0,
+      "window": [
+        0,
+        1278,
+        252,
+        258
+      ],
+      "anchor": [
+        128,
+        1398
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "transform",
+      "frame": 1,
+      "window": [
+        252,
+        1271,
+        260,
+        265
+      ],
+      "anchor": [
+        384,
+        1398
+      ],
+      "reviewed_boundary_alpha_max": 1
+    },
+    {
+      "animation": "transform",
+      "frame": 2,
+      "window": [
+        512,
+        1271,
+        268,
+        265
+      ],
+      "anchor": [
+        640,
+        1398
+      ],
+      "reviewed_boundary_alpha_max": 4
+    },
+    {
+      "animation": "transform",
+      "frame": 3,
+      "window": [
+        780,
+        1272,
+        244,
+        264
+      ],
+      "anchor": [
+        896,
+        1398
+      ],
+      "reviewed_boundary_alpha_max": 1
+    }
+  ]
+}

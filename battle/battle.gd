@@ -1960,6 +1960,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 			await tween.finished
 			if not _is_operation_current(lifecycle_generation):
 				break
+		var form_before_entry := unit.combat_form_id
 		if not grid.relocate_unit(unit, path[i]):
 			break
 		unit.record_runtime_movement(1)
@@ -1975,6 +1976,15 @@ func _animate_move(unit: Unit, path: Array) -> void:
 			break
 		if bool(entry_result.get("end_movement", false)):
 			break
+		# A terrain-triggered reveal must finish on this cell before the next
+		# segment translates the body. The original paid path remains intact.
+		if unit.combat_form_id != form_before_entry and i + 1 < path.size() \
+				and is_instance_valid(view) and view.has_method("wait_for_transformation_visual_finished"):
+			if not await view.wait_for_transformation_visual_finished() \
+					or not _is_operation_current(lifecycle_generation) or not unit.is_alive:
+				break
+			if view.has_method("begin_movement_feedback"):
+				view.begin_movement_feedback(path[i], path[i + 1])
 	terrain_effects.end_unit_resolution(unit)
 	if is_instance_valid(view):
 		view.end_movement_feedback()

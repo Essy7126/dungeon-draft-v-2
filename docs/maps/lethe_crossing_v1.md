@@ -3,7 +3,7 @@
 > État depuis l'ajout du [Temple du Serment Noir](black_oath_temple_v1.md), le 6 septembre 2026 : IV est désormais une salle intermédiaire de la run à cinq salles. Les preuves de cette fiche décrivent sa livraison initiale à quatre salles ; le contrôle Studio auparavant en échec passe dans la validation V.
 
 
-Cette carte ajoute une salle IV après le Jugement de Paris. Elle utilise la scène partagée `RegisteredTerrainBattle`, avec une **nouvelle topologie** : deux espaces décalés, un passage large, de petites fosses et une nouvelle répartition des obstacles. Le centre garde une matière calme et les vrais sprites de dalles du jeu.
+Cette carte ajoute une salle IV après le Jugement silencieux. Elle utilise la scène partagée `RegisteredTerrainBattle`, avec une **nouvelle topologie** : deux espaces décalés, un passage large, de petites fosses et une nouvelle répartition des obstacles. Le centre garde une matière calme et les vrais sprites de dalles du jeu.
 
 ## Implantation tactique
 

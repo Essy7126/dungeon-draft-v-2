@@ -95,7 +95,15 @@ enum ControlLevel {
 @export var visual_scene: PackedScene = null
 @export var preview_visual_scene: PackedScene = null
 # Optional 2D preview. When present it takes priority over the 3D scene.
-@export var preview_sprite_frames: SpriteFrames = null
+# Optional artwork must not prevent encounters and runs from loading.
+@export_file("*.tres") var preview_sprite_frames_path: String = ""
+@export var preview_sprite_frames: SpriteFrames = null:
+	get:
+		if preview_sprite_frames != null or preview_sprite_frames_path.is_empty():
+			return preview_sprite_frames
+		if not ResourceLoader.exists(preview_sprite_frames_path, "SpriteFrames"):
+			return null
+		return load(preview_sprite_frames_path) as SpriteFrames
 @export var preview_sprite_animation: StringName = &"idle_E"
 # Fiche d'animations optionnelle : quel clip du modele 3D joue chaque evenement
 # (Repos, Marche, Course, Attaque ou sort, Degat recu, Mort...).
@@ -128,6 +136,7 @@ var disciplines: Array[DisciplineData]:
 @export_range(1, 12, 1) var active_spell_slots: int = 4
 # Liste des sorts (Resources Spell) que cette unité connaît.
 @export var spells: Array[Spell] = []
+@export var combat_form_change: CombatFormChangeData = null
 # ============================================================
 # COMPORTEMENT D'IA
 # ============================================================

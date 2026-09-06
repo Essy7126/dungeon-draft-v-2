@@ -48,20 +48,7 @@ func _run() -> void:
 	var spell_ids: Array[StringName] = []
 	for spell in hero_data.spells:
 		spell_ids.append(spell.get_effective_spell_id())
-	var contract_passed := (
-		selected_run.resource_path == "res://data/runs/odyssey.tres"
-		and selected_run.content_profile.profile_id == &"odyssey"
-		and hero_data.get_effective_unit_id() == &"achilles"
-		and hero_data.max_ap == 6
-		and hero_data.max_mp == 3
-		and spell_ids == [
-			&"achilles_spear_thrust",
-			&"achilles_advance",
-			&"achilles_sweep",
-			&"achilles_guard",
-		]
-		and not hero_data.basic_attack_enabled
-	)
+	var contract_passed := runtime_hero_contract_is_valid(selected_run, hero_data)
 	_report.run_contract = {
 		"run_data_path": selected_run.resource_path,
 		"profile_id": str(selected_run.content_profile.profile_id),
@@ -335,6 +322,43 @@ func _exercise_post_combat_and_result_captures() -> void:
 		_fail("Le choix de relique post-combat ou le résultat final est invalide.")
 
 
+static func runtime_hero_contract_is_valid(run_data: RunData, hero_data: UnitData) -> bool:
+	if run_data == null or hero_data == null or run_data.content_profile == null:
+		return false
+	var profile := RunContentCatalogService.progression_profile_for(run_data, &"achilles")
+	if profile == null:
+		return false
+	var expected_spell_ids: Array[StringName] = []
+	for spell in profile.spells:
+		expected_spell_ids.append(spell.get_effective_spell_id())
+	var actual_spell_ids: Array[StringName] = []
+	for spell in hero_data.spells:
+		actual_spell_ids.append(spell.get_effective_spell_id())
+	return (
+		run_data.resource_path == "res://data/runs/odyssey.tres"
+		and run_data.content_profile.profile_id == &"odyssey"
+		and hero_data.get_effective_unit_id() == &"achilles"
+		and hero_data.max_ap == 6
+		and hero_data.max_mp == 3
+		and expected_spell_ids == [
+			&"achilles_peleid_strike", &"achilles_fulminant_dash",
+			&"achilles_pelion_shot", &"achilles_bronze_guard",
+		]
+		and actual_spell_ids == expected_spell_ids
+		and not hero_data.basic_attack_enabled
+	)
+
+
+static func expected_transition_counts(run_data: RunData) -> Dictionary:
+	var room_count := run_data.rooms.size() if run_data != null else 0
+	var rewarded_rooms := maxi(0, room_count - 1)
+	return {
+		"completed_rooms": room_count,
+		"reward_options_seen": 2 * rewarded_rooms,
+		"relics_claimed": rewarded_rooms,
+	}
+
+
 func _exercise_forced_transitions(
 		run_data: RunData,
 		hero_sources: Array
@@ -346,6 +370,7 @@ func _exercise_forced_transitions(
 	var completed_rooms := 0
 	var reward_options_seen := 0
 	var relics_claimed := 0
+	var expected := expected_transition_counts(run_data)
 	if prepared:
 		for room_index in range(run_data.rooms.size()):
 			manager.current_room_index = room_index
@@ -374,10 +399,10 @@ func _exercise_forced_transitions(
 				break
 			completed_rooms += 1
 	var result := manager.get_last_run_result()
-	var victory_passed := prepared \
-		and completed_rooms == 3 \
-		and reward_options_seen == 4 \
-		and relics_claimed == 2 \
+	var victory_passed: bool = prepared \
+		and completed_rooms == expected.completed_rooms \
+		and reward_options_seen == expected.reward_options_seen \
+		and relics_claimed == expected.relics_claimed \
 		and bool(result.get("victory", false))
 	manager.cleanup_run_state()
 	var defeat_prepared: bool = manager._prepare_preconfigured_run(
@@ -390,9 +415,10 @@ func _exercise_forced_transitions(
 	var defeat_result := manager.get_last_run_result()
 	var defeat_passed := defeat_prepared \
 		and not bool(defeat_result.get("victory", true))
-	var passed := victory_passed and defeat_passed
+	var passed: bool = victory_passed and defeat_passed
 	_report.forced_transition = {
 		"prepared": prepared,
+		"expected": expected,
 		"completed_rooms": completed_rooms,
 		"reward_options_seen": reward_options_seen,
 		"relics_claimed": relics_claimed,
@@ -402,7 +428,7 @@ func _exercise_forced_transitions(
 		"passed": passed,
 	}
 	if not passed:
-		_fail("Le runner de victoires forcées ne traverse pas les trois salles.")
+		_fail("Le runner de victoires forcées ne valide pas les %d salles et leurs récompenses." % expected.completed_rooms)
 	manager.cleanup_run_state()
 	manager.free()
 

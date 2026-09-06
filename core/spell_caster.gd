@@ -780,6 +780,13 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	if ctx.failed or ctx.resolved:
 		return ctx.report
 	ctx.resolved = true
+	# A committed old-form shot cannot resolve after a health-triggered form
+	# change. Costs already paid remain paid; there is no duplicate refund.
+	if ctx.spell != null and ctx.spell.required_combat_form != &"" \
+			and (ctx.caster == null or ctx.caster.combat_form_id != ctx.spell.required_combat_form):
+		ctx.failed = true
+		ctx.report = _failed_report(ctx.caster, ctx.spell, ctx.cell, "combat_form")
+		return ctx.report
 
 	_resolve_targets(ctx)
 	if ctx.spell.is_delayed():
@@ -908,6 +915,9 @@ func _resolve_impacts(ctx: CastContext) -> void:
 		if target != null and not (
 				ctx.spell.exclude_caster_from_area_effects
 				and target == ctx.caster
+			) and not (
+				ctx.spell.exclude_allies_from_area_effects
+				and target.team == ctx.caster.team
 			):
 			_resolve_unit_impact(ctx, target, target_cell, sequence_index)
 		_resolve_cell_terrain(ctx, target_cell)
@@ -961,8 +971,11 @@ func _resolve_unit_impact(
 				report["crits"].append(target)
 			if damage_result.dodged:
 				report["dodges"].append(target)
-			var hp_loss := maxi(0, hp_before_damage - target.current_hp)
-			var shield_loss := maxi(0, shield_before_damage - target.current_shield)
+			# Applied hit facts survive reactive healing or a new form shield.
+			var hp_loss: int = damage_result.hp_damage_applied if damage_result.hp_damage_applied >= 0 \
+				else maxi(0, hp_before_damage - target.current_hp)
+			var shield_loss: int = damage_result.shield_damage_absorbed if damage_result.shield_damage_absorbed >= 0 \
+				else maxi(0, shield_before_damage - target.current_shield)
 			report["hp_damage_total"] += hp_loss
 			report["shield_absorbed_total"] += shield_loss
 			if hp_loss + shield_loss > 0 and target.team != caster.team \
@@ -1231,6 +1244,8 @@ func _resolve_caster_movement(ctx: CastContext) -> void:
 	# or hazard is applied once and the presentation follows the actual endpoint.
 	var relocation := _terrain.consume_relocation_result(ctx.caster, ctx.cell)
 	var destination := relocation.get("destination", ctx.cell) as Vector2i
+	ctx.report["caster_movement_from"] = origin
+	ctx.report["caster_movement_to"] = destination
 	ctx.caster.record_runtime_movement(_grid.manhattan(origin, ctx.cell))
 	ctx.movement.append({
 		"unit": ctx.caster,

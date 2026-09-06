@@ -1,19 +1,20 @@
-[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://data/encounters/encounter_definition.gd" id="1_encounter"]
 [ext_resource type="Resource" path="res://data/units/enemies/spectre_greatsword.tres" id="2_spectre"]
 [ext_resource type="Resource" path="res://data/units/enemies/odyssey_skirmisher.tres" id="3_skirmisher"]
 [ext_resource type="Resource" path="res://data/runs/glory/odyssey_no_consumables.tres" id="4_glory"]
+[ext_resource type="Resource" path="res://data/units/enemies/philosopher_mage.tres" id="5_mage"]
 
 [resource]
 script = ExtResource("1_encounter")
 room_index = 4
-roster_units = Array[UnitData]([ExtResource("2_spectre"), ExtResource("3_skirmisher")])
-roster_counts = PackedInt32Array(2, 1)
+roster_units = Array[UnitData]([ExtResource("5_mage"), ExtResource("2_spectre"), ExtResource("3_skirmisher")])
+roster_counts = PackedInt32Array(1, 1, 1)
 formation_profiles = Array[StringName]([&"split", &"double_line", &"left_flank", &"right_flank"])
 living_enemy_cap = 3
-minimum_path_distance_by_role = {&"spectre_greatsword": 12, &"odyssey_skirmisher": 10}
-maximum_path_distance_by_role = {&"spectre_greatsword": 17, &"odyssey_skirmisher": 15}
+minimum_path_distance_by_role = {&"philosopher_mage": 12, &"spectre_greatsword": 12, &"odyssey_skirmisher": 10}
+maximum_path_distance_by_role = {&"philosopher_mage": 17, &"spectre_greatsword": 17, &"odyssey_skirmisher": 15}
 encounter_id = &"catabase_room_04"
 base_xp = 160
 glory_challenge = ExtResource("4_glory")

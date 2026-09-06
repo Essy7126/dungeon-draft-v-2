@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ParisSpriteVisualProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/paris/paris_sprite_visual_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"paris_sprites_v1"
+sprite_frames_path = "res://assets/characters/paris/sprites_v1/frames_spectral.tres"
+infernal_frames_path = "res://assets/characters/paris/sprites_v1/frames_infernal.tres"
+transformation_frames_path = "res://assets/characters/paris/sprites_v1/frames_transform.tres"
+frame_canvas_size = Vector2i(512, 384)
+foot_anchor = Vector2(256, 320)
+display_scale = 0.35
