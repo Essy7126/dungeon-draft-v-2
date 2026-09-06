@@ -49,5 +49,5 @@ func test_paris_gameplay_and_form_load_without_their_optional_portraits() -> voi
 	assert_eq(unit.combat_form_id, &"spectral")
 	unit.take_damage(97)
 	assert_eq(unit.combat_form_id, &"infernal")
-	assert_eq(unit.current_hp, 23, "The cosmetic fix must not heal or respawn Paris")
+	assert_eq(unit.current_hp, unit.max_hp.get_int(), "Missing optional art must not suppress the full transformation heal.")
 	assert_eq(unit.spells.size(), 4)

@@ -22,6 +22,7 @@ suivante part de la nouvelle vue, y compris l’élévation et le zoom de la map
 L’effet de transformation est attaché à la vue qui révèle la phase décidée par
 `Unit`. Il suit les déplacements de cette vue et disparaît avec sa mort, son
 annulation ou la fin des 0,90 s. Il n’applique ni bouclier, ni dégâts, ni soin.
+Depuis le 7 septembre 2026, `Unit` restaure tous ses PV à Paris lors de cette métamorphose et lui accorde 30 bouclier ; les effets graphiques présentent ces faits sans les appliquer une seconde fois.
 
 Les IDs d’action empêchent de doubler une résolution. Le changement de scène et
 la fin du combat annulent les effets encore présents. Le groupe de diagnostic

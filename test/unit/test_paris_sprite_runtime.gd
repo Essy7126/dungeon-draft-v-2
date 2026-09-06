@@ -107,7 +107,7 @@ func test_exact_twenty_percent_does_not_transform_but_next_real_hp_loss_does_onc
 	assert_eq(unit.current_hp, 24)
 	assert_false(view.is_transformation_pending())
 	unit.take_damage(1)
-	assert_eq(unit.current_hp, 23)
+	assert_eq(unit.current_hp, unit.max_hp.get_int())
 	assert_true(view.is_transformation_pending())
 	assert_eq(view.animated_sprite.animation, &"transform_S")
 	assert_false(view.play_idle())

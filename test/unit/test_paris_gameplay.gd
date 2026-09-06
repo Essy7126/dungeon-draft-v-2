@@ -76,6 +76,7 @@ func test_complete_kit_and_unambiguous_form_threshold() -> void:
 	assert_true(PARIS.combat_form_change.is_valid())
 	assert_eq(PARIS.combat_form_change.below_hp_percent, 20)
 	assert_eq(PARIS.combat_form_change.shield_grant, 30)
+	assert_true(PARIS.combat_form_change.restore_full_hp)
 
 
 func test_exactly_twenty_percent_does_not_transform_but_next_real_damage_does() -> void:
@@ -87,7 +88,7 @@ func test_exactly_twenty_percent_does_not_transform_but_next_real_damage_does() 
 	assert_eq(paris.combat_form_id, &"spectral")
 	assert_true(events.is_empty())
 	paris.take_damage(1)
-	assert_eq(paris.current_hp, 23, "Transformation never heals the real damage.")
+	assert_eq(paris.current_hp, 120, "Surviving the threshold restores the full current maximum.")
 	assert_eq(paris.current_shield, 30)
 	assert_eq(events, [[paris.get_instance_id(), &"spectral", &"infernal"]])
 	assert_eq(paris.spells, [WHIP, SWEEP, PULL, STEP])
@@ -95,16 +96,24 @@ func test_exactly_twenty_percent_does_not_transform_but_next_real_damage_does() 
 
 func test_nineteen_percent_of_original_hp_triggers_once() -> void:
 	var paris := Unit.from_data(PARIS)
+	var transitions: Array = []
+	paris.combat_form_changed.connect(func(_unit, old_form, new_form): transitions.append([old_form, new_form]))
 	paris.take_damage(98)
-	assert_eq(paris.current_hp, 22)
+	assert_eq(paris.current_hp, 120)
 	assert_eq(paris.combat_form_id, &"infernal")
 	paris.take_damage(20)
 	assert_eq(paris.current_shield, 10)
-	paris.heal(60)
-	paris.take_damage(70)
+	paris.take_damage(108)
 	assert_eq(paris.current_hp, 22)
-	assert_eq(paris.current_shield, 0, "Dropping below the threshold again never refills the carapace.")
+	assert_eq(paris.current_shield, 0, "Dropping below the threshold again restores neither HP nor carapace.")
 	assert_eq(paris.combat_form_id, &"infernal")
+	assert_false(paris._try_combat_form_change())
+	assert_eq(paris.current_hp, 22)
+	assert_eq(transitions, [[&"spectral", &"infernal"]])
+	paris.heal(60)
+	paris.take_damage(60)
+	assert_eq(paris.current_hp, 22, "Even a later ordinary heal does not rearm the transformation.")
+	assert_eq(transitions.size(), 1)
 
 
 func test_transformation_preserves_identity_cell_resources_and_statuses() -> void:
@@ -125,6 +134,7 @@ func test_transformation_preserves_identity_cell_resources_and_statuses() -> voi
 	assert_eq(paris.get_active_statuses().size(), status_count)
 	assert_true(paris.has_status(&"frozen"))
 	assert_eq(paris.max_hp.get_int(), 120)
+	assert_eq(paris.current_hp, 120)
 	assert_eq(paris.initiative.get_int(), 9)
 
 
@@ -146,10 +156,15 @@ func test_periodic_damage_crosses_threshold_with_the_same_rules() -> void:
 	paris.apply_status(FIRE.applied_status)
 	paris.start_turn()
 	paris.process_statuses()
-	assert_eq(paris.current_hp, 22)
+	assert_eq(paris.current_hp, 120)
 	assert_eq(paris.combat_form_id, &"infernal")
 	assert_eq(paris.current_shield, 30)
 	assert_true(paris.has_status(&"burn"), "Transformation does not cleanse the initiating burn.")
+	paris.tick_statuses()
+	paris.start_turn()
+	paris.process_statuses()
+	assert_eq(paris.current_hp, 120)
+	assert_eq(paris.current_shield, 24, "The next real burn tick consumes the new shield without restoring it.")
 
 
 func test_lethal_periodic_damage_does_not_transform() -> void:
@@ -162,19 +177,22 @@ func test_lethal_periodic_damage_does_not_transform() -> void:
 	paris.start_turn()
 	paris.process_statuses()
 	assert_false(paris.is_alive)
+	assert_eq(paris.current_hp, 0)
 	assert_eq(paris.combat_form_id, &"spectral")
 	assert_eq(paris.current_shield, 0)
 
 
-func test_max_hp_modifiers_do_not_move_the_original_threshold() -> void:
+func test_max_hp_modifiers_keep_the_original_threshold_and_restore_the_current_maximum() -> void:
 	var paris := Unit.from_data(PARIS)
-	paris.max_hp.base_value = 200
+	paris.max_hp.add_modifier(80.0, Stat.ModType.FLAT, "paris_test_max_hp_bonus")
 	paris.take_damage(81)
 	assert_eq(paris.current_hp, 39)
 	assert_eq(paris.combat_form_id, &"spectral", "39/200 is below 20%, but 39/120 is not.")
 	paris.take_damage(16)
 	assert_eq(paris.combat_form_id, &"infernal")
 	assert_eq(paris.max_hp.get_int(), 200)
+	assert_eq(paris.current_hp, 200, "The heal uses the modified maximum, not the initial 120 HP.")
+	assert_eq(PARIS.max_hp, 120, "The shared encounter resource remains unchanged.")
 
 
 func test_shield_absorption_is_not_hp_loss_or_an_early_transformation() -> void:
@@ -373,7 +391,7 @@ func test_infernal_ai_closes_distance_by_teleport_and_uses_whip() -> void:
 	_execute(f, plan)
 	assert_eq(f.hero.current_hp, 380)
 	assert_eq(f.paris.current_ap, 0)
-	assert_eq(f.paris.current_hp, 23)
+	assert_eq(f.paris.current_hp, 120)
 
 
 func test_infernal_aoe_spares_allies_direct_impact_but_ground_fire_affects_everyone() -> void:
@@ -391,7 +409,7 @@ func test_infernal_aoe_spares_allies_direct_impact_but_ground_fire_affects_every
 	assert_eq(f.hero.current_hp, 378)
 	assert_eq(other.current_hp, 78)
 	assert_eq(ally.current_hp, 92, "The direct 14 damage spares allies; the actual floor fire still deals 8.")
-	assert_eq(f.paris.current_hp, 23)
+	assert_eq(f.paris.current_hp, 120)
 
 
 func test_arrow_projectiles_respect_opaque_obstacles() -> void:
@@ -410,17 +428,18 @@ func test_arrow_projectiles_respect_opaque_obstacles() -> void:
 	assert_eq(f.paris.current_ap, 4)
 
 
-func test_initial_shield_absorption_report_survives_transformation_carapace() -> void:
+func test_damage_report_preserves_hp_loss_and_absorption_despite_full_restoration_and_new_carapace() -> void:
 	var f := _field()
 	f.paris.take_damage(90)
 	f.paris.add_shield(10)
 	var attack := Factory.make_spell({"damage": 17, "spell_range": 7, "ap_cost": 2})
 	var report: Dictionary = f.caster.cast(f.hero, attack, f.paris.grid_pos)
 	assert_false(report.get("failed", false))
-	assert_eq(f.paris.current_hp, 23)
+	assert_eq(f.paris.current_hp, 120)
 	assert_eq(f.paris.current_shield, 30)
 	assert_eq(report.hp_damage_total, 7)
 	assert_eq(report.shield_absorbed_total, 10)
+	assert_true(report.damaged_enemies.has(f.paris), "Healing cannot erase the enemy actually hit.")
 
 
 func test_infernal_single_target_turn_varies_whip_and_sweep() -> void:
@@ -477,3 +496,77 @@ func test_low_map_obstacles_do_not_falsely_block_arrows() -> void:
 	for spell in [ARROW, FIRE, ICE, VORTEX]:
 		assert_true(f.caster.can_cast(f.paris, spell, f.hero.grid_pos))
 	assert_eq(f.paris.current_ap, 4)
+
+
+func test_reduced_max_hp_caps_restoration_without_changing_the_original_threshold() -> void:
+	var paris := Unit.from_data(PARIS)
+	paris.max_hp.add_modifier(-40.0, Stat.ModType.FLAT, "paris_test_max_hp_penalty")
+	assert_eq(paris.current_hp, 80)
+	paris.take_damage(56)
+	assert_eq(paris.current_hp, 24)
+	assert_eq(paris.combat_form_id, &"spectral")
+	paris.take_damage(1)
+	assert_eq(paris.combat_form_id, &"infernal")
+	assert_eq(paris.current_hp, 80, "Restoration cannot exceed the current reduced maximum.")
+	assert_eq(paris.max_hp.get_int(), 80)
+
+
+func test_full_restoration_is_opt_in_for_other_form_resources() -> void:
+	assert_false(CombatFormChangeData.new().restore_full_hp)
+	var data := PARIS.duplicate(false) as UnitData
+	data.combat_form_change = PARIS.combat_form_change.duplicate(false) as CombatFormChangeData
+	data.combat_form_change.restore_full_hp = false
+	var unit := Unit.from_data(data)
+	unit.take_damage(97)
+	assert_eq(unit.combat_form_id, &"infernal")
+	assert_eq(unit.current_hp, 23, "Existing form definitions without the option keep their surviving HP.")
+	assert_eq(unit.current_shield, 30)
+	assert_true(PARIS.combat_form_change.restore_full_hp, "The opt-out fixture never mutates Paris's shared resource.")
+
+
+func test_hp_and_form_signals_expose_restoration_and_the_final_kit_on_the_same_unit() -> void:
+	var paris := Unit.from_data(PARIS)
+	var events: Array = []
+	paris.hp_changed.connect(func(unit): events.append({
+		"kind": &"hp", "id": unit.get_instance_id(), "hp": unit.current_hp, "form": unit.combat_form_id,
+	}))
+	paris.combat_form_changed.connect(func(unit, old_form, new_form): events.append({
+		"kind": &"form", "id": unit.get_instance_id(), "hp": unit.current_hp,
+		"old": old_form, "form": new_form, "shield": unit.current_shield,
+		"spells": unit.spells.duplicate(),
+	}))
+	var result := paris.take_damage(97)
+	assert_eq(result.hp_damage_applied, 97, "The actual hit survives the reactive healing in its DamageResult.")
+	assert_eq(result.shield_damage_absorbed, 0)
+	assert_eq(events, [
+		{"kind": &"hp", "id": paris.get_instance_id(), "hp": 23, "form": &"spectral"},
+		{"kind": &"hp", "id": paris.get_instance_id(), "hp": 120, "form": &"infernal"},
+		{"kind": &"form", "id": paris.get_instance_id(), "hp": 120,
+			"old": &"spectral", "form": &"infernal", "shield": 30,
+			"spells": [WHIP, SWEEP, PULL, STEP]},
+	], "HP listeners see the real loss then the restored life; the form event carries the complete new state.")
+
+
+func test_lethal_hit_after_restoration_ends_the_infernal_phase_without_a_second_heal() -> void:
+	var paris := Unit.from_data(PARIS)
+	paris.take_damage(97)
+	assert_eq(paris.current_hp, 120)
+	var result := paris.take_damage(150)
+	assert_eq(result.hp_damage_applied, 120)
+	assert_eq(result.shield_damage_absorbed, 30)
+	assert_false(paris.is_alive)
+	assert_eq(paris.current_hp, 0)
+	assert_eq(paris.current_shield, 0)
+	assert_false(paris._try_combat_form_change())
+
+
+func test_unshielded_spell_damage_report_remains_positive_after_restoration() -> void:
+	var f := _field()
+	var attack := Factory.make_spell({"damage": 97, "spell_range": 7, "ap_cost": 2})
+	var report: Dictionary = f.caster.cast(f.hero, attack, f.paris.grid_pos)
+	assert_false(report.get("failed", false))
+	assert_eq(f.paris.current_hp, 120)
+	assert_eq(f.paris.combat_form_id, &"infernal")
+	assert_eq(report.hp_damage_total, 97, "An identical HP value before and after the hit is not zero damage.")
+	assert_eq(report.shield_absorbed_total, 0)
+	assert_true(report.damaged_enemies.has(f.paris))

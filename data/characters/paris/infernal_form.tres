@@ -15,6 +15,7 @@ initial_form = &"spectral"
 target_form = &"infernal"
 below_hp_percent = 20
 shield_grant = 30
+restore_full_hp = true
 shield_source_id = &"paris_infernal_carapace"
 preview_sprite_frames_path = "res://assets/characters/paris/sprites_v1/paris_infernal_portrait.tres"
 preview_sprite_animation = &"idle_E"

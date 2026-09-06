@@ -3,12 +3,13 @@ class_name CombatFormChangeData
 extends Resource
 
 ## A one-way, non-lethal health threshold transition. The original Unit remains
-## authoritative: no respawn, healing, turn reset, or removal of active statuses.
+## authoritative: no respawn, turn reset, or removal of active statuses.
 @export var ability_id: StringName = &"combat_form_change"
 @export var initial_form: StringName = &""
 @export var target_form: StringName = &""
 @export_range(1, 99, 1) var below_hp_percent: int = 20
 @export var shield_grant: int = 0
+@export var restore_full_hp: bool = false
 @export var shield_source_id: StringName = &"combat_form"
 @export var spells: Array[Spell] = []
 # Optional artwork must not prevent encounters and runs from loading.

@@ -23,7 +23,8 @@ func test_paris_inspection_announces_the_threshold_and_future_kit() -> void:
 	var text := _text(panel)
 	assert_string_contains(text, "sous 20 %")
 	assert_string_contains(text, "30 bouclier")
-	assert_string_contains(text, "sans soin")
+	assert_string_contains(text, "tous ses PV")
+	assert_false(text.contains("sans soin"))
 	for spell: Spell in paris.combat_form_change.spells:
 		assert_string_contains(text, spell.spell_name)
 	assert_eq(panel.get("_subtitle").text, "Ennemi · Archer spectral")

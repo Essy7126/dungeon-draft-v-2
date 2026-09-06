@@ -1810,6 +1810,10 @@ func _try_combat_form_change() -> bool:
 		add_sourced_shield(change.shield_source_id, change.shield_grant, self, {
 			"spell_id": change.ability_id, "tags": [&"transformation"],
 		})
+	if change.restore_full_hp:
+		var missing_hp := maxi(0, max_hp.get_int() - current_hp)
+		if missing_hp > 0:
+			heal(missing_hp, self, {"ability_id": change.ability_id})
 	stats_changed.emit(self)
 	combat_form_changed.emit(self, old_form, combat_form_id)
 	DebugLogger.info(CAT_COMBAT, "%s : métamorphose en %s (%d PV, %d bouclier)" % [

@@ -16,7 +16,7 @@
 script = ExtResource("1")
 unit_id = &"catabase_shadow_paris"
 unit_name = "L’Ombre de Paris"
-description = "Archer grec spectral : flèches d’ombre, de feu, de glace et du vortex. Sous 20 % de ses PV initiaux, une seule fois, sa forme infernale remplace l’arc par un fouet de feu et gagne 30 bouclier. Aucun soin ni retour à la vie."
+description = "Archer grec spectral : flèches d’ombre, de feu, de glace et du vortex. Sous 20 % de ses PV initiaux, une seule fois, sa forme infernale remplace l’arc par un fouet de feu, lui rend tous ses PV et accorde 30 bouclier. Ses PA/PM restants sont conservés. Un coup fatal le tue normalement."
 team = 1
 max_hp = 120
 initiative = 9
@@ -41,5 +41,5 @@ ai_profile = ExtResource("ai")
 faction_id = &"catabase_shadows"
 tactical_role_id = &"catabase_shadow_paris"
 role = "Archer spectral · Démon au fouet"
-presentation_summary = "Brisez sa ligne de tir, exploitez les dalles, puis préparez-vous à sa métamorphose sous 20 % de PV."
+presentation_summary = "Brisez sa ligne de tir, exploitez les dalles, puis préparez-vous à sa métamorphose sous 20 % de PV : tous ses PV reviennent et il gagne 30 bouclier."
 presentation_badge = "PARIS"

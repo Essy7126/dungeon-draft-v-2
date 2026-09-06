@@ -39,7 +39,10 @@ func test_active_hud_switches_rendered_portrait_and_real_slots_only_below_twenty
 	_assert_portrait(hud, original_frames)
 	assert_eq(hud.get("_spell_buttons"), spectral_buttons, "HP refreshes preserve the current slots")
 	unit.take_damage(1)
-	assert_eq(unit.current_hp, 23)
+	assert_eq(unit.current_hp, unit.max_hp.get_int())
+	var health_bar := hud.get("_hp_bar") as RecraftResourceBarView
+	assert_eq(health_bar.current_value, float(unit.max_hp.get_int()))
+	assert_eq(health_bar.maximum_value, float(unit.max_hp.get_int()))
 	assert_eq(unit.combat_form_id, &"infernal")
 	_assert_portrait(hud, data.combat_form_change.preview_sprite_frames)
 	_assert_kit(hud, INFERNAL_KIT)

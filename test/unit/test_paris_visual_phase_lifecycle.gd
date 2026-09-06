@@ -140,7 +140,7 @@ func test_runner_replans_only_changed_form_after_real_fire_entry_and_keeps_actio
 	body.set_process(true)
 	await runner.run(unit)
 	assert_eq(unit.combat_form_id, &"infernal")
-	assert_eq(unit.current_hp, 22)
+	assert_eq(unit.current_hp, unit.max_hp.get_int())
 	assert_eq(unit.current_mp, 2)
 	assert_eq(battle.enemy_ai.plans_built, 2)
 	assert_eq(runner.executed_spells, [&"paris_infernal_whip"])

@@ -1,5 +1,7 @@
 # Paris : deux formes, un seul personnage de combat
 
+Règle mise à jour le 7 septembre 2026 : un dégât survivable laissant Paris strictement sous 20 % de ses PV initiaux déclenche une seule métamorphose, lui rend tous ses PV et accorde 30 bouclier. Les PA/PM restants, statuts et activation sont conservés. Un coup fatal ne le ressuscite pas. Le modèle de combat applique le soin ; les sprites n'appliquent aucune ressource.
+
 `ParisIsoUnitView.tscn` utilise un seul `AnimatedSprite2D`. Le socle de lecture est
 celui du Dialecticien : horloge monotone respectant pause et vitesse du jeu,
 marqueur de libération unique, annulation et mort sûres. Aucun modèle 3D ou
@@ -56,4 +58,4 @@ explicite de map conserve sa priorité.
 Vérifications dédiées : `test_paris_sprite_runtime.gd`,
 `test_paris_sprite_vfx.gd` et `test_paris_visual_phase_lifecycle.gd`. Les résultats
 d’exécution et les captures de combat sont conservés par le rapport de
-validation de Paris.
+validation de Paris. Les résultats et captures v1 sont historiques : ils précèdent la récupération complète ajoutée le 7 septembre 2026 et ne prouvent pas cette nouvelle règle.

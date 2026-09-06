@@ -1,12 +1,14 @@
 # Paris — boss final de Catabase
 
+**Mise à jour du 7 septembre 2026.** Les règles ci-dessous incluent désormais la récupération de tous ses PV à la métamorphose. Les résultats chiffrés, le rapport JSON et les captures **v1** conservés dans ce document sont des preuves historiques produites avant ce soin. Ils ne valident pas la nouvelle restauration de PV.
+
 Paris remplace le Champion dans la cinquième et dernière rencontre, au Temple du Serment Noir. Deux spectres l’accompagnent. Il n’apparaît pas dans les quatre premières salles ; la troisième devient Le Jugement silencieux et oppose Champion + Spectre. L’identité `catabase_shadow_paris` reste stable pour les systèmes de combat, les inspecteurs et les événements.
 
 ## Combat
 
 L’archer spectral possède 120 PV, 4 PA et 3 PM. Ses cinq sorts couvrent la flèche spectrale, le feu, la glace, l’attraction et une téléportation personnelle. Ils passent par les règles canoniques de portée, obstacles, terrain, statut et occupation. Le vortex peut attirer une cible sur une dalle dangereuse ou un téléporteur ; Pas du vortex paie ses PA et applique la dalle réellement atteinte. Le feu posé sur la glace produit la réaction d’eau existante.
 
-Un dégât survivable qui laisse Paris strictement sous 20 % de ses PV initiaux déclenche une seule transformation : à 24/120 il reste archer, à 23/120 ou moins il devient démon. Il gagne 30 points de bouclier, sans soin ni réinitialisation des ressources, statuts, initiative ou récupération partagée. Un coup létal tue normalement. Le kit infernal contient le Fouet du Tartare, la Couronne de braises, l’Étreinte du Tartare et Pas du vortex. Les chiffres et règles détaillés se trouvent dans [paris_gameplay_v1.md](paris_gameplay_v1.md).
+Un dégât survivable qui laisse Paris strictement sous 20 % de ses PV initiaux déclenche une seule transformation : à 24/120 il reste archer, à 23/120 ou moins il devient démon. Il récupère alors tous ses PV, jusqu'à son maximum en vigueur, et gagne 30 points de bouclier. Ses PA/PM restants, statuts, initiative et récupération partagée sont conservés ; son activation n'est pas réinitialisée. Un coup létal tue normalement. Le kit infernal contient le Fouet du Tartare, la Couronne de braises, l’Étreinte du Tartare et Pas du vortex. Les chiffres et règles détaillés se trouvent dans [paris_gameplay_v1.md](paris_gameplay_v1.md).
 
 L’IA conserve une distance de tir en première forme, emploie ses éléments et les dangers de la map, puis recherche la portée du fouet. La transformation annule les anciennes actions incompatibles. Une entrée sur terrain qui transforme Paris suspend son animation de déplacement et replanifie la suite avec ses ressources restantes.
 
@@ -20,7 +22,7 @@ Les effets possèdent 32 dessins : flèche, givre, feu, vortex, impact spectral,
 
 La fiche ennemie annonce le seuil et affiche le kit courant. Les portraits de phase utilisent une donnée de présentation séparée, sans modifier l’UnitData partagé.
 
-## Vérification reproductible
+## Vérification reproductible et preuves historiques v1
 
 [run_unit_checks.ps1](../../tools/paris_sprite_validation/run_unit_checks.ps1), avec l’option `-Regression`, couvre les règles de Paris et les systèmes partagés. La matrice [run_matrix.ps1](../../tools/paris_sprite_validation/run_matrix.ps1) joue huit scénarios dans quatre directions : flèches, glace, feu, attraction, téléportation, approche, transformation et mort. Achille reçoit son niveau de fixture avant le combat ; les dégâts, PA, PM, déplacements et transformations suivants viennent d’actions normales. Cette matrice isolée ne constitue pas une traversée complète de la campagne.
 
@@ -31,14 +33,19 @@ Les GIF sont assemblés à partir des captures du viewport, avec leurs timestamp
 Les diagnostics connus de ressources/RID lors de la fermeture des outils Godot sont conservés dans les logs. Ils sont distingués des erreurs de scripts et de combat, qui font échouer la validation.
 
 
-Pour ce lot, les logs GUT finaux attestent **30 scripts, 298 tests réussis sur 298 et 17 224 assertions**, en 25,996 s. Le reçu de l’agrégateur recoupe ces totaux avec les 30 résultats par script et conserve les SHA-256 de `artifacts/paris_sprite_validation_v1/gut_final/stdout.log` et `stderr.log`. Il conserve aussi les huit diagnostics connus de fermeture ; aucun diagnostic runtime non reconnu n’apparaît dans ces deux logs. Les suites incluent Paris, ses origines de sorts et son HUD de phase, ainsi que les régressions Catabase, mage, Achille, spectre, terrain, déplacement et transitions de salle.
+Pour le lot historique v1, antérieur au soin de métamorphose, les logs GUT finaux attestent **30 scripts, 298 tests réussis sur 298 et 17 224 assertions**, en 25,996 s. Le reçu de l’agrégateur recoupe ces totaux avec les 30 résultats par script et conserve les SHA-256 de `artifacts/paris_sprite_validation_v1/gut_final/stdout.log` et `stderr.log`. Il conserve aussi les huit diagnostics connus de fermeture ; aucun diagnostic runtime non reconnu n’apparaît dans ces deux logs. Les suites incluent Paris, ses origines de sorts et son HUD de phase, ainsi que les régressions Catabase, mage, Achille, spectre, terrain, déplacement et transitions de salle.
 
 Les pipelines Node ont également passé **30 tests** lors de la vérification finale : [extraction et atlas du personnage](../../tools/paris_sprite_pipeline/build.test.cjs), [séparation des dessins sources](../../tools/paris_sprite_pipeline/segmentation.test.cjs) et [effets/icônes RGBA](../../tools/paris_sprite_pipeline/build_effects.test.cjs). Ce résultat est distinct des tests GUT et des combats filmés.
 
-La matrice finale passe **32 combats sur 32**, et la vérification séparée de la salle V passe avec Paris et ses deux spectres. Les **huit sorts** ont réellement été choisis dans ce lot, dont l'Étreinte du Tartare. Le [rapport de combat](paris_combat_validation_v1.json) conserve leurs actions, coûts, dégâts et effets observés. Cette couverture décrit les combats exécutés ; les huit scénarios ne forcent pas systématiquement huit sorts distincts.
+La matrice historique v1 passe **32 combats sur 32**, et la vérification séparée de la salle V passe avec Paris et ses deux spectres. Les **huit sorts** ont réellement été choisis dans ce lot, dont l'Étreinte du Tartare. Le [rapport de combat](paris_combat_validation_v1.json) conserve leurs actions, coûts, dégâts et effets observés. Cette couverture décrit les combats exécutés ; les huit scénarios ne forcent pas systématiquement huit sorts distincts.
 
-## Captures du jeu
+## Captures historiques v1 — avant restauration des PV
+
+Ces médias et leur reçu d'encodage conservent leurs pixels et mesures d'origine ; aucune valeur n'a été réécrite pour simuler le nouveau soin.
 
 La [salle V](paris/media/paris_final_room_v1.png) montre le déploiement sur le Temple du Serment Noir avec son roster canonique. L'[extrait de transformation](paris/media/paris_transform_v1.gif) provient du duel isolé de validation : les quatre poses de métamorphose, le premier fouet, la Couronne de braises puis le retour au repos. Le cadrage fixe a été élargi pour contenir le recul par téléportation et la silhouette du fouet. Les pixels proviennent du viewport ; aucun mouvement intermédiaire n'a été inventé.
 
 Le [reçu d'encodage](paris/media/paris_transform_v1.encode_report.json) vérifie les images et timestamps de cet extrait continu. Les captures et les mesures sans capture sont des lancements séparés.
+
+
+Validation du soin le 7 septembre 2026 : **303 tests GUT réussis** et **deux duels réels** (transformation et défaite, orientation E). Dans chaque duel, le dégât déclencheur laisse Paris à 22 PV ; il reçoit ensuite exactement 98 PV de soin et commence sa métamorphose à 120/120 PV avec 30 bouclier. Le second duel confirme sa mort normale après cette seconde phase. Le [reçu de cette modification](paris_full_heal_validation_v1.json) est distinct des preuves historiques et ne revendique pas une nouvelle matrice de 32 combats.

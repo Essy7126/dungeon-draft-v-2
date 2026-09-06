@@ -53,6 +53,8 @@ var _clip_report := {"enabled": false}
 var _clip_omitted_frames := 0
 var _transformations: Array[Dictionary] = []
 var _active_transform: Dictionary = {}
+var _last_spectral_damage_fact: Dictionary = {}
+var _metamorphosis_heal_fact: Dictionary = {}
 var _occupancy: Array[Dictionary] = []
 var _form_atlases: Dictionary = {}
 
@@ -156,6 +158,8 @@ func _run() -> void:
 					break
 				await _pass_real_turn()
 		if scenario == "defeat":
+			# Full infernal HP + shield = 150. A legal 24-damage shot per
+			# useful activation needs at most seven; retain the 12-turn bound.
 			for round_index in 12:
 				if not _paris.is_alive or not _hero.is_alive or not _errors.is_empty():
 					break
@@ -266,7 +270,13 @@ func _on_animation() -> void:
 	var action := clip.get_slice("_", 0)
 	var now := Time.get_ticks_usec()
 	if action == "transform" and _active_transform.is_empty():
-		_active_transform = {"started_usec": now, "hp": _paris.current_hp, "max_hp": _paris.max_hp.get_int(), "shield": _paris.current_shield, "form_before": str(_observed_visual.get_visual_runtime_state().get("combat_form", "")), "finish_count": 0}
+		# Damage and healing signals precede the sprite transition. Preserve
+		# those actual facts: animation-start HP is already fully restored.
+		_active_transform = {"started_usec": now, "hp": _paris.current_hp, "max_hp": _paris.max_hp.get_int(),
+			"shield": _paris.current_shield, "form_before": str(_observed_visual.get_visual_runtime_state().get("combat_form", "")), "finish_count": 0,
+			"health_contract": "surviving_damage_then_full_heal",
+			"trigger_damage_fact": _last_spectral_damage_fact.duplicate(true),
+			"full_heal_fact": _metamorphosis_heal_fact.duplicate(true)}
 		_transformations.append(_active_transform)
 	if not _reaction.is_empty() and action != str(_reaction.action):
 		_reaction.finished_usec = now
@@ -322,24 +332,31 @@ func _on_spell_cast(actor: Unit, spell: Spell, report: Dictionary) -> void:
 		(_active_cast.terrain_after as Array).append({"cell": cell, "properties": _battle.grid.get_terrain_properties(cell), "effect": _battle.grid.get_effect(cell)})
 
 
-func _fact(kind: String, actor: Unit, target: Unit, amount: int, extra: Dictionary = {}) -> void:
+func _fact(kind: String, actor: Unit, target: Unit, amount: int, extra: Dictionary = {}) -> Dictionary:
 	var fact := {"kind": kind, "time_usec": Time.get_ticks_usec(), "actor_id": str(actor.unit_id) if actor != null else "",
 		"target_id": str(target.unit_id), "target_instance": target.get_instance_id(), "amount": amount,
-		"target_hp": target.current_hp, "target_shield": target.current_shield, "target_cell": target.grid_pos}
+		"target_hp": target.current_hp, "target_shield": target.current_shield, "target_cell": target.grid_pos,
+		"fact_index": _facts.size(), "target_max_hp": target.max_hp.get_int(),
+		"target_form": str(target.combat_form_id), "target_alive": target.is_alive}
 	fact.merge(extra)
 	_facts.append(fact)
 	if actor == _paris and not _active_cast.is_empty():
 		(_active_cast.facts as Array).append(fact)
+	return fact
 
 
 func _on_damage(target: Unit, attacker: Unit, amount: int, _category: int, _element: int, _critical: bool) -> void:
 	if target in [_paris, _hero] or attacker == _paris:
-		_fact("hp_damage", attacker, target, amount, {"element": _element, "category": _category})
+		var fact: Dictionary = _fact("hp_damage", attacker, target, amount, {"element": _element, "category": _category})
+		if target == _paris and target.combat_form_id == &"spectral":
+			_last_spectral_damage_fact = fact
 
 
 func _on_heal(target: Unit, source: Unit, amount: int) -> void:
 	if source == _paris:
-		_fact("heal", source, target, amount)
+		var fact: Dictionary = _fact("heal", source, target, amount)
+		if target == _paris and target.combat_form_id == &"infernal":
+			_metamorphosis_heal_fact = fact
 
 
 func _on_shield(target: Unit, source: Unit, amount: int) -> void:
@@ -655,9 +672,25 @@ func _validate() -> void:
 	if configuration.scenario in ["transform", "defeat"]:
 		if _transformations.size() != 1:
 			_errors.append("threshold_transformation_not_exactly_once")
+		var self_heal_count := 0
+		for fact: Dictionary in _facts:
+			if str(fact.kind) == "heal" and str(fact.actor_id) == str(_paris.unit_id) and int(fact.target_instance) == _paris.get_instance_id():
+				self_heal_count += 1
+		if self_heal_count != 1:
+			_errors.append("metamorphosis_full_heal_not_exactly_once")
 		for transition: Dictionary in _transformations:
-			if int(transition.hp) <= 0 or int(transition.hp) * 5 >= int(transition.max_hp):
-				_errors.append("transformation_did_not_start_below_strict_twenty_percent")
+			var damage: Dictionary = transition.get("trigger_damage_fact", {})
+			var healing: Dictionary = transition.get("full_heal_fact", {})
+			var trigger_hp := int(damage.get("target_hp", -1))
+			var maximum_hp := int(transition.max_hp)
+			if int(damage.get("amount", 0)) <= 0 or trigger_hp <= 0 or trigger_hp * 5 >= maximum_hp or str(damage.get("target_form", "")) != "spectral" or not bool(damage.get("target_alive", false)):
+				_errors.append("transformation_missing_surviving_damage_below_strict_twenty_percent")
+			if str(healing.get("kind", "")) != "heal" or int(healing.get("amount", -1)) != maximum_hp - trigger_hp or int(healing.get("target_hp", -1)) != maximum_hp or str(healing.get("target_form", "")) != "infernal" or not bool(healing.get("target_alive", false)):
+				_errors.append("metamorphosis_missing_actual_full_heal")
+			if int(damage.get("fact_index", -1)) < 0 or int(healing.get("fact_index", -1)) <= int(damage.get("fact_index", -1)) or int(healing.get("time_usec", 0)) < int(damage.get("time_usec", 0)) or int(healing.get("time_usec", 0)) > int(transition.started_usec):
+				_errors.append("metamorphosis_damage_heal_animation_order_invalid")
+			if int(transition.hp) != maximum_hp or int(transition.shield) != 30:
+				_errors.append("metamorphosis_animation_did_not_start_with_full_hp_and_shield")
 			if int(transition.get("finish_count", 0)) != 1 or str(transition.get("form_after", "")) != "infernal":
 				_errors.append("transformation_did_not_finish_in_infernal_form")
 			if not bool(transition.get("returned_idle", false)):
