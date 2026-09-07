@@ -6,10 +6,11 @@ const PACKAGES := ["greek_drawn_courtyard_v1", "ashen_hell_courtyard_v1", "silen
 const DIRECTIONS := [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 
 
-func test_five_catabase_rooms_bind_their_registered_production_maps() -> void:
-	assert_eq(RUN.rooms.size(), 5)
-	for index in range(PACKAGES.size()):
-		var room := RUN.rooms[index] as ArenaDefinition
+func test_five_historical_catabase_rooms_keep_their_registered_production_maps() -> void:
+	var historical_rooms := RUN.rooms.slice(0, PACKAGES.size())
+	assert_eq(historical_rooms.size(), 5)
+	for index in range(historical_rooms.size()):
+		var room := historical_rooms[index] as ArenaDefinition
 		assert_not_null(room)
 		if room == null:
 			continue

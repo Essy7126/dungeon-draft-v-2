@@ -21,13 +21,15 @@ const DISCIPLINE_IDS: Array[StringName] = [
 ]
 
 
-func test_odyssey_is_a_valid_five_room_single_encounter_run() -> void:
+func test_odyssey_is_a_valid_fifteen_arena_single_encounter_pool() -> void:
 	var run := _run()
 	assert_not_null(run)
 	assert_eq(run.run_name, "Catabase")
 	assert_true(run.is_single_encounter_flow())
 	assert_eq(run.maximum_waves_per_room, 1)
-	assert_eq(run.rooms.size(), 5)
+	assert_true(run.catabase_route_enabled)
+	assert_eq(run.rooms.size(), 15)
+	assert_eq(run.rooms.map(func(room: RoomData): return room.resource_path), Array(ExpeditionMapCatalog.ROOM_PATHS))
 	assert_true(run.is_valid(), str(run.validation_errors()))
 	var room_paths := {}
 	var encounter_paths := {}
@@ -51,9 +53,9 @@ func test_odyssey_is_a_valid_five_room_single_encounter_run() -> void:
 		room_paths[room.resource_path] = true
 		encounter_paths[room.encounter_definition.resource_path] = true
 		visual_paths[room.painted_map_visual_data.resource_path] = true
-	assert_eq(room_paths.size(), 5)
-	assert_eq(encounter_paths.size(), 5)
-	assert_eq(visual_paths.size(), 5)
+	assert_eq(room_paths.size(), 15)
+	assert_eq(encounter_paths.size(), 15)
+	assert_eq(visual_paths.size(), 15)
 
 
 func test_achilles_profile_chain_and_chassis_are_exact() -> void:
@@ -217,8 +219,8 @@ func test_invalid_empty_duplicate_and_mismatched_profiles_are_rejected() -> void
 	assert_true(resolution.heroes.is_empty())
 
 
-func test_odyssey_victory_defeat_relaunch_and_trio_switches_are_clean() -> void:
-	var run := _run()
+func test_historical_odyssey_victory_defeat_relaunch_and_trio_switches_are_clean() -> void:
+	var run := _historical_sequential_run()
 	var manager = GameManagerScript.new()
 	var resolved := RunHeroResolver.resolve_runtime_hero_data(run, false)
 	assert_true(manager._prepare_preconfigured_run(run, resolved.heroes))
@@ -485,8 +487,8 @@ func test_odyssey_economy_starts_with_consumables_and_offers_relics() -> void:
 	manager.free()
 
 
-func test_odyssey_final_room_keeps_the_no_relic_reward_rule() -> void:
-	var run := _run()
+func test_historical_odyssey_final_room_keeps_the_no_relic_reward_rule() -> void:
+	var run := _historical_sequential_run()
 	var resolved := RunHeroResolver.resolve_runtime_hero_data(run, false)
 	var manager = GameManagerScript.new()
 	assert_true(manager._prepare_preconfigured_run(run, resolved.heroes))
@@ -627,7 +629,7 @@ func test_refined_hud_resolves_portrait_icons_utilities_and_no_basic_attack() ->
 	assert_true(hud._skills_button.visible)
 
 
-func test_studio_catalogs_open_odyssey_hero_and_all_five_rooms() -> void:
+func test_studio_catalogs_open_odyssey_hero_and_all_fifteen_arenas() -> void:
 	var run := _run()
 	var discovered := RunContentCatalogService.discover_runs()
 	assert_true(discovered.any(func(item: RunData): return item.resource_path == ODYSSEY_PATH))
@@ -639,8 +641,10 @@ func test_studio_catalogs_open_odyssey_hero_and_all_five_rooms() -> void:
 	assert_eq(skill_session.working_unit.unit_id, &"achilles")
 	var encounter_session := EncounterEditSession.new()
 	assert_true(encounter_session.open(run, ODYSSEY_PATH))
-	assert_eq(encounter_session.working_run.rooms.size(), 5)
-	for room in encounter_session.working_run.rooms:
+	assert_eq(encounter_session.working_run.rooms.size(), 15)
+	for index in range(encounter_session.working_run.rooms.size()):
+		var room := encounter_session.working_run.rooms[index]
+		assert_same(encounter_session.work_to_source.get(room), run.rooms[index])
 		assert_not_null(room.encounter_definition)
 
 
@@ -749,6 +753,16 @@ func test_odyssey_reward_deck_is_scoped_and_main_restarts_cleanly() -> void:
 
 func _run() -> RunData:
 	return load(ODYSSEY_PATH) as RunData
+
+
+func _historical_sequential_run() -> RunData:
+	# These tests exercise GameManager's sequential reward/transition contract.
+	# The production twenty-step route is covered by the expedition integration probes.
+	var source := _run()
+	var historical := source.duplicate(false) as RunData
+	historical.catabase_route_enabled = false
+	historical.rooms = source.rooms.slice(0, 5)
+	return historical
 
 
 func _progression() -> CharacterProgressionProfile:

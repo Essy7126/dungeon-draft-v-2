@@ -31,8 +31,8 @@ const RETIRED_PRESENTATION_LABELS := [
 ]
 
 
-func test_catabase_keeps_one_champion_and_the_five_current_room_routes() -> void:
-	# The content resolver does not require room scenes. Inspect the authored route
+func test_catabase_keeps_one_champion_and_the_authored_room_pool() -> void:
+	# The content resolver does not require room scenes. Inspect the authored pool
 	# separately so a room's imported enemy visuals cannot mask a champion regression.
 	var content := load(CONTENT_PATH) as RunContentProfile
 	assert_true(content.is_valid(), str(content.validation_errors()))
@@ -55,24 +55,23 @@ func test_catabase_keeps_one_champion_and_the_five_current_room_routes() -> void
 
 	var source := FileAccess.get_file_as_string(ODYSSEY_PATH)
 	assert_true(source.contains('run_name = "Catabase"'))
+	assert_true(source.contains("catabase_route_enabled = true"))
 	assert_true(source.contains('path="%s"' % CONTENT_PATH))
 	var room_pattern := RegEx.new()
 	assert_eq(room_pattern.compile('path="(res://data/rooms/[^" ]+\\.tres)"'), OK)
 	var room_paths: Array[String] = []
 	for match_result in room_pattern.search_all(source):
 		room_paths.append(match_result.get_string(1))
-	assert_eq(room_paths, [
-		"res://data/rooms/odyssey/room_01.tres",
-		"res://data/rooms/odyssey/room_02.tres",
-		"res://data/rooms/odyssey/room_03.tres",
-		"res://data/rooms/odyssey/room_04.tres",
-		"res://data/rooms/odyssey/room_05.tres",
-	])
+	assert_eq(room_paths.size(), 15)
+	assert_eq(room_paths, Array(ExpeditionMapCatalog.ROOM_PATHS))
 	for room_path in room_paths:
 		assert_true(FileAccess.file_exists(room_path))
 		var room_source := FileAccess.get_file_as_string(room_path)
 		assert_true(room_source.contains("battle_scene = ExtResource("), room_path)
-		assert_true(room_source.contains("encounter_definition = ExtResource("), room_path)
+		assert_true(
+			room_source.contains("encounter_definition = ExtResource(")
+			or room_source.contains("encounter_definition = SubResource("), room_path
+		)
 		assert_true(room_source.contains("hero_spawn_zone = Array[Vector2i]([Vector2i("), room_path)
 
 

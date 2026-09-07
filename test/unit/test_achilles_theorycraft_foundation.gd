@@ -115,11 +115,30 @@ func test_snapshot_matches_four_discipline_resources() -> void:
 		assert_eq(discipline.ranks[1].choices.size(), 2)
 
 
+func test_snapshot_exports_extended_catabase_room_pool() -> void:
+	# V3 exposes fifteen authored arenas as a pool for the twenty-step route.
+	# Durations are authored estimates, not a measured full-run playtime.
+	assert_eq(snapshot.odyssey.target_duration_minutes, 55)
+	assert_eq(snapshot.odyssey.extended_duration_minutes, 80)
+	assert_eq(snapshot.odyssey.rooms.size(), 15)
+	var run := load(ODYSSEY) as RunData
+	var exported_paths: Array = []
+	var unique_paths := {}
+	for index in snapshot.odyssey.rooms.size():
+		var room: Dictionary = snapshot.odyssey.rooms[index]
+		var path := String(room.resource_path)
+		exported_paths.append(path)
+		assert_false(unique_paths.has(path), "Each authored arena is exported once")
+		unique_paths[path] = true
+		assert_eq(room.index, index + 1)
+		assert_eq(room.encounter, run.rooms[index].encounter_definition.resource_path)
+		assert_eq(room.flow_encounter_count, 1)
+		assert_true(path.begins_with("res://data/rooms/odyssey/" if index < 5 else "res://data/rooms/catabase_expansion/"))
+	assert_eq(exported_paths, Array(ExpeditionMapCatalog.ROOM_PATHS), "Export preserves the canonical map pool and ordering")
+
+
 func test_snapshot_matches_odyssey_rooms() -> void:
 	assert_eq(snapshot.odyssey.seed, 2401)
-	assert_eq(snapshot.odyssey.target_duration_minutes, 18)
-	assert_eq(snapshot.odyssey.extended_duration_minutes, 25)
-	assert_eq(snapshot.odyssey.rooms.size(), 5)
 	assert_true(snapshot.odyssey.rooms.all(func(room): return room.flow_encounter_count == 1))
 	assert_eq(snapshot.odyssey.starting_inventory, [
 		{"item_id": "minor_healing_potion", "quantity": 2},

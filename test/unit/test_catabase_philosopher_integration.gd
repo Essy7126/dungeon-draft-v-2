@@ -15,20 +15,22 @@ class ClassificationBattle:
 		pass
 
 
-func test_campaign_introduces_the_canonical_mage_in_lethe_without_adding_an_enemy() -> void:
-	assert_eq(RUN.rooms.size(), 5)
+func test_historical_rooms_introduce_the_canonical_mage_in_lethe_without_adding_an_enemy() -> void:
+	assert_eq(RUN.rooms.size(), 15)
 	assert_eq(RUN.content_profile.hero_profiles.size(), 1)
 	assert_eq(RUN.content_profile.hero_profiles[0].base_unit_data.unit_id, &"achilles")
 	var expected_counts := [1, 3, 2, 3, 3]
-	for index in range(RUN.rooms.size()):
-		var room := RUN.rooms[index]
-		var encounter := room.encounter_definition
+	var historical_rooms := RUN.rooms.slice(0, expected_counts.size())
+	assert_eq(historical_rooms.size(), 5)
+	for index in range(historical_rooms.size()):
+		var room: RoomData = historical_rooms[index]
+		var encounter: EncounterDefinition = room.encounter_definition
 		assert_true(encounter.is_valid(), str(encounter.validation_errors()))
-		var roster := encounter.expanded_roster()
+		var roster: Array[UnitData] = encounter.expanded_roster()
 		assert_eq(roster.size(), expected_counts[index], room.room_name)
 		assert_eq(room.enemies, roster, "fallback and encounter must name the same units in order")
 		assert_eq(encounter.living_enemy_cap, expected_counts[index], room.room_name)
-		assert_eq(roster.has(MAGE), index == 3, "the mage is introduced only in room IV")
+		assert_eq(roster.has(MAGE), index == 3, "the historical mage encounter remains room IV")
 	var lethe := RUN.rooms[3]
 	assert_eq(lethe.encounter_definition.expanded_roster().map(
 		func(unit: UnitData): return unit.unit_id),

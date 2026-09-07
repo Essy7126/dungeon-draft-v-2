@@ -1,6 +1,8 @@
 extends GutTest
 
 const CATABASE_RUN: RunData = preload("res://data/runs/odyssey.tres")
+const MAP_CATALOG = preload("res://core/expedition/expedition_map_catalog.gd")
+const ROUTE_CATALOG = preload("res://core/expedition/expedition_route_catalog.gd")
 const EXPECTED_MIDDLE_ROSTER: Array[StringName] = [
 	&"odyssey_skirmisher",
 	&"odyssey_skirmisher",
@@ -12,8 +14,10 @@ const EXPECTED_JUDGMENT_ROSTER: Array[StringName] = [
 ]
 
 
-func test_catabase_keeps_five_distinct_ordered_arenas() -> void:
-	assert_eq(CATABASE_RUN.rooms.size(), 5)
+func test_catabase_pool_keeps_fifteen_distinct_catalogued_arenas() -> void:
+	assert_eq(MAP_CATALOG.ROOM_COUNT, 15)
+	assert_eq(CATABASE_RUN.rooms.size(), MAP_CATALOG.ROOM_COUNT)
+	assert_eq(MAP_CATALOG.ROOM_PATHS.size(), MAP_CATALOG.ROOM_COUNT)
 	assert_eq(
 		CATABASE_RUN.rooms[1].room_name,
 		"Catabase II — La Porte des Cendres",
@@ -24,14 +28,20 @@ func test_catabase_keeps_five_distinct_ordered_arenas() -> void:
 	)
 	var names := {}
 	var map_ids := {}
-	for room in CATABASE_RUN.rooms:
+	for index in range(CATABASE_RUN.rooms.size()):
+		var room := CATABASE_RUN.rooms[index]
 		assert_not_null(room)
+		if room == null:
+			continue
+		if index < MAP_CATALOG.ROOM_PATHS.size():
+			assert_eq(room.resource_path, MAP_CATALOG.ROOM_PATHS[index], "the pool order matches the route's map catalogue")
 		assert_not_null(room.grid_layout, room.resource_path)
 		assert_not_null(room.painted_map_visual_data, room.resource_path)
 		names[room.room_name] = true
-		map_ids[room.painted_map_visual_data.map_id] = true
-	assert_eq(names.size(), 5, "chaque salle garde une identité propre")
-	assert_eq(map_ids.size(), 5, "chaque salle garde une arène visuelle propre")
+		if room.painted_map_visual_data != null:
+			map_ids[room.painted_map_visual_data.map_id] = true
+	assert_eq(names.size(), 15, "chaque salle garde une identité propre")
+	assert_eq(map_ids.size(), 15, "chaque salle garde une arène visuelle propre")
 
 
 func test_middle_room_is_the_melee_formation_escalation() -> void:
@@ -45,7 +55,7 @@ func test_middle_room_is_the_melee_formation_escalation() -> void:
 	assert_eq(_room_enemy_ids(room), EXPECTED_MIDDLE_ROSTER)
 
 
-func test_judgment_precedes_the_boss_with_champion_and_spectre() -> void:
+func test_historical_judgment_precedes_the_boss_with_champion_and_spectre() -> void:
 	var judgment := CATABASE_RUN.rooms[2]
 	assert_eq(_roster_ids(judgment), EXPECTED_JUDGMENT_ROSTER)
 	assert_eq(_room_enemy_ids(judgment), EXPECTED_JUDGMENT_ROSTER)
@@ -70,9 +80,9 @@ func test_judgment_precedes_the_boss_with_champion_and_spectre() -> void:
 
 
 
-func test_encounter_durability_accounts_for_paris_two_form_boss() -> void:
+func test_historical_encounter_durability_accounts_for_paris_two_form_boss() -> void:
 	var durability: Array[int] = []
-	for room in CATABASE_RUN.rooms:
+	for room in CATABASE_RUN.rooms.slice(0, 5):
 		durability.append(_total_roster_hp(room))
 	assert_lt(durability[0], durability[1], str(durability))
 	assert_lt(durability[1], durability[2], str(durability))
@@ -117,7 +127,7 @@ func test_later_room_formations_are_valid_for_twenty_seeds() -> void:
 					assert_lte(cell.y, 5, "The black temple's enemies deploy opposite the heroes in the north of the nave")
 
 
-func test_lethe_and_final_boss_follow_the_silent_judgment() -> void:
+func test_historical_lethe_and_temple_follow_the_silent_judgment() -> void:
 	var cases := [
 		[3, "Catabase IV — Le Gué du Léthé", &"catabase_room_04", 160,
 			[&"philosopher_mage", &"spectre_greatsword", &"odyssey_skirmisher"]],
@@ -173,20 +183,43 @@ func _total_roster_hp(room: RoomData) -> int:
 	return result
 
 
-func test_paris_is_the_unique_final_boss_of_the_five_room_run() -> void:
+func test_paris_is_the_unique_route_boss_at_depth_twenty() -> void:
 	var paris := load("res://data/units/enemies/catabase_shadow_paris.tres") as UnitData
+	# Preserve the original five-room roster contract independently of the
+	# larger arena pool, whose indices are not the expedition's step order.
+	var historical_rooms := CATABASE_RUN.rooms.slice(0, 5)
 	var occurrences := 0
-	for index in range(CATABASE_RUN.rooms.size()):
-		var room := CATABASE_RUN.rooms[index]
+	for index in range(historical_rooms.size()):
+		var room: RoomData = historical_rooms[index]
 		for unit_data in room.encounter_definition.expanded_roster():
 			if unit_data.get_effective_unit_id() == &"catabase_shadow_paris":
 				occurrences += 1
-				assert_eq(index, CATABASE_RUN.rooms.size() - 1)
+				assert_eq(index, 4)
 				assert_same(unit_data, paris, "The final boss uses the canonical Paris resource.")
-		if index < CATABASE_RUN.rooms.size() - 1:
+		if index < 4:
 			assert_false(_room_enemy_ids(room).has(&"catabase_shadow_paris"))
 	assert_eq(occurrences, 1)
-	var last := CATABASE_RUN.rooms.back() as ArenaDefinition
+	var bosses: Array[Dictionary] = []
+	assert_eq(ROUTE_CATALOG.DEPTH_COUNT, 20)
+	for node in ROUTE_CATALOG.create_nodes(CATABASE_RUN.default_seed):
+		if str(node.kind) == "boss":
+			bosses.append(node)
+		else:
+			assert_lt(int(node.depth), ROUTE_CATALOG.DEPTH_COUNT, "the final step is reserved for the boss")
+	assert_eq(bosses.size(), 1)
+	if bosses.size() != 1:
+		return
+	var final_node := bosses[0]
+	assert_eq(int(final_node.depth), ROUTE_CATALOG.DEPTH_COUNT)
+	assert_true(final_node.edges.is_empty())
+	assert_eq(str(final_node.reward), "victory")
+	var final_room_index := int(final_node.room_index)
+	assert_eq(final_room_index, int(ROUTE_CATALOG.MAP_BY_DEPTH[ROUTE_CATALOG.DEPTH_COUNT]))
+	assert_true(final_room_index in range(CATABASE_RUN.rooms.size()))
+	if final_room_index not in range(CATABASE_RUN.rooms.size()):
+		return
+	var last := CATABASE_RUN.rooms[final_room_index] as ArenaDefinition
+	assert_same(last, MAP_CATALOG.get_room(final_room_index))
 	assert_eq(last.arena_id, &"black_oath_temple_v1")
 	assert_eq(last.encounter_definition.encounter_id, &"catabase_room_05")
 	assert_eq(last.encounter_definition.room_index, 5)

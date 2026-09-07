@@ -5,22 +5,50 @@ const PARIS: UnitData = preload("res://data/units/enemies/catabase_shadow_paris.
 const SOURCE_ARENA: ArenaDefinition = preload("res://data/arenas/silent_judgment_courtyard_v1/arena.tres")
 const SOURCE_FINAL: ArenaDefinition = preload("res://data/arenas/black_oath_temple_v1/arena.tres")
 const CASES := preload("res://tools/paris_sprite_validation/cases.gd")
+const ROUTE_CATALOG = preload("res://core/expedition/expedition_route_catalog.gd")
 
 
 func test_normal_catabase_selection_reaches_the_canonical_paris_room_without_extra_card() -> void:
 	var entries := CharacterSelectionCatalog.get_entries()
-	var selected: Dictionary = {}
+	var catabase_entries: Array[Dictionary] = []
 	for entry: Dictionary in entries:
-		if entry.get("run") == RUN:
-			assert_true(selected.is_empty(), "one canonical solo Catabase entry")
-			selected = entry
-	assert_false(selected.is_empty(), "Paris is accessible from the normal Catabase menu")
-	assert_eq(selected.get("id"), &"achilles")
-	assert_eq(RUN.rooms.size(), 5)
-	var room := RUN.rooms[4] as ArenaDefinition
+		var selected_run := entry.get("run") as RunData
+		var hero := entry.get("unit") as UnitData
+		assert_not_null(hero)
+		if hero != null:
+			assert_ne(hero.get_effective_unit_id(), PARIS.get_effective_unit_id(), "Paris is a boss, not an extra character-selection card")
+		if selected_run != null and selected_run.catabase_route_enabled:
+			catabase_entries.append(entry)
+			assert_not_null(hero)
+			if hero != null:
+				assert_eq(hero.get_effective_unit_id(), &"achilles", "appearances retain canonical Achilles gameplay")
+	assert_false(catabase_entries.is_empty(), "Paris is accessible from the normal Catabase menu")
+	assert_eq(RUN.rooms.size(), 15)
+	assert_eq(ROUTE_CATALOG.DEPTH_COUNT, 20)
+	var final_nodes: Array[Dictionary] = []
+	for node in ROUTE_CATALOG.create_nodes(RUN.default_seed):
+		if int(node.depth) == ROUTE_CATALOG.DEPTH_COUNT:
+			final_nodes.append(node)
+	assert_eq(final_nodes.size(), 1)
+	if final_nodes.size() != 1:
+		return
+	var final_node := final_nodes[0]
+	assert_eq(str(final_node.kind), "boss")
+	assert_true(final_node.edges.is_empty())
+	var final_room_index := int(final_node.room_index)
+	assert_eq(final_room_index, int(ROUTE_CATALOG.MAP_BY_DEPTH[ROUTE_CATALOG.DEPTH_COUNT]))
+	assert_true(final_room_index in range(RUN.rooms.size()))
+	if final_room_index not in range(RUN.rooms.size()):
+		return
+	var room := RUN.rooms[final_room_index] as ArenaDefinition
 	assert_not_null(room)
 	if room == null:
 		return
+	for entry: Dictionary in catabase_entries:
+		var selected_run := entry["run"] as RunData
+		assert_eq(selected_run.rooms.size(), 15)
+		if final_room_index < selected_run.rooms.size():
+			assert_same(selected_run.rooms[final_room_index], room, "every Catabase appearance reaches the same authored final arena")
 	assert_not_null(room.grid_layout)
 	var final_visual: PaintedMapVisualData = room.painted_map_visual_data
 	assert_not_null(final_visual)
@@ -34,7 +62,7 @@ func test_normal_catabase_selection_reaches_the_canonical_paris_room_without_ext
 	assert_eq(room.resource_path, "res://data/rooms/odyssey/room_05.tres")
 	assert_eq(room.encounter_definition.room_index, 5)
 	for index in range(4):
-		assert_false(RUN.rooms[index].enemies.has(PARIS), "Paris is exclusive to the final room")
+		assert_false(RUN.rooms[index].enemies.has(PARIS), "Paris is exclusive to the final arena within the five historical rooms")
 		assert_false(RUN.rooms[index].encounter_definition.expanded_roster().has(PARIS))
 	assert_false(SOURCE_ARENA.encounter_definition.expanded_roster().has(PARIS))
 	assert_eq(PARIS.visual_scene.resource_path, "res://characters/paris/ParisIsoUnitView.tscn")
