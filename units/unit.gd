@@ -146,6 +146,7 @@ var sprite_scale: float = 3.0
 var idle_animation: String = "default"
 var visual_scene: PackedScene = null
 var preview_visual_scene: PackedScene = null
+var portrait_texture_override: Texture2D = null
 
 # --- Sorts ---
 var basic_attack_enabled: bool = true
@@ -237,6 +238,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.idle_animation = data.idle_animation
 	u.visual_scene = data.visual_scene
 	u.preview_visual_scene = data.preview_visual_scene
+	u.portrait_texture_override = data.portrait_texture_override
 	u.basic_attack_enabled = data.basic_attack_enabled
 	u.ai_behavior = data.ai_behavior
 	u.combat_style = data.combat_style

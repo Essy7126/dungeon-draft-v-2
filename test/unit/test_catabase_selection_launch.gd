@@ -2,7 +2,6 @@ extends GutTest
 ## Actual run loading is intentional: missing room dependencies must fail this test.
 
 const SELECTION = preload("res://ui/selection/CharacterSelectionScreen.tscn")
-const MANAGER = preload("res://core/game_manager.gd")
 const CATABASE := "res://data/runs/odyssey.tres"
 const TRIAL := "res://data/runs/philosopher_trial.tres"
 const SAVE := "user://inventory_equipment_v1.json"
@@ -10,6 +9,16 @@ var _screen: CharacterSelectionScreen
 var _manager
 var _global_before: Dictionary
 var _save_before: String
+
+
+class SelectionManager:
+	extends "res://core/game_manager.gd"
+	var requested_battles := 0
+	func start_next_battle() -> void:
+		_room_outcome_resolved = false
+		requested_battles += 1
+	func save_expedition(_path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
+		return not get_expedition_snapshot().is_empty()
 
 
 func before_each() -> void:
@@ -41,8 +50,8 @@ func test_catabase_loads_its_real_rooms_and_has_its_own_achilles_selection() -> 
 		assert_not_null(room.battle_scene)
 		assert_not_null(room.get_encounter_for_wave(0))
 	var entries := _screen.get_entries()
-	assert_eq(entries.size(), 5, "Catabase, the trio, and the separate trial must all remain browsable")
-	assert_eq(_entry_ids(entries), [&"achilles", &"elf", &"mage", &"warrior", &"achilles"])
+	assert_eq(entries.size(), 6, "Both Catabase appearances, the trio, and the separate trial remain browsable")
+	assert_eq(_entry_ids(entries), [&"achilles", &"achilles_painted_g", &"elf", &"mage", &"warrior", &"achilles"])
 	assert_eq(_screen.get_selected_entry().get("id"), &"achilles")
 	assert_same(_screen.get_selected_entry().get("run"), run)
 	var trial_entries := entries.filter(func(entry): return entry["run"].resource_path == TRIAL)
@@ -58,17 +67,18 @@ func test_catabase_selection_starts_real_champion_manager_at_first_room_without_
 	if run == null:
 		return
 	assert_same(_screen.get_selected_entry().get("run"), run)
-	_manager = MANAGER.new()
+	_manager = SelectionManager.new()
 	_manager._ready()
 	watch_signals(_manager)
 	assert_true(_screen.prepare_adventure(_manager))
 	assert_same(_manager.peek_next_run_data(), run)
 	assert_true(_manager.start_configured_run())
-	assert_same(_manager.get_active_run_data(), run)
+	assert_true(ExpeditionRunFactory.is_expedition(_manager.get_active_run_data()))
+	assert_eq(_manager.expedition.route.current_node_id, "d01_0")
 	assert_null(_manager.peek_next_run_data(), "Configuration is consumed exactly once")
 	assert_eq(_manager.current_room_index, 0)
-	assert_same(_manager.get_current_room(), run.rooms[0])
-	assert_signal_emitted_with_parameters(_manager, "scene_change_requested", ["res://ui/Transitionsalle.tscn"])
+	assert_same(_manager.get_current_room().grid_layout, run.rooms[0].grid_layout)
+	assert_eq(_manager.requested_battles, 1, "Catabase requests its opening battle directly")
 	var states: Array = _manager.get_ordered_character_states()
 	assert_eq(states.size(), 1)
 	if states.is_empty():

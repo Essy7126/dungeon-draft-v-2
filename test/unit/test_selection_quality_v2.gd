@@ -121,7 +121,7 @@ func test_zoom_is_bounded_and_changes_the_actual_sprite_scale() -> void:
 
 func test_selecting_another_hero_or_adventure_restores_one_hundred_percent_zoom() -> void:
 	screen._change_zoom(0.1)
-	assert_true(screen.select_character(2))
+	assert_true(screen.select_character(3))
 	assert_eq(screen.get_selected_entry().get("id"), &"mage")
 	assert_false(screen.get_preview().is_using_sprite_preview())
 	assert_almost_eq(screen._zoom, 1.0, 0.0001)
@@ -137,29 +137,33 @@ func test_selecting_another_hero_or_adventure_restores_one_hundred_percent_zoom(
 
 
 func test_roster_folio_preview_and_primary_action_fit_common_screen_sizes() -> void:
-	assert_eq(screen.get_entries().size(), 5)
-	assert_eq(screen._roster_buttons.size(), 5)
+	assert_eq(screen.get_entries().size(), 6)
+	assert_eq(screen._roster_buttons.size(), 6)
 	var folio := screen.find_child("CharacterFolio", true, false) as Control
 	var note := screen.find_child("RosterNote", true, false) as Control
+	var roster := screen.find_child("HeroRosterScroll", true, false) as ScrollContainer
 	assert_not_null(folio)
 	assert_not_null(note)
-	if folio == null or note == null:
+	assert_not_null(roster)
+	if folio == null or note == null or roster == null:
 		return
 	for viewport_size in [Vector2(1280, 720), Vector2(1440, 900), Vector2(1920, 1080)]:
 		screen.size = viewport_size
 		await wait_process_frames(3)
 		for character_index in range(screen.get_entries().size()):
 			assert_true(screen.select_character(character_index))
+			var selected_card: Button = screen._roster_buttons[character_index]
+			selected_card.grab_focus()
 			screen.show_details(0)
 			await wait_process_frames(2)
 			var context := "%s, entry %d" % [viewport_size, character_index]
-			var controls: Array[Control] = [folio, note, screen.get_preview(), screen.start_button, screen._details]
-			controls.append_array(screen._roster_buttons)
+			var controls: Array[Control] = [folio, note, roster, selected_card, screen.get_preview(), screen.start_button, screen._details]
 			controls.append_array(screen._spell_buttons)
 			controls.append_array(screen._pose_buttons)
 			controls.append_array(screen._tab_buttons)
 			for control in controls:
 				_assert_control_fits(control, context)
+			assert_true(roster.get_global_rect().grow(1.0).encloses(selected_card.get_global_rect()), "Every focused hero remains reachable in the roster: " + context)
 			assert_false(folio.get_global_rect().intersects(screen.start_button.get_global_rect()), "Folio must not cover the primary action: " + context)
 			screen.show_details(1)
 			await wait_process_frames(2)
@@ -205,32 +209,36 @@ func test_all_technique_descriptions_use_readable_glossary_terms_instead_of_toke
 				assert_true(displayed.contains("Lave"), "Boule de feu must display the player-facing glossary term Lave")
 
 
-func test_roster_displays_four_distinct_illustrated_portraits_and_reuses_achilles() -> void:
+func test_roster_displays_the_painted_preview_and_preserves_classic_illustrated_portraits() -> void:
 	var entries := screen.get_entries()
-	assert_eq(entries.size(), 5)
+	assert_eq(entries.size(), 6)
 	var portraits: Array[Texture2D] = []
 	var unique_portraits: Dictionary = {}
 	var atlas_regions: Dictionary = {}
 	for index in range(entries.size()):
 		var unit: UnitData = entries[index].get("unit")
-		var portrait := screen._portrait_for(unit)
+		var painted := bool(entries[index].get("use_preview_portrait", false))
+		var portrait := screen._portrait_for(unit, painted)
 		assert_not_null(portrait, "Every visible hero must have an illustrated portrait")
 		if portrait == null:
 			return
-		assert_true(portrait.resource_path.contains("illustrated_v2"), "Roster should use the new selection artwork")
+		if painted:
+			assert_same(portrait, unit.portrait_texture_override, "Painted Achille card uses his cropped portrait")
+		else:
+			assert_true(portrait.resource_path.contains("illustrated_v2"), "Classic heroes keep their selection artwork")
 		var rendered_portraits := screen._roster_buttons[index].find_children("*", "TextureRect", true, false)
 		assert_eq(rendered_portraits.size(), 1, "Each roster card renders one portrait")
 		if not rendered_portraits.is_empty():
 			assert_same((rendered_portraits[0] as TextureRect).texture, portrait)
 		portraits.append(portrait)
-		if index < 4:
+		if index < entries.size() - 1:
 			unique_portraits[portrait.get_instance_id()] = true
 			if portrait is AtlasTexture:
 				var atlas_key := "%d:%s" % [portrait.atlas.get_instance_id(), portrait.region]
 				assert_false(atlas_regions.has(atlas_key), "Different heroes must not share the same atlas crop")
 				atlas_regions[atlas_key] = true
-	assert_eq(unique_portraits.size(), 4)
-	assert_same(portraits[0], portraits[4], "Achille keeps his portrait across Catabase and the philosopher trial")
+	assert_eq(unique_portraits.size(), 5)
+	assert_same(portraits[0], portraits[5], "Classic Achille keeps his portrait across Catabase and the philosopher trial")
 
 
 func _assert_control_fits(control: Control, context: String) -> void:

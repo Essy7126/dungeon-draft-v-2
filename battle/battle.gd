@@ -2212,6 +2212,10 @@ func _spell_cast_rejection_reason(
 			return "Une autre capacité différée est déjà préparée."
 		&"hp_condition":
 			return "La condition de points de vie de cette capacité n'est pas remplie."
+		&"sacrifice_non_lethal":
+			return "PV insuffisants : le sacrifice doit vous laisser au moins 1 PV."
+		&"healing_reserve_empty":
+			return "La réserve commune de soin de ce combat est épuisée."
 		&"team_limit", &"required_unit_present":
 			return "La limite de créatures de cette capacité est déjà atteinte."
 		&"movement_required":

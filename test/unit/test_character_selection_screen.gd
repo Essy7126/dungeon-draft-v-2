@@ -33,7 +33,7 @@ func before_each() -> void:
 func test_catalog_exposes_real_run_stats_and_resolved_spell_kits() -> void:
 	var entries := screen.get_entries()
 	assert_eq(entries.map(func(entry): return entry["id"]), [
-		&"achilles", &"elf", &"mage", &"warrior", &"achilles",
+		&"achilles", &"achilles_painted_g", &"elf", &"mage", &"warrior", &"achilles",
 	])
 	for entry in entries:
 		var unit := entry["unit"] as UnitData
@@ -63,7 +63,7 @@ func test_character_selection_refreshes_stats_kit_and_preview_together() -> void
 	_assert_visible_stats(screen.get_selected_entry()["unit"] as UnitData)
 	assert_true(screen.select_spell(3))
 	assert_eq(screen.selected_spell_index, 3)
-	assert_true(screen.select_character(2))
+	assert_true(screen.select_character(3))
 	assert_eq(screen.get_selected_entry()["id"], &"mage")
 	assert_eq(screen.selected_spell_index, 0)
 	var mage := screen.get_selected_entry()["unit"] as UnitData
@@ -131,7 +131,7 @@ func test_preparing_achilles_configures_the_solo_run_at_room_zero() -> void:
 
 
 func test_browsing_a_trio_member_preserves_the_complete_playable_party() -> void:
-	assert_true(screen.select_character(2))
+	assert_true(screen.select_character(3))
 	var selected := screen.get_selected_entry()
 	assert_eq(selected["id"], &"mage")
 	assert_eq(selected["run"], TRIO_RUN)
@@ -242,9 +242,46 @@ func test_spell_tree_modal_prevents_duplicate_opening_and_underlying_navigation(
 	assert_eq(screen.selected_spell_index, 2)
 	spell_tree.close_screen()
 	await wait_process_frames(2)
-	assert_true(screen.select_character(1))
+	assert_true(screen.select_character(2))
 	assert_true(screen.open_spell_tree())
 	assert_eq(screen.get_spell_tree().character_id, &"elf")
+
+
+func test_painted_achilles_has_its_own_preview_and_queues_the_same_catabase_gameplay() -> void:
+	assert_true(screen.select_character(1))
+	var selected := screen.get_selected_entry()
+	var unit: UnitData = selected.unit
+	assert_eq(selected.id, &"achilles_painted_g")
+	assert_eq(selected.display_name, "Achille peint")
+	assert_eq(unit.get_effective_unit_id(), &"achilles")
+	assert_eq(unit.preview_sprite_frames_path, RunHeroVisualVariants.PAINTED_FRAMES_PATH)
+	assert_eq(screen.get_preview().get_sprite_instance().sprite_frames, unit.preview_sprite_frames)
+	_assert_visible_stats(unit)
+	assert_eq(screen.start_button.text, "INCARNER ACHILLE   ›")
+	for direction in [&"S", &"W", &"N", &"E"]:
+		screen.rotate_preview(1)
+		assert_eq(screen.get_preview().get_sprite_instance().animation, StringName("idle_%s" % direction))
+	var manager := AdventureManager.new()
+	add_child_autofree(manager)
+	assert_true(screen.prepare_adventure(manager))
+	assert_eq(manager.configured_run.hero_visual_variants, {"achilles": "painted_g"})
+	assert_eq(manager.configured_run.content_profile, CATABASE_RUN.content_profile)
+	assert_eq(manager.configured_run.rooms, CATABASE_RUN.rooms)
+	assert_true(CATABASE_RUN.hero_visual_variants.is_empty())
+
+
+func test_returning_from_painted_selection_does_not_mutate_the_classic_run() -> void:
+	assert_true(screen.select_character(1))
+	screen.request_back(false)
+	assert_false(screen.start_button.disabled)
+	assert_true(CATABASE_RUN.hero_visual_variants.is_empty())
+	assert_true(screen.select_character(0))
+	assert_eq(screen.get_selected_entry().display_name, "Achille classique")
+	assert_ne(screen.get_preview().unit_data.preview_sprite_frames_path, RunHeroVisualVariants.PAINTED_FRAMES_PATH)
+	var manager := AdventureManager.new()
+	add_child_autofree(manager)
+	assert_true(screen.prepare_adventure(manager))
+	assert_same(manager.configured_run, CATABASE_RUN)
 
 
 func test_leaving_selection_disposes_an_open_spell_tree_preview() -> void:

@@ -38,6 +38,11 @@ func applies_to(spell) -> bool:
 func get_range_bonus(_caster, _spell) -> int:
 	return 0
 
+
+## Shared by actual healing and previews. Neutral for existing modifiers.
+func get_heal_amount(_caster, _spell, base_amount: int) -> int:
+	return base_amount
+
 # Remplace la portée minimale d'un sort avant la validation de cible. Une
 # valeur négative signifie « aucun override ». Lorsque plusieurs sources sont
 # actives, SpellCaster retient la contrainte la plus forte pour que l'ordre des

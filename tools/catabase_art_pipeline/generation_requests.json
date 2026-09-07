@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-09-07",
+  "provider": "Higgsfield",
+  "requests": [
+    {
+      "index": 1,
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "e4a45c02-674a-4f7d-b4b2-9ba80ec6448d"
+          }
+        ],
+        "prompt": "Create a production sprite atlas of EXACTLY SIXTEEN distinct fantasy tactical RPG ability icons, in an exact 4 by 4 square grid with equal cells. Use the supplied reference as the strict painting/material/style guide. Each icon is isolated in the center of its own cell, fills 68 percent of that cell, no overlaps, generous equal empty gutters. Background everywhere pure uniform blue-black #101824, no grid lines, no borders, no writing, no letters, no digits, no captions, no watermark. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm aged brass and teal accents, fine colored outlines, graduated painterly shadows, NO heavy black comic outlines. Greek mythic Achilles ability objects and action glyphs; rich materials and carved chunky forms as in reference, no modern items.\nRead order, left to right then top to bottom, EXACTLY:\nRow 1: (1) a bronze spear tip making a bright compact ivory gold impact burst, (2) a bronze spear rushing diagonally with three long turquoise speed ribbons, (3) one long elegant bronze arrow with ivory fletching and a sharply focused turquoise glint, (4) a solid round aged bronze shield facing viewer, teal inset rim, ivory central boss.\nRow 2: (5) a hooked bronze spear point curling around a teal energy tether, (6) a broad bronze sweeping blade encircled by a single strong crescent cutting arc, (7) a bronze sacrificial dagger crossed by one luminous ruby fissure, (8) a curved gold harvesting blade catching three jade life motes flowing upward.\nRow 3: (9) a straight bronze arrow bursting outward through a compact fan of turquoise shards to depict pushback, (10) a carved gold eye with a ruby pupil over a small bronze target ring, (11) two offset engraved bronze sandal footprints with a short teal curving motion trail, (12) a curved bronze counterstrike blade making a reverse S sweep around a small silver shield.\nRow 4: (13) a bronze shield seen three-quarter side, projecting a clear ivory lateral impact flare, (14) a heavy bronze shield anchored on two chunky slate stones with jade steady light, (15) a luminous cyan breath spiral rising from a small brass laurel cup, (16) one bronze sandal footprint above a curved luminous jade stitch trail for walking recovery.\nEach of the 16 symbols must look different and remain bold and clear at 48 pixels. No repeated weapons replacing the requested symbols. This is inventory quality object illustration with the premium hand-painted volume of the provided original nine icons."
+      }
+    },
+    {
+      "index": 2,
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "3:2",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "2bf07a34-7aa1-4c05-9c90-969d0bf3fb14"
+          }
+        ],
+        "prompt": "Create a finished game environment illustration for the clickable rest destination \"Le camp des compagnons\" in a Greek mythic underworld tactical RPG. Match the supplied submerged-library reference EXTREMELY closely in painting style, large clean readable chunky stone forms, refined hand-painted 3D appearance, subtle colored contours, graduated shadow and polished selective highlights. Blue-black petrol slate, warm honey candle/fire light, aged oxidized brass, restrained olive moss, subtle cyan magic. No flat cel shading, no thick black cartoon contours, no photorealism.\nHigh three-quarter isometric view of an intimate ancient stone courtyard suspended just above very dark teal still water, with a broken classical portico, an old twisted olive tree and red-brown linen canopy. Companions have left beautiful equipment and offerings, but show NO characters so the player's hero can be imagined visiting. Strong spatial readability and a walkable stone path linking four clear service areas.\nComposition is a wide stage, leaving about 8 percent unimportant outer margin so it can be cropped to 16:10. Service object anchors measured as percentages of full image width,height: near (22%,48%) a beautifully arranged bronze repair-and-trade bench under a linen awning, with sword, amphora, small closed chest and brass scales; near (50%,72%) a low circular brazier with glowing amber coals, two simple resting seats and carefully piled travel blankets; near (79%,43%) a large ancient inscribed memory stele surrounded by turquoise votive lamps and laurel; near (78%,79%) a low round offering basin with a floating cyan oath crystal for discovery. These four anchors must be clearly separated and inviting, ample dark negative space below each for interface labels added later. No readable writing, no UI, no buttons, no labels, no text. Fine decorative carvings are abstract. Architectural background mostly upper quarter; important foreground objects are fully inside frame. Soft dark vignette only at outside edges. The environment should feel as lovingly painted, atmospheric and materially precise as the approved submerged library reference, while being its own warm sheltered companion camp."
+      }
+    }
+  ],
+  "jobs": [
+    {
+      "index": 1,
+      "job_id": "10757605-4fba-4fe8-8af9-ac4c98ee28b0",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_142922_10757605-4fba-4fe8-8af9-ac4c98ee28b0.png"
+    },
+    {
+      "index": 2,
+      "job_id": "71aaec1c-eabf-45a3-a23e-327eedc9cfe9",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_142922_71aaec1c-eabf-45a3-a23e-327eedc9cfe9.png"
+    }
+  ]
+}

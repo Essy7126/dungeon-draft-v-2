@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RunData" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="RunData" load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
@@ -12,12 +12,24 @@
 [ext_resource type="Resource" path="res://data/rooms/odyssey/room_05.tres" id="10_room_05"]
 [ext_resource type="Resource" path="res://data/characters/catabase/attack_classifications.tres" id="11_actions"]
 
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_06_porteurs.tres" id="12_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_07_citerne.tres" id="13_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_08_braises.tres" id="14_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_09_peristyle.tres" id="15_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_10_digue.tres" id="16_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_11_mesures.tres" id="17_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_12_necropole.tres" id="18_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_13_offrandes.tres" id="19_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_14_escalier.tres" id="20_expansion"]
+[ext_resource type="Resource" path="res://data/rooms/catabase_expansion/room_15_moirai.tres" id="21_expansion"]
+
 [resource]
 script = ExtResource("1_run")
 run_name = "Catabase"
+catabase_route_enabled = true
 default_seed = 2401
-target_duration_minutes = 18
-extended_duration_minutes = 25
+target_duration_minutes = 55
+extended_duration_minutes = 80
 room_flow_mode = 0
 maximum_waves_per_room = 1
 content_profile = ExtResource("3_content")
@@ -26,4 +38,4 @@ action_classification_catalog = ExtResource("11_actions")
 intro_sequence = ExtResource("8_intro")
 hub_room_selection_enabled = false
 hub_forced_start_room_index = 0
-rooms = Array[ExtResource("2_room")]([ExtResource("5_room_01"), ExtResource("6_room_02"), ExtResource("7_room_03"), ExtResource("9_room_04"), ExtResource("10_room_05")])
+rooms = Array[ExtResource("2_room")]([ExtResource("5_room_01"), ExtResource("6_room_02"), ExtResource("7_room_03"), ExtResource("9_room_04"), ExtResource("10_room_05"), ExtResource("12_expansion"), ExtResource("13_expansion"), ExtResource("14_expansion"), ExtResource("15_expansion"), ExtResource("16_expansion"), ExtResource("17_expansion"), ExtResource("18_expansion"), ExtResource("19_expansion"), ExtResource("20_expansion"), ExtResource("21_expansion")])

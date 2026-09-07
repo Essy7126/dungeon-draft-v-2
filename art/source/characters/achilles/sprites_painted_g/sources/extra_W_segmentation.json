@@ -1,0 +1,356 @@
+{
+  "enabled": true,
+  "coreAlpha": 32,
+  "expectedBodies": 16,
+  "componentCount": 18,
+  "bodyIds": [
+    1,
+    4,
+    3,
+    2,
+    12,
+    11,
+    13,
+    14,
+    15,
+    9,
+    5,
+    6,
+    7,
+    16,
+    17,
+    18
+  ],
+  "components": [
+    {
+      "id": 1,
+      "corePixels": 57111,
+      "bbox": [
+        49,
+        43,
+        523,
+        486
+      ],
+      "centroid": [
+        313.38703577244314,
+        262.4080124669503
+      ],
+      "owner": 0,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 4,
+      "corePixels": 55379,
+      "bbox": [
+        1530,
+        70,
+        2004,
+        495
+      ],
+      "centroid": [
+        1808.0421459397967,
+        281.94394987269544
+      ],
+      "owner": 3,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 3,
+      "corePixels": 54548,
+      "bbox": [
+        977,
+        62,
+        1486,
+        488
+      ],
+      "centroid": [
+        1291.7303842487352,
+        266.93675295152894
+      ],
+      "owner": 2,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 2,
+      "corePixels": 53440,
+      "bbox": [
+        594,
+        54,
+        922,
+        486
+      ],
+      "centroid": [
+        750.0918226047904,
+        267.5640344311377
+      ],
+      "owner": 1,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 12,
+      "corePixels": 51580,
+      "bbox": [
+        50,
+        1083,
+        488,
+        1493
+      ],
+      "centroid": [
+        307.0156068243505,
+        1284.5393175649476
+      ],
+      "owner": 8,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 11,
+      "corePixels": 51547,
+      "bbox": [
+        1081,
+        1066,
+        1415,
+        1481
+      ],
+      "centroid": [
+        1269.9393757153666,
+        1276.4214794265429
+      ],
+      "owner": 10,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 13,
+      "corePixels": 50858,
+      "bbox": [
+        1524,
+        1095,
+        1960,
+        1501
+      ],
+      "centroid": [
+        1779.1505171261158,
+        1294.587380549766
+      ],
+      "owner": 11,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 14,
+      "corePixels": 48960,
+      "bbox": [
+        593,
+        1097,
+        978,
+        1483
+      ],
+      "centroid": [
+        810.3862949346405,
+        1279.1564338235294
+      ],
+      "owner": 9,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 15,
+      "corePixels": 48715,
+      "bbox": [
+        102,
+        1574,
+        415,
+        1965
+      ],
+      "centroid": [
+        259.4093605665606,
+        1778.0816791542645
+      ],
+      "owner": 12,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 9,
+      "corePixels": 46766,
+      "bbox": [
+        1610,
+        579,
+        1908,
+        1018
+      ],
+      "centroid": [
+        1797.8473891288543,
+        799.5195441132447
+      ],
+      "owner": 7,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 5,
+      "corePixels": 46361,
+      "bbox": [
+        634,
+        549,
+        913,
+        1016
+      ],
+      "centroid": [
+        789.3461314466902,
+        781.2966933413861
+      ],
+      "owner": 5,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 6,
+      "corePixels": 46211,
+      "bbox": [
+        146,
+        551,
+        424,
+        1011
+      ],
+      "centroid": [
+        313.4439851983294,
+        772.2744801021402
+      ],
+      "owner": 4,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 7,
+      "corePixels": 45647,
+      "bbox": [
+        1148,
+        564,
+        1406,
+        1019
+      ],
+      "centroid": [
+        1291.4163252787696,
+        784.4591758494535
+      ],
+      "owner": 6,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 16,
+      "corePixels": 45282,
+      "bbox": [
+        580,
+        1607,
+        865,
+        1975
+      ],
+      "centroid": [
+        720.3450377633496,
+        1821.38633452586
+      ],
+      "owner": 13,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 17,
+      "corePixels": 41286,
+      "bbox": [
+        977,
+        1767,
+        1422,
+        1969
+      ],
+      "centroid": [
+        1209.0362834859275,
+        1871.6454972629947
+      ],
+      "owner": 14,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 18,
+      "corePixels": 35385,
+      "bbox": [
+        1514,
+        1839,
+        1990,
+        1981
+      ],
+      "centroid": [
+        1750.847760350431,
+        1919.796100042391
+      ],
+      "owner": 15,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 8,
+      "corePixels": 76,
+      "bbox": [
+        283,
+        575,
+        294,
+        642
+      ],
+      "centroid": [
+        288.1578947368421,
+        608.1842105263158
+      ],
+      "owner": 4,
+      "assignment": "nearest-body-majority",
+      "confidence": 1.0
+    },
+    {
+      "id": 10,
+      "corePixels": 1,
+      "bbox": [
+        777,
+        675,
+        778,
+        676
+      ],
+      "centroid": [
+        777.0,
+        675.0
+      ],
+      "owner": 5,
+      "assignment": "nearest-body-majority",
+      "confidence": 1.0
+    }
+  ],
+  "errors": [],
+  "key": {
+    "keyType": "magenta",
+    "keyColor": [
+      255,
+      0,
+      255
+    ],
+    "dominanceTransparentAt": 110,
+    "dominanceOpaqueBelow": 40,
+    "borderForegroundFraction": 0.0,
+    "alphaChanged": 3427568,
+    "pixelsChanged": 3427568,
+    "transparentPixels": 3413480,
+    "softAlphaPixels": 14088,
+    "removedSpeckPixels": 0,
+    "removedSpeckComponents": [],
+    "removalPolicy": "Remove disconnected <=3px specks only."
+  },
+  "coordinates": "Global source pixels; final roots remain nominal-cell-local.",
+  "softPixelsBeyondTwoPixelFringeRetained": 0,
+  "sourceAlphaSum": 197184406,
+  "assignedAlphaSum": 197184406,
+  "unassignedCorePixels": 0
+}

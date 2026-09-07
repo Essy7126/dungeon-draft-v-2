@@ -9,7 +9,12 @@ var state: CharacterRunState
 func before_each() -> void:
 	manager = MANAGER.new()
 	manager._ready()
-	assert_true(manager._prepare_preconfigured_run(RUN, manager.resolve_run_hero_data(RUN).heroes))
+	# This fixture preserves the historical five-room Champion subsystem contract.
+	# Production's canonical route launch is covered by tests/expedition/session_integration_test.gd.
+	var historical_run := RUN.duplicate(false) as RunData
+	historical_run.catabase_route_enabled = false
+	historical_run.rooms = RUN.rooms.slice(0, 5)
+	assert_true(manager._prepare_preconfigured_run(historical_run, manager.resolve_run_hero_data(historical_run).heroes))
 	manager.current_room_index = 0
 	state = manager.get_ordered_character_states()[0]
 
@@ -20,7 +25,9 @@ func after_each() -> void:
 	manager.free()
 
 
-func test_current_catabase_keeps_five_actual_encounters_and_canonical_chassis() -> void:
+func test_historical_champion_fixture_keeps_canonical_chassis_while_production_uses_expanded_route() -> void:
+	assert_true(RUN.catabase_route_enabled, "Production Catabase uses its branching route")
+	assert_eq(RUN.rooms.size(), 15, "Production room pool includes ten new maps")
 	assert_eq(manager.rooms.size(), 5)
 	assert_true(state.uses_champion_progression())
 	assert_eq(state.unit.max_hp.get_int(), 110)
@@ -160,7 +167,7 @@ func test_snapshot_preserves_equipped_forge_and_rejected_restore_leaves_live_sta
 	assert_eq(JSON.parse_string(JSON.stringify(manager.get_inventory_equipment_snapshot())), JSON.parse_string(JSON.stringify(before)))
 
 
-func test_four_equipment_rewards_reach_black_temple_and_only_fifth_victory_ends_run() -> void:
+func test_historical_five_room_fixture_awards_equipment_and_ends_on_fifth_victory() -> void:
 	assert_eq(manager.rooms.size(), 5)
 	var selected_ids: Array[StringName] = []
 	for index in range(manager.rooms.size()):

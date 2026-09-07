@@ -1,0 +1,85 @@
+{
+	"allowed_floor_polygon": [
+		[
+			0,
+			0
+		],
+		[
+			1920,
+			0
+		],
+		[
+			1920,
+			1200
+		],
+		[
+			0,
+			1200
+		]
+	],
+	"canvas_size": [
+		1920,
+		1200
+	],
+	"combat_ground_band": {
+		"enabled": false
+	},
+	"floor_palette": {
+		"bevel_flatten_strength": 0.82,
+		"body": "#697386",
+		"light": "#a6adc0",
+		"painted_steps": 0.25,
+		"shade": "#363e50"
+	},
+	"geometry_manifest_path": "geometry_manifest.json",
+	"ground_details": {
+		"enabled": false
+	},
+	"land": {
+		"color": "#1b1f2a"
+	},
+	"land_polygon": [
+		[
+			0,
+			0
+		],
+		[
+			1920,
+			0
+		],
+		[
+			1920,
+			1200
+		],
+		[
+			0,
+			1200
+		]
+	],
+	"metadata": {
+		"art_method": "Existing Catabase terrain renderer, original authored topology and palette; dedicated environmental paintings remain future art work.",
+		"biome": "oath",
+		"tactical_intent": "Quatre chambres se raccordent à une place centrale. Les piliers séparent les packs sans rendre les tireurs inaccessibles."
+	},
+	"minimum_floor_margin_px": 30.0,
+	"pit_palette": {
+		"back_wall": "#363e50",
+		"depth_native_px": 13,
+		"floor": "#1b1f2a",
+		"left_wall": "#363e50"
+	},
+	"props_palette": {
+		"highlight": "#a6adc0",
+		"ink": "#1b1f2a",
+		"left": "#697386",
+		"right": "#363e50",
+		"top": "#a6adc0"
+	},
+	"shorelines": [],
+	"soil_patches": [],
+	"version": 1,
+	"water": {
+		"color": "#1b1f2a"
+	},
+	"world_decor": []
+}

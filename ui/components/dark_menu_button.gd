@@ -52,7 +52,7 @@ func _sync_emphasis() -> void:
 		remove_theme_stylebox_override(&"normal")
 	if _emphasis_tween != null and _emphasis_tween.is_valid():
 		_emphasis_tween.kill()
-	if reduced_motion:
+	if reduced_motion or bool(get_meta("catabase_motion_enabled", false)):
 		scale = Vector2.ONE
 		return
 	_emphasis_tween = create_tween()

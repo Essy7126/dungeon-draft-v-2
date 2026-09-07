@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "updated_on": "2026-09-07",
+  "provider": "Higgsfield",
+  "processing_kind": "mechanical_known_matte_removal",
+  "original_export_receipt": "art/source/catabase/painted/pilot_exports.json",
+  "source_path": "art/source/catabase/painted/generations/icons_martial_sheet.png",
+  "source_sha256": "764ac30f348904d17ff09dff19cf8344fbe7dd31fc58eafbb35c7f3860087e0e",
+  "source_unchanged": true,
+  "source_matte_rgb": [
+    20,
+    29,
+    46
+  ],
+  "algorithm": {
+    "color_space": "8-bit source RGB",
+    "distance": "max(abs(RGB - [20,29,46]))",
+    "alpha": "max(clamp(distance/25,0,1), max(max(background-RGB,0)/background)), quantized upward to 8-bit before RGB recovery",
+    "foreground_rgb": "round(background + (RGB-background)/alpha); fully transparent RGB set to zero",
+    "preservation": "No crop, resample, redraw or silhouette translation. Opaque RGB is unchanged. Original composite on source matte is reconstructed within one channel level."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "preview": "meshy_output/review/higgsfield_matte_trial/review_unmatte.jpg",
+    "sizes": [
+      34,
+      48,
+      64,
+      160
+    ],
+    "backgrounds": [
+      "dark petrol #1e343c",
+      "parchment #e3cfa1"
+    ],
+    "notes": "Square navy backgrounds removed. Existing dark surrounds of painted glows remain deliberately intact; these spell icons are consumed on dark cards and HUD. Do not claim a reconstructed transparent glow for light backgrounds."
+  },
+  "runtime_validation": "passed_import_gut49_gui302_at_1280x720_and_1920x1080",
+  "runtime_evidence": "artifacts/meshy_ui/validation_summary.json",
+  "exports": [
+    {
+      "id": "peleid_strike",
+      "path": "assets/catabase/painted/icons/peleid_strike.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "753c038cc67736da85ecbecd0b03bd8e1434f272b70d1672621af933b4c34e98",
+      "transparent_pixels": 30437,
+      "partially_transparent_pixels": 10865,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "1574221c654053ec3ca59325e6189f93fd332393510cab50f5364f231e457dad"
+    },
+    {
+      "id": "fulminant_dash",
+      "path": "assets/catabase/painted/icons/fulminant_dash.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "fb468f5584245a9a8d761471c71117fce57bb1677ffb4f623b1e835f6a750ff4",
+      "transparent_pixels": 44316,
+      "partially_transparent_pixels": 8295,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "dd21234055a1acf9eb3403c1af8ef97176f3997a62b50646b3aed25074e853dd"
+    },
+    {
+      "id": "pelion_shot",
+      "path": "assets/catabase/painted/icons/pelion_shot.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "b3fe0d12efa03302f4838fca27cd9c51b242f14fb311088439b7e93bc467b48b",
+      "transparent_pixels": 50481,
+      "partially_transparent_pixels": 7170,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "a11e9e9349a844290f48fa0487894acdb15a2c810a621e5827c5607c04bcfae8"
+    },
+    {
+      "id": "bronze_guard",
+      "path": "assets/catabase/painted/icons/bronze_guard.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "820cb35fcf5475928efb3fc31ca7d53308d27ca000f3b9e040af6c5ac064f8b4",
+      "transparent_pixels": 33112,
+      "partially_transparent_pixels": 3762,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "a8bb85b7971e4f177f17e5c047fe8f0ba7d314c9d7c14dcc48bd54fc55cf6497"
+    },
+    {
+      "id": "crochet",
+      "path": "assets/catabase/painted/icons/crochet.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "ccb9afb91873d15891b76e2b5ba407c281d581fc2de55a34d2461ac81208190c",
+      "transparent_pixels": 40458,
+      "partially_transparent_pixels": 10912,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "127ab0f0e648f6f7aec9b97e9ecc81decc70c0a68e518b39d5265cab2084af14"
+    },
+    {
+      "id": "fauchage",
+      "path": "assets/catabase/painted/icons/fauchage.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "b3223d4a825d99197240e71a661430e5139a364f86722f549a11d78e27e6d5aa",
+      "transparent_pixels": 38261,
+      "partially_transparent_pixels": 9818,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "967fbce8b6a6d650f1a0e8004a396f51008de968eb11e77b5c7c3370c68c2193"
+    },
+    {
+      "id": "entaille",
+      "path": "assets/catabase/painted/icons/entaille.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "903dc2b1d9ed1514efdfcdd59719a3867ff3637140e76eb47bd09a82998fb1cc",
+      "transparent_pixels": 34589,
+      "partially_transparent_pixels": 11367,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "310a0526b9bac98706769ea6543d999a80f0013fd2f336607b58d0626846d2ca"
+    },
+    {
+      "id": "moisson",
+      "path": "assets/catabase/painted/icons/moisson.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "3ec39157d073736d29ec4517dc6c10d6cbff7f6d4e7a7f9ba27f348bcbf15e48",
+      "transparent_pixels": 40054,
+      "partially_transparent_pixels": 10285,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "e0d040162581b9bada71b99612f1cda0c1644638a912cfdb080ea8637138f8a8"
+    },
+    {
+      "id": "rupture",
+      "path": "assets/catabase/painted/icons/rupture.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "304cd9b89ccfca392edc32e07dc73ac94f68a37bad5b9b33c10b78add4765dcb",
+      "transparent_pixels": 43992,
+      "partially_transparent_pixels": 8790,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "abfbd680220b125e775498b3219f00a0edc83d558af9ab24d8ae1917b0eeddd4"
+    },
+    {
+      "id": "marque",
+      "path": "assets/catabase/painted/icons/marque.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "a90bf666700e54c597721be03363af326ee0812537b046cc48e2fc907152538c",
+      "transparent_pixels": 36278,
+      "partially_transparent_pixels": 6985,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "4d492a552395b9553c0f7e34b69de0db0891b2ed8ef75355133bf4c8367fc4f1"
+    },
+    {
+      "id": "feinte",
+      "path": "assets/catabase/painted/icons/feinte.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "cbb849c06879956e01a99b917fa50b8ac9d4162403ace98554da5cf9f9ec3670",
+      "transparent_pixels": 40474,
+      "partially_transparent_pixels": 8435,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "7fee0622a7712464ce3f4385fe902b74cf4909b271a43ae8bc8d449a529b93cf"
+    },
+    {
+      "id": "contretemps",
+      "path": "assets/catabase/painted/icons/contretemps.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "0b8591225ed015aa5c29a172ea0bef9f21aacacd8c92fe136ac4e2e072e1dc53",
+      "transparent_pixels": 37172,
+      "partially_transparent_pixels": 8305,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "7c20b66456f14a25a98bf91f1856feba683c5ded6cbb50d219926087e13e1fe4"
+    },
+    {
+      "id": "heurt",
+      "path": "assets/catabase/painted/icons/heurt.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "5d9f284eb0a069eda5a667f9fa09e0a021c719e9bdb15dd18638ab71b637f602",
+      "transparent_pixels": 37795,
+      "partially_transparent_pixels": 5236,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "1f5685c98bdaaef0b1c7ad1b56daa016c5f3b599e4e3cb33a72399befa76b6aa"
+    },
+    {
+      "id": "posture",
+      "path": "assets/catabase/painted/icons/posture.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "a8c65c1d89a55093e85c6cb22dc6509b278cd3b1bc32603526160f8ee28d3bd0",
+      "transparent_pixels": 32055,
+      "partially_transparent_pixels": 7200,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "1aa243df4cc0ef18326672d13b97c78d7e8f31049eebde78c12c78ca0b59cd79"
+    },
+    {
+      "id": "souffle",
+      "path": "assets/catabase/painted/icons/souffle.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "01775bfb47f667fd80f537992dc7724d456cf67e9a1d102f7066a923ecd2636e",
+      "transparent_pixels": 38549,
+      "partially_transparent_pixels": 6290,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "e567ac20851d446df86f602e8abef48d77bf2f109d6513cfc17cce8ea29b7787"
+    },
+    {
+      "id": "marche",
+      "path": "assets/catabase/painted/icons/marche.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "before_sha256": "2d33d3ffcdd5c2e91c84855aad917635116215e135262c15282676387a2ea3fe",
+      "transparent_pixels": 41800,
+      "partially_transparent_pixels": 7340,
+      "opaque_pixels_rgb_unchanged": true,
+      "original_navy_recomposition_max_channel_error": 0,
+      "after_sha256": "8c8b975e1c182284499be73efefa679c9618f16492f5d4e7511bfec7dd9aa9ad"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ extends "res://ui/action_bar.gd"
 
 signal utility_skill_tree_requested(character_id: StringName, discipline_id: StringName)
 signal utility_inventory_requested(character_id: StringName)
+signal utility_map_requested
 signal item_activation_requested(instance_id: StringName)
 
 const UNIT_PRESENTATION := preload("res://ui/combat/combat_unit_presentation.gd")
@@ -212,6 +213,10 @@ func _ready() -> void:
 	_inventory_button.pressed.connect(_on_inventory_button_pressed)
 	_inventory_button.shortcut = _shortcut_for_key(KEY_I)
 	_inventory_button.shortcut_in_tooltip = true
+	_map_button.pressed.connect(func(): utility_map_requested.emit())
+	_map_button.shortcut = _shortcut_for_key(KEY_C)
+	_map_button.shortcut_in_tooltip = true
+	_map_button.tooltip_text = "Consulter la carte de Catabase (C)"
 	_skills_button.pressed.connect(_on_skills_button_pressed)
 	_skills_button.shortcut = _shortcut_for_key(KEY_K)
 	_skills_button.shortcut_in_tooltip = true
@@ -1333,7 +1338,7 @@ func _resolve_character_theme(unit) -> CharacterHUDThemeData:
 		return null
 	for theme in character_themes:
 		if theme != null and theme.matches_unit(unit):
-			return theme
+			return CharacterHUDThemeCatalog.with_presentation_overrides(theme, unit)
 	if skin_variant == HudSkinVariant.REFINED:
 		return CharacterHUDThemeCatalog.resolve_refined(unit)
 	if StringName(unit.unit_id) == &"elf":
@@ -1413,11 +1418,10 @@ func _apply_character_theme(unit) -> void:
 	_attack_btn.set_icon(
 		_active_character_theme.get_spell_icon(&"basic_attack")
 	)
-	_move_btn.set_icon(
-		visual_skin.icon_move
-		if visual_skin != null and visual_skin.icon_move != null
-		else _active_character_theme.move_action_icon
-	)
+	var move_icon := visual_skin.icon_move if visual_skin != null and visual_skin.icon_move != null else _active_character_theme.move_action_icon
+	if GameManager.expedition != null:
+		move_icon = CatabasePaintedIconCatalog.stat_icon("max_mp", move_icon)
+	_move_btn.set_icon(move_icon)
 	_end_btn.set_icon(
 		visual_skin.icon_end_turn if visual_skin != null else null
 	)
@@ -1438,12 +1442,42 @@ func _apply_character_theme(unit) -> void:
 	_inventory_button.icon = _active_character_theme.utility_inventory_icon
 	_map_button.icon = _active_character_theme.utility_map_icon
 	_skills_button.icon = _active_character_theme.utility_skills_icon
+	if GameManager.expedition != null:
+		_inventory_button.icon = CatabaseUITheme.icon("nav", "equipment")
+		_map_button.icon = CatabaseUITheme.icon("nav", "map")
+		_skills_button.icon = CatabaseUITheme.icon("nav", "tree")
+	# Painted icons retain their own colors; other runs keep the skin's tint.
+	for utility_button in [_inventory_button, _map_button, _skills_button]:
+		var painted := GameManager.expedition != null
+		CatabaseUITheme.bind_button_motion(utility_button, painted)
+		if not utility_button.has_meta("catabase_icon_layout"):
+			utility_button.set_meta("catabase_icon_layout", {
+				"expand_icon": utility_button.expand_icon,
+				"width_override": utility_button.has_theme_constant_override("icon_max_width"),
+				"width": utility_button.get_theme_constant("icon_max_width"),
+			})
+		var original: Dictionary = utility_button.get_meta("catabase_icon_layout")
+		utility_button.expand_icon = true if painted else bool(original.expand_icon)
+		if painted or bool(original.width_override):
+			utility_button.add_theme_constant_override("icon_max_width", 24 if painted else int(original.width))
+		else:
+			utility_button.remove_theme_constant_override("icon_max_width")
+		var normal := visual_skin.text_primary if visual_skin != null else Color.WHITE
+		var pressed := visual_skin.text_secondary if visual_skin != null else Color.WHITE
+		var disabled := visual_skin.text_muted if visual_skin != null else Color("788c88")
+		utility_button.add_theme_color_override("icon_normal_color", Color.WHITE if painted else normal)
+		utility_button.add_theme_color_override("icon_hover_color", Color.WHITE if painted else normal)
+		utility_button.add_theme_color_override("icon_pressed_color", Color("c5dfd9") if painted else pressed)
+		utility_button.add_theme_color_override("icon_disabled_color", Color("788c88") if painted else disabled)
 	_utility_dock.visible = refined
 	_inventory_button.visible = refined and (
-		_premium_skin_active() or not _compact_layout_active()
+		GameManager.expedition != null or _premium_skin_active() or not _compact_layout_active()
 	)
 	_inventory_button.disabled = not refined or not _player_controls_enabled
-	_map_button.visible = refined and not _premium_skin_active() and not _compact_layout_active()
+	_map_button.visible = refined and (
+		GameManager.expedition != null or (not _premium_skin_active() and not _compact_layout_active())
+	)
+	_map_button.disabled = GameManager.expedition == null
 	_skills_button.visible = refined
 	_set_refined_depth_visible(refined)
 	_skills_button.disabled = (
@@ -1612,14 +1646,24 @@ func _chassis_visual_scale(viewport_width: float) -> float:
 
 func _effective_spell_visual_size(viewport_width: float) -> float:
 	if _official_chassis_active():
-		return roundf(
+		var visual_size := roundf(
 			(layout_data.action_slot_size if _clean_skin_active() else ORNATE_SPELL_VISUAL_SIZE) * _chassis_visual_scale(viewport_width)
 		)
+		if _premium_skin_active() and _spell_buttons.size() > 4:
+			# The premium chassis reserves a fixed spell region between Move
+			# and End Turn. Fit every equipped slot inside that region.
+			var count := _spell_buttons.size()
+			var available := layout_data.premium_ability_width * _chassis_visual_scale(viewport_width)
+			var gaps := float(count - 1) * _effective_spell_gap(viewport_width)
+			visual_size = minf(visual_size, floorf((available - gaps) / float(count)))
+		return maxf(visual_size, 1.0)
 	return METRICS.scaled(METRICS.SPELL_VISUAL_SIZE, _layout_scale)
 
 
 func _effective_spell_icon_size(viewport_width: float) -> float:
 	if _official_chassis_active():
+		if _premium_skin_active() and _spell_buttons.size() > 4:
+			return roundf(_effective_spell_visual_size(viewport_width) * layout_data.action_icon_size / layout_data.action_slot_size)
 		return roundf(
 			(layout_data.action_icon_size if _clean_skin_active() else ORNATE_SPELL_ICON_SIZE) * _chassis_visual_scale(viewport_width)
 		)
@@ -2297,8 +2341,8 @@ func _apply_layout_metrics() -> void:
 				end_turn_size.y
 			)
 		)
-		var utility_size := 52.0 * premium_scale
-		var utility_gap := 8.0 * premium_scale
+		var utility_size := (34.0 if GameManager.expedition != null else 52.0) * premium_scale
+		var utility_gap := (5.0 if GameManager.expedition != null else 8.0) * premium_scale
 		for utility_button in [_inventory_button, _map_button, _skills_button]:
 			utility_button.custom_minimum_size = Vector2.ONE * utility_size
 		_utility_dock.add_theme_constant_override(
@@ -2321,14 +2365,16 @@ func _apply_layout_metrics() -> void:
 			Rect2(0.0, end_top, end_turn_size.x, end_turn_size.y)
 		)
 		var utility_size := clampf(28.0 * compact_scale, 22.0, 30.0)
+		var utility_width := utility_size * 3.0 + 8.0 if GameManager.expedition != null else utility_size
+		_utility_dock.add_theme_constant_override("separation", 4)
 		for utility_button in [_inventory_button, _map_button, _skills_button]:
 			utility_button.custom_minimum_size = Vector2.ONE * utility_size
 		_set_control_rect(
 			_utility_dock,
 			Rect2(
-				(end_turn_size.x - utility_size) * 0.5,
+				(end_turn_size.x - utility_width) * 0.5,
 				turn_content_height - utility_size - 2.0,
-				utility_size,
+				utility_width,
 				utility_size
 			)
 		)

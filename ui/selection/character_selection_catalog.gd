@@ -11,16 +11,21 @@ const PHILOSOPHER_TRIAL_RUN_PATH := "res://data/runs/philosopher_trial.tres"
 static func get_entries() -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
 	_append_run_entries(entries, CATABASE_RUN_PATH)
+	_append_run_entries(entries, CATABASE_RUN_PATH, {"achilles": "painted_g"})
 	_append_run_entries(entries, TRIO_RUN_PATH)
 	_append_run_entries(entries, PHILOSOPHER_TRIAL_RUN_PATH)
 	return entries
 
 
-static func _append_run_entries(entries: Array[Dictionary], run_path: String) -> void:
+static func _append_run_entries(entries: Array[Dictionary], run_path: String, variants: Dictionary = {}) -> void:
 	var run := load(run_path) as RunData
 	if run == null:
 		push_error("CharacterSelectionCatalog: aventure introuvable : %s" % run_path)
 		return
+	if not variants.is_empty():
+		run = run.duplicate(false) as RunData
+		run.set_path_cache("")
+		run.hero_visual_variants = variants.duplicate()
 	var resolution := RunHeroResolver.resolve_runtime_hero_data(run, false)
 	if not resolution.is_valid():
 		for error in resolution.errors:
@@ -33,8 +38,13 @@ static func _append_run_entries(entries: Array[Dictionary], run_path: String) ->
 	if party_names.size() > 1:
 		party_note = "Groupe fixe · %s" % " · ".join(party_names)
 	for hero in resolution.heroes:
+		var is_catabase_achilles := run_path == CATABASE_RUN_PATH and hero.get_effective_unit_id() == &"achilles"
+		var painted := is_catabase_achilles and not variants.is_empty()
 		entries.append({
-			"id": hero.get_effective_unit_id(),
+			"id": &"achilles_painted_g" if painted else hero.get_effective_unit_id(),
+			"display_name": ("Achille peint" if painted else "Achille classique") if is_catabase_achilles else hero.unit_name,
+			"appearance": "STYLE PEINT  ·  Bronze et turquoise" if painted else "APPARENCE ORIGINALE  ·  Tenue disponible en jeu",
+			"use_preview_portrait": painted,
 			"unit": hero,
 			"run": run,
 			"chapter": run.run_name if run_path == PHILOSOPHER_TRIAL_RUN_PATH else ("Catabase" if run_path == CATABASE_RUN_PATH else "L’Odyssée du trio"),

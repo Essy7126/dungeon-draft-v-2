@@ -27,6 +27,26 @@ Le menu ouvre désormais le [nouvel écran de sélection](docs/design/character_
 
 Pour le voir directement, ouvrir `ui/selection/CharacterSelectionScreen.tscn` et lancer **F6** dans Godot.
 
+## Catabase : chemin et build recomposable
+
+Lancer Achille par la sélection habituelle ouvre Catabase : premier combat et
+quatre sorts fixes, puis construction du kit en cours de run. Le parcours à
+embranchements comprend environ quinze combats et cinq haltes. Dix nouvelles
+arènes complètent les cinq historiques ; les haltes proposent des zones de
+commerce, de récupération, de lore et de découverte de branches.
+
+La carte sur parchemin s'ouvre aussi pendant le combat avec son icône à côté de
+l'inventaire ou la touche **C**. Le kit se recompose entre les rencontres.
+La [référence V3](docs/design/achilles/catabase_run_recomposable_v3.md), les
+[doctrines et équipements](docs/design/achilles/catabase_build_doctrines_equipment.md),
+la [pipeline des maps](docs/maps/catabase_expansion_v1.md) et les
+[commandes de validation](tests/expedition/README.md) décrivent le contenu et ses limites.
+
+L'[habillage peint Meshy](docs/design/achilles/catabase_meshy_ui_v1.md) complète les
+sorts, équipements, marqueurs et menus. L'inventaire conserve ses actions visibles,
+les kits de quatre à six sorts tiennent dans le HUD, et les retours visuels au clic
+respectent l'option de réduction des animations.
+
 Le bouton **Explorer les maîtrises** ouvre le [grimoire des sorts](docs/design/spell_codex_2026-09-05.md) du héros et du sort sélectionnés : recherche, filtre des choix prêts, arbre et fiche détaillée. Le même écran reste accessible depuis le HUD pendant la run.
 
 ## Lancer les tests

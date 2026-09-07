@@ -46,7 +46,7 @@ func _run() -> void:
 	await _settle()
 	var entries: Array = selection.get_entries()
 	var ids: Array = entries.map(func(entry): return str(entry.id))
-	_check(ids == ["achilles", "elf", "mage", "warrior", "achilles"], "All five authored hero/adventure choices remain in order")
+	_check(ids == ["achilles", "achilles_painted_g", "elf", "mage", "warrior", "achilles"], "Both Achille appearances and all adventures remain in order")
 	var selected: Dictionary = selection.get_selected_entry()
 	_check(selected.get("run") == _run_data and str(selected.get("id")) == "achilles", "Initial selection is Achille in Catabase")
 	var achilles_runs: Array[String] = []

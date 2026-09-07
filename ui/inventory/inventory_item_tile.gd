@@ -131,6 +131,9 @@ func _animate_emphasis(enabled: bool) -> void:
 		enabled = false
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
+	if GameManager.is_reduced_motion_enabled():
+		finish_motion()
+		return
 	_hover_tween = create_tween().set_parallel(true)
 	_hover_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_hover_tween.tween_property(
@@ -139,9 +142,16 @@ func _animate_emphasis(enabled: bool) -> void:
 	_hover_tween.tween_property(
 		self,
 		"modulate",
-		Color(1.04, 1.02, 0.96, 1.0) if enabled else Color.WHITE,
+		(Color(1.04, 1.04, 1.04, 1.0) if GameManager.expedition != null else Color(1.04, 1.02, 0.96, 1.0)) if enabled else Color.WHITE,
 		0.1
 	)
+
+
+func finish_motion() -> void:
+	if _hover_tween != null and _hover_tween.is_valid():
+		_hover_tween.kill()
+	scale = Vector2.ONE
+	modulate = Color.WHITE
 
 
 func _update_pivot() -> void:

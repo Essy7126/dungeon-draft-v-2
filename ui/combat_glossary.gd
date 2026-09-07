@@ -209,7 +209,8 @@ static func _effect_text(spell: Spell, caster = null) -> String:
 		spell.get_scaled_shield(caster), profile, caster.shield_creation_multiplier
 	)
 	return _effect_text_from_values(
-		spell, target_damage[0] if not target_damage.is_empty() else 0, shield, target_damage
+		spell, target_damage[0] if not target_damage.is_empty() else 0, shield, target_damage,
+		spell.get_scaled_heal(caster)
 	)
 
 
@@ -223,9 +224,9 @@ static func spell_base_effect_text(unit: UnitData, spell: Spell) -> String:
 	)
 
 
-static func _effect_text_from_values(spell: Spell, damage: int, shield: int, target_damage: PackedInt32Array = PackedInt32Array()) -> String:
+static func _effect_text_from_values(spell: Spell, damage: int, shield: int, target_damage: PackedInt32Array = PackedInt32Array(), heal_override: int = -1) -> String:
 	var effects: Array = []
-	var heal := spell.heal
+	var heal := spell.heal if heal_override < 0 else heal_override
 	if damage > 0:
 		var damage_text := str(damage)
 		if target_damage.size() > 1:

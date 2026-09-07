@@ -1,8 +1,11 @@
 extends Control
 
+const CATABASE_ART := preload("res://ui/expedition/catabase_ui_theme.gd")
+
 @onready var result_label: Label = $Background/Center/Panel/Content/Result
 @onready var panel: PanelContainer = %Panel
 @onready var crest: TextureRect = $Background/Center/Panel/Content/Crest
+@onready var _default_crest: Texture2D = crest.texture
 @onready var register_label: Label = $Background/Center/Panel/Content/Register
 @onready var run_name_label: Label = $Background/Center/Panel/Content/RunName
 @onready var progression_label: Label = $Background/Center/Panel/Content/Progression
@@ -34,6 +37,15 @@ func _apply_result(result: Dictionary) -> void:
 	var run_name := str(result.get("run_name", "")).strip_edges()
 	var is_catabase := bool(result.get("is_catabase", false))
 	_is_catabase = is_catabase
+	if is_catabase:
+		CATABASE_ART.apply(self)
+		var result_icon := CATABASE_ART.icon("resources", "victory" if victory else "defeat")
+		crest.texture = result_icon if result_icon != null else _default_crest
+		crest.modulate = Color.WHITE
+	else:
+		PremiumUI.apply(self)
+		crest.texture = _default_crest
+	_apply_panel_margins()
 	register_label.text = (
 		"REGISTRE DE L’ARCHIVISTE · CATABASE"
 		if is_catabase else "REGISTRE DE L’ARCHIVISTE"
@@ -77,6 +89,12 @@ func _apply_result(result: Dictionary) -> void:
 		"Retourner auprès de l’Archiviste"
 		if is_catabase else "Retour au menu principal"
 	)
+	return_button.icon = CATABASE_ART.icon("nav", "home") if is_catabase else null
+	return_button.expand_icon = is_catabase
+	if is_catabase:
+		return_button.add_theme_constant_override("icon_max_width", 24)
+	else:
+		return_button.remove_theme_constant_override("icon_max_width")
 
 
 func _on_return_pressed() -> void:
@@ -87,7 +105,7 @@ func _on_return_pressed() -> void:
 
 
 func _apply_panel_margins() -> void:
-	var source := PremiumUI.get_theme().get_stylebox(&"panel", &"PremiumScreen")
+	var source := theme.get_stylebox(&"panel", &"PremiumScreen")
 	if source == null:
 		return
 	var style := source.duplicate() as StyleBox

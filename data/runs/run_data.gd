@@ -15,6 +15,8 @@ enum RoomFlowMode {
 }
 
 @export var run_name: String = "Run"
+## Catabase uses its authored room pool inside a persistent branching journey.
+@export var catabase_route_enabled: bool = false
 ## Graine de repli, utilisée seulement quand le tirage aléatoire est désactivé
 ## ci-dessous. Deux parties lancées avec la même graine proposent exactement les
 ## mêmes reliques et placent les ennemis de la même façon.
@@ -30,6 +32,9 @@ enum RoomFlowMode {
 )
 @export_range(1, 10, 1) var maximum_waves_per_room: int = 1
 @export var content_profile: RunContentProfile = null
+## Optional appearance selection, keyed by unchanged gameplay character ids.
+## Empty preserves the canonical visuals, including saves made before variants.
+@export var hero_visual_variants: Dictionary = {}
 @export var economy_profile: RunEconomyProfile = null
 ## Classification explicite des actions, indépendante du nom ou de la portée.
 @export var action_classification_catalog: CombatActionClassificationCatalogData = null

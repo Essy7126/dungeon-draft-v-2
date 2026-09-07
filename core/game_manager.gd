@@ -104,6 +104,9 @@ var _room_wave_counts := PackedInt32Array()
 var _room_exit_selected := false
 var _cleared_room_emitted := false
 var _reduced_motion_enabled := false
+var expedition: ExpeditionSession = null
+var expedition_save_path: String = ExpeditionSaveService.SAVE_PATH
+const EXPEDITION_SCREEN_PATH := "res://ui/expedition/ExpeditionScreen.tscn"
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
@@ -222,6 +225,10 @@ func configure_next_run_start_room(room_index: int) -> void:
 
 ## `hero_sources` accepte des chemins res:// vers des UnitData ou des UnitData.
 func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
+	if run_data != null and run_data.catabase_route_enabled:
+		_next_run_start_room_index = 0
+		start_expedition(_resolve_run_seed(run_data) & 0x7fffffff, run_data.hero_visual_variants)
+		return
 	var requested_start_room := _next_run_start_room_index
 	_next_run_start_room_index = 0
 	if run_data == null or requested_start_room >= run_data.rooms.size():
@@ -413,6 +420,7 @@ func _clear_heroes() -> void:
 
 
 func cleanup_run_state() -> void:
+	expedition = null
 	_battle_outcome_generation += 1
 	_battle_outcome_pending = false
 	_combat_report_tracker.discard()
@@ -645,6 +653,8 @@ func equip_inventory_item(
 		character_id: StringName,
 		slot: int
 	) -> Dictionary:
+	if expedition != null and not expedition.is_editable():
+		return _inventory_failure("BUILD_LOCKED", "L'équipement se prépare entre les destinations.")
 	if not run_active or run_inventory == null:
 		return _inventory_failure("RUN_INACTIVE", "Aucune run active.")
 	var state := get_character_state(character_id)
@@ -656,6 +666,8 @@ func equip_inventory_item(
 	)
 	if result.get("success", false):
 		equipment_changed.emit(result.duplicate(true))
+		if expedition != null:
+			save_expedition()
 	return result
 
 
@@ -663,6 +675,8 @@ func unequip_inventory_item(
 		character_id: StringName,
 		slot: int
 	) -> Dictionary:
+	if expedition != null and not expedition.is_editable():
+		return _inventory_failure("BUILD_LOCKED", "L'équipement se prépare entre les destinations.")
 	if not run_active or run_inventory == null:
 		return _inventory_failure("RUN_INACTIVE", "Aucune run active.")
 	var result := _equipment_service.unequip(
@@ -672,6 +686,8 @@ func unequip_inventory_item(
 	)
 	if result.get("success", false):
 		equipment_changed.emit(result.duplicate(true))
+		if expedition != null:
+			save_expedition()
 	return result
 
 
@@ -690,6 +706,8 @@ func use_inventory_item(
 		if _combat_report_tracker.is_active():
 			_encounter_consumables_used += 1
 		item_used.emit(result.duplicate(true))
+		if expedition != null and expedition.is_editable():
+			save_expedition()
 	return result
 
 
@@ -718,6 +736,9 @@ func get_inventory_equipment_snapshot() -> Dictionary:
 
 func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 	last_restore_error = &""
+	if expedition != null:
+		last_restore_error = &"EXPEDITION_BOUNDARY_SAVE_REQUIRED"
+		return false
 	var snapshot_version := int(snapshot.get("version", -1))
 	for state in get_ordered_character_states():
 		if state.uses_champion_progression() and snapshot_version != INVENTORY_EQUIPMENT_SNAPSHOT_VERSION:
@@ -875,6 +896,9 @@ func _preflight_progression_restore(progression_snapshot: Dictionary, candidate_
 func save_inventory_equipment_state(
 		file_path: String = "user://inventory_equipment_v1.json"
 	) -> bool:
+	if expedition != null:
+		last_restore_error = &"EXPEDITION_BOUNDARY_SAVE_REQUIRED"
+		return false
 	var snapshot := get_inventory_equipment_snapshot()
 	if snapshot.is_empty():
 		return false
@@ -1037,6 +1061,9 @@ func _close_active_progression_screen() -> void:
 
 # Passe à la salle suivante, ou termine le run s'il n'y en a plus.
 func _go_to_next_room() -> void:
+	if expedition != null:
+		_request_scene_change(EXPEDITION_SCREEN_PATH)
+		return
 	unbind_combat_context()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 	_room_combat_report = null
@@ -1656,8 +1683,18 @@ func on_battle_won() -> void:
 		current_wave_index = 0
 	_room_outcome_resolved = true
 	_room_exit_selected = false
-	capture_battle_outcome_background()
+	if expedition == null:
+		capture_battle_outcome_background()
 	_last_combat_report = _finalize_current_combat_report(true)
+	if expedition != null:
+		expedition.combat_won()
+		expedition.reward_options(item_catalog)
+		_room_exit_selected = true
+		_emit_current_room_cleared_once()
+		combat_report_ready.emit(_last_combat_report)
+		save_expedition()
+		_request_scene_change(EXPEDITION_SCREEN_PATH)
+		return
 	_resolve_current_glory_challenge()
 	_award_current_encounter_progression()
 	wave_cleared.emit(
@@ -1700,6 +1737,8 @@ func on_battle_lost() -> void:
 	_finish_run(false)
 
 func _finish_run(victory: bool) -> void:
+	if expedition != null:
+		DirAccess.remove_absolute(expedition_save_path)
 	_battle_outcome_generation += 1
 	_battle_outcome_pending = false
 	run_active = false
@@ -1900,6 +1939,8 @@ func get_current_glory_challenge_state() -> Dictionary:
 ## Les points peuvent être conservés. Leur dépense se fait entre les combats,
 ## avant la capture de Sagesse de la rencontre suivante.
 func can_edit_champion_build() -> bool:
+	if expedition != null and not expedition.is_editable():
+		return false
 	return run_active and not _combat_report_tracker.is_active() and not _battle_outcome_pending
 
 
@@ -1908,10 +1949,14 @@ func spend_champion_attribute(character_id: StringName, attribute_id: StringName
 	if not can_edit_champion_build() or state == null or not state.spend_champion_attribute(attribute_id):
 		return false
 	champion_build_changed.emit(character_id)
+	if expedition != null:
+		save_expedition()
 	return true
 
 
 func purchase_champion_mastery(character_id: StringName, node_id: StringName) -> Dictionary:
+	if expedition != null:
+		return {"purchased": false, "allowed": false, "reason_id": "EXPEDITION_TECHNIQUES_ONLY"}
 	var state := get_character_state(character_id)
 	if not can_edit_champion_build() or state == null:
 		return {"purchased": false, "allowed": false, "reason_id": "BUILD_LOCKED_IN_COMBAT"}
@@ -1937,6 +1982,8 @@ func _resolve_current_glory_challenge() -> void:
 
 func get_champion_remaining_encounter_xp() -> Array[int]:
 	var result: Array[int] = []
+	if expedition != null:
+		return result
 	for index in range(current_room_index + 1, rooms.size()):
 		var encounter: EncounterDefinition = rooms[index].get_encounter_for_wave(0)
 		if encounter != null:
@@ -1945,6 +1992,8 @@ func get_champion_remaining_encounter_xp() -> Array[int]:
 
 
 func get_champion_camp_snapshot() -> Dictionary:
+	if expedition != null:
+		return {}
 	if _odyssey_run_state == null or _active_economy_profile == null:
 		return {}
 	var states := get_ordered_character_states()
@@ -1956,6 +2005,8 @@ func get_champion_camp_snapshot() -> Dictionary:
 
 
 func purchase_champion_camp_offer(offer_id: StringName, target_id: StringName = &"") -> Dictionary:
+	if expedition != null:
+		return {"success": false, "error": "Les services se trouvent sur la carte de l'expédition."}
 	if not can_edit_champion_build() or _odyssey_run_state == null or _active_economy_profile == null:
 		return {"success": false, "error": "La préparation est disponible entre les combats."}
 	var states := get_ordered_character_states()
@@ -1975,3 +2026,155 @@ func get_champion_reaction_priorities() -> Dictionary:
 
 func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array[StringName]) -> bool:
 	return _odyssey_run_state != null and _odyssey_run_state.set_reaction_priority_override(group, ordered_effect_ids)
+
+
+# Catabase orchestration stays at destination boundaries, outside combat.
+func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}) -> bool:
+	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
+		return false
+	if seed_value < 0:
+		var random := RandomNumberGenerator.new()
+		random.randomize()
+		seed_value = int(random.randi()) & 0x7fffffff
+	var data := ExpeditionRunFactory.create(seed_value & 0x7fffffff, hero_visual_variants)
+	var resolution := resolve_run_hero_data(data, false)
+	if not resolution.is_valid() or not _prepare_preconfigured_run(data, resolution.heroes):
+		return false
+	expedition = ExpeditionSession.new()
+	expedition.initialize(get_character_state(&"achilles"), run_seed)
+	# The cinematic and selected hero lead directly to the same authored opening.
+	return choose_expedition_node("d01_0")
+
+
+func choose_expedition_node(node_id: String) -> bool:
+	if expedition == null or not run_active or not expedition.enter(node_id):
+		return false
+	var node := expedition.route.get_current_node()
+	current_room_index = int(node.depth) - 1
+	rooms[current_room_index] = ExpeditionRunFactory.make_room(node, run_seed)
+	current_wave_index = 0
+	_room_combat_report = null
+	_last_combat_report = null
+	_room_outcome_resolved = false
+	_room_exit_selected = false
+	_cleared_room_emitted = false
+	if expedition.route.phase == "reward":
+		expedition.reward_options(item_catalog)
+	save_expedition()
+	if expedition.route.phase == "combat":
+		start_next_battle()
+	return true
+
+
+func claim_expedition_reward(option_id: String) -> Dictionary:
+	if expedition == null or not run_active:
+		return {"success": false, "message": "Aucune expédition en cours."}
+	var result := expedition.claim(option_id, run_inventory, item_catalog)
+	if bool(result.get("success", false)):
+		if expedition.route.phase == "complete":
+			_finish_run(true)
+		else:
+			save_expedition()
+	return result
+
+
+func use_catabase_hub_service(service_id: String) -> Dictionary:
+	if expedition == null or not run_active:
+		return {"success": false, "message": "Aucune halte en cours."}
+	var result: Dictionary = expedition.use_hub_service(service_id, run_inventory, item_catalog)
+	if bool(result.get("success", false)):
+		champion_build_changed.emit(&"achilles")
+		save_expedition()
+	return result
+
+
+func purchase_expedition_technique(node_id: String) -> Dictionary:
+	if expedition == null or not expedition.is_editable():
+		return {"success": false, "reason": "Le kit est engagé pour ce combat."}
+	var result: Dictionary = expedition.build.purchase(node_id)
+	if bool(result.get("success", false)):
+		champion_build_changed.emit(&"achilles")
+		save_expedition()
+	return result
+
+
+func undo_expedition_technique() -> Dictionary:
+	if expedition == null or not expedition.is_editable():
+		return {"success": false, "reason": "Le kit est engagé pour ce combat."}
+	var result: Dictionary = expedition.build.undo_last_purchase()
+	if bool(result.get("success", false)):
+		champion_build_changed.emit(&"achilles")
+		save_expedition()
+	return result
+
+
+func equip_expedition_spell(spell_id: StringName, slot: int) -> bool:
+	if expedition == null or not expedition.is_editable() or not expedition.build.equip(spell_id, slot):
+		return false
+	champion_build_changed.emit(&"achilles")
+	save_expedition()
+	return true
+
+
+func choose_expedition_capacity(option: String) -> Dictionary:
+	if expedition == null or not expedition.is_editable():
+		return {"success": false, "reason": "Choix indisponible."}
+	var result: Dictionary = expedition.build.choose_depth_eight(option)
+	if bool(result.get("success", false)):
+		save_expedition()
+	return result
+
+
+func get_expedition_snapshot() -> Dictionary:
+	if expedition == null or not run_active or _combat_report_tracker.is_active():
+		return {}
+	var state := expedition.character
+	return {"version": 2, "mode": "catabase_route", "hero_visual_variants": _active_run_data.hero_visual_variants.duplicate(), "session": expedition.to_snapshot(), "inventory": run_inventory.to_snapshot(), "equipment": state.equipment_loadout.to_snapshot(), "progression": state.get_progression_snapshot(), "current_hp": state.unit.current_hp}
+
+
+func save_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
+	if path == ExpeditionSaveService.SAVE_PATH:
+		path = expedition_save_path
+	return ExpeditionSaveService.write_snapshot(get_expedition_snapshot(), path)
+
+
+func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
+	var prepared := ExpeditionSaveService.prepare(snapshot)
+	if prepared.is_empty():
+		last_restore_error = &"INVALID_EXPEDITION_SAVE"
+		return false
+	# Commit only objects that have passed all inventory, progression and route checks.
+	cleanup_run_state()
+	var state: CharacterRunState = prepared.state
+	heroes = [state.unit]
+	character_states = {state.character_id: state}
+	_initialize_run_state(prepared.run_data)
+	_disconnect_inventory_signal()
+	_relic_runtime_service.dispose()
+	run_inventory = prepared.inventory
+	_connect_inventory_signal()
+	_relic_runtime_service.initialize(run_inventory, item_catalog, heroes, _active_run_data.action_classification_catalog)
+	expedition = prepared.session
+	for node_id in expedition.route.completed_node_ids:
+		for node in expedition.route.nodes:
+			if str(node.id) == node_id:
+				rooms[int(node.depth) - 1] = ExpeditionRunFactory.make_room(node, run_seed)
+	var current := expedition.route.get_current_node()
+	current_room_index = int(current.depth) - 1 if not current.is_empty() else -1
+	if current_room_index >= 0:
+		rooms[current_room_index] = ExpeditionRunFactory.make_room(current, run_seed)
+	last_restore_error = &""
+	return true
+
+
+func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
+	if path == ExpeditionSaveService.SAVE_PATH:
+		path = expedition_save_path
+	if not restore_expedition_snapshot(ExpeditionSaveService.read_snapshot(path)):
+		return false
+	if expedition.route.phase == "combat":
+		expedition.build.begin_encounter("catabase:%d:%s" % [run_seed, expedition.route.current_node_id])
+		start_next_battle()
+	else:
+		_request_scene_change(EXPEDITION_SCREEN_PATH)
+	return true

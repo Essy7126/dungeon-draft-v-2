@@ -1,0 +1,1515 @@
+{
+  "date": "2026-09-07",
+  "purpose": "Integrate painted Achilles G as a selectable Catabase appearance with the canonical gameplay identity and full directional kit.",
+  "credits": {
+    "starting": 65.5,
+    "current": 4.5,
+    "spentSoFar": 61
+  },
+  "referenceRequests": [
+    {
+      "index": 1,
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "214186f5-3a65-47d1-9a3c-c449505102bc"
+          }
+        ],
+        "prompt": "PRODUCTION CHARACTER DIRECTION REFERENCE, single full-body Achilles. Use the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nEXACT REQUIRED ORIENTATION N: Camera sees his BACK and right side. He faces diagonally AWAY toward the UPPER-RIGHT corner of the image (northeast on screen). His back armor is dominant, NO frontal chest jewel visible. Spear in his anatomical right hand on the right side of his body; shield on anatomical left arm, partly hidden on far side. Native drawn rear three-quarter view.\nModest 15-degree elevated orthographic tactical isometric camera, preserve human body height. Neutral ready stance, both feet on floor, knees gently relaxed, spear upright with blade at TOP, shield relaxed. No pose action. Single character fills 76% of image height from crest to soles. ALL equipment and feet inside frame with generous margins. SOLID PURE MAGENTA #FF00FF BACKGROUND for mechanical chroma key. No ground shadow, ground plane, border, text, letters, labels, texture or gradient in background. Do not mirror source; REDRAW proper anatomy and equipment sides for the required viewpoint."
+      }
+    },
+    {
+      "index": 2,
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "214186f5-3a65-47d1-9a3c-c449505102bc"
+          }
+        ],
+        "prompt": "PRODUCTION CHARACTER DIRECTION REFERENCE, single full-body Achilles. Use the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nEXACT REQUIRED ORIENTATION E: Camera sees his FRONT and left side. He faces diagonally TOWARD the viewer and the LOWER-RIGHT corner (southeast on screen). Face and chest visible angled RIGHT. Shield on anatomical left arm in the near foreground, spear in anatomical right hand on the far side. Native drawn front three-quarter view.\nModest 15-degree elevated orthographic tactical isometric camera, preserve human body height. Neutral ready stance, both feet on floor, knees gently relaxed, spear upright with blade at TOP, shield relaxed. No pose action. Single character fills 76% of image height from crest to soles. ALL equipment and feet inside frame with generous margins. SOLID PURE MAGENTA #FF00FF BACKGROUND for mechanical chroma key. No ground shadow, ground plane, border, text, letters, labels, texture or gradient in background. Do not mirror source; REDRAW proper anatomy and equipment sides for the required viewpoint."
+      }
+    },
+    {
+      "index": 3,
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "214186f5-3a65-47d1-9a3c-c449505102bc"
+          }
+        ],
+        "prompt": "PRODUCTION CHARACTER DIRECTION REFERENCE, single full-body Achilles. Use the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nEXACT REQUIRED ORIENTATION S: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT.\nModest 15-degree elevated orthographic tactical isometric camera, preserve human body height. Neutral ready stance, both feet on floor, knees gently relaxed, spear upright with blade at TOP, shield relaxed. No pose action. Single character fills 76% of image height from crest to soles. ALL equipment and feet inside frame with generous margins. SOLID PURE MAGENTA #FF00FF BACKGROUND for mechanical chroma key. No ground shadow, ground plane, border, text, letters, labels, texture or gradient in background. Do not mirror source; REDRAW proper anatomy and equipment sides for the required viewpoint."
+      }
+    },
+    {
+      "index": 4,
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "214186f5-3a65-47d1-9a3c-c449505102bc"
+          }
+        ],
+        "prompt": "PRODUCTION CHARACTER DIRECTION REFERENCE, single full-body Achilles. Use the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nEXACT REQUIRED ORIENTATION W: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view.\nModest 15-degree elevated orthographic tactical isometric camera, preserve human body height. Neutral ready stance, both feet on floor, knees gently relaxed, spear upright with blade at TOP, shield relaxed. No pose action. Single character fills 76% of image height from crest to soles. ALL equipment and feet inside frame with generous margins. SOLID PURE MAGENTA #FF00FF BACKGROUND for mechanical chroma key. No ground shadow, ground plane, border, text, letters, labels, texture or gradient in background. Do not mirror source; REDRAW proper anatomy and equipment sides for the required viewpoint."
+      }
+    }
+  ],
+  "referenceResults": [
+    {
+      "index": 1,
+      "job_id": "de8ef4dc-be38-47f0-b958-fa761c19499b",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_123923_de8ef4dc-be38-47f0-b958-fa761c19499b.png"
+    },
+    {
+      "index": 2,
+      "job_id": "9c2a5d34-17c9-4982-8875-5cbc904f9044",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_123923_9c2a5d34-17c9-4982-8875-5cbc904f9044.png"
+    },
+    {
+      "index": 3,
+      "job_id": "ad0bdfc7-0b14-4d37-b18f-6a99e796c5e9",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_123923_ad0bdfc7-0b14-4d37-b18f-6a99e796c5e9.png"
+    },
+    {
+      "index": 4,
+      "job_id": "d6bd30de-ec86-4e6c-b667-793b8ac0c636",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_123923_d6bd30de-ec86-4e6c-b667-793b8ac0c636.png"
+    }
+  ],
+  "turnaround": {
+    "request": {
+      "index": 5,
+      "params": {
+        "model": "gpt_image_2",
+        "quality": "high",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "214186f5-3a65-47d1-9a3c-c449505102bc"
+          }
+        ],
+        "prompt": "Draw a FOUR-VIEW CHARACTER TURNAROUND of the painted Greek hero in the reference. Reconstruct the character in 3D and draw four DIFFERENT viewing angles. Do not duplicate the reference pose. Same adult human proportions, outfit and painted rendering.\nLAYOUT: 2 columns by 2 rows on a perfectly flat solid #FF00FF magenta background. Exactly FOUR complete full-body characters, each centered in its own quarter. Large clean margins, body only 70% cell height. No writing, labels, lines, floor or shadows.\nTOP LEFT = BACK three-quarter view, facing AWAY to UPPER RIGHT. We see BACK armor and back of helmet, not chest or face. Right arm holding upright spear on near right side, left forearm shield on far left. The back of shield has a leather handle, no sun on its inside.\nTOP RIGHT = FRONT three-quarter view, facing LOWER RIGHT. Nose and toes clearly point RIGHT. Anatomical LEFT arm and sun shield are near camera, so the big shield partly covers the chest in foreground. Anatomical RIGHT hand holds upright spear on the farther side.\nBOTTOM LEFT = FRONT three-quarter view, facing LOWER LEFT, like supplied reference. Nose and toes point LEFT. Anatomical RIGHT arm and upright spear near camera, sun shield on LEFT forearm visible on viewer right.\nBOTTOM RIGHT = BACK three-quarter view, facing AWAY to UPPER LEFT. We see BACK armor and rear of helmet, not chest or face. Anatomical LEFT arm and shield closest to viewer, shield's outward bronze sun visible. Anatomical RIGHT hand and spear on farther side.\nAll characters have EXACTLY TWO FEET with exactly TWO legs. No floating spare feet or spare weapons. Single spear always in RIGHT hand, shield always LEFT; left/right views must be natively redrawn with correct equipment sides, NOT mirrored images.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nKeep a neutral standing combat-ready stance for all four, one constant body scale. Modest 15-degree elevated isometric game camera. Flat magenta outside every edge, no magenta light or bounce on bronze/skin. Full spear tip and boots fit inside each own cell."
+      }
+    },
+    "results": [
+      {
+        "index": 5,
+        "job_id": "cee34ce8-b1f9-4b6e-8f88-79dd85e82cc5",
+        "status": "completed",
+        "type": "image",
+        "model": "gpt_image_2",
+        "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124331_cee34ce8-b1f9-4b6e-8f88-79dd85e82cc5.png"
+      }
+    ]
+  },
+  "eastCorrection": {
+    "request": {
+      "index": 6,
+      "params": {
+        "model": "gpt_image_2",
+        "quality": "high",
+        "resolution": "2k",
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "214186f5-3a65-47d1-9a3c-c449505102bc"
+          }
+        ],
+        "prompt": "Draw this exact painted Achilles character viewed from the OPPOSITE FRONT SIDE. FULL BODY. His FACE, NOSE, CHEST and TOES point toward the RIGHT edge of the picture at a 45-degree three-quarter angle. The turquoise sun SHIELD is on the LEFT side of the PICTURE, close to the camera, attached to his anatomical LEFT arm. The upright SPEAR is on the RIGHT side of the PICTURE, farther from camera, held in his anatomical RIGHT hand. We see the LEFT side of his face and body and the FRONT of his bronze breastplate. This must be a newly drawn viewpoint with correct anatomical equipment, NOT a mirrored version of the original. Preserve same painted materials, warm bronze, navy tunic, turquoise shield with bronze sun, dark curls, short orange crest, mature tan face, athletic long legs and natural five-and-a-half-head adult height. Feet aim diagonally DOWN-RIGHT. Eye-height modestly elevated 15 degrees, orthographic game sprite. One still relaxed combat-ready standing pose, only two feet, spear tip at TOP. Full body and whole equipment inside frame with generous margin. Pure solid magenta #FF00FF background, no shadow or ground. REPEAT: FACE POINTS RIGHT, SHIELD LEFT IN PICTURE, SPEAR RIGHT IN PICTURE."
+      }
+    },
+    "results": [
+      {
+        "index": 6,
+        "job_id": "be76cecd-9c55-4e70-905e-13228e88783f",
+        "status": "completed",
+        "type": "image",
+        "model": "gpt_image_2",
+        "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124725_be76cecd-9c55-4e70-905e-13228e88783f.png"
+      }
+    ]
+  },
+  "sheetRequests": [
+    {
+      "index": 7,
+      "key": "locomotion_N",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "898a7db8-6177-42dd-9680-5c2d9c32512d"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and right side. He faces diagonally AWAY toward the UPPER-RIGHT corner of the image (northeast on screen). His back armor is dominant, NO frontal chest jewel visible. Spear in his anatomical right hand on the right side of his body; shield on anatomical left arm, partly hidden on far side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 (four frames) a subtle breathing idle cycle: same feet planted, upright spear, relaxed shield. Slight inhale1-2, exhale3-4.\nROWS2+3 (eight frames, ONE full walking cycle in place): 1right-foot-forward contact; 2right knee bears weight rear heel lifts; 3opposite leg passes under hips with NARROW stance; 4opposite knee swings forward foot visibly raised; 5LEFT-foot-forward contact; 6left knee bears weight rear heel lifts; 7right leg passes under hips NARROW stance; 8right knee swings forward foot raised. Opposite legs lead poses1vs5. Contact poses wide, passing poses narrow. Pelvis fixed horizontally. Upright spear one blade at TOP at EVERY walking frame, shield stable; neither turns or swaps hand.\nROW4 (four frames) spear attack aimed in the SAME direction as this view: 1neutral upright ready; 2draw spear back and align shaft FORWARD toward facing target; 3fully wind up with right elbow back, spear ready to thrust; 4impact FULL RIGHT-ARM EXTENSION forward, spearhead leading straight toward target, shield guards torso. Fixed stance with front knee bent. Spear blade never points backward, one rigid unchanged weapon. Final attack must be a forward jab, not a spin.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 8,
+      "key": "base_N",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "898a7db8-6177-42dd-9680-5c2d9c32512d"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 12 complete full-body animation poses in a regular FOUR-COLUMN x 3-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and right side. He faces diagonally AWAY toward the UPPER-RIGHT corner of the image (northeast on screen). His back armor is dominant, NO frontal chest jewel visible. Spear in his anatomical right hand on the right side of his body; shield on anatomical left arm, partly hidden on far side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n12 DISTINCT poses, four columns x three rows.\nROW1 four DASH poses aimed toward the same direction as the view: (1) planted crouched anticipation; (2) leg extension launch; (3) airborne forward dash, clear feet off floor, one knee tucked and other leg back, body leans15degrees, spear aligned toward target and shield braced; (4) planted soft-knee landing returning toward ready stance. All in place: root stays same position, only limbs move. Do not depict four translated characters.\nROW2 four BOW SHOT poses: SPEAR AND SHIELD ARE SECURED ON BACK during archery, bow in LEFT HAND, drawing hand RIGHT. (1) raise small dark wooden recurve bow toward facing direction and nock ONE arrow; (2) full draw right hand at cheek; (3) RELEASE right fingertips trail beside cheek, arrow has left image, left arm and bow stay extended; (4) lower bow and relax. Whole bowstring and both arms coherent, two feet planted.\nROW3 four SHIELD BLOCK poses: spear back in RIGHT hand held upright unchanged, shield on LEFT forearm. (1) start raising shield; (2) lift it across chest toward facing threat; (3) strongest impact brace, knees gently flex, shield covers torso and face remains visible as allowed by viewpoint; (4) begin lower shield. No magic, VFX, sparks, enemies or motion trails.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 9,
+      "key": "extra_N",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "898a7db8-6177-42dd-9680-5c2d9c32512d"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and right side. He faces diagonally AWAY toward the UPPER-RIGHT corner of the image (northeast on screen). His back armor is dominant, NO frontal chest jewel visible. Spear in his anatomical right hand on the right side of his body; shield on anatomical left arm, partly hidden on far side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 four SPEAR SWEEP poses: spear in RIGHT hand, LEFT forearm shield. (1) brace and draw spear across body to one side; (2) wind up torso slightly with weapon chambered; (3) full sweep impact in facing direction, spear extends across frontal arc, blade on leading end; (4) follow-through easing toward ready. Both feet planted; no turnaround or camera rotation.\nROW2 four HIGH VOLLEY archery poses: SPEAR AND SHIELD STRAPPED TO BACK, bow LEFT hand, string RIGHT hand. (1) raise bow diagonally upward and forward in facing direction, nock ONE arrow; (2) full draw aiming into sky; (3) release with right fingertips beside cheek, arrow has departed, bow remains raised; (4) lower bow. Consistent two arms, two legs, equipment storage.\nROW3 four HIT REACTION poses with spear RIGHT and shield LEFT: (1) ready stance; (2) recoil torso backward slightly as struck, bend knees; (3) maximum recoil still on two feet, equipment retained; (4) recover ready. NO blood or damage effects.\nROW4 four DEFEAT poses: (1) stumble with knees buckling; (2) drop onto one knee, head lowers; (3) collapse onto side toward facing direction; (4) final prone body lying completely on ground, head, limbs and equipment all inside cell. Keep two legs/two arms, armor same, no gore. Final death has no upright duplicate, no standing legs or floating equipment.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 10,
+      "key": "locomotion_S",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "755b8c31-0a74-46d7-87d9-bf446c932f38"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 (four frames) a subtle breathing idle cycle: same feet planted, upright spear, relaxed shield. Slight inhale1-2, exhale3-4.\nROWS2+3 (eight frames, ONE full walking cycle in place): 1right-foot-forward contact; 2right knee bears weight rear heel lifts; 3opposite leg passes under hips with NARROW stance; 4opposite knee swings forward foot visibly raised; 5LEFT-foot-forward contact; 6left knee bears weight rear heel lifts; 7right leg passes under hips NARROW stance; 8right knee swings forward foot raised. Opposite legs lead poses1vs5. Contact poses wide, passing poses narrow. Pelvis fixed horizontally. Upright spear one blade at TOP at EVERY walking frame, shield stable; neither turns or swaps hand.\nROW4 (four frames) spear attack aimed in the SAME direction as this view: 1neutral upright ready; 2draw spear back and align shaft FORWARD toward facing target; 3fully wind up with right elbow back, spear ready to thrust; 4impact FULL RIGHT-ARM EXTENSION forward, spearhead leading straight toward target, shield guards torso. Fixed stance with front knee bent. Spear blade never points backward, one rigid unchanged weapon. Final attack must be a forward jab, not a spin.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 11,
+      "key": "base_S",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "755b8c31-0a74-46d7-87d9-bf446c932f38"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 12 complete full-body animation poses in a regular FOUR-COLUMN x 3-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n12 DISTINCT poses, four columns x three rows.\nROW1 four DASH poses aimed toward the same direction as the view: (1) planted crouched anticipation; (2) leg extension launch; (3) airborne forward dash, clear feet off floor, one knee tucked and other leg back, body leans15degrees, spear aligned toward target and shield braced; (4) planted soft-knee landing returning toward ready stance. All in place: root stays same position, only limbs move. Do not depict four translated characters.\nROW2 four BOW SHOT poses: SPEAR AND SHIELD ARE SECURED ON BACK during archery, bow in LEFT HAND, drawing hand RIGHT. (1) raise small dark wooden recurve bow toward facing direction and nock ONE arrow; (2) full draw right hand at cheek; (3) RELEASE right fingertips trail beside cheek, arrow has left image, left arm and bow stay extended; (4) lower bow and relax. Whole bowstring and both arms coherent, two feet planted.\nROW3 four SHIELD BLOCK poses: spear back in RIGHT hand held upright unchanged, shield on LEFT forearm. (1) start raising shield; (2) lift it across chest toward facing threat; (3) strongest impact brace, knees gently flex, shield covers torso and face remains visible as allowed by viewpoint; (4) begin lower shield. No magic, VFX, sparks, enemies or motion trails.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 12,
+      "key": "extra_S",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "755b8c31-0a74-46d7-87d9-bf446c932f38"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 four SPEAR SWEEP poses: spear in RIGHT hand, LEFT forearm shield. (1) brace and draw spear across body to one side; (2) wind up torso slightly with weapon chambered; (3) full sweep impact in facing direction, spear extends across frontal arc, blade on leading end; (4) follow-through easing toward ready. Both feet planted; no turnaround or camera rotation.\nROW2 four HIGH VOLLEY archery poses: SPEAR AND SHIELD STRAPPED TO BACK, bow LEFT hand, string RIGHT hand. (1) raise bow diagonally upward and forward in facing direction, nock ONE arrow; (2) full draw aiming into sky; (3) release with right fingertips beside cheek, arrow has departed, bow remains raised; (4) lower bow. Consistent two arms, two legs, equipment storage.\nROW3 four HIT REACTION poses with spear RIGHT and shield LEFT: (1) ready stance; (2) recoil torso backward slightly as struck, bend knees; (3) maximum recoil still on two feet, equipment retained; (4) recover ready. NO blood or damage effects.\nROW4 four DEFEAT poses: (1) stumble with knees buckling; (2) drop onto one knee, head lowers; (3) collapse onto side toward facing direction; (4) final prone body lying completely on ground, head, limbs and equipment all inside cell. Keep two legs/two arms, armor same, no gore. Final death has no upright duplicate, no standing legs or floating equipment.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 13,
+      "key": "locomotion_W",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "65d5c887-61e5-4582-bfa3-4c24f1a7b6ca"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 (four frames) a subtle breathing idle cycle: same feet planted, upright spear, relaxed shield. Slight inhale1-2, exhale3-4.\nROWS2+3 (eight frames, ONE full walking cycle in place): 1right-foot-forward contact; 2right knee bears weight rear heel lifts; 3opposite leg passes under hips with NARROW stance; 4opposite knee swings forward foot visibly raised; 5LEFT-foot-forward contact; 6left knee bears weight rear heel lifts; 7right leg passes under hips NARROW stance; 8right knee swings forward foot raised. Opposite legs lead poses1vs5. Contact poses wide, passing poses narrow. Pelvis fixed horizontally. Upright spear one blade at TOP at EVERY walking frame, shield stable; neither turns or swaps hand.\nROW4 (four frames) spear attack aimed in the SAME direction as this view: 1neutral upright ready; 2draw spear back and align shaft FORWARD toward facing target; 3fully wind up with right elbow back, spear ready to thrust; 4impact FULL RIGHT-ARM EXTENSION forward, spearhead leading straight toward target, shield guards torso. Fixed stance with front knee bent. Spear blade never points backward, one rigid unchanged weapon. Final attack must be a forward jab, not a spin.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 14,
+      "key": "base_W",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "65d5c887-61e5-4582-bfa3-4c24f1a7b6ca"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 12 complete full-body animation poses in a regular FOUR-COLUMN x 3-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n12 DISTINCT poses, four columns x three rows.\nROW1 four DASH poses aimed toward the same direction as the view: (1) planted crouched anticipation; (2) leg extension launch; (3) airborne forward dash, clear feet off floor, one knee tucked and other leg back, body leans15degrees, spear aligned toward target and shield braced; (4) planted soft-knee landing returning toward ready stance. All in place: root stays same position, only limbs move. Do not depict four translated characters.\nROW2 four BOW SHOT poses: SPEAR AND SHIELD ARE SECURED ON BACK during archery, bow in LEFT HAND, drawing hand RIGHT. (1) raise small dark wooden recurve bow toward facing direction and nock ONE arrow; (2) full draw right hand at cheek; (3) RELEASE right fingertips trail beside cheek, arrow has left image, left arm and bow stay extended; (4) lower bow and relax. Whole bowstring and both arms coherent, two feet planted.\nROW3 four SHIELD BLOCK poses: spear back in RIGHT hand held upright unchanged, shield on LEFT forearm. (1) start raising shield; (2) lift it across chest toward facing threat; (3) strongest impact brace, knees gently flex, shield covers torso and face remains visible as allowed by viewpoint; (4) begin lower shield. No magic, VFX, sparks, enemies or motion trails.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 15,
+      "key": "extra_W",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "65d5c887-61e5-4582-bfa3-4c24f1a7b6ca"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 four SPEAR SWEEP poses: spear in RIGHT hand, LEFT forearm shield. (1) brace and draw spear across body to one side; (2) wind up torso slightly with weapon chambered; (3) full sweep impact in facing direction, spear extends across frontal arc, blade on leading end; (4) follow-through easing toward ready. Both feet planted; no turnaround or camera rotation.\nROW2 four HIGH VOLLEY archery poses: SPEAR AND SHIELD STRAPPED TO BACK, bow LEFT hand, string RIGHT hand. (1) raise bow diagonally upward and forward in facing direction, nock ONE arrow; (2) full draw aiming into sky; (3) release with right fingertips beside cheek, arrow has departed, bow remains raised; (4) lower bow. Consistent two arms, two legs, equipment storage.\nROW3 four HIT REACTION poses with spear RIGHT and shield LEFT: (1) ready stance; (2) recoil torso backward slightly as struck, bend knees; (3) maximum recoil still on two feet, equipment retained; (4) recover ready. NO blood or damage effects.\nROW4 four DEFEAT poses: (1) stumble with knees buckling; (2) drop onto one knee, head lowers; (3) collapse onto side toward facing direction; (4) final prone body lying completely on ground, head, limbs and equipment all inside cell. Keep two legs/two arms, armor same, no gore. Final death has no upright duplicate, no standing legs or floating equipment.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 16,
+      "key": "locomotion_E",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "be76cecd-9c55-4e70-905e-13228e88783f"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and left side. He faces diagonally TOWARD the viewer and the LOWER-RIGHT corner (southeast on screen). Face and chest visible angled RIGHT. Shield on anatomical left arm in the near foreground, spear in anatomical right hand on the far side. Native drawn front three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 (four frames) a subtle breathing idle cycle: same feet planted, upright spear, relaxed shield. Slight inhale1-2, exhale3-4.\nROWS2+3 (eight frames, ONE full walking cycle in place): 1right-foot-forward contact; 2right knee bears weight rear heel lifts; 3opposite leg passes under hips with NARROW stance; 4opposite knee swings forward foot visibly raised; 5LEFT-foot-forward contact; 6left knee bears weight rear heel lifts; 7right leg passes under hips NARROW stance; 8right knee swings forward foot raised. Opposite legs lead poses1vs5. Contact poses wide, passing poses narrow. Pelvis fixed horizontally. Upright spear one blade at TOP at EVERY walking frame, shield stable; neither turns or swaps hand.\nROW4 (four frames) spear attack aimed in the SAME direction as this view: 1neutral upright ready; 2draw spear back and align shaft FORWARD toward facing target; 3fully wind up with right elbow back, spear ready to thrust; 4impact FULL RIGHT-ARM EXTENSION forward, spearhead leading straight toward target, shield guards torso. Fixed stance with front knee bent. Spear blade never points backward, one rigid unchanged weapon. Final attack must be a forward jab, not a spin.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 17,
+      "key": "base_E",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "be76cecd-9c55-4e70-905e-13228e88783f"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 12 complete full-body animation poses in a regular FOUR-COLUMN x 3-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and left side. He faces diagonally TOWARD the viewer and the LOWER-RIGHT corner (southeast on screen). Face and chest visible angled RIGHT. Shield on anatomical left arm in the near foreground, spear in anatomical right hand on the far side. Native drawn front three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n12 DISTINCT poses, four columns x three rows.\nROW1 four DASH poses aimed toward the same direction as the view: (1) planted crouched anticipation; (2) leg extension launch; (3) airborne forward dash, clear feet off floor, one knee tucked and other leg back, body leans15degrees, spear aligned toward target and shield braced; (4) planted soft-knee landing returning toward ready stance. All in place: root stays same position, only limbs move. Do not depict four translated characters.\nROW2 four BOW SHOT poses: SPEAR AND SHIELD ARE SECURED ON BACK during archery, bow in LEFT HAND, drawing hand RIGHT. (1) raise small dark wooden recurve bow toward facing direction and nock ONE arrow; (2) full draw right hand at cheek; (3) RELEASE right fingertips trail beside cheek, arrow has left image, left arm and bow stay extended; (4) lower bow and relax. Whole bowstring and both arms coherent, two feet planted.\nROW3 four SHIELD BLOCK poses: spear back in RIGHT hand held upright unchanged, shield on LEFT forearm. (1) start raising shield; (2) lift it across chest toward facing threat; (3) strongest impact brace, knees gently flex, shield covers torso and face remains visible as allowed by viewpoint; (4) begin lower shield. No magic, VFX, sparks, enemies or motion trails.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    },
+    {
+      "index": 18,
+      "key": "extra_E",
+      "params": {
+        "model": "nano_banana_pro",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "be76cecd-9c55-4e70-905e-13228e88783f"
+          }
+        ],
+        "prompt": "Generate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and left side. He faces diagonally TOWARD the viewer and the LOWER-RIGHT corner (southeast on screen). Face and chest visible angled RIGHT. Shield on anatomical left arm in the near foreground, spear in anatomical right hand on the far side. Native drawn front three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 four SPEAR SWEEP poses: spear in RIGHT hand, LEFT forearm shield. (1) brace and draw spear across body to one side; (2) wind up torso slightly with weapon chambered; (3) full sweep impact in facing direction, spear extends across frontal arc, blade on leading end; (4) follow-through easing toward ready. Both feet planted; no turnaround or camera rotation.\nROW2 four HIGH VOLLEY archery poses: SPEAR AND SHIELD STRAPPED TO BACK, bow LEFT hand, string RIGHT hand. (1) raise bow diagonally upward and forward in facing direction, nock ONE arrow; (2) full draw aiming into sky; (3) release with right fingertips beside cheek, arrow has departed, bow remains raised; (4) lower bow. Consistent two arms, two legs, equipment storage.\nROW3 four HIT REACTION poses with spear RIGHT and shield LEFT: (1) ready stance; (2) recoil torso backward slightly as struck, bend knees; (3) maximum recoil still on two feet, equipment retained; (4) recover ready. NO blood or damage effects.\nROW4 four DEFEAT poses: (1) stumble with knees buckling; (2) drop onto one knee, head lowers; (3) collapse onto side toward facing direction; (4) final prone body lying completely on ground, head, limbs and equipment all inside cell. Keep two legs/two arms, armor same, no gore. Final death has no upright duplicate, no standing legs or floating equipment.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes."
+      }
+    }
+  ],
+  "sheetResults": [
+    {
+      "index": 7,
+      "job_id": "caf2d003-5a16-4e15-bc29-765dd81e113c",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124850_caf2d003-5a16-4e15-bc29-765dd81e113c.png"
+    },
+    {
+      "index": 8,
+      "job_id": "16b85542-3c43-44c6-8a71-290e6092baea",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124852_16b85542-3c43-44c6-8a71-290e6092baea.png"
+    },
+    {
+      "index": 9,
+      "job_id": "e589da2d-7c7e-4c31-ab4a-012a91b532dc",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124850_e589da2d-7c7e-4c31-ab4a-012a91b532dc.png"
+    },
+    {
+      "index": 10,
+      "job_id": "96a08c9f-0af3-47e4-99dc-55c457c53907",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124850_96a08c9f-0af3-47e4-99dc-55c457c53907.png"
+    },
+    {
+      "index": 11,
+      "job_id": "926aec7c-f263-4d24-a2f6-b5de68a26ebe",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124850_926aec7c-f263-4d24-a2f6-b5de68a26ebe.png"
+    },
+    {
+      "index": 12,
+      "job_id": "16e15877-739e-4978-9271-271eff6f7972",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124851_16e15877-739e-4978-9271-271eff6f7972.png"
+    },
+    {
+      "index": 13,
+      "job_id": "72f2be83-d4c1-455d-b772-2bfc5e78a136",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124917_72f2be83-d4c1-455d-b772-2bfc5e78a136.png"
+    },
+    {
+      "index": 14,
+      "job_id": "3b2b5f1c-659d-4d5f-9775-02b91b3ecd27",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124917_3b2b5f1c-659d-4d5f-9775-02b91b3ecd27.png"
+    },
+    {
+      "index": 15,
+      "job_id": "c1f3695f-326b-4f68-a33b-2a25184688fb",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124917_c1f3695f-326b-4f68-a33b-2a25184688fb.png"
+    },
+    {
+      "index": 16,
+      "job_id": "e9f2f6e3-b029-4944-9b23-34ad6be9e638",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125111_e9f2f6e3-b029-4944-9b23-34ad6be9e638.png"
+    },
+    {
+      "index": 17,
+      "job_id": "8ae2da33-71bf-4a2e-b687-57c0ccc4e6f9",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125112_8ae2da33-71bf-4a2e-b687-57c0ccc4e6f9.png"
+    },
+    {
+      "index": 18,
+      "job_id": "9dc6f2ce-5fb2-444d-9e94-b498fff537db",
+      "status": "completed",
+      "type": "image",
+      "model": "nano_banana_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125111_9dc6f2ce-5fb2-444d-9e94-b498fff537db.png"
+    }
+  ],
+  "leftCorrectionRequests": [
+    {
+      "index": 19,
+      "key": "locomotion_S",
+      "params": {
+        "model": "gpt_image_2",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "755b8c31-0a74-46d7-87d9-bf446c932f38"
+          }
+        ],
+        "prompt": "ALL ACTIONS IN THIS SHEET MUST AIM TO THE LEFT SIDE OF THE IMAGE. This is essential. FRONT VIEW, facing TOWARD viewer and LEFT, toward screen LOWER LEFT. Nose, chest, knees and toes point LEFT at all times.\nGenerate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 (four frames) a subtle breathing idle cycle: same feet planted, upright spear, relaxed shield. Slight inhale1-2, exhale3-4.\nROWS2+3 (eight frames, ONE full walking cycle in place): 1right-foot-forward contact; 2right knee bears weight rear heel lifts; 3opposite leg passes under hips with NARROW stance; 4opposite knee swings forward foot visibly raised; 5LEFT-foot-forward contact; 6left knee bears weight rear heel lifts; 7right leg passes under hips NARROW stance; 8right knee swings forward foot raised. Opposite legs lead poses1vs5. Contact poses wide, passing poses narrow. Pelvis fixed horizontally. Upright spear one blade at TOP at EVERY walking frame, shield stable; neither turns or swaps hand.\nROW4 (four frames) spear attack aimed in the SAME direction as this view: 1neutral upright ready; 2draw spear back and align shaft FORWARD toward facing target; 3fully wind up with right elbow back, spear ready to thrust; 4impact FULL RIGHT-ARM EXTENSION forward, spearhead leading straight toward target, shield guards torso. Fixed stance with front knee bent. Spear blade never points backward, one rigid unchanged weapon. Final attack must be a forward jab, not a spin.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes.\nSTRICT DIRECTION OVERRIDE: Face and all weapons aim to SCREEN LEFT, NEVER SCREEN RIGHT. Every SPEAR THRUST, SWEEP, DASH and ARROW points LEFT. For bow, the extended bow arm reaches LEFT and drawing hand is to its RIGHT behind string. For spear the spearhead is always LEFT of the hand when thrusting. The torso must NOT turn right in any action. Keep all gestures on this LEFT-facing axis. Pure magenta background with no shadow. Follow regular 4 columns by 4 rows grid.",
+        "quality": "medium"
+      }
+    },
+    {
+      "index": 20,
+      "key": "base_S",
+      "params": {
+        "model": "gpt_image_2",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "755b8c31-0a74-46d7-87d9-bf446c932f38"
+          }
+        ],
+        "prompt": "ALL ACTIONS IN THIS SHEET MUST AIM TO THE LEFT SIDE OF THE IMAGE. This is essential. FRONT VIEW, facing TOWARD viewer and LEFT, toward screen LOWER LEFT. Nose, chest, knees and toes point LEFT at all times.\nGenerate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 12 complete full-body animation poses in a regular FOUR-COLUMN x 3-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n12 DISTINCT poses, four columns x three rows.\nROW1 four DASH poses aimed toward the same direction as the view: (1) planted crouched anticipation; (2) leg extension launch; (3) airborne forward dash, clear feet off floor, one knee tucked and other leg back, body leans15degrees, spear aligned toward target and shield braced; (4) planted soft-knee landing returning toward ready stance. All in place: root stays same position, only limbs move. Do not depict four translated characters.\nROW2 four BOW SHOT poses: SPEAR AND SHIELD ARE SECURED ON BACK during archery, bow in LEFT HAND, drawing hand RIGHT. (1) raise small dark wooden recurve bow toward facing direction and nock ONE arrow; (2) full draw right hand at cheek; (3) RELEASE right fingertips trail beside cheek, arrow has left image, left arm and bow stay extended; (4) lower bow and relax. Whole bowstring and both arms coherent, two feet planted.\nROW3 four SHIELD BLOCK poses: spear back in RIGHT hand held upright unchanged, shield on LEFT forearm. (1) start raising shield; (2) lift it across chest toward facing threat; (3) strongest impact brace, knees gently flex, shield covers torso and face remains visible as allowed by viewpoint; (4) begin lower shield. No magic, VFX, sparks, enemies or motion trails.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes.\nSTRICT DIRECTION OVERRIDE: Face and all weapons aim to SCREEN LEFT, NEVER SCREEN RIGHT. Every SPEAR THRUST, SWEEP, DASH and ARROW points LEFT. For bow, the extended bow arm reaches LEFT and drawing hand is to its RIGHT behind string. For spear the spearhead is always LEFT of the hand when thrusting. The torso must NOT turn right in any action. Keep all gestures on this LEFT-facing axis. Pure magenta background with no shadow. Follow regular 4 columns by 3 rows grid.",
+        "quality": "medium"
+      }
+    },
+    {
+      "index": 21,
+      "key": "extra_S",
+      "params": {
+        "model": "gpt_image_2",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "755b8c31-0a74-46d7-87d9-bf446c932f38"
+          }
+        ],
+        "prompt": "ALL ACTIONS IN THIS SHEET MUST AIM TO THE LEFT SIDE OF THE IMAGE. This is essential. FRONT VIEW, facing TOWARD viewer and LEFT, toward screen LOWER LEFT. Nose, chest, knees and toes point LEFT at all times.\nGenerate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his FRONT and right side. He faces diagonally TOWARD the viewer and the LOWER-LEFT corner (southwest on screen). Face and chest visible angled LEFT like the supplied G reference. Shield on anatomical left forearm appears at viewer RIGHT, spear in anatomical right hand appears at viewer LEFT. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 four SPEAR SWEEP poses: spear in RIGHT hand, LEFT forearm shield. (1) brace and draw spear across body to one side; (2) wind up torso slightly with weapon chambered; (3) full sweep impact in facing direction, spear extends across frontal arc, blade on leading end; (4) follow-through easing toward ready. Both feet planted; no turnaround or camera rotation.\nROW2 four HIGH VOLLEY archery poses: SPEAR AND SHIELD STRAPPED TO BACK, bow LEFT hand, string RIGHT hand. (1) raise bow diagonally upward and forward in facing direction, nock ONE arrow; (2) full draw aiming into sky; (3) release with right fingertips beside cheek, arrow has departed, bow remains raised; (4) lower bow. Consistent two arms, two legs, equipment storage.\nROW3 four HIT REACTION poses with spear RIGHT and shield LEFT: (1) ready stance; (2) recoil torso backward slightly as struck, bend knees; (3) maximum recoil still on two feet, equipment retained; (4) recover ready. NO blood or damage effects.\nROW4 four DEFEAT poses: (1) stumble with knees buckling; (2) drop onto one knee, head lowers; (3) collapse onto side toward facing direction; (4) final prone body lying completely on ground, head, limbs and equipment all inside cell. Keep two legs/two arms, armor same, no gore. Final death has no upright duplicate, no standing legs or floating equipment.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes.\nSTRICT DIRECTION OVERRIDE: Face and all weapons aim to SCREEN LEFT, NEVER SCREEN RIGHT. Every SPEAR THRUST, SWEEP, DASH and ARROW points LEFT. For bow, the extended bow arm reaches LEFT and drawing hand is to its RIGHT behind string. For spear the spearhead is always LEFT of the hand when thrusting. The torso must NOT turn right in any action. Keep all gestures on this LEFT-facing axis. Pure magenta background with no shadow. Follow regular 4 columns by 4 rows grid.",
+        "quality": "medium"
+      }
+    },
+    {
+      "index": 22,
+      "key": "locomotion_W",
+      "params": {
+        "model": "gpt_image_2",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "65d5c887-61e5-4582-bfa3-4c24f1a7b6ca"
+          }
+        ],
+        "prompt": "ALL ACTIONS IN THIS SHEET MUST AIM TO THE LEFT SIDE OF THE IMAGE. This is essential. BACK VIEW, facing AWAY and LEFT, toward screen UPPER LEFT. We see rear helmet/backplate at all times.\nGenerate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 (four frames) a subtle breathing idle cycle: same feet planted, upright spear, relaxed shield. Slight inhale1-2, exhale3-4.\nROWS2+3 (eight frames, ONE full walking cycle in place): 1right-foot-forward contact; 2right knee bears weight rear heel lifts; 3opposite leg passes under hips with NARROW stance; 4opposite knee swings forward foot visibly raised; 5LEFT-foot-forward contact; 6left knee bears weight rear heel lifts; 7right leg passes under hips NARROW stance; 8right knee swings forward foot raised. Opposite legs lead poses1vs5. Contact poses wide, passing poses narrow. Pelvis fixed horizontally. Upright spear one blade at TOP at EVERY walking frame, shield stable; neither turns or swaps hand.\nROW4 (four frames) spear attack aimed in the SAME direction as this view: 1neutral upright ready; 2draw spear back and align shaft FORWARD toward facing target; 3fully wind up with right elbow back, spear ready to thrust; 4impact FULL RIGHT-ARM EXTENSION forward, spearhead leading straight toward target, shield guards torso. Fixed stance with front knee bent. Spear blade never points backward, one rigid unchanged weapon. Final attack must be a forward jab, not a spin.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes.\nSTRICT DIRECTION OVERRIDE: Face and all weapons aim to SCREEN LEFT, NEVER SCREEN RIGHT. Every SPEAR THRUST, SWEEP, DASH and ARROW points LEFT. For bow, the extended bow arm reaches LEFT and drawing hand is to its RIGHT behind string. For spear the spearhead is always LEFT of the hand when thrusting. The torso must NOT turn right in any action. Keep all gestures on this LEFT-facing axis. Pure magenta background with no shadow. Follow regular 4 columns by 4 rows grid.",
+        "quality": "medium"
+      }
+    },
+    {
+      "index": 23,
+      "key": "base_W",
+      "params": {
+        "model": "gpt_image_2",
+        "resolution": "2k",
+        "aspect_ratio": "4:3",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "65d5c887-61e5-4582-bfa3-4c24f1a7b6ca"
+          }
+        ],
+        "prompt": "ALL ACTIONS IN THIS SHEET MUST AIM TO THE LEFT SIDE OF THE IMAGE. This is essential. BACK VIEW, facing AWAY and LEFT, toward screen UPPER LEFT. We see rear helmet/backplate at all times.\nGenerate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 12 complete full-body animation poses in a regular FOUR-COLUMN x 3-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n12 DISTINCT poses, four columns x three rows.\nROW1 four DASH poses aimed toward the same direction as the view: (1) planted crouched anticipation; (2) leg extension launch; (3) airborne forward dash, clear feet off floor, one knee tucked and other leg back, body leans15degrees, spear aligned toward target and shield braced; (4) planted soft-knee landing returning toward ready stance. All in place: root stays same position, only limbs move. Do not depict four translated characters.\nROW2 four BOW SHOT poses: SPEAR AND SHIELD ARE SECURED ON BACK during archery, bow in LEFT HAND, drawing hand RIGHT. (1) raise small dark wooden recurve bow toward facing direction and nock ONE arrow; (2) full draw right hand at cheek; (3) RELEASE right fingertips trail beside cheek, arrow has left image, left arm and bow stay extended; (4) lower bow and relax. Whole bowstring and both arms coherent, two feet planted.\nROW3 four SHIELD BLOCK poses: spear back in RIGHT hand held upright unchanged, shield on LEFT forearm. (1) start raising shield; (2) lift it across chest toward facing threat; (3) strongest impact brace, knees gently flex, shield covers torso and face remains visible as allowed by viewpoint; (4) begin lower shield. No magic, VFX, sparks, enemies or motion trails.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes.\nSTRICT DIRECTION OVERRIDE: Face and all weapons aim to SCREEN LEFT, NEVER SCREEN RIGHT. Every SPEAR THRUST, SWEEP, DASH and ARROW points LEFT. For bow, the extended bow arm reaches LEFT and drawing hand is to its RIGHT behind string. For spear the spearhead is always LEFT of the hand when thrusting. The torso must NOT turn right in any action. Keep all gestures on this LEFT-facing axis. Pure magenta background with no shadow. Follow regular 4 columns by 3 rows grid.",
+        "quality": "medium"
+      }
+    },
+    {
+      "index": 24,
+      "key": "extra_W",
+      "params": {
+        "model": "gpt_image_2",
+        "resolution": "2k",
+        "aspect_ratio": "1:1",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "65d5c887-61e5-4582-bfa3-4c24f1a7b6ca"
+          }
+        ],
+        "prompt": "ALL ACTIONS IN THIS SHEET MUST AIM TO THE LEFT SIDE OF THE IMAGE. This is essential. BACK VIEW, facing AWAY and LEFT, toward screen UPPER LEFT. We see rear helmet/backplate at all times.\nGenerate a production sprite sheet for a tactical game. Use the supplied SINGLE-DIRECTION painted Achilles as the exact visual model AND camera orientation. Every character in the output must have this same viewing angle. Do NOT return a single character or a reference board. Draw precisely 16 complete full-body animation poses in a regular FOUR-COLUMN x 4-ROW grid, row-major order.\nUse the supplied Achilles G image as the exact character model and PAINTED art style. Adult athletic Greek human, elongated natural legs, about 5.5 heads tall excluding crest, never squat/dwarf/chibi. Warm bronze breastplate with small turquoise jewel, navy blue short tunic, dark teal bracers, bronze greaves and sandal boots, tan face, dark curly hair, open bronze helmet and SHORT burnt-orange crest. ONE straight spear with leaf-shaped spearhead on ONE END only in anatomical RIGHT hand. ONE round dark turquoise shield with bronze sun emblem on anatomical LEFT forearm. Soft hand-painted volumes, warm highlights, restrained colored outline; preserve source brush rendering. No blue white chevron design. No costume redesign.\nLOCK VIEW: Camera sees his BACK and left side. He faces diagonally AWAY toward the UPPER-LEFT corner (northwest on screen). His back armor dominant, NO frontal chest jewel visible. Round shield on anatomical LEFT forearm on the left near side, spear in anatomical right hand farther side. Native drawn rear three-quarter view. Keep the face/back and equipment exactly consistent with the input image in EVERY row. No camera changes, no automatic mirroring.\nGRID GEOMETRY IS CRITICAL: each cell equal width/height, pose centered in its cell, standing body from crest to soles only 56% of cell height, ground root at 82% cell height, pelvis on cell center X. Large empty gutters and margins for the entire spear, bow and death poses. ALL poses same exact scale, head size, leg length and costume, NO larger top row/smaller bottom row. NEVER crop any weapon, boot, limb or helmet or put it in another cell.\n16 DISTINCT poses, four columns x four rows.\nROW1 four SPEAR SWEEP poses: spear in RIGHT hand, LEFT forearm shield. (1) brace and draw spear across body to one side; (2) wind up torso slightly with weapon chambered; (3) full sweep impact in facing direction, spear extends across frontal arc, blade on leading end; (4) follow-through easing toward ready. Both feet planted; no turnaround or camera rotation.\nROW2 four HIGH VOLLEY archery poses: SPEAR AND SHIELD STRAPPED TO BACK, bow LEFT hand, string RIGHT hand. (1) raise bow diagonally upward and forward in facing direction, nock ONE arrow; (2) full draw aiming into sky; (3) release with right fingertips beside cheek, arrow has departed, bow remains raised; (4) lower bow. Consistent two arms, two legs, equipment storage.\nROW3 four HIT REACTION poses with spear RIGHT and shield LEFT: (1) ready stance; (2) recoil torso backward slightly as struck, bend knees; (3) maximum recoil still on two feet, equipment retained; (4) recover ready. NO blood or damage effects.\nROW4 four DEFEAT poses: (1) stumble with knees buckling; (2) drop onto one knee, head lowers; (3) collapse onto side toward facing direction; (4) final prone body lying completely on ground, head, limbs and equipment all inside cell. Keep two legs/two arms, armor same, no gore. Final death has no upright duplicate, no standing legs or floating equipment.\nPURE FLAT SOLID MAGENTA #FF00FF everywhere outside character silhouettes. No shadow, no floor, no backdrop gradient, no magenta reflected light or edgeglow. No captions, numbers, labels, panel borders, guides, action lines or particles. Human long athletic legs and smaller adult head like reference. Keep the brush-painted material style while preserving clear game-animation silhouettes.\nSTRICT DIRECTION OVERRIDE: Face and all weapons aim to SCREEN LEFT, NEVER SCREEN RIGHT. Every SPEAR THRUST, SWEEP, DASH and ARROW points LEFT. For bow, the extended bow arm reaches LEFT and drawing hand is to its RIGHT behind string. For spear the spearhead is always LEFT of the hand when thrusting. The torso must NOT turn right in any action. Keep all gestures on this LEFT-facing axis. Pure magenta background with no shadow. Follow regular 4 columns by 4 rows grid.",
+        "quality": "medium"
+      }
+    }
+  ],
+  "leftCorrectionResults": [
+    {
+      "index": 19,
+      "job_id": "59df6a9b-13e5-494f-be01-b12bedfd0b8f",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_59df6a9b-13e5-494f-be01-b12bedfd0b8f.png"
+    },
+    {
+      "index": 20,
+      "job_id": "04878ae4-59dc-45cd-b18c-f90b0a778bd7",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_04878ae4-59dc-45cd-b18c-f90b0a778bd7.png"
+    },
+    {
+      "index": 21,
+      "job_id": "29488b50-bd87-4150-831d-4b26161da0f9",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_29488b50-bd87-4150-831d-4b26161da0f9.png"
+    },
+    {
+      "index": 22,
+      "job_id": "1f47419e-304d-4704-a0cb-d593bec4623f",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125857_1f47419e-304d-4704-a0cb-d593bec4623f.png"
+    },
+    {
+      "index": 23,
+      "job_id": "761b8a92-e880-481d-bf57-ac3c147ce5e2",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_761b8a92-e880-481d-bf57-ac3c147ce5e2.png"
+    },
+    {
+      "index": 24,
+      "job_id": "3f24d08b-f1ad-407f-9376-61259f498b45",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_3f24d08b-f1ad-407f-9376-61259f498b45.png"
+    }
+  ],
+  "selectedSources": [
+    {
+      "key": "locomotion_N",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_124850_caf2d003-5a16-4e15-bc29-765dd81e113c.png",
+      "columns": 4,
+      "rows": 4,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.5850487540628385,
+      "roots": [
+        [
+          256.0,
+          506.0
+        ],
+        [
+          256.0,
+          506.0
+        ],
+        [
+          256.0,
+          506.0
+        ],
+        [
+          256.0,
+          506.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          498.0
+        ],
+        [
+          256.0,
+          452.5
+        ],
+        [
+          256.0,
+          452.5
+        ],
+        [
+          256.0,
+          452.5
+        ],
+        [
+          256.0,
+          452.5
+        ]
+      ]
+    },
+    {
+      "key": "base_N",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/a8f92535-04f4-4b4c-9f35-81893823cc0e.png",
+      "columns": 4,
+      "rows": 3,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.4560810810810811,
+      "roots": [
+        [
+          300.0,
+          560.0
+        ],
+        [
+          300.0,
+          560.0
+        ],
+        [
+          300.0,
+          560.0
+        ],
+        [
+          300.0,
+          560.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ],
+        [
+          300.0,
+          576.0
+        ]
+      ]
+    },
+    {
+      "key": "extra_N",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_132521_0e8e3aed-eca5-4da6-a738-e8f0232b6fde.png",
+      "columns": 4,
+      "rows": 4,
+      "preserveCrossCellEquipment": true,
+      "removeDetachedProjectiles": true,
+      "scale": 0.6060606060606061,
+      "roots": [
+        [
+          256.0,
+          485.0
+        ],
+        [
+          256.0,
+          485.0
+        ],
+        [
+          256.0,
+          485.0
+        ],
+        [
+          256.0,
+          485.0
+        ],
+        [
+          256.0,
+          477.0
+        ],
+        [
+          256.0,
+          477.0
+        ],
+        [
+          256.0,
+          477.0
+        ],
+        [
+          256.0,
+          477.0
+        ],
+        [
+          256.0,
+          427.5
+        ],
+        [
+          256.0,
+          427.5
+        ],
+        [
+          256.0,
+          427.5
+        ],
+        [
+          256.0,
+          427.5
+        ],
+        [
+          256.0,
+          399.0
+        ],
+        [
+          256.0,
+          399.0
+        ],
+        [
+          256.0,
+          399.0
+        ],
+        [
+          256.0,
+          399.0
+        ]
+      ]
+    },
+    {
+      "key": "locomotion_S",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_59df6a9b-13e5-494f-be01-b12bedfd0b8f.png",
+      "columns": 4,
+      "rows": 4,
+      "removeDetachedProjectiles": true,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.5660377358490566,
+      "roots": [
+        [
+          256.0,
+          508.0
+        ],
+        [
+          256.0,
+          508.0
+        ],
+        [
+          256.0,
+          508.0
+        ],
+        [
+          256.0,
+          508.0
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          479.5
+        ],
+        [
+          256.0,
+          465.5
+        ],
+        [
+          256.0,
+          465.5
+        ],
+        [
+          256.0,
+          465.5
+        ],
+        [
+          256.0,
+          465.5
+        ]
+      ]
+    },
+    {
+      "key": "base_S",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_04878ae4-59dc-45cd-b18c-f90b0a778bd7.png",
+      "columns": 4,
+      "rows": 3,
+      "removeDetachedProjectiles": true,
+      "preserveCrossCellEquipment": true,
+      "componentOwners": {
+        "39": 6
+      },
+      "scale": 0.550234359078867,
+      "roots": [
+        [
+          292.0,
+          556.0
+        ],
+        [
+          292.0,
+          556.0
+        ],
+        [
+          292.0,
+          556.0
+        ],
+        [
+          292.0,
+          556.0
+        ],
+        [
+          292.0,
+          535.0
+        ],
+        [
+          292.0,
+          535.0
+        ],
+        [
+          292.0,
+          535.0
+        ],
+        [
+          292.0,
+          535.0
+        ],
+        [
+          292.0,
+          499.5
+        ],
+        [
+          292.0,
+          499.5
+        ],
+        [
+          292.0,
+          499.5
+        ],
+        [
+          292.0,
+          499.5
+        ]
+      ]
+    },
+    {
+      "key": "extra_S",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_29488b50-bd87-4150-831d-4b26161da0f9.png",
+      "columns": 4,
+      "rows": 4,
+      "removeDetachedProjectiles": true,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.5837837837837838,
+      "roots": [
+        [
+          256.0,
+          501.0
+        ],
+        [
+          256.0,
+          501.0
+        ],
+        [
+          256.0,
+          501.0
+        ],
+        [
+          256.0,
+          501.0
+        ],
+        [
+          256.0,
+          510.0
+        ],
+        [
+          256.0,
+          510.0
+        ],
+        [
+          256.0,
+          510.0
+        ],
+        [
+          256.0,
+          510.0
+        ],
+        [
+          256.0,
+          491.0
+        ],
+        [
+          256.0,
+          491.0
+        ],
+        [
+          256.0,
+          491.0
+        ],
+        [
+          256.0,
+          491.0
+        ],
+        [
+          256.0,
+          425.0
+        ],
+        [
+          256.0,
+          425.0
+        ],
+        [
+          256.0,
+          425.0
+        ],
+        [
+          256.0,
+          425.0
+        ]
+      ]
+    },
+    {
+      "key": "locomotion_W",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125857_1f47419e-304d-4704-a0cb-d593bec4623f.png",
+      "columns": 4,
+      "rows": 4,
+      "removeDetachedProjectiles": true,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.6053811659192825,
+      "roots": [
+        [
+          256.0,
+          482.0
+        ],
+        [
+          256.0,
+          482.0
+        ],
+        [
+          256.0,
+          482.0
+        ],
+        [
+          256.0,
+          482.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          467.0
+        ],
+        [
+          256.0,
+          463.5
+        ],
+        [
+          256.0,
+          463.5
+        ],
+        [
+          256.0,
+          463.5
+        ],
+        [
+          256.0,
+          463.5
+        ]
+      ]
+    },
+    {
+      "key": "base_W",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_761b8a92-e880-481d-bf57-ac3c147ce5e2.png",
+      "columns": 4,
+      "rows": 3,
+      "removeDetachedProjectiles": true,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.5697404515720617,
+      "roots": [
+        [
+          292.0,
+          573.0
+        ],
+        [
+          292.0,
+          573.0
+        ],
+        [
+          292.0,
+          573.0
+        ],
+        [
+          292.0,
+          573.0
+        ],
+        [
+          292.0,
+          532.0
+        ],
+        [
+          292.0,
+          532.0
+        ],
+        [
+          292.0,
+          532.0
+        ],
+        [
+          292.0,
+          532.0
+        ],
+        [
+          292.0,
+          459.0
+        ],
+        [
+          292.0,
+          459.0
+        ],
+        [
+          292.0,
+          459.0
+        ],
+        [
+          292.0,
+          459.0
+        ]
+      ]
+    },
+    {
+      "key": "extra_W",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125856_3f24d08b-f1ad-407f-9376-61259f498b45.png",
+      "columns": 4,
+      "rows": 4,
+      "removeDetachedProjectiles": true,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.608793686583991,
+      "roots": [
+        [
+          256.0,
+          486.0
+        ],
+        [
+          256.0,
+          486.0
+        ],
+        [
+          256.0,
+          486.0
+        ],
+        [
+          256.0,
+          486.0
+        ],
+        [
+          256.0,
+          504.0
+        ],
+        [
+          256.0,
+          504.0
+        ],
+        [
+          256.0,
+          504.0
+        ],
+        [
+          256.0,
+          504.0
+        ],
+        [
+          256.0,
+          463.0
+        ],
+        [
+          256.0,
+          463.0
+        ],
+        [
+          256.0,
+          463.0
+        ],
+        [
+          256.0,
+          463.0
+        ],
+        [
+          256.0,
+          430.5
+        ],
+        [
+          256.0,
+          430.5
+        ],
+        [
+          256.0,
+          430.5
+        ],
+        [
+          256.0,
+          430.5
+        ]
+      ]
+    },
+    {
+      "key": "locomotion_E",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125111_e9f2f6e3-b029-4944-9b23-34ad6be9e638.png",
+      "columns": 4,
+      "rows": 4,
+      "keyColor": [
+        131,
+        131,
+        131
+      ],
+      "preserveCrossCellEquipment": true,
+      "scale": 0.5487804878048781,
+      "roots": [
+        [
+          256.0,
+          506.5
+        ],
+        [
+          256.0,
+          506.5
+        ],
+        [
+          256.0,
+          506.5
+        ],
+        [
+          256.0,
+          506.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          505.5
+        ],
+        [
+          256.0,
+          486.5
+        ],
+        [
+          256.0,
+          486.5
+        ],
+        [
+          256.0,
+          486.5
+        ],
+        [
+          256.0,
+          486.5
+        ]
+      ]
+    },
+    {
+      "key": "base_E",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125112_8ae2da33-71bf-4a2e-b687-57c0ccc4e6f9.png",
+      "columns": 4,
+      "rows": 3,
+      "preserveCrossCellEquipment": true,
+      "scale": 0.4623287671232877,
+      "roots": [
+        [
+          300.0,
+          553.0
+        ],
+        [
+          300.0,
+          553.0
+        ],
+        [
+          300.0,
+          553.0
+        ],
+        [
+          300.0,
+          553.0
+        ],
+        [
+          300.0,
+          586.5
+        ],
+        [
+          300.0,
+          586.5
+        ],
+        [
+          300.0,
+          586.5
+        ],
+        [
+          300.0,
+          586.5
+        ],
+        [
+          300.0,
+          594.0
+        ],
+        [
+          300.0,
+          594.0
+        ],
+        [
+          300.0,
+          594.0
+        ],
+        [
+          300.0,
+          594.0
+        ]
+      ]
+    },
+    {
+      "key": "extra_E",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_125111_9dc6f2ce-5fb2-444d-9e94-b498fff537db.png",
+      "columns": 4,
+      "rows": 4,
+      "keyColor": [
+        251,
+        249,
+        252
+      ],
+      "preserveCrossCellEquipment": true,
+      "backgroundSeeds": [
+        [
+          835,
+          625
+        ],
+        [
+          870,
+          755
+        ],
+        [
+          1340,
+          625
+        ],
+        [
+          1370,
+          755
+        ],
+        [
+          1900,
+          780
+        ]
+      ],
+      "scale": 0.576307363927428,
+      "roots": [
+        [
+          256.0,
+          483.5
+        ],
+        [
+          256.0,
+          483.5
+        ],
+        [
+          256.0,
+          483.5
+        ],
+        [
+          256.0,
+          483.5
+        ],
+        [
+          256.0,
+          494.5
+        ],
+        [
+          256.0,
+          494.5
+        ],
+        [
+          256.0,
+          494.5
+        ],
+        [
+          256.0,
+          494.5
+        ],
+        [
+          256.0,
+          502.5
+        ],
+        [
+          256.0,
+          502.5
+        ],
+        [
+          256.0,
+          502.5
+        ],
+        [
+          256.0,
+          502.5
+        ],
+        [
+          256.0,
+          488.5
+        ],
+        [
+          256.0,
+          488.5
+        ],
+        [
+          256.0,
+          488.5
+        ],
+        [
+          256.0,
+          488.5
+        ]
+      ]
+    }
+  ],
+  "status": "integrated-functional-tests-passed-shutdown-diagnostics-open",
+  "directionalCorrections": "directional_corrections.json",
+  "processingScriptSha256": "145d80322c18c2fa69ac7649910dabcc4d6a0ccecadbdb6e7aa03c471f7bd2dd",
+  "finalValidation": {
+    "ProbeShutdownClean": false,
+    "Godot": "4.7.1",
+    "TestsTotal": 46,
+    "GraphicalChecksPassed": 33,
+    "PlayerSaveUnchanged": true,
+    "StrictImportPassed": false,
+    "TestsPassed": 46,
+    "Assertions": 3232,
+    "Report": "artifacts/achilles_painted_g_integration/summary.json",
+    "GraphicalChecksTotal": 33
+  },
+  "finalPackUrl": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/20d213f1-c54e-4b41-a776-ece862337e70.zip"
+}

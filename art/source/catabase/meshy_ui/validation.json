@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "updated_on": "2026-09-07",
+  "status": "targeted_validation_passed_with_documented_shutdown_diagnostics",
+  "godot": {
+    "executable": "C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe",
+    "version": "4.7.1.stable.official.a13da4feb",
+    "platform": "Windows",
+    "graphics": "OpenGL Compatibility, Intel Graphics",
+    "ci_difference": "Repository workflow installs Godot4.7 stable on Linux; local validation used4.7.1 stable on Windows."
+  },
+  "import": {
+    "exit_code": 0,
+    "unexpected_script_errors": 0,
+    "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--editor' '--recovery-mode' '--path' '.' '--import' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/final-import.log'",
+    "console_log": "artifacts/meshy_ui/final-import.combined.log"
+  },
+  "gut": {
+    "tests": 199,
+    "passing": 199,
+    "failures": 0,
+    "assertions": 11862,
+    "groups": [
+      {
+        "stem": "final-gut",
+        "tests": 49,
+        "assertions": 7417,
+        "scripts": [
+          "test_catabase_painted_icons",
+          "test_catabase_halt_art",
+          "test_catabase_meshy_art",
+          "test_inventory_equipment_system",
+          "test_equipment_reward_presentation"
+        ],
+        "shutdown": "clean",
+        "exit_code": 0,
+        "failures": 0,
+        "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/final-gut.log' '--script' 'res://addons/gut/gut_cmdln.gd' '--' '-gconfig=' '-gexit' '-gdisable_colors' '-gfailure_error_types' 'engine,gut,push_error' '-gjunit_xml_file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/final-gut.junit.xml' '-gtest' 'res://test/unit/test_catabase_painted_icons.gd' '-gtest' 'res://test/unit/test_catabase_halt_art.gd' '-gtest' 'res://test/unit/test_catabase_meshy_art.gd' '-gtest' 'res://test/unit/test_inventory_equipment_system.gd' '-gtest' 'res://test/unit/test_equipment_reward_presentation.gd'",
+        "console_log": "artifacts/meshy_ui/final-gut.combined.log",
+        "junit": "artifacts/meshy_ui/final-gut.junit.xml"
+      },
+      {
+        "stem": "expanded-gut",
+        "tests": 118,
+        "assertions": 3866,
+        "scripts": [
+          "test_catabase_champion_run",
+          "test_catabase_selection_launch",
+          "test_character_selection_screen",
+          "test_selection_ashen_skin",
+          "test_selection_quality_v2",
+          "test_achilles_painted_g_runtime",
+          "test_achilles_visual_variant_run",
+          "test_run_flow_isolation",
+          "test_champion_runtime_integration",
+          "test_spell_modifier",
+          "test_character_progression_foundation",
+          "test_champion_spell_tooltips"
+        ],
+        "shutdown": "80 ObjectDB instances and 17 resources retained at process exit.",
+        "exit_code": 0,
+        "failures": 0,
+        "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/expanded-gut.log' '--script' 'res://addons/gut/gut_cmdln.gd' '--' '-gconfig=' '-gexit' '-gdisable_colors' '-gfailure_error_types' 'engine,gut,push_error' '-gjunit_xml_file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/expanded-gut.junit.xml' '-gtest' 'res://test/unit/test_catabase_champion_run.gd' '-gtest' 'res://test/unit/test_catabase_selection_launch.gd' '-gtest' 'res://test/unit/test_character_selection_screen.gd' '-gtest' 'res://test/unit/test_selection_ashen_skin.gd' '-gtest' 'res://test/unit/test_selection_quality_v2.gd' '-gtest' 'res://test/unit/test_achilles_painted_g_runtime.gd' '-gtest' 'res://test/unit/test_achilles_visual_variant_run.gd' '-gtest' 'res://test/unit/test_run_flow_isolation.gd' '-gtest' 'res://test/unit/test_champion_runtime_integration.gd' '-gtest' 'res://test/unit/test_spell_modifier.gd' '-gtest' 'res://test/unit/test_character_progression_foundation.gd' '-gtest' 'res://test/unit/test_champion_spell_tooltips.gd'",
+        "console_log": "artifacts/meshy_ui/expanded-gut.combined.log",
+        "junit": "artifacts/meshy_ui/expanded-gut.junit.xml"
+      },
+      {
+        "stem": "hud-gut",
+        "tests": 32,
+        "assertions": 579,
+        "scripts": [
+          "test_recraft_combat_hud_v1",
+          "test_persistent_run_combat_hud",
+          "test_hud_graybox_interaction_contract",
+          "test_hud_slot_polish_v2",
+          "test_run_hud_canonical_bindings"
+        ],
+        "shutdown": "417 ObjectDB instances, 46 resources, renderer RID allocations and PagedAllocator retained at process exit.",
+        "exit_code": 0,
+        "failures": 0,
+        "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/hud-gut.log' '--script' 'res://addons/gut/gut_cmdln.gd' '--' '-gconfig=' '-gexit' '-gdisable_colors' '-gfailure_error_types' 'engine,gut,push_error' '-gjunit_xml_file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/hud-gut.junit.xml' '-gtest' 'res://test/unit/test_recraft_combat_hud_v1.gd' '-gtest' 'res://test/unit/test_persistent_run_combat_hud.gd' '-gtest' 'res://test/unit/test_hud_graybox_interaction_contract.gd' '-gtest' 'res://test/unit/test_hud_slot_polish_v2.gd' '-gtest' 'res://test/unit/test_run_hud_canonical_bindings.gd'",
+        "console_log": "artifacts/meshy_ui/hud-gut.combined.log",
+        "junit": "artifacts/meshy_ui/hud-gut.junit.xml"
+      }
+    ]
+  },
+  "business_probes": [
+    {
+      "id": "route",
+      "scene": "res://tests/expedition/route_state_test.gd",
+      "script": true,
+      "checks": 12785,
+      "complete_paths": 3456,
+      "scope": "Authored route topology and safe presentation.",
+      "shutdown": "clean",
+      "exit_code": 0,
+      "failures": 0,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/route.log' '--script' 'res://tests/expedition/route_state_test.gd'",
+      "log": "artifacts/meshy_ui/route.log"
+    },
+    {
+      "id": "build",
+      "scene": "res://tests/expedition/build_state_test.tscn",
+      "checks": 1000,
+      "scope": "Build rules, capacity choices, spell modifiers and equipment.",
+      "shutdown": "8 dummy textures, 409 ObjectDB instances and 168 resources retained at exit; same counts recorded in the earlier painted-art regression summary.",
+      "exit_code": 0,
+      "failures": 0,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/build.log' 'res://tests/expedition/build_state_test.tscn'",
+      "log": "artifacts/meshy_ui/build.log"
+    },
+    {
+      "id": "session",
+      "scene": "res://tests/expedition/session_integration_test.tscn",
+      "checks": 301,
+      "scope": "Session progression and snapshots with simulated victories.",
+      "shutdown": "clean",
+      "exit_code": 0,
+      "failures": 0,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/session.log' 'res://tests/expedition/session_integration_test.tscn'",
+      "log": "artifacts/meshy_ui/session.log"
+    },
+    {
+      "id": "maps",
+      "scene": "res://tests/expedition/CatabaseMapsTest.tscn",
+      "checks": 4439,
+      "maps": 10,
+      "scope": "Load all ten new arenas, deploy Achilles and validate canonical opening spells; no claim of ten played victories.",
+      "shutdown": "One canceled suspended _refresh_log execution during map-script reload at catabase_maps_test.gd:96.",
+      "exit_code": 0,
+      "failures": 0,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/maps.log' 'res://tests/expedition/CatabaseMapsTest.tscn'",
+      "log": "artifacts/meshy_ui/maps.log"
+    },
+    {
+      "id": "battle",
+      "scene": "res://tests/expedition/BattleFlowProbe.tscn",
+      "scope": "Actual first victory through player intents; 3 Pelion casts, 3 Peleid casts, 3 moves and 3 end-turns, followed by Crochet purchase/replacement, reward and route return.",
+      "shutdown": "16 dummy textures, 814 ObjectDB instances and 310 resources retained at process exit. Waiting for queued UI cleanup did not eliminate them.",
+      "exit_code": 0,
+      "failures": 0,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/battle.log' 'res://tests/expedition/BattleFlowProbe.tscn'",
+      "log": "artifacts/meshy_ui/battle.log"
+    }
+  ],
+  "verified_interactions": [
+    "Real four-spell opening and real six-spell follow-up combat reach player idle; temporary introduction ends naturally.",
+    "All46 spells resolve artwork, twelve real equipment definitions use painted images, nine stat glyphs and five doctrine emblems plus Achilles load.",
+    "Unknown route presentation never leaks its real kind; inspected combat map leaves run snapshot unchanged.",
+    "Actual engine mouse events hover and click pause Options to toggle reduced motion and restore it; actual hit-target geometry remains fixed.",
+    "Inventory action footer remains visible before scrolling and stationary while details scroll; actual mouse click equips selected weapon and returns replaced weapon to inventory.",
+    "Themes, icons, action parents and presentation restore outside Catabase; reduced motion disables active motion including inventory tile zoom.",
+    "Each of four/six spell-button rectangles is disjoint from Move, EndTurn, three navigation buttons and all other spells; no horizontal viewport overflow across21 main views per resolution.",
+    "Explicit result fixtures cover victory/defeat with real result scene and restoration of another adventure."
+  ],
+  "issues_found_and_corrected": [
+    "StyleBox sentinel margins expanded inventory; effective margins now preserved.",
+    "Missing metadata on first motion binding generated engine errors; has_meta guards added.",
+    "Inventory Equip action was below the long description; existing actions moved to a reversible fixed footer.",
+    "Legacy pause zoom moved its click target; Catabase motion keeps scale=1.",
+    "Six-spell HUD overlapped Move and EndTurn at1280; final slot sizing fits the actual ability region, with71 overlap assertions added."
+  ],
+  "limitations": [
+    "Runtime shutdown diagnostics remain in combat-containing scenarios. Functional checks pass, but these exits are not reported as clean.",
+    "Intermediate victories, discoveries and twelve equipment grants in the UI probe are explicit fixtures. Only BattleFlowProbe plays the full opening victory.",
+    "Result screens are explicit fixtures and do not represent playing the final boss.",
+    "Only1280x720 and1920x1080 were visually validated. No claim of full20-room manual playthrough or balance validation."
+  ],
+  "global_baseline_guard": {
+    "status": "requested_pending_execution",
+    "workflow": ".github/workflows/godot-validation.yml#baseline-guard"
+  },
+  "graphical_probes": [
+    {
+      "kind": "ui",
+      "resolution": "1280x720",
+      "exit_code": 0,
+      "checks": 302,
+      "failures": [],
+      "capture_count": 21,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--path' '.' '--rendering-method' 'gl_compatibility' '--audio-driver' 'Dummy' '--position' '-3000,-3000' '--resolution' '1280x720' '--log-file' 'artifacts/meshy_ui/final-runtime_1280x720.log' 'res://tests/expedition/CatabaseMeshyUIProbe.tscn' '--' 'resolution=1280x720'",
+      "report": "artifacts/meshy_ui/1280x720/report.json",
+      "stdout": "artifacts/meshy_ui/final-runtime_1280x720.stdout.log",
+      "stderr": "artifacts/meshy_ui/final-runtime_1280x720.stderr.log",
+      "scope": "Real opening, pause/resume, item selection and equipment actions. Intermediate victories, item grants and discoveries are fixtures; exclusive XII alternatives use a restored pre-choice build snapshot.",
+      "capture_freshness": "Final production presentation for this view.",
+      "shutdown": "1143 ObjectDB instances, 339 resources, OpenGL textures/buffers/RIDs and PagedAllocator retained at process exit."
+    },
+    {
+      "kind": "outcomes",
+      "resolution": "1280x720",
+      "exit_code": 0,
+      "checks": 17,
+      "failures": [],
+      "capture_count": 2,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--path' '.' '--rendering-method' 'gl_compatibility' '--audio-driver' 'Dummy' '--position' '-3000,-3000' '--resolution' '1280x720' '--log-file' 'artifacts/meshy_ui/outcomes_1280x720.log' 'res://tests/expedition/CatabaseMeshyUIProbe.tscn' '--' 'resolution=1280x720' 'outcomes_only=true'",
+      "report": "artifacts/meshy_ui/1280x720/outcomes_report.json",
+      "stdout": "artifacts/meshy_ui/outcomes_1280x720.stdout.log",
+      "stderr": "artifacts/meshy_ui/outcomes_1280x720.stderr.log",
+      "scope": "Actual result scene with explicit victory/defeat fixtures and restoration of another adventure's presentation; no claim of playing the final boss.",
+      "capture_freshness": "Final production presentation for this view.",
+      "shutdown": "clean"
+    },
+    {
+      "kind": "painted",
+      "resolution": "1280x720",
+      "exit_code": 0,
+      "checks": 320,
+      "failures": [],
+      "capture_count": 7,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--path' '.' '--rendering-method' 'gl_compatibility' '--audio-driver' 'Dummy' '--position' '-3000,-3000' '--resolution' '1280x720' '--log-file' 'artifacts/meshy_ui/painted_1280x720.log' 'res://tests/expedition/CatabasePaintedArtProbe.tscn' '--' 'resolution=1280x720'",
+      "report": "artifacts/catabase_painted_art/1280x720/report.json",
+      "stdout": "artifacts/meshy_ui/painted_1280x720.stdout.log",
+      "stderr": "artifacts/meshy_ui/painted_1280x720.stderr.log",
+      "scope": "Real opening HUD and two halt transactions through their confirmation buttons; intermediate victories are fixtures, not combat validation.",
+      "capture_freshness": "Supplemental halt/transaction captures precede final matte cleanup; prefer main UI captures for final trees.",
+      "shutdown": "783 ObjectDB instances, 279 resources, OpenGL allocations and PagedAllocator retained at process exit."
+    },
+    {
+      "kind": "ui",
+      "resolution": "1920x1080",
+      "exit_code": 0,
+      "checks": 302,
+      "failures": [],
+      "capture_count": 21,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--path' '.' '--rendering-method' 'gl_compatibility' '--audio-driver' 'Dummy' '--position' '-3000,-3000' '--resolution' '1920x1080' '--log-file' 'artifacts/meshy_ui/final-runtime_1920x1080.log' 'res://tests/expedition/CatabaseMeshyUIProbe.tscn' '--' 'resolution=1920x1080'",
+      "report": "artifacts/meshy_ui/1920x1080/report.json",
+      "stdout": "artifacts/meshy_ui/final-runtime_1920x1080.stdout.log",
+      "stderr": "artifacts/meshy_ui/final-runtime_1920x1080.stderr.log",
+      "scope": "Real opening, pause/resume, item selection and equipment actions. Intermediate victories, item grants and discoveries are fixtures; exclusive XII alternatives use a restored pre-choice build snapshot.",
+      "capture_freshness": "Final production presentation for this view.",
+      "shutdown": "1143 ObjectDB instances, 339 resources, OpenGL textures/buffers/RIDs and PagedAllocator retained at process exit."
+    },
+    {
+      "kind": "outcomes",
+      "resolution": "1920x1080",
+      "exit_code": 0,
+      "checks": 17,
+      "failures": [],
+      "capture_count": 2,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--path' '.' '--rendering-method' 'gl_compatibility' '--audio-driver' 'Dummy' '--position' '-3000,-3000' '--resolution' '1920x1080' '--log-file' 'artifacts/meshy_ui/outcomes_1920x1080.log' 'res://tests/expedition/CatabaseMeshyUIProbe.tscn' '--' 'resolution=1920x1080' 'outcomes_only=true'",
+      "report": "artifacts/meshy_ui/1920x1080/outcomes_report.json",
+      "stdout": "artifacts/meshy_ui/outcomes_1920x1080.stdout.log",
+      "stderr": "artifacts/meshy_ui/outcomes_1920x1080.stderr.log",
+      "scope": "Actual result scene with explicit victory/defeat fixtures and restoration of another adventure's presentation; no claim of playing the final boss.",
+      "capture_freshness": "Final production presentation for this view.",
+      "shutdown": "clean"
+    },
+    {
+      "kind": "painted",
+      "resolution": "1920x1080",
+      "exit_code": 0,
+      "checks": 320,
+      "failures": [],
+      "capture_count": 7,
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--path' '.' '--rendering-method' 'gl_compatibility' '--audio-driver' 'Dummy' '--position' '-3000,-3000' '--resolution' '1920x1080' '--log-file' 'artifacts/meshy_ui/painted_1920x1080.log' 'res://tests/expedition/CatabasePaintedArtProbe.tscn' '--' 'resolution=1920x1080'",
+      "report": "artifacts/catabase_painted_art/1920x1080/report.json",
+      "stdout": "artifacts/meshy_ui/painted_1920x1080.stdout.log",
+      "stderr": "artifacts/meshy_ui/painted_1920x1080.stderr.log",
+      "scope": "Real opening HUD and two halt transactions through their confirmation buttons; intermediate victories are fixtures, not combat validation.",
+      "capture_freshness": "Supplemental halt/transaction captures precede final matte cleanup; prefer main UI captures for final trees.",
+      "shutdown": "783 ObjectDB instances, 279 resources, OpenGL allocations and PagedAllocator retained at process exit."
+    }
+  ],
+  "local_full_report": "artifacts/meshy_ui/validation_summary.json"
+}

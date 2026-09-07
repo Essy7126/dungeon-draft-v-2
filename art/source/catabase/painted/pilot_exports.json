@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "provider": "Higgsfield",
+  "pipeline": "tools/catabase_art_pipeline/build_pilot.py",
+  "creative_generation_jobs": [
+    "10757605-4fba-4fe8-8af9-ac4c98ee28b0",
+    "71aaec1c-eabf-45a3-a23e-327eedc9cfe9"
+  ],
+  "source_hashes": {
+    "icons": "764ac30f348904d17ff09dff19cf8344fbe7dd31fc58eafbb35c7f3860087e0e",
+    "camp": "f6ab1db45abed48f36b02b91be3e12013cfc7b3cea169a6f13aa4d8100490445",
+    "library": "97e3b95a07cbb36aaf4784da6b65cb0ee4986a1755ec7cec7c460d9907a9bed5",
+    "original_icons": "70aea95cd54e40165096d2018cf4704f8427bd842534feedeafc6af82d8f2376"
+  },
+  "processing": "Higgsfield sandbox only; connected-mark extraction, uniform resampling, central crop. No model generation outside Higgsfield.",
+  "exports": [
+    {
+      "id": "peleid_strike",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        55,
+        48,
+        505,
+        506
+      ],
+      "path": "assets/catabase/painted/icons/peleid_strike.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "753c038cc67736da85ecbecd0b03bd8e1434f272b70d1672621af933b4c34e98"
+    },
+    {
+      "id": "fulminant_dash",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        548,
+        44,
+        1006,
+        507
+      ],
+      "path": "assets/catabase/painted/icons/fulminant_dash.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "fb468f5584245a9a8d761471c71117fce57bb1677ffb4f623b1e835f6a750ff4"
+    },
+    {
+      "id": "pelion_shot",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1044,
+        34,
+        1517,
+        507
+      ],
+      "path": "assets/catabase/painted/icons/pelion_shot.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "b3fe0d12efa03302f4838fca27cd9c51b242f14fb311088439b7e93bc467b48b"
+    },
+    {
+      "id": "bronze_guard",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1538,
+        46,
+        1995,
+        506
+      ],
+      "path": "assets/catabase/painted/icons/bronze_guard.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "820cb35fcf5475928efb3fc31ca7d53308d27ca000f3b9e040af6c5ac064f8b4"
+    },
+    {
+      "id": "crochet",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        55,
+        546,
+        508,
+        1007
+      ],
+      "path": "assets/catabase/painted/icons/crochet.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "ccb9afb91873d15891b76e2b5ba407c281d581fc2de55a34d2461ac81208190c"
+    },
+    {
+      "id": "fauchage",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        549,
+        543,
+        1004,
+        1005
+      ],
+      "path": "assets/catabase/painted/icons/fauchage.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "b3223d4a825d99197240e71a661430e5139a364f86722f549a11d78e27e6d5aa"
+    },
+    {
+      "id": "entaille",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1048,
+        548,
+        1496,
+        1006
+      ],
+      "path": "assets/catabase/painted/icons/entaille.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "903dc2b1d9ed1514efdfcdd59719a3867ff3637140e76eb47bd09a82998fb1cc"
+    },
+    {
+      "id": "moisson",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1546,
+        546,
+        1980,
+        1006
+      ],
+      "path": "assets/catabase/painted/icons/moisson.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "3ec39157d073736d29ec4517dc6c10d6cbff7f6d4e7a7f9ba27f348bcbf15e48"
+    },
+    {
+      "id": "rupture",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        55,
+        1045,
+        510,
+        1503
+      ],
+      "path": "assets/catabase/painted/icons/rupture.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "304cd9b89ccfca392edc32e07dc73ac94f68a37bad5b9b33c10b78add4765dcb"
+    },
+    {
+      "id": "marque",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        553,
+        1060,
+        1002,
+        1490
+      ],
+      "path": "assets/catabase/painted/icons/marque.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "a90bf666700e54c597721be03363af326ee0812537b046cc48e2fc907152538c"
+    },
+    {
+      "id": "feinte",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1051,
+        1048,
+        1497,
+        1503
+      ],
+      "path": "assets/catabase/painted/icons/feinte.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "cbb849c06879956e01a99b917fa50b8ac9d4162403ace98554da5cf9f9ec3670"
+    },
+    {
+      "id": "contretemps",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1545,
+        1057,
+        1993,
+        1520
+      ],
+      "path": "assets/catabase/painted/icons/contretemps.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "0b8591225ed015aa5c29a172ea0bef9f21aacacd8c92fe136ac4e2e072e1dc53"
+    },
+    {
+      "id": "heurt",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        66,
+        1390,
+        635,
+        1996
+      ],
+      "path": "assets/catabase/painted/icons/heurt.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "5d9f284eb0a069eda5a667f9fa09e0a021c719e9bdb15dd18638ab71b637f602"
+    },
+    {
+      "id": "posture",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        508,
+        1524,
+        1003,
+        2001
+      ],
+      "path": "assets/catabase/painted/icons/posture.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "a8c65c1d89a55093e85c6cb22dc6509b278cd3b1bc32603526160f8ee28d3bd0"
+    },
+    {
+      "id": "souffle",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1063,
+        1531,
+        1479,
+        2002
+      ],
+      "path": "assets/catabase/painted/icons/souffle.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "01775bfb47f667fd80f537992dc7724d456cf67e9a1d102f7066a923ecd2636e"
+    },
+    {
+      "id": "marche",
+      "source": "generations/icons_martial_sheet.png",
+      "source_box": [
+        1500,
+        1424,
+        1987,
+        2000
+      ],
+      "path": "assets/catabase/painted/icons/marche.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "2d33d3ffcdd5c2e91c84855aad917635116215e135262c15282676387a2ea3fe"
+    },
+    {
+      "id": "camp_compagnons",
+      "source": "generations/camp_compagnons.png",
+      "source_dimensions": [
+        2528,
+        1696
+      ],
+      "transform": "uniform scale + central crop, no anisotropic distortion",
+      "path": "assets/catabase/painted/halts/camp_compagnons.png",
+      "dimensions": [
+        1920,
+        1200
+      ],
+      "sha256": "90a33615fadf90cec6302bc136a77e810ed07268dbdf21ab056ee350f2d65106"
+    },
+    {
+      "id": "bibliotheque_engloutie",
+      "source": "references/bibliotheque_engloutie.png",
+      "source_dimensions": [
+        2752,
+        1536
+      ],
+      "transform": "uniform scale + central crop, no anisotropic distortion",
+      "path": "assets/catabase/painted/halts/bibliotheque_engloutie.png",
+      "dimensions": [
+        1920,
+        1200
+      ],
+      "sha256": "e2aea2edacbe50bea53b6c18df7bce5b16aff1f5617c0968ebc62351dddfcdcc"
+    }
+  ],
+  "review": {
+    "style": "inspected against approved references",
+    "small_icons": "pending local review",
+    "runtime": "pending"
+  }
+}

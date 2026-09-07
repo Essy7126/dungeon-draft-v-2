@@ -374,8 +374,9 @@ func _preview_effect_on_unit(caster, spell: Spell, _target) -> String:
 	var damage := spell.get_scaled_damage(caster)
 	if damage > 0:
 		parts.append("~%d dégâts avant défenses" % damage)
-	if spell.heal > 0:
-		parts.append("~%d PV rendus" % spell.heal)
+	var healing := spell.get_scaled_heal(caster)
+	if healing > 0:
+		parts.append("~%d PV rendus" % healing)
 	var shield: int = spell.get_scaled_shield(caster)
 	if shield > 0:
 		parts.append("%d bouclier" % shield)
@@ -466,7 +467,7 @@ func _spell_summary(spell: Spell, unit = null) -> String:
 	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
 	parts.append("%d PA" % ap_cost)
 	var damage: int = spell.get_scaled_damage(unit) if unit is Unit else spell.damage
-	var heal: int = spell.heal
+	var heal: int = spell.get_scaled_heal(unit) if unit is Unit else spell.heal
 	var shield: int = spell.get_scaled_shield(unit) if unit is Unit else spell.shield_grant
 	if damage > 0:
 		parts.append("%d degats" % damage)

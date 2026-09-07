@@ -409,6 +409,8 @@ func _pull_unit(caster: Unit, target: Unit, cells: int, journal: Array = []) -> 
 				or bool(relocation.get("destination_effect_applied", false)):
 			result["landed_on_terrain"] = true
 		# Un deplacement force : compte comme une poussee pour la generation EXPLOIT.
+		# Pulls expose the same authoritative equipment fact as successful pushes.
+		caster.record_target_moved_or_collided(target)
 		result["pushed"] = true
 		journal.append({
 			"unit": target, "from": from_pos, "to": resolved_pos,
@@ -984,7 +986,7 @@ func _resolve_unit_impact(
 		affected = true
 	if spell.is_healing():
 		var before_hp: int = target.current_hp
-		var heal_amount := spell.heal + int(ctx.heal_bonus_by_unit.get(target, 0))
+		var heal_amount := spell.get_scaled_heal(caster, int(ctx.heal_bonus_by_unit.get(target, 0)))
 		if spell.heal_bonus_effect_name.strip_edges() != "":
 			var heal_effect := _terrain.get_effect_data(target.grid_pos)
 			if heal_effect != null and heal_effect.effect_name == spell.heal_bonus_effect_name:

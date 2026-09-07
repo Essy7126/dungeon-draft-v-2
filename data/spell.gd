@@ -174,6 +174,14 @@ func get_scaled_shield(caster: Unit, level: int = 1) -> int:
 func is_healing() -> bool:
 	return heal > 0
 
+
+func get_scaled_heal(caster: Unit, bonus: int = 0) -> int:
+	var amount := heal + bonus
+	for modifier in modifiers:
+		if modifier != null and modifier.applies_to(self):
+			amount = modifier.get_heal_amount(caster, self, amount)
+	return maxi(0, amount)
+
 func has_terrain_effect() -> bool:
 	return terrain_effect != null
 

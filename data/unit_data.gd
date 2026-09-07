@@ -94,6 +94,8 @@ enum ControlLevel {
 # rendu historique de l'unite reste le fallback.
 @export var visual_scene: PackedScene = null
 @export var preview_visual_scene: PackedScene = null
+## Optional portrait for the selected appearance; gameplay identity stays unchanged.
+@export var portrait_texture_override: Texture2D = null
 # Optional 2D preview. When present it takes priority over the 3D scene.
 # Optional artwork must not prevent encounters and runs from loading.
 @export_file("*.tres") var preview_sprite_frames_path: String = ""

@@ -120,6 +120,14 @@ func clear_modifiers() -> void:
 		_modifiers.clear()
 		changed.emit()
 
+
+## Boundary cleanup keeps progression and equipment (permanent sources) intact.
+func clear_temporary_modifiers() -> void:
+	var previous_count := _modifiers.size()
+	_modifiers = _modifiers.filter(func(modifier): return int(modifier.duration) < 0)
+	if _modifiers.size() != previous_count:
+		changed.emit()
+
 # ============================================================
 # GESTION DE LA DURÉE (modificateurs temporaires)
 # À appeler au début de chaque tour de l'unité.

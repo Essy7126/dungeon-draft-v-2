@@ -1,0 +1,277 @@
+{
+  "version": 1,
+  "legend": {
+    " ": "absent",
+    ".": "stone",
+    "H": "hero spawn",
+    "E": "enemy spawn",
+    "o": "low obstacle",
+    "#": "high obstacle",
+    "L": "lava",
+    "I": "ice"
+  },
+  "maps": [
+    {
+      "id": "porteurs",
+      "title": "La Porte des Porteurs",
+      "intent": "Deux couloirs contournent une épine centrale : attirer un garde dans un goulet, ou déborder le tireur par l'autre aile.",
+      "palette": "limestone",
+      "enemies": [
+        "guard",
+        "archer",
+        "guard"
+      ],
+      "rows": [
+        "   ..........   ",
+        "  .......E...   ",
+        "  ..##...##..   ",
+        "  ...........   ",
+        "  .E...#...E.   ",
+        "  ...  #  ...   ",
+        "  ...  #  ...   ",
+        "  ...  #  ...   ",
+        "  .....#.....   ",
+        "  ...........   ",
+        "  ..oo...oo..   ",
+        "  ....HH.....   ",
+        "   ...HH....    "
+      ]
+    },
+    {
+      "id": "citerne",
+      "title": "La Citerne des Échos",
+      "intent": "Un anneau autour d'une citerne ouverte ; deux accès courts se disputent et le pourtour permet le kite sans cul-de-sac.",
+      "palette": "lethe",
+      "enemies": [
+        "spectre",
+        "archer",
+        "archer"
+      ],
+      "rows": [
+        "   .........   ",
+        "  .....E.....  ",
+        " ............. ",
+        " ..oo.....oo.. ",
+        " ...       .E. ",
+        " .E.       ... ",
+        " .....   ..... ",
+        " .....   ..... ",
+        " ...       ... ",
+        " ..oo.....oo.. ",
+        " ............. ",
+        "  ....HH.....  ",
+        "   ...HH....   "
+      ]
+    },
+    {
+      "id": "braises",
+      "title": "La Galerie des Braises",
+      "intent": "Un trajet en lacets avec deux raccourcis de braises : économiser du mouvement au prix de PV, ou contrôler les coudes sûrs.",
+      "palette": "ember",
+      "enemies": [
+        "guard",
+        "archer",
+        "skirmisher"
+      ],
+      "rows": [
+        "       ....... ",
+        "       ....... ",
+        "       ..ooE.. ",
+        "   ........... ",
+        "   ..LL...E... ",
+        "   ..E..       ",
+        "   oo...       ",
+        "   .......     ",
+        "   ...LL..     ",
+        "   .......     ",
+        " ..oo.....     ",
+        " ...HH...      ",
+        " ...HH...      "
+      ]
+    },
+    {
+      "id": "peristyle",
+      "title": "Le Péristyle Brisé",
+      "intent": "Des colonnes alternent couverture haute et socles bas. La mêlée coupe les diagonales, les projectiles cherchent leurs lignes.",
+      "palette": "limestone",
+      "enemies": [
+        "archer",
+        "skirmisher",
+        "spectre"
+      ],
+      "rows": [
+        "  ..E..E..E..  ",
+        " ............. ",
+        " ..#..o..#..o. ",
+        " ............. ",
+        " .o..#..o..#.. ",
+        " ............. ",
+        " ...  ...  ... ",
+        " ............. ",
+        " ..#..o..#..o. ",
+        " ............. ",
+        " .o..#..o..#.. ",
+        " .....HH...... ",
+        "  ....HH.....  "
+      ]
+    },
+    {
+      "id": "digue",
+      "title": "La Digue du Léthé",
+      "intent": "Trois traversées relient deux berges. Les ponts latéraux sont sûrs ; le passage gelé central récompense la mobilité et le placement.",
+      "palette": "lethe",
+      "enemies": [
+        "guard",
+        "archer",
+        "spectre"
+      ],
+      "rows": [
+        " E....   ....E ",
+        " .....   ..... ",
+        " .oo..   ..oo. ",
+        " ............. ",
+        " ............. ",
+        " .....   ..... ",
+        " ..#..III..#.. ",
+        " .....III..... ",
+        " .....   ..... ",
+        " ............. ",
+        " ............. ",
+        " .HH..   ..... ",
+        " .HH..   ...E. "
+      ]
+    },
+    {
+      "id": "mesures",
+      "title": "La Cour des Mesures",
+      "intent": "Deux ailes s'ouvrent après un étranglement à trois cases. Le joueur décide entre percer ensemble, attirer l'ennemi ou se décaler vers les niches.",
+      "palette": "judgment",
+      "enemies": [
+        "champion",
+        "archer",
+        "guard"
+      ],
+      "rows": [
+        " ..E... ...E.. ",
+        " .....E ...... ",
+        " ............. ",
+        " ..oo.....oo.. ",
+        "  ...........  ",
+        "   ...#...     ",
+        "     ...       ",
+        "     ...       ",
+        "   ...#...     ",
+        "  ...........  ",
+        " ..oo.....oo.. ",
+        " .....HH...... ",
+        " .....HH...... "
+      ]
+    },
+    {
+      "id": "necropole",
+      "title": "La Nécropole des Vœux",
+      "intent": "Quatre chambres se raccordent à une place centrale. Les piliers séparent les packs sans rendre les tireurs inaccessibles.",
+      "palette": "oath",
+      "enemies": [
+        "spectre",
+        "spectre",
+        "archer"
+      ],
+      "rows": [
+        " E....   ....E ",
+        " .o...   ...o. ",
+        " .....   ..... ",
+        " ............. ",
+        " ............. ",
+        "   ...#...     ",
+        "   .......     ",
+        "   ...#...     ",
+        " ............. ",
+        " ............. ",
+        " .....   ..... ",
+        " .oHH.   .E.o. ",
+        " ..HH.   ..... "
+      ]
+    },
+    {
+      "id": "offrandes",
+      "title": "Le Carrefour des Offrandes",
+      "intent": "Achille arrive au centre bas, les adversaires couvrent trois branches. Choisir une priorité et utiliser le centre pour renverser la direction du combat.",
+      "palette": "limestone",
+      "enemies": [
+        "guard",
+        "archer",
+        "skirmisher"
+      ],
+      "rows": [
+        "     .E..      ",
+        "     ....      ",
+        "     .o..      ",
+        "     ....      ",
+        " ............. ",
+        " .E...##...E.. ",
+        " ............. ",
+        " ............. ",
+        "     ....      ",
+        "     .o..      ",
+        "     ....      ",
+        "     .HH.      ",
+        "     .HH.      "
+      ]
+    },
+    {
+      "id": "escalier",
+      "title": "Les Degrés de Cendre",
+      "intent": "Des terrasses décalées donnent des fronts successifs. Les échancrures laissent passer les tirs mais imposent de penser le déplacement.",
+      "palette": "ember",
+      "enemies": [
+        "skirmisher",
+        "archer",
+        "spectre",
+        "guard"
+      ],
+      "rows": [
+        "         .E.E. ",
+        "       ....... ",
+        "       ..oo... ",
+        "     .......E. ",
+        "     ......... ",
+        "   ......      ",
+        "   .oo...      ",
+        " .........     ",
+        " .......E.     ",
+        " ...oo..       ",
+        " ......        ",
+        " .HH...        ",
+        " .HH...        "
+      ]
+    },
+    {
+      "id": "moirai",
+      "title": "L'Atrium des Moires",
+      "intent": "Une vaste arène à trois ouvertures autour d'un noyau de colonnes. Elle demande de choisir sa distance tout en gardant un chemin de retraite.",
+      "palette": "oath",
+      "enemies": [
+        "champion",
+        "spectre",
+        "archer",
+        "guard"
+      ],
+      "rows": [
+        "   .E..E..E.   ",
+        "  ...........  ",
+        " ............. ",
+        " ...##...##... ",
+        " .........E... ",
+        " .oo..   ..oo. ",
+        " .....   ..... ",
+        " .oo..   ..oo. ",
+        " ............. ",
+        " ...##...##... ",
+        " ............. ",
+        "  ....HH.....  ",
+        "   ...HH....   "
+      ]
+    }
+  ]
+}

@@ -112,10 +112,20 @@ func _build_roster() -> void:
 	_label(_canvas, "Les héros", Rect2(32, 117, 260, 37), 27, TEXT, HEADING)
 	_hero_counter = _label(_canvas, "", Rect2(241, 125, 91, 25), 15, GOLD, BOLD, HORIZONTAL_ALIGNMENT_RIGHT)
 	_label(_canvas, "Un destin à incarner", Rect2(33, 154, 297, 24), 17, MUTED)
+	var scroll := ScrollContainer.new()
+	scroll.name = "HeroRosterScroll"
+	scroll.position = Vector2(32, 192)
+	scroll.size = Vector2(318, 528)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	_canvas.add_child(scroll)
+	var roster := Control.new()
+	roster.custom_minimum_size = Vector2(300, _entries.size() * 105 - 10)
+	scroll.add_child(roster)
 	for index in range(_entries.size()):
 		var entry: Dictionary = _entries[index]
 		var unit: UnitData = entry["unit"]
-		var button := _button(_canvas, "", Rect2(32, 192 + index * 105, 300, 95))
+		var button := _button(roster, "", Rect2(0, index * 105, 300, 95))
 		button.name = "Hero_%d_%s" % [index, entry["id"]]
 		button.set_meta("style_role", &"roster")
 		button.set_meta("accent", entry["accent"])
@@ -124,14 +134,18 @@ func _build_roster() -> void:
 		button.pressed.connect(select_character.bind(index))
 		_roster_buttons.append(button)
 		var portrait_frame := _panel(button, Rect2(9, 9, 76, 77), Color("302924"), Color("7e6752"), 4, &"portrait")
-		var thumb := _portrait_for(unit)
+		var thumb := _portrait_for(unit, bool(entry.get("use_preview_portrait", false)))
 		if thumb != null:
 			_texture(portrait_frame, thumb, Rect2(2, 2, 72, 73))
 		else:
 			_label(portrait_frame, unit.unit_name.left(1), Rect2(0, 0, 76, 77), 38, entry["accent"], HEADING, HORIZONTAL_ALIGNMENT_CENTER)
 		var marker := _line(button, Rect2(0, 14, 3, 67), Color(entry["accent"], 0.28))
 		marker.name = "SelectionMarker"
-		_label(button, unit.unit_name, Rect2(101, 9, 178, 31), 25, TEXT, HEADING)
+		var roster_name := str(entry.get("display_name", unit.unit_name))
+		var roster_font_size := 22
+		while roster_font_size > 16 and HEADING.get_string_size(roster_name, HORIZONTAL_ALIGNMENT_LEFT, -1, roster_font_size).x > 178:
+			roster_font_size -= 1
+		_label(button, roster_name, Rect2(101, 9, 178, 31), roster_font_size, TEXT, HEADING)
 		var journey := _label(button, str(entry["chapter"]).to_upper(), Rect2(101, 44, 180, 19), 13, Color("c7b494"), BOLD)
 		journey.name = "Journey"
 		journey.clip_text = true
@@ -355,15 +369,15 @@ func select_character(index: int) -> bool:
 	_pose = &"idle"
 	var entry := get_selected_entry()
 	var unit: UnitData = entry["unit"]
-	_name.text = unit.unit_name
+	_name.text = entry.get("display_name", unit.unit_name)
 	_hero_counter.text = "%02d / %02d" % [index + 1, _entries.size()]
 	_zoom = 1.0
 	_zoom_label.text = "100 %"
-	_role.text = "Champion de Catabase" if entry["id"] == &"achilles" else unit.role
+	_role.text = "Champion de Catabase" if unit.get_effective_unit_id() == &"achilles" else unit.role
 	_chapter.text = entry["chapter"]
 	_party_note.text = entry["party_note"]
 	_lore_body.text = entry["description"]
-	_appearance.text = "APPARENCE ORIGINALE  ·  Tenue disponible en jeu"
+	_appearance.text = entry.get("appearance", "APPARENCE ORIGINALE  ·  Tenue disponible en jeu")
 	var champion_mode := unit.progression_profile != null and unit.progression_profile.progression_model == CharacterProgressionProfile.ProgressionModel.CHAMPION_LEVEL_AND_MASTERY
 	stats_labels["prowess"].visible = champion_mode
 	stats_labels["level"].visible = champion_mode
@@ -374,7 +388,7 @@ func select_character(index: int) -> bool:
 	stats_labels["mp"].text = str(unit.max_mp)
 	stats_labels["initiative"].text = str(unit.initiative)
 	stats_labels["armor"].text = str(unit.armure).trim_suffix(".0")
-	start_button.text = "INCARNER ACHILLE   ›" if entry["id"] == &"achilles" else "JOUER AVEC LE TRIO   ›"
+	start_button.text = "INCARNER ACHILLE   ›" if unit.get_effective_unit_id() == &"achilles" else "JOUER AVEC LE TRIO   ›"
 	start_button.tooltip_text = "Commencer %s\n%s" % [entry["chapter"], entry["party_note"]]
 	_preview.configure(unit)
 	_preview.set_showcase_zoom(_zoom)
@@ -566,7 +580,13 @@ func _layout() -> void:
 	_canvas.position = (size - REFERENCE * fit) * 0.5
 
 
-func _portrait_for(unit: UnitData) -> Texture2D:
+func _portrait_for(unit: UnitData, prefer_preview := false) -> Texture2D:
+	if unit.portrait_texture_override != null:
+		return unit.portrait_texture_override
+	if prefer_preview and unit.preview_sprite_frames != null:
+		var preview_frames := unit.preview_sprite_frames
+		if preview_frames.has_animation(unit.preview_sprite_animation):
+			return preview_frames.get_frame_texture(unit.preview_sprite_animation, 0)
 	var illustrated := "res://asset/ui/character_selection/portraits/%s_illustrated_v2.%s" % [unit.get_effective_unit_id(), "png" if unit.get_effective_unit_id() == &"achilles" else "tres"]
 	if ResourceLoader.exists(illustrated):
 		return load(illustrated) as Texture2D

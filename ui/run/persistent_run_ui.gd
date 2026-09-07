@@ -8,6 +8,7 @@ const MODAL_PAUSE: StringName = &"pause"
 const MODAL_SKILL_TREE: StringName = &"skill_tree"
 const MODAL_EVOLUTION: StringName = &"evolution"
 const COMBAT_HUD_PORT := preload("res://ui/combat/combat_hud_port.gd")
+const CATABASE_UI_THEME := preload("res://ui/expedition/catabase_ui_theme.gd")
 
 enum RunUIMode {
 	COMBAT,
@@ -47,6 +48,7 @@ var _active_evolution_request_id: StringName = &""
 var _active_evolution_upgrade_id: StringName = &""
 var _modal_coordinator := CombatModalCoordinator.new()
 var _hud_port = null
+var _expedition_inspection: Control = null
 
 
 func _ready() -> void:
@@ -64,6 +66,7 @@ func _ready() -> void:
 	combat_hud.utility_inventory_requested.connect(
 		_on_inventory_requested
 	)
+	combat_hud.utility_map_requested.connect(_on_map_requested)
 	skill_tree_screen.screen_closed.connect(
 		_on_skill_tree_screen_closed
 	)
@@ -91,6 +94,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_close_expedition_inspection()
 	_close_evolution_overlay_for_cleanup()
 	close_inventory_screen()
 	close_pause_menu()
@@ -160,6 +164,11 @@ func get_combat_hud_lifecycle_snapshot() -> Dictionary:
 
 
 func set_reduced_motion(enabled: bool) -> void:
+	if enabled:
+		CATABASE_UI_THEME.finish_motion(self)
+		var scene: Node = get_tree().current_scene if is_inside_tree() else null
+		if scene != null:
+			CATABASE_UI_THEME.finish_motion(scene)
 	if _hud_port != null:
 		_hud_port.set_reduced_motion(enabled)
 		var context = _hud_port.get_bound_context()
@@ -177,6 +186,8 @@ func _on_reduced_motion_changed(enabled: bool) -> void:
 
 
 func set_ui_mode(mode: RunUIMode) -> void:
+	if mode != RunUIMode.COMBAT:
+		_close_expedition_inspection()
 	if mode == RunUIMode.TRANSITION or not GameManager.run_active:
 		close_inventory_screen()
 		close_pause_menu()
@@ -325,12 +336,15 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 		wanted_id = states[0].character_id
 	if _hud_port != null:
 		_hud_port.set_controls_enabled(false)
+	CATABASE_UI_THEME.apply_inventory(inventory_screen, GameManager.expedition != null)
 	if not inventory_screen.open_for_character(wanted_id, GameManager):
 		if _hud_port != null:
 			_hud_port.set_controls_enabled(_combat_controls_before_inventory)
 		_combat_controls_before_inventory = false
 		_release_modal(MODAL_INVENTORY)
 		return false
+	if GameManager.expedition != null:
+		CATABASE_UI_THEME.reveal(inventory_screen)
 	return true
 
 
@@ -369,6 +383,7 @@ func open_pause_menu() -> bool:
 	_owns_tree_pause = true
 	if _hud_port != null:
 		_hud_port.set_controls_enabled(false)
+	CATABASE_UI_THEME.apply_pause(pause_menu, GameManager.expedition != null)
 	pause_menu.open_menu()
 	get_tree().paused = true
 	return true
@@ -397,6 +412,10 @@ func close_pause_menu() -> bool:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("ui_cancel"):
+		return
+	if is_instance_valid(_expedition_inspection):
+		get_viewport().set_input_as_handled()
+		_close_expedition_inspection()
 		return
 	if is_inventory_open():
 		get_viewport().set_input_as_handled()
@@ -437,6 +456,7 @@ func _on_skill_tree_requested(
 	) -> void:
 	if _ui_mode != RunUIMode.COMBAT \
 			or skill_tree_screen.visible \
+		or is_instance_valid(_expedition_inspection) \
 		or is_inventory_open() \
 		or _evolution_screen_active \
 		or not _combat_context_allows_run_modal():
@@ -446,6 +466,9 @@ func _on_skill_tree_requested(
 		_combat_controls_before_skill_tree = false
 		return
 	_hud_port.set_controls_enabled(false)
+	if GameManager.expedition != null:
+		_show_expedition_inspection("build")
+		return
 	if not skill_tree_screen.open_for_character(
 			character_id,
 			GameManager,
@@ -466,6 +489,40 @@ func _on_skill_tree_screen_closed() -> void:
 		_hud_port.set_controls_enabled(_combat_controls_before_skill_tree)
 	_combat_controls_before_skill_tree = false
 	_release_modal(MODAL_SKILL_TREE)
+
+
+func _on_map_requested() -> void:
+	if GameManager.expedition == null or _ui_mode != RunUIMode.COMBAT \
+			or is_instance_valid(_expedition_inspection) \
+			or not _combat_context_allows_run_modal():
+		return
+	_combat_controls_before_skill_tree = _hud_port.are_controls_enabled()
+	if not _claim_modal(MODAL_SKILL_TREE):
+		_combat_controls_before_skill_tree = false
+		return
+	_hud_port.set_controls_enabled(false)
+	_show_expedition_inspection("map")
+
+
+func _show_expedition_inspection(page: String) -> void:
+	var screen: Control = load("res://ui/expedition/ExpeditionScreen.tscn").instantiate()
+	screen.set("inspection_only", true)
+	screen.set("initial_page", page)
+	_expedition_inspection = screen
+	screen.connect("inspection_closed", func():
+		_expedition_inspection = null
+		_on_skill_tree_screen_closed()
+	)
+	overlay_layer.add_child(screen)
+
+
+func _close_expedition_inspection() -> void:
+	if not is_instance_valid(_expedition_inspection):
+		return
+	var screen := _expedition_inspection
+	_expedition_inspection = null
+	screen.queue_free()
+	_on_skill_tree_screen_closed()
 
 
 func _on_inventory_requested(character_id: StringName) -> void:

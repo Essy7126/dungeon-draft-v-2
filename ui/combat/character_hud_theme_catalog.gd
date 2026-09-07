@@ -18,5 +18,17 @@ static func resolve_refined(unit) -> CharacterHUDThemeData:
 		return null
 	for theme in REFINED_THEMES:
 		if theme != null and theme.matches_unit(unit):
-			return theme
+			return with_presentation_overrides(theme, unit)
 	return null
+
+
+static func with_presentation_overrides(theme: CharacterHUDThemeData, unit) -> CharacterHUDThemeData:
+	if theme == null or unit == null:
+		return theme
+	var portrait := unit.get("portrait_texture_override") as Texture2D
+	if portrait == null:
+		return theme
+	var presentation := theme.duplicate(false) as CharacterHUDThemeData
+	presentation.set_path_cache("")
+	presentation.portrait_texture = portrait
+	return presentation

@@ -88,3 +88,82 @@ func get_known_spells() -> Array[Spell]:
 
 func get_active_slot_count() -> int:
 	return _slot_count
+
+
+## Changes capacity without forgetting learned spells or compacting empty slots.
+## A shrink that would discard an equipped spell must be made explicit first.
+func resize_slots(slot_count: int) -> bool:
+	if slot_count < 0 or slot_count > 6:
+		return false
+	if slot_count < _slot_count:
+		for index in range(slot_count, _slot_count):
+			if _equipped_spell_ids[index] != &"":
+				return false
+	if slot_count == _slot_count:
+		return true
+	while _equipped_spell_ids.size() < slot_count:
+		_equipped_spell_ids.append(&"")
+	_equipped_spell_ids.resize(slot_count)
+	_slot_count = slot_count
+	changed.emit()
+	return true
+
+
+func get_spell_slot_ids() -> Array[StringName]:
+	return _equipped_spell_ids.duplicate()
+
+
+func to_snapshot() -> Dictionary:
+	var known: Array[String] = []
+	var equipped: Array[String] = []
+	for spell in _known_spells:
+		known.append(String(spell.get_effective_spell_id()))
+	for spell_id in _equipped_spell_ids:
+		equipped.append(String(spell_id))
+	return {"version": 1, "slot_count": _slot_count,
+		"known_spell_ids": known, "equipped_spell_ids": equipped}
+
+
+## The caller supplies the allowed resources; snapshots never load arbitrary paths.
+## All validation precedes the first mutation, including duplicate/unknown IDs.
+func restore_snapshot(snapshot: Dictionary, available_spells: Array) -> bool:
+	if snapshot.get("version", 0) != 1:
+		return false
+	var count_value: Variant = snapshot.get("slot_count", -1)
+	if not (count_value is int or count_value is float) \
+			or float(count_value) != floor(float(count_value)):
+		return false
+	var count := int(count_value)
+	var known_value: Variant = snapshot.get("known_spell_ids")
+	var slots_value: Variant = snapshot.get("equipped_spell_ids")
+	if count < 0 or count > 6 or not known_value is Array \
+			or not slots_value is Array or slots_value.size() != count:
+		return false
+	var available := {}
+	for candidate in available_spells:
+		if candidate is Spell:
+			available[String(candidate.get_effective_spell_id())] = candidate
+	var known: Array[Spell] = []
+	var known_by_id := {}
+	for id_value in known_value:
+		if not (id_value is String or id_value is StringName):
+			return false
+		var id := StringName(id_value)
+		if id == &"" or known_by_id.has(id) or not available.has(String(id)):
+			return false
+		known.append(available[String(id)])
+		known_by_id[id] = available[String(id)]
+	var slots: Array[StringName] = []
+	for id_value in slots_value:
+		if not (id_value is String or id_value is StringName):
+			return false
+		var id := StringName(id_value)
+		if id != &"" and (not known_by_id.has(id) or slots.has(id)):
+			return false
+		slots.append(id)
+	_slot_count = count
+	_known_spells = known
+	_known_by_id = known_by_id
+	_equipped_spell_ids = slots
+	changed.emit()
+	return true

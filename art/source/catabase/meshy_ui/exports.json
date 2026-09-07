@@ -34,7 +34,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
       "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "givre",
@@ -68,7 +69,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
       "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "foudre",
@@ -102,7 +104,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
       "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "serment_rempart",
@@ -136,7 +139,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
       "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "serment_brasier",
@@ -170,7 +174,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
       "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "exp_tempest",
@@ -204,7 +209,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
       "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_levier",
@@ -238,7 +244,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
       "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_lame_sang",
@@ -272,7 +279,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
       "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_javeline",
@@ -306,7 +314,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
       "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_xiphos_danse",
@@ -340,7 +349,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
       "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_masse_airain",
@@ -374,7 +384,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
       "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_fer_braise",
@@ -408,7 +419,8 @@
       "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
       "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_cuirasse",
@@ -442,7 +454,8 @@
       "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
       "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_lin_survivant",
@@ -476,7 +489,8 @@
       "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
       "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_sandales",
@@ -510,7 +524,8 @@
       "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
       "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_sceau_chasse",
@@ -544,7 +559,8 @@
       "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
       "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_prisme",
@@ -578,7 +594,8 @@
       "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
       "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "catabase_agrafe",
@@ -612,7 +629,8 @@
       "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
       "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "force",
@@ -646,7 +664,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "attack_power",
@@ -680,7 +699,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "max_hp",
@@ -714,7 +734,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "initiative",
@@ -748,7 +769,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "esquive",
@@ -782,7 +804,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "armure",
@@ -816,7 +839,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "resist_magique",
@@ -850,7 +874,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "heal_budget",
@@ -884,7 +909,8 @@
       "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
       "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "colere",
@@ -922,7 +948,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
       "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "chiron",
@@ -960,7 +987,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
       "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "eaque",
@@ -998,7 +1026,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
       "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "elements",
@@ -1036,7 +1065,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
       "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "serment",
@@ -1074,7 +1104,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
       "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "achilles",
@@ -1112,7 +1143,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
       "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "oboles",
@@ -1150,7 +1182,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
       "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "destiny",
@@ -1188,7 +1221,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
       "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "health",
@@ -1226,7 +1260,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
       "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "level",
@@ -1264,7 +1299,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
       "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "victory",
@@ -1302,7 +1338,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
       "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "defeat",
@@ -1340,7 +1377,8 @@
       "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
       "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "normal",
@@ -1378,7 +1416,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "elite",
@@ -1416,7 +1455,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "boss",
@@ -1454,7 +1494,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "hub",
@@ -1492,7 +1533,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "merchant",
@@ -1530,7 +1572,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "sanctuary",
@@ -1568,7 +1611,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "lore",
@@ -1606,7 +1650,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "event",
@@ -1644,7 +1689,9 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080.",
+      "runtime_usage": "Supported by the marker resolver; current route generation does not emit this type."
     },
     {
       "id": "cache",
@@ -1682,7 +1729,9 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080.",
+      "runtime_usage": "Supported by the marker resolver; current route generation does not emit this type."
     },
     {
       "id": "unknown",
@@ -1720,7 +1769,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "hidden",
@@ -1758,7 +1808,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "current",
@@ -1796,7 +1847,8 @@
       "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
       "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "map",
@@ -1834,7 +1886,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "tree",
@@ -1872,7 +1925,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "equipment",
@@ -1910,7 +1964,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "halt",
@@ -1948,7 +2003,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "journal",
@@ -1986,7 +2042,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "home",
@@ -2024,7 +2081,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "close",
@@ -2062,7 +2120,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "settings",
@@ -2100,7 +2159,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "save",
@@ -2138,7 +2198,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "continue",
@@ -2176,7 +2237,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "lock",
@@ -2214,7 +2276,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "check",
@@ -2252,7 +2315,8 @@
       "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
       "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "button_normal",
@@ -2290,7 +2354,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
       "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "button_primary",
@@ -2328,7 +2393,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
       "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "button_selected",
@@ -2366,7 +2432,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
       "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "button_disabled",
@@ -2404,7 +2471,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
       "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "tab_normal",
@@ -2442,7 +2510,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
       "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "tab_selected",
@@ -2480,7 +2549,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
       "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "panel",
@@ -2518,7 +2588,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
       "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "card",
@@ -2556,7 +2627,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
       "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "tooltip",
@@ -2594,7 +2666,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
       "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "banner",
@@ -2632,7 +2705,8 @@
       "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
       "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "slot_normal",
@@ -2670,7 +2744,8 @@
       "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
       "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "slot_selected",
@@ -2708,7 +2783,8 @@
       "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
       "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "slot_locked",
@@ -2746,7 +2822,8 @@
       "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
       "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "portrait_frame",
@@ -2784,7 +2861,8 @@
       "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
       "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "background",
@@ -2807,7 +2885,8 @@
       "source_path": "meshy_output/20260907_172946_catabase-ui-background_01a07c7d/source.png",
       "source_sha256": "6615bdfa55be8503d914771b66ce3eb6971a6cc3ec760a1d00acb4c415cfae9f",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "tree_fresco",
@@ -2830,7 +2909,8 @@
       "source_path": "meshy_output/20260907_173232_catabase-ui-tree-fresco_01a07c7f/source.png",
       "source_sha256": "028169776bc75a29fd46f4cf2df8b8c512a7c57434d0e5118bef0a236f104f45",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "route_parchment",
@@ -2853,7 +2933,8 @@
       "source_path": "meshy_output/20260907_173233_catabase-ui-route-parchment_01a07c7f/source.png",
       "source_sha256": "f8acb137028fd43423127b03d60a7eb0c364367c37ddd7b6d06fe4cdc29edbfc",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     },
     {
       "id": "max_mp",
@@ -2891,8 +2972,43 @@
       "source_path": "meshy_output/20260907_173234_catabase-ui-movement-glyph-rev_01a07c7f/source.png",
       "source_sha256": "6f6957e4c856d592654279244a40ee9d05920dedb0f79052974a11b459760f8b",
       "review_status": "visually_reviewed",
-      "runtime_validation": "pending"
+      "runtime_validation": "passed",
+      "runtime_validation_scope": "Texture load, catalog and presentation contracts; applicable UI states inspected at 1280x720 and 1920x1080."
     }
   ],
-  "review_method": "Source atlas and extracted sheets inspected, including icon previews at 64, 48 and 34 px. Runtime captures verified separately."
+  "review_method": "Source atlas and extracted sheets inspected, including icon previews at 64, 48 and 34 px. Runtime captures verified separately.",
+  "status": "integrated_tested",
+  "validation": {
+    "godot": "4.7.1.stable",
+    "gut_assets": {
+      "tests": 49,
+      "assertions": 7417,
+      "failures": 0
+    },
+    "gut_regression": {
+      "tests": 118,
+      "assertions": 3866,
+      "failures": 0
+    },
+    "gut_hud": {
+      "tests": 32,
+      "assertions": 579,
+      "failures": 0
+    },
+    "ui": [
+      {
+        "resolution": "1280x720",
+        "checks": 302,
+        "failures": 0,
+        "report": "artifacts/meshy_ui/1280x720/report.json"
+      },
+      {
+        "resolution": "1920x1080",
+        "checks": 302,
+        "failures": 0,
+        "report": "artifacts/meshy_ui/1920x1080/report.json"
+      }
+    ],
+    "limitations": "Combat probes report resources retained at engine shutdown; no script errors or failed behavior checks. Full-run difficulty/playability is not measured."
+  }
 }

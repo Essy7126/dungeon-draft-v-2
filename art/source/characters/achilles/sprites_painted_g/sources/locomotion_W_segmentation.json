@@ -1,0 +1,322 @@
+{
+  "enabled": true,
+  "coreAlpha": 32,
+  "expectedBodies": 16,
+  "componentCount": 16,
+  "bodyIds": [
+    2,
+    3,
+    4,
+    1,
+    13,
+    15,
+    16,
+    10,
+    14,
+    12,
+    7,
+    5,
+    8,
+    6,
+    9,
+    11
+  ],
+  "components": [
+    {
+      "id": 2,
+      "corePixels": 53492,
+      "bbox": [
+        636,
+        28,
+        891,
+        483
+      ],
+      "centroid": [
+        761.3398825992672,
+        251.25811336274583
+      ],
+      "owner": 1,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 3,
+      "corePixels": 53413,
+      "bbox": [
+        1118,
+        28,
+        1372,
+        483
+      ],
+      "centroid": [
+        1244.6712036395634,
+        251.31108531630878
+      ],
+      "owner": 2,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 4,
+      "corePixels": 53354,
+      "bbox": [
+        1616,
+        28,
+        1870,
+        483
+      ],
+      "centroid": [
+        1741.7596056528096,
+        251.5868538441354
+      ],
+      "owner": 3,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 1,
+      "corePixels": 53166,
+      "bbox": [
+        145,
+        28,
+        399,
+        483
+      ],
+      "centroid": [
+        270.04074032276264,
+        251.8457472820976
+      ],
+      "owner": 0,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 13,
+      "corePixels": 53086,
+      "bbox": [
+        136,
+        1550,
+        368,
+        2005
+      ],
+      "centroid": [
+        254.88456466865088,
+        1780.0539501940248
+      ],
+      "owner": 12,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 15,
+      "corePixels": 52524,
+      "bbox": [
+        998,
+        1572,
+        1377,
+        1996
+      ],
+      "centroid": [
+        1241.2091615261595,
+        1774.3522008986367
+      ],
+      "owner": 14,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 16,
+      "corePixels": 51857,
+      "bbox": [
+        1454,
+        1593,
+        1924,
+        1998
+      ],
+      "centroid": [
+        1752.4692519814105,
+        1793.0176061091076
+      ],
+      "owner": 15,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 10,
+      "corePixels": 51272,
+      "bbox": [
+        1603,
+        1041,
+        1841,
+        1492
+      ],
+      "centroid": [
+        1729.0158371040725,
+        1266.9041387111874
+      ],
+      "owner": 11,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 14,
+      "corePixels": 51239,
+      "bbox": [
+        496,
+        1571,
+        916,
+        2005
+      ],
+      "centroid": [
+        746.3586330724644,
+        1780.495189211343
+      ],
+      "owner": 13,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 12,
+      "corePixels": 50732,
+      "bbox": [
+        621,
+        1047,
+        860,
+        1492
+      ],
+      "centroid": [
+        747.2934242687062,
+        1266.0550540093038
+      ],
+      "owner": 9,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 7,
+      "corePixels": 50547,
+      "bbox": [
+        627,
+        536,
+        860,
+        981
+      ],
+      "centroid": [
+        749.8724157714602,
+        756.3461135181119
+      ],
+      "owner": 5,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 5,
+      "corePixels": 50483,
+      "bbox": [
+        1608,
+        535,
+        1840,
+        981
+      ],
+      "centroid": [
+        1728.7839074539945,
+        755.4430798486619
+      ],
+      "owner": 7,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 8,
+      "corePixels": 50114,
+      "bbox": [
+        1118,
+        536,
+        1350,
+        981
+      ],
+      "centroid": [
+        1240.096539889053,
+        756.2975416051403
+      ],
+      "owner": 6,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 6,
+      "corePixels": 50043,
+      "bbox": [
+        141,
+        536,
+        369,
+        982
+      ],
+      "centroid": [
+        258.64252742641327,
+        757.516335951082
+      ],
+      "owner": 4,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 9,
+      "corePixels": 49740,
+      "bbox": [
+        1122,
+        1040,
+        1357,
+        1485
+      ],
+      "centroid": [
+        1245.469340570969,
+        1262.4374346602333
+      ],
+      "owner": 10,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    },
+    {
+      "id": 11,
+      "corePixels": 49570,
+      "bbox": [
+        139,
+        1046,
+        372,
+        1492
+      ],
+      "centroid": [
+        260.6018559612669,
+        1264.5265886624975
+      ],
+      "owner": 8,
+      "assignment": "dominant-body-centroid",
+      "confidence": 1.0
+    }
+  ],
+  "errors": [],
+  "key": {
+    "keyType": "magenta",
+    "keyColor": [
+      255,
+      0,
+      255
+    ],
+    "dominanceTransparentAt": 110,
+    "dominanceOpaqueBelow": 40,
+    "borderForegroundFraction": 0.0,
+    "alphaChanged": 3383446,
+    "pixelsChanged": 3383446,
+    "transparentPixels": 3367888,
+    "softAlphaPixels": 15558,
+    "removedSpeckPixels": 0,
+    "removedSpeckComponents": [],
+    "removalPolicy": "Remove disconnected <=3px specks only."
+  },
+  "coordinates": "Global source pixels; final roots remain nominal-cell-local.",
+  "softPixelsBeyondTwoPixelFringeRetained": 0,
+  "sourceAlphaSum": 208715062,
+  "assignedAlphaSum": 208715062,
+  "unassignedCorePixels": 0
+}

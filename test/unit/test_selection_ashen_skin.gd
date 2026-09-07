@@ -50,10 +50,10 @@ func test_material_layers_do_not_obscure_focus_or_intercept_their_controls() -> 
 
 
 func test_clicking_the_material_selects_the_real_hero_and_preserves_selected_state() -> void:
-	var mage: Button = screen._roster_buttons[2]
+	var mage: Button = screen._roster_buttons[3]
 	var achilles: Button = screen._roster_buttons[0]
 	await _click(mage)
-	assert_eq(screen.selected_index, 2, "A click through the decorative surface reaches Mage")
+	assert_eq(screen.selected_index, 3, "A click through the decorative surface reaches Mage")
 	assert_eq(screen.get_selected_entry().get("id"), &"mage")
 	assert_true(mage.button_pressed)
 	assert_true(_state(mage).get("selected", false))

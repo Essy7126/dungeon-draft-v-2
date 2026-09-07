@@ -13,15 +13,33 @@ const CHARACTER_SELECTION_SCENE_PATH := "res://ui/selection/CharacterSelectionSc
 const REFERENCE_VIEWPORT := Vector2(1200.0, 896.0)
 
 var _intro_en_cours: bool = true
+var _resume_button: Button
 
 
 func _ready() -> void:
+	if FileAccess.file_exists(GameManager.expedition_save_path):
+		_resume_button = Button.new()
+		_resume_button.name = "BoutonReprendreCatabase"
+		_resume_button.text = "Reprendre Catabase"
+		_resume_button.custom_minimum_size.y = 52
+		boutons.add_child(_resume_button)
+		boutons.move_child(_resume_button, 1)
+		_resume_button.pressed.connect(func():
+			if not GameManager.resume_expedition():
+				_resume_button.text = "Sauvegarde incompatible"
+				_resume_button.tooltip_text = "La sauvegarde a été conservée ; vous pouvez commencer une nouvelle partie."
+		)
 	PremiumUI.apply(boutons)
 	bouton_nouvelle_partie.pressed.connect(_on_nouvelle_partie)
 	bouton_quitter.pressed.connect(_on_quitter)
 	animation_player.animation_finished.connect(_on_intro_terminee)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_configure_focus_navigation()
+	if _resume_button != null:
+		bouton_nouvelle_partie.focus_neighbor_bottom = bouton_nouvelle_partie.get_path_to(_resume_button)
+		_resume_button.focus_neighbor_top = _resume_button.get_path_to(bouton_nouvelle_partie)
+		_resume_button.focus_neighbor_bottom = _resume_button.get_path_to(bouton_quitter)
+		bouton_quitter.focus_neighbor_top = bouton_quitter.get_path_to(_resume_button)
 	_apply_responsive_layout()
 	animation_player.play("intro")
 
@@ -83,4 +101,4 @@ func _apply_responsive_layout() -> void:
 	boutons.offset_left = left
 	boutons.offset_right = left + width
 	boutons.offset_top = top
-	boutons.offset_bottom = top + 190.0
+	boutons.offset_bottom = top + 252.0
