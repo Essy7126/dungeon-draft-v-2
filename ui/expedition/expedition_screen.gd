@@ -174,7 +174,7 @@ func _render() -> void:
 	_summary.text = "ACHILLE  ·  Étapes %d / 20" % session.route.completed_node_ids.size()
 	_resource_values.health.text = "%d / %d PV" % [hero.current_hp, hero.max_hp.get_int()]
 	_resource_values.level.text = "Niveau %d" % champion.current_level
-	_resource_values.destiny.text = "%d points de destin" % session.build.points
+	_resource_values.destiny.text = "%d %s de destin" % [session.build.points, "point" if session.build.points == 1 else "points"]
 	_resource_values.oboles.text = "%d oboles" % session.gold
 	_status.text = "Consultation en combat · le chemin et le kit se choisissent entre les rencontres." if inspection_only else session.last_message
 	match _page:
@@ -413,7 +413,9 @@ func _render_build() -> void:
 func _render_technique(parent: Control, offer: Dictionary) -> void:
 	var session := GameManager.expedition
 	var card := _card(parent, TEAL if bool(offer.owned) else GOLD)
-	_label(card, str(offer.kind).to_upper() + "  /  %d POINTS" % int(offer.cost), 13, GOLD)
+	var cost := int(offer.cost)
+	var point_label := "point" if cost == 1 else "points"
+	_label(card, str(offer.kind).to_upper() + "  /  %d %s" % [cost, point_label.to_upper()], 13, GOLD)
 	_illustrated_title(card, str(offer.title), CatabasePaintedIconCatalog.node_icon(offer) if bool(offer.get("discovered", true)) else ART_THEME.icon("nav", "lock"), 64)
 	_label(card, str(offer.description), 17)
 	var prereq: Array = offer.get("prerequisites", [])
@@ -421,7 +423,7 @@ func _render_technique(parent: Control, offer: Dictionary) -> void:
 		var names := PackedStringArray()
 		for id in prereq: names.append(str(session.build.catalog.get_node(str(id)).get("title", id)))
 		_label(card, "Requiert : " + " + ".join(names), 14, MUTED)
-	var buy := _button(card, "Acquis" if bool(offer.owned) else "Choisir · %d points" % int(offer.cost), bool(offer.available))
+	var buy := _button(card, "Acquis" if bool(offer.owned) else "Choisir · %d %s" % [cost, point_label], bool(offer.available))
 	buy.name = "PurchaseTechnique"
 	buy.disabled = inspection_only or not bool(offer.available)
 	buy.tooltip_text = str(offer.get("reason", ""))
@@ -552,7 +554,8 @@ func _render_gear() -> void:
 	var state := session.character
 	var column := _scroll_column(_body)
 	var stats := _card(column, GOLD)
-	_label(stats, "CARACTÉRISTIQUES  /  %d POINTS DISPONIBLES" % state.champion_progression.unspent_attribute_points, 15, GOLD)
+	var available_points := state.champion_progression.unspent_attribute_points
+	_label(stats, "CARACTÉRISTIQUES  /  %d %s" % [available_points, "POINT DISPONIBLE" if available_points == 1 else "POINTS DISPONIBLES"], 15, GOLD)
 	_label(stats, "Prouesse %d   ·   Armure %d   ·   Esquive %d %%   ·   %d PA / %d PM" % [state.unit.attack_power.get_int(), state.unit.armure.get_int(), roundi(state.unit.esquive.get_value() * 100), state.unit.max_ap.get_int(), state.unit.max_mp.get_int()], 21)
 	for attr in [["vitality", "Vitalité", "+6 % des PV de base par point."], ["power", "Puissance", "+5 % de Prouesse par point."], ["resolve", "Résolution", "+4 armure et +5 % aux boucliers créés."], ["wisdom", "Sagesse", "+10 % XP aux prochaines étapes ; accélère les caractéristiques, sans donner de points de destin."]]:
 		var row := HBoxContainer.new()
