@@ -121,8 +121,29 @@ Les scénarios contenant du combat signalent encore des objets/ressources retenu
 à l'arrêt du moteur : notamment 1 143 objets et 339 ressources pour le probe UI.
 Leurs assertions passent, mais leur fermeture n'est pas qualifiée de propre.
 Le probe de cartes signale aussi l'annulation d'un rafraîchissement suspendu lors
-d'un rechargement de script. La suite globale et son contrôle des échecs
-historiques sont exécutés séparément avant la publication finale.
+d'un rechargement de script.
+
+La suite globale du dépôt a été interrompue au plafond de trente minutes du job
+`BASELINE-GUARD` (1 876 secondes mesurées avec son arrêt). Elle avait commencé
+1 983 tests dans 199 suites, sans produire de résumé final ; les diagnostics
+partiels recensent 145 identités de tests en échec. Le vérificateur officiel
+retourne 1 pour exécution incomplète. **La suite globale n'est donc pas validée.**
+L'allowlist historique n'a pas été modifiée. Des dépendances inchangées au parent
+confirment certains conflits Studio, Achille 3D et anciennes icônes raffinées ;
+les autres échecs n'ont pas tous été attribués, et aucune exécution complète du
+parent n'a été réalisée. Les deux fichiers de résultats Arena Studio écrits par
+ces tests ont été restaurés à leurs empreintes initiales.
+
+Les sept suites dont les contrats dépendaient de l'ancien pool de cinq arènes
+ont ensuite été adaptées et exécutées : **76 tests passent sur 97**. Toutes les
+nouvelles assertions concernant les quinze arènes, leur ordre, leurs rencontres,
+leurs données visuelles, les copies Studio et le boss à l'étape XX passent.
+Les scénarios de transition séquentielle conservent explicitement une copie des
+cinq salles historiques. Les 21 échecs conservés se répartissent entre
+Theorycraft (10) et Solo (11), notamment les anciens contrats de sorts, économie,
+visuels et cible de récompense. Ces suites élargies ne sont pas qualifiées de
+vertes. Leur détail est inclus dans le reçu de validation, séparément des
+199 tests passants de l'intégration UI/art et de ses régressions ciblées.
 
 ## Limites de cette passe
 

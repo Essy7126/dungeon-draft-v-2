@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "updated_on": "2026-09-07",
-  "status": "targeted_validation_passed_with_documented_shutdown_diagnostics",
+  "status": "ui_passed_extended_validation_has_failures",
   "godot": {
     "executable": "C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe",
     "version": "4.7.1.stable.official.a13da4feb",
@@ -143,33 +143,6 @@
       "log": "artifacts/meshy_ui/battle.log"
     }
   ],
-  "verified_interactions": [
-    "Real four-spell opening and real six-spell follow-up combat reach player idle; temporary introduction ends naturally.",
-    "All46 spells resolve artwork, twelve real equipment definitions use painted images, nine stat glyphs and five doctrine emblems plus Achilles load.",
-    "Unknown route presentation never leaks its real kind; inspected combat map leaves run snapshot unchanged.",
-    "Actual engine mouse events hover and click pause Options to toggle reduced motion and restore it; actual hit-target geometry remains fixed.",
-    "Inventory action footer remains visible before scrolling and stationary while details scroll; actual mouse click equips selected weapon and returns replaced weapon to inventory.",
-    "Themes, icons, action parents and presentation restore outside Catabase; reduced motion disables active motion including inventory tile zoom.",
-    "Each of four/six spell-button rectangles is disjoint from Move, EndTurn, three navigation buttons and all other spells; no horizontal viewport overflow across21 main views per resolution.",
-    "Explicit result fixtures cover victory/defeat with real result scene and restoration of another adventure."
-  ],
-  "issues_found_and_corrected": [
-    "StyleBox sentinel margins expanded inventory; effective margins now preserved.",
-    "Missing metadata on first motion binding generated engine errors; has_meta guards added.",
-    "Inventory Equip action was below the long description; existing actions moved to a reversible fixed footer.",
-    "Legacy pause zoom moved its click target; Catabase motion keeps scale=1.",
-    "Six-spell HUD overlapped Move and EndTurn at1280; final slot sizing fits the actual ability region, with71 overlap assertions added."
-  ],
-  "limitations": [
-    "Runtime shutdown diagnostics remain in combat-containing scenarios. Functional checks pass, but these exits are not reported as clean.",
-    "Intermediate victories, discoveries and twelve equipment grants in the UI probe are explicit fixtures. Only BattleFlowProbe plays the full opening victory.",
-    "Result screens are explicit fixtures and do not represent playing the final boss.",
-    "Only1280x720 and1920x1080 were visually validated. No claim of full20-room manual playthrough or balance validation."
-  ],
-  "global_baseline_guard": {
-    "status": "requested_pending_execution",
-    "workflow": ".github/workflows/godot-validation.yml#baseline-guard"
-  },
   "graphical_probes": [
     {
       "kind": "ui",
@@ -262,5 +235,825 @@
       "shutdown": "783 ObjectDB instances, 279 resources, OpenGL allocations and PagedAllocator retained at process exit."
     }
   ],
+  "verified_interactions": [
+    "Real four-spell opening and real six-spell follow-up combat reach player idle; temporary introduction ends naturally.",
+    "All46 spells resolve artwork, twelve real equipment definitions use painted images, nine stat glyphs and five doctrine emblems plus Achilles load.",
+    "Unknown route presentation never leaks its real kind; inspected combat map leaves run snapshot unchanged.",
+    "Actual engine mouse events hover and click pause Options to toggle reduced motion and restore it; actual hit-target geometry remains fixed.",
+    "Inventory action footer remains visible before scrolling and stationary while details scroll; actual mouse click equips selected weapon and returns replaced weapon to inventory.",
+    "Themes, icons, action parents and presentation restore outside Catabase; reduced motion disables active motion including inventory tile zoom.",
+    "Each of four/six spell-button rectangles is disjoint from Move, EndTurn, three navigation buttons and all other spells; no horizontal viewport overflow across21 main views per resolution.",
+    "Explicit result fixtures cover victory/defeat with real result scene and restoration of another adventure."
+  ],
+  "issues_found_and_corrected": [
+    "StyleBox sentinel margins expanded inventory; effective margins now preserved.",
+    "Missing metadata on first motion binding generated engine errors; has_meta guards added.",
+    "Inventory Equip action was below the long description; existing actions moved to a reversible fixed footer.",
+    "Legacy pause zoom moved its click target; Catabase motion keeps scale=1.",
+    "Six-spell HUD overlapped Move and EndTurn at1280; final slot sizing fits the actual ability region, with71 overlap assertions added."
+  ],
+  "limitations": [
+    "Runtime shutdown diagnostics remain in combat-containing scenarios. Functional checks pass, but these exits are not reported as clean.",
+    "Intermediate victories, discoveries and twelve equipment grants in the UI probe are explicit fixtures. Only BattleFlowProbe plays the full opening victory.",
+    "Result screens are explicit fixtures and do not represent playing the final boss.",
+    "Only1280x720 and1920x1080 were visually validated. No claim of full20-room manual playthrough or balance validation."
+  ],
+  "global_baseline_guard": {
+    "status": "incomplete_timeout_verifier_failed",
+    "workflow": ".github/workflows/godot-validation.yml#baseline-guard",
+    "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' --headless --path . -s res://addons/gut/gut_cmdln.gd -gdir=res://test/unit -ginclude_subdirs -gprefix=test_ -gexit *> artifacts/meshy_ui/global-gut.log",
+    "verifier": "tools/verify_gut_historical_allowlist.py",
+    "allowlist": "tools/gut_historical_allowlist.json",
+    "log": "artifacts/meshy_ui/global-gut.log",
+    "worktree_before": "artifacts/meshy_ui/worktree_before.json",
+    "parent_comparison": "artifacts/meshy_ui/parent_comparison.json",
+    "initial_findings": "Unchanged parent test_encounter_g6_closure references missing uses_compact_title. Initial Achilles3D test/adapter/profile failures are on files with identical Git blobs to c1311f3; parent was not rerun.",
+    "process_exit_code": -1,
+    "verifier_exit_code": 1,
+    "verifier_command": "& 'C:/Users/p.montebello/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 tools/verify_gut_historical_allowlist.py artifacts/meshy_ui/global-gut.log tools/gut_historical_allowlist.json -1",
+    "verifier_log": "artifacts/meshy_ui/global-allowlist-verdict.log",
+    "timebox_minutes": 30,
+    "started_at_local": "2026-09-07 18:31:37",
+    "stopped_at_local": "2026-09-07 19:02:53",
+    "elapsed_seconds": 1876,
+    "final_summary_present": false,
+    "scripts_started": 199,
+    "tests_started": 1983,
+    "partial_failed_test_identities": 145,
+    "partial_failure_details": "artifacts/meshy_ui/global_progress.json",
+    "verdict": "The official verifier rejects the truncated execution. Its zero observed failures means no final summary was available, not that the executed tests passed.145 failure identities were collected from partial per-test diagnostics.",
+    "allowlist_modified": false,
+    "parent_evidence": "Unchanged parent G6 test and Studio implementation both lack uses_compact_title. Initial Achilles3D test/adapter/profile files are unchanged. Refined-theme resources and canonical spell files are unchanged; the new painted-prefix branch is not entered by the failing canonical icons. No full parent runtime baseline was executed; other failures are not all individually attributed.",
+    "worktree_after": "artifacts/meshy_ui/worktree_after.json",
+    "worktree_changes": {
+      "added": [
+        "art/source/catabase/meshy_ui/validation.json"
+      ],
+      "removed": [],
+      "content_changed": [
+        "artifacts/arena_studio/arena_studio_test/arena_definition.json",
+        "artifacts/arena_studio/arena_studio_test/validation_report.json",
+        "docs/design/achilles/catabase_meshy_ui_v1.md",
+        "test/unit/test_achilles_odyssey_production_contract.gd",
+        "test/unit/test_achilles_theorycraft_foundation.gd",
+        "test/unit/test_catabase_philosopher_integration.gd",
+        "test/unit/test_catabase_registered_terrain.gd",
+        "test/unit/test_catabase_vertical_slice_content.gd",
+        "test/unit/test_paris_production_access.gd",
+        "ui/expedition/expedition_screen.gd"
+      ],
+      "git_status_changed": true,
+      "restoration_performed": true
+    },
+    "test_generated_artifact_restorations": [
+      {
+        "path": "artifacts/arena_studio/arena_studio_test/arena_definition.json",
+        "mutated_sha256": "86cc52f800907874e66b4c3727398c2f1e90493025b71ff129594de5bafc8888",
+        "restored_sha256": "af59c52d879e12de5a4105f4ca4310870c82248c2fd300e3c94861dbdd803ee0",
+        "baseline_hash_matches": true
+      },
+      {
+        "path": "artifacts/arena_studio/arena_studio_test/validation_report.json",
+        "mutated_sha256": "eb030b01e85df74cb7a5134816e9e153b67aa1f5926ab126363d4ef7515105f1",
+        "restored_sha256": "0e9ae5a7bc14f4e313549ae41ddf838370d311f73e888539b3b6dfa1d8755bd9",
+        "baseline_hash_matches": true
+      }
+    ],
+    "restorations_report": "artifacts/meshy_ui/worktree_test_restorations.json",
+    "intentional_changes_retained": "All docs/provenance, authorized run-contract test adaptations and screen pluralization changes were preserved. Root updated test_odyssey_achilles_solo_run.gd after the after-snapshot."
+  },
+  "run_contract_adaptations": {
+    "status": "new_pool_contracts_pass_legacy_failures_retained",
+    "import": {
+      "exit_code": 0,
+      "console_log": "artifacts/meshy_ui/contract-import.combined.log",
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' --headless --editor --recovery-mode --path . --import --log-file 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/contract-import.log' *> artifacts/meshy_ui/contract-import.combined.log",
+      "scope": "Final contract test edits and screen singular/plural copy. Editor import alone did not load two test scripts; GUT detected and drove their typed-slice corrections."
+    },
+    "groups": [
+      {
+        "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/contract-gut.log' '--script' 'res://addons/gut/gut_cmdln.gd' '--' '-gconfig=' '-gexit' '-gdisable_colors' '-gfailure_error_types' 'engine,gut,push_error' '-gjunit_xml_file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/contract-gut.junit.xml' '-gtest' 'res://test/unit/test_achilles_odyssey_production_contract.gd' '-gtest' 'res://test/unit/test_achilles_theorycraft_foundation.gd' '-gtest' 'res://test/unit/test_catabase_philosopher_integration.gd' '-gtest' 'res://test/unit/test_catabase_registered_terrain.gd' '-gtest' 'res://test/unit/test_catabase_vertical_slice_content.gd' '-gtest' 'res://test/unit/test_odyssey_achilles_solo_run.gd' '-gtest' 'res://test/unit/test_paris_production_access.gd' *> artifacts/meshy_ui/contract-gut.combined.log",
+        "exit_code": 1,
+        "junit": "artifacts/meshy_ui/contract-gut.junit.xml",
+        "console_log": "artifacts/meshy_ui/contract-gut.combined.log",
+        "tests": 88,
+        "passing": 67,
+        "failures": 21,
+        "suites": [
+          {
+            "script": "test/unit/test_achilles_odyssey_production_contract.gd",
+            "tests": 6,
+            "passing": 6,
+            "failures": 0,
+            "cases": [
+              {
+                "name": "test_catabase_keeps_one_champion_and_the_authored_room_pool",
+                "status": "pass",
+                "assertions": 80,
+                "failure_details": []
+              },
+              {
+                "name": "test_achilles_chassis_keeps_current_stats_combat_sprite_and_selection_preview",
+                "status": "pass",
+                "assertions": 16,
+                "failure_details": []
+              },
+              {
+                "name": "test_four_champion_techniques_keep_their_scaling_movement_and_guard_contract",
+                "status": "pass",
+                "assertions": 41,
+                "failure_details": []
+              },
+              {
+                "name": "test_champion_uses_victory_xp_and_thirty_six_masteries_without_spell_xp",
+                "status": "pass",
+                "assertions": 21,
+                "failure_details": []
+              },
+              {
+                "name": "test_main_trio_keeps_its_four_spells_and_legacy_cast_xp_progression",
+                "status": "pass",
+                "assertions": 44,
+                "failure_details": []
+              },
+              {
+                "name": "test_achilles_hud_icons_and_player_copy_are_production_ready",
+                "status": "pass",
+                "assertions": 243,
+                "failure_details": []
+              }
+            ]
+          },
+          {
+            "script": "test/unit/test_achilles_theorycraft_foundation.gd",
+            "tests": 55,
+            "passing": 45,
+            "failures": 10,
+            "cases": [
+              {
+                "name": "test_snapshot_records_repository_sha",
+                "status": "pass",
+                "assertions": 6,
+                "failure_details": []
+              },
+              {
+                "name": "test_snapshot_matches_achilles_unit_resource",
+                "status": "pass",
+                "assertions": 8,
+                "failure_details": []
+              },
+              {
+                "name": "test_snapshot_matches_progression_profile",
+                "status": "pass",
+                "assertions": 4,
+                "failure_details": []
+              },
+              {
+                "name": "test_snapshot_matches_four_spell_resources",
+                "status": "fail",
+                "assertions": 2,
+                "failure_details": [
+                  "Unexpected Errors:\n      [1] <engine-2>Invalid access to property or key 'achilles_spear_thrust' on a base object of type 'Dictionary'.\n            at line -1"
+                ]
+              },
+              {
+                "name": "test_snapshot_matches_four_discipline_resources",
+                "status": "fail",
+                "assertions": 23,
+                "failure_details": [
+                  "[3] expected to equal [4]:  \n            at line 104"
+                ]
+              },
+              {
+                "name": "test_snapshot_exports_extended_catabase_room_pool",
+                "status": "pass",
+                "assertions": 79,
+                "failure_details": []
+              },
+              {
+                "name": "test_snapshot_matches_odyssey_rooms",
+                "status": "fail",
+                "assertions": 6,
+                "failure_details": [
+                  "[\"odyssey\"] expected to equal [\"first_run_equipment_reward\"]:  \n            at line 149"
+                ]
+              },
+              {
+                "name": "test_snapshot_matches_odyssey_enemies",
+                "status": "pass",
+                "assertions": 7,
+                "failure_details": []
+              },
+              {
+                "name": "test_theorycraft_code_is_not_referenced_by_odyssey",
+                "status": "pass",
+                "assertions": 3,
+                "failure_details": []
+              },
+              {
+                "name": "test_theorycraft_code_is_not_referenced_by_achilles_unit",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_theorycraft_draft_does_not_modify_character_run_state",
+                "status": "pass",
+                "assertions": 2,
+                "failure_details": []
+              },
+              {
+                "name": "test_theorycraft_draft_does_not_modify_save_data",
+                "status": "pass",
+                "assertions": 4,
+                "failure_details": []
+              },
+              {
+                "name": "test_theorycraft_export_does_not_modify_production_resources",
+                "status": "pass",
+                "assertions": 2,
+                "failure_details": []
+              },
+              {
+                "name": "test_export_destinations_reject_arbitrary_and_canonical_paths",
+                "status": "pass",
+                "assertions": 21,
+                "failure_details": []
+              },
+              {
+                "name": "test_artifact_generator_validates_root_before_creating_directories",
+                "status": "fail",
+                "assertions": 5,
+                "failure_details": [
+                  "\n            at line 249"
+                ]
+              },
+              {
+                "name": "test_user_drafts_are_saved_outside_res",
+                "status": "pass",
+                "assertions": 3,
+                "failure_details": []
+              },
+              {
+                "name": "test_theorycraft_sources_contain_no_production_save_service",
+                "status": "pass",
+                "assertions": 13,
+                "failure_details": []
+              },
+              {
+                "name": "test_sequence_enumerator_respects_six_ap",
+                "status": "fail",
+                "assertions": 31,
+                "failure_details": [
+                  "[28] expected to equal [22]:  \n            at line 274"
+                ]
+              },
+              {
+                "name": "test_sequence_enumerator_respects_explicit_non_six_ap_budget",
+                "status": "pass",
+                "assertions": 3,
+                "failure_details": []
+              },
+              {
+                "name": "test_sequence_enumerator_has_no_hidden_six_ap_fallback",
+                "status": "pass",
+                "assertions": 3,
+                "failure_details": []
+              },
+              {
+                "name": "test_sequence_enumerator_respects_once_per_activation",
+                "status": "pass",
+                "assertions": 64,
+                "failure_details": []
+              },
+              {
+                "name": "test_sequence_enumerator_reports_unused_ap",
+                "status": "fail",
+                "assertions": 2,
+                "failure_details": [
+                  "DICTIONARY({ \"0\": 14, \"1\": 4, \"2\": 4, \"3\": 4, \"4\": 1, \"5\": 1 }) != DICTIONARY({ \"0\": 6, \"1\": 6, \"2\": 6, \"3\": 1, \"4\": 3 }).\n      { \"0\": 14, \"1\": 4, \"2\": 4, \"3\": 4, \"4\": ..., \"5\": 1 } != { \"0\": 6, \"1\": 6, \"2\": 6, \"3\": 1, \"4\": 3..., \"4\": 3 }  6 of 6 keys do not match.  \n            at line 315"
+                ]
+              },
+              {
+                "name": "test_sequence_enumerator_distinguishes_abstract_and_contextual",
+                "status": "fail",
+                "assertions": 3,
+                "failure_details": [
+                  "[28] expected to equal [22]:  \n            at line 326"
+                ]
+              },
+              {
+                "name": "test_contextual_sequence_count_remains_not_measured_without_legality_evidence",
+                "status": "pass",
+                "assertions": 64,
+                "failure_details": []
+              },
+              {
+                "name": "test_all_context_fields_export_explicit_provenance",
+                "status": "pass",
+                "assertions": 224,
+                "failure_details": []
+              },
+              {
+                "name": "test_sequence_enumerator_is_deterministic",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_observed_values_have_resource_source",
+                "status": "pass",
+                "assertions": 8,
+                "failure_details": []
+              },
+              {
+                "name": "test_derived_values_have_calculation_source",
+                "status": "pass",
+                "assertions": 2,
+                "failure_details": []
+              },
+              {
+                "name": "test_action_build_and_static_template_fields_have_complete_provenance",
+                "status": "pass",
+                "assertions": 503,
+                "failure_details": []
+              },
+              {
+                "name": "test_snapshot_root_containers_have_explicit_provenance",
+                "status": "pass",
+                "assertions": 14,
+                "failure_details": []
+              },
+              {
+                "name": "test_comparison_report_fields_and_gaps_have_complete_provenance",
+                "status": "pass",
+                "assertions": 204,
+                "failure_details": []
+              },
+              {
+                "name": "test_draft_values_are_marked_draft",
+                "status": "pass",
+                "assertions": 3,
+                "failure_details": []
+              },
+              {
+                "name": "test_edited_draft_action_value_becomes_draft_provenance",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_real_spell_reference_refreshes_values_from_resource",
+                "status": "fail",
+                "assertions": 2,
+                "failure_details": [
+                  "[3] expected to equal [2]:  \n            at line 499"
+                ]
+              },
+              {
+                "name": "test_manual_assumptions_are_visible",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_not_measured_is_not_reported_as_zero",
+                "status": "pass",
+                "assertions": 33,
+                "failure_details": []
+              },
+              {
+                "name": "test_build_comparison_is_deterministic",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_build_comparison_caps_selection_at_three",
+                "status": "pass",
+                "assertions": 2,
+                "failure_details": []
+              },
+              {
+                "name": "test_comparison_deltas_expose_honest_axis_consequences",
+                "status": "pass",
+                "assertions": 31,
+                "failure_details": []
+              },
+              {
+                "name": "test_numeric_only_build_warning",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_potential_dominance_warning",
+                "status": "pass",
+                "assertions": 2,
+                "failure_details": []
+              },
+              {
+                "name": "test_guard_loop_warning",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_build_assumptions_feed_bounded_validators",
+                "status": "pass",
+                "assertions": 5,
+                "failure_details": []
+              },
+              {
+                "name": "test_kite_risk_warning",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_missing_recovery_warning",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_similar_build_warning",
+                "status": "pass",
+                "assertions": 1,
+                "failure_details": []
+              },
+              {
+                "name": "test_current_baseline_uses_real_resources",
+                "status": "fail",
+                "assertions": 8,
+                "failure_details": [
+                  "ARRAY([\"res://data/spells/achilles/peleid_strike.tres\", \"res://data/spells/achilles/fulmin...rd.tres\"]) != ARRAY([\"res://data/spells/achilles/spear_thrust.tres\", \"res://data/spells/achilles/advance...rd.tres\"]).\n      [\"res://data/spells/achilles/peleid_stri...ard.tres\"] != [\"res://data/spells/achilles/spear_thrus...ard.tres\"]  4 of 4 indexes do not match.  \n            at line 631"
+                ]
+              },
+              {
+                "name": "test_sword_shield_template_is_not_runtime_loadable",
+                "status": "pass",
+                "assertions": 4,
+                "failure_details": []
+              },
+              {
+                "name": "test_bow_template_is_not_runtime_loadable",
+                "status": "pass",
+                "assertions": 4,
+                "failure_details": []
+              },
+              {
+                "name": "test_templates_contain_no_final_balance_values",
+                "status": "pass",
+                "assertions": 66,
+                "failure_details": []
+              },
+              {
+                "name": "test_templates_contain_no_weapon_asset_reference",
+                "status": "pass",
+                "assertions": 12,
+                "failure_details": []
+              },
+              {
+                "name": "test_gate_a_artifacts_not_loaded_by_runtime",
+                "status": "pass",
+                "assertions": 4,
+                "failure_details": []
+              },
+              {
+                "name": "test_gate_a_weapon_candidates_not_referenced",
+                "status": "pass",
+                "assertions": 9,
+                "failure_details": []
+              },
+              {
+                "name": "test_lab_scene_is_autonomous_and_has_three_build_slots",
+                "status": "fail",
+                "assertions": 7,
+                "failure_details": [
+                  "[16] expected to equal [4]:  \n            at line 702"
+                ]
+              },
+              {
+                "name": "test_deterministic_exports_repeat_byte_for_byte",
+                "status": "pass",
+                "assertions": 14,
+                "failure_details": []
+              }
+            ]
+          },
+          {
+            "script": "test/unit/test_catabase_registered_terrain.gd",
+            "tests": 5,
+            "passing": 5,
+            "failures": 0,
+            "cases": [
+              {
+                "name": "test_five_historical_catabase_rooms_keep_their_registered_production_maps",
+                "status": "pass",
+                "assertions": 139,
+                "failure_details": []
+              },
+              {
+                "name": "test_persisted_projection_matches_the_registered_floor_pits_and_obstacles",
+                "status": "pass",
+                "assertions": 8705,
+                "failure_details": []
+              },
+              {
+                "name": "test_registered_plan_survives_studio_snapshot_and_terrain_update",
+                "status": "pass",
+                "assertions": 15,
+                "failure_details": []
+              },
+              {
+                "name": "test_judgment_courtyard_keeps_tactical_obstacles_without_peripheral_props",
+                "status": "pass",
+                "assertions": 14,
+                "failure_details": []
+              },
+              {
+                "name": "test_later_maps_use_distinct_tactical_footprints_and_preserve_studio_bindings",
+                "status": "pass",
+                "assertions": 36,
+                "failure_details": []
+              }
+            ]
+          },
+          {
+            "script": "test/unit/test_odyssey_achilles_solo_run.gd",
+            "tests": 20,
+            "passing": 9,
+            "failures": 11,
+            "cases": [
+              {
+                "name": "test_odyssey_is_a_valid_fifteen_arena_single_encounter_pool",
+                "status": "pass",
+                "assertions": 131,
+                "failure_details": []
+              },
+              {
+                "name": "test_achilles_profile_chain_and_chassis_are_exact",
+                "status": "fail",
+                "assertions": 17,
+                "failure_details": [
+                  "ARRAY([&\"achilles_peleid_strike\", &\"achilles_fulminant_dash\", &\"achilles_pelion_shot\", &\"a...e_guard\"]) != ARRAY([&\"achilles_spear_thrust\", &\"achilles_advance\", &\"achilles_sweep\", &\"achilles_guard\"...s_guard\"]).\n      [&\"achilles_peleid_strike\", &\"achilles_f...ze_guard\"] != [&\"achilles_spear_thrust\", &\"achilles_ad...es_guard\"]  4 of 4 indexes do not match.  \n            at line 84"
+                ]
+              },
+              {
+                "name": "test_achilles_spells_and_initial_disciplines_match_contract",
+                "status": "fail",
+                "assertions": 6,
+                "failure_details": [
+                  "ARRAY([3, 1, 1]) != ARRAY([2, 1, 2]).\n      [3, 1, 1] != [2, 1, 2]  2 of 3 indexes do not match.  \n            at line 91"
+                ]
+              },
+              {
+                "name": "test_odyssey_enemy_stats_and_room_rosters_are_exact",
+                "status": "pass",
+                "assertions": 15,
+                "failure_details": []
+              },
+              {
+                "name": "test_resolver_and_game_manager_construct_exactly_one_runtime_hero",
+                "status": "fail",
+                "assertions": 12,
+                "failure_details": [
+                  "ARRAY([&\"achilles_peleid_strike\", &\"achilles_fulminant_dash\", &\"achilles_pelion_shot\", &\"a...e_guard\"]) != ARRAY([&\"achilles_spear_thrust\", &\"achilles_advance\", &\"achilles_sweep\", &\"achilles_guard\"...s_guard\"]).\n      [&\"achilles_peleid_strike\", &\"achilles_f...ze_guard\"] != [&\"achilles_spear_thrust\", &\"achilles_ad...es_guard\"]  4 of 4 indexes do not match.  \n            at line 178"
+                ]
+              },
+              {
+                "name": "test_invalid_empty_duplicate_and_mismatched_profiles_are_rejected",
+                "status": "pass",
+                "assertions": 8,
+                "failure_details": []
+              },
+              {
+                "name": "test_historical_odyssey_victory_defeat_relaunch_and_trio_switches_are_clean",
+                "status": "fail",
+                "assertions": 56,
+                "failure_details": [
+                  "[STRING_NAME(achilles)] expected to equal [STRING_NAME()]:  \n            at line 243"
+                ]
+              },
+              {
+                "name": "test_spear_guard_and_once_per_activation_use_real_spell_caster",
+                "status": "fail",
+                "assertions": 8,
+                "failure_details": [
+                  "{ \"caster\": <RefCounted#-9223370567120310543>, \"spell\": (res://data/spells/achilles/peleid_strike.tres):<Resource#-9223371652203541149>, \"cell\": (2, 0), \"failed\": true, \"reason\": \"target\", \"affected_units\": [], \"damaged_enemies\": [], \"healed_units\": [], \"shielded_units\": [], \"healing_by_unit\": {  }, \"hp_damage_total\": 0, \"shield_absorbed_total\": 0, \"healing_total\": 0, \"shield_increase_total\": 0, \"status_changed_units\": [], \"status_change_count\": 0, \"controlled_enemies\": [], \"drained_units\": [], \"terrain_changed\": [], \"crits\": [], \"dodges\": [], \"effective_cast\": false, \"did_change_combat_state\": false, \"effect_reasons\": [], \"movement_count\": 0 }\n            at line 289"
+                ]
+              },
+              {
+                "name": "test_advance_moves_to_contact_and_never_crosses_wall_or_unit",
+                "status": "fail",
+                "assertions": 24,
+                "failure_details": [
+                  "{ \"caster\": <RefCounted#-9223370565761356319>, \"spell\": (res://data/spells/achilles/fulminant_dash.tres):<Resource#-9223371652069323463>, \"cell\": (3, 0), \"failed\": true, \"reason\": \"target\", \"affected_units\": [], \"damaged_enemies\": [], \"healed_units\": [], \"shielded_units\": [], \"healing_by_unit\": {  }, \"hp_damage_total\": 0, \"shield_absorbed_total\": 0, \"healing_total\": 0, \"shield_increase_total\": 0, \"status_changed_units\": [], \"status_change_count\": 0, \"controlled_enemies\": [], \"drained_units\": [], \"terrain_changed\": [], \"crits\": [], \"dodges\": [], \"effective_cast\": false, \"did_change_combat_state\": false, \"effect_reasons\": [], \"movement_count\": 0 }\n            at line 331"
+                ]
+              },
+              {
+                "name": "test_sweep_hits_and_pushes_only_cardinal_adjacent_enemies",
+                "status": "fail",
+                "assertions": 7,
+                "failure_details": [
+                  "{ \"caster\": <RefCounted#-9223370561617383897>, \"spell\": (res://data/spells/achilles/pelion_shot.tres):<Resource#-9223371650978804885>, \"cell\": (3, 3), \"failed\": true, \"reason\": \"target\", \"affected_units\": [], \"damaged_enemies\": [], \"healed_units\": [], \"shielded_units\": [], \"healing_by_unit\": {  }, \"hp_damage_total\": 0, \"shield_absorbed_total\": 0, \"healing_total\": 0, \"shield_increase_total\": 0, \"status_changed_units\": [], \"status_change_count\": 0, \"controlled_enemies\": [], \"drained_units\": [], \"terrain_changed\": [], \"crits\": [], \"dodges\": [], \"effective_cast\": false, \"did_change_combat_state\": false, \"effect_reasons\": [], \"movement_count\": 0 }\n            at line 422"
+                ]
+              },
+              {
+                "name": "test_odyssey_economy_starts_with_consumables_and_offers_relics",
+                "status": "fail",
+                "assertions": 31,
+                "failure_details": [
+                  "[STRING_NAME(odyssey)] expected to equal [STRING_NAME(first_run_equipment_reward)]:  \n            at line 435"
+                ]
+              },
+              {
+                "name": "test_historical_odyssey_final_room_keeps_the_no_relic_reward_rule",
+                "status": "pass",
+                "assertions": 7,
+                "failure_details": []
+              },
+              {
+                "name": "test_catabase_disciplines_offer_one_signature_evolution_each",
+                "status": "fail",
+                "assertions": 2,
+                "failure_details": [
+                  "Unexpected Errors:\n      [1] <engine-2>Invalid access to property or key 'rank' on a base object of type 'Nil'.\n            at line -1"
+                ]
+              },
+              {
+                "name": "test_runtime_visual_adapter_releases_falls_back_and_dies_cleanly",
+                "status": "fail",
+                "assertions": 4,
+                "failure_details": [
+                  "[STRING_NAME(Sprite2DBackend)] expected to equal [STRING_NAME(Viewport3DBackend)]:  \n            at line 569"
+                ]
+              },
+              {
+                "name": "test_visual_cleanup_cancels_pending_action_without_late_release",
+                "status": "pass",
+                "assertions": 3,
+                "failure_details": []
+              },
+              {
+                "name": "test_refined_hud_resolves_portrait_icons_utilities_and_no_basic_attack",
+                "status": "pass",
+                "assertions": 13,
+                "failure_details": []
+              },
+              {
+                "name": "test_studio_catalogs_open_odyssey_hero_and_all_fifteen_arenas",
+                "status": "pass",
+                "assertions": 36,
+                "failure_details": []
+              },
+              {
+                "name": "test_main_and_test_runs_keep_their_existing_contracts",
+                "status": "pass",
+                "assertions": 8,
+                "failure_details": []
+              },
+              {
+                "name": "test_odyssey_rooms_encounters_and_progression_are_isolated",
+                "status": "pass",
+                "assertions": 28,
+                "failure_details": []
+              },
+              {
+                "name": "test_odyssey_reward_deck_is_scoped_and_main_restarts_cleanly",
+                "status": "fail",
+                "assertions": 13,
+                "failure_details": [
+                  "[24] expected to equal [8]:  \n            at line 717"
+                ]
+              }
+            ]
+          },
+          {
+            "script": "test/unit/test_paris_production_access.gd",
+            "tests": 2,
+            "passing": 2,
+            "failures": 0,
+            "cases": [
+              {
+                "name": "test_normal_catabase_selection_reaches_the_canonical_paris_room_without_extra_card",
+                "status": "pass",
+                "assertions": 52,
+                "failure_details": []
+              },
+              {
+                "name": "test_combat_fixtures_preserve_canonical_enemy_rules_and_source_arena",
+                "status": "pass",
+                "assertions": 422,
+                "failure_details": []
+              }
+            ]
+          }
+        ],
+        "unloaded_scripts": [
+          "test_catabase_philosopher_integration: inferred type from untyped slice (room, encounter, roster)",
+          "test_catabase_vertical_slice_content: inferred room type from untyped slice"
+        ],
+        "shutdown": "5393 ObjectDB instances, 3538 resources, renderer allocations and PagedAllocator retained at process exit."
+      },
+      {
+        "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' '--headless' '--path' '.' '--log-file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/contract-retry-gut.log' '--script' 'res://addons/gut/gut_cmdln.gd' '--' '-gconfig=' '-gexit' '-gdisable_colors' '-gfailure_error_types' 'engine,gut,push_error' '-gjunit_xml_file' 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/contract-retry-gut.junit.xml' '-gtest' 'res://test/unit/test_catabase_philosopher_integration.gd' '-gtest' 'res://test/unit/test_catabase_vertical_slice_content.gd' *> artifacts/meshy_ui/contract-retry-gut.combined.log",
+        "exit_code": 0,
+        "junit": "artifacts/meshy_ui/contract-retry-gut.junit.xml",
+        "console_log": "artifacts/meshy_ui/contract-retry-gut.combined.log",
+        "tests": 9,
+        "passing": 9,
+        "failures": 0,
+        "suites": [
+          {
+            "script": "test/unit/test_catabase_philosopher_integration.gd",
+            "tests": 2,
+            "passing": 2,
+            "failures": 0,
+            "cases": [
+              {
+                "name": "test_historical_rooms_introduce_the_canonical_mage_in_lethe_without_adding_an_enemy",
+                "status": "pass",
+                "assertions": 35,
+                "failure_details": []
+              },
+              {
+                "name": "test_campaign_battle_merges_projectile_axiom_with_all_achilles_classifications",
+                "status": "pass",
+                "assertions": 17,
+                "failure_details": []
+              }
+            ]
+          },
+          {
+            "script": "test/unit/test_catabase_vertical_slice_content.gd",
+            "tests": 7,
+            "passing": 7,
+            "failures": 0,
+            "cases": [
+              {
+                "name": "test_catabase_pool_keeps_fifteen_distinct_catalogued_arenas",
+                "status": "pass",
+                "assertions": 67,
+                "failure_details": []
+              },
+              {
+                "name": "test_middle_room_is_the_melee_formation_escalation",
+                "status": "pass",
+                "assertions": 7,
+                "failure_details": []
+              },
+              {
+                "name": "test_historical_judgment_precedes_the_boss_with_champion_and_spectre",
+                "status": "pass",
+                "assertions": 14,
+                "failure_details": []
+              },
+              {
+                "name": "test_historical_encounter_durability_accounts_for_paris_two_form_boss",
+                "status": "pass",
+                "assertions": 7,
+                "failure_details": []
+              },
+              {
+                "name": "test_later_room_formations_are_valid_for_twenty_seeds",
+                "status": "pass",
+                "assertions": 694,
+                "failure_details": []
+              },
+              {
+                "name": "test_historical_lethe_and_temple_follow_the_silent_judgment",
+                "status": "pass",
+                "assertions": 30,
+                "failure_details": []
+              },
+              {
+                "name": "test_paris_is_the_unique_route_boss_at_depth_twenty",
+                "status": "pass",
+                "assertions": 69,
+                "failure_details": []
+              }
+            ]
+          }
+        ],
+        "shutdown": "9 ObjectDB instances and 4 resources retained at process exit.",
+        "parse_errors": 0
+      }
+    ],
+    "tests_executed": 97,
+    "passing": 76,
+    "failures": 21,
+    "scope": "Pool of 15 authored arenas, canonical order and valid visual/encounter resources; historical calibration preserved on first five; unique route boss at step XX; Studio clone source paths; Catabase hero appearances access the same boss.",
+    "duration_claim": "55/80 minutes are authored target/extended duration fields, not measured playthrough times.",
+    "legacy_failures": "10 Theorycraft and 11 Solo tests retain old spell/discipline, reward, action-economy or 3D backend expectations. The historical victory/relaunch test now completes its five-room fixture and has one failure: reward target_character_id expects empty but receives achilles. These are not counted as passing tests.",
+    "parent_evidence": "artifacts/meshy_ui/parent_comparison.json records unchanged canonical spells, progression, economy, first_run, fixed_trio and FirstRunEquipmentRewardService relative to c1311f3. Failure assertions remain unchanged. No complete parent runtime baseline was executed, and the global timeout has not been cleared.",
+    "allowlist_modified": false
+  },
+  "final_worktree_audit": {
+    "snapshot": "artifacts/meshy_ui/worktree_contracts_final.json",
+    "delta_against_pre_global": "artifacts/meshy_ui/worktree_final_delta.json",
+    "result": "Only intended documentation/provenance, seven adapted run-contract tests and screen pluralization differ. The two test-written Arena Studio artifacts match their exact pre-global SHA256 values. No unexpected production mutations remain."
+  },
   "local_full_report": "artifacts/meshy_ui/validation_summary.json"
 }
