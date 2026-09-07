@@ -1,0 +1,71 @@
+{
+  "id": "stats",
+  "kind": "sheet",
+  "cols": 3,
+  "rows": 3,
+  "matte": "navy",
+  "treatment": "icons",
+  "entries": [
+    {
+      "id": "force",
+      "path": "assets/catabase/painted/tree/stats/force.png",
+      "description": "a compact muscular bronze gauntlet clenched into a fist"
+    },
+    {
+      "id": "attack_power",
+      "path": "assets/catabase/painted/tree/stats/attack_power.png",
+      "description": "two crossing bronze spearheads with one ivory impact star"
+    },
+    {
+      "id": "max_hp",
+      "path": "assets/catabase/painted/tree/stats/max_hp.png",
+      "description": "a plump polished ruby heart held in a restrained bronze clasp"
+    },
+    {
+      "id": "initiative",
+      "path": "assets/catabase/painted/tree/stats/initiative.png",
+      "description": "a small bronze hourglass with bright turquoise sand and one winglike speed sweep"
+    },
+    {
+      "id": "max_mp",
+      "path": "assets/catabase/painted/tree/stats/max_mp.png",
+      "description": "one ancient Greek sandal footprint with a strong turquoise forward arrow-shaped trail"
+    },
+    {
+      "id": "esquive",
+      "path": "assets/catabase/painted/tree/stats/esquive.png",
+      "description": "a small silver curved arrow elegantly avoiding a single bronze arrowhead"
+    },
+    {
+      "id": "armure",
+      "path": "assets/catabase/painted/tree/stats/armure.png",
+      "description": "a solid broad bronze breastplate with thick beveled surfaces"
+    },
+    {
+      "id": "resist_magique",
+      "path": "assets/catabase/painted/tree/stats/resist_magique.png",
+      "description": "a violet crystal protected by a simple bronze circular ward"
+    },
+    {
+      "id": "heal_budget",
+      "path": "assets/catabase/painted/tree/stats/heal_budget.png",
+      "description": "a small golden laurel cup containing three luminous jade drops"
+    }
+  ],
+  "endpoint": "/openapi/v1/image-to-image",
+  "payload": {
+    "ai_model": "nano-banana-pro",
+    "reference_image_urls": [
+      "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+    ],
+    "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 9 separate icons in a regular 3 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a compact muscular bronze gauntlet clenched into a fist; cell 2: two crossing bronze spearheads with one ivory impact star; cell 3: a plump polished ruby heart held in a restrained bronze clasp; cell 4: a small bronze hourglass with bright turquoise sand and one winglike speed sweep; cell 5: one ancient Greek sandal footprint with a strong turquoise forward arrow-shaped trail; cell 6: a small silver curved arrow elegantly avoiding a single bronze arrowhead; cell 7: a solid broad bronze breastplate with thick beveled surfaces; cell 8: a violet crystal protected by a simple bronze circular ward; cell 9: a small golden laurel cup containing three luminous jade drops.",
+    "aspect_ratio": "1:1"
+  },
+  "estimated_credits": 9,
+  "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172358_catabase-ui-stats_01a07c78",
+  "status": "SUCCEEDED",
+  "consumed_credits": 9,
+  "reported_model": "nano-banana-pro",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172358_catabase-ui-stats_01a07c78\\source.png"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "01a07c7a-960a-7207-9505-1795beda7b08",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 12 separate icons in a regular 4 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a folded ivory parchment route map with a simple winding turquoise path; cell 2: a stylized golden branching laurel with three large turquoise buds; cell 3: a compact ancient Greek bronze helmet and short sword; cell 4: a small bronze brazier with a warm sheltered amber flame; cell 5: a handsome closed leather journal with bronze clasp and ivory page edges; cell 6: a simple Greek temple pediment on two short bronze columns; cell 7: a clear simple bronze X cross made of two short beveled bars; cell 8: a chunky simple bronze cog with six teeth and turquoise hub; cell 9: a bronze seal stamp beside one folded ivory scroll; cell 10: a clear thick right-pointing bronze chevron with warm ivory edge; cell 11: a small closed antique bronze padlock with a round keyhole; cell 12: a clear thick jade check mark with restrained bronze edging.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788794803982,
+  "started_at": 1788794803988,
+  "finished_at": 1788794863342,
+  "expires_at": 1789054063342,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c7a-960a-7207-9505-1795beda7b08_0.png?Expires=1789054063&Signature=g0xIGW7DnJ0Z6fEft7PM-jQKwyrPPoyiTQjbQVwQXl-xw6KGtcjI8m6Q674N-3XSWxo9UB8h7fZ7kTGI6OQ~aAA5mImZ8gN7AD21APkMYXtzZ76DFo-wG8BrXU35ZcDnjC2cACFoOQw-WOKsJrd8mY2eYxPmLGS6G12E6cSxASwhmX2SzhdjeqN82fmY-jaGehw1gZDpgXt0m-BtOlY-7OD3JMJl5WGoBoco5jUJKNOfkHeVxN5ndDZ14AE7Rjzh6sJxilomIemXlv1GxkIIxPPjUi6nT0qKnL3XDtDET3fCuzfErlIjOihGtHvDDxQj-lEGffc4ltlS9CJnC02IpQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

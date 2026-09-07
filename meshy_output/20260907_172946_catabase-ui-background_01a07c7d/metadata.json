@@ -1,0 +1,25 @@
+{
+  "project_name": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame subtle game-menu background material. Very dark petrol blue slate stone, broad smooth low-contrast areas, extremely restrained mottling. Sparse ancient Greek bronze engraving and olive traces only at outer corners. Center 85 percent must remain quiet and nearly uniform for readable interface panels layered above. No scene, no objects, no glowing focal points, no border, no perspective, no vignette to white, no text. Edge-to-edge dark material.",
+  "folder": "20260907_172946_catabase-ui-background_01a07c7d",
+  "root_task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+  "created_at": "2026-09-07T17:29:46.177559",
+  "updated_at": "2026-09-07T17:32:31.502571",
+  "tasks": [
+    {
+      "task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+      "task_type": "image-to-image",
+      "stage": "submitted",
+      "files": [],
+      "created_at": "2026-09-07T17:29:46.177559"
+    },
+    {
+      "task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-07T17:32:31.502571"
+    }
+  ]
+}

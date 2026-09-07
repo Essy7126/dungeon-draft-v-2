@@ -1,0 +1,23 @@
+{
+  "id": "background",
+  "kind": "background",
+  "entries": [
+    {
+      "id": "background",
+      "path": "assets/catabase/painted/ui/background.png"
+    }
+  ],
+  "endpoint": "/openapi/v1/image-to-image",
+  "payload": {
+    "ai_model": "nano-banana-pro",
+    "reference_image_urls": [
+      "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_2bf07a34-7aa1-4c05-9c90-969d0bf3fb14.png"
+    ],
+    "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame subtle game-menu background material. Very dark petrol blue slate stone, broad smooth low-contrast areas, extremely restrained mottling. Sparse ancient Greek bronze engraving and olive traces only at outer corners. Center 85 percent must remain quiet and nearly uniform for readable interface panels layered above. No scene, no objects, no glowing focal points, no border, no perspective, no vignette to white, no text. Edge-to-edge dark material.",
+    "aspect_ratio": "16:9"
+  },
+  "estimated_credits": 9,
+  "task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172946_catabase-ui-background_01a07c7d",
+  "status": "SUBMITTED"
+}

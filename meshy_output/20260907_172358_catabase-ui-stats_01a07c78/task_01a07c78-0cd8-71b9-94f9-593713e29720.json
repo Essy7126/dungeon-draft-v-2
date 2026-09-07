@@ -1,0 +1,16 @@
+{
+  "id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 9 separate icons in a regular 3 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a compact muscular bronze gauntlet clenched into a fist; cell 2: two crossing bronze spearheads with one ivory impact star; cell 3: a plump polished ruby heart held in a restrained bronze clasp; cell 4: a small bronze hourglass with bright turquoise sand and one winglike speed sweep; cell 5: one ancient Greek sandal footprint with a strong turquoise forward arrow-shaped trail; cell 6: a small silver curved arrow elegantly avoiding a single bronze arrowhead; cell 7: a solid broad bronze breastplate with thick beveled surfaces; cell 8: a violet crystal protected by a simple bronze circular ward; cell 9: a small golden laurel cup containing three luminous jade drops.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788794637964,
+  "started_at": 1788794637968,
+  "finished_at": 1788794673276,
+  "expires_at": 1789053873276,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c78-0cd8-71b9-94f9-593713e29720_0.png?Expires=1789053873&Signature=mY~ecATov8WZ--volPU65j2sk93j-r1IVO74MPUuxVCxL8s0osqe7yWOgViYa90vd5LryNiTmRBsBLSWmZExZbUbZ9CWfmgoj4KgfflaGXHg3gh4ZHWbssqOhsc-QGBehwiZzhoj0YKWuhSmMu~QY-VeZ0EQ6ysWAk6SVfx3iGh-ehmfvXfEV~KYp5IYe4oGSI5C-Pz61x~GtllhV9F9Hrjnm0X0oXjHMPMdzzFtI4jUMYzrEIlqH~ME-DxRIIQ9lu0~F1WniPzYid3CeIhQ1l1jcOk78DnFB0thcDD-bmPw2gxYyVkKgEv4EsGIpUSJyO6MDKcnUzZHKMoNMM2PbQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

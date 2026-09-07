@@ -1,0 +1,25 @@
+{
+  "project_name": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: three chunky ancient gold obol coins with abstract relief, no digits or letters; cell 2: a luminous turquoise destiny crystal inside a small open gold laurel; cell 3: one luminous ruby heart with two restrained golden wings of light; cell 4: a golden starburst medallion framed by a compact laurel crown; cell 5: a triumphant golden laurel wreath surrounding a raised ivory spearhead; cell 6: a cracked bronze helmet with a dim ruby fissure resting on a single dark stone.",
+  "folder": "20260907_172642_catabase-ui-resources_01a07c7a",
+  "root_task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+  "created_at": "2026-09-07T17:26:42.868680",
+  "updated_at": "2026-09-07T17:29:33.804253",
+  "tasks": [
+    {
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "task_type": "image-to-image",
+      "stage": "submitted",
+      "files": [],
+      "created_at": "2026-09-07T17:26:42.868680"
+    },
+    {
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-07T17:29:33.804253"
+    }
+  ]
+}

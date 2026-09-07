@@ -1,0 +1,25 @@
+{
+  "project_name": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create a flat full-frame aged warm ivory and honey parchment background for a vertical game route map. Fine genuine paper grain, soft warm edges, tiny very low-contrast Greek meander corner flourishes. Center 85 percent is clean unobstructed paper, without any lines, paths, icons, symbols or text. No rolled edges, no folds, no perspective, no desk, no isolated sheet floating on another background. Fill the entire portrait canvas with the paper material.",
+  "folder": "20260907_173233_catabase-ui-route-parchment_01a07c7f",
+  "root_task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+  "created_at": "2026-09-07T17:32:33.393903",
+  "updated_at": "2026-09-07T17:34:42.192343",
+  "tasks": [
+    {
+      "task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+      "task_type": "image-to-image",
+      "stage": "submitted",
+      "files": [],
+      "created_at": "2026-09-07T17:32:33.393903"
+    },
+    {
+      "task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-07T17:34:42.192343"
+    }
+  ]
+}

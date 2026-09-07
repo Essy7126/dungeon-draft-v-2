@@ -1,0 +1,86 @@
+{
+  "id": "route",
+  "kind": "sheet",
+  "cols": 4,
+  "rows": 3,
+  "matte": "navy",
+  "treatment": "icons",
+  "entries": [
+    {
+      "id": "normal",
+      "path": "assets/catabase/painted/route/normal.png",
+      "description": "two crossed short bronze swords in a compact round icon"
+    },
+    {
+      "id": "elite",
+      "path": "assets/catabase/painted/route/elite.png",
+      "description": "a bronze hornless warrior helm above two crossed spears and one ruby star"
+    },
+    {
+      "id": "boss",
+      "path": "assets/catabase/painted/route/boss.png",
+      "description": "a large imposing dark bronze crowned guardian helm with cyan eye slits"
+    },
+    {
+      "id": "hub",
+      "path": "assets/catabase/painted/route/hub.png",
+      "description": "a low circular bronze brazier with warm amber campfire"
+    },
+    {
+      "id": "merchant",
+      "path": "assets/catabase/painted/route/merchant.png",
+      "description": "a gold balance scale and one small leather coin pouch"
+    },
+    {
+      "id": "sanctuary",
+      "path": "assets/catabase/painted/route/sanctuary.png",
+      "description": "a small ancient Greek stone altar holding a jade offering bowl"
+    },
+    {
+      "id": "lore",
+      "path": "assets/catabase/painted/route/lore.png",
+      "description": "an open ivory book and a small turquoise crystal bookmark"
+    },
+    {
+      "id": "event",
+      "path": "assets/catabase/painted/route/event.png",
+      "description": "a bronze theatrical mask with a tiny amber spark"
+    },
+    {
+      "id": "cache",
+      "path": "assets/catabase/painted/route/cache.png",
+      "description": "a small closed honey wood treasure chest with bronze fittings"
+    },
+    {
+      "id": "unknown",
+      "path": "assets/catabase/painted/route/unknown.png",
+      "description": "a sealed dark bronze medallion with an abstract swirling mist, no question mark or letters"
+    },
+    {
+      "id": "hidden",
+      "path": "assets/catabase/painted/route/hidden.png",
+      "description": "a small partly open stone doorway behind a curling teal mist veil"
+    },
+    {
+      "id": "current",
+      "path": "assets/catabase/painted/route/current.png",
+      "description": "a bright ivory downward-pointing spearhead surrounded by a compact golden laurel"
+    }
+  ],
+  "endpoint": "/openapi/v1/image-to-image",
+  "payload": {
+    "ai_model": "nano-banana-pro",
+    "reference_image_urls": [
+      "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+    ],
+    "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 12 separate icons in a regular 4 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: two crossed short bronze swords in a compact round icon; cell 2: a bronze hornless warrior helm above two crossed spears and one ruby star; cell 3: a large imposing dark bronze crowned guardian helm with cyan eye slits; cell 4: a low circular bronze brazier with warm amber campfire; cell 5: a gold balance scale and one small leather coin pouch; cell 6: a small ancient Greek stone altar holding a jade offering bowl; cell 7: an open ivory book and a small turquoise crystal bookmark; cell 8: a bronze theatrical mask with a tiny amber spark; cell 9: a small closed honey wood treasure chest with bronze fittings; cell 10: a sealed dark bronze medallion with an abstract swirling mist, no question mark or letters; cell 11: a small partly open stone doorway behind a curling teal mist veil; cell 12: a bright ivory downward-pointing spearhead surrounded by a compact golden laurel.",
+    "aspect_ratio": "4:3"
+  },
+  "estimated_credits": 9,
+  "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172643_catabase-ui-route_01a07c7a",
+  "status": "SUCCEEDED",
+  "consumed_credits": 9,
+  "reported_model": "nano-banana-pro",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172643_catabase-ui-route_01a07c7a\\source.png"
+}

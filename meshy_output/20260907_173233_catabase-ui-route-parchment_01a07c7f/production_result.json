@@ -1,0 +1,26 @@
+{
+  "id": "route_parchment",
+  "kind": "background",
+  "entries": [
+    {
+      "id": "route_parchment",
+      "path": "assets/catabase/painted/ui/route_parchment.png"
+    }
+  ],
+  "endpoint": "/openapi/v1/image-to-image",
+  "payload": {
+    "ai_model": "nano-banana-pro",
+    "reference_image_urls": [
+      "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+    ],
+    "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create a flat full-frame aged warm ivory and honey parchment background for a vertical game route map. Fine genuine paper grain, soft warm edges, tiny very low-contrast Greek meander corner flourishes. Center 85 percent is clean unobstructed paper, without any lines, paths, icons, symbols or text. No rolled edges, no folds, no perspective, no desk, no isolated sheet floating on another background. Fill the entire portrait canvas with the paper material.",
+    "aspect_ratio": "3:4"
+  },
+  "estimated_credits": 9,
+  "task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173233_catabase-ui-route-parchment_01a07c7f",
+  "status": "SUCCEEDED",
+  "consumed_credits": 9,
+  "reported_model": "nano-banana-pro",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173233_catabase-ui-route-parchment_01a07c7f\\source.png"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 4 separate panels in a regular 2 columns by 2 rows grid. Read order is left to right, then top to bottom. Each cell contains one front-facing square UI panel, occupying 82 percent of the cell width and height. Exact orthographic front view, straight parallel edges, no perspective, restrained beveled bronze corners. The central 80 percent is a near-uniform dark petrol blank surface with no objects, ornaments or text. Make the edges straight and uninterrupted at their midpoints for nine-slice stretching. No ornament protrudes outside its own rectangle. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: main window panel, dark petrol stone center, restrained aged bronze rectangular border and small carved Greek corner details; cell 2: compact content card, thin aged brass rectangular rim, clean dark blue-black stone center; cell 3: quiet tooltip panel, very thin warm bronze rim with clipped corners, near-black petrol center; cell 4: title banner panel, refined aged bronze top and bottom rails, tiny laurel corner motifs, empty dark petrol center.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788794982741,
+  "started_at": 1788794982743,
+  "finished_at": 1788795132998,
+  "expires_at": 1789054332998,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c7d-502e-7003-b9e3-ab39defe86df_0.png?Expires=1789054332&Signature=falrJOIrNxQPtozXloe3c64QUZOwXAY~1ZIMikPEMgDUEiYGgUQ~L3FGlxi2u2dx0vg~0ysbZOzmRROdrk46itt7wC6VqyD67EBFCTNgTGCuJW-TPOZ5intx7OFCasHwiwOH8vlrcrFdOLQs~vz9rN-a2KfvUokplACwu77zkoRVurUa~SYsepESjyd7ZxtqG3iv9Ll7ARrE71yy1hwiIDgeYm0llJFXT5OOWyB8NN6~Vf98rc73sgRMhpx5bGU1yOKFemdtDvEq4P0rhLJ7iWq8k9Skz0Zfcicd2fViBhy05QQZnrQXss3H5K6OW5LpSifi5-8O5UBxc9K-nMXsMg__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

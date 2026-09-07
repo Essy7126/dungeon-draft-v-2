@@ -1,0 +1,2898 @@
+{
+  "phase": "catabase_ui_v1",
+  "provider": "Meshy",
+  "exports": [
+    {
+      "id": "braise",
+      "path": "assets/catabase/painted/icons/braise.png",
+      "cell_index": 0,
+      "cell_box": [
+        8,
+        8,
+        392,
+        440
+      ],
+      "source_box": [
+        45,
+        56,
+        352,
+        394
+      ],
+      "source_content_dimensions": [
+        307,
+        338
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "9e90ea56ec7ceea214ea005aa2304fefd85a3685e1c05c4f753237fae6d919e8",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
+      "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "givre",
+      "path": "assets/catabase/painted/icons/givre.png",
+      "cell_index": 1,
+      "cell_box": [
+        408,
+        8,
+        792,
+        440
+      ],
+      "source_box": [
+        424,
+        63,
+        776,
+        402
+      ],
+      "source_content_dimensions": [
+        352,
+        339
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "3e870d4cb2593103f80005531f37c0fac0101fb0a9e196568e5f459c0e4904e6",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
+      "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "foudre",
+      "path": "assets/catabase/painted/icons/foudre.png",
+      "cell_index": 2,
+      "cell_box": [
+        808,
+        8,
+        1192,
+        440
+      ],
+      "source_box": [
+        863,
+        52,
+        1128,
+        400
+      ],
+      "source_content_dimensions": [
+        265,
+        348
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "476791d30cc7719107d3438e13f57cfa87b3c5556e293d367bf7e84bee1dae63",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
+      "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "serment_rempart",
+      "path": "assets/catabase/painted/icons/serment_rempart.png",
+      "cell_index": 3,
+      "cell_box": [
+        8,
+        456,
+        392,
+        888
+      ],
+      "source_box": [
+        58,
+        498,
+        346,
+        836
+      ],
+      "source_content_dimensions": [
+        288,
+        338
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "d784dd13ebe36ad045e6ae59f0dd57318645e393b6f6e04f2dbee45c3121c1b1",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
+      "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "serment_brasier",
+      "path": "assets/catabase/painted/icons/serment_brasier.png",
+      "cell_index": 4,
+      "cell_box": [
+        408,
+        456,
+        792,
+        888
+      ],
+      "source_box": [
+        433,
+        501,
+        767,
+        835
+      ],
+      "source_content_dimensions": [
+        334,
+        334
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "95313828ea0025d862c967505ffc99bdedcd21c208736c51258ff1db6c38ec8a",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
+      "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "exp_tempest",
+      "path": "assets/catabase/painted/icons/exp_tempest.png",
+      "cell_index": 5,
+      "cell_box": [
+        808,
+        456,
+        1192,
+        888
+      ],
+      "source_box": [
+        815,
+        488,
+        1175,
+        828
+      ],
+      "source_content_dimensions": [
+        360,
+        340
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "76223a687c8eb70c7a8fb0d7156218dbbaa35116f6aa56b360f9e1c5e367d237",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-spells-remaining_01a07c77/source.png",
+      "source_sha256": "51e9b01b1d1f06521451758f0ccd505036d3ef4a98cdfa0cc492a6c9665340ff",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_levier",
+      "path": "assets/catabase/painted/equipment/catabase_levier.png",
+      "cell_index": 0,
+      "cell_box": [
+        8,
+        8,
+        392,
+        440
+      ],
+      "source_box": [
+        31,
+        40,
+        379,
+        415
+      ],
+      "source_content_dimensions": [
+        348,
+        375
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "375472361bbd1a6960368eb0c68991b3ab14bc320ddfabade28003cf066b3353",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
+      "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_lame_sang",
+      "path": "assets/catabase/painted/equipment/catabase_lame_sang.png",
+      "cell_index": 1,
+      "cell_box": [
+        408,
+        8,
+        792,
+        440
+      ],
+      "source_box": [
+        449,
+        61,
+        752,
+        398
+      ],
+      "source_content_dimensions": [
+        303,
+        337
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "fd749017cd17b4c2425e2683f33585f945da5d2dfaa9f536a35bc3e1ddfb4782",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
+      "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_javeline",
+      "path": "assets/catabase/painted/equipment/catabase_javeline.png",
+      "cell_index": 2,
+      "cell_box": [
+        808,
+        8,
+        1192,
+        440
+      ],
+      "source_box": [
+        814,
+        41,
+        1161,
+        418
+      ],
+      "source_content_dimensions": [
+        347,
+        377
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "44ffcc69e9fb2c090532629b17a7fc5fbc8a7aac76ce84a81f1049b67f36c033",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
+      "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_xiphos_danse",
+      "path": "assets/catabase/painted/equipment/catabase_xiphos_danse.png",
+      "cell_index": 3,
+      "cell_box": [
+        8,
+        456,
+        392,
+        888
+      ],
+      "source_box": [
+        42,
+        486,
+        377,
+        840
+      ],
+      "source_content_dimensions": [
+        335,
+        354
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "90aba949daf0f58115b57a812d56e8a7204d7968667bbbea9d246c8ac72d3119",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
+      "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_masse_airain",
+      "path": "assets/catabase/painted/equipment/catabase_masse_airain.png",
+      "cell_index": 4,
+      "cell_box": [
+        408,
+        456,
+        792,
+        888
+      ],
+      "source_box": [
+        436,
+        488,
+        770,
+        840
+      ],
+      "source_content_dimensions": [
+        334,
+        352
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "03421ed4192c2f0e265f1c8394cf08aae9572aa871fa81fb07fcbf90070f275d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
+      "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_fer_braise",
+      "path": "assets/catabase/painted/equipment/catabase_fer_braise.png",
+      "cell_index": 5,
+      "cell_box": [
+        808,
+        456,
+        1192,
+        888
+      ],
+      "source_box": [
+        813,
+        489,
+        1155,
+        842
+      ],
+      "source_content_dimensions": [
+        342,
+        353
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "007cbbabe3d647f144ad76837a828103d92d5db08c22cf49772646cdc5295d1d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "source_path": "meshy_output/20260907_172356_catabase-ui-equipment-weapons_01a07c78/source.png",
+      "source_sha256": "c2fc8e7b657bca91c926571d1779b9ec05f8e30f2cb6d0b5e385bef9eeadbd0a",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_cuirasse",
+      "path": "assets/catabase/painted/equipment/catabase_cuirasse.png",
+      "cell_index": 0,
+      "cell_box": [
+        8,
+        8,
+        392,
+        440
+      ],
+      "source_box": [
+        53,
+        41,
+        351,
+        408
+      ],
+      "source_content_dimensions": [
+        298,
+        367
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "ce8089e2a8650933a3e8effb5cb95dbf0d1552ff342e684626f38e9134d05091",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
+      "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_lin_survivant",
+      "path": "assets/catabase/painted/equipment/catabase_lin_survivant.png",
+      "cell_index": 1,
+      "cell_box": [
+        408,
+        8,
+        792,
+        440
+      ],
+      "source_box": [
+        425,
+        71,
+        774,
+        381
+      ],
+      "source_content_dimensions": [
+        349,
+        310
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "402998aa5ab2ecb70fd0685908eb85e299ec38b9e14afafcc6ad4714c35c6807",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
+      "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_sandales",
+      "path": "assets/catabase/painted/equipment/catabase_sandales.png",
+      "cell_index": 2,
+      "cell_box": [
+        808,
+        8,
+        1192,
+        440
+      ],
+      "source_box": [
+        828,
+        59,
+        1172,
+        386
+      ],
+      "source_content_dimensions": [
+        344,
+        327
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "abb538a2f0800e24c0d65b062697ca2147436a2740e9a2dc2e42d0ad9b8f3015",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
+      "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_sceau_chasse",
+      "path": "assets/catabase/painted/equipment/catabase_sceau_chasse.png",
+      "cell_index": 3,
+      "cell_box": [
+        8,
+        456,
+        392,
+        888
+      ],
+      "source_box": [
+        32,
+        540,
+        369,
+        799
+      ],
+      "source_content_dimensions": [
+        337,
+        259
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "641b805c19e72389c62be57e7c2b5630dda9d352841223c2c8a5af8883abf435",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
+      "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_prisme",
+      "path": "assets/catabase/painted/equipment/catabase_prisme.png",
+      "cell_index": 4,
+      "cell_box": [
+        408,
+        456,
+        792,
+        888
+      ],
+      "source_box": [
+        439,
+        509,
+        761,
+        830
+      ],
+      "source_content_dimensions": [
+        322,
+        321
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "a91bd3e4a98bae1fcb1d91990ac33031501ecb42c4fb81782780e80f81c6cc2d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
+      "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "catabase_agrafe",
+      "path": "assets/catabase/painted/equipment/catabase_agrafe.png",
+      "cell_index": 5,
+      "cell_box": [
+        808,
+        456,
+        1192,
+        888
+      ],
+      "source_box": [
+        838,
+        509,
+        1161,
+        834
+      ],
+      "source_content_dimensions": [
+        323,
+        325
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "99e93d008ee65784c81dc09cbbbd9d2dac43ec4239c83f64dee236f907898939",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "source_path": "meshy_output/20260907_172357_catabase-ui-equipment-armor_01a07c78/source.png",
+      "source_sha256": "8c57f073534d7abc2292a7725faab3e0500cd498799251d4a43fabd22d2726d3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "force",
+      "path": "assets/catabase/painted/tree/stats/force.png",
+      "cell_index": 0,
+      "cell_box": [
+        8,
+        8,
+        333,
+        333
+      ],
+      "source_box": [
+        45,
+        28,
+        291,
+        312
+      ],
+      "source_content_dimensions": [
+        246,
+        284
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "1cf1616b23dddca2eb8981944ae2ca594da58f0faa1583b1d7243df1ccafe400",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "attack_power",
+      "path": "assets/catabase/painted/tree/stats/attack_power.png",
+      "cell_index": 1,
+      "cell_box": [
+        349,
+        8,
+        675,
+        333
+      ],
+      "source_box": [
+        370,
+        25,
+        654,
+        316
+      ],
+      "source_content_dimensions": [
+        284,
+        291
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "0df95595d854cdd25997c7e0dbdd4ee738f4443f4bb57eb247bf087b7e7cfbcd",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "max_hp",
+      "path": "assets/catabase/painted/tree/stats/max_hp.png",
+      "cell_index": 2,
+      "cell_box": [
+        691,
+        8,
+        1016,
+        333
+      ],
+      "source_box": [
+        718,
+        50,
+        988,
+        300
+      ],
+      "source_content_dimensions": [
+        270,
+        250
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "51191a0d2a84aba8156985899682b61197a9f291fac0cc180131208804ffefc3",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "initiative",
+      "path": "assets/catabase/painted/tree/stats/initiative.png",
+      "cell_index": 3,
+      "cell_box": [
+        8,
+        349,
+        333,
+        675
+      ],
+      "source_box": [
+        38,
+        368,
+        299,
+        654
+      ],
+      "source_content_dimensions": [
+        261,
+        286
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "4a73ad43f3a9a0a02c42a59e484e443476e87e4905cdf2c323d32855d904a119",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "esquive",
+      "path": "assets/catabase/painted/tree/stats/esquive.png",
+      "cell_index": 5,
+      "cell_box": [
+        691,
+        349,
+        1016,
+        675
+      ],
+      "source_box": [
+        714,
+        364,
+        988,
+        660
+      ],
+      "source_content_dimensions": [
+        274,
+        296
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "2361f479a64f218301a310e96b6953a4488a1bfdf93738af08b8aaf9037feb1c",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "armure",
+      "path": "assets/catabase/painted/tree/stats/armure.png",
+      "cell_index": 6,
+      "cell_box": [
+        8,
+        691,
+        333,
+        1016
+      ],
+      "source_box": [
+        47,
+        714,
+        297,
+        995
+      ],
+      "source_content_dimensions": [
+        250,
+        281
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "a5b23bd09dae8065d95f6dad163a0a5222e691fc9bb4b2534013fcf9b737dad1",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "resist_magique",
+      "path": "assets/catabase/painted/tree/stats/resist_magique.png",
+      "cell_index": 7,
+      "cell_box": [
+        349,
+        691,
+        675,
+        1016
+      ],
+      "source_box": [
+        388,
+        707,
+        636,
+        992
+      ],
+      "source_content_dimensions": [
+        248,
+        285
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "d9af71d282d2d271942c458b1ebd15aade48c80865d124169c1d66c69e7efd48",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "heal_budget",
+      "path": "assets/catabase/painted/tree/stats/heal_budget.png",
+      "cell_index": 8,
+      "cell_box": [
+        691,
+        691,
+        1016,
+        1016
+      ],
+      "source_box": [
+        712,
+        710,
+        995,
+        993
+      ],
+      "source_content_dimensions": [
+        283,
+        283
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "cec92101d62ee2a8b608d514a8ce63f06a6cc01150b47793b182f2dde54e676a",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "source_path": "meshy_output/20260907_172358_catabase-ui-stats_01a07c78/source.png",
+      "source_sha256": "615d7189dfad53fc0058b5c98c99348fecef0b597cce0f7d848ea7ed27dfb5f6",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "colere",
+      "path": "assets/catabase/painted/tree/emblems/colere.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        8,
+        8,
+        392,
+        440
+      ],
+      "source_box": [
+        37,
+        31,
+        360,
+        409
+      ],
+      "source_content_dimensions": [
+        323,
+        378
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "fcbb8f1026484124580635f19c9bc6dd84d679d7a3bfb41075ace024d052951b",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
+      "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "chiron",
+      "path": "assets/catabase/painted/tree/emblems/chiron.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        408,
+        8,
+        792,
+        440
+      ],
+      "source_box": [
+        426,
+        68,
+        775,
+        400
+      ],
+      "source_content_dimensions": [
+        349,
+        332
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "d5bae651918a3ca839c3d70beab348f2f9f170b8209cc25460a8c3db9a17a5b1",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
+      "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "eaque",
+      "path": "assets/catabase/painted/tree/emblems/eaque.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        808,
+        8,
+        1192,
+        440
+      ],
+      "source_box": [
+        835,
+        60,
+        1166,
+        396
+      ],
+      "source_content_dimensions": [
+        331,
+        336
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "c53014af8bfd885206e27ecef79735f748345eeda4441fb9f98d7817ffc2326e",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
+      "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "elements",
+      "path": "assets/catabase/painted/tree/emblems/elements.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        8,
+        456,
+        392,
+        888
+      ],
+      "source_box": [
+        40,
+        489,
+        358,
+        837
+      ],
+      "source_content_dimensions": [
+        318,
+        348
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "8ae807956e38ea866275e30c9efb526e46062dc3756ee3c95f9bcdabb44b0c38",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
+      "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "serment",
+      "path": "assets/catabase/painted/tree/emblems/serment.png",
+      "cell_index": 4,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        408,
+        456,
+        792,
+        888
+      ],
+      "source_box": [
+        439,
+        501,
+        761,
+        847
+      ],
+      "source_content_dimensions": [
+        322,
+        346
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "3a36a647c14c408e752239eef36de92d7f2e72d38722fe7a7c3c9022eb13966a",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
+      "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "achilles",
+      "path": "assets/catabase/painted/tree/emblems/achilles.png",
+      "cell_index": 5,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        808,
+        456,
+        1192,
+        888
+      ],
+      "source_box": [
+        837,
+        498,
+        1163,
+        844
+      ],
+      "source_content_dimensions": [
+        326,
+        346
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "2b80c442a7c91e8e83790d7f886bcd99d8c6f1d92f8d236616b7757bad2e2d8b",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-emblems_01a07c7a/source.png",
+      "source_sha256": "e5cc7a4cbb4e7267aa9f5fb32a84bf599e7ad06dbadce66c086a2aacab1eb351",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "oboles",
+      "path": "assets/catabase/painted/ui/resources/oboles.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        8,
+        8,
+        392,
+        440
+      ],
+      "source_box": [
+        44,
+        90,
+        355,
+        368
+      ],
+      "source_content_dimensions": [
+        311,
+        278
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "fe0554d0742ad3c3fc80608f41ebd2eafc547976b817d020e555b1b5e7b1764d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
+      "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "destiny",
+      "path": "assets/catabase/painted/ui/resources/destiny.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        408,
+        8,
+        792,
+        440
+      ],
+      "source_box": [
+        460,
+        79,
+        740,
+        370
+      ],
+      "source_content_dimensions": [
+        280,
+        291
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "e30eacc2b48345b1a35d417887a1fd0129d63d8077a0fc71660c72b56083363d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
+      "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "health",
+      "path": "assets/catabase/painted/ui/resources/health.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        808,
+        8,
+        1192,
+        440
+      ],
+      "source_box": [
+        808,
+        85,
+        1192,
+        372
+      ],
+      "source_content_dimensions": [
+        384,
+        287
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "7567b23f61e3a41078eddfbd59713fbd4bde7328fc030b00c8ae44c259e8d982",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
+      "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "level",
+      "path": "assets/catabase/painted/ui/resources/level.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        8,
+        456,
+        392,
+        888
+      ],
+      "source_box": [
+        30,
+        514,
+        371,
+        828
+      ],
+      "source_content_dimensions": [
+        341,
+        314
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "e145f6b8830fe3945692cab3cc8774d8d90d16386a3183aa3adc02a221fa7f44",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
+      "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "victory",
+      "path": "assets/catabase/painted/ui/resources/victory.png",
+      "cell_index": 4,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        408,
+        456,
+        792,
+        888
+      ],
+      "source_box": [
+        425,
+        512,
+        775,
+        831
+      ],
+      "source_content_dimensions": [
+        350,
+        319
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "9c827718f422b326fc0fe64b86a6f2c1e0811e21b936eb048b50f2328399a6a3",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
+      "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "defeat",
+      "path": "assets/catabase/painted/ui/resources/defeat.png",
+      "cell_index": 5,
+      "reviewed_grid": [
+        3,
+        2
+      ],
+      "cell_box": [
+        808,
+        456,
+        1192,
+        888
+      ],
+      "source_box": [
+        846,
+        506,
+        1151,
+        840
+      ],
+      "source_content_dimensions": [
+        305,
+        334
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "e4ef8e1964d050beb81c6cbd0a0428f93e11aa5edf6b8a5963309ce09d6259a8",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "source_path": "meshy_output/20260907_172642_catabase-ui-resources_01a07c7a/source.png",
+      "source_sha256": "f49adab97d89bad725a8420fb6564f5746b25b09c4ab593e83addb8c2daf42b3",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "normal",
+      "path": "assets/catabase/painted/route/normal.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        8,
+        8,
+        292,
+        291
+      ],
+      "source_box": [
+        41,
+        42,
+        258,
+        260
+      ],
+      "source_content_dimensions": [
+        217,
+        218
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "daf69d509eb94f67142188ebe5890be311835282de0dfbee4c6bc3c8d7040770",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "elite",
+      "path": "assets/catabase/painted/route/elite.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        308,
+        8,
+        592,
+        291
+      ],
+      "source_box": [
+        318,
+        19,
+        585,
+        276
+      ],
+      "source_content_dimensions": [
+        267,
+        257
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "08a7fd0033a2e9087fa08a7168241f72fd37f3114a858c4df91556a1415f7e84",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "boss",
+      "path": "assets/catabase/painted/route/boss.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        608,
+        8,
+        892,
+        291
+      ],
+      "source_box": [
+        658,
+        19,
+        844,
+        282
+      ],
+      "source_content_dimensions": [
+        186,
+        263
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "f01c72b510bffb3a919cf69f6622598bfd1259c1f3a5183c7d9c5f072c3b46ea",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "hub",
+      "path": "assets/catabase/painted/route/hub.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        908,
+        8,
+        1192,
+        291
+      ],
+      "source_box": [
+        934,
+        26,
+        1166,
+        276
+      ],
+      "source_content_dimensions": [
+        232,
+        250
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "e10cf170687de32df15553f299274d18e07d4c8c8eedc8677faaaf96f3afac66",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "merchant",
+      "path": "assets/catabase/painted/route/merchant.png",
+      "cell_index": 4,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        8,
+        307,
+        292,
+        589
+      ],
+      "source_box": [
+        26,
+        323,
+        274,
+        576
+      ],
+      "source_content_dimensions": [
+        248,
+        253
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "2206af80900149b2fcf53e8a609ffee0857b2efd265c00026ecbd7819b9c2b68",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "sanctuary",
+      "path": "assets/catabase/painted/route/sanctuary.png",
+      "cell_index": 5,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        308,
+        307,
+        592,
+        589
+      ],
+      "source_box": [
+        348,
+        326,
+        555,
+        576
+      ],
+      "source_content_dimensions": [
+        207,
+        250
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "43165b5ffc82b7c57dbb900df7baf6be0cab8f972edf4d9e05d567fabd66c241",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "lore",
+      "path": "assets/catabase/painted/route/lore.png",
+      "cell_index": 6,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        608,
+        307,
+        892,
+        589
+      ],
+      "source_box": [
+        614,
+        341,
+        886,
+        556
+      ],
+      "source_content_dimensions": [
+        272,
+        215
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "12750b971848edceb1e19c19406939ce14eb3a556edee18370a85941d68931d9",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "event",
+      "path": "assets/catabase/painted/route/event.png",
+      "cell_index": 7,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        908,
+        307,
+        1192,
+        589
+      ],
+      "source_box": [
+        954,
+        328,
+        1164,
+        569
+      ],
+      "source_content_dimensions": [
+        210,
+        241
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "c72e123b15a069763e0a64a81952c8b878e380403ce2725d7c9d7d13c870386d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "cache",
+      "path": "assets/catabase/painted/route/cache.png",
+      "cell_index": 8,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        8,
+        605,
+        292,
+        888
+      ],
+      "source_box": [
+        28,
+        628,
+        270,
+        868
+      ],
+      "source_content_dimensions": [
+        242,
+        240
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "63425d2cfcae70c50f480ea9362e181e72647d0c12a03dc5166f13eacebbdf90",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "unknown",
+      "path": "assets/catabase/painted/route/unknown.png",
+      "cell_index": 9,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        308,
+        605,
+        592,
+        888
+      ],
+      "source_box": [
+        334,
+        630,
+        567,
+        865
+      ],
+      "source_content_dimensions": [
+        233,
+        235
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "daf6788276fafc9c3f0551342eeb0557f8771f4187e24de9cbb37a445b5a2bb9",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "hidden",
+      "path": "assets/catabase/painted/route/hidden.png",
+      "cell_index": 10,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        608,
+        605,
+        892,
+        888
+      ],
+      "source_box": [
+        638,
+        621,
+        868,
+        875
+      ],
+      "source_content_dimensions": [
+        230,
+        254
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "6a635f5367f43d6273b074c361104ddd787ebfcf38c2e3fbd9b1954cc958c7f9",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "current",
+      "path": "assets/catabase/painted/route/current.png",
+      "cell_index": 11,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        908,
+        605,
+        1192,
+        888
+      ],
+      "source_box": [
+        932,
+        618,
+        1168,
+        877
+      ],
+      "source_content_dimensions": [
+        236,
+        259
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "5999bc5da872199fdfa87e85e1cbc18c11b10110141358cfc07e331584be625a",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "source_path": "meshy_output/20260907_172643_catabase-ui-route_01a07c7a/source.png",
+      "source_sha256": "31d24e5a5efa1396ebf833d769cdd619a3459137f528e7b631630aca9c7c75e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "map",
+      "path": "assets/catabase/painted/ui/nav/map.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        8,
+        8,
+        292,
+        291
+      ],
+      "source_box": [
+        13,
+        28,
+        287,
+        274
+      ],
+      "source_content_dimensions": [
+        274,
+        246
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "81e5f0f4082b8562147b9075a0112a15882cfd6ed4416aae38e406340c2e6fad",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "tree",
+      "path": "assets/catabase/painted/ui/nav/tree.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        308,
+        8,
+        592,
+        291
+      ],
+      "source_box": [
+        330,
+        22,
+        568,
+        284
+      ],
+      "source_content_dimensions": [
+        238,
+        262
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "cddb4a760272bbb9502e81b854e75be2786147b18ae5fe04aa171cb7b8888642",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "equipment",
+      "path": "assets/catabase/painted/ui/nav/equipment.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        608,
+        8,
+        892,
+        291
+      ],
+      "source_box": [
+        645,
+        19,
+        879,
+        284
+      ],
+      "source_content_dimensions": [
+        234,
+        265
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "905023574242434bf58236206bea7d017a4093c99208d1830d8bfde2dec45e5d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "halt",
+      "path": "assets/catabase/painted/ui/nav/halt.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        908,
+        8,
+        1192,
+        291
+      ],
+      "source_box": [
+        962,
+        19,
+        1134,
+        279
+      ],
+      "source_content_dimensions": [
+        172,
+        260
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "920bfa74abea88c2c9b7d803a23d655d64ff15c660f1184e3a61808d5c3d1916",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "journal",
+      "path": "assets/catabase/painted/ui/nav/journal.png",
+      "cell_index": 4,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        8,
+        307,
+        292,
+        589
+      ],
+      "source_box": [
+        19,
+        320,
+        282,
+        579
+      ],
+      "source_content_dimensions": [
+        263,
+        259
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "ec09cb1af472a9cafeab450edd3f53f89bbc392a2324b9a2e4ec889e09f6e1d0",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "home",
+      "path": "assets/catabase/painted/ui/nav/home.png",
+      "cell_index": 5,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        308,
+        307,
+        592,
+        589
+      ],
+      "source_box": [
+        312,
+        323,
+        587,
+        575
+      ],
+      "source_content_dimensions": [
+        275,
+        252
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "55bb4b847117a1eee5960bcbe6bcb24a60c4e20e9313fce8c0860c0fe081ec32",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "close",
+      "path": "assets/catabase/painted/ui/nav/close.png",
+      "cell_index": 6,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        608,
+        307,
+        892,
+        589
+      ],
+      "source_box": [
+        634,
+        328,
+        863,
+        571
+      ],
+      "source_content_dimensions": [
+        229,
+        243
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "1299f5ada228f2887b08ad262b65344c3829b43d1ae9c8fc087c45faf16a9a11",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "settings",
+      "path": "assets/catabase/painted/ui/nav/settings.png",
+      "cell_index": 7,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        908,
+        307,
+        1192,
+        589
+      ],
+      "source_box": [
+        931,
+        323,
+        1168,
+        576
+      ],
+      "source_content_dimensions": [
+        237,
+        253
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "f829fbef3923d88a79feac8ade089fe2d95a98e6d3754f17b4fdc68ede8e765e",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "save",
+      "path": "assets/catabase/painted/ui/nav/save.png",
+      "cell_index": 8,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        8,
+        605,
+        292,
+        888
+      ],
+      "source_box": [
+        23,
+        622,
+        280,
+        874
+      ],
+      "source_content_dimensions": [
+        257,
+        252
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "252aabded87f1504046633173e861e5c6824381fec8057a13f6ae486116dd49b",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "continue",
+      "path": "assets/catabase/painted/ui/nav/continue.png",
+      "cell_index": 9,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        308,
+        605,
+        592,
+        888
+      ],
+      "source_box": [
+        366,
+        624,
+        539,
+        877
+      ],
+      "source_content_dimensions": [
+        173,
+        253
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "4e2c6f7742c505ec2ebf173b68afdffbb1aaa026ccb6a042bc47247a357f6944",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "lock",
+      "path": "assets/catabase/painted/ui/nav/lock.png",
+      "cell_index": 10,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        608,
+        605,
+        892,
+        888
+      ],
+      "source_box": [
+        652,
+        624,
+        845,
+        875
+      ],
+      "source_content_dimensions": [
+        193,
+        251
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "fcf11e1145dbc9780f89eed2732572d400fa02b5e6415c285a950a5d9b2528c3",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "check",
+      "path": "assets/catabase/painted/ui/nav/check.png",
+      "cell_index": 11,
+      "reviewed_grid": [
+        4,
+        3
+      ],
+      "cell_box": [
+        908,
+        605,
+        1192,
+        888
+      ],
+      "source_box": [
+        924,
+        634,
+        1171,
+        864
+      ],
+      "source_content_dimensions": [
+        247,
+        230
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "acec83fd4b667182efb1738a99a04f4d47619b24f718d4bccab0c4e6680a9a35",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "source_path": "meshy_output/20260907_172644_catabase-ui-navigation_01a07c7a/source.png",
+      "source_sha256": "c0117101601b45ae4519d4eae0b460af093feb671cb8b7fa346812528c27158f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "button_normal",
+      "path": "assets/catabase/painted/ui/button_normal.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        2,
+        4
+      ],
+      "cell_box": [
+        8,
+        8,
+        504,
+        248
+      ],
+      "source_box": [
+        22,
+        28,
+        490,
+        230
+      ],
+      "source_content_dimensions": [
+        468,
+        202
+      ],
+      "dimensions": [
+        371,
+        160
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "271c37e34ae79af3cac42d2317a2ffce243174a7f8b71e5b553d9661ba7f1785",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
+      "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "button_primary",
+      "path": "assets/catabase/painted/ui/button_primary.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        2,
+        4
+      ],
+      "cell_box": [
+        520,
+        8,
+        1016,
+        248
+      ],
+      "source_box": [
+        534,
+        28,
+        1002,
+        230
+      ],
+      "source_content_dimensions": [
+        468,
+        202
+      ],
+      "dimensions": [
+        371,
+        160
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "06cc23d7b28c585eb1321c87e5e99cec0b59a89f4e588fc819a8e2b9db58c006",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
+      "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "button_selected",
+      "path": "assets/catabase/painted/ui/button_selected.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        2,
+        4
+      ],
+      "cell_box": [
+        8,
+        264,
+        504,
+        504
+      ],
+      "source_box": [
+        22,
+        283,
+        490,
+        486
+      ],
+      "source_content_dimensions": [
+        468,
+        203
+      ],
+      "dimensions": [
+        369,
+        160
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "f9302743233d9d3c48f67964486c5b6dc367e3eaf3b21211192e82e557a7cd79",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
+      "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "button_disabled",
+      "path": "assets/catabase/painted/ui/button_disabled.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        2,
+        4
+      ],
+      "cell_box": [
+        520,
+        264,
+        1016,
+        504
+      ],
+      "source_box": [
+        534,
+        283,
+        1002,
+        486
+      ],
+      "source_content_dimensions": [
+        468,
+        203
+      ],
+      "dimensions": [
+        369,
+        160
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "72005a82f6656b422e777e92bfd87b1c5579f814daf484dcec6c960a144f269b",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
+      "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "tab_normal",
+      "path": "assets/catabase/painted/ui/tab_normal.png",
+      "cell_index": 4,
+      "reviewed_grid": [
+        2,
+        4
+      ],
+      "cell_box": [
+        8,
+        520,
+        504,
+        760
+      ],
+      "source_box": [
+        22,
+        536,
+        490,
+        710
+      ],
+      "source_content_dimensions": [
+        468,
+        174
+      ],
+      "dimensions": [
+        430,
+        160
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "65dd9e0a0924c897284ccd76fea5199cf92095af2026b2049c73f6734b201a21",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
+      "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "tab_selected",
+      "path": "assets/catabase/painted/ui/tab_selected.png",
+      "cell_index": 5,
+      "reviewed_grid": [
+        2,
+        4
+      ],
+      "cell_box": [
+        520,
+        520,
+        1016,
+        760
+      ],
+      "source_box": [
+        534,
+        536,
+        1002,
+        711
+      ],
+      "source_content_dimensions": [
+        468,
+        175
+      ],
+      "dimensions": [
+        428,
+        160
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "b80e5b5b202b14e2580a8e5d302a98fa55bf2d58e3c96331d0e517675f686eaf",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-buttons_01a07c7d/source.png",
+      "source_sha256": "7b2c86ad04ed7a7047913429ccc43f259fdc807297d271d5790b2de63f991787",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "panel",
+      "path": "assets/catabase/painted/ui/panel.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        8,
+        8,
+        504,
+        504
+      ],
+      "source_box": [
+        10,
+        10,
+        503,
+        502
+      ],
+      "source_content_dimensions": [
+        493,
+        492
+      ],
+      "dimensions": [
+        448,
+        447
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "4749ddaa2edb1da1b611e863f8e7a0a1a377b406dc3b9db0ae6afa4b87033280",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
+      "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "card",
+      "path": "assets/catabase/painted/ui/card.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        520,
+        8,
+        1016,
+        504
+      ],
+      "source_box": [
+        526,
+        14,
+        1011,
+        498
+      ],
+      "source_content_dimensions": [
+        485,
+        484
+      ],
+      "dimensions": [
+        448,
+        447
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "3f49d8a6ae507dd27e4cd176e12aaac0ded8d52aee03e723469c453db092cdff",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
+      "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "tooltip",
+      "path": "assets/catabase/painted/ui/tooltip.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        8,
+        520,
+        504,
+        1016
+      ],
+      "source_box": [
+        12,
+        523,
+        500,
+        1002
+      ],
+      "source_content_dimensions": [
+        488,
+        479
+      ],
+      "dimensions": [
+        448,
+        440
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "837b5d87a410d0fdf315e697d3daf412f8ac15eb41d8974b09e48ea31cc0e733",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
+      "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "banner",
+      "path": "assets/catabase/painted/ui/banner.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        520,
+        520,
+        1016,
+        1016
+      ],
+      "source_box": [
+        524,
+        523,
+        1012,
+        1012
+      ],
+      "source_content_dimensions": [
+        488,
+        489
+      ],
+      "dimensions": [
+        447,
+        448
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "624c314943d7b92497daa583134edefd0d1b49777e6cbc38ce21d1ba9e2f85cd",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "source_path": "meshy_output/20260907_172942_catabase-ui-panels_01a07c7d/source.png",
+      "source_sha256": "e8b20726dc713c108222680df95255a29539ff37c4dbb60260a4716107edc95e",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "slot_normal",
+      "path": "assets/catabase/painted/ui/slot_normal.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        8,
+        8,
+        504,
+        504
+      ],
+      "source_box": [
+        39,
+        41,
+        473,
+        475
+      ],
+      "source_content_dimensions": [
+        434,
+        434
+      ],
+      "dimensions": [
+        128,
+        128
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "82e4b07f42302ef93971b9ce0ec53c52748aa1fd16b76f97b5eeca8645d5291a",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-5278-7371-9219-59f66014c089",
+      "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
+      "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "slot_selected",
+      "path": "assets/catabase/painted/ui/slot_selected.png",
+      "cell_index": 1,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        520,
+        8,
+        1016,
+        504
+      ],
+      "source_box": [
+        551,
+        41,
+        985,
+        475
+      ],
+      "source_content_dimensions": [
+        434,
+        434
+      ],
+      "dimensions": [
+        128,
+        128
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "9a99487751b327fdd26a26eb9c6059b69bd1c5926ea47765dc38c80f85aff0ed",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-5278-7371-9219-59f66014c089",
+      "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
+      "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "slot_locked",
+      "path": "assets/catabase/painted/ui/slot_locked.png",
+      "cell_index": 2,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        8,
+        520,
+        504,
+        1016
+      ],
+      "source_box": [
+        39,
+        548,
+        473,
+        983
+      ],
+      "source_content_dimensions": [
+        434,
+        435
+      ],
+      "dimensions": [
+        128,
+        128
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "6288720a3c01cda7fff336e44d9944811b6fd336198a717bc3d4e3547cf54572",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-5278-7371-9219-59f66014c089",
+      "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
+      "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "portrait_frame",
+      "path": "assets/catabase/painted/ui/portrait_frame.png",
+      "cell_index": 3,
+      "reviewed_grid": [
+        2,
+        2
+      ],
+      "cell_box": [
+        520,
+        520,
+        1016,
+        1016
+      ],
+      "source_box": [
+        540,
+        540,
+        988,
+        989
+      ],
+      "source_content_dimensions": [
+        448,
+        449
+      ],
+      "dimensions": [
+        128,
+        128
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "4a1b0ffd98a687eebded4944b19fa07ed5ed8547f5fd8ce3a0505cfb12b43914",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-5278-7371-9219-59f66014c089",
+      "source_path": "meshy_output/20260907_172943_catabase-ui-frames_01a07c7d/source.png",
+      "source_sha256": "1ecbddaad3d2590c59eb4e4cc64b1bb349d2dc94f9b954e823fa160937a301e5",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "background",
+      "path": "assets/catabase/painted/ui/background.png",
+      "source_box": [
+        0,
+        0,
+        1376,
+        768
+      ],
+      "dimensions": [
+        1376,
+        768
+      ],
+      "processing": "original pixels, RGB PNG",
+      "sha256": "8eb0b8c5daf03f15c88015a58ef0d495c8ac013a83970ccbe69b776298da1832",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+      "source_path": "meshy_output/20260907_172946_catabase-ui-background_01a07c7d/source.png",
+      "source_sha256": "6615bdfa55be8503d914771b66ce3eb6971a6cc3ec760a1d00acb4c415cfae9f",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "tree_fresco",
+      "path": "assets/catabase/painted/ui/tree_fresco.png",
+      "source_box": [
+        0,
+        0,
+        1376,
+        768
+      ],
+      "dimensions": [
+        1376,
+        768
+      ],
+      "processing": "original pixels, RGB PNG",
+      "sha256": "a8bcd95b43f7319647d413ac03ac1b1066a223f6b6c1399b053b389f09a9aeb7",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+      "source_path": "meshy_output/20260907_173232_catabase-ui-tree-fresco_01a07c7f/source.png",
+      "source_sha256": "028169776bc75a29fd46f4cf2df8b8c512a7c57434d0e5118bef0a236f104f45",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "route_parchment",
+      "path": "assets/catabase/painted/ui/route_parchment.png",
+      "source_box": [
+        0,
+        0,
+        896,
+        1200
+      ],
+      "dimensions": [
+        896,
+        1200
+      ],
+      "processing": "original pixels, RGB PNG",
+      "sha256": "3f9c9b7dbd93ae56cb05e63bf01ba98604025d38f6c0a4e70654b35a2260199d",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+      "source_path": "meshy_output/20260907_173233_catabase-ui-route-parchment_01a07c7f/source.png",
+      "source_sha256": "f8acb137028fd43423127b03d60a7eb0c364367c37ddd7b6d06fe4cdc29edbfc",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    },
+    {
+      "id": "max_mp",
+      "path": "assets/catabase/painted/tree/stats/max_mp.png",
+      "cell_index": 0,
+      "reviewed_grid": [
+        1,
+        1
+      ],
+      "cell_box": [
+        8,
+        8,
+        1016,
+        1016
+      ],
+      "source_box": [
+        149,
+        139,
+        863,
+        903
+      ],
+      "source_content_dimensions": [
+        714,
+        764
+      ],
+      "dimensions": [
+        256,
+        256
+      ],
+      "processing": "cell extraction, exterior matte removal, uniform fit; no creative repainting",
+      "sha256": "a6aee3d30e58b3c6d6cd05bf590512c91ae90a4d6fdfda4e70bed90daf26635b",
+      "provider": "Meshy",
+      "model": "nano-banana-pro",
+      "task_id": "01a07c7f-ec51-771c-a39b-fbdc3a4b37fe",
+      "source_path": "meshy_output/20260907_173234_catabase-ui-movement-glyph-rev_01a07c7f/source.png",
+      "source_sha256": "6f6957e4c856d592654279244a40ee9d05920dedb0f79052974a11b459760f8b",
+      "review_status": "visually_reviewed",
+      "runtime_validation": "pending"
+    }
+  ],
+  "review_method": "Source atlas and extracted sheets inspected, including icon previews at 64, 48 and 34 px. Runtime captures verified separately."
+}

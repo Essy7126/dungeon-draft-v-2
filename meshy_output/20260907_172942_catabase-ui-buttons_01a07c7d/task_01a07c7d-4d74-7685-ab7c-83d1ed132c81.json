@@ -1,0 +1,16 @@
+{
+  "id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate buttons in a regular 2 columns by 3 rows grid. Read order is left to right, then top to bottom. Each cell contains one wide horizontal rectangular UI plate, width 84 percent of the cell and height 40 percent of the cell. Exact front orthographic view, completely straight parallel edges, no perspective, rounded beveled corners, no drop shadows. All plates have identical external dimensions, corner geometry and edge thickness. Their centers are empty dark petrol surfaces suitable for a text label added by the game. Edge decoration must be restrained, keeping the central 75 percent empty and near uniform. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: secondary button, aged bronze thin rim and near-uniform dark petrol center; cell 2: primary action button, warmer polished gold rim, dark bronze center, small amber corner highlights; cell 3: selected button, aged bronze rim with restrained turquoise inlay, dark petrol center; cell 4: disabled button, muted worn bronze rim, subdued graphite blue center; cell 5: navigation tab, thin bronze edges and a shallow dark petrol center; cell 6: selected navigation tab, small jade edge accents and a narrow warm golden bottom edge, dark petrol center.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788794982117,
+  "started_at": 1788794982121,
+  "finished_at": 1788795039647,
+  "expires_at": 1789054239647,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c7d-4d74-7685-ab7c-83d1ed132c81_0.png?Expires=1789054239&Signature=A9FFuUarBkPkUGUZMa6-XcPbz~3K06O~i0e2G3noBNPt-YNntoH~lg8-ttOqvfZTvB6h6OLMBYRvqVuJjdbsmnWDCQX5pK1Q06qcYQPbHBG0K3aVsK3-KZQ89TSrcsioCzaybOnI355GhhUjYMlGB5qTxHZAMIhOFhdoBmp2YI0q9BGHDb-gwKxycrZTLiwXAo0h6Xoc6ysO6e6B3UyHQwF~xK6xNqxWJIlTSDAaStIMlzNlAb1vda0rJqBoB0SDWPXOBFpZ33rn38Cmtg2bQebtW-laoAdI7MuJSe0YUeTBvjhpv4oW9yzW4k19256oznOV5DOs2Dl7ogUOSbU9eQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

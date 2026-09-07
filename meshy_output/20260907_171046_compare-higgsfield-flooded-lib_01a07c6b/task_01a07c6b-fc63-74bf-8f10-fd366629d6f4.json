@@ -1,0 +1,16 @@
+{
+  "id": "01a07c6b-fc63-74bf-8f10-fd366629d6f4",
+  "type": "text-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788793846894,
+  "started_at": 1788793846899,
+  "finished_at": 1788793907654,
+  "expires_at": 1789053107654,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c6b-fc63-74bf-8f10-fd366629d6f4_0.png?Expires=1789053107&Signature=Dm6s6U8Zt7btTmdPPbb~WaiaMopgChvtz0dz-bv59CcgHhU5SGq45CLdLacFzV536I5jA7xqDu3d~H9U5y83zCEDjSXBN13AiGMyt53eDR3kPjmrBDfkpPDXF74cVy1ESvfDLL7oxByGhb8rSYmzSdEXSIfmxw64ftq2Era7j1cAxq4GiO~5G6bshhg1aIF7O82ZGiNQyzXwEGl4RoS-zr~YdkA1inWZvzOCIsQ8dcdyQHfK-A0FBQ25Q3u~yHzIhCkS-NURvNpJYDyXyvR0u~-NTddk0E~Hs5hy56N3FrG-TXjjAsgXJDINqw4LwWBhGeun6iX5-dibvoi41tW6hg__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}
