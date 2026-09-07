@@ -1,0 +1,16 @@
+{
+  "id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame subtle game-menu background material. Very dark petrol blue slate stone, broad smooth low-contrast areas, extremely restrained mottling. Sparse ancient Greek bronze engraving and olive traces only at outer corners. Center 85 percent must remain quiet and nearly uniform for readable interface panels layered above. No scene, no objects, no glowing focal points, no border, no perspective, no vignette to white, no text. Edge-to-edge dark material.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788794985913,
+  "started_at": 1788794985917,
+  "finished_at": 1788795039235,
+  "expires_at": 1789054239235,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c7d-556e-7488-b267-00e6995e9e61_0.png?Expires=1789054239&Signature=lX6aGLHU1OfE~JBUg908JcBe74ptnnvjKQ67PiB8MDQgpQQAQt4VtvMu9R59ErQbu5MyG9cmBJCKSfJIdd3ChOQzC~7H3pNmh8lAkyZGz8zxrG1hH2P18U54HrE5wX8hC~vbdDbihSm5L2ldqBdDAOYYYAnJB3qmdR3Akn5GRKWmCMt6GxypxbByLMk58XKFvQna7e739CaL5Jfa7ZLmX04skDnb3ni5~EpW5GSmFE5-hEmqBuN~BkgU0FsYhLsbNfV-TcyUWmH-s6QvA1jd7M6cYK81bqV1Z6C3BW9qGHMP0k~wv-j6Ficw0g13wer~9GmduWnImHBb00evN42vCQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

@@ -1,0 +1,16 @@
+{
+  "id": "01a07c6a-8adf-725f-8c86-192588b5e2d6",
+  "type": "text-to-image",
+  "ai_model": "nano-banana-2",
+  "prompt": "Create a polished game art demonstration sheet: exactly nine distinct fantasy dungeon inventory item icons in a perfectly regular 3 by 3 grid, no words or lettering. Each icon fully separated with generous margins, equal scale and centered in its own invisible cell, on a uniform solid midnight navy background #101824, no card frames. Row 1: ruby health potion in round glass bottle, icy blue mana potion in triangular glass bottle, jade poison vial. Row 2: ancient bronze dungeon key with a skull bow, short iron sword with a worn leather grip, folded parchment dungeon map tied with red cord. Row 3: small oak treasure chest bound with brass, luminous violet crystal cluster, silver ring with an emerald. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm brass and teal accents. Three-quarter isometric object views; no environmental scene, no characters, no watermarks. These are illustrative item icon concepts.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788793752300,
+  "started_at": 1788793752306,
+  "finished_at": 1788793885976,
+  "expires_at": 1789053085976,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c6a-8adf-725f-8c86-192588b5e2d6_0.png?Expires=1789053085&Signature=clqSDOmWSR1KJ--jKMHqJwAccHj6T8U~Vg01TsMR2ROJlorC2VKtx-fjEBw5n1f~HMM9nVf1AVOUkRdopef2eToEucaFmQzmM6TFBe6PJt0i0XDEo6fGtCXIuXnX~vO5nuKnVPopHAW-dJJg9sPqSAPl6wEpyCXFw00VvKcWjF7gcjH-~PO082O5Q1uSRAQp3uXQWGBcFh8be9IbZT05lEG~6xlroTvYT3RuR8GmDUbx3gLzxzByAliRUFYRf7s6xS6Uv5D8NjsQ4rcAv-KgtUj0ZDLq-4tbxMTajGyDIJYUHKS-RiTh7Zw2LI1G3CHbX5hhk~lqZmxiy6Vq13yffA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 6
+}

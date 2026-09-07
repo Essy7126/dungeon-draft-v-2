@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "folder": "20260907_170912_compare-higgsfield-inventory-i_01a07c6a",
+      "prompt": "Create a polished game art demonstration sheet: exactly nine distinct fantasy dungeon inventory item icons in a perfectly regular 3 by 3 grid, no words or lettering. Each icon fully separated with generous margins, equal scale and centered in its own invisible cell, on a uniform solid midnight navy background #101824, no card frames. Row 1: ruby health potion in round glass bottle, icy blue mana potion in triangular glass bottle, jade poison vial. Row 2: ancient bronze dungeon key with a skull bow, short iron sword with a worn leather grip, folded parchment dungeon map tied with red cord. Row 3: small oak treasure chest bound with brass, luminous violet crystal cluster, silver ring with an emerald. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm brass and teal accents. Three-quarter isometric object views; no environmental scene, no characters, no watermarks. These are illustrative item icon concepts.",
+      "task_type": "text-to-image",
+      "root_task_id": "01a07c6a-8adf-725f-8c86-192588b5e2d6",
+      "created_at": "2026-09-07T17:09:12.379658",
+      "updated_at": "2026-09-07T17:11:50.393612",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_170912_compare-higgsfield-flooded-lib_01a07c6a",
+      "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+      "task_type": "text-to-image",
+      "root_task_id": "01a07c6a-8b93-7691-b726-1eca1c087710",
+      "created_at": "2026-09-07T17:09:12.549146",
+      "updated_at": "2026-09-07T17:11:50.852018",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_171046_compare-higgsfield-inventory-i_01a07c6b",
+      "prompt": "Create a polished game art demonstration sheet: exactly nine distinct fantasy dungeon inventory item icons in a perfectly regular 3 by 3 grid, no words or lettering. Each icon fully separated with generous margins, equal scale and centered in its own invisible cell, on a uniform solid midnight navy background #101824, no card frames. Row 1: ruby health potion in round glass bottle, icy blue mana potion in triangular glass bottle, jade poison vial. Row 2: ancient bronze dungeon key with a skull bow, short iron sword with a worn leather grip, folded parchment dungeon map tied with red cord. Row 3: small oak treasure chest bound with brass, luminous violet crystal cluster, silver ring with an emerald. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm brass and teal accents. Three-quarter isometric object views; no environmental scene, no characters, no watermarks. These are illustrative item icon concepts.",
+      "task_type": "text-to-image",
+      "root_task_id": "01a07c6b-fbaf-71bd-8f72-c1ea9d42c688",
+      "created_at": "2026-09-07T17:10:46.791994",
+      "updated_at": "2026-09-07T17:11:28.749242",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_171046_compare-higgsfield-flooded-lib_01a07c6b",
+      "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+      "task_type": "text-to-image",
+      "root_task_id": "01a07c6b-fc63-74bf-8f10-fd366629d6f4",
+      "created_at": "2026-09-07T17:10:46.971794",
+      "updated_at": "2026-09-07T17:11:53.597056",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172356_catabase-ui-spells-remaining_01a07c77",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a bronze arrowhead with a compact curling orange flame and glowing embers; cell 2: two chunky icy blue crystal shackles connected by one short frosted chain; cell 3: a strong angular cyan lightning bolt striking a small bronze spearhead; cell 4: a thick bronze shield with a tiny sealed jade oath gem and a single protective arch; cell 5: a bronze oath seal enclosing a luminous ruby flame, compact circular silhouette; cell 6: a powerful circular ivory and turquoise whirlwind around three bronze spearheads pointing tangentially, visibly circular area attack.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "created_at": "2026-09-07T17:23:56.017375",
+      "updated_at": "2026-09-07T17:26:05.691389",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172356_catabase-ui-equipment-weapons_01a07c78",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a hefty Myrmidon bronze spear with hooked levering tip and leather grip; cell 2: a short sacrificial bronze dagger with ruby edge fissure and dark red wrapped grip; cell 3: an elegant long bronze throwing javelin with ivory fletching and a focused teal sight gem; cell 4: a graceful short Greek xiphos sword with leaf-shaped blade and teal cloth grip; cell 5: a heavy square-headed ancient bronze war mace with thick geometric flanges; cell 6: a forged dark bronze spearhead with orange-hot rune-free furnace core.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "created_at": "2026-09-07T17:23:56.747105",
+      "updated_at": "2026-09-07T17:26:06.135526",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172357_catabase-ui-equipment-armor_01a07c78",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a handsome ancient Greek bronze muscle cuirass with teal shoulder insets; cell 2: a carefully folded ivory linen tunic with worn leather straps and restrained jade stitching; cell 3: a pair of wingless ancient Greek brown leather sandals with small bronze buckles; cell 4: a gold and bronze hunter seal with a carved eye and deep ruby pupil; cell 5: a triangular turquoise and icy blue crystal prism seated in an elegant bronze cradle; cell 6: a circular aged bronze oath brooch clasp with interlocking arms and a small jade shield gem.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "created_at": "2026-09-07T17:23:57.434988",
+      "updated_at": "2026-09-07T17:26:06.842722",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172358_catabase-ui-stats_01a07c78",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 9 separate icons in a regular 3 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a compact muscular bronze gauntlet clenched into a fist; cell 2: two crossing bronze spearheads with one ivory impact star; cell 3: a plump polished ruby heart held in a restrained bronze clasp; cell 4: a small bronze hourglass with bright turquoise sand and one winglike speed sweep; cell 5: one ancient Greek sandal footprint with a strong turquoise forward arrow-shaped trail; cell 6: a small silver curved arrow elegantly avoiding a single bronze arrowhead; cell 7: a solid broad bronze breastplate with thick beveled surfaces; cell 8: a violet crystal protected by a simple bronze circular ward; cell 9: a small golden laurel cup containing three luminous jade drops.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "created_at": "2026-09-07T17:23:58.152502",
+      "updated_at": "2026-09-07T17:26:07.297504",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172642_catabase-ui-emblems_01a07c7a",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a bold bronze round emblem showing a roaring lion face and a short ruby flame crest; cell 2: a refined bronze laurel medallion with a curved bow and turquoise arrow; cell 3: a heavy bronze medallion with a strong classical shield and ivory central boss; cell 4: a bronze ring embracing three clearly separated orange flame, blue ice shard and cyan lightning symbols; cell 5: a bronze ring embracing two clasped armored hands above a small jade oath gem; cell 6: an ancient Greek heroic profile helmet medallion in warm bronze with an ivory crest.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "created_at": "2026-09-07T17:26:42.118406",
+      "updated_at": "2026-09-07T17:27:26.384813",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172642_catabase-ui-resources_01a07c7a",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: three chunky ancient gold obol coins with abstract relief, no digits or letters; cell 2: a luminous turquoise destiny crystal inside a small open gold laurel; cell 3: one luminous ruby heart with two restrained golden wings of light; cell 4: a golden starburst medallion framed by a compact laurel crown; cell 5: a triumphant golden laurel wreath surrounding a raised ivory spearhead; cell 6: a cracked bronze helmet with a dim ruby fissure resting on a single dark stone.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "created_at": "2026-09-07T17:26:42.868680",
+      "updated_at": "2026-09-07T17:29:33.804253",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172643_catabase-ui-route_01a07c7a",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 12 separate icons in a regular 4 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: two crossed short bronze swords in a compact round icon; cell 2: a bronze hornless warrior helm above two crossed spears and one ruby star; cell 3: a large imposing dark bronze crowned guardian helm with cyan eye slits; cell 4: a low circular bronze brazier with warm amber campfire; cell 5: a gold balance scale and one small leather coin pouch; cell 6: a small ancient Greek stone altar holding a jade offering bowl; cell 7: an open ivory book and a small turquoise crystal bookmark; cell 8: a bronze theatrical mask with a tiny amber spark; cell 9: a small closed honey wood treasure chest with bronze fittings; cell 10: a sealed dark bronze medallion with an abstract swirling mist, no question mark or letters; cell 11: a small partly open stone doorway behind a curling teal mist veil; cell 12: a bright ivory downward-pointing spearhead surrounded by a compact golden laurel.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "created_at": "2026-09-07T17:26:43.625203",
+      "updated_at": "2026-09-07T17:29:34.628373",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172644_catabase-ui-navigation_01a07c7a",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 12 separate icons in a regular 4 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a folded ivory parchment route map with a simple winding turquoise path; cell 2: a stylized golden branching laurel with three large turquoise buds; cell 3: a compact ancient Greek bronze helmet and short sword; cell 4: a small bronze brazier with a warm sheltered amber flame; cell 5: a handsome closed leather journal with bronze clasp and ivory page edges; cell 6: a simple Greek temple pediment on two short bronze columns; cell 7: a clear simple bronze X cross made of two short beveled bars; cell 8: a chunky simple bronze cog with six teeth and turquoise hub; cell 9: a bronze seal stamp beside one folded ivory scroll; cell 10: a clear thick right-pointing bronze chevron with warm ivory edge; cell 11: a small closed antique bronze padlock with a round keyhole; cell 12: a clear thick jade check mark with restrained bronze edging.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "created_at": "2026-09-07T17:26:44.176569",
+      "updated_at": "2026-09-07T17:29:35.776942",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172942_catabase-ui-buttons_01a07c7d",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate buttons in a regular 2 columns by 3 rows grid. Read order is left to right, then top to bottom. Each cell contains one wide horizontal rectangular UI plate, width 84 percent of the cell and height 40 percent of the cell. Exact front orthographic view, completely straight parallel edges, no perspective, rounded beveled corners, no drop shadows. All plates have identical external dimensions, corner geometry and edge thickness. Their centers are empty dark petrol surfaces suitable for a text label added by the game. Edge decoration must be restrained, keeping the central 75 percent empty and near uniform. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: secondary button, aged bronze thin rim and near-uniform dark petrol center; cell 2: primary action button, warmer polished gold rim, dark bronze center, small amber corner highlights; cell 3: selected button, aged bronze rim with restrained turquoise inlay, dark petrol center; cell 4: disabled button, muted worn bronze rim, subdued graphite blue center; cell 5: navigation tab, thin bronze edges and a shallow dark petrol center; cell 6: selected navigation tab, small jade edge accents and a narrow warm golden bottom edge, dark petrol center.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "created_at": "2026-09-07T17:29:42.352618",
+      "updated_at": "2026-09-07T17:30:53.280457",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172942_catabase-ui-panels_01a07c7d",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 4 separate panels in a regular 2 columns by 2 rows grid. Read order is left to right, then top to bottom. Each cell contains one front-facing square UI panel, occupying 82 percent of the cell width and height. Exact orthographic front view, straight parallel edges, no perspective, restrained beveled bronze corners. The central 80 percent is a near-uniform dark petrol blank surface with no objects, ornaments or text. Make the edges straight and uninterrupted at their midpoints for nine-slice stretching. No ornament protrudes outside its own rectangle. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: main window panel, dark petrol stone center, restrained aged bronze rectangular border and small carved Greek corner details; cell 2: compact content card, thin aged brass rectangular rim, clean dark blue-black stone center; cell 3: quiet tooltip panel, very thin warm bronze rim with clipped corners, near-black petrol center; cell 4: title banner panel, refined aged bronze top and bottom rails, tiny laurel corner motifs, empty dark petrol center.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "created_at": "2026-09-07T17:29:42.940344",
+      "updated_at": "2026-09-07T17:32:30.541869",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172943_catabase-ui-frames_01a07c7d",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 4 separate frames in a regular 2 columns by 2 rows grid. Read order is left to right, then top to bottom. Each cell contains one front-facing square UI panel, occupying 82 percent of the cell width and height. Exact orthographic front view, straight parallel edges, no perspective, restrained beveled bronze corners. The central 80 percent is a near-uniform dark petrol blank surface with no objects, ornaments or text. Make the edges straight and uninterrupted at their midpoints for nine-slice stretching. No ornament protrudes outside its own rectangle. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: square inventory slot frame, thin warm bronze bevel and dark petrol center; cell 2: same square inventory slot frame with small turquoise active edge glints, dark petrol center; cell 3: same square inventory slot frame in desaturated aged bronze, dark graphite center, no lock object; cell 4: square heroic portrait frame with handsome bronze corner laurel ornaments and dark petrol center.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7d-5278-7371-9219-59f66014c089",
+      "created_at": "2026-09-07T17:29:43.696368",
+      "updated_at": "2026-09-07T17:32:31.023418",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_172946_catabase-ui-background_01a07c7d",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame subtle game-menu background material. Very dark petrol blue slate stone, broad smooth low-contrast areas, extremely restrained mottling. Sparse ancient Greek bronze engraving and olive traces only at outer corners. Center 85 percent must remain quiet and nearly uniform for readable interface panels layered above. No scene, no objects, no glowing focal points, no border, no perspective, no vignette to white, no text. Edge-to-edge dark material.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+      "created_at": "2026-09-07T17:29:46.177559",
+      "updated_at": "2026-09-07T17:32:31.502571",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_173232_catabase-ui-tree-fresco_01a07c7f",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame very dark petrol ancient Greek underworld wall fresco, designed behind a skill tree. Extremely subtle low-contrast relief of roots, laurel branches and a distant broken Greek portico, mostly around the outer 15 percent. Center is calm dark slate with barely visible stone texture. Muted bronze patina, no characters, no objects in the center, no bright lights, no UI, no drawn skill nodes or connectors. Decorative background only, broad quiet surfaces, edge-to-edge landscape.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+      "created_at": "2026-09-07T17:32:32.701499",
+      "updated_at": "2026-09-07T17:34:41.717881",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_173233_catabase-ui-route-parchment_01a07c7f",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create a flat full-frame aged warm ivory and honey parchment background for a vertical game route map. Fine genuine paper grain, soft warm edges, tiny very low-contrast Greek meander corner flourishes. Center 85 percent is clean unobstructed paper, without any lines, paths, icons, symbols or text. No rolled edges, no folds, no perspective, no desk, no isolated sheet floating on another background. Fill the entire portrait canvas with the paper material.",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+      "created_at": "2026-09-07T17:32:33.393903",
+      "updated_at": "2026-09-07T17:34:42.192343",
+      "task_count": 2
+    },
+    {
+      "folder": "20260907_173234_catabase-ui-movement-glyph-rev_01a07c7f",
+      "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 1 separate icons in a regular 1 columns by 1 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: ONE isolated wingless ancient Greek sandal footprint made of aged bronze, with a short bright turquoise directional ribbon beneath it. Floating icon only. Absolutely no floor, no pavement, no square backing plate, no tile, no environment, no surface, no framed vignette. Large clean silhouette..",
+      "task_type": "image-to-image",
+      "root_task_id": "01a07c7f-ec51-771c-a39b-fbdc3a4b37fe",
+      "created_at": "2026-09-07T17:32:34.054084",
+      "updated_at": "2026-09-07T17:34:42.704580",
+      "task_count": 2
+    }
+  ]
+}

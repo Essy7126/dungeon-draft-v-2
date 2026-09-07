@@ -1,0 +1,16 @@
+{
+  "id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create a flat full-frame aged warm ivory and honey parchment background for a vertical game route map. Fine genuine paper grain, soft warm edges, tiny very low-contrast Greek meander corner flourishes. Center 85 percent is clean unobstructed paper, without any lines, paths, icons, symbols or text. No rolled edges, no folds, no perspective, no desk, no isolated sheet floating on another background. Fill the entire portrait canvas with the paper material.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788795153122,
+  "started_at": 1788795153126,
+  "finished_at": 1788795213242,
+  "expires_at": 1789054413242,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c7f-e99a-72cf-9230-467f165ac331_0.png?Expires=1789054413&Signature=GW6x3BoQ2Zw9GIF8W9B9oK5OiwLkdxzq0gdZLwTGLX1SlUwSH4ghKZb40qMJq1YXJSAEGK7tWVLaOFuqDWFuXp6zQsGtbi4U37ls57I-iqNATOINHljLx2DeEqInLgqL-MwtLarq3XYdRRSkjS79FpIrVm7mekby6IyT86YN5-m20z-WKUHBY4rn4wriuQ34LmmN0dzxElt1tfVQAlBQfsIDAA0qgsFucIUVOB8ILy3rcsAgUkUdwUnQTuswwvGyJqW58KsZJMZtCrQGYlnhbGZPBpfpXBLDR8b2sihW8Qbced9WPF4BpAMP2JCLqeKrIIa0gu3-6q-QSVsT7gDjrw__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

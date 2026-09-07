@@ -1,0 +1,28 @@
+{
+  "task_id": "01a07c6a-8b93-7691-b726-1eca1c087710",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_170912_compare-higgsfield-flooded-lib_01a07c6a",
+  "reference": {
+    "id": "higgsfield_flooded_library",
+    "status": "existing",
+    "style_approval": "user_approved",
+    "job_id": "2bf07a34-7aa1-4c05-9c90-969d0bf3fb14",
+    "title": "Bibliothèque engloutie",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_2bf07a34-7aa1-4c05-9c90-969d0bf3fb14.png",
+    "local_path": "art/source/catabase/painted/references/bibliotheque_engloutie.png",
+    "dimensions": [
+      2752,
+      1536
+    ],
+    "requested_model": "nano_banana_pro",
+    "reported_model": "nano_banana_2",
+    "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+    "sha256": "97e3b95a07cbb36aaf4784da6b65cb0ee4986a1755ec7cec7c460d9907a9bed5"
+  },
+  "payload": {
+    "ai_model": "nano-banana-2",
+    "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+    "aspect_ratio": "16:9"
+  },
+  "endpoint": "/openapi/v1/text-to-image",
+  "status": "SUBMITTED"
+}

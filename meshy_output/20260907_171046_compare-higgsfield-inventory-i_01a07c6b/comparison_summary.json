@@ -1,0 +1,77 @@
+{
+  "starting_balance": {
+    "balance": 1414
+  },
+  "ending_balance": {
+    "balance": 1396
+  },
+  "cases": [
+    {
+      "task_id": "01a07c6b-fbaf-71bd-8f72-c1ea9d42c688",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_171046_compare-higgsfield-inventory-i_01a07c6b",
+      "reference": {
+        "id": "higgsfield_inventory_icons",
+        "status": "existing",
+        "style_approval": "user_approved",
+        "job_id": "e4a45c02-674a-4f7d-b4b2-9ba80ec6448d",
+        "title": "Neuf icônes d'inventaire",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png",
+        "local_path": "art/source/catabase/painted/references/inventory_icons.png",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "requested_model": "nano_banana_pro",
+        "reported_model": "nano_banana_2",
+        "prompt": "Create a polished game art demonstration sheet: exactly nine distinct fantasy dungeon inventory item icons in a perfectly regular 3 by 3 grid, no words or lettering. Each icon fully separated with generous margins, equal scale and centered in its own invisible cell, on a uniform solid midnight navy background #101824, no card frames. Row 1: ruby health potion in round glass bottle, icy blue mana potion in triangular glass bottle, jade poison vial. Row 2: ancient bronze dungeon key with a skull bow, short iron sword with a worn leather grip, folded parchment dungeon map tied with red cord. Row 3: small oak treasure chest bound with brass, luminous violet crystal cluster, silver ring with an emerald. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm brass and teal accents. Three-quarter isometric object views; no environmental scene, no characters, no watermarks. These are illustrative item icon concepts.",
+        "sha256": "70aea95cd54e40165096d2018cf4704f8427bd842534feedeafc6af82d8f2376"
+      },
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "prompt": "Create a polished game art demonstration sheet: exactly nine distinct fantasy dungeon inventory item icons in a perfectly regular 3 by 3 grid, no words or lettering. Each icon fully separated with generous margins, equal scale and centered in its own invisible cell, on a uniform solid midnight navy background #101824, no card frames. Row 1: ruby health potion in round glass bottle, icy blue mana potion in triangular glass bottle, jade poison vial. Row 2: ancient bronze dungeon key with a skull bow, short iron sword with a worn leather grip, folded parchment dungeon map tied with red cord. Row 3: small oak treasure chest bound with brass, luminous violet crystal cluster, silver ring with an emerald. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm brass and teal accents. Three-quarter isometric object views; no environmental scene, no characters, no watermarks. These are illustrative item icon concepts.",
+        "aspect_ratio": "1:1"
+      },
+      "endpoint": "/openapi/v1/text-to-image",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "files": [
+        "image.png"
+      ]
+    },
+    {
+      "task_id": "01a07c6b-fc63-74bf-8f10-fd366629d6f4",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_171046_compare-higgsfield-flooded-lib_01a07c6b",
+      "reference": {
+        "id": "higgsfield_flooded_library",
+        "status": "existing",
+        "style_approval": "user_approved",
+        "job_id": "2bf07a34-7aa1-4c05-9c90-969d0bf3fb14",
+        "title": "Bibliothèque engloutie",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_2bf07a34-7aa1-4c05-9c90-969d0bf3fb14.png",
+        "local_path": "art/source/catabase/painted/references/bibliotheque_engloutie.png",
+        "dimensions": [
+          2752,
+          1536
+        ],
+        "requested_model": "nano_banana_pro",
+        "reported_model": "nano_banana_2",
+        "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+        "sha256": "97e3b95a07cbb36aaf4784da6b65cb0ee4986a1755ec7cec7c460d9907a9bed5"
+      },
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "prompt": "An evocative environment concept for a stylized fantasy dungeon game, a forgotten flooded underground library seen from a high three-quarter isometric game camera. A small raised stone walkway leads from the lower left past broken shelves and amber candles to a monumental circular portal carved into a wall on the right. The portal glows teal, lighting suspended dust and shallow water; ancient bronze mechanisms and hanging roots frame it. Strong spatial readability, large clean shapes, modest stylization, beautiful detailed hand-painted game art. Single cohesive game environment, no UI, no writing, no characters. Blue-black slate stone, turquoise magic, warm honey light. Visually legible navigable floor, contrasting lit focus at the portal, carefully composed 16:9 scene. This is a mood and environment concept illustration, not a technical level map.",
+        "aspect_ratio": "16:9"
+      },
+      "endpoint": "/openapi/v1/text-to-image",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "files": [
+        "image.png"
+      ]
+    }
+  ],
+  "method": "Identical original Higgsfield prompts and matched aspect ratios; no reference-image conditioning. Meshy model explicitly selected: nano-banana-pro. Meshy resolution is not specified by this endpoint."
+}

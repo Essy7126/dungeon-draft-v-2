@@ -1,0 +1,53 @@
+{
+  "id": "buttons",
+  "kind": "sheet",
+  "cols": 2,
+  "rows": 3,
+  "matte": "magenta",
+  "treatment": "buttons",
+  "entries": [
+    {
+      "id": "button_normal",
+      "path": "assets/catabase/painted/ui/button_normal.png",
+      "description": "secondary button, aged bronze thin rim and near-uniform dark petrol center"
+    },
+    {
+      "id": "button_primary",
+      "path": "assets/catabase/painted/ui/button_primary.png",
+      "description": "primary action button, warmer polished gold rim, dark bronze center, small amber corner highlights"
+    },
+    {
+      "id": "button_selected",
+      "path": "assets/catabase/painted/ui/button_selected.png",
+      "description": "selected button, aged bronze rim with restrained turquoise inlay, dark petrol center"
+    },
+    {
+      "id": "button_disabled",
+      "path": "assets/catabase/painted/ui/button_disabled.png",
+      "description": "disabled button, muted worn bronze rim, subdued graphite blue center"
+    },
+    {
+      "id": "tab_normal",
+      "path": "assets/catabase/painted/ui/tab_normal.png",
+      "description": "navigation tab, thin bronze edges and a shallow dark petrol center"
+    },
+    {
+      "id": "tab_selected",
+      "path": "assets/catabase/painted/ui/tab_selected.png",
+      "description": "selected navigation tab, small jade edge accents and a narrow warm golden bottom edge, dark petrol center"
+    }
+  ],
+  "endpoint": "/openapi/v1/image-to-image",
+  "payload": {
+    "ai_model": "nano-banana-pro",
+    "reference_image_urls": [
+      "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+    ],
+    "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate buttons in a regular 2 columns by 3 rows grid. Read order is left to right, then top to bottom. Each cell contains one wide horizontal rectangular UI plate, width 84 percent of the cell and height 40 percent of the cell. Exact front orthographic view, completely straight parallel edges, no perspective, rounded beveled corners, no drop shadows. All plates have identical external dimensions, corner geometry and edge thickness. Their centers are empty dark petrol surfaces suitable for a text label added by the game. Edge decoration must be restrained, keeping the central 75 percent empty and near uniform. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: secondary button, aged bronze thin rim and near-uniform dark petrol center; cell 2: primary action button, warmer polished gold rim, dark bronze center, small amber corner highlights; cell 3: selected button, aged bronze rim with restrained turquoise inlay, dark petrol center; cell 4: disabled button, muted worn bronze rim, subdued graphite blue center; cell 5: navigation tab, thin bronze edges and a shallow dark petrol center; cell 6: selected navigation tab, small jade edge accents and a narrow warm golden bottom edge, dark petrol center.",
+    "aspect_ratio": "1:1"
+  },
+  "estimated_credits": 9,
+  "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172942_catabase-ui-buttons_01a07c7d",
+  "status": "SUBMITTED"
+}
