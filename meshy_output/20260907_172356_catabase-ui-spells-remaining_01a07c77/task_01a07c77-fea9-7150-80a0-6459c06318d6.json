@@ -1,0 +1,16 @@
+{
+  "id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a bronze arrowhead with a compact curling orange flame and glowing embers; cell 2: two chunky icy blue crystal shackles connected by one short frosted chain; cell 3: a strong angular cyan lightning bolt striking a small bronze spearhead; cell 4: a thick bronze shield with a tiny sealed jade oath gem and a single protective arch; cell 5: a bronze oath seal enclosing a luminous ruby flame, compact circular silhouette; cell 6: a powerful circular ivory and turquoise whirlwind around three bronze spearheads pointing tangentially, visibly circular area attack.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788794635816,
+  "started_at": 1788794635821,
+  "finished_at": 1788794737852,
+  "expires_at": 1789053937852,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c77-fea9-7150-80a0-6459c06318d6_0.png?Expires=1789053937&Signature=ADozuhQgiThCjnW9j0RzFq-ffAnLP2wQ09tEg4tsyccwLJ~TD3qLuISEKak2tcZ4RnprDrcmAAgUcTnn6y21AsnlHhDm6P7ORkBbFjp0q0FzAzGqxrgzt-baU8OT5GDyfRVEsX4G~6oFMjaPL-WzQwEm-1FPZv4yUSpHXPw8beSTn-eE3ugmZ5NX~ny3rpTjLLNmv-W6eA0RA3Hh99SCOtdbV0wN8pAVFb~3TwhmEJDtLllnGel9f0BwZwYM94p-YBazcTonYgBvVT40KhNSfsYT1PQ-lymPmg3tWILsSo87yEXGlVYv2k1rhm~hXy7P6Gs9AhYQWg8TmgU8T2LBhw__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

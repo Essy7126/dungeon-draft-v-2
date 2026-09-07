@@ -1,0 +1,71 @@
+{
+  "cases": [
+    {
+      "reference": "higgsfield_flooded_library",
+      "requested_model": "nano-banana-2",
+      "reported_model": "nano-banana-2",
+      "task_id": "01a07c6a-8b93-7691-b726-1eca1c087710",
+      "status": "SUCCEEDED",
+      "credits": 6,
+      "dimensions": [
+        1376,
+        768
+      ],
+      "file_bytes": 1401755,
+      "sha256": "5dcd91e809e087c29a9099eca4efc06959b31e08c7af0734d039155027a530b8",
+      "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_170912_compare-higgsfield-flooded-lib_01a07c6a\\image.png",
+      "generation_ms": 108559
+    },
+    {
+      "reference": "higgsfield_inventory_icons",
+      "requested_model": "nano-banana-2",
+      "reported_model": "nano-banana-2",
+      "task_id": "01a07c6a-8adf-725f-8c86-192588b5e2d6",
+      "status": "SUCCEEDED",
+      "credits": 6,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "file_bytes": 1125503,
+      "sha256": "ba4026eddc9ea8481c8b8a014da394899e45eeae17a6b3d772c171e02f257180",
+      "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_170912_compare-higgsfield-inventory-i_01a07c6a\\image.png",
+      "generation_ms": 133670
+    },
+    {
+      "reference": "higgsfield_flooded_library",
+      "requested_model": "nano-banana-pro",
+      "reported_model": "nano-banana-pro",
+      "task_id": "01a07c6b-fc63-74bf-8f10-fd366629d6f4",
+      "status": "SUCCEEDED",
+      "credits": 9,
+      "dimensions": [
+        1376,
+        768
+      ],
+      "file_bytes": 1523805,
+      "sha256": "f650ca18a81dcfef3987ef882962bf12cbdbca2767a89ea4082591803a3806fc",
+      "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_171046_compare-higgsfield-flooded-lib_01a07c6b\\image.png",
+      "generation_ms": 60755
+    },
+    {
+      "reference": "higgsfield_inventory_icons",
+      "requested_model": "nano-banana-pro",
+      "reported_model": "nano-banana-pro",
+      "task_id": "01a07c6b-fbaf-71bd-8f72-c1ea9d42c688",
+      "status": "SUCCEEDED",
+      "credits": 9,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "file_bytes": 1039181,
+      "sha256": "fecf2ff31e95b6595cf096ee7fb9c29591be080ebeed8917c9baa57169e2c9a9",
+      "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_171046_compare-higgsfield-inventory-i_01a07c6b\\image.png",
+      "generation_ms": 31340
+    }
+  ],
+  "credits_total": 30,
+  "initial_balance": 1426,
+  "final_balance": 1396
+}

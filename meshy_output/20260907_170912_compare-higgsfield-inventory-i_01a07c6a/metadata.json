@@ -1,0 +1,25 @@
+{
+  "project_name": "Create a polished game art demonstration sheet: exactly nine distinct fantasy dungeon inventory item icons in a perfectly regular 3 by 3 grid, no words or lettering. Each icon fully separated with generous margins, equal scale and centered in its own invisible cell, on a uniform solid midnight navy background #101824, no card frames. Row 1: ruby health potion in round glass bottle, icy blue mana potion in triangular glass bottle, jade poison vial. Row 2: ancient bronze dungeon key with a skull bow, short iron sword with a worn leather grip, folded parchment dungeon map tied with red cord. Row 3: small oak treasure chest bound with brass, luminous violet crystal cluster, silver ring with an emerald. Cohesive handcrafted stylized fantasy RPG art, charming chunky silhouettes, hand-painted 3D appearance, readable at small sizes, controlled highlights upper left, exquisite material clarity, warm brass and teal accents. Three-quarter isometric object views; no environmental scene, no characters, no watermarks. These are illustrative item icon concepts.",
+  "folder": "20260907_170912_compare-higgsfield-inventory-i_01a07c6a",
+  "root_task_id": "01a07c6a-8adf-725f-8c86-192588b5e2d6",
+  "created_at": "2026-09-07T17:09:12.379658",
+  "updated_at": "2026-09-07T17:11:50.393612",
+  "tasks": [
+    {
+      "task_id": "01a07c6a-8adf-725f-8c86-192588b5e2d6",
+      "task_type": "text-to-image",
+      "stage": "submitted",
+      "files": [],
+      "created_at": "2026-09-07T17:09:12.379658"
+    },
+    {
+      "task_id": "01a07c6a-8adf-725f-8c86-192588b5e2d6",
+      "task_type": "text-to-image",
+      "stage": "complete",
+      "files": [
+        "image.png"
+      ],
+      "created_at": "2026-09-07T17:11:50.393612"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "project_name": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame very dark petrol ancient Greek underworld wall fresco, designed behind a skill tree. Extremely subtle low-contrast relief of roots, laurel branches and a distant broken Greek portico, mostly around the outer 15 percent. Center is calm dark slate with barely visible stone texture. Muted bronze patina, no characters, no objects in the center, no bright lights, no UI, no drawn skill nodes or connectors. Decorative background only, broad quiet surfaces, edge-to-edge landscape.",
+  "folder": "20260907_173232_catabase-ui-tree-fresco_01a07c7f",
+  "root_task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+  "created_at": "2026-09-07T17:32:32.701499",
+  "updated_at": "2026-09-07T17:34:41.717881",
+  "tasks": [
+    {
+      "task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+      "task_type": "image-to-image",
+      "stage": "submitted",
+      "files": [],
+      "created_at": "2026-09-07T17:32:32.701499"
+    },
+    {
+      "task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-07T17:34:41.717881"
+    }
+  ]
+}

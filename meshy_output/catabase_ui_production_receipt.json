@@ -1,0 +1,794 @@
+{
+  "phase": "catabase_ui_v1",
+  "jobs": [
+    {
+      "id": "spells_remaining",
+      "kind": "sheet",
+      "cols": 3,
+      "rows": 2,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "braise",
+          "path": "assets/catabase/painted/icons/braise.png",
+          "description": "a bronze arrowhead with a compact curling orange flame and glowing embers"
+        },
+        {
+          "id": "givre",
+          "path": "assets/catabase/painted/icons/givre.png",
+          "description": "two chunky icy blue crystal shackles connected by one short frosted chain"
+        },
+        {
+          "id": "foudre",
+          "path": "assets/catabase/painted/icons/foudre.png",
+          "description": "a strong angular cyan lightning bolt striking a small bronze spearhead"
+        },
+        {
+          "id": "serment_rempart",
+          "path": "assets/catabase/painted/icons/serment_rempart.png",
+          "description": "a thick bronze shield with a tiny sealed jade oath gem and a single protective arch"
+        },
+        {
+          "id": "serment_brasier",
+          "path": "assets/catabase/painted/icons/serment_brasier.png",
+          "description": "a bronze oath seal enclosing a luminous ruby flame, compact circular silhouette"
+        },
+        {
+          "id": "exp_tempest",
+          "path": "assets/catabase/painted/icons/exp_tempest.png",
+          "description": "a powerful circular ivory and turquoise whirlwind around three bronze spearheads pointing tangentially, visibly circular area attack"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a bronze arrowhead with a compact curling orange flame and glowing embers; cell 2: two chunky icy blue crystal shackles connected by one short frosted chain; cell 3: a strong angular cyan lightning bolt striking a small bronze spearhead; cell 4: a thick bronze shield with a tiny sealed jade oath gem and a single protective arch; cell 5: a bronze oath seal enclosing a luminous ruby flame, compact circular silhouette; cell 6: a powerful circular ivory and turquoise whirlwind around three bronze spearheads pointing tangentially, visibly circular area attack.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c77-fea9-7150-80a0-6459c06318d6",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172356_catabase-ui-spells-remaining_01a07c77",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172356_catabase-ui-spells-remaining_01a07c77\\source.png"
+    },
+    {
+      "id": "equipment_weapons",
+      "kind": "sheet",
+      "cols": 3,
+      "rows": 2,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "catabase_levier",
+          "path": "assets/catabase/painted/equipment/catabase_levier.png",
+          "description": "a hefty Myrmidon bronze spear with hooked levering tip and leather grip"
+        },
+        {
+          "id": "catabase_lame_sang",
+          "path": "assets/catabase/painted/equipment/catabase_lame_sang.png",
+          "description": "a short sacrificial bronze dagger with ruby edge fissure and dark red wrapped grip"
+        },
+        {
+          "id": "catabase_javeline",
+          "path": "assets/catabase/painted/equipment/catabase_javeline.png",
+          "description": "an elegant long bronze throwing javelin with ivory fletching and a focused teal sight gem"
+        },
+        {
+          "id": "catabase_xiphos_danse",
+          "path": "assets/catabase/painted/equipment/catabase_xiphos_danse.png",
+          "description": "a graceful short Greek xiphos sword with leaf-shaped blade and teal cloth grip"
+        },
+        {
+          "id": "catabase_masse_airain",
+          "path": "assets/catabase/painted/equipment/catabase_masse_airain.png",
+          "description": "a heavy square-headed ancient bronze war mace with thick geometric flanges"
+        },
+        {
+          "id": "catabase_fer_braise",
+          "path": "assets/catabase/painted/equipment/catabase_fer_braise.png",
+          "description": "a forged dark bronze spearhead with orange-hot rune-free furnace core"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a hefty Myrmidon bronze spear with hooked levering tip and leather grip; cell 2: a short sacrificial bronze dagger with ruby edge fissure and dark red wrapped grip; cell 3: an elegant long bronze throwing javelin with ivory fletching and a focused teal sight gem; cell 4: a graceful short Greek xiphos sword with leaf-shaped blade and teal cloth grip; cell 5: a heavy square-headed ancient bronze war mace with thick geometric flanges; cell 6: a forged dark bronze spearhead with orange-hot rune-free furnace core.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c78-0746-70cb-b16d-11b332d753a5",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172356_catabase-ui-equipment-weapons_01a07c78",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172356_catabase-ui-equipment-weapons_01a07c78\\source.png"
+    },
+    {
+      "id": "equipment_armor",
+      "kind": "sheet",
+      "cols": 3,
+      "rows": 2,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "catabase_cuirasse",
+          "path": "assets/catabase/painted/equipment/catabase_cuirasse.png",
+          "description": "a handsome ancient Greek bronze muscle cuirass with teal shoulder insets"
+        },
+        {
+          "id": "catabase_lin_survivant",
+          "path": "assets/catabase/painted/equipment/catabase_lin_survivant.png",
+          "description": "a carefully folded ivory linen tunic with worn leather straps and restrained jade stitching"
+        },
+        {
+          "id": "catabase_sandales",
+          "path": "assets/catabase/painted/equipment/catabase_sandales.png",
+          "description": "a pair of wingless ancient Greek brown leather sandals with small bronze buckles"
+        },
+        {
+          "id": "catabase_sceau_chasse",
+          "path": "assets/catabase/painted/equipment/catabase_sceau_chasse.png",
+          "description": "a gold and bronze hunter seal with a carved eye and deep ruby pupil"
+        },
+        {
+          "id": "catabase_prisme",
+          "path": "assets/catabase/painted/equipment/catabase_prisme.png",
+          "description": "a triangular turquoise and icy blue crystal prism seated in an elegant bronze cradle"
+        },
+        {
+          "id": "catabase_agrafe",
+          "path": "assets/catabase/painted/equipment/catabase_agrafe.png",
+          "description": "a circular aged bronze oath brooch clasp with interlocking arms and a small jade shield gem"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a handsome ancient Greek bronze muscle cuirass with teal shoulder insets; cell 2: a carefully folded ivory linen tunic with worn leather straps and restrained jade stitching; cell 3: a pair of wingless ancient Greek brown leather sandals with small bronze buckles; cell 4: a gold and bronze hunter seal with a carved eye and deep ruby pupil; cell 5: a triangular turquoise and icy blue crystal prism seated in an elegant bronze cradle; cell 6: a circular aged bronze oath brooch clasp with interlocking arms and a small jade shield gem.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c78-0a28-7706-8f2b-dbc38b01c9a1",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172357_catabase-ui-equipment-armor_01a07c78",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172357_catabase-ui-equipment-armor_01a07c78\\source.png"
+    },
+    {
+      "id": "stats",
+      "kind": "sheet",
+      "cols": 3,
+      "rows": 3,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "force",
+          "path": "assets/catabase/painted/tree/stats/force.png",
+          "description": "a compact muscular bronze gauntlet clenched into a fist"
+        },
+        {
+          "id": "attack_power",
+          "path": "assets/catabase/painted/tree/stats/attack_power.png",
+          "description": "two crossing bronze spearheads with one ivory impact star"
+        },
+        {
+          "id": "max_hp",
+          "path": "assets/catabase/painted/tree/stats/max_hp.png",
+          "description": "a plump polished ruby heart held in a restrained bronze clasp"
+        },
+        {
+          "id": "initiative",
+          "path": "assets/catabase/painted/tree/stats/initiative.png",
+          "description": "a small bronze hourglass with bright turquoise sand and one winglike speed sweep"
+        },
+        {
+          "id": "max_mp",
+          "path": "assets/catabase/painted/tree/stats/max_mp.png",
+          "description": "one ancient Greek sandal footprint with a strong turquoise forward arrow-shaped trail"
+        },
+        {
+          "id": "esquive",
+          "path": "assets/catabase/painted/tree/stats/esquive.png",
+          "description": "a small silver curved arrow elegantly avoiding a single bronze arrowhead"
+        },
+        {
+          "id": "armure",
+          "path": "assets/catabase/painted/tree/stats/armure.png",
+          "description": "a solid broad bronze breastplate with thick beveled surfaces"
+        },
+        {
+          "id": "resist_magique",
+          "path": "assets/catabase/painted/tree/stats/resist_magique.png",
+          "description": "a violet crystal protected by a simple bronze circular ward"
+        },
+        {
+          "id": "heal_budget",
+          "path": "assets/catabase/painted/tree/stats/heal_budget.png",
+          "description": "a small golden laurel cup containing three luminous jade drops"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 9 separate icons in a regular 3 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a compact muscular bronze gauntlet clenched into a fist; cell 2: two crossing bronze spearheads with one ivory impact star; cell 3: a plump polished ruby heart held in a restrained bronze clasp; cell 4: a small bronze hourglass with bright turquoise sand and one winglike speed sweep; cell 5: one ancient Greek sandal footprint with a strong turquoise forward arrow-shaped trail; cell 6: a small silver curved arrow elegantly avoiding a single bronze arrowhead; cell 7: a solid broad bronze breastplate with thick beveled surfaces; cell 8: a violet crystal protected by a simple bronze circular ward; cell 9: a small golden laurel cup containing three luminous jade drops.",
+        "aspect_ratio": "1:1"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c78-0cd8-71b9-94f9-593713e29720",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172358_catabase-ui-stats_01a07c78",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172358_catabase-ui-stats_01a07c78\\source.png"
+    },
+    {
+      "id": "emblems",
+      "kind": "sheet",
+      "cols": 3,
+      "rows": 2,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "colere",
+          "path": "assets/catabase/painted/tree/emblems/colere.png",
+          "description": "a bold bronze round emblem showing a roaring lion face and a short ruby flame crest"
+        },
+        {
+          "id": "chiron",
+          "path": "assets/catabase/painted/tree/emblems/chiron.png",
+          "description": "a refined bronze laurel medallion with a curved bow and turquoise arrow"
+        },
+        {
+          "id": "eaque",
+          "path": "assets/catabase/painted/tree/emblems/eaque.png",
+          "description": "a heavy bronze medallion with a strong classical shield and ivory central boss"
+        },
+        {
+          "id": "elements",
+          "path": "assets/catabase/painted/tree/emblems/elements.png",
+          "description": "a bronze ring embracing three clearly separated orange flame, blue ice shard and cyan lightning symbols"
+        },
+        {
+          "id": "serment",
+          "path": "assets/catabase/painted/tree/emblems/serment.png",
+          "description": "a bronze ring embracing two clasped armored hands above a small jade oath gem"
+        },
+        {
+          "id": "achilles",
+          "path": "assets/catabase/painted/tree/emblems/achilles.png",
+          "description": "an ancient Greek heroic profile helmet medallion in warm bronze with an ivory crest"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a bold bronze round emblem showing a roaring lion face and a short ruby flame crest; cell 2: a refined bronze laurel medallion with a curved bow and turquoise arrow; cell 3: a heavy bronze medallion with a strong classical shield and ivory central boss; cell 4: a bronze ring embracing three clearly separated orange flame, blue ice shard and cyan lightning symbols; cell 5: a bronze ring embracing two clasped armored hands above a small jade oath gem; cell 6: an ancient Greek heroic profile helmet medallion in warm bronze with an ivory crest.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7a-8d39-70b9-95ce-12e4297845c9",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172642_catabase-ui-emblems_01a07c7a",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172642_catabase-ui-emblems_01a07c7a\\source.png"
+    },
+    {
+      "id": "resources",
+      "kind": "sheet",
+      "cols": 3,
+      "rows": 2,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "oboles",
+          "path": "assets/catabase/painted/ui/resources/oboles.png",
+          "description": "three chunky ancient gold obol coins with abstract relief, no digits or letters"
+        },
+        {
+          "id": "destiny",
+          "path": "assets/catabase/painted/ui/resources/destiny.png",
+          "description": "a luminous turquoise destiny crystal inside a small open gold laurel"
+        },
+        {
+          "id": "health",
+          "path": "assets/catabase/painted/ui/resources/health.png",
+          "description": "one luminous ruby heart with two restrained golden wings of light"
+        },
+        {
+          "id": "level",
+          "path": "assets/catabase/painted/ui/resources/level.png",
+          "description": "a golden starburst medallion framed by a compact laurel crown"
+        },
+        {
+          "id": "victory",
+          "path": "assets/catabase/painted/ui/resources/victory.png",
+          "description": "a triumphant golden laurel wreath surrounding a raised ivory spearhead"
+        },
+        {
+          "id": "defeat",
+          "path": "assets/catabase/painted/ui/resources/defeat.png",
+          "description": "a cracked bronze helmet with a dim ruby fissure resting on a single dark stone"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate icons in a regular 3 columns by 2 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: three chunky ancient gold obol coins with abstract relief, no digits or letters; cell 2: a luminous turquoise destiny crystal inside a small open gold laurel; cell 3: one luminous ruby heart with two restrained golden wings of light; cell 4: a golden starburst medallion framed by a compact laurel crown; cell 5: a triumphant golden laurel wreath surrounding a raised ivory spearhead; cell 6: a cracked bronze helmet with a dim ruby fissure resting on a single dark stone.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7a-9028-7256-ac82-12a18b3f1990",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172642_catabase-ui-resources_01a07c7a",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172642_catabase-ui-resources_01a07c7a\\source.png"
+    },
+    {
+      "id": "route",
+      "kind": "sheet",
+      "cols": 4,
+      "rows": 3,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "normal",
+          "path": "assets/catabase/painted/route/normal.png",
+          "description": "two crossed short bronze swords in a compact round icon"
+        },
+        {
+          "id": "elite",
+          "path": "assets/catabase/painted/route/elite.png",
+          "description": "a bronze hornless warrior helm above two crossed spears and one ruby star"
+        },
+        {
+          "id": "boss",
+          "path": "assets/catabase/painted/route/boss.png",
+          "description": "a large imposing dark bronze crowned guardian helm with cyan eye slits"
+        },
+        {
+          "id": "hub",
+          "path": "assets/catabase/painted/route/hub.png",
+          "description": "a low circular bronze brazier with warm amber campfire"
+        },
+        {
+          "id": "merchant",
+          "path": "assets/catabase/painted/route/merchant.png",
+          "description": "a gold balance scale and one small leather coin pouch"
+        },
+        {
+          "id": "sanctuary",
+          "path": "assets/catabase/painted/route/sanctuary.png",
+          "description": "a small ancient Greek stone altar holding a jade offering bowl"
+        },
+        {
+          "id": "lore",
+          "path": "assets/catabase/painted/route/lore.png",
+          "description": "an open ivory book and a small turquoise crystal bookmark"
+        },
+        {
+          "id": "event",
+          "path": "assets/catabase/painted/route/event.png",
+          "description": "a bronze theatrical mask with a tiny amber spark"
+        },
+        {
+          "id": "cache",
+          "path": "assets/catabase/painted/route/cache.png",
+          "description": "a small closed honey wood treasure chest with bronze fittings"
+        },
+        {
+          "id": "unknown",
+          "path": "assets/catabase/painted/route/unknown.png",
+          "description": "a sealed dark bronze medallion with an abstract swirling mist, no question mark or letters"
+        },
+        {
+          "id": "hidden",
+          "path": "assets/catabase/painted/route/hidden.png",
+          "description": "a small partly open stone doorway behind a curling teal mist veil"
+        },
+        {
+          "id": "current",
+          "path": "assets/catabase/painted/route/current.png",
+          "description": "a bright ivory downward-pointing spearhead surrounded by a compact golden laurel"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 12 separate icons in a regular 4 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: two crossed short bronze swords in a compact round icon; cell 2: a bronze hornless warrior helm above two crossed spears and one ruby star; cell 3: a large imposing dark bronze crowned guardian helm with cyan eye slits; cell 4: a low circular bronze brazier with warm amber campfire; cell 5: a gold balance scale and one small leather coin pouch; cell 6: a small ancient Greek stone altar holding a jade offering bowl; cell 7: an open ivory book and a small turquoise crystal bookmark; cell 8: a bronze theatrical mask with a tiny amber spark; cell 9: a small closed honey wood treasure chest with bronze fittings; cell 10: a sealed dark bronze medallion with an abstract swirling mist, no question mark or letters; cell 11: a small partly open stone doorway behind a curling teal mist veil; cell 12: a bright ivory downward-pointing spearhead surrounded by a compact golden laurel.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7a-9314-73e0-802a-7db7f8f913ff",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172643_catabase-ui-route_01a07c7a",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172643_catabase-ui-route_01a07c7a\\source.png"
+    },
+    {
+      "id": "navigation",
+      "kind": "sheet",
+      "cols": 4,
+      "rows": 3,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "map",
+          "path": "assets/catabase/painted/ui/nav/map.png",
+          "description": "a folded ivory parchment route map with a simple winding turquoise path"
+        },
+        {
+          "id": "tree",
+          "path": "assets/catabase/painted/ui/nav/tree.png",
+          "description": "a stylized golden branching laurel with three large turquoise buds"
+        },
+        {
+          "id": "equipment",
+          "path": "assets/catabase/painted/ui/nav/equipment.png",
+          "description": "a compact ancient Greek bronze helmet and short sword"
+        },
+        {
+          "id": "halt",
+          "path": "assets/catabase/painted/ui/nav/halt.png",
+          "description": "a small bronze brazier with a warm sheltered amber flame"
+        },
+        {
+          "id": "journal",
+          "path": "assets/catabase/painted/ui/nav/journal.png",
+          "description": "a handsome closed leather journal with bronze clasp and ivory page edges"
+        },
+        {
+          "id": "home",
+          "path": "assets/catabase/painted/ui/nav/home.png",
+          "description": "a simple Greek temple pediment on two short bronze columns"
+        },
+        {
+          "id": "close",
+          "path": "assets/catabase/painted/ui/nav/close.png",
+          "description": "a clear simple bronze X cross made of two short beveled bars"
+        },
+        {
+          "id": "settings",
+          "path": "assets/catabase/painted/ui/nav/settings.png",
+          "description": "a chunky simple bronze cog with six teeth and turquoise hub"
+        },
+        {
+          "id": "save",
+          "path": "assets/catabase/painted/ui/nav/save.png",
+          "description": "a bronze seal stamp beside one folded ivory scroll"
+        },
+        {
+          "id": "continue",
+          "path": "assets/catabase/painted/ui/nav/continue.png",
+          "description": "a clear thick right-pointing bronze chevron with warm ivory edge"
+        },
+        {
+          "id": "lock",
+          "path": "assets/catabase/painted/ui/nav/lock.png",
+          "description": "a small closed antique bronze padlock with a round keyhole"
+        },
+        {
+          "id": "check",
+          "path": "assets/catabase/painted/ui/nav/check.png",
+          "description": "a clear thick jade check mark with restrained bronze edging"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 12 separate icons in a regular 4 columns by 3 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: a folded ivory parchment route map with a simple winding turquoise path; cell 2: a stylized golden branching laurel with three large turquoise buds; cell 3: a compact ancient Greek bronze helmet and short sword; cell 4: a small bronze brazier with a warm sheltered amber flame; cell 5: a handsome closed leather journal with bronze clasp and ivory page edges; cell 6: a simple Greek temple pediment on two short bronze columns; cell 7: a clear simple bronze X cross made of two short beveled bars; cell 8: a chunky simple bronze cog with six teeth and turquoise hub; cell 9: a bronze seal stamp beside one folded ivory scroll; cell 10: a clear thick right-pointing bronze chevron with warm ivory edge; cell 11: a small closed antique bronze padlock with a round keyhole; cell 12: a clear thick jade check mark with restrained bronze edging.",
+        "aspect_ratio": "4:3"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7a-960a-7207-9505-1795beda7b08",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172644_catabase-ui-navigation_01a07c7a",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172644_catabase-ui-navigation_01a07c7a\\source.png"
+    },
+    {
+      "id": "buttons",
+      "kind": "sheet",
+      "cols": 2,
+      "rows": 3,
+      "matte": "magenta",
+      "treatment": "buttons",
+      "entries": [
+        {
+          "id": "button_normal",
+          "path": "assets/catabase/painted/ui/button_normal.png",
+          "description": "secondary button, aged bronze thin rim and near-uniform dark petrol center"
+        },
+        {
+          "id": "button_primary",
+          "path": "assets/catabase/painted/ui/button_primary.png",
+          "description": "primary action button, warmer polished gold rim, dark bronze center, small amber corner highlights"
+        },
+        {
+          "id": "button_selected",
+          "path": "assets/catabase/painted/ui/button_selected.png",
+          "description": "selected button, aged bronze rim with restrained turquoise inlay, dark petrol center"
+        },
+        {
+          "id": "button_disabled",
+          "path": "assets/catabase/painted/ui/button_disabled.png",
+          "description": "disabled button, muted worn bronze rim, subdued graphite blue center"
+        },
+        {
+          "id": "tab_normal",
+          "path": "assets/catabase/painted/ui/tab_normal.png",
+          "description": "navigation tab, thin bronze edges and a shallow dark petrol center"
+        },
+        {
+          "id": "tab_selected",
+          "path": "assets/catabase/painted/ui/tab_selected.png",
+          "description": "selected navigation tab, small jade edge accents and a narrow warm golden bottom edge, dark petrol center"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 6 separate buttons in a regular 2 columns by 3 rows grid. Read order is left to right, then top to bottom. Each cell contains one wide horizontal rectangular UI plate, width 84 percent of the cell and height 40 percent of the cell. Exact front orthographic view, completely straight parallel edges, no perspective, rounded beveled corners, no drop shadows. All plates have identical external dimensions, corner geometry and edge thickness. Their centers are empty dark petrol surfaces suitable for a text label added by the game. Edge decoration must be restrained, keeping the central 75 percent empty and near uniform. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: secondary button, aged bronze thin rim and near-uniform dark petrol center; cell 2: primary action button, warmer polished gold rim, dark bronze center, small amber corner highlights; cell 3: selected button, aged bronze rim with restrained turquoise inlay, dark petrol center; cell 4: disabled button, muted worn bronze rim, subdued graphite blue center; cell 5: navigation tab, thin bronze edges and a shallow dark petrol center; cell 6: selected navigation tab, small jade edge accents and a narrow warm golden bottom edge, dark petrol center.",
+        "aspect_ratio": "1:1"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7d-4d74-7685-ab7c-83d1ed132c81",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172942_catabase-ui-buttons_01a07c7d",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172942_catabase-ui-buttons_01a07c7d\\source.png"
+    },
+    {
+      "id": "panels",
+      "kind": "sheet",
+      "cols": 2,
+      "rows": 2,
+      "matte": "magenta",
+      "treatment": "panels",
+      "entries": [
+        {
+          "id": "panel",
+          "path": "assets/catabase/painted/ui/panel.png",
+          "description": "main window panel, dark petrol stone center, restrained aged bronze rectangular border and small carved Greek corner details"
+        },
+        {
+          "id": "card",
+          "path": "assets/catabase/painted/ui/card.png",
+          "description": "compact content card, thin aged brass rectangular rim, clean dark blue-black stone center"
+        },
+        {
+          "id": "tooltip",
+          "path": "assets/catabase/painted/ui/tooltip.png",
+          "description": "quiet tooltip panel, very thin warm bronze rim with clipped corners, near-black petrol center"
+        },
+        {
+          "id": "banner",
+          "path": "assets/catabase/painted/ui/banner.png",
+          "description": "title banner panel, refined aged bronze top and bottom rails, tiny laurel corner motifs, empty dark petrol center"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 4 separate panels in a regular 2 columns by 2 rows grid. Read order is left to right, then top to bottom. Each cell contains one front-facing square UI panel, occupying 82 percent of the cell width and height. Exact orthographic front view, straight parallel edges, no perspective, restrained beveled bronze corners. The central 80 percent is a near-uniform dark petrol blank surface with no objects, ornaments or text. Make the edges straight and uninterrupted at their midpoints for nine-slice stretching. No ornament protrudes outside its own rectangle. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: main window panel, dark petrol stone center, restrained aged bronze rectangular border and small carved Greek corner details; cell 2: compact content card, thin aged brass rectangular rim, clean dark blue-black stone center; cell 3: quiet tooltip panel, very thin warm bronze rim with clipped corners, near-black petrol center; cell 4: title banner panel, refined aged bronze top and bottom rails, tiny laurel corner motifs, empty dark petrol center.",
+        "aspect_ratio": "1:1"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172942_catabase-ui-panels_01a07c7d",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172942_catabase-ui-panels_01a07c7d\\source.png"
+    },
+    {
+      "id": "frames",
+      "kind": "sheet",
+      "cols": 2,
+      "rows": 2,
+      "matte": "magenta",
+      "treatment": "frames",
+      "entries": [
+        {
+          "id": "slot_normal",
+          "path": "assets/catabase/painted/ui/slot_normal.png",
+          "description": "square inventory slot frame, thin warm bronze bevel and dark petrol center"
+        },
+        {
+          "id": "slot_selected",
+          "path": "assets/catabase/painted/ui/slot_selected.png",
+          "description": "same square inventory slot frame with small turquoise active edge glints, dark petrol center"
+        },
+        {
+          "id": "slot_locked",
+          "path": "assets/catabase/painted/ui/slot_locked.png",
+          "description": "same square inventory slot frame in desaturated aged bronze, dark graphite center, no lock object"
+        },
+        {
+          "id": "portrait_frame",
+          "path": "assets/catabase/painted/ui/portrait_frame.png",
+          "description": "square heroic portrait frame with handsome bronze corner laurel ornaments and dark petrol center"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 4 separate frames in a regular 2 columns by 2 rows grid. Read order is left to right, then top to bottom. Each cell contains one front-facing square UI panel, occupying 82 percent of the cell width and height. Exact orthographic front view, straight parallel edges, no perspective, restrained beveled bronze corners. The central 80 percent is a near-uniform dark petrol blank surface with no objects, ornaments or text. Make the edges straight and uninterrupted at their midpoints for nine-slice stretching. No ornament protrudes outside its own rectangle. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: square inventory slot frame, thin warm bronze bevel and dark petrol center; cell 2: same square inventory slot frame with small turquoise active edge glints, dark petrol center; cell 3: same square inventory slot frame in desaturated aged bronze, dark graphite center, no lock object; cell 4: square heroic portrait frame with handsome bronze corner laurel ornaments and dark petrol center.",
+        "aspect_ratio": "1:1"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7d-5278-7371-9219-59f66014c089",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172943_catabase-ui-frames_01a07c7d",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172943_catabase-ui-frames_01a07c7d\\source.png"
+    },
+    {
+      "id": "background",
+      "kind": "background",
+      "entries": [
+        {
+          "id": "background",
+          "path": "assets/catabase/painted/ui/background.png"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_2bf07a34-7aa1-4c05-9c90-969d0bf3fb14.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame subtle game-menu background material. Very dark petrol blue slate stone, broad smooth low-contrast areas, extremely restrained mottling. Sparse ancient Greek bronze engraving and olive traces only at outer corners. Center 85 percent must remain quiet and nearly uniform for readable interface panels layered above. No scene, no objects, no glowing focal points, no border, no perspective, no vignette to white, no text. Edge-to-edge dark material.",
+        "aspect_ratio": "16:9"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7d-556e-7488-b267-00e6995e9e61",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172946_catabase-ui-background_01a07c7d",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_172946_catabase-ui-background_01a07c7d\\source.png"
+    },
+    {
+      "id": "tree_fresco",
+      "kind": "background",
+      "entries": [
+        {
+          "id": "tree_fresco",
+          "path": "assets/catabase/painted/ui/tree_fresco.png"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_2bf07a34-7aa1-4c05-9c90-969d0bf3fb14.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame very dark petrol ancient Greek underworld wall fresco, designed behind a skill tree. Extremely subtle low-contrast relief of roots, laurel branches and a distant broken Greek portico, mostly around the outer 15 percent. Center is calm dark slate with barely visible stone texture. Muted bronze patina, no characters, no objects in the center, no bright lights, no UI, no drawn skill nodes or connectors. Decorative background only, broad quiet surfaces, edge-to-edge landscape.",
+        "aspect_ratio": "16:9"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173232_catabase-ui-tree-fresco_01a07c7f",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173232_catabase-ui-tree-fresco_01a07c7f\\source.png"
+    },
+    {
+      "id": "route_parchment",
+      "kind": "background",
+      "entries": [
+        {
+          "id": "route_parchment",
+          "path": "assets/catabase/painted/ui/route_parchment.png"
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create a flat full-frame aged warm ivory and honey parchment background for a vertical game route map. Fine genuine paper grain, soft warm edges, tiny very low-contrast Greek meander corner flourishes. Center 85 percent is clean unobstructed paper, without any lines, paths, icons, symbols or text. No rolled edges, no folds, no perspective, no desk, no isolated sheet floating on another background. Fill the entire portrait canvas with the paper material.",
+        "aspect_ratio": "3:4"
+      },
+      "estimated_credits": 9,
+      "task_id": "01a07c7f-e99a-72cf-9230-467f165ac331",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173233_catabase-ui-route-parchment_01a07c7f",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173233_catabase-ui-route-parchment_01a07c7f\\source.png"
+    },
+    {
+      "id": "movement_glyph_revision",
+      "kind": "sheet",
+      "cols": 1,
+      "rows": 1,
+      "matte": "navy",
+      "treatment": "icons",
+      "entries": [
+        {
+          "id": "max_mp",
+          "path": "assets/catabase/painted/tree/stats/max_mp.png",
+          "description": "ONE isolated wingless ancient Greek sandal footprint made of aged bronze, with a short bright turquoise directional ribbon beneath it. Floating icon only. Absolutely no floor, no pavement, no square backing plate, no tile, no environment, no surface, no framed vignette. Large clean silhouette."
+        }
+      ],
+      "endpoint": "/openapi/v1/image-to-image",
+      "payload": {
+        "ai_model": "nano-banana-pro",
+        "reference_image_urls": [
+          "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_e4a45c02-674a-4f7d-b4b2-9ba80ec6448d.png"
+        ],
+        "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 1 separate icons in a regular 1 columns by 1 rows grid. Read order is left to right, then top to bottom. Each object fills about 68 percent of its cell, centered, equally scaled, generous empty margins, no overlap between cells. Three-quarter object view, front-readable glyphs where appropriate. Every pixel of the empty background must be uniform midnight blue #141D2E. No paper, no scene, no background texture or cast shadows beyond each object. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: ONE isolated wingless ancient Greek sandal footprint made of aged bronze, with a short bright turquoise directional ribbon beneath it. Floating icon only. Absolutely no floor, no pavement, no square backing plate, no tile, no environment, no surface, no framed vignette. Large clean silhouette..",
+        "aspect_ratio": "1:1"
+      },
+      "estimated_credits": 9,
+      "revision_of": "stats:max_mp",
+      "revision_reason": "Initial glyph included a stone floor tile; replace with an isolated readable movement symbol.",
+      "task_id": "01a07c7f-ec51-771c-a39b-fbdc3a4b37fe",
+      "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173234_catabase-ui-movement-glyph-rev_01a07c7f",
+      "status": "SUCCEEDED",
+      "consumed_credits": 9,
+      "reported_model": "nano-banana-pro",
+      "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173234_catabase-ui-movement-glyph-rev_01a07c7f\\source.png"
+    }
+  ],
+  "initial_balance": {
+    "balance": 1396
+  },
+  "latest_balance": {
+    "balance": 1261
+  },
+  "consumed_credits": 135
+}

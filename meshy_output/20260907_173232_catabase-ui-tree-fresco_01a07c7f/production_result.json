@@ -1,0 +1,26 @@
+{
+  "id": "tree_fresco",
+  "kind": "background",
+  "entries": [
+    {
+      "id": "tree_fresco",
+      "path": "assets/catabase/painted/ui/tree_fresco.png"
+    }
+  ],
+  "endpoint": "/openapi/v1/image-to-image",
+  "payload": {
+    "ai_model": "nano-banana-pro",
+    "reference_image_urls": [
+      "https://d8j0ntlcm91z4.cloudfront.net/user_3Ixm0qCahpQeob0xcZCb9tdKY43/hf_20260907_113139_2bf07a34-7aa1-4c05-9c90-969d0bf3fb14.png"
+    ],
+    "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame very dark petrol ancient Greek underworld wall fresco, designed behind a skill tree. Extremely subtle low-contrast relief of roots, laurel branches and a distant broken Greek portico, mostly around the outer 15 percent. Center is calm dark slate with barely visible stone texture. Muted bronze patina, no characters, no objects in the center, no bright lights, no UI, no drawn skill nodes or connectors. Decorative background only, broad quiet surfaces, edge-to-edge landscape.",
+    "aspect_ratio": "16:9"
+  },
+  "estimated_credits": 9,
+  "task_id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173232_catabase-ui-tree-fresco_01a07c7f",
+  "status": "SUCCEEDED",
+  "consumed_credits": 9,
+  "reported_model": "nano-banana-pro",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260907_173232_catabase-ui-tree-fresco_01a07c7f\\source.png"
+}

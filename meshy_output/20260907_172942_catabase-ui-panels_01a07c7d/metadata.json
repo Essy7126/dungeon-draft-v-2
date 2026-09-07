@@ -1,0 +1,25 @@
+{
+  "project_name": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Create one production atlas of EXACTLY 4 separate panels in a regular 2 columns by 2 rows grid. Read order is left to right, then top to bottom. Each cell contains one front-facing square UI panel, occupying 82 percent of the cell width and height. Exact orthographic front view, straight parallel edges, no perspective, restrained beveled bronze corners. The central 80 percent is a near-uniform dark petrol blank surface with no objects, ornaments or text. Make the edges straight and uninterrupted at their midpoints for nine-slice stretching. No ornament protrudes outside its own rectangle. Every pixel outside the isolated assets must be pure flat vivid magenta #FF00FF, as a chroma matte. No magenta anywhere inside an asset. No visible grid lines or frames around atlas cells. DO NOT repeat the reference objects; paint the requested new subjects. Exact contents: cell 1: main window panel, dark petrol stone center, restrained aged bronze rectangular border and small carved Greek corner details; cell 2: compact content card, thin aged brass rectangular rim, clean dark blue-black stone center; cell 3: quiet tooltip panel, very thin warm bronze rim with clipped corners, near-black petrol center; cell 4: title banner panel, refined aged bronze top and bottom rails, tiny laurel corner motifs, empty dark petrol center.",
+  "folder": "20260907_172942_catabase-ui-panels_01a07c7d",
+  "root_task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+  "created_at": "2026-09-07T17:29:42.940344",
+  "updated_at": "2026-09-07T17:32:30.541869",
+  "tasks": [
+    {
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "task_type": "image-to-image",
+      "stage": "submitted",
+      "files": [],
+      "created_at": "2026-09-07T17:29:42.940344"
+    },
+    {
+      "task_id": "01a07c7d-502e-7003-b9e3-ab39defe86df",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-07T17:32:30.541869"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "01a07c7f-e67b-73ae-905a-9bbcf0aa08fc",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Match the reference image painting and material finish: premium hand-painted fantasy RPG art, generous sculpted forms, warm aged bronze, dark petrol stone, restrained turquoise, amber highlights from upper left, soft colored outlines and graduated shadows. Greek mythic underworld Catabase. Strong readable silhouettes and calm broad forms. No modern objects, no text, no lettering, no digits, no labels, no watermark. Paint a full-frame very dark petrol ancient Greek underworld wall fresco, designed behind a skill tree. Extremely subtle low-contrast relief of roots, laurel branches and a distant broken Greek portico, mostly around the outer 15 percent. Center is calm dark slate with barely visible stone texture. Muted bronze patina, no characters, no objects in the center, no bright lights, no UI, no drawn skill nodes or connectors. Decorative background only, broad quiet surfaces, edge-to-edge landscape.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788795152427,
+  "started_at": 1788795152431,
+  "finished_at": 1788795251598,
+  "expires_at": 1789054451598,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07c7f-e67b-73ae-905a-9bbcf0aa08fc_0.png?Expires=1789054451&Signature=TDAGoXNxjJv~NHhr2heSgjt-jDf3nth7-El8ZW2TBAjlIFnPInqotYBtkN1ATgPesrsu3AsBKtg5HdGmJw2rJ9ujjZGMBe6nboWe2tR4Q4UIAorpeOnWJbk4M7BAsMwNGrDT7tPRpEME9oldG1cmZNF-XYL2n4nZqy0uwQeIky97oS1RUtXBWhBTxb4JKpEuD9dRhL8mS3iQSY4ZztBgABJmvqUYb2DE~O9byjvDvK2C8klElDt90avOZces4NHMIhYzJuRGDC77367SHSsrhT1AfCy-uAcv6s6VVR0~1lJTovry9Yodz38-ozTiyaPe1HOFD47ZE85p7t7WI-n75A__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}
