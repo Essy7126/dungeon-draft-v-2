@@ -58,10 +58,12 @@ La clé a été lue sans écho et utilisée uniquement dans l'environnement des 
 - Les quatre PNG passent `Pillow.Image.verify()` ; dimensions, taille et SHA-256 ont été relevés.
 - L'identité de chaque prompt envoyé avec le prompt original du manifeste a été vérifiée.
 - Les quatre `consumed_credits` totalisent 30, cohérents avec le solde final.
-- Les ressources de jeu n'ont pas été remplacées. Les résultats restent dans `meshy_output/`, exclu de l'import Godot par `.gdignore`, et non suivis par Git. Aucun test moteur n'est revendiqué pour ces images de comparaison.
+- Les ressources de jeu n'ont pas été remplacées par ces quatre images. Les résultats restent dans `meshy_output/`, exclu de l'import Godot par `.gdignore`. Initialement non suivis, ils sont maintenant archivés dans Git avec les assets. Aucun test moteur n'est revendiqué pour ces images de comparaison.
 
 ## Décision suggérée
 
 Pour des objets isolés, Meshy est une piste crédible ; Pro mérite une sélection au cas par cas lorsque ses détails ajoutent de la lisibilité. Pour les haltes et maps dans le style Higgsfield, ce test ne démontre pas encore une substitution directe. Le prochain essai pertinent serait de conditionner la génération sur la référence approuvée, avec une contrainte explicite de décor plein cadre et, pour une arène, son guide géométrique. Cet essai supplémentaire n'a pas été lancé.
+
+La production suivante a utilisé les références approuvées pour compléter les icônes et l'interface, tout en conservant les haltes Higgsfield. Ses 80 exports et leur validation sont décrits dans [la passe UI Meshy](../docs/design/achilles/catabase_meshy_ui_v1.md). Elle constitue une opération distincte de ces quatre images comparatives.
 
 Sources : [API Text to Image](https://docs.meshy.ai/en/api/text-to-image), [tarifs Meshy](https://docs.meshy.ai/en/api/pricing), [production Higgsfield du projet](../docs/design/achilles/catabase_higgsfield_production.md).
