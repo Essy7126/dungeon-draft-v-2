@@ -1055,5 +1055,93 @@
     "delta_against_pre_global": "artifacts/meshy_ui/worktree_final_delta.json",
     "result": "Only intended documentation/provenance, seven adapted run-contract tests and screen pluralization differ. The two test-written Arena Studio artifacts match their exact pre-global SHA256 values. No unexpected production mutations remain."
   },
-  "local_full_report": "artifacts/meshy_ui/validation_summary.json"
+  "local_full_report": "artifacts/meshy_ui/validation_summary.json",
+  "hub_merge_validation": {
+    "status": "passed",
+    "scope": "One editor import and test_sanctuary_session only, after merging Sanctuaire. No graphical or global rerun.",
+    "godot": "4.7.1.stable.official.a13da4feb Windows headless",
+    "import": {
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' --headless --editor --recovery-mode --path . --import --log-file 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/hub-merge-import.log' *> artifacts/meshy_ui/hub-merge-import.combined.log",
+      "exit_code": 0,
+      "log": "artifacts/meshy_ui/hub-merge-import.combined.log",
+      "parse_or_script_errors": 0,
+      "shutdown": "clean"
+    },
+    "gut": {
+      "command": "& 'C:/Users/p.montebello/Desktop/Utile/G/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe' --headless --path . --log-file 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/hub-merge-gut.log' --script res://addons/gut/gut_cmdln.gd -- -gconfig= -gexit -gdisable_colors -gfailure_error_types engine,gut,push_error -gjunit_xml_file 'C:/Users/p.montebello/Documents/GitHub/dungeon-draft-v-2/artifacts/meshy_ui/hub-merge-gut.junit.xml' -gtest res://test/unit/test_sanctuary_session.gd *> artifacts/meshy_ui/hub-merge-gut.combined.log",
+      "exit_code": 0,
+      "tests": 10,
+      "passing": 10,
+      "failures": 0,
+      "assertions": 76,
+      "junit": "artifacts/meshy_ui/hub-merge-gut.junit.xml",
+      "log": "artifacts/meshy_ui/hub-merge-gut.combined.log",
+      "unexpected_errors": 0,
+      "shutdown": "clean",
+      "cases": [
+        {
+          "name": "test_achat_met_a_jour_solde_stock_et_inventaire_ensemble",
+          "status": "pass"
+        },
+        {
+          "name": "test_achats_successifs_cumulent_la_quantite_sans_double_debit",
+          "status": "pass"
+        },
+        {
+          "name": "test_solde_insuffisant_ne_change_aucune_donnee",
+          "status": "pass"
+        },
+        {
+          "name": "test_stock_epuise_refuse_un_nouvel_achat_sans_mutation",
+          "status": "pass"
+        },
+        {
+          "name": "test_quantite_indisponible_ne_realise_pas_un_achat_partiel",
+          "status": "pass"
+        },
+        {
+          "name": "test_article_inconnu_et_quantites_invalides_ne_changent_rien",
+          "status": "pass"
+        },
+        {
+          "name": "test_une_seule_benediction_et_aucun_double_choix",
+          "status": "pass"
+        },
+        {
+          "name": "test_benediction_inconnue_ne_consomme_pas_le_choix",
+          "status": "pass"
+        },
+        {
+          "name": "test_vues_retournees_et_sessions_sont_independantes",
+          "status": "pass"
+        },
+        {
+          "name": "test_reset_restaure_stock_solde_inventaire_et_choix",
+          "status": "pass"
+        }
+      ]
+    },
+    "catabase_code": {
+      "reference": "9d937b8abf5863f165c932ec1653f415326eefa7",
+      "file_count": 1158,
+      "different_index_blobs": [],
+      "different_worktree_files": [],
+      "details": "artifacts/meshy_ui/hub_merge_catabase_blob_audit.json",
+      "commands": [
+        "git ls-tree -rz 9d937b8",
+        "git ls-files --stage -z",
+        "git diff --name-only 9d937b8"
+      ],
+      "filter": "All core/ui/battle/data files, or paths containing catabase/expedition, with extensions gd, tscn, tres, gdshader or uid."
+    },
+    "worktree": {
+      "before": "artifacts/meshy_ui/worktree_hub_before.json",
+      "after": "artifacts/meshy_ui/worktree_hub_after.json",
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "git_status_unchanged": true
+    },
+    "limitations": "Existing wider-suite failures and shutdown limitations in validation_summary.json are unchanged; this bounded validation does not certify the Sanctuaire graphical scene."
+  }
 }

@@ -1,0 +1,25 @@
+{
+  "project_name": "Sanctuary residents 2D",
+  "folder": "20260907_195221_sanctuary-residents_01a07cff",
+  "root_task_id": "01a07cff-e00a-75e2-b74b-8d695c07bbfb",
+  "created_at": "2026-09-07T19:52:21.720675",
+  "updated_at": "2026-09-07T19:53:41.312826",
+  "tasks": [
+    {
+      "task_id": "01a07cff-e00a-75e2-b74b-8d695c07bbfb",
+      "task_type": "text-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-07T19:52:21.720675"
+    },
+    {
+      "task_id": "01a07cff-e00a-75e2-b74b-8d695c07bbfb",
+      "task_type": "text-to-image",
+      "stage": "completed",
+      "files": [
+        "residents.png"
+      ],
+      "created_at": "2026-09-07T19:53:41.312826"
+    }
+  ]
+}

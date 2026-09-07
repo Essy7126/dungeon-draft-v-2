@@ -1,0 +1,16 @@
+{
+  "id": "01a07cef-b3f2-7239-b8c4-6c1368ca1352",
+  "type": "image-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "Image 1 is the composition master. Image 2 is ONLY a reference for hand-painted MATERIAL TEXTURE.\nRepaint IMAGE 1 with richer tactile hand-painted material texture, matching the texture sophistication of image 2. Preserve image 1's EXACT high-angle isometric camera, framing, scale, floor plan and every object silhouette and position. This is a texture and painted-surface refinement of image 1, NOT a new scene. The result must immediately be recognizable as the same view as image 1. Do not copy image 2's composition, architecture or camera.\nRetain image 1's open courtyard, modest center mosaic, merchant stall upper left, oracle shrine upper right, gateway back center and water at the right edge. Preserve the large visible floor area. Do not add buildings, roofs, objects, foreground awnings, stairs or water. Never lower the camera or turn this into a frontal view.\nWithin the existing shapes, paint limestone with subtle mineral granules, worn edge chips and dry-brush pore texture; cloth with visible woven fibers and softened painterly folds; amphorae with earthy glaze and terracotta grain; bronze with aged patina; wood with restrained grain; foliage with layered leaf brushstrokes. Varied colored ink edges and beautiful gouache painting, visibly illustrated, not photographic or 3D. Real material-specific texture, not a uniform noise overlay. Central walking slabs remain quiet, low contrast and clearly readable. Preserve image 1's lighting and palette. No characters, text or interface.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788802479279,
+  "started_at": 1788802479284,
+  "finished_at": 1788802566086,
+  "expires_at": 1789061766086,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07cef-b3f2-7239-b8c4-6c1368ca1352_0.png?Expires=1789061766&Signature=EKxvRUHPTfvrLZR7~yTXU8QLibsQnY9Vavdx46vI2eHf9boJZkRDJtPGw0Cf~PMqC9i29IpT6axWsuuGESAcHNVbMwSRmnA8Et-h7SOoy7s1cRYBbbEpw~O4PoOVS5lBnS1H73VTxloVqxoXK343yEvDhCK5yRyXjorMFQO9LxBR17vQmppwklqgAYoilF6BTgOw59KWTmQSwgJagrj0maRnquUs9deI~5DbSynROHef2PHrL-Vgk0caJidyNzd939WuBVpgk138vPPlYsJO2XTL~8r1QLNHY7VuyWx090UJxYHu3r5dLfY0OTPRfedw9AXnOI74yWnYOctPQYM-NQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

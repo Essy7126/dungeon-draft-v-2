@@ -145,6 +145,13 @@ visuels et cible de récompense. Ces suites élargies ne sont pas qualifiées de
 vertes. Leur détail est inclus dans le reçu de validation, séparément des
 199 tests passants de l'intégration UI/art et de ses régressions ciblées.
 
+Une publication concurrente du prototype Sanctuaire (`2b9eec2`) a été fusionnée
+avant la publication finale. Le Sanctuaire reste autonome : aucun raccordement
+à Catabase n'a été ajouté. Après fusion, l'import est propre, les dix tests de
+session du Sanctuaire passent (76 assertions), et 1 158 fichiers de code, scènes
+et ressources du périmètre Catabase sont identiques au jalon validé `9d937b8`.
+Aucun fichier source n'a été modifié par ces dernières vérifications.
+
 ## Limites de cette passe
 
 L'habillage couvre les contrôles et contenus de la run actuelle. Les nouvelles

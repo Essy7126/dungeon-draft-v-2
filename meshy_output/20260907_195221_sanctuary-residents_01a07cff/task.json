@@ -1,0 +1,16 @@
+{
+  "id": "01a07cff-e00a-75e2-b74b-8d695c07bbfb",
+  "type": "text-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Create a production 2D isometric game character sprite atlas: EXACTLY TWO complete isolated standing adult Greek fantasy residents, side by side with large space between them. True transparent background, no floor, no backdrop, no scene, no shadows. High angle isometric game camera looking DOWN at both characters, visible tops of heads and shoulders, full body from head to sandals, feet at the same baseline, three quarter facing toward lower right. Left half: a stocky elderly male Greek merchant with a short grey beard, warm terracotta tunic, muted ochre draped cloak, leather belt with small purse, carrying a small bronze weighing scale at waist level, friendly clever face. Right half: a tall adult Greek oracle priestess in a desaturated teal-blue draped robe and pale ivory veil, restrained bronze ornaments, holding a small amber votive lamp at waist, serene face. Beautiful richly textured hand-painted gouache and tempera illustration, mineral pigments, visible fine woven cloth texture, worn bronze patina, nuanced painted skin, crisp elegant colored outlines. Match a premium mythological Greek underworld RPG sanctuary with violet shadows and soft amber highlights. Readable bold silhouettes at small game size, each figure occupies about one third of total image width and 80 percent of height. The two figures must never touch or overlap. No text, labels, UI, borders, weapons, extra figures, scenery or photorealism. Every body extremity fully in frame with clear transparent margin. Keep bottom feet completely visible.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788803541616,
+  "started_at": 1788803541620,
+  "finished_at": 1788803583995,
+  "expires_at": 1789062783995,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07cff-e00a-75e2-b74b-8d695c07bbfb_0.png?Expires=1789062783&Signature=N8RzXu9Vnxt9y5dun5dmrrcnlMx1JanbjvXAsjvyPuVOapMFRPa~J5VzxUJpMF0VvXtpa9FNYSdnUYNfQ9ctuX73hemergjXeMUC-R895wmMfeb2~4pguBtpPOPw4I6JqyebNsZ-TrtM0jmPj9Uc1rxCz3PL-xKxiOSL7G~U9xBzJ-JzXYkG~Ujj4HqGm5d1~95icUMkY~RToD3L11O--aQGDbJrvF0JjuELekrEvD9C9tLWZ5P83Su4ZnYN6vMn2i9J4H5Te7Du0lN0PUSONt8xvUuMNyUQUPuTTG3g67-xUVo2qAlRo9-5I1YIGRa14hO1FVXDONlr~2Y1VWrqBA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

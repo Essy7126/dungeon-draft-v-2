@@ -1,0 +1,73 @@
+{
+  "project_name": "Refuge des Braises",
+  "folder": "20260907_191714_b-refuge-des-braises_01a07cdf",
+  "root_task_id": "01a07cdf-c112-77e3-b5df-7ed0e9e30528",
+  "created_at": "2026-09-07T19:17:14.032164",
+  "updated_at": "2026-09-07T19:39:13.457296",
+  "tasks": [
+    {
+      "task_id": "01a07cdf-c112-77e3-b5df-7ed0e9e30528",
+      "task_type": "text-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-07T19:17:14.032164"
+    },
+    {
+      "task_id": "01a07cdf-c112-77e3-b5df-7ed0e9e30528",
+      "task_type": "text-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "B_refuge_des_braises.png"
+      ],
+      "created_at": "2026-09-07T19:20:44.648123"
+    },
+    {
+      "task_id": "01a07ce6-eaa9-7396-ae7a-f5db40a862d5",
+      "task_type": "image-to-image",
+      "stage": "texture_v2_created",
+      "files": [],
+      "created_at": "2026-09-07T19:25:03.699236"
+    },
+    {
+      "task_id": "01a07ce6-eaa9-7396-ae7a-f5db40a862d5",
+      "task_type": "image-to-image",
+      "stage": "texture_v2_completed_review_pending",
+      "files": [
+        "B_refuge_des_braises_texture_v2.png"
+      ],
+      "created_at": "2026-09-07T19:25:46.800592"
+    },
+    {
+      "task_id": "01a07cef-b7c9-72d3-b651-0ca7faee8a53",
+      "task_type": "image-to-image",
+      "stage": "texture_v3_created",
+      "files": [],
+      "created_at": "2026-09-07T19:34:40.642811"
+    },
+    {
+      "task_id": "01a07cef-b7c9-72d3-b651-0ca7faee8a53",
+      "task_type": "image-to-image",
+      "stage": "texture_v3_completed_review_pending",
+      "files": [
+        "B_refuge_des_braises_texture_v3.png"
+      ],
+      "created_at": "2026-09-07T19:35:24.168285"
+    },
+    {
+      "task_id": "01a07cf3-2d4b-76bd-beb4-001479b30d46",
+      "task_type": "image-to-image",
+      "stage": "texture_v4_created",
+      "files": [],
+      "created_at": "2026-09-07T19:38:30.371387"
+    },
+    {
+      "task_id": "01a07cf3-2d4b-76bd-beb4-001479b30d46",
+      "task_type": "image-to-image",
+      "stage": "texture_v4_completed_review_pending",
+      "files": [
+        "B_refuge_des_braises_texture_v4.png"
+      ],
+      "created_at": "2026-09-07T19:39:13.457296"
+    }
+  ]
+}
