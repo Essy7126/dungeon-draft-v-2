@@ -13,7 +13,7 @@ const TITLE_FONT := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-V
 const INK := Color("efe5d2")
 const MUTED := Color("bdb09b")
 const BRONZE := Color("c39458")
-const DARK := Color("211f1bea")
+const DARK := Color("211f1b")
 const CARD := Color("302b23")
 const SUCCESS := Color("b5d4a7")
 

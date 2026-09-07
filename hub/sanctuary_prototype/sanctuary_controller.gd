@@ -16,6 +16,7 @@ const TITLE_FONT := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-V
 const LAYOUT_PATH := "res://hub/sanctuary_prototype/refuge_layout.json"
 const GOLD := Color("d5b178")
 const INK := Color("eee5d2")
+const ENTITY_NAMES := {&"merchant": "le marchand", &"oracle": "l'oracle", &"passage": "le passage"}
 
 @export_range(60.0, 500.0, 5.0) var movement_speed := 210.0
 @export_range(0.15, 0.9, 0.01) var player_display_scale := 0.43
@@ -134,12 +135,12 @@ func interact_with(id: StringName) -> bool:
 	var approach := _point(data.approach)
 	var path := nav.get_path(player.position, approach)
 	if path.is_empty():
-		_status("Impossible de rejoindre %s depuis ici." % String(data.name).to_lower())
+		_status("Impossible de rejoindre %s depuis ici." % String(ENTITY_NAMES.get(id, data.name)))
 		return false
 	_pending_entity = id
 	_start_path(path)
 	if not _panels.is_open():
-		_status("En route vers %s…" % String(data.name).to_lower())
+		_status("En route vers %s…" % String(ENTITY_NAMES.get(id, data.name)))
 	return true
 
 
@@ -274,7 +275,7 @@ func _complete_path() -> void:
 			_panels.open_oracle()
 		&"passage":
 			_panels.open_departure()
-	_status("Achille échange avec %s." % String(data.name).to_lower())
+	_status("Achille examine ses préparatifs." if id == &"passage" else "Achille échange avec %s." % String(ENTITY_NAMES.get(id, data.name)))
 
 
 func _open_inventory() -> void:
