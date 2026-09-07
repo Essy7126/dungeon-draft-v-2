@@ -1,0 +1,16 @@
+{
+  "id": "01a07cf3-2d4b-76bd-beb4-001479b30d46",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Edit this exact original game map. Preserve the high-angle isometric camera, the floor geometry, the generous empty walking space and the positions and proportions of all existing objects. The only substantial change should be to the art rendering: MUCH richer hand-painted material texture and surface detail, while keeping a clearly DRAWN illustrated game style. Make the stone feel like porous mineral limestone with fine grains, subtle mottled pigments, tiny chipped edges and dry brushwork. Give the canvas awning a convincing woven linen texture and worn embroidered edges, amphorae granular terracotta and imperfect glazed paint, bronze hammered patina and restrained edge glints, wood real painted grain, olive and cypress foliage finely layered brushstrokes and bark texture. Sophisticated textured gouache and tempera painting with crisp controlled illustrated edges, not photorealism or 3D. Texture each material differently, never apply one generic noise filter. Keep the central paving texture lower contrast than the props, so a small hero remains legible. Preserve the original color palette and light direction. Do not enlarge objects, move the camera, build new architecture, introduce characters, cover the center, add interface/text or invent a new composition. The output canvas may extend vertically for 3:2 framing; do so by gently extending the perimeter while keeping the original view intact, never stretching or tilting the scene.\nPreserve the original protective underworld twilight: blue-violet stone shadows, amber firelight, oxblood merchant awning and turquoise water. Do not turn it into daylight or change the altar.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788802710153,
+  "started_at": 1788802710156,
+  "finished_at": 1788802751734,
+  "expires_at": 1789061951734,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a07cf3-2d4b-76bd-beb4-001479b30d46_0.png?Expires=1789061951&Signature=Mwiv4HjjTyuefD8tMoYD~b2IPNfbsTRMSq3pFZaDFlBTVT-9XXMbxlQOMeLZor1IKWvNj4gz2UWYwE71ONhnND-2vMAPLOXBu03kOTr4Yc~6adcqOPNt8zQnmKv-Wn3sxU4VP8u9ZgEW7cBJmuzwAvFl3EuaE2kGES2VMIWnxXDA4WubE5sQClJ9Twbcw4reAeUi7Vw1gskdPrf9Xe0NO~1QcgzvbIkJXfFBfGE0ZjynY-n3QOVf5HQ5WI8jD8UYKu6dyGSNLvQlrw8PQtc01jdpkjrQLdDVkIeg~GBDm2h48nc3EbxiE6GZz82-h8muUbUddWgUMygzdRitaVIDzA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

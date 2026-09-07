@@ -1,0 +1,95 @@
+{
+  "selected_direction": "B4 — Refuge des Braises texturé",
+  "approved_by_user": true,
+  "reviewed_by": [
+    "primary_agent",
+    "independent_art_review"
+  ],
+  "provider": "Meshy",
+  "credits_spent": 87,
+  "balance_before": 1261,
+  "balance_after": 1174,
+  "tasks": [
+    {
+      "id": "01a07cdf-c031-713c-af41-f1f827f0191c",
+      "stage": "task",
+      "model": "nano-banana-pro",
+      "credits": 9,
+      "folder": "meshy_output/20260907_191713_a-cour-des-sources_01a07cdf"
+    },
+    {
+      "id": "01a07ce6-e8c4-730f-a9fd-2e51cc2f83fc",
+      "stage": "task_texture_v2",
+      "model": "nano-banana-pro",
+      "credits": 9,
+      "folder": "meshy_output/20260907_191713_a-cour-des-sources_01a07cdf"
+    },
+    {
+      "id": "01a07cef-b3f2-7239-b8c4-6c1368ca1352",
+      "stage": "task_texture_v3",
+      "model": "nano-banana-pro",
+      "credits": 9,
+      "folder": "meshy_output/20260907_191713_a-cour-des-sources_01a07cdf"
+    },
+    {
+      "id": "01a07cf3-1df1-7250-b540-6efa38c5c8e2",
+      "stage": "task_texture_v4",
+      "model": "gpt-image-2",
+      "credits": 12,
+      "folder": "meshy_output/20260907_191713_a-cour-des-sources_01a07cdf"
+    },
+    {
+      "id": "01a07cdf-c112-77e3-b5df-7ed0e9e30528",
+      "stage": "task",
+      "model": "nano-banana-pro",
+      "credits": 9,
+      "folder": "meshy_output/20260907_191714_b-refuge-des-braises_01a07cdf"
+    },
+    {
+      "id": "01a07ce6-eaa9-7396-ae7a-f5db40a862d5",
+      "stage": "task_texture_v2",
+      "model": "nano-banana-pro",
+      "credits": 9,
+      "folder": "meshy_output/20260907_191714_b-refuge-des-braises_01a07cdf"
+    },
+    {
+      "id": "01a07cef-b7c9-72d3-b651-0ca7faee8a53",
+      "stage": "task_texture_v3",
+      "model": "nano-banana-pro",
+      "credits": 9,
+      "folder": "meshy_output/20260907_191714_b-refuge-des-braises_01a07cdf"
+    },
+    {
+      "id": "01a07cf3-2d4b-76bd-beb4-001479b30d46",
+      "stage": "task_texture_v4",
+      "model": "gpt-image-2",
+      "credits": 12,
+      "folder": "meshy_output/20260907_191714_b-refuge-des-braises_01a07cdf"
+    },
+    {
+      "id": "01a07cff-e00a-75e2-b74b-8d695c07bbfb",
+      "stage": "task",
+      "model": "gpt-image-2",
+      "credits": 9,
+      "folder": "meshy_output/20260907_195221_sanctuary-residents_01a07cff"
+    }
+  ],
+  "runtime_assets": [
+    {
+      "path": "asset/hub/sanctuary_prototype/refuge_des_braises_v4.png",
+      "bytes": 3725235,
+      "sha256": "8acb30e5f8e2f524e360bdc5544b574156261fe44bfb7e451d1404ca84efd34f"
+    },
+    {
+      "path": "asset/hub/sanctuary_prototype/residents.png",
+      "bytes": 1835311,
+      "sha256": "67cc0c0db2711f9004fae83cd3bc84968838eab040d92a435ed21f9875351c72"
+    },
+    {
+      "path": "asset/hub/sanctuary_prototype/residents_mask.png",
+      "bytes": 19775,
+      "sha256": "62091e2f4ff05ce886ab8c929f0144872a70c203b8933bbe972187592550fcf7"
+    }
+  ],
+  "resident_mask": "Separate technical mask; original Meshy RGB image unchanged."
+}

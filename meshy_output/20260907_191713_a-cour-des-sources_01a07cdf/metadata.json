@@ -1,0 +1,73 @@
+{
+  "project_name": "Cour des Sources",
+  "folder": "20260907_191713_a-cour-des-sources_01a07cdf",
+  "root_task_id": "01a07cdf-c031-713c-af41-f1f827f0191c",
+  "created_at": "2026-09-07T19:17:13.803076",
+  "updated_at": "2026-09-07T19:39:34.447472",
+  "tasks": [
+    {
+      "task_id": "01a07cdf-c031-713c-af41-f1f827f0191c",
+      "task_type": "text-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-07T19:17:13.803076"
+    },
+    {
+      "task_id": "01a07cdf-c031-713c-af41-f1f827f0191c",
+      "task_type": "text-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "A_cour_des_sources.png"
+      ],
+      "created_at": "2026-09-07T19:20:43.978102"
+    },
+    {
+      "task_id": "01a07ce6-e8c4-730f-a9fd-2e51cc2f83fc",
+      "task_type": "image-to-image",
+      "stage": "texture_v2_created",
+      "files": [],
+      "created_at": "2026-09-07T19:25:03.212216"
+    },
+    {
+      "task_id": "01a07ce6-e8c4-730f-a9fd-2e51cc2f83fc",
+      "task_type": "image-to-image",
+      "stage": "texture_v2_completed_review_pending",
+      "files": [
+        "A_cour_des_sources_texture_v2.png"
+      ],
+      "created_at": "2026-09-07T19:26:11.604698"
+    },
+    {
+      "task_id": "01a07cef-b3f2-7239-b8c4-6c1368ca1352",
+      "task_type": "image-to-image",
+      "stage": "texture_v3_created",
+      "files": [],
+      "created_at": "2026-09-07T19:34:39.572464"
+    },
+    {
+      "task_id": "01a07cef-b3f2-7239-b8c4-6c1368ca1352",
+      "task_type": "image-to-image",
+      "stage": "texture_v3_completed_review_pending",
+      "files": [
+        "A_cour_des_sources_texture_v3.png"
+      ],
+      "created_at": "2026-09-07T19:36:18.029847"
+    },
+    {
+      "task_id": "01a07cf3-1df1-7250-b540-6efa38c5c8e2",
+      "task_type": "image-to-image",
+      "stage": "texture_v4_created",
+      "files": [],
+      "created_at": "2026-09-07T19:38:26.237883"
+    },
+    {
+      "task_id": "01a07cf3-1df1-7250-b540-6efa38c5c8e2",
+      "task_type": "image-to-image",
+      "stage": "texture_v4_completed_review_pending",
+      "files": [
+        "A_cour_des_sources_texture_v4.png"
+      ],
+      "created_at": "2026-09-07T19:39:34.447472"
+    }
+  ]
+}
