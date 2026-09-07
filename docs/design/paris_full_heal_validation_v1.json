@@ -1,0 +1,102 @@
+{
+  "schema": "dd.paris.full-heal-change-validation.v1",
+  "date": "2026-09-07",
+  "scope": "Targeted full-health transformation change: 303 GUT tests and two actual E-direction duels. This is not a new 32-case matrix or campaign playthrough.",
+  "unit_tests": {
+    "scripts": 30,
+    "tests": 303,
+    "passing_tests": 303,
+    "assertions": 17271,
+    "logs": [
+      {
+        "path": "artifacts/paris_sprite_validation_v1/gut_full_heal/stdout.log",
+        "sha256": "d51618af8fbb1ca945ddd61cd59e59281786f910f684226d6b2504fb938626e6"
+      },
+      {
+        "path": "artifacts/paris_sprite_validation_v1/gut_full_heal/stderr.log",
+        "sha256": "4df00a88809074f02222ada0b469614baa09bd25de13d77857deceb6c0d855cc"
+      }
+    ]
+  },
+  "combat_checks": [
+    {
+      "name": "transform_E",
+      "ok": true,
+      "source_report": "artifacts/paris_sprite_validation_v1/full_heal/transform_E/runtime_validation.json",
+      "report_sha256": "d8433859cac4206d5a60a233bb7b8a5f4a156d95d3be2d08a12764033225effb",
+      "trigger_hp": 22,
+      "healing_amount": 98,
+      "hp_at_transformation": 120,
+      "max_hp": 120,
+      "shield_at_transformation": 30,
+      "transformation_duration_seconds": 0.900905,
+      "heal_count": 1,
+      "final_paris": {
+        "alive": true,
+        "ap": 0,
+        "cell": "(5, 9)",
+        "hp": 116,
+        "id": "catabase_shadow_paris",
+        "instance_id": -9223371659619071000,
+        "max_hp": 120,
+        "mp": 3,
+        "shield": 0
+      },
+      "death_events": 0,
+      "death_visual_finishes": 0,
+      "infernal_spells": [
+        "paris_infernal_whip",
+        "paris_infernal_sweep"
+      ]
+    },
+    {
+      "name": "defeat_E",
+      "ok": true,
+      "source_report": "artifacts/paris_sprite_validation_v1/full_heal/defeat_E/runtime_validation.json",
+      "report_sha256": "edf7bc583035793c0f5745efb4d23f8c476e3839ed5ff6f2dfa623097643c9db",
+      "trigger_hp": 22,
+      "healing_amount": 98,
+      "hp_at_transformation": 120,
+      "max_hp": 120,
+      "shield_at_transformation": 30,
+      "transformation_duration_seconds": 0.901922,
+      "heal_count": 1,
+      "final_paris": {
+        "alive": false,
+        "ap": 0,
+        "cell": "(-1, -1)",
+        "hp": 0,
+        "id": "catabase_shadow_paris",
+        "instance_id": -9223371659619071000,
+        "max_hp": 120,
+        "mp": 3,
+        "shield": 0
+      },
+      "death_events": 1,
+      "death_visual_finishes": 1,
+      "infernal_spells": [
+        "paris_infernal_whip",
+        "paris_infernal_sweep",
+        "paris_vortex_step",
+        "paris_infernal_whip",
+        "paris_infernal_whip",
+        "paris_infernal_sweep"
+      ]
+    }
+  ],
+  "source_files": [
+    {
+      "path": "units/unit.gd",
+      "sha256": "b0394b79bd39d1d94cd7e051183ef00151f77985e1d608a43b3b40dbc4c1ddc7"
+    },
+    {
+      "path": "data/combat/combat_form_change_data.gd",
+      "sha256": "30ebdc369c063446f4f2b8271a095d8a72d047c726a45261e7834b4d80f71339"
+    },
+    {
+      "path": "data/characters/paris/infernal_form.tres",
+      "sha256": "bb5ba4ba1adc1f83d871b62425adafb71da889694b00f888d8e4aedd1adf2d7f"
+    }
+  ],
+  "known_limitation": "Existing Godot shutdown resource/RID diagnostics remain in raw logs; no script or combat errors occurred."
+}

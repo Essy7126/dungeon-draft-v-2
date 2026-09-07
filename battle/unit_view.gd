@@ -2,6 +2,8 @@
 # battle/unit_view.gd
 extends Node2D
 
+signal _visual_wait_frame_ready
+
 const Glossary = preload("res://ui/combat_glossary.gd")
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 
@@ -82,17 +84,22 @@ func _exit_tree() -> void:
 	_disconnect_runtime_signals()
 
 
-func cancel_pending_visual_actions() -> void:
+func _clear_pending_visual_action_tracking() -> void:
 	_optional_visual_cast_generation += 1
 	_optional_visual_cast_pending = false
 	_optional_visual_action_pending = false
 	_optional_visual_action_finished = false
 	_suppress_next_attack_event_visual = false
 	_disconnect_release_callables()
+
+
+func cancel_pending_visual_actions() -> void:
+	_clear_pending_visual_action_tracking()
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("cancel_pending_visual_actions") \
 			and (not is_instance_valid(unit) or unit.is_alive):
 		_optional_visual.cancel_pending_visual_actions()
+	_resume_visual_frame_wait()
 
 
 func _is_async_context_valid(generation: int) -> bool:
@@ -107,8 +114,20 @@ func _wait_one_safe_process_frame(generation: int) -> bool:
 	var tree := get_tree()
 	if tree == null:
 		return false
-	await tree.process_frame
+	# Await our own gate, so cancellation and _exit_tree can resume the
+	# coroutine while this instance still exists. Awaiting SceneTree directly
+	# would leave a callback scheduled after this UnitView has been freed.
+	if not tree.process_frame.is_connected(_resume_visual_frame_wait):
+		tree.process_frame.connect(_resume_visual_frame_wait, CONNECT_ONE_SHOT)
+	await _visual_wait_frame_ready
 	return _is_async_context_valid(generation)
+
+
+func _resume_visual_frame_wait() -> void:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree != null and tree.process_frame.is_connected(_resume_visual_frame_wait):
+		tree.process_frame.disconnect(_resume_visual_frame_wait)
+	_visual_wait_frame_ready.emit()
 
 
 func _disconnect_release_callable(callback: Callable) -> void:
@@ -245,6 +264,18 @@ func get_optional_visual() -> Node2D:
 ## Recale l'echantillon de locomotion apres un deplacement pilote par Battle
 ## (ruee, teletransportation). Sans ce recalage, la frame suivante peut prendre
 ## le saut deja termine pour un nouveau depart de marche.
+func finish_external_spell_movement() -> void:
+	if _closing or (is_instance_valid(unit) and not unit.is_alive):
+		return
+	_clear_pending_visual_action_tracking()
+	if is_instance_valid(_optional_visual):
+		if _optional_visual.has_method("finish_external_spell_movement"):
+			_optional_visual.finish_external_spell_movement()
+		elif _optional_visual.has_method("cancel_pending_visual_actions"):
+			_optional_visual.cancel_pending_visual_actions()
+	_resume_visual_frame_wait()
+
+
 func synchronize_external_movement() -> void:
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("synchronize_external_movement"):
@@ -263,9 +294,17 @@ func apply_painted_presentation(
 		profile.profile_for_unit(unit.unit_id)
 		if profile != null and unit != null else null
 	)
+	# Room overrides stay authoritative. A visual may opt in to a family default
+	# so newly authored rooms preserve its proportions without copying profiles.
+	if _painted_family_profile == null and profile != null and unit != null \
+			and is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("get_painted_visual_profile"):
+		var fallback := _optional_visual.get_painted_visual_profile() as UnitVisualProfile
+		if fallback != null and fallback.matches(unit.unit_id):
+			_painted_family_profile = fallback
 	_painted_visual_scale = (
-		profile.final_visual_scale(unit.unit_id)
-		if apply_visual_scale and profile != null and unit != null else 1.0
+		_painted_family_profile.final_visual_scale(profile.global_unit_scale_multiplier)
+		if apply_visual_scale and profile != null and _painted_family_profile != null else 1.0
 	)
 	_painted_readability_enabled = apply_readability and profile != null
 	if is_instance_valid(_optional_visual):
@@ -349,6 +388,29 @@ func get_cast_effect_origin_global() -> Vector2:
 		return _optional_visual.to_global(local_origin)
 	return global_position
 
+
+## A phase reveal belongs to the actual unit, independently of a spell marker.
+## Pause does not consume the watchdog, and scene teardown ends the wait.
+func wait_for_transformation_visual_finished(timeout_seconds := 5.0) -> bool:
+	var generation := _lifecycle_generation
+	var elapsed := 0.0
+	var last_tick := Time.get_ticks_usec()
+	while _is_async_context_valid(generation) and is_instance_valid(unit) and unit.is_alive:
+		if not is_instance_valid(_optional_visual) \
+				or not _optional_visual.has_method("is_transformation_pending") \
+				or not _optional_visual.is_transformation_pending():
+			return true
+		var now := Time.get_ticks_usec()
+		if not get_tree().paused:
+			elapsed += maxf(0, float(now - last_tick) / 1000000.0) * Engine.time_scale
+		last_tick = now
+		if elapsed >= maxf(0.001, timeout_seconds):
+			_optional_visual.cancel_pending_visual_actions()
+			return _is_async_context_valid(generation) and unit.is_alive
+		if not await _wait_one_safe_process_frame(generation):
+			return false
+	return false
+
 ## Synchronisation visuelle seulement : le calcul du sort reste dans
 ## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
 func prepare_spell_visual(
@@ -357,6 +419,8 @@ func prepare_spell_visual(
 		release_timeout_msec: int = 5000
 	) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
+		return false
+	if not await wait_for_transformation_visual_finished():
 		return false
 	face_grid_direction(target_cell - unit.grid_pos)
 	if not is_instance_valid(_optional_visual):
@@ -432,6 +496,8 @@ func prepare_basic_attack_visual(
 		release_timeout_msec: int = 5000
 	) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
+		return false
+	if not await wait_for_transformation_visual_finished():
 		return false
 	face_grid_direction(target_cell - unit.grid_pos)
 	if not is_instance_valid(_optional_visual) \
@@ -795,6 +861,11 @@ func _begin_movement_feedback(
 	elif _optional_visual.has_method("play_walk"):
 		_optional_visual.play_walk()
 
+
+func update_movement_stride(step_index: int, progress: float) -> void:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("update_movement_stride"):
+		_optional_visual.update_movement_stride(step_index, progress)
 
 func end_movement_feedback() -> void:
 	var optional_handles_idle := false

@@ -1,0 +1,22 @@
+{
+  "base_E": {
+    "scale": 0.7,
+    "roots": [[128,316],[526,317],[928,311],[1259,325],[164,683],[526,684],[884,684],[1258,684],[164,1048],[544,1048],[903,1047],[1289,1053]],
+    "notes": [
+      "Global source coordinates, row-major 4x3, source 1448x1086. Scale fixed across all twelve poses; standing bow body approximately 320px becomes 224px.",
+      "Planted-pose X is between the sole supports; Y is just below the lowest sole, preserving the canonical idle root offset. Estimate +/-4px.",
+      "Dash frames 1 and 2 (zero-based) use virtual ground roots below the pelvis, with the adjacent planted dash baseline retained. Their lifted feet and spear bbox do not determine alignment; estimate +/-10px.",
+      "Identity remains coherent: red crest, bronze helmet, ivory cuirass, petrol pteruges, red belt, dark teal shield with ivory chevron. Bow uses the back-mounted shield and spear. No visibly clipped spear or bow tips. Compact crouch in shield pose 2 is intentional; do not scale it up to the standing height."
+    ]
+  },
+  "base_S": {
+    "scale": 0.66,
+    "roots": [[251,326],[576,326],[962,327],[1313,338],[199,696],[575,704],[966,705],[1309,711],[245,1059],[601,1064],[972,1073],[1323,1072]],
+    "notes": [
+      "Global source coordinates, row-major 4x3, source 1448x1086. This sheet's standing body is approximately 340px, so .66 preserves the same approximately 225px target body height as base_E at .70.",
+      "Planted-pose X is between the sole supports; Y is just below the lowest sole. Front/back feet have visibly different projected depths, as in canonical idle_S. Estimate +/-4px.",
+      "Dash frames 1 and 2 (zero-based) use a virtual pelvis-derived ground root near the neighboring planted baseline. Frame 2 is a strongly forward-pitched flight drawing: do not center its bbox or lower its lifted feet onto the floor. Estimate +/-12px.",
+      "Matching crest, helmet, cuirass, belt and shield; bow/quiver/back equipment are readable. Hands are connected to bow/string or spear, with no obvious detached grip. No visibly clipped weapon tip. Root of the final shield poses lies close to source bottom because the complete feet remain near y1065."
+    ]
+  }
+}

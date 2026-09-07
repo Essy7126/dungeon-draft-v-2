@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+
+[sub_resource type="Resource" id="Hp"]
+script = ExtResource("2_stat")
+stat_id = &"max_hp"
+value = 0.15
+modifier_type = 1
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_wave_cuirass"
+display_name = "Cuirasse des vagues"
+description = "+15 % PV max ; Garde +25 % contre projectile et -15 % contre mêlée."
+tags = Array[StringName]([&"odyssey", &"achilles", &"aeacus"])
+category = 1
+equipment_slot = 1
+compatible_character_ids = Array[StringName]([&"achilles"])
+stat_modifiers = Array[ItemStatModifierData]([SubResource("Hp")])
+guard_effectiveness_melee = 0.85
+guard_effectiveness_projectile = 1.25

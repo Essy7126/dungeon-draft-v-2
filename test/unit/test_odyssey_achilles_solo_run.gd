@@ -27,13 +27,13 @@ const DISCIPLINE_IDS: Array[StringName] = [
 ]
 
 
-func test_odyssey_is_a_valid_three_room_single_encounter_run() -> void:
+func test_odyssey_is_a_valid_five_room_single_encounter_run() -> void:
 	var run := _run()
 	assert_not_null(run)
 	assert_eq(run.run_name, "Catabase")
 	assert_true(run.is_single_encounter_flow())
 	assert_eq(run.maximum_waves_per_room, 1)
-	assert_eq(run.rooms.size(), 3)
+	assert_eq(run.rooms.size(), 5)
 	assert_true(run.is_valid(), str(run.validation_errors()))
 	var room_paths := {}
 	var encounter_paths := {}
@@ -71,9 +71,9 @@ func test_odyssey_is_a_valid_three_room_single_encounter_run() -> void:
 		room_paths[room.resource_path] = true
 		encounter_paths[room.encounter_definition.resource_path] = true
 		visual_paths[room.painted_map_visual_data.resource_path] = true
-	assert_eq(room_paths.size(), 3)
-	assert_eq(encounter_paths.size(), 3)
-	assert_eq(visual_paths.size(), 3)
+	assert_eq(room_paths.size(), 5)
+	assert_eq(encounter_paths.size(), 5)
+	assert_eq(visual_paths.size(), 5)
 
 
 func test_achilles_profile_chain_and_chassis_are_exact() -> void:
@@ -176,10 +176,10 @@ func test_odyssey_enemy_stats_and_room_rosters_are_exact() -> void:
 	var run := _run()
 	assert_eq(_roster_ids(run.rooms[0]), [&"catabase_frail_hellspawn"])
 	assert_eq(_roster_ids(run.rooms[1]), [
-		&"odyssey_skirmisher", &"odyssey_skirmisher", &"odyssey_guard",
+		&"odyssey_skirmisher", &"odyssey_skirmisher", &"spectre_greatsword",
 	])
 	assert_eq(_roster_ids(run.rooms[2]), [
-		&"odyssey_champion", &"catabase_shadow_paris",
+		&"odyssey_champion", &"spectre_greatsword",
 	])
 
 
@@ -647,7 +647,7 @@ func test_refined_hud_resolves_portrait_icons_utilities_and_no_basic_attack() ->
 	assert_true(hud._skills_button.visible)
 
 
-func test_studio_catalogs_open_odyssey_hero_and_all_three_rooms() -> void:
+func test_studio_catalogs_open_odyssey_hero_and_all_five_rooms() -> void:
 	var run := _run()
 	var discovered := RunContentCatalogService.discover_runs()
 	assert_true(discovered.any(func(item: RunData): return item.resource_path == ODYSSEY_PATH))
@@ -659,7 +659,7 @@ func test_studio_catalogs_open_odyssey_hero_and_all_three_rooms() -> void:
 	assert_eq(skill_session.working_unit.unit_id, &"achilles")
 	var encounter_session := EncounterEditSession.new()
 	assert_true(encounter_session.open(run, ODYSSEY_PATH))
-	assert_eq(encounter_session.working_run.rooms.size(), 3)
+	assert_eq(encounter_session.working_run.rooms.size(), 5)
 	for room in encounter_session.working_run.rooms:
 		assert_not_null(room.encounter_definition)
 

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+
+[sub_resource type="Resource" id="HpDrawback"]
+script = ExtResource("2_stat")
+stat_id = &"max_hp"
+value = -0.10
+modifier_type = 1
+
+[sub_resource type="Resource" id="Dash"]
+script = ExtResource("3_spell")
+modifier_name = "Nœud de Phthie"
+target_spell_id = &"achilles_fulminant_dash"
+range_bonus = 1
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_phthia_knot"
+display_name = "Nœud de Phthie"
+description = "Percée gagne 1 portée ; -10 % PV max."
+tags = Array[StringName]([&"odyssey", &"achilles", &"hybrid"])
+category = 2
+equipment_slot = 2
+compatible_character_ids = Array[StringName]([&"achilles"])
+stat_modifiers = Array[ItemStatModifierData]([SubResource("HpDrawback")])
+spell_modifiers = Array[SpellModifier]([SubResource("Dash")])

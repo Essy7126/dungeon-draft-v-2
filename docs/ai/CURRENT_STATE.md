@@ -1,5 +1,18 @@
 # État courant vérifié du projet
 
+> Cinquième carte intégrée le 6 septembre 2026 : [Le Temple du Serment Noir](../maps/black_oath_temple_v1.md) prolonge Catabase après le Gué du Léthé. Temple grec noir dessiné : 152 dalles, nef libre de six cases sur quatorze, huit bases de colonnes et deux fosses ; 144 cases praticables connectées. Cadrage local borné à la peinture pour garder le plateau visible avec l'inspecteur compact, zoom et proportions conservés. Tests ciblés : 38/38, 10 614 assertions. Deux parcours GPU finaux 1920 × 1080 et 1200 × 896 : cinq salles/actions, quatre transitions et dix captures par format ; proportions comparées et captures inspectées. Les salles I–IV, leurs rencontres et les profils économie/progression conservent leurs SHA-256. Le catalogue Studio passe désormais ; l'échec de portrait signalé dans le bilan IV ci-dessous est historique. [Pipeline actualisée](../maps/registered_terrain_pipeline.md), preuves et limites dans la fiche V.
+
+
+> Quatrième carte intégrée le 6 septembre 2026 : [Le Gué du Léthé](../maps/lethe_crossing_v1.md) ajoute IV après le Jugement de Paris. Nouvelle implantation : 114 dalles, deux cours décalées, passage libre de cinq cases, huit obstacles et trois petites fosses ; 106 cases praticables connectées. Les trois premières salles et rencontres sont conservées. Tests principaux : 26/26, 7 976 assertions. Parcours GPU 1920 × 1080 et 1200 × 896 : quatre salles/actions, trois transitions, huit captures par format ; géométrie et centre calme contrôlés. Contrôles annexes : 2/3, échec du catalogue global Studio sur le portrait manquant du Mage philosophe, hors carte. [Pipeline actualisée](../maps/registered_terrain_pipeline.md) ; détails et limites dans la fiche.
+
+> Troisième carte intégrée le 5 septembre 2026 : [Le Parvis du Jugement](../maps/silent_judgment_courtyard_v1.md) remplace l'ancienne map de la salle III de Catabase. Les trois salles utilisent désormais la [pipeline partagée de terrain peint](../maps/registered_terrain_pipeline.md). III conserve sa rencontre finale et adopte un centre clair : 217 vraies dalles, 12 cases d'obstacles tactiques, aucun décor cosmétique séparé, joints neutres et bandeau de terre fondu. Validation ciblée : 13 tests / 5 565 assertions ; parcours GPU en 1920 × 1080 et 1200 × 896 exacts, trois couples déplacement/garde, deux transitions et six captures par parcours. Les victoires I/II sont forcées uniquement pour la QA ; III reste en combat après ses actions. Rapports et limites dans la fiche de carte.
+
+
+> Point d’entrée de reprise au 5 septembre 2026 : [Catabase, référence Dofus et production VFX](REPRISE_PROJET_2026-09-05.md). Cette synthèse confronte les décisions récentes au HEAD `13cb587` par lecture statique. Les statuts, chiffres et validations ci-dessous restent attachés à leurs dates ; ils ne constituent pas une certification globale du HEAD actuel.
+
+> Arène reconstruite le 5 septembre 2026 : [La Cour des Sources, géométrie et terrain issus du relevé Dofus](../maps/greek_drawn_courtyard_v1.md). Repère natif commun 1920 × 1200, 217 dalles existantes, cinq fosses/16 VOID, 12 cases bloquées, berges et décors séparés. Combat, support complet des dalles et déplacement/Garde vérifiés en 1920 × 1080 et 1200 × 896. Les parties masquées de la référence restent inférées. Passe artistique V4 achevée : paysage grec peint composé, premiers plans transparents assortis et raccord Land/dalles contrôlé sur les 217 matériaux. Bandeau de terre calcaire ajouté autour du contour réel : 0,42 cellule, fondu extérieur, aucune nouvelle case ; marge de rive minimale mesurée de 26,434 px.
+
+
 ## Catabase — cinématique V4 (WORKTREE_CANDIDATE, 2026-08-28)
 
 - Dépôt : `Essy7126/dungeon-draft-v-2` ; branche : `main` ; BASE de mission :

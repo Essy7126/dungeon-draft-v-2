@@ -120,6 +120,10 @@ func test_each_odyssey_spell_uses_its_native_meshy_clip() -> void:
 
 func _ready_runtime() -> Dictionary:
 	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
+	# Keep the Meshy fixture independent of the canonical sprite selection.
+	adapter.rendering_backend = "VIEWPORT_3D"
+	adapter.sprite_profile = null
+	adapter.visual_profile = load(PROFILE_PATH) as AchillesVisualProfile
 	add_child_autofree(adapter)
 	adapter.bind_unit(Unit.from_data(load(UNIT_PATH) as UnitData))
 	var deadline := Time.get_ticks_msec() + READY_TIMEOUT_MSEC

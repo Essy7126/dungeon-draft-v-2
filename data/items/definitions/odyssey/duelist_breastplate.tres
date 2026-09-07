@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+
+[sub_resource type="Resource" id="Hp"]
+script = ExtResource("2_stat")
+stat_id = &"max_hp"
+value = 0.10
+modifier_type = 1
+
+[sub_resource type="Resource" id="Armor"]
+script = ExtResource("2_stat")
+stat_id = &"armure"
+value = 25.0
+
+[sub_resource type="Resource" id="Strike"]
+script = ExtResource("3_spell")
+modifier_name = "Riposte du duelliste"
+target_spell_id = &"achilles_peleid_strike"
+damage_percent = 0.20
+require_hp_lost_since_previous_activation = true
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_duelist_breastplate"
+display_name = "Pectoral du duelliste"
+description = "+10 % PV max, +25 Armure ; Frappe gagne 20 % après une perte de PV depuis la précédente activation."
+tags = Array[StringName]([&"odyssey", &"achilles", &"wrath"])
+category = 1
+equipment_slot = 1
+compatible_character_ids = Array[StringName]([&"achilles"])
+stat_modifiers = Array[ItemStatModifierData]([SubResource("Hp"), SubResource("Armor")])
+spell_modifiers = Array[SpellModifier]([SubResource("Strike")])

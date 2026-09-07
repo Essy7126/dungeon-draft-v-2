@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"achilles_fulminant_dash"
+spell_name = "Percée fulgurante"
+description = "1 PA · De 1 à 3 cases en ligne cardinale · Se déplace vers une case libre sans traverser unité ni obstacle. Une utilisation par activation."
+icon = ExtResource("2_icon")
+ap_cost = 1
+minimum_range = 1
+spell_range = 3
+needs_line_of_sight = false
+once_per_activation = true
+can_target_enemy = false
+can_target_free_cell = true
+line_from_caster = true
+damage = 0
+damage_type = 0
+caster_movement = 1
+movement_requires_clear_path = true
+skill_tree = null

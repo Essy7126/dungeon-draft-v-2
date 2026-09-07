@@ -1,0 +1,507 @@
+{
+  "schema_version": 1,
+  "kind": "original_game_capture_excerpt",
+  "description": "Fin réelle du combat : dernière réaction hit_E, attaques des spectres, chute death_N et fondu. La direction de mort suit normalement le dernier agresseur.",
+  "output": "docs/design/achilles/media/achilles_defeat_v2.gif",
+  "working_encoder_manifest": "artifacts/achilles_kit_sprite_validation_v2/defeat_E_visual/clip/achilles_defeat_v2.clip_manifest.json",
+  "source_manifest": "artifacts/achilles_kit_sprite_validation_v2/defeat_E_visual/clip/clip_manifest.json",
+  "source_manifest_sha256": "644a0b74a3faffd5a4a9ecdbb55d5ef462d6d51f3a840acd7561dc0913aa5bac",
+  "source_frame_count": 203,
+  "selected_frame_count": 58,
+  "source_frame_indices": [
+    145,
+    202
+  ],
+  "timestamp_clock": "Original Godot Time.get_ticks_usec; timestamps are not rebased or interpolated.",
+  "first_capture_usec": 20486323,
+  "ended_usec": 24605630,
+  "source_time_interval_ms": [
+    9509.929,
+    13629.236
+  ],
+  "source_duration_ms": 4119.307,
+  "viewport_rectangle_px": [
+    251,
+    119,
+    248,
+    274
+  ],
+  "output_enlargement": 2,
+  "policy": "Unmodified contiguous captured frames. Original capture_usec and ended_usec preserved. No synthesized frame, time stretch, retiming or duplicated tail.",
+  "measurement_limit": "Actual rendered game frames. GPU readback can affect the recorded cadence; separate runs without capture measure gameplay timing.",
+  "frames": [
+    {
+      "index": 145,
+      "capture_usec": 20486323,
+      "source_file": "frame_0145.png",
+      "sha256": "af0cdb96a717acc26a5d8701c4bde38a413d50ea6226efeda3726eee7233856e",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 146,
+      "capture_usec": 20620497,
+      "source_file": "frame_0146.png",
+      "sha256": "aaf18be4a861982f154b6a668f7fded7295e28588eb0959144e48b37f86b5b81",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 147,
+      "capture_usec": 20682994,
+      "source_file": "frame_0147.png",
+      "sha256": "be46a9bfe32f7f75bf85287c7f1e340f675fbf905777840bae54aaa00f46ca0d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 148,
+      "capture_usec": 20747628,
+      "source_file": "frame_0148.png",
+      "sha256": "f9226a60065a6a55afd2bf539b1bee8fa701684e0425d0d4f0f8cf87a6d6e4a4",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 149,
+      "capture_usec": 20811427,
+      "source_file": "frame_0149.png",
+      "sha256": "f9226a60065a6a55afd2bf539b1bee8fa701684e0425d0d4f0f8cf87a6d6e4a4",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 150,
+      "capture_usec": 20878523,
+      "source_file": "frame_0150.png",
+      "sha256": "f9226a60065a6a55afd2bf539b1bee8fa701684e0425d0d4f0f8cf87a6d6e4a4",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 151,
+      "capture_usec": 20941714,
+      "source_file": "frame_0151.png",
+      "sha256": "f9226a60065a6a55afd2bf539b1bee8fa701684e0425d0d4f0f8cf87a6d6e4a4",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 152,
+      "capture_usec": 21005715,
+      "source_file": "frame_0152.png",
+      "sha256": "ac42b27d86df19f47df5bb833accef147dde8d745d3533ce040bf0c96c8fa211",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 153,
+      "capture_usec": 21070203,
+      "source_file": "frame_0153.png",
+      "sha256": "ac42b27d86df19f47df5bb833accef147dde8d745d3533ce040bf0c96c8fa211",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 154,
+      "capture_usec": 21132003,
+      "source_file": "frame_0154.png",
+      "sha256": "b11056c055896c8768173604057afd1ed9d6e885981f03d69a4b6859ed792393",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 155,
+      "capture_usec": 21204592,
+      "source_file": "frame_0155.png",
+      "sha256": "85e91158b5648d9d61c9a767da40e7929278f734010227d8e3eaad57cb83e9a4",
+      "hero_animation": "hit_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 156,
+      "capture_usec": 21268177,
+      "source_file": "frame_0156.png",
+      "sha256": "0d2f46f118ee8c36dd688d30321d759749146e03981e76c9c6e98aaa286fc5a7",
+      "hero_animation": "hit_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 157,
+      "capture_usec": 21329321,
+      "source_file": "frame_0157.png",
+      "sha256": "ea258d11a85e46a4a0d0d01750614151e7957516bc2ec5317570f8ab1dba178a",
+      "hero_animation": "hit_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 158,
+      "capture_usec": 21391244,
+      "source_file": "frame_0158.png",
+      "sha256": "d47f87f26ee2252ccb5c6a8b7c003251c9075e49551e4addbabb71e7e060d37e",
+      "hero_animation": "hit_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 159,
+      "capture_usec": 21455759,
+      "source_file": "frame_0159.png",
+      "sha256": "20bc4287760fbf56b927c87965e18623cc9dd413b856c9dce5a404cf90fa50c5",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 160,
+      "capture_usec": 21517332,
+      "source_file": "frame_0160.png",
+      "sha256": "12312e89365babf441e9f40ebe9d841a36edfea05b427588c50c6718f08357f8",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 161,
+      "capture_usec": 21580122,
+      "source_file": "frame_0161.png",
+      "sha256": "e7b436bea4d4cae9282363456b01b305585b232959ae6b555506f1eb89727d51",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 162,
+      "capture_usec": 21642434,
+      "source_file": "frame_0162.png",
+      "sha256": "8cbde833c22df5ea4d91ddae242bdef7eb5373821603f4556b19544697b8a8ea",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 163,
+      "capture_usec": 21705239,
+      "source_file": "frame_0163.png",
+      "sha256": "4ba9b5d0d4dbfe8ec08b31b3c29972afd9bf8062e3adee8983b36fd0d79ab5dd",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 164,
+      "capture_usec": 21767287,
+      "source_file": "frame_0164.png",
+      "sha256": "f3b8a32737793dc54adadfb7e5a268cd80123ee6f097e299a940ef56bdc01626",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 165,
+      "capture_usec": 21829658,
+      "source_file": "frame_0165.png",
+      "sha256": "4a2ed587e29e6c3563c742cf3006d7a3d870bdadd00f63755c0b9eca42b8ce5a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 166,
+      "capture_usec": 22025659,
+      "source_file": "frame_0166.png",
+      "sha256": "d185948759d2c14197274fc3fa0d2cb3e0172914f12ea91edde5387c72c2e693",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 167,
+      "capture_usec": 22086589,
+      "source_file": "frame_0167.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 168,
+      "capture_usec": 22150281,
+      "source_file": "frame_0168.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 169,
+      "capture_usec": 22213897,
+      "source_file": "frame_0169.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 170,
+      "capture_usec": 22271841,
+      "source_file": "frame_0170.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 171,
+      "capture_usec": 22334323,
+      "source_file": "frame_0171.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 172,
+      "capture_usec": 22397930,
+      "source_file": "frame_0172.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 173,
+      "capture_usec": 22460030,
+      "source_file": "frame_0173.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 174,
+      "capture_usec": 22522050,
+      "source_file": "frame_0174.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 175,
+      "capture_usec": 22584718,
+      "source_file": "frame_0175.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 176,
+      "capture_usec": 22647813,
+      "source_file": "frame_0176.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 177,
+      "capture_usec": 22711314,
+      "source_file": "frame_0177.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 178,
+      "capture_usec": 22775419,
+      "source_file": "frame_0178.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 179,
+      "capture_usec": 22841372,
+      "source_file": "frame_0179.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 180,
+      "capture_usec": 22904981,
+      "source_file": "frame_0180.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 181,
+      "capture_usec": 22970435,
+      "source_file": "frame_0181.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 182,
+      "capture_usec": 23035069,
+      "source_file": "frame_0182.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 183,
+      "capture_usec": 23100567,
+      "source_file": "frame_0183.png",
+      "sha256": "4dceece71d8c1f018336f814f9b6a5acd5e58cb79ae5633e9fefa07feb70e05d",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 184,
+      "capture_usec": 23176950,
+      "source_file": "frame_0184.png",
+      "sha256": "5c2e0155ad069dd502042ab67ff24a937bc3fdae346c090be78c111a9a2935bf",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 185,
+      "capture_usec": 23241562,
+      "source_file": "frame_0185.png",
+      "sha256": "2f81061663ae3fd3bd91e527687dd904a4a3a3474e425db4cf7516abf456dfcb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 186,
+      "capture_usec": 23299707,
+      "source_file": "frame_0186.png",
+      "sha256": "2cf390c94d4e5db5e969b3c1acfd1f5afa17bf56fccf1430a7d78e4d4c700679",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 187,
+      "capture_usec": 23364083,
+      "source_file": "frame_0187.png",
+      "sha256": "2cf390c94d4e5db5e969b3c1acfd1f5afa17bf56fccf1430a7d78e4d4c700679",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 188,
+      "capture_usec": 23423349,
+      "source_file": "frame_0188.png",
+      "sha256": "2cf390c94d4e5db5e969b3c1acfd1f5afa17bf56fccf1430a7d78e4d4c700679",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 189,
+      "capture_usec": 23485618,
+      "source_file": "frame_0189.png",
+      "sha256": "2cf390c94d4e5db5e969b3c1acfd1f5afa17bf56fccf1430a7d78e4d4c700679",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 190,
+      "capture_usec": 23549551,
+      "source_file": "frame_0190.png",
+      "sha256": "26126fcb57fa6ce1ac6f8d85a3689ef7cf0c861273b75b4f154ba0a8b08d9dc9",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 191,
+      "capture_usec": 23614158,
+      "source_file": "frame_0191.png",
+      "sha256": "26126fcb57fa6ce1ac6f8d85a3689ef7cf0c861273b75b4f154ba0a8b08d9dc9",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 192,
+      "capture_usec": 23675560,
+      "source_file": "frame_0192.png",
+      "sha256": "22c10e6b43fad698741e4c9e0ff61c1d4e1a373a5ee9c582f45c429872a61a60",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 193,
+      "capture_usec": 23763063,
+      "source_file": "frame_0193.png",
+      "sha256": "9da4b23653d2b9bce44a4f457518aaa23a1328cca85dd9cf4e5ff06a9d3d8176",
+      "hero_animation": "death_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 194,
+      "capture_usec": 23828521,
+      "source_file": "frame_0194.png",
+      "sha256": "b06b3092c3f594170373478f2be11ec4aae635db36f90d9565208bf97c5bd461",
+      "hero_animation": "death_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 195,
+      "capture_usec": 23895622,
+      "source_file": "frame_0195.png",
+      "sha256": "6e67a3e8546a55a7a642339762e38b70408003df29f03188b00c1e9331a68b85",
+      "hero_animation": "death_N",
+      "hero_frame": 1
+    },
+    {
+      "index": 196,
+      "capture_usec": 23956201,
+      "source_file": "frame_0196.png",
+      "sha256": "dd648cb44b6f93b12e32641519d96b786e8d0d398af4db81ce1c509ed2a37a2c",
+      "hero_animation": "death_N",
+      "hero_frame": 1
+    },
+    {
+      "index": 197,
+      "capture_usec": 24018106,
+      "source_file": "frame_0197.png",
+      "sha256": "b4fd027dcc5dc2392c6f53c1bb3dbdec016d9c6af92e1cfa7b38d7bbe532f14e",
+      "hero_animation": "death_N",
+      "hero_frame": 2
+    },
+    {
+      "index": 198,
+      "capture_usec": 24081881,
+      "source_file": "frame_0198.png",
+      "sha256": "d8d41806525b9c9fe3f76ccc1257d9711bf4c44e686e364bae70db02f954f217",
+      "hero_animation": "death_N",
+      "hero_frame": 2
+    },
+    {
+      "index": 199,
+      "capture_usec": 24139272,
+      "source_file": "frame_0199.png",
+      "sha256": "1c22beea76bf3a67738ac5df891fbe1c42213de1d24e2c8378b12163be11e179",
+      "hero_animation": "death_N",
+      "hero_frame": 3
+    },
+    {
+      "index": 200,
+      "capture_usec": 24202675,
+      "source_file": "frame_0200.png",
+      "sha256": "2f710654554e2ed09ead8e58c8e509fca38a5c916f40ade1f9d2fbb451e19c57",
+      "hero_animation": "death_N",
+      "hero_frame": 3
+    },
+    {
+      "index": 201,
+      "capture_usec": 24264711,
+      "source_file": "frame_0201.png",
+      "sha256": "e84bbfeceeeb957241766dbc916a562fae6da0dab756a2e8255868c59ff56046",
+      "hero_animation": "death_N",
+      "hero_frame": 3
+    },
+    {
+      "index": 202,
+      "capture_usec": 24327274,
+      "source_file": "frame_0202.png",
+      "sha256": "87f6b69b7d65db5caaf4261316d576427ff0fafac8599d5a30e94b70c7ae4984",
+      "hero_animation": "death_N",
+      "hero_frame": 3
+    }
+  ],
+  "encoded_duration_ms": 4120,
+  "encoded_dimensions_px": [
+    496,
+    548
+  ],
+  "encoded_frame_count": 34,
+  "output_sha256": "3988193f241216d59cfddda25c762d85be4396e4554320cad5153f8b86f81120",
+  "output_bytes": 747553,
+  "validation_report": "docs/design/achilles/media/achilles_defeat_v2.encode_report.json"
+}

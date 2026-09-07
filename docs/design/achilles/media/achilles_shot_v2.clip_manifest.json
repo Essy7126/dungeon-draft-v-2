@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "kind": "original_game_capture_excerpt",
+  "description": "Tir complet : marche, repos, préparation de l’arc, libération, projectile réel et récupération.",
+  "output": "docs/design/achilles/media/achilles_shot_v2.gif",
+  "working_encoder_manifest": "artifacts/achilles_kit_sprite_validation_v2/base_shot_E_visual/clip/achilles_shot_v2.clip_manifest.json",
+  "source_manifest": "artifacts/achilles_kit_sprite_validation_v2/base_shot_E_visual/clip/clip_manifest.json",
+  "source_manifest_sha256": "82fba5ecf548be9b5a33b53aef8cbe2f334667fe84f9d954d84dccc8375b4575",
+  "source_frame_count": 46,
+  "selected_frame_count": 46,
+  "source_frame_indices": [
+    0,
+    45
+  ],
+  "timestamp_clock": "Original Godot Time.get_ticks_usec; timestamps are not rebased or interpolated.",
+  "first_capture_usec": 12437726,
+  "ended_usec": 15256193,
+  "source_time_interval_ms": [
+    0,
+    2818.467
+  ],
+  "source_duration_ms": 2818.467,
+  "viewport_rectangle_px": [
+    251,
+    119,
+    386,
+    343
+  ],
+  "output_enlargement": 2,
+  "policy": "Unmodified contiguous captured frames. Original capture_usec and ended_usec preserved. No synthesized frame, time stretch, retiming or duplicated tail.",
+  "measurement_limit": "Actual rendered game frames. GPU readback can affect the recorded cadence; separate runs without capture measure gameplay timing.",
+  "frames": [
+    {
+      "index": 0,
+      "capture_usec": 12437726,
+      "source_file": "frame_0000.png",
+      "sha256": "cd187d7e36e964624fd8506ca54877451c930cfcb363760299f508d451fff87d",
+      "hero_animation": "walk_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 1,
+      "capture_usec": 12503589,
+      "source_file": "frame_0001.png",
+      "sha256": "850709f15610526ee41ad10f1b6b84bdd0b05045dc3912d232f375d85afe0e06",
+      "hero_animation": "walk_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 2,
+      "capture_usec": 12562356,
+      "source_file": "frame_0002.png",
+      "sha256": "159dc179d3448bb070e40e4c9e48984f5adddacb099fd123ce9dc2156312f1c2",
+      "hero_animation": "walk_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 3,
+      "capture_usec": 12621467,
+      "source_file": "frame_0003.png",
+      "sha256": "d7e97d849595d2a93c063576be3fa91be6bd1691f79b99cda99bc4a66cda607f",
+      "hero_animation": "walk_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 4,
+      "capture_usec": 12682927,
+      "source_file": "frame_0004.png",
+      "sha256": "043bbba85dd25cd733cb40db21247c066d15c9fc398054e844a9645de1178bf0",
+      "hero_animation": "walk_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 5,
+      "capture_usec": 12748018,
+      "source_file": "frame_0005.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 6,
+      "capture_usec": 12808836,
+      "source_file": "frame_0006.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 7,
+      "capture_usec": 12867678,
+      "source_file": "frame_0007.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 8,
+      "capture_usec": 12927646,
+      "source_file": "frame_0008.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 9,
+      "capture_usec": 12987004,
+      "source_file": "frame_0009.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 10,
+      "capture_usec": 13048482,
+      "source_file": "frame_0010.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 11,
+      "capture_usec": 13106969,
+      "source_file": "frame_0011.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 12,
+      "capture_usec": 13167932,
+      "source_file": "frame_0012.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 13,
+      "capture_usec": 13226976,
+      "source_file": "frame_0013.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 14,
+      "capture_usec": 13290818,
+      "source_file": "frame_0014.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 15,
+      "capture_usec": 13356915,
+      "source_file": "frame_0015.png",
+      "sha256": "3082ba60e4d2412163391e3841aa04b074e007198d290e9579814c1cd40e268a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 16,
+      "capture_usec": 13443275,
+      "source_file": "frame_0016.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "bow_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 17,
+      "capture_usec": 13506857,
+      "source_file": "frame_0017.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "bow_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 18,
+      "capture_usec": 13565658,
+      "source_file": "frame_0018.png",
+      "sha256": "2a6d5f1be9081584d105d143a498142909c39b3c4d410062db7aa3b3b472e81b",
+      "hero_animation": "bow_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 19,
+      "capture_usec": 13624852,
+      "source_file": "frame_0019.png",
+      "sha256": "2a6d5f1be9081584d105d143a498142909c39b3c4d410062db7aa3b3b472e81b",
+      "hero_animation": "bow_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 20,
+      "capture_usec": 13684090,
+      "source_file": "frame_0020.png",
+      "sha256": "c3ff4263a8638419e6595c79ba18a8e386cad9cbc1fe20bd91facc556e42fe60",
+      "hero_animation": "bow_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 21,
+      "capture_usec": 13744209,
+      "source_file": "frame_0021.png",
+      "sha256": "c3ff4263a8638419e6595c79ba18a8e386cad9cbc1fe20bd91facc556e42fe60",
+      "hero_animation": "bow_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 22,
+      "capture_usec": 13803684,
+      "source_file": "frame_0022.png",
+      "sha256": "f5bc96bb6aa6c0815aebb49bc9810d543c45cd7cfbdbfc08f251ecb788454c58",
+      "hero_animation": "bow_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 23,
+      "capture_usec": 13861311,
+      "source_file": "frame_0023.png",
+      "sha256": "61f88865dfe062b658ad8f13494d0d1e087104fa5e0b559a7eeba03208a3beaa",
+      "hero_animation": "bow_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 24,
+      "capture_usec": 13921862,
+      "source_file": "frame_0024.png",
+      "sha256": "7461e32c49a5f6bfd95e15236b1b08a2c1aa5b1dfcafda040cf9df1b279ec890",
+      "hero_animation": "bow_E",
+      "hero_frame": 4
+    },
+    {
+      "index": 25,
+      "capture_usec": 13983421,
+      "source_file": "frame_0025.png",
+      "sha256": "736ae9189c2a4c8e3e43407cfe401a02491e2aff87b018e93d0fb701226317f2",
+      "hero_animation": "bow_E",
+      "hero_frame": 4
+    },
+    {
+      "index": 26,
+      "capture_usec": 14048292,
+      "source_file": "frame_0026.png",
+      "sha256": "5d48d023254e3e10257c41a2c7ddc714a0343f5c629e2024f8d171a2caf07b9d",
+      "hero_animation": "bow_E",
+      "hero_frame": 5
+    },
+    {
+      "index": 27,
+      "capture_usec": 14106603,
+      "source_file": "frame_0027.png",
+      "sha256": "b5d326724c4bcfd2ca99accf70051c7e2addd3fffb35e538aaaf5dc937276f2a",
+      "hero_animation": "bow_E",
+      "hero_frame": 5
+    },
+    {
+      "index": 28,
+      "capture_usec": 14166445,
+      "source_file": "frame_0028.png",
+      "sha256": "f98fe91f3dd4b265bb8c32fa67894a6b2e628ae2997ef50212390e0106a6dacd",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 29,
+      "capture_usec": 14222675,
+      "source_file": "frame_0029.png",
+      "sha256": "0736ffbf2a82287db026ea4273282d7a4f8bd9e43765453d5505bfc00accd2dc",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 30,
+      "capture_usec": 14281043,
+      "source_file": "frame_0030.png",
+      "sha256": "5e736876d1d731d0472e523f11a80edf0dee507f133bfd64f981dadd712770bb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 31,
+      "capture_usec": 14340599,
+      "source_file": "frame_0031.png",
+      "sha256": "2257ab28097edbb4737546835216719b267c7f2efe1e0e1d105c3e11e856ef4a",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 32,
+      "capture_usec": 14399536,
+      "source_file": "frame_0032.png",
+      "sha256": "78ae788e6646d651aa3b10f6d6553135750f5007e9510e38332326c964271c07",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 33,
+      "capture_usec": 14458481,
+      "source_file": "frame_0033.png",
+      "sha256": "463003e213f99f4f868ca8bfdc49f2c924552c5f5dfaf30b1058a2c22970786b",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 34,
+      "capture_usec": 14518497,
+      "source_file": "frame_0034.png",
+      "sha256": "c1e2e760466eb95dadd97c3d74d02b2f8eb9a06728e9d2956a0183bf0a013b43",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 35,
+      "capture_usec": 14584822,
+      "source_file": "frame_0035.png",
+      "sha256": "baf5e05447a9959471a171470d4657823a0826fee3d7a965a51a99ca4c119944",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 36,
+      "capture_usec": 14644055,
+      "source_file": "frame_0036.png",
+      "sha256": "987b54f96117cfdefd0f4ca6d05fe1a4dd8ee73e2a072239762fa822e82238b0",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 37,
+      "capture_usec": 14705236,
+      "source_file": "frame_0037.png",
+      "sha256": "accd4ca2e64265d19b0d275bc18eb6f90d83a9d2f14552656a8a374149479943",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 38,
+      "capture_usec": 14765471,
+      "source_file": "frame_0038.png",
+      "sha256": "172c11d65d4f2abf380a6ca10c8806f116d56f5ad351763ff276d2b8d20cd3f4",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 39,
+      "capture_usec": 14824002,
+      "source_file": "frame_0039.png",
+      "sha256": "c9665870dd625197ae78efc7a0105f42cd4d22a8fdc43f4f1617c986556d824c",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 40,
+      "capture_usec": 14884353,
+      "source_file": "frame_0040.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 41,
+      "capture_usec": 14944369,
+      "source_file": "frame_0041.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 42,
+      "capture_usec": 15003227,
+      "source_file": "frame_0042.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 43,
+      "capture_usec": 15064552,
+      "source_file": "frame_0043.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 44,
+      "capture_usec": 15124340,
+      "source_file": "frame_0044.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 45,
+      "capture_usec": 15183736,
+      "source_file": "frame_0045.png",
+      "sha256": "f9c3cbacfc3575411b0d82e47e16a57cc037533e1af69a2c02e9f3eeb7d40169",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    }
+  ],
+  "encoded_duration_ms": 2820,
+  "encoded_dimensions_px": [
+    772,
+    686
+  ],
+  "encoded_frame_count": 28,
+  "output_sha256": "96c085aeacd9e7ae50a18cdf1aaea2cd353927beb4ef8bcd560199e417741a69",
+  "output_bytes": 528652,
+  "validation_report": "docs/design/achilles/media/achilles_shot_v2.encode_report.json"
+}

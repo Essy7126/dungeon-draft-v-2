@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="4_skin"]
 
 [node name="SkillTreeNodeDetailPanel" type="PanelContainer"]
-custom_minimum_size = Vector2(360, 0)
+custom_minimum_size = Vector2(286, 0)
 theme = ExtResource("2_theme")
 theme_type_variation = &"SkillTreeDetailSurface"
 script = ExtResource("1_script")
@@ -27,6 +27,7 @@ patch_margin_right = 72
 patch_margin_bottom = 150
 
 [node name="ReadingVeil" type="Panel" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,33 +49,38 @@ theme_override_constants/margin_top = 36
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 36
 
-[node name="ContentScroll" type="ScrollContainer" parent="SafeMargin"]
+[node name="DetailLayout" type="VBoxContainer" parent="SafeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ContentScroll" type="ScrollContainer" parent="SafeMargin/DetailLayout"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 1
 
-[node name="Content" type="VBoxContainer" parent="SafeMargin/ContentScroll"]
+[node name="Content" type="VBoxContainer" parent="SafeMargin/DetailLayout/ContentScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="IconStage" type="Control" parent="SafeMargin/ContentScroll/Content"]
+[node name="IconStage" type="Control" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 88)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="DisciplineIcon" parent="SafeMargin/ContentScroll/Content/IconStage" instance=ExtResource("3_glyph")]
+[node name="DisciplineIcon" parent="SafeMargin/DetailLayout/ContentScroll/Content/IconStage" instance=ExtResource("3_glyph")]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 38.0
-offset_bottom = 38.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 30.0
+offset_bottom = 30.0
 
-[node name="IconOverride" type="TextureRect" parent="SafeMargin/ContentScroll/Content/IconStage"]
+[node name="IconOverride" type="TextureRect" parent="SafeMargin/DetailLayout/ContentScroll/Content/IconStage"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -92,7 +98,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PrimaryGlyph" parent="SafeMargin/ContentScroll/Content/IconStage" instance=ExtResource("3_glyph")]
+[node name="PrimaryGlyph" parent="SafeMargin/DetailLayout/ContentScroll/Content/IconStage" instance=ExtResource("3_glyph")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -107,7 +113,7 @@ offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NameLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="NameLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeTitleLabel"
@@ -117,7 +123,7 @@ text = "DÉTAIL DU NŒUD"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="MetaLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="MetaLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeMetaLabel"
@@ -127,7 +133,7 @@ text = "Archer — Rang 1"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="XPLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="XPLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.84, 0.7, 0.4, 1)
@@ -135,7 +141,16 @@ theme_override_font_sizes/font_size = 15
 text = "0 XP requis"
 horizontal_alignment = 1
 
-[node name="DescriptionHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="StateLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.8, 0.45, 1)
+theme_override_font_sizes/font_size = 15
+text = "Acquis"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="DescriptionHeading" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeSectionLabel"
@@ -143,7 +158,7 @@ theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "EFFET"
 
-[node name="DescriptionLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="DescriptionLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 108)
 layout_mode = 2
@@ -151,10 +166,11 @@ theme_override_font_sizes/font_size = 16
 text = "Description"
 autowrap_mode = 2
 
-[node name="SeparatorA" type="HSeparator" parent="SafeMargin/ContentScroll/Content"]
+[node name="SeparatorA" type="HSeparator" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SpellHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="SpellHeading" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeSectionLabel"
@@ -162,15 +178,15 @@ theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "SORT AFFECTÉ"
 
-[node name="SpellLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="SpellLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 28)
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Tir précis"
 autowrap_mode = 2
 
-[node name="PrerequisitesHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="PrerequisitesHeading" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeSectionLabel"
@@ -178,18 +194,19 @@ theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "PRÉREQUIS"
 
-[node name="PrerequisitesLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="PrerequisitesLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 28)
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Aucun"
 autowrap_mode = 2
 
-[node name="SeparatorB" type="HSeparator" parent="SafeMargin/ContentScroll/Content"]
+[node name="SeparatorB" type="HSeparator" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IncompatibilitiesHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="IncompatibilitiesHeading" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -198,7 +215,7 @@ theme_override_colors/font_color = Color(0.82, 0.52, 0.5, 1)
 theme_override_font_sizes/font_size = 13
 text = "INCOMPATIBILITÉ"
 
-[node name="IncompatibilitiesLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="IncompatibilitiesLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -207,7 +224,7 @@ theme_override_font_sizes/font_size = 15
 text = "L’autre choix a été acquis."
 autowrap_mode = 2
 
-[node name="StateHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="StateHeading" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeSectionLabel"
@@ -215,15 +232,7 @@ theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "ÉTAT"
 
-[node name="StateLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.8, 0.45, 1)
-theme_override_font_sizes/font_size = 15
-text = "Futur compatible"
-autowrap_mode = 2
-
-[node name="ReasonHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="ReasonHeading" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SkillTreeSectionLabel"
@@ -231,7 +240,7 @@ theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "RAISON"
 
-[node name="ReasonLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+[node name="ReasonLabel" type="Label" parent="SafeMargin/DetailLayout/ContentScroll/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
@@ -240,7 +249,7 @@ theme_override_font_sizes/font_size = 15
 text = "Évolution future compatible."
 autowrap_mode = 2
 
-[node name="ActionButton" type="Button" parent="SafeMargin/ContentScroll/Content"]
+[node name="ActionButton" type="Button" parent="SafeMargin/DetailLayout"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2

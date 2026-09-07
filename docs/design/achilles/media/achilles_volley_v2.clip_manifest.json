@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "kind": "original_game_capture_excerpt",
+  "description": "Salve vers le nord : marche, préparation, libération des projectiles réels et récupération.",
+  "output": "docs/design/achilles/media/achilles_volley_v2.gif",
+  "working_encoder_manifest": "artifacts/achilles_kit_sprite_validation_v2/volley_N_final_visual/clip/achilles_volley_v2.clip_manifest.json",
+  "source_manifest": "artifacts/achilles_kit_sprite_validation_v2/volley_N_final_visual/clip/clip_manifest.json",
+  "source_manifest_sha256": "e9694ec74913ea8a2d536a47f9238dc7a7eb921d1e9decfab73aa48bb1befda8",
+  "source_frame_count": 46,
+  "selected_frame_count": 46,
+  "source_frame_indices": [
+    0,
+    45
+  ],
+  "timestamp_clock": "Original Godot Time.get_ticks_usec; timestamps are not rebased or interpolated.",
+  "first_capture_usec": 9075094,
+  "ended_usec": 11867301,
+  "source_time_interval_ms": [
+    0,
+    2792.207
+  ],
+  "source_duration_ms": 2792.207,
+  "viewport_rectangle_px": [
+    320,
+    205,
+    351,
+    327
+  ],
+  "output_enlargement": 2,
+  "policy": "Unmodified contiguous captured frames. Original capture_usec and ended_usec preserved. No synthesized frame, time stretch, retiming or duplicated tail.",
+  "measurement_limit": "Actual rendered game frames. GPU readback can affect the recorded cadence; separate runs without capture measure gameplay timing.",
+  "frames": [
+    {
+      "index": 0,
+      "capture_usec": 9075094,
+      "source_file": "frame_0000.png",
+      "sha256": "474d12e367801000c5bcfa8a29ed81971b2bb24b5d880479d8953ee7cfa2776a",
+      "hero_animation": "walk_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 1,
+      "capture_usec": 9131571,
+      "source_file": "frame_0001.png",
+      "sha256": "b05afe46617a8b999bb84cfbeb9e933bad3523bf9ecc2294c51feb599b90f823",
+      "hero_animation": "walk_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 2,
+      "capture_usec": 9192409,
+      "source_file": "frame_0002.png",
+      "sha256": "62222f2a4de352fe2bdd306100f001bdf9e01687fc04033471a2ab30023eba06",
+      "hero_animation": "walk_N",
+      "hero_frame": 1
+    },
+    {
+      "index": 3,
+      "capture_usec": 9252701,
+      "source_file": "frame_0003.png",
+      "sha256": "c0465d2d1463aa08562edfacbc279479d870511f3bcd205d3163f5d07ab5d151",
+      "hero_animation": "walk_N",
+      "hero_frame": 2
+    },
+    {
+      "index": 4,
+      "capture_usec": 9313690,
+      "source_file": "frame_0004.png",
+      "sha256": "4e2b4b95bee463fe17d76dedd2a3a6460f4bcfc127819314fd7824b68a24afa8",
+      "hero_animation": "walk_N",
+      "hero_frame": 3
+    },
+    {
+      "index": 5,
+      "capture_usec": 9367288,
+      "source_file": "frame_0005.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 6,
+      "capture_usec": 9428749,
+      "source_file": "frame_0006.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 7,
+      "capture_usec": 9489040,
+      "source_file": "frame_0007.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 8,
+      "capture_usec": 9549682,
+      "source_file": "frame_0008.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 9,
+      "capture_usec": 9610372,
+      "source_file": "frame_0009.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 10,
+      "capture_usec": 9670878,
+      "source_file": "frame_0010.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 11,
+      "capture_usec": 9731413,
+      "source_file": "frame_0011.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 12,
+      "capture_usec": 9792007,
+      "source_file": "frame_0012.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 13,
+      "capture_usec": 9852573,
+      "source_file": "frame_0013.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 14,
+      "capture_usec": 9913233,
+      "source_file": "frame_0014.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 15,
+      "capture_usec": 9973735,
+      "source_file": "frame_0015.png",
+      "sha256": "15db929d86fb9c03c05a36b4967382238239187c6d3360b9e571298e6ad53877",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 16,
+      "capture_usec": 10054457,
+      "source_file": "frame_0016.png",
+      "sha256": "e0be99a3b31b7f1679146b3b7675b088263a9e406ab23faea116d0a711539f72",
+      "hero_animation": "volley_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 17,
+      "capture_usec": 10113195,
+      "source_file": "frame_0017.png",
+      "sha256": "e0be99a3b31b7f1679146b3b7675b088263a9e406ab23faea116d0a711539f72",
+      "hero_animation": "volley_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 18,
+      "capture_usec": 10173723,
+      "source_file": "frame_0018.png",
+      "sha256": "e7773f3305ec0cb6236e59bf7b57e6c74ec023d165854b45fa572f635070d213",
+      "hero_animation": "volley_N",
+      "hero_frame": 1
+    },
+    {
+      "index": 19,
+      "capture_usec": 10234304,
+      "source_file": "frame_0019.png",
+      "sha256": "e7773f3305ec0cb6236e59bf7b57e6c74ec023d165854b45fa572f635070d213",
+      "hero_animation": "volley_N",
+      "hero_frame": 1
+    },
+    {
+      "index": 20,
+      "capture_usec": 10294948,
+      "source_file": "frame_0020.png",
+      "sha256": "fe720ae76791c44e5e3a30a026d6908a8e44e0e7919181e419163298807ec3a4",
+      "hero_animation": "volley_N",
+      "hero_frame": 2
+    },
+    {
+      "index": 21,
+      "capture_usec": 10355504,
+      "source_file": "frame_0021.png",
+      "sha256": "fe720ae76791c44e5e3a30a026d6908a8e44e0e7919181e419163298807ec3a4",
+      "hero_animation": "volley_N",
+      "hero_frame": 2
+    },
+    {
+      "index": 22,
+      "capture_usec": 10416123,
+      "source_file": "frame_0022.png",
+      "sha256": "34c209dabb33be4e477b95b940ab174d6c22d6d88ecebc3f5356481d9bf5c776",
+      "hero_animation": "volley_N",
+      "hero_frame": 3
+    },
+    {
+      "index": 23,
+      "capture_usec": 10476781,
+      "source_file": "frame_0023.png",
+      "sha256": "7934e24c899774ea005e193edc9d638beb87cb4c0d1678b7d30a50244db3ed3a",
+      "hero_animation": "volley_N",
+      "hero_frame": 3
+    },
+    {
+      "index": 24,
+      "capture_usec": 10537398,
+      "source_file": "frame_0024.png",
+      "sha256": "5a77cf745a14c808891b9fb750a673949022f63e22b62ace8a06280e385d7641",
+      "hero_animation": "volley_N",
+      "hero_frame": 4
+    },
+    {
+      "index": 25,
+      "capture_usec": 10597909,
+      "source_file": "frame_0025.png",
+      "sha256": "078ef530d040bb31b77c5f139511b6e2d383e2be065e72b746319c6d710dacf2",
+      "hero_animation": "volley_N",
+      "hero_frame": 4
+    },
+    {
+      "index": 26,
+      "capture_usec": 10656211,
+      "source_file": "frame_0026.png",
+      "sha256": "0b1f43346611dd2e74d687961a3f0a94a36a936d88494c57b41b0a96a1b4ca14",
+      "hero_animation": "volley_N",
+      "hero_frame": 5
+    },
+    {
+      "index": 27,
+      "capture_usec": 10713046,
+      "source_file": "frame_0027.png",
+      "sha256": "a4912744f739e3c00100ab10be746c920a1e16c231ad449bdca5967534344d88",
+      "hero_animation": "volley_N",
+      "hero_frame": 5
+    },
+    {
+      "index": 28,
+      "capture_usec": 10773771,
+      "source_file": "frame_0028.png",
+      "sha256": "cdbedb1436bbf500a5d8f5ef0b518f78168532b2902ad5b0cb21a512b14eee25",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 29,
+      "capture_usec": 10834356,
+      "source_file": "frame_0029.png",
+      "sha256": "72caf2d6f3d65f3a6a353505527383090eec0e2a45c360e433ecfba61001a217",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 30,
+      "capture_usec": 10894960,
+      "source_file": "frame_0030.png",
+      "sha256": "c766f380760744713d9f1e4a96abbc8a2fed600cd5ec1e624e198d1de9bdfd9b",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 31,
+      "capture_usec": 10955473,
+      "source_file": "frame_0031.png",
+      "sha256": "0a01f01a1afffa5ef88ffc7f16c2660554529ed1b178383e7a7248bbcb6cd758",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 32,
+      "capture_usec": 11016086,
+      "source_file": "frame_0032.png",
+      "sha256": "e2b18b98c5e73b5b7ec5dbc171273f9eea4600370e04b2b50526ec0ab77a52bc",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 33,
+      "capture_usec": 11076750,
+      "source_file": "frame_0033.png",
+      "sha256": "898d3161bea08ed398a6f9199c1a59c5d72a54467c873b755fdc754d6ff169ba",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 34,
+      "capture_usec": 11137604,
+      "source_file": "frame_0034.png",
+      "sha256": "21e1fac03c1764f9c621471c8bb3e84547cf1b27c605db8928ae22114431a8c3",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 35,
+      "capture_usec": 11198240,
+      "source_file": "frame_0035.png",
+      "sha256": "85524822ca8f84c3cfac25a6370861e5b2fc7b2d406d339b98aad23a9672db41",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 36,
+      "capture_usec": 11258972,
+      "source_file": "frame_0036.png",
+      "sha256": "2ace382ac25073cfe6d18e4b712216e00674f19b5edff543ba457b0f8b9049cc",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 37,
+      "capture_usec": 11319107,
+      "source_file": "frame_0037.png",
+      "sha256": "587fa13e6f9626b75a170bee4581e97b2229d0397926b0e062b163004ab437c5",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 38,
+      "capture_usec": 11380092,
+      "source_file": "frame_0038.png",
+      "sha256": "0ed3dd22db08e2a63bdc9776e5ec0ae674293e9acb59f49a8fcdc953bc50ec6f",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 39,
+      "capture_usec": 11440315,
+      "source_file": "frame_0039.png",
+      "sha256": "f37ac3da5d2a5cf564a342cfb3059197745c0107fd46d7491c38a02fe802d41f",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 40,
+      "capture_usec": 11501160,
+      "source_file": "frame_0040.png",
+      "sha256": "2f551974d545e0ab0e3b46e525504daf187466675c8d7e48f8422059e06b53a7",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 41,
+      "capture_usec": 11562216,
+      "source_file": "frame_0041.png",
+      "sha256": "db0ce1ea1e41af7cf8743def0cdea41ca8cf0a7e760d64f83721764589de24a6",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 42,
+      "capture_usec": 11622027,
+      "source_file": "frame_0042.png",
+      "sha256": "e39ec528cc4f8cf462346ef5cdf3a636f97b2a9c115edd82b7dadc4fd9184ba1",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 43,
+      "capture_usec": 11682704,
+      "source_file": "frame_0043.png",
+      "sha256": "e0be99a3b31b7f1679146b3b7675b088263a9e406ab23faea116d0a711539f72",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 44,
+      "capture_usec": 11737273,
+      "source_file": "frame_0044.png",
+      "sha256": "e0be99a3b31b7f1679146b3b7675b088263a9e406ab23faea116d0a711539f72",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    },
+    {
+      "index": 45,
+      "capture_usec": 11797951,
+      "source_file": "frame_0045.png",
+      "sha256": "e0be99a3b31b7f1679146b3b7675b088263a9e406ab23faea116d0a711539f72",
+      "hero_animation": "idle_N",
+      "hero_frame": 0
+    }
+  ],
+  "encoded_duration_ms": 2790,
+  "encoded_dimensions_px": [
+    702,
+    654
+  ],
+  "encoded_frame_count": 31,
+  "output_sha256": "0307995879b4458e7bb0ac3dfcddfb5fc62a90ecb834a782a5c47d18a7cdf238",
+  "output_bytes": 638169,
+  "validation_report": "docs/design/achilles/media/achilles_volley_v2.encode_report.json"
+}

@@ -1,0 +1,1 @@
+Remove the white background from this eight-character transformation sprite sheet. Make it fully transparent, actual PNG alpha=0 between the characters. Preserve all eight character drawings exactly as shown. Do not draw a checkerboard, black fill, white fill, scene or other background. Output a genuine transparent PNG game asset.

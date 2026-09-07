@@ -3,6 +3,7 @@ extends RefCounted
 
 signal active_relics_changed(count: int)
 signal effect_evaluated(report: Dictionary)
+signal tactical_intent_emitted(intent: Dictionary)
 
 # Motifs renvoyés par manual_activation_state() et activate_relic_manually().
 # L'interface s'en sert pour griser un bouton sans avoir à redevenir experte des
@@ -18,13 +19,16 @@ const MANUAL_REASON_BUSY: StringName = &"busy"
 const MANUAL_REASON_NO_EFFECT_APPLIED: StringName = &"no_effect_applied"
 
 var registry := RelicEffectRegistry.new()
+var action_classification_registry := CombatActionClassificationRegistry.new()
 var _inventory: RunInventory = null
 var _catalog: ItemCatalog = null
+var _action_classification_catalog: CombatActionClassificationCatalogData = null
 var _heroes: Array[Unit] = []
 var _combat_units: Array = []
 var _grid: GridData = null
 var _active_relics: Array[Dictionary] = []
 var _activations := {}
+var _intent_frequency_reservations: Dictionary = {}
 var _cooldown_until := {}
 var _subscriptions_active := false
 var _in_combat := false
@@ -38,13 +42,20 @@ var _event_serial := 0
 func initialize(
 		inventory: RunInventory,
 		catalog: ItemCatalog,
-		heroes: Array
+		heroes: Array,
+		classification_catalog: CombatActionClassificationCatalogData = null
 	) -> bool:
 	dispose()
 	if inventory == null or catalog == null:
 		return false
 	_inventory = inventory
 	_catalog = catalog
+	_action_classification_catalog = classification_catalog
+	action_classification_registry = CombatActionClassificationRegistry.new()
+	if classification_catalog != null \
+			and not action_classification_registry.initialize(classification_catalog):
+		dispose()
+		return false
 	set_heroes(heroes)
 	if not _inventory.changed.is_connected(_refresh_active_relics):
 		_inventory.changed.connect(_refresh_active_relics)
@@ -59,11 +70,14 @@ func dispose() -> void:
 	_disconnect_event_bus()
 	_inventory = null
 	_catalog = null
+	_action_classification_catalog = null
+	action_classification_registry = CombatActionClassificationRegistry.new()
 	_heroes.clear()
 	_combat_units.clear()
 	_grid = null
 	_active_relics.clear()
 	_activations.clear()
+	_intent_frequency_reservations.clear()
 	_cooldown_until.clear()
 	_in_combat = false
 	_resolving = false
@@ -82,7 +96,9 @@ func rebuild_after_restore(inventory: RunInventory, heroes: Array) -> bool:
 	var was_in_combat := _in_combat
 	var units := _combat_units.duplicate()
 	var grid := _grid
-	if not initialize(inventory, _catalog, heroes):
+	var catalog := _catalog
+	var classification_catalog := _action_classification_catalog
+	if not initialize(inventory, catalog, heroes, classification_catalog):
 		return false
 	if was_in_combat:
 		begin_combat(units, grid)
@@ -94,6 +110,7 @@ func begin_combat(units: Array, grid: GridData = null) -> void:
 	_turn_serial = 0
 	_round_number = 0
 	_activations.clear()
+	_intent_frequency_reservations.clear()
 	_cooldown_until.clear()
 	_combat_units = units.duplicate()
 	_grid = grid
@@ -110,6 +127,7 @@ func end_combat() -> void:
 	_combat_units.clear()
 	_grid = null
 	_activations.clear()
+	_intent_frequency_reservations.clear()
 	_cooldown_until.clear()
 	_resolving = false
 
@@ -126,6 +144,8 @@ func active_relic_ids() -> Array[StringName]:
 
 
 func process_trigger(trigger_id: StringName, source_context: Dictionary) -> Array[Dictionary]:
+	if str(source_context.get("action_id", "")).begins_with("relic:"):
+		return []
 	var reports: Array[Dictionary] = []
 	if _resolving or not _in_combat:
 		return reports
@@ -135,19 +155,79 @@ func process_trigger(trigger_id: StringName, source_context: Dictionary) -> Arra
 	context["trigger_id"] = trigger_id
 	context["event_serial"] = _event_serial
 	var heroes := _trigger_heroes(context)
+	for hero in heroes:
+		var resolution := registry.resolve_reaction_candidates(
+			_trigger_candidates(trigger_id, hero)
+		)
+		for suppressed in resolution.get("suppressed", []) as Array:
+			var report := _suppressed_report(suppressed as Dictionary, hero, context)
+			reports.append(report)
+			effect_evaluated.emit(report.duplicate(true))
+		for candidate in resolution.get("selected", []) as Array:
+			var entry := candidate as Dictionary
+			var report := _evaluate_effect(
+				entry.instance as ItemInstance,
+				entry.definition as ItemDefinition,
+				int(entry.effect_index),
+				entry.effect as ItemReactiveEffectData,
+				hero,
+				context,
+			)
+			reports.append(report)
+			effect_evaluated.emit(report.duplicate(true))
+	_resolving = false
+	return reports
+
+
+func _trigger_candidates(trigger_id: StringName, hero: Unit) -> Array[Dictionary]:
+	var candidates: Array[Dictionary] = []
 	for relic in _active_relics:
 		var definition := relic.definition as ItemDefinition
 		var instance := relic.instance as ItemInstance
+		if definition == null or instance == null:
+			continue
 		for effect_index in range(definition.reactive_effects.size()):
 			var effect := definition.reactive_effects[effect_index]
 			if effect == null or not effect.enabled or effect.trigger_id != trigger_id:
 				continue
-			for hero in heroes:
-				var report := _evaluate_effect(instance, definition, effect_index, effect, hero, context)
-				reports.append(report)
-				effect_evaluated.emit(report.duplicate(true))
-	_resolving = false
-	return reports
+			candidates.append({
+				"instance": instance,
+				"definition": definition,
+				"effect_index": effect_index,
+				"effect": effect,
+				"persistent_order": int(relic.get("persistent_order", 0)) * 1000 + effect_index,
+				"stable_id": "%s:%d:%s" % [
+					instance.instance_id, effect_index,
+					hero.get_runtime_stable_id() if hero != null else &"",
+				],
+			})
+	return candidates
+
+
+func _suppressed_report(
+		candidate: Dictionary,
+		hero: Unit,
+		context: Dictionary
+	) -> Dictionary:
+	var definition := candidate.get("definition") as ItemDefinition
+	var instance := candidate.get("instance") as ItemInstance
+	var effect := candidate.get("effect") as ItemReactiveEffectData
+	return {
+		"item_id": definition.item_id if definition != null else &"",
+		"instance_id": instance.instance_id if instance != null else &"",
+		"effect_index": int(candidate.get("effect_index", -1)),
+		"trigger_id": effect.trigger_id if effect != null else &"",
+		"reaction_group": effect.reaction_group if effect != null else &"",
+		"priority": effect.priority if effect != null else 0,
+		"scenario_id": context.get("scenario_id", &""),
+		"triggered": false,
+		"hero": hero,
+		"target": null,
+		"reason": "Réaction écartée par la priorité du groupe exclusif.",
+		"reason_code": candidate.get("suppression_reason", &"reaction_group_conflict"),
+		"winner_stable_id": candidate.get("winner_stable_id", &""),
+		"before": {}, "after": {}, "remaining": -1,
+	}
 
 
 # ============================================================
@@ -416,7 +496,14 @@ func _evaluate_effect(
 		"triggered": false, "hero": hero,
 		"target": null, "reason": "", "before": {}, "after": {},
 		"remaining": -1,
+		"reaction_group": effect.reaction_group,
+		"priority": effect.priority,
+		"tactical_intent": {},
 	}
+	if int(context.get("relic_reaction_depth", 0)) > 0:
+		report.reason = "Une réaction issue d'une relique ne peut pas réamorcer une relique."
+		report.reason_code = &"recursive_reaction_blocked"
+		return report
 	var validation := registry.validate_effect(effect)
 	if not validation.is_empty():
 		report.reason = str(validation[0].get("message", "Combinaison invalide."))
@@ -440,6 +527,7 @@ func _evaluate_effect(
 		report.reason = "La cible configurée est absente de l’événement."
 		return report
 	var before := _targets_snapshot(targets)
+	context.erase("tactical_intent")
 	var applied := _apply_result(effect, targets, hero, context, instance, effect_index)
 	if not applied:
 		report.reason = "Le résultat n’a produit aucun effet valide."
@@ -450,6 +538,7 @@ func _evaluate_effect(
 	report.target = targets[0] if targets.size() == 1 else targets
 	report.before = before
 	report.after = _targets_snapshot(targets)
+	report.tactical_intent = (context.get("tactical_intent", {}) as Dictionary).duplicate(true)
 	report.remaining = _remaining_activations(effect, instance, effect_index, hero, context)
 	return report
 
@@ -496,6 +585,22 @@ func _conditions_pass(
 			&"kill_by_hero":
 				if context.get("killer") != hero:
 					return false
+			&"minimum_hp_loss_ratio":
+				if float(context.get("hp_loss", 0)) \
+						< float(hero.max_hp.get_int()) * condition.value:
+					return false
+			&"fully_absorbed":
+				if not bool(context.get("fully_absorbed", false)):
+					return false
+			&"projectile":
+				if not bool(context.get("projectile", false)):
+					return false
+			&"ability_id":
+				if StringName(context.get("spell_id", &"")) != condition.string_name_value:
+					return false
+			&"guard_active":
+				if not hero.get_shield_instances().any(func(shield: ShieldInstance) -> bool: return shield.tags.has(&"guard")):
+					return false
 			&"first_in_frequency":
 				if _activation_count(effect, instance, effect_index, hero, context) != 0:
 					return false
@@ -523,6 +628,10 @@ func _resolve_targets(target_id: StringName, hero: Unit, context: Dictionary) ->
 				result.append(active)
 		ItemReactiveEffectData.TARGET_ALL_CONTROLLED_HEROES:
 			result = _living_heroes()
+		ItemReactiveEffectData.TARGET_EVENT_TARGET:
+			var event_target := context.get("event_target") as Unit
+			if event_target != null:
+				result.append(event_target)
 	return result
 
 
@@ -539,6 +648,64 @@ func _apply_result(
 	if effect.result_id == ItemReactiveEffectData.RESULT_CANCEL_IN_PROGRESS:
 		context["cancelled"] = true
 		return true
+	var result_descriptor := registry.descriptor(
+		RelicEffectRegistry.KIND_RESULT, effect.result_id
+	)
+	if StringName(result_descriptor.get(
+			"execution", RelicEffectRegistry.EXECUTION_RUNTIME
+		)) == RelicEffectRegistry.EXECUTION_INTENT:
+		var intent := registry.build_tactical_intent(effect, {
+			"item_id": instance.definition_id,
+			"instance_id": instance.instance_id,
+			"effect_index": effect_index,
+			"actor_id": hero.get_runtime_stable_id() if hero != null else &"",
+			"target_ids": _stable_target_ids(targets),
+			"damage_source_id": _stable_unit_id(context.get("damage_source")),
+			"event_target_id": _stable_unit_id(context.get("event_target")),
+			"spell_id": StringName(context.get("spell_id", &"")),
+			"hp_loss": int(context.get("hp_loss", 0)),
+			"amount_absorbed": int(context.get("amount_absorbed", 0)),
+			"action_id": StringName(context.get("action_id", &"")),
+			"event_serial": _event_serial,
+			"relic_reaction_depth": 1,
+		})
+		if intent.is_empty():
+			return false
+		if effect.frequency_id != ItemReactiveEffectData.FREQUENCY_UNLIMITED:
+			var reservation := StringName("%s:%d:%s:%d" % [instance.instance_id, effect_index, _stable_unit_id(hero), _event_serial])
+			var cooldown_key := _effect_hero_key(instance, effect_index, hero)
+			_intent_frequency_reservations[reservation] = {
+				"key": _frequency_key(effect, instance, effect_index, hero, context),
+				"cooldown_key": cooldown_key,
+				"cooldown_before": int(_cooldown_until.get(cooldown_key, 0)),
+			}
+			intent["frequency_reservation"] = reservation
+		context["tactical_intent"] = intent
+		tactical_intent_emitted.emit(intent.duplicate(true))
+		return true
+	if effect.result_id == ItemReactiveEffectData.RESULT_GRANT_SHIELD_MAX_HP:
+		var shield_amount := maxi(1, int(ceil(float(hero.max_hp.get_int()) * effect.value)))
+		var shield_options := _result_metadata(instance, effect_index)
+		shield_options.merge({
+			"shield_source_id": StringName("relic:%s" % instance.instance_id),
+			"tags": [&"relic", &"emergency_guard"],
+		}, true)
+		return hero.add_shield(shield_amount, hero, shield_options) != null
+	if effect.result_id == ItemReactiveEffectData.RESULT_LETHAL_REPRIEVE_CONSUME:
+		var parameters := registry.parameter_values(effect)
+		if hero.current_hp > 0 or _inventory == null \
+				or not bool(parameters.get("consume_relic", false)):
+			return false
+		hero.current_hp = int(parameters.get("remaining_hp", 1))
+		hero.hp_changed.emit(hero)
+		var shield_amount := maxi(1, int(ceil(float(hero.max_hp.get_int()) * effect.value)))
+		var shield_options := _result_metadata(instance, effect_index)
+		shield_options.merge({
+			"shield_source_id": StringName("relic:%s" % instance.instance_id),
+			"tags": [&"relic", &"lethal_reprieve"],
+		}, true)
+		hero.add_shield(shield_amount, hero, shield_options)
+		return bool(_inventory.remove_quantity(instance.instance_id, 1).get("success", false))
 	var changed := false
 	for target in targets:
 		if target == null or not target.is_alive:
@@ -580,6 +747,18 @@ func _apply_result(
 					EventBus.health_cost_paid.emit(target, paid, _result_metadata(instance, effect_index))
 					changed = true
 	return changed
+
+
+func _stable_target_ids(targets: Array[Unit]) -> Array[StringName]:
+	var result: Array[StringName] = []
+	for target in targets:
+		if target != null:
+			result.append(target.get_runtime_stable_id())
+	return result
+
+
+func _stable_unit_id(value) -> StringName:
+	return value.get_runtime_stable_id() if value is Unit else &""
 
 
 func _frequency_available(
@@ -629,6 +808,8 @@ func _frequency_key(effect, instance, effect_index, hero, context) -> String:
 	match effect.frequency_id:
 		ItemReactiveEffectData.FREQUENCY_ACTION:
 			scope = "action:%s" % context.get("action_id", "event_%d" % context.get("event_serial", _event_serial))
+		ItemReactiveEffectData.FREQUENCY_ACTIVATION:
+			scope = "activation:%d" % (hero.activation_index if hero != null else -1)
 		ItemReactiveEffectData.FREQUENCY_TURN:
 			scope = "turn:%d" % _turn_serial
 		ItemReactiveEffectData.FREQUENCY_ROUND:
@@ -708,12 +889,19 @@ func _are_adjacent(first: Unit, second: Unit) -> bool:
 func _refresh_active_relics() -> void:
 	_active_relics.clear()
 	if _inventory != null and _catalog != null:
+		var persistent_order := 0
 		for instance in _inventory.get_slots():
 			if instance == null:
+				persistent_order += 1
 				continue
 			var definition := _catalog.get_definition(instance.definition_id)
 			if definition != null and definition.is_relic():
-				_active_relics.append({"instance": instance, "definition": definition})
+				_active_relics.append({
+					"instance": instance,
+					"definition": definition,
+					"persistent_order": persistent_order,
+				})
+			persistent_order += 1
 	active_relics_changed.emit(_active_relics.size())
 
 
@@ -730,6 +918,11 @@ func _connect_event_bus() -> void:
 	EventBus.voluntary_movement_prepared.connect(_on_voluntary_movement_prepared)
 	EventBus.voluntary_movement_resolved.connect(_on_voluntary_movement_resolved)
 	EventBus.hp_damage_taken.connect(_on_hp_damage_taken)
+	EventBus.shield_absorption_resolved.connect(_on_shield_absorption_resolved)
+	EventBus.hit_resolved.connect(_on_hit_resolved)
+	EventBus.collision_impact.connect(_on_collision_impact)
+	EventBus.spell_cast.connect(_on_spell_cast)
+	EventBus.lethal_hit_resolved.connect(_on_lethal_hit_resolved)
 	EventBus.unit_killed.connect(_on_unit_killed)
 	_subscriptions_active = true
 
@@ -745,6 +938,11 @@ func _disconnect_event_bus() -> void:
 		[EventBus.voluntary_movement_prepared, _on_voluntary_movement_prepared],
 		[EventBus.voluntary_movement_resolved, _on_voluntary_movement_resolved],
 		[EventBus.hp_damage_taken, _on_hp_damage_taken], [EventBus.unit_killed, _on_unit_killed],
+		[EventBus.shield_absorption_resolved, _on_shield_absorption_resolved],
+		[EventBus.hit_resolved, _on_hit_resolved],
+		[EventBus.collision_impact, _on_collision_impact],
+		[EventBus.spell_cast, _on_spell_cast],
+		[EventBus.lethal_hit_resolved, _on_lethal_hit_resolved],
 	]:
 		var event_signal := pair[0] as Signal
 		var callback := pair[1] as Callable
@@ -834,6 +1032,87 @@ func _on_hp_damage_taken(fact: CombatEventFact) -> void:
 	}, true)
 	process_trigger(ItemReactiveEffectData.TRIGGER_HP_LOST, context)
 	process_trigger(ItemReactiveEffectData.TRIGGER_HP_THRESHOLD_CROSSED, context)
+	if target.current_hp <= 0:
+		process_trigger(ItemReactiveEffectData.TRIGGER_LETHAL_HIT, context)
+
+
+func _on_shield_absorption_resolved(fact: CombatEventFact) -> void:
+	if fact == null or not fact.target is Unit or (fact.target as Unit).team != 0:
+		return
+	var hero := fact.target as Unit
+	process_trigger(ItemReactiveEffectData.TRIGGER_SHIELD_ABSORPTION, {
+		"trigger_hero": hero,
+		"event_target": hero,
+		"damage_source": fact.source,
+		"amount_absorbed": fact.amount_absorbed,
+		"attack_classification": fact.attack_classification,
+		"guard_absorbed": fact.guard_absorbed,
+		"source_absorption": fact.source_absorption.duplicate(true),
+		"action_id": fact.action_id,
+	})
+
+
+func _on_hit_resolved(fact: CombatEventFact) -> void:
+	if fact == null or not fact.target is Unit or (fact.target as Unit).team != 0:
+		return
+	var hero := fact.target as Unit
+	var guard_absorbed := 0
+	for absorption in fact.source_absorption:
+		if (absorption.get("tags", []) as Array).has(&"guard"):
+			guard_absorbed += int(absorption.get("amount_absorbed", 0))
+	var classification := fact.attack_classification
+	if classification == &"":
+		classification = action_classification_registry.classification_for_ability(
+			fact.ability_id
+		)
+	process_trigger(ItemReactiveEffectData.TRIGGER_HIT_RESOLVED, {
+		"trigger_hero": hero,
+		"event_target": hero,
+		"damage_source": fact.source,
+		"amount_absorbed": guard_absorbed,
+		"fully_absorbed": fact.guard_absorbed and fact.amount_resolved > 0 \
+			and fact.amount_applied == 0 \
+			and guard_absorbed == fact.amount_resolved,
+		"guard_absorbed": fact.guard_absorbed,
+		"source_absorption": fact.source_absorption.duplicate(true),
+		"attack_classification": classification,
+		"projectile": classification == &"PROJECTILE",
+		"action_id": fact.action_id,
+	})
+
+
+func _on_collision_impact(attacker, victim, damage: int) -> void:
+	if not attacker is Unit or not victim is Unit or (attacker as Unit).team != 0:
+		return
+	process_trigger(ItemReactiveEffectData.TRIGGER_COLLISION_IMPACT, {
+		"trigger_hero": attacker,
+		"active_unit": attacker,
+		"event_target": victim,
+		"collision_damage": damage,
+		"action_id": StringName("collision_%d" % _event_serial),
+	})
+
+
+func _on_spell_cast(caster, spell, report: Dictionary) -> void:
+	if not caster is Unit or (caster as Unit).team != 0 or not spell is Spell or bool(report.get("automatic", false)):
+		return
+	process_trigger(ItemReactiveEffectData.TRIGGER_SPELL_CAST, {
+		"trigger_hero": caster,
+		"active_unit": caster,
+		"spell_id": (spell as Spell).get_effective_spell_id(),
+		"action_id": StringName(report.get("action_id", &"")),
+	})
+
+
+func _on_lethal_hit_resolved(target, attacker, _origin_cell: Vector2i) -> void:
+	if not target is Unit or (target as Unit).team != 0:
+		return
+	process_trigger(ItemReactiveEffectData.TRIGGER_LETHAL_HIT, {
+		"trigger_hero": target,
+		"event_target": target,
+		"damage_source": attacker,
+		"action_id": StringName("lethal_%d" % _event_serial),
+	})
 
 
 func _on_unit_killed(unit: Unit, killer: Unit) -> void:
@@ -849,3 +1128,14 @@ func _unit_context(unit: Unit) -> Dictionary:
 		"trigger_hero": unit if unit != null and unit.team == 0 else null,
 		"active_unit": unit,
 	}
+
+
+func refund_tactical_intent(intent: Dictionary) -> bool:
+	var reservation := StringName(intent.get("frequency_reservation", &""))
+	if not _intent_frequency_reservations.has(reservation):
+		return false
+	var entry := _intent_frequency_reservations[reservation] as Dictionary
+	_intent_frequency_reservations.erase(reservation)
+	_activations[entry.key] = maxi(0, int(_activations.get(entry.key, 0)) - 1)
+	_cooldown_until[entry.cooldown_key] = int(entry.cooldown_before)
+	return true

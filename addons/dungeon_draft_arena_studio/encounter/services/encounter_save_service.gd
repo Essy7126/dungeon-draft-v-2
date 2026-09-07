@@ -18,6 +18,13 @@ static func build_plan(session: EncounterEditSession) -> Dictionary:
 		for wave in room.waves:
 			if wave != null and wave.encounter_definition != null and not resources.has(wave.encounter_definition):
 				resources.append(wave.encounter_definition)
+	var glory_resources: Array[Resource] = []
+	for resource in resources:
+		if resource is EncounterDefinition and resource.glory_challenge != null:
+			var glory := resource.glory_challenge as Resource
+			if not glory_resources.has(glory):
+				glory_resources.append(glory)
+	resources = glory_resources + resources
 	for room in session.working_run.rooms:
 		if room != null and not resources.has(room):
 			resources.append(room)

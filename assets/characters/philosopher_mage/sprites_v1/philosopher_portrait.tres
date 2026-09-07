@@ -1,0 +1,11 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/philosopher_mage/sprites_v1/atlas_base_E.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Portrait"]
+atlas = ExtResource("1")
+region = Rect2(196, 84, 140, 140)
+filter_clip = true
+
+[resource]
+animations = [{ "frames": [{ "duration": 1.0, "texture": SubResource("Portrait") }], "loop": true, "name": &"idle_E", "speed": 1.0 }]

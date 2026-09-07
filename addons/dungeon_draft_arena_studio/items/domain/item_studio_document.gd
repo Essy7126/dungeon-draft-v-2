@@ -301,6 +301,12 @@ func _restore_definition(definition: ItemDefinition, snapshot: Dictionary) -> vo
 	definition.compatible_character_ids = _string_names(
 		snapshot.get("compatible_character_ids", []) as Array
 	)
+	definition.guard_effectiveness_melee = float(snapshot.get(
+		"guard_effectiveness_melee", 1.0
+	))
+	definition.guard_effectiveness_projectile = float(snapshot.get(
+		"guard_effectiveness_projectile", 1.0
+	))
 	var stats: Array[ItemStatModifierData] = []
 	for value in snapshot.get("stat_modifiers", []) as Array:
 		var properties := (value as Dictionary).get("properties", {}) as Dictionary
@@ -353,6 +359,27 @@ func _restore_reactive_effect(snapshot: Dictionary) -> ItemReactiveEffectData:
 	effect.frequency_id = StringName(properties.get("frequency_id", ItemReactiveEffectData.FREQUENCY_UNLIMITED))
 	effect.max_activations = int(properties.get("max_activations", 1))
 	effect.recharge_turns = int(properties.get("recharge_turns", 1))
+	effect.reaction_group = StringName(properties.get("reaction_group", &""))
+	effect.stackable = bool(properties.get("stackable", true))
+	effect.priority = int(properties.get("priority", 0))
+	var parameters: Array[ItemReactiveParameterData] = []
+	for parameter_value in properties.get("parameters", []) as Array:
+		var parameter_properties := (parameter_value as Dictionary).get(
+			"properties", {}
+		) as Dictionary
+		var parameter := ItemReactiveParameterData.new()
+		parameter.parameter_id = StringName(parameter_properties.get("parameter_id", &""))
+		parameter.value_type = int(parameter_properties.get(
+			"value_type", ItemReactiveParameterData.ValueType.FLOAT
+		))
+		parameter.float_value = float(parameter_properties.get("float_value", 0.0))
+		parameter.integer_value = int(parameter_properties.get("integer_value", 0))
+		parameter.boolean_value = bool(parameter_properties.get("boolean_value", false))
+		parameter.string_name_value = StringName(parameter_properties.get(
+			"string_name_value", &""
+		))
+		parameters.append(parameter)
+	effect.parameters = parameters
 	var conditions: Array[ItemReactiveConditionData] = []
 	for condition_value in properties.get("conditions", []) as Array:
 		var condition_snapshot := condition_value as Dictionary
@@ -362,6 +389,9 @@ func _restore_reactive_effect(snapshot: Dictionary) -> ItemReactiveEffectData:
 		condition.comparison = StringName(condition_properties.get("comparison", &"equal"))
 		condition.value = float(condition_properties.get("value", 0.0))
 		condition.team = int(condition_properties.get("team", 0))
+		condition.string_name_value = StringName(condition_properties.get(
+			"string_name_value", &""
+		))
 		conditions.append(condition)
 	effect.conditions = conditions
 	return effect

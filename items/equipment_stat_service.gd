@@ -18,13 +18,18 @@ func apply_item(
 		var source := _source(instance, modifier.stat_id)
 		stat.remove_modifiers_from(source)
 		stat.add_modifier(
-			modifier.value,
+			modifier.value * (1.0 + 0.2 * instance.forge_level) if modifier.value > 0.0 else modifier.value,
 			Stat.ModType.FLAT
 				if modifier.modifier_type == ItemStatModifierData.ModifierType.FLAT
 				else Stat.ModType.PERCENT,
 			source,
 		)
 	unit.set_equipment_spell_modifiers(instance.instance_id, definition.spell_modifiers)
+	unit.set_equipment_guard_effectiveness(
+		instance.instance_id,
+		definition.guard_effectiveness_melee,
+		definition.guard_effectiveness_projectile,
+	)
 	_clamp_runtime_resources(unit, previous_max_hp)
 	unit.stats_changed.emit(unit)
 	return true
@@ -43,6 +48,7 @@ func remove_item(
 		if stat != null:
 			stat.remove_modifiers_from(_source(instance, modifier.stat_id))
 	unit.clear_equipment_spell_modifiers(instance.instance_id)
+	unit.clear_equipment_guard_effectiveness(instance.instance_id)
 	_clamp_runtime_resources(unit, previous_max_hp)
 	unit.stats_changed.emit(unit)
 
@@ -85,7 +91,7 @@ func _can_apply(
 	) -> bool:
 	if unit == null or instance == null or definition == null:
 		return false
-	if instance.definition_id != definition.item_id:
+	if instance.definition_id != definition.item_id or instance.forge_level < 0 or instance.forge_level > 2:
 		return false
 	for modifier in definition.stat_modifiers:
 		if modifier == null \

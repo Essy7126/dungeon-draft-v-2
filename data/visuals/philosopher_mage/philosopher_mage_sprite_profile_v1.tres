@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="PhilosopherSpriteVisualProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/philosopher_mage/philosopher_sprite_visual_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"philosopher_mage_sprites_v1"
+sprite_frames_path = "res://assets/characters/philosopher_mage/sprites_v1/philosopher_sprite_frames.tres"
+frame_canvas_size = Vector2i(512, 384)
+foot_anchor = Vector2(256, 320)
+display_scale = 0.35
+movement_segment_duration_seconds = 0.3

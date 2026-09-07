@@ -119,7 +119,7 @@ func test_snapshot_matches_odyssey_rooms() -> void:
 	assert_eq(snapshot.odyssey.seed, 2401)
 	assert_eq(snapshot.odyssey.target_duration_minutes, 18)
 	assert_eq(snapshot.odyssey.extended_duration_minutes, 25)
-	assert_eq(snapshot.odyssey.rooms.size(), 3)
+	assert_eq(snapshot.odyssey.rooms.size(), 5)
 	assert_true(snapshot.odyssey.rooms.all(func(room): return room.flow_encounter_count == 1))
 	assert_eq(snapshot.odyssey.starting_inventory, [
 		{"item_id": "minor_healing_potion", "quantity": 2},

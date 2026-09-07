@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/vortex_step.tres" id="paris_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("paris_icon")
+spell_id = &"paris_vortex_step"
+spell_name = "Pas du vortex"
+description = "Se téléporte sur une case libre à 2–4 cases pour 2 PA. Déclenche les effets réels de la dalle d’arrivée. Disponible dans les deux formes."
+ap_cost = 2
+minimum_range = 2
+spell_range = 4
+required_combat_form = &""
+damage = 0
+damage_type = 1
+element = 4
+impact_delay_seconds = 0
+once_per_activation = false
+cooldown_activations = 3
+caster_movement = 1
+movement_requires_clear_path = false
+needs_line_of_sight = false
+can_target_enemy = false
+can_target_free_cell = true

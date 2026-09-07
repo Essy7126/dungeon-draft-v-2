@@ -1,0 +1,14 @@
+{
+  "extra_N": {
+    "scale": 0.94,
+    "roots": [[147,275],[452,287],[741,287],[1081,283],[157,604],[459,602],[770,600],[1077,601],[154,887],[473,887],[758,896],[1079,900],[155,1177],[451,1183],[762,1152],[1088,1148]],
+    "notes": [
+      "Global source coordinates, source_extra_N.png is 1254x1254; sixteen poses row-major 4x4. Rows sweep, volley, hit, death. Fixed scale .94: final upright hit pose approximately 233px crest-to-sole becomes 219px, matching the actual idle_N V1 approximately 218px; head/crest proportions also match.",
+      "Planted root X is between sole supports; Y is slightly below the lowest sole, as in the canonical idle. Sole coordinates were checked against alpha components in the lower leg region. Estimate +/-3px.",
+      "SOURCE POSE 6 IS EXCLUDED: the volley release drawing lacks its shield/back equipment. The measured [770,600] is provided only for complete source indexing, not permission to use this drawing. The production frame must retain the planned override to base_N pose6 with coherent back equipment.",
+      "Death roots use feet, kneeling supports and then pelvis ground projection. Seated [762,1152] and prone [1088,1148] deliberately ignore the spear shaft below the body. Estimate +/-6px, +/-8px for the prone pelvis projection.",
+      "The other fifteen poses retain the red crest, bronze helmet, ivory back plate, petrol clothing, red belt and shield. Raised spear grip, bow draw, recoil and collapse remain anatomically readable; seated far leg is occluded by the skirt. In the final prone pose the shield lies high across the back and its forearm connection is obscured, so this connection cannot be certified from the drawing alone.",
+      "No other visibly clipped tip, detached hand, duplicated limb or opaque contact with a neighboring pose was found. All normal planted roots are independent of weapon bounds."
+    ]
+  }
+}

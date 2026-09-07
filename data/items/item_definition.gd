@@ -47,6 +47,10 @@ enum UseEffect {
 @export var compatible_character_ids: Array[StringName] = []
 @export var stat_modifiers: Array[ItemStatModifierData] = []
 @export var spell_modifiers: Array[SpellModifier] = []
+## Multiplicateurs défensifs portés par la source de Garde et résolus
+## selon la classification explicite de l’attaque reçue.
+@export_range(0.01, 5.0, 0.01) var guard_effectiveness_melee := 1.0
+@export_range(0.01, 5.0, 0.01) var guard_effectiveness_projectile := 1.0
 
 @export_group("Relic")
 @export var reactive_effects: Array[ItemReactiveEffectData] = []
@@ -80,6 +84,9 @@ func is_valid() -> bool:
 	if category == Category.ACCESSORY and equipment_slot != EquipmentSlot.ACCESSORY:
 		return false
 	if is_equippable() and stack_limit != 1:
+		return false
+	if guard_effectiveness_melee <= 0.0 \
+			or guard_effectiveness_projectile <= 0.0:
 		return false
 	if category in [Category.CONSUMABLE, Category.SCROLL]:
 		return use_effect != UseEffect.NONE and use_value > 0.0
@@ -133,3 +140,11 @@ func get_inventory_icon() -> Texture2D:
 
 func get_reward_card_texture() -> Texture2D:
 	return card_texture if card_texture != null else icon
+
+
+func runtime_requirements() -> Array[StringName]:
+	var result: Array[StringName] = []
+	if not is_equal_approx(guard_effectiveness_melee, 1.0) \
+			or not is_equal_approx(guard_effectiveness_projectile, 1.0):
+		result.append(&"guard_attack_classification_hook")
+	return result

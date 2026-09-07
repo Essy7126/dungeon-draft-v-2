@@ -2,6 +2,8 @@ class_name EnemyAI
 extends RefCounted
 
 const LogDefinitions = preload("res://debug/log_definitions.gd")
+const SupportMageDecision = preload("res://core/ai/support_mage_decision.gd")
+const SpectralArcherDecision = preload("res://core/ai/spectral_archer_decision.gd")
 
 var _grid: GridData
 var _pathfinder: Pathfinder
@@ -34,6 +36,10 @@ func decide(enemy: Unit, all_units: Array) -> Array:
 func _decide_with_prepared_paths(enemy: Unit, all_units: Array) -> Array:
 	if enemy.ai_profile != null:
 		match enemy.ai_profile.strategy:
+			EnemyAIProfile.Strategy.SUPPORT_MAGE:
+				return SupportMageDecision.decide(self, enemy, all_units)
+			EnemyAIProfile.Strategy.SPECTRAL_ARCHER:
+				return SpectralArcherDecision.decide(self, enemy, all_units)
 			EnemyAIProfile.Strategy.FORMATION_MELEE:
 				return _decide_formation_melee(enemy, all_units)
 			EnemyAIProfile.Strategy.GUARDIAN_CHIEF:
@@ -330,6 +336,18 @@ func _decide_melee(enemy: Unit, all_units: Array) -> Array:
 				plan.append({ "type": "move", "path": reachable_path })
 				if _grid.are_adjacent(final_pos, target.grid_pos) and enemy.can_use_basic_attack():
 					plan.append({ "type": "attack", "target": target })
+				elif not enemy.basic_attack_enabled:
+					# Spell-only melee units need their strike in the same plan as
+					# the approach. Project the destination without moving the unit;
+					# EnemyTurnRunner revalidates the cast after the real movement.
+					for spell_value in _direct_damage_spells(enemy):
+						var approach_spell := spell_value as Spell
+						if _can_cast_from(enemy, approach_spell, final_pos, target):
+							plan.append({
+								"type": "cast", "spell": approach_spell,
+								"cell": target.grid_pos,
+							})
+							break
 	else:
 		DebugLogger.trace(CAT, "%s : aucune case d'approche vers %s" % [enemy.unit_name, target.unit_name])
 	return plan

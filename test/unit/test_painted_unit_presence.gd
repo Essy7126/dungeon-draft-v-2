@@ -47,7 +47,7 @@ func test_chaque_map_peinte_possede_un_profil_de_presentation_valide() -> void:
 			profile.global_unit_scale_multiplier, expected_room_scale[index], 0.0001
 		)
 		assert_true(profile.contact_shadows_enabled)
-		assert_true(profile.outlines_enabled)
+		assert_false(profile.outlines_enabled, "Painted actors use their authored edges; outlines are opt-in.")
 		assert_false(profile.action_focus_enabled)
 		assert_eq(profile.action_focus_zoom, 0.0)
 

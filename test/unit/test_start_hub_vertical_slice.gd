@@ -380,7 +380,7 @@ func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
 		available_runs[1].is_valid(), str(available_runs[1].validation_errors())
 	)
 	assert_eq(available_runs[2].run_name, "Catabase")
-	assert_eq(available_runs[2].rooms.size(), 3)
+	assert_eq(available_runs[2].rooms.size(), 5)
 	assert_true(
 		available_runs[2].is_valid(), str(available_runs[2].validation_errors())
 	)

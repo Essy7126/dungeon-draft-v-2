@@ -13,6 +13,11 @@ const TRIGGER_HP_LOST: StringName = &"hp_lost"
 const TRIGGER_HP_THRESHOLD_CROSSED: StringName = &"hp_threshold_crossed"
 const TRIGGER_UNIT_KILLED: StringName = &"unit_killed"
 const TRIGGER_ADJACENT_ENEMY_TURN_END: StringName = &"adjacent_enemy_turn_end"
+const TRIGGER_SHIELD_ABSORPTION: StringName = &"shield_absorption"
+const TRIGGER_HIT_RESOLVED: StringName = &"hit_resolved"
+const TRIGGER_COLLISION_IMPACT: StringName = &"collision_impact"
+const TRIGGER_SPELL_CAST: StringName = &"spell_cast"
+const TRIGGER_LETHAL_HIT: StringName = &"lethal_hit"
 # Seul déclencheur qui n'est branché sur aucun signal d'EventBus : c'est le
 # joueur qui choisit le moment, en cliquant sur l'objet dans la barre de combat.
 const TRIGGER_MANUAL_ACTIVATION: StringName = &"manual_activation"
@@ -22,6 +27,7 @@ const TARGET_DAMAGE_SOURCE: StringName = &"damage_source"
 const TARGET_KILLED_UNIT: StringName = &"killed_unit"
 const TARGET_ACTIVE_UNIT: StringName = &"active_unit"
 const TARGET_ALL_CONTROLLED_HEROES: StringName = &"all_controlled_heroes"
+const TARGET_EVENT_TARGET: StringName = &"event_target"
 
 const RESULT_CURRENT_AP: StringName = &"current_ap"
 const RESULT_NEXT_TURN_AP: StringName = &"next_turn_ap"
@@ -33,9 +39,18 @@ const RESULT_PAY_HP_FLAT: StringName = &"pay_hp_flat"
 const RESULT_PAY_HP_PERCENT: StringName = &"pay_hp_percent"
 const RESULT_REDUCE_VOLUNTARY_MOVE_COST: StringName = &"reduce_voluntary_move_cost"
 const RESULT_CANCEL_IN_PROGRESS: StringName = &"cancel_in_progress"
+const RESULT_MARK_VENGEANCE: StringName = &"mark_vengeance"
+const RESULT_COLLISION_ARMOR_FOLLOWUP: StringName = &"collision_armor_followup"
+const RESULT_DASH_NEXT_SHOT: StringName = &"dash_next_shot"
+const RESULT_REFLECT_ABSORBED_PROJECTILE: StringName = &"reflect_absorbed_projectile"
+const RESULT_DUAL_TECHNIQUE: StringName = &"dual_technique"
+const RESULT_GUARD_DASH_CONVERSION: StringName = &"guard_dash_conversion"
+const RESULT_GRANT_SHIELD_MAX_HP: StringName = &"grant_shield_max_hp"
+const RESULT_LETHAL_REPRIEVE_CONSUME: StringName = &"lethal_reprieve_consume"
 
 const FREQUENCY_UNLIMITED: StringName = &"unlimited"
 const FREQUENCY_ACTION: StringName = &"per_action"
+const FREQUENCY_ACTIVATION: StringName = &"per_activation"
 const FREQUENCY_TURN: StringName = &"per_turn"
 const FREQUENCY_ROUND: StringName = &"per_round"
 const FREQUENCY_COMBAT: StringName = &"per_combat"
@@ -51,6 +66,12 @@ const FREQUENCY_COOLDOWN_TURNS: StringName = &"cooldown_turns"
 @export var frequency_id: StringName = FREQUENCY_UNLIMITED
 @export_range(1, 99, 1) var max_activations := 1
 @export_range(1, 99, 1) var recharge_turns := 1
+@export_group("Reaction policy")
+@export var reaction_group: StringName = &""
+@export var stackable := true
+@export_range(-1000, 1000, 1) var priority := 0
+@export_group("Typed result parameters")
+@export var parameters: Array[ItemReactiveParameterData] = []
 
 
 func is_manual_trigger() -> bool:
@@ -64,8 +85,13 @@ func is_structurally_valid() -> bool:
 		return false
 	if frequency_id == FREQUENCY_COOLDOWN_TURNS and recharge_turns <= 0:
 		return false
+	var parameter_ids := {}
+	for parameter in parameters:
+		if parameter == null or not parameter.is_valid() \
+				or parameter_ids.has(parameter.parameter_id):
+			return false
+		parameter_ids[parameter.parameter_id] = true
 	for condition in conditions:
 		if condition == null or not condition.is_valid():
 			return false
 	return true
-

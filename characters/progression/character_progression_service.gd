@@ -12,9 +12,13 @@ func reset_run() -> void:
 	begin_combat()
 
 
-func begin_combat() -> void:
+func begin_combat(character_states: Dictionary = {}) -> void:
 	_combat_xp_by_key.clear()
 	_awarded_spell_activation_keys.clear()
+	for candidate in character_states.values():
+		var state := candidate as CharacterRunState
+		if state != null:
+			state.begin_encounter()
 
 
 func grant_cast_xp(
@@ -36,6 +40,13 @@ func grant_cast_xp(
 	var character_state := _find_state_for_unit(character_states, caster)
 	if character_state == null:
 		return _refusal(&"character_state_missing", caster, spell)
+	if character_state.uses_champion_progression():
+		return _refusal(
+			&"champion_encounter_xp_only",
+			caster,
+			spell,
+			character_state.character_id,
+		)
 	# The run state is authoritative. This also accepts a legacy UnitData whose
 	# tree was recovered by CharacterRunState during the transition.
 	if character_state.get_spell_progress(spell_id) == null:
@@ -90,6 +101,29 @@ func grant_cast_xp(
 		combat_xp >= MAX_SPELL_XP_PER_COMBAT
 	)
 	return progress_result
+
+
+func award_encounter_xp(
+		character_states: Dictionary,
+		encounter_id: StringName,
+		base_xp: int,
+		victory: bool,
+		glory_accepted: bool = false,
+		glory_succeeded: bool = false
+	) -> Dictionary:
+	var results := {}
+	for candidate in character_states.values():
+		var state := candidate as CharacterRunState
+		if state == null or not state.uses_champion_progression():
+			continue
+		results[state.character_id] = state.award_encounter_xp(
+			encounter_id,
+			base_xp,
+			victory,
+			glory_accepted,
+			glory_succeeded,
+		)
+	return results
 
 
 func get_combat_xp(character_id: StringName, spell_id: StringName) -> int:

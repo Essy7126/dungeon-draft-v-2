@@ -12,6 +12,9 @@ const CARD_GAP_RATIO := 0.0054
 const WIDTH_RATIOS := [0.08, 0.065, 0.06, 0.057]
 const HEIGHT_RATIOS := [0.06, 0.05, 0.044, 0.039]
 const PREMIUM_REFERENCE_SIZE := Vector2(1672.0, 941.0)
+const TURN_TITLE_MAX_FONT_SIZE := 18
+const TURN_TITLE_MIN_FONT_SIZE := 13
+const TURN_TITLE_SHADOW_PADDING := 2.0
 const PREMIUM_CARD_SIZES := [
 	Vector2(76.0, 64.0),
 	Vector2(70.0, 58.0),
@@ -38,6 +41,7 @@ var _reduced_motion := false
 
 func _ready() -> void:
 	visible = false
+	turn_header_title.resized.connect(_fit_turn_header_title)
 	_apply_skin_to_chrome()
 	_update_timeline_geometry()
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
@@ -307,6 +311,7 @@ func _apply_skin_to_chrome() -> void:
 		turn_header_title.add_theme_font_override("font", visual_skin.font_emphasis)
 		turn_header_title.add_theme_color_override("font_color", visual_skin.text_primary)
 	turn_header.visible = _premium_skin_active() and _queue != null
+	_fit_turn_header_title()
 
 
 func _refresh_turn_header(unit: Unit) -> void:
@@ -315,8 +320,39 @@ func _refresh_turn_header(unit: Unit) -> void:
 	turn_header.visible = _premium_skin_active() and _queue != null
 	if unit == null:
 		turn_header_title.text = "ORDRE DU TOUR"
+		_fit_turn_header_title()
 		return
 	turn_header_title.text = _turn_title(unit.unit_name)
+	_fit_turn_header_title()
+
+
+func _fit_turn_header_title() -> void:
+	if not is_instance_valid(turn_header_title):
+		return
+	var font := turn_header_title.get_theme_font("font")
+	if font == null:
+		return
+	var available_width := maxf(turn_header_title.size.x - TURN_TITLE_SHADOW_PADDING, 1.0)
+	var available_height := maxf(turn_header_title.size.y - TURN_TITLE_SHADOW_PADDING, 1.0)
+	var font_size := TURN_TITLE_MAX_FONT_SIZE
+	while font_size > TURN_TITLE_MIN_FONT_SIZE:
+		var text_size := font.get_string_size(
+			turn_header_title.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size
+		)
+		if text_size.x <= available_width and text_size.y <= available_height:
+			break
+		font_size -= 1
+	if turn_header_title.get_theme_font_size("font_size") != font_size:
+		turn_header_title.add_theme_font_size_override("font_size", font_size)
+	# Keep a readable lower bound for unusually long names; the complete title
+	# remains available through its tooltip if even the minimum does not fit.
+	var fitted_width := font.get_string_size(
+		turn_header_title.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size
+	).x
+	turn_header_title.tooltip_text = turn_header_title.text \
+		if fitted_width > available_width else ""
+	turn_header_title.mouse_filter = Control.MOUSE_FILTER_PASS \
+		if fitted_width > available_width else Control.MOUSE_FILTER_IGNORE
 
 
 func _turn_title(unit_name: String) -> String:

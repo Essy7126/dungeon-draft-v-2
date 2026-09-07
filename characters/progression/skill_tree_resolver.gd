@@ -13,6 +13,14 @@ enum RejectionReason {
 	MISSING_PREREQUISITE,
 	EXCLUDED_BY_SELECTION,
 	INVALID_TREE_DATA,
+	WRONG_PROGRESSION_MODE,
+	LEVEL_GATE,
+	INSUFFICIENT_MASTERY,
+	ALREADY_SELECTED,
+	MISSING_ANY_PREREQUISITE,
+	EXCLUSIVE_GROUP,
+	TREE_NOT_COMPLETE,
+	TREE_POINTS_GATE,
 }
 
 
@@ -268,6 +276,10 @@ static func validate_discipline(
 						rank_data.rank,
 					]
 				)
+			if choice is SkillTreeNodeData:
+				var typed := choice as SkillTreeNodeData
+				for message in typed.validation_errors():
+					_append_diagnostic(diagnostics, message)
 
 	for node_id_value in nodes_by_id:
 		var node_id := StringName(node_id_value)
@@ -313,6 +325,21 @@ static func validate_discipline(
 						excluded_id,
 					]
 				)
+		if node is SkillTreeNodeData:
+			var typed := node as SkillTreeNodeData
+			for any_id in typed.requires_any_node_ids:
+				if not nodes_by_id.has(any_id):
+					_append_diagnostic(
+						diagnostics,
+						"UNKNOWN_ANY_PREREQUISITE: %s -> %s" % [node_id, any_id]
+					)
+				elif int(node_ranks[any_id]) >= node_rank:
+					_append_diagnostic(
+						diagnostics,
+						"ANY_PREREQUISITE_NOT_IN_LOWER_RANK: %s -> %s" % [
+							node_id, any_id,
+						]
+					)
 
 	var visit_states := {}
 	for node_id_value in nodes_by_id:
@@ -326,6 +353,448 @@ static func validate_discipline(
 				[]
 			)
 	return PackedStringArray(diagnostics)
+
+
+## Point d'entree explicite pour les nouveaux consommateurs. Les APIs legacy
+## ci-dessus ne changent ni signature ni semantique.
+static func evaluate_purchase(
+		discipline: DisciplineData,
+		node_id: StringName,
+		context: Dictionary,
+		doctrines: Array[DisciplineData] = [],
+		advanced_nodes: Array[SkillTreeNodeData] = []
+	) -> Dictionary:
+	if discipline == null:
+		return _mastery_decision(false, RejectionReason.INVALID_DISCIPLINE, null)
+	if discipline.progression_mode == DisciplineData.ProgressionMode.LEGACY_RANK_XP:
+		var pending: Array[int] = []
+		pending.assign(context.get("pending_ranks", []))
+		var selected: Array[StringName] = []
+		selected.assign(context.get("selected_node_ids", []))
+		return evaluate_selection(
+			discipline,
+			int(context.get("choice_rank", 0)),
+			node_id,
+			int(context.get("reached_rank", 0)),
+			pending,
+			selected,
+		)
+	var node := _find_node(discipline, node_id) as SkillTreeNodeData
+	var mastery_selected: Array[StringName] = []
+	mastery_selected.assign(context.get("selected_node_ids", []))
+	return evaluate_mastery_purchase(
+		node,
+		doctrines,
+		advanced_nodes,
+		int(context.get("champion_level", 1)),
+		int(context.get("unspent_mastery_points", 0)),
+		mastery_selected,
+	)
+
+
+static func evaluate_mastery_purchase(
+		node: SkillTreeNodeData,
+		doctrines: Array[DisciplineData],
+		advanced_nodes: Array[SkillTreeNodeData],
+		champion_level: int,
+		unspent_mastery_points: int,
+		selected_node_ids: Array[StringName],
+		champion_profile: ChampionProgressionProfile = null
+	) -> Dictionary:
+	if node == null or not node.is_champion_mastery():
+		return _mastery_decision(false, RejectionReason.INVALID_NODE, node)
+	if selected_node_ids.has(node.upgrade_id):
+		return _mastery_decision(false, RejectionReason.ALREADY_SELECTED, node)
+	var catalog := champion_node_catalog(doctrines, advanced_nodes)
+	if not catalog.is_empty() and catalog.get(node.upgrade_id) != node:
+		return _mastery_decision(false, RejectionReason.INVALID_NODE, node)
+	var required_level := node.required_champion_level
+	if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE:
+		var has_capstone := false
+		for selected_id in selected_node_ids:
+			var selected_node := catalog.get(selected_id) as SkillTreeNodeData
+			if selected_node != null and selected_node.node_type == SkillTreeNodeData.NodeType.CAPSTONE:
+				has_capstone = true
+		var capstone_level := (champion_profile.second_capstone_level if has_capstone else champion_profile.first_capstone_level) if champion_profile != null else (13 if has_capstone else 10)
+		required_level = maxi(required_level, capstone_level)
+	if champion_level < required_level:
+		return _mastery_decision(false, RejectionReason.LEVEL_GATE, node)
+	if unspent_mastery_points < node.mastery_cost:
+		return _mastery_decision(false, RejectionReason.INSUFFICIENT_MASTERY, node)
+	for required_id in node.prerequisite_node_ids:
+		if not selected_node_ids.has(required_id):
+			return _mastery_decision(
+				false, RejectionReason.MISSING_PREREQUISITE, node,
+				[required_id],
+			)
+	if not node.requires_any_node_ids.is_empty():
+		var has_any := false
+		for required_id in node.requires_any_node_ids:
+			if selected_node_ids.has(required_id):
+				has_any = true
+				break
+		if not has_any:
+			return _mastery_decision(
+				false,
+				RejectionReason.MISSING_ANY_PREREQUISITE,
+				node,
+				node.requires_any_node_ids,
+			)
+	for excluded_id in node.excluded_node_ids:
+		if selected_node_ids.has(excluded_id):
+			return _mastery_decision(
+				false, RejectionReason.EXCLUDED_BY_SELECTION, node, [], [excluded_id]
+			)
+	if node.exclusive_group != &"":
+		for selected_id in selected_node_ids:
+			var selected_node := catalog.get(selected_id) as SkillTreeNodeData
+			if selected_node != null \
+					and selected_node.exclusive_group == node.exclusive_group:
+				return _mastery_decision(
+					false,
+					RejectionReason.EXCLUSIVE_GROUP,
+					node,
+					[],
+					[selected_id],
+				)
+	for tree_id in node.requires_completed_tree_ids:
+		var required_tree := champion_doctrine_by_id(doctrines, tree_id)
+		if required_tree == null \
+				or not champion_doctrine_is_complete(required_tree, selected_node_ids):
+			return _mastery_decision(
+				false, RejectionReason.TREE_NOT_COMPLETE, node
+			)
+	for requirement in node.doctrine_point_requirements:
+		if requirement == null:
+			return _mastery_decision(false, RejectionReason.INVALID_TREE_DATA, node)
+		var required_tree := champion_doctrine_by_id(doctrines, requirement.tree_id)
+		if required_tree == null or champion_doctrine_selected_cost(
+			required_tree, selected_node_ids
+		) < requirement.minimum_points:
+			return _mastery_decision(
+				false, RejectionReason.TREE_POINTS_GATE, node
+			)
+	return _mastery_decision(true, RejectionReason.NONE, node)
+
+
+## Alias de compatibilite avec les prototypes Champion deja presents dans
+## certaines branches locales. Il partage strictement le meme resolver.
+static func evaluate_champion_purchase(
+		node: SkillTreeNodeData,
+		doctrines: Array[DisciplineData],
+		advanced_nodes: Array[SkillTreeNodeData],
+		champion_level: int,
+		unspent_mastery_points: int,
+		selected_node_ids: Array[StringName]
+	) -> Dictionary:
+	return evaluate_mastery_purchase(
+		node,
+		doctrines,
+		advanced_nodes,
+		champion_level,
+		unspent_mastery_points,
+		selected_node_ids,
+	)
+
+
+static func validate_champion_tree(
+		doctrines: Array[DisciplineData],
+		advanced_nodes: Array[SkillTreeNodeData] = []
+	) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if doctrines.size() != 3:
+		errors.append("CHAMPION_DOCTRINE_COUNT: expected 3, found %d" % doctrines.size())
+	var doctrine_ids := {}
+	var node_ids := {}
+	var effect_sources := {}
+	for doctrine in doctrines:
+		if doctrine == null or doctrine.discipline_id == &"":
+			errors.append("CHAMPION_DOCTRINE_INVALID")
+			continue
+		if discipline_ids_has(doctrine_ids, doctrine.discipline_id):
+			errors.append("CHAMPION_DOCTRINE_DUPLICATE: %s" % doctrine.discipline_id)
+		doctrine_ids[doctrine.discipline_id] = true
+		if doctrine.progression_mode != DisciplineData.ProgressionMode.MASTERY_POINTS:
+			errors.append("CHAMPION_DOCTRINE_MODE: %s" % doctrine.discipline_id)
+		errors.append_array(validate_discipline(doctrine))
+		var nodes := champion_doctrine_nodes(doctrine)
+		if nodes.size() != 9:
+			errors.append("CHAMPION_NODE_COUNT: %s" % doctrine.discipline_id)
+		var tier_counts := {}
+		var capstone_count := 0
+		var affected := {}
+		for node in nodes:
+			_validate_mastery_node_identity(
+				node, doctrine.discipline_id, node_ids, effect_sources, errors
+			)
+			tier_counts[node.tier] = int(tier_counts.get(node.tier, 0)) + 1
+			if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE:
+				capstone_count += 1
+			for spell_id in node.affected_spell_ids:
+				affected[spell_id] = true
+		if tier_counts.get(1, 0) != 1 \
+				or tier_counts.get(2, 0) != 2 \
+				or tier_counts.get(3, 0) != 2 \
+				or tier_counts.get(4, 0) != 2 \
+				or tier_counts.get(5, 0) != 2:
+			errors.append("CHAMPION_TIER_TOPOLOGY: %s" % doctrine.discipline_id)
+		if capstone_count != 2:
+			errors.append("CHAMPION_CAPSTONE_COUNT: %s" % doctrine.discipline_id)
+		if affected.size() < 3:
+			errors.append("CHAMPION_AFFECTED_SPELLS: %s" % doctrine.discipline_id)
+		if minimal_champion_capstone_cost(doctrine) != 6:
+			errors.append("CHAMPION_MINIMAL_PATH_COST: %s" % doctrine.discipline_id)
+		if full_champion_doctrine_cost(doctrine) != 9:
+			errors.append("CHAMPION_FULL_COST: %s" % doctrine.discipline_id)
+	for node in advanced_nodes:
+		if node == null or not node.is_champion_mastery():
+			errors.append("CHAMPION_ADVANCED_NODE_INVALID")
+			continue
+		_validate_mastery_node_identity(
+			node, node.doctrine_id, node_ids, effect_sources, errors
+		)
+		match node.node_type:
+			SkillTreeNodeData.NodeType.SPECIALIST_SUMMIT:
+				if node.required_champion_level != 13:
+					errors.append("CHAMPION_SUMMIT_GATE: %s" % node.upgrade_id)
+			SkillTreeNodeData.NodeType.MYTHIC_JUNCTION, SkillTreeNodeData.NodeType.APOTHEOSIS:
+				if node.required_champion_level != 14:
+					errors.append("CHAMPION_ADVANCED_GATE: %s" % node.upgrade_id)
+			_:
+				errors.append("CHAMPION_ADVANCED_TYPE: %s" % node.upgrade_id)
+	return errors
+
+
+static func champion_node_catalog(
+		doctrines: Array[DisciplineData],
+		advanced_nodes: Array[SkillTreeNodeData] = []
+	) -> Dictionary:
+	var result := {}
+	for doctrine in doctrines:
+		for node in champion_doctrine_nodes(doctrine):
+			result[node.upgrade_id] = node
+	for node in advanced_nodes:
+		if node != null:
+			result[node.upgrade_id] = node
+	return result
+
+
+static func champion_doctrine_nodes(
+		doctrine: DisciplineData
+	) -> Array[SkillTreeNodeData]:
+	var result: Array[SkillTreeNodeData] = []
+	if doctrine == null:
+		return result
+	for rank_data in doctrine.ranks:
+		if rank_data == null:
+			continue
+		for choice in rank_data.choices:
+			var node := choice as SkillTreeNodeData
+			if node != null and node.is_champion_mastery():
+				result.append(node)
+	return result
+
+
+static func champion_doctrine_by_id(
+		doctrines: Array[DisciplineData],
+		doctrine_id: StringName
+	) -> DisciplineData:
+	for doctrine in doctrines:
+		if doctrine != null and doctrine.discipline_id == doctrine_id:
+			return doctrine
+	return null
+
+
+static func champion_doctrine_selected_cost(
+		doctrine: DisciplineData,
+		selected_node_ids: Array[StringName]
+	) -> int:
+	var total := 0
+	for node in champion_doctrine_nodes(doctrine):
+		if selected_node_ids.has(node.upgrade_id):
+			total += node.mastery_cost
+	return total
+
+
+static func minimal_champion_capstone_cost(doctrine: DisciplineData) -> int:
+	var paths := champion_capstone_paths(doctrine, 99)
+	var minimum := 2147483647
+	for path_value in paths:
+		var path := path_value as Array
+		minimum = mini(minimum, _path_cost(doctrine, path))
+	return -1 if minimum == 2147483647 else minimum
+
+
+static func full_champion_doctrine_cost(doctrine: DisciplineData) -> int:
+	var non_capstone_cost := 0
+	var maximum_capstone_cost := 0
+	for node in champion_doctrine_nodes(doctrine):
+		if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE:
+			maximum_capstone_cost = maxi(maximum_capstone_cost, node.mastery_cost)
+		else:
+			non_capstone_cost += node.mastery_cost
+	return non_capstone_cost + maximum_capstone_cost
+
+
+static func champion_doctrine_is_complete(
+		doctrine: DisciplineData,
+		selected_node_ids: Array[StringName]
+	) -> bool:
+	var selected_capstone := false
+	var catalog := champion_node_catalog([doctrine])
+	for node in champion_doctrine_nodes(doctrine):
+		if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE \
+				and selected_node_ids.has(node.upgrade_id):
+			selected_capstone = true
+	if not selected_capstone:
+		return false
+	if champion_doctrine_selected_cost(doctrine, selected_node_ids) \
+			>= full_champion_doctrine_cost(doctrine):
+		return true
+	# Une paire explicitement exclusive compte comme un palier complet lorsque
+	# l'une de ses branches est achetee ; aucune gate n'est contournee.
+	for node in champion_doctrine_nodes(doctrine):
+		if node.node_type == SkillTreeNodeData.NodeType.CAPSTONE \
+				or selected_node_ids.has(node.upgrade_id):
+			continue
+		var covered_by_exclusion := false
+		for excluded_id in node.excluded_node_ids:
+			if selected_node_ids.has(excluded_id) and catalog.has(excluded_id):
+				covered_by_exclusion = true
+				break
+		if not covered_by_exclusion:
+			return false
+	return true
+
+
+static func champion_capstone_paths(
+		doctrine: DisciplineData,
+		champion_level: int
+	) -> Array:
+	var paths: Array = []
+	if doctrine == null:
+		return paths
+	var tier_nodes := {}
+	for node in champion_doctrine_nodes(doctrine):
+		if not tier_nodes.has(node.tier):
+			tier_nodes[node.tier] = []
+		(tier_nodes[node.tier] as Array).append(node)
+	if not tier_nodes.has(1):
+		return paths
+	var seeds: Array = []
+	for root_value in tier_nodes[1]:
+		var root := root_value as SkillTreeNodeData
+		seeds.append([root.upgrade_id])
+	for tier in [2, 3, 4]:
+		var expanded: Array = []
+		for seed_value in seeds:
+			var seed := seed_value as Array
+			for subset in _non_empty_subsets(tier_nodes.get(tier, [])):
+				var candidate := seed.duplicate()
+				for node_value in subset:
+					candidate.append((node_value as SkillTreeNodeData).upgrade_id)
+				if _path_dependencies_pass(doctrine, candidate):
+					expanded.append(candidate)
+		seeds = expanded
+	for capstone_value in tier_nodes.get(5, []):
+		var capstone := capstone_value as SkillTreeNodeData
+		if capstone.required_champion_level > champion_level:
+			continue
+		for seed_value in seeds:
+			var candidate := (seed_value as Array).duplicate()
+			candidate.append(capstone.upgrade_id)
+			if _path_dependencies_pass(doctrine, candidate):
+				paths.append(candidate)
+	return paths
+
+
+static func _mastery_decision(
+		allowed: bool,
+		reason: RejectionReason,
+		node: SkillTreeNodeData,
+		missing_prerequisites: Array = [],
+		conflicting_node_ids: Array = []
+	) -> Dictionary:
+	return {
+		"allowed": allowed,
+		"reason": reason,
+		"reason_id": RejectionReason.keys()[reason],
+		"node": node,
+		"mastery_cost": node.mastery_cost if node != null else 0,
+		"missing_prerequisites": missing_prerequisites.duplicate(),
+		"conflicting_node_ids": conflicting_node_ids.duplicate(),
+	}
+
+
+static func _validate_mastery_node_identity(
+		node: SkillTreeNodeData,
+		expected_doctrine_id: StringName,
+		node_ids: Dictionary,
+		effect_sources: Dictionary,
+		errors: PackedStringArray
+	) -> void:
+	if node_ids.has(node.upgrade_id):
+		errors.append("CHAMPION_NODE_DUPLICATE: %s" % node.upgrade_id)
+	else:
+		node_ids[node.upgrade_id] = true
+	if node.doctrine_id != expected_doctrine_id:
+		errors.append("CHAMPION_NODE_AUTHORITY: %s" % node.upgrade_id)
+	for effect in node.reactive_effects:
+		if effect == null:
+			continue
+		if effect_sources.has(effect.source_id):
+			errors.append("CHAMPION_REACTIVE_SOURCE_DUPLICATE: %s" % effect.source_id)
+		effect_sources[effect.source_id] = true
+
+
+static func discipline_ids_has(values: Dictionary, key: StringName) -> bool:
+	return values.has(key)
+
+
+static func _non_empty_subsets(values: Array) -> Array:
+	var result: Array = []
+	var count := values.size()
+	for mask in range(1, 1 << count):
+		var subset: Array = []
+		for index in range(count):
+			if mask & (1 << index):
+				subset.append(values[index])
+		result.append(subset)
+	return result
+
+
+static func _path_dependencies_pass(
+		doctrine: DisciplineData,
+		path: Array
+	) -> bool:
+	for node_id_value in path:
+		var node := _find_node(doctrine, StringName(node_id_value)) as SkillTreeNodeData
+		if node == null:
+			return false
+		for required_id in node.prerequisite_node_ids:
+			if not path.has(required_id):
+				return false
+		if not node.requires_any_node_ids.is_empty():
+			var any_found := false
+			for required_id in node.requires_any_node_ids:
+				if path.has(required_id):
+					any_found = true
+					break
+			if not any_found:
+				return false
+		for excluded_id in node.excluded_node_ids:
+			if path.has(excluded_id):
+				return false
+	return true
+
+
+static func _path_cost(discipline: DisciplineData, path: Array) -> int:
+	var result := 0
+	for node_id_value in path:
+		var node := _find_node(discipline, StringName(node_id_value)) as SkillTreeNodeData
+		if node != null:
+			result += node.mastery_cost
+	return result
 
 
 static func _decision(

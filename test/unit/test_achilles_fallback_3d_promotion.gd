@@ -151,6 +151,10 @@ func test_cancelled_verified_fallback_action_emits_nothing_late() -> void:
 func _create_ready_adapter() -> AchillesIsoUnitView:
 	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
 	assert_not_null(adapter)
+	# Exercise the retained 3D backend explicitly; the canonical scene uses sprites.
+	adapter.rendering_backend = "VIEWPORT_3D"
+	adapter.sprite_profile = null
+	adapter.visual_profile = load(PROFILE_PATH) as AchillesVisualProfile
 	add_child_autofree(adapter)
 	var deadline := Time.get_ticks_msec() + RUNTIME_READY_TIMEOUT_MSEC
 	while adapter.get_active_backend_name() != &"Viewport3DBackend" \
@@ -167,6 +171,8 @@ func _create_missing_asset_adapter() -> AchillesIsoUnitView:
 	profile.character_asset_path = MISSING_CHARACTER_PATH
 	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
 	assert_not_null(adapter)
+	adapter.rendering_backend = "VIEWPORT_3D"
+	adapter.sprite_profile = null
 	adapter.visual_profile = profile
 	add_child_autofree(adapter)
 	var deadline := Time.get_ticks_msec() + RUNTIME_READY_TIMEOUT_MSEC

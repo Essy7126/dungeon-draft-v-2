@@ -28,6 +28,9 @@ const MITIGATION_K := 100.0
 # ============================================================
 
 class DamageResult:
+	# Filled only by Unit when the hit is applied. Pure previews keep -1.
+	var hp_damage_applied: int = -1
+	var shield_damage_absorbed: int = -1
 	var amount: int = 0          # dégâts finaux (après tout)
 	var raw: int = 0             # dégâts bruts d'entrée (avant mitigation)
 	var dodged: bool = false     # l'attaque a été esquivée (amount = 0)
@@ -71,6 +74,8 @@ class HitContext:
 	var impact_id: StringName = &""
 	var sequence_index: int = 0
 	var ability_id: StringName = &""
+	var attack_classification: StringName = &""
+	var guard_damage_multiplier: float = 1.0
 	var status_id: StringName = &""
 	var is_periodic: bool = false
 

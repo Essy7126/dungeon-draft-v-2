@@ -31,6 +31,8 @@ enum RoomFlowMode {
 @export_range(1, 10, 1) var maximum_waves_per_room: int = 1
 @export var content_profile: RunContentProfile = null
 @export var economy_profile: RunEconomyProfile = null
+## Classification explicite des actions, indépendante du nom ou de la portée.
+@export var action_classification_catalog: CombatActionClassificationCatalogData = null
 @export_group("Hub et cinematique")
 @export var intro_sequence: CinematicSequenceData = null
 @export var hub_room_selection_enabled := true
@@ -69,6 +71,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append_array(content_profile.validation_errors())
 	if economy_profile != null:
 		errors.append_array(economy_profile.validation_errors())
+	if action_classification_catalog != null:
+		errors.append_array(action_classification_catalog.validation_errors())
 	if is_single_encounter_flow() and maximum_waves_per_room != 1:
 		errors.append(
 			"Une run SINGLE_ENCOUNTER doit limiter les combats par salle a 1."

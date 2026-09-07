@@ -118,8 +118,24 @@ static func _validate_storage_paths(
 	elif resource is SkillUpgradeData:
 		for modifier in resource.spell_modifiers:
 			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
+		if resource is SkillTreeNodeData:
+			for targeted in resource.targeted_spell_modifiers:
+				_validate_storage_paths(
+					targeted, messages, visited, allowed_storage_roots
+				)
+			for effect in resource.reactive_effects:
+				_validate_storage_paths(effect, messages, visited, allowed_storage_roots)
+			for requirement in resource.doctrine_point_requirements:
+				_validate_storage_paths(
+					requirement, messages, visited, allowed_storage_roots
+				)
+	elif resource is TargetedSpellModifierData:
+		for modifier in resource.modifiers:
+			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
 	elif resource is Spell:
 		_validate_storage_paths(resource.skill_tree, messages, visited, allowed_storage_roots)
+		_validate_storage_paths(resource.damage_scaling, messages, visited, allowed_storage_roots)
+		_validate_storage_paths(resource.shield_scaling, messages, visited, allowed_storage_roots)
 		for modifier in resource.modifiers:
 			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
 
@@ -210,7 +226,8 @@ static func _validate_discipline(
 				else:
 					display_names_in_discipline[normalized_name] = node.rank
 			_validate_node(unit, discipline, node, messages)
-	_validate_reachability(discipline, messages)
+	if discipline.progression_mode == DisciplineData.ProgressionMode.LEGACY_RANK_XP:
+		_validate_reachability(discipline, messages)
 	if production_profile:
 		_validate_production_profile(discipline, messages)
 
@@ -233,6 +250,12 @@ static func _validate_node(
 			"Le joueur ne saura pas ce que cette amélioration change.",
 			"Décrivez l’effet avec une phrase simple.", node.upgrade_id, &"description", node.rank
 		))
+	if node is SkillTreeNodeData and (node as SkillTreeNodeData).is_champion_mastery():
+		_validate_mastery_node(unit, node as SkillTreeNodeData, messages)
+		_validate_exclusion_symmetry(
+			discipline, node as SkillTreeNodeData, messages
+		)
+		return
 	var target_spell := SkillTreeCatalogService.spell_for_discipline(
 		unit, discipline.discipline_id
 	) if node.target_spell_id == &"" else _find_spell(unit, node.target_spell_id)
@@ -283,15 +306,80 @@ static func _validate_node(
 			if modifier is SpellModSkillTreeEffect:
 				_validate_skill_effect(node, modifier, target_spell, messages)
 	if node is SkillTreeNodeData:
-		var tree_node := node as SkillTreeNodeData
-		for excluded_id in tree_node.excluded_node_ids:
-			var other := _find_node(discipline, excluded_id) as SkillTreeNodeData
-			if other != null and not other.excluded_node_ids.has(node.upgrade_id):
-				messages.append(_warning(
-					&"exclusion_asymmetric", "Exclusion non symétrique",
-					"« %s » exclut « %s », mais l’inverse n’est pas déclaré." % [node.display_name, other.display_name],
-					"Utilisez le bouton « Rendre symétrique ».", node.upgrade_id, &"excluded_node_ids", node.rank
-				))
+		_validate_exclusion_symmetry(
+			discipline, node as SkillTreeNodeData, messages
+		)
+
+
+static func _validate_mastery_node(
+		unit: UnitData,
+		node: SkillTreeNodeData,
+		messages: Array[SkillTreeValidationMessage]
+	) -> void:
+	var has_effect := not node.spell_modifiers.is_empty() \
+		or not node.targeted_spell_modifiers.is_empty() \
+		or not node.reactive_effects.is_empty()
+	if not has_effect:
+		messages.append(_warning(
+			&"mastery_node_without_effect", "Maîtrise sans effet",
+			"Ce nœud ne contient ni transformation ciblée ni effet réactif.",
+			"Ajoutez un effet typé enregistré.", node.upgrade_id,
+			&"targeted_spell_modifiers", node.rank
+		))
+	for spell_id in node.affected_spell_ids:
+		if _find_spell(unit, spell_id) == null:
+			messages.append(_error(
+				&"mastery_affected_spell_missing", "Sort affecté introuvable",
+				"La maîtrise %s annonce un sort absent : %s." % [
+					node.upgrade_id, spell_id,
+				],
+				"Choisissez un sort du profil de progression.", node.upgrade_id,
+				&"affected_spell_ids", node.rank
+			))
+	for targeted in node.targeted_spell_modifiers:
+		if targeted == null:
+			continue
+		if _find_spell(unit, targeted.spell_id) == null:
+			messages.append(_error(
+				&"mastery_target_spell_missing", "Cible de maîtrise introuvable",
+				"Le groupe de modificateurs cible %s, absent du profil." \
+					% targeted.spell_id,
+				"Sélectionnez un sort existant.", node.upgrade_id,
+				&"targeted_spell_modifiers", node.rank
+			))
+		for diagnostic in targeted.validation_errors():
+			messages.append(_error(
+				&"mastery_targeted_modifier_invalid", "Transformation ciblée invalide",
+				str(diagnostic), "Corrigez la Resource typée.", node.upgrade_id,
+				&"targeted_spell_modifiers", node.rank
+			))
+	for effect in node.reactive_effects:
+		if effect == null:
+			continue
+		for diagnostic in effect.structural_errors():
+			messages.append(_error(
+				&"mastery_reactive_effect_invalid", "Effet réactif invalide",
+				str(diagnostic), "Corrigez fréquence, scope ou paramètres typés.",
+				node.upgrade_id, &"reactive_effects", node.rank
+			))
+
+
+static func _validate_exclusion_symmetry(
+		discipline: DisciplineData,
+		tree_node: SkillTreeNodeData,
+		messages: Array[SkillTreeValidationMessage]
+	) -> void:
+	for excluded_id in tree_node.excluded_node_ids:
+		var other := _find_node(discipline, excluded_id) as SkillTreeNodeData
+		if other != null and not other.excluded_node_ids.has(tree_node.upgrade_id):
+			messages.append(_warning(
+				&"exclusion_asymmetric", "Exclusion non symétrique",
+				"« %s » exclut « %s », mais l’inverse n’est pas déclaré." % [
+					tree_node.display_name, other.display_name,
+				],
+				"Utilisez le bouton « Rendre symétrique ».", tree_node.upgrade_id,
+				&"excluded_node_ids", tree_node.rank
+			))
 
 
 static func _validate_skill_effect(

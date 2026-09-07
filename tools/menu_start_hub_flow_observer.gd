@@ -1,5 +1,6 @@
 extends Node
 
+const SELECTION_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
 const START_HUB_PATH := "res://hub/StartHub.tscn"
 const TALK_CAPTURE := (
 	"res://artifacts/start_hub/corrections/09_menu_to_hub_archivist_talk.png"
@@ -10,6 +11,15 @@ func start(title: Node) -> void:
 	GameManager.run_active = true
 	await get_tree().process_frame
 	title.get_node("UI/Boutons/BoutonNouvellePartie").pressed.emit()
+	for _frame in range(60):
+		await get_tree().process_frame
+		if get_tree().current_scene != null and get_tree().current_scene.scene_file_path == SELECTION_PATH:
+			break
+	if not get_tree().current_scene is CharacterSelectionScreen:
+		push_error("MENU_START_HUB_FLOW_VERIFY: la sélection de personnage ne s’ouvre pas.")
+		get_tree().quit(1)
+		return
+	get_tree().current_scene.open_refuge()
 	for _frame in range(30):
 		await get_tree().process_frame
 		if get_tree().current_scene != null \

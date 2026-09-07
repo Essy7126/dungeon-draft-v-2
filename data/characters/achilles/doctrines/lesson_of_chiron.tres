@@ -1,0 +1,514 @@
+[gd_resource type="Resource" script_class="DisciplineData" load_steps=52 format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
+[ext_resource type="Script" path="res://data/characters/targeted_spell_modifier_data.gd" id="4_targeted"]
+[ext_resource type="Script" path="res://data/characters/mastery_spell_modifier_data.gd" id="5_static"]
+[ext_resource type="Script" path="res://data/characters/mastery_reactive_effect_data.gd" id="6_reactive"]
+
+[sub_resource type="Resource" id="FxEyeArm"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_centaur_eye.arm"
+effect_id = &"set_flag"
+event_id = &"distance_travelled"
+scope = 1
+frequency = 3
+max_triggers = 1
+priority = 90
+minimum_moved_cells = 2
+flag_id = &"chiron_centaur_eye_ready"
+
+[sub_resource type="Resource" id="FxEyeConsume"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_centaur_eye.consume"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 1
+frequency = 3
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 95
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+required_flag_id = &"chiron_centaur_eye_ready"
+target_spell_id = &"achilles_pelion_shot"
+flag_id = &"chiron_centaur_eye_ready"
+multiplier = 1.1
+
+[sub_resource type="Resource" id="NodeCentaurEye"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_centaur_eye"
+display_name = "Œil du centaure"
+description = "Après au moins deux cases parcourues pendant l’activation, le prochain Tir gagne 10 %."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 1
+mastery_cost = 1
+tier = 1
+node_type = 1
+doctrine_id = &"achilles_lesson_of_chiron"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxEyeArm"), SubResource("FxEyeConsume")])
+effect_axis = &"movement_to_shot"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 95
+affected_spell_ids = Array[StringName]([&"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticReachBounds"]
+script = ExtResource("5_static")
+modifier_name = "Allonge du Pélion — portée 3–8"
+effect_type = 3
+minimum_range = 3
+maximum_range = 8
+
+[sub_resource type="Resource" id="TargetReachShot"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticReachBounds")])
+
+[sub_resource type="Resource" id="FxReachLong"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_pelion_reach.long_bonus"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 105
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+minimum_distance = 6
+target_spell_id = &"achilles_pelion_shot"
+multiplier = 1.25
+
+[sub_resource type="Resource" id="FxReachNearPenalty"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_pelion_reach.near_penalty"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"range_stance_damage"
+stackable = false
+priority = 104
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+minimum_distance = 3
+maximum_distance = 3
+target_spell_id = &"achilles_pelion_shot"
+multiplier = 0.8
+
+[sub_resource type="Resource" id="NodePelionReach"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_pelion_reach"
+display_name = "Allonge du Pélion"
+description = "Tir passe à portée 3–8 : +25 % à six cases ou plus et -20 % à trois cases. Exclusif avec Tir rapproché."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 2
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_centaur_eye"])
+excluded_node_ids = Array[StringName]([&"achilles_chiron_close_shot"])
+mastery_cost = 1
+tier = 2
+node_type = 2
+exclusive_group = &"achilles_chiron_range_stance"
+doctrine_id = &"achilles_lesson_of_chiron"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetReachShot")])
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxReachLong"), SubResource("FxReachNearPenalty")])
+effect_axis = &"long_range_stance"
+reaction_group = &"range_stance"
+stackable = false
+priority = 105
+affected_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticCloseBounds"]
+script = ExtResource("5_static")
+modifier_name = "Tir rapproché — portée 1–5"
+effect_type = 3
+minimum_range = 1
+maximum_range = 5
+
+[sub_resource type="Resource" id="StaticClosePush"]
+script = ExtResource("5_static")
+modifier_name = "Tir rapproché — poussée 1"
+effect_type = 4
+flat_value = 1
+
+[sub_resource type="Resource" id="TargetCloseShot"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticCloseBounds"), SubResource("StaticClosePush")])
+
+[sub_resource type="Resource" id="FxCloseBonus"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_close_shot.close_bonus"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 105
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+maximum_distance = 3
+target_spell_id = &"achilles_pelion_shot"
+multiplier = 1.25
+
+[sub_resource type="Resource" id="FxCloseFarPenalty"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_close_shot.far_penalty"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"range_stance_damage"
+stackable = false
+priority = 104
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+minimum_distance = 5
+maximum_distance = 5
+target_spell_id = &"achilles_pelion_shot"
+multiplier = 0.85
+
+[sub_resource type="Resource" id="NodeCloseShot"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_close_shot"
+display_name = "Tir rapproché"
+description = "Tir passe à portée 1–5 : +25 % à trois cases ou moins, poussée 1 et -15 % à cinq cases. Exclusif avec Allonge."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 2
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_centaur_eye"])
+excluded_node_ids = Array[StringName]([&"achilles_chiron_pelion_reach"])
+mastery_cost = 1
+tier = 2
+node_type = 2
+exclusive_group = &"achilles_chiron_range_stance"
+doctrine_id = &"achilles_lesson_of_chiron"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetCloseShot")])
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxCloseBonus"), SubResource("FxCloseFarPenalty")])
+effect_axis = &"close_range_stance"
+reaction_group = &"range_stance"
+stackable = false
+priority = 105
+affected_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxImpossibleAngle"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_impossible_angle.followup"
+effect_id = &"queue_followup"
+event_id = &"movement_resolved"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"optional_reposition"
+stackable = false
+priority = 85
+valid_spell_ids = Array[StringName]([&"achilles_fulminant_dash"])
+maximum_cells = 1
+optional = true
+followup_request_type = &"orthogonal_step"
+
+[sub_resource type="Resource" id="NodeImpossibleAngle"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_impossible_angle"
+display_name = "Angle impossible"
+description = "Après Percée, propose un pas orthogonal optionnel gratuit d’une case, une fois par activation."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 3
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_pelion_reach", &"achilles_chiron_close_shot"])
+mastery_cost = 1
+tier = 3
+node_type = 2
+doctrine_id = &"achilles_lesson_of_chiron"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxImpossibleAngle")])
+effect_axis = &"orthogonal_reposition"
+reaction_group = &"optional_reposition"
+stackable = false
+priority = 85
+affected_spell_ids = Array[StringName]([&"achilles_fulminant_dash", &"achilles_pelion_shot", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxStoppingArrow"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_stopping_arrow.mp_penalty"
+effect_id = &"next_activation_mp"
+event_id = &"damage_dealt"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"next_activation_mp_penalty"
+stackable = false
+priority = 100
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+maximum_distance = 4
+flat_value = -1
+
+[sub_resource type="Resource" id="NodeStoppingArrow"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_stopping_arrow"
+display_name = "Flèche d’arrêt"
+description = "À quatre cases ou moins, la cible perd 1 PM à sa prochaine activation. Non cumulable."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 3
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_pelion_reach", &"achilles_chiron_close_shot"])
+mastery_cost = 1
+tier = 3
+node_type = 2
+doctrine_id = &"achilles_lesson_of_chiron"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxStoppingArrow")])
+effect_axis = &"movement_control"
+reaction_group = &"next_activation_mp_penalty"
+stackable = false
+priority = 100
+affected_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticPiercingLine"]
+script = ExtResource("5_static")
+modifier_name = "Flèche perforante — deux cibles"
+effect_type = 6
+maximum_targets = 2
+target_multipliers = PackedFloat32Array(1.0, 0.6)
+
+[sub_resource type="Resource" id="StaticPiercingEnabled"]
+script = ExtResource("5_static")
+modifier_name = "Flèche perforante — perforation"
+effect_type = 8
+enabled_value = true
+
+[sub_resource type="Resource" id="TargetPiercingShot"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticPiercingLine"), SubResource("StaticPiercingEnabled")])
+
+[sub_resource type="Resource" id="NodePiercingArrow"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_piercing_arrow"
+display_name = "Flèche perforante"
+description = "Tir traverse la première cible et inflige 60 % à une seconde cible alignée."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 4
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_impossible_angle", &"achilles_chiron_stopping_arrow"])
+mastery_cost = 1
+tier = 4
+node_type = 2
+doctrine_id = &"achilles_lesson_of_chiron"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetPiercingShot")])
+effect_axis = &"piercing_line"
+reaction_group = &"shot_shape"
+stackable = false
+priority = 160
+affected_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxHuntArmDamage"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_mobile_hunt.arm_damage"
+effect_id = &"set_flag"
+event_id = &"distance_travelled"
+scope = 1
+frequency = 3
+max_triggers = 1
+priority = 90
+minimum_moved_cells = 3
+flag_id = &"chiron_mobile_hunt_damage"
+
+[sub_resource type="Resource" id="FxHuntArmMove"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_mobile_hunt.arm_move"
+effect_id = &"set_flag"
+event_id = &"distance_travelled"
+scope = 1
+frequency = 3
+max_triggers = 1
+priority = 89
+minimum_moved_cells = 3
+flag_id = &"chiron_mobile_hunt_move"
+
+[sub_resource type="Resource" id="FxHuntDamage"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_mobile_hunt.damage"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 1
+frequency = 3
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 115
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+required_flag_id = &"chiron_mobile_hunt_damage"
+target_spell_id = &"achilles_pelion_shot"
+flag_id = &"chiron_mobile_hunt_damage"
+multiplier = 1.2
+
+[sub_resource type="Resource" id="FxHuntMove"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_mobile_hunt.engagement"
+effect_id = &"ignore_engagement"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"engagement_penalty_ignore"
+stackable = false
+priority = 100
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+required_flag_id = &"chiron_mobile_hunt_move"
+flat_value = 1
+
+[sub_resource type="Resource" id="NodeMobileHunt"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_mobile_hunt"
+display_name = "Chasse mobile"
+description = "Après au moins trois cases parcourues, Tir gagne 20 % et le premier déplacement normal suivant ignore 1 point de pénalité d’engagement."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 4
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_impossible_angle", &"achilles_chiron_stopping_arrow"])
+mastery_cost = 1
+tier = 4
+node_type = 2
+doctrine_id = &"achilles_lesson_of_chiron"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxHuntArmDamage"), SubResource("FxHuntArmMove"), SubResource("FxHuntDamage"), SubResource("FxHuntMove")])
+effect_axis = &"mobile_marksman"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 115
+affected_spell_ids = Array[StringName]([&"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticDeathLine"]
+script = ExtResource("5_static")
+modifier_name = "Ligne de mort — trois cibles"
+effect_type = 6
+maximum_targets = 3
+target_multipliers = PackedFloat32Array(1.0, 0.7, 0.4)
+
+[sub_resource type="Resource" id="StaticDeathPierce"]
+script = ExtResource("5_static")
+modifier_name = "Ligne de mort — perforation"
+effect_type = 8
+enabled_value = true
+
+[sub_resource type="Resource" id="TargetDeathLine"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticDeathLine"), SubResource("StaticDeathPierce")])
+
+[sub_resource type="Resource" id="FxDeathLineArmor"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_chiron_death_line.armor_ignore"
+effect_id = &"ignore_armor"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"armor_ignore"
+stackable = true
+priority = 170
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+minimum_distance = 6
+target_spell_id = &"achilles_pelion_shot"
+flat_value = 25
+
+[sub_resource type="Resource" id="NodeDeathLine"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_death_line"
+display_name = "Ligne de mort"
+description = "Tir traverse jusqu’à trois cibles à 100/70/40 % et ignore 25 Armure à six cases ou plus."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 5
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_piercing_arrow", &"achilles_chiron_mobile_hunt"])
+excluded_node_ids = Array[StringName]([&"achilles_chiron_centaur_volley"])
+mastery_cost = 2
+required_champion_level = 10
+tier = 5
+node_type = 3
+exclusive_group = &"achilles_chiron_capstone"
+doctrine_id = &"achilles_lesson_of_chiron"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetDeathLine")])
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxDeathLineArmor")])
+effect_axis = &"death_line"
+reaction_group = &"shot_shape"
+stackable = false
+priority = 170
+affected_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticVolleyBounds"]
+script = ExtResource("5_static")
+modifier_name = "Volée du centaure — portée 2–5"
+effect_type = 3
+minimum_range = 2
+maximum_range = 5
+
+[sub_resource type="Resource" id="StaticVolleyFan"]
+script = ExtResource("5_static")
+modifier_name = "Volée du centaure — éventail"
+effect_type = 7
+maximum_targets = 3
+target_multipliers = PackedFloat32Array(0.7, 0.7, 0.7)
+
+[sub_resource type="Resource" id="StaticVolleyNoPierce"]
+script = ExtResource("5_static")
+modifier_name = "Volée du centaure — sans perforation"
+effect_type = 8
+enabled_value = false
+
+[sub_resource type="Resource" id="TargetVolleyShot"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticVolleyBounds"), SubResource("StaticVolleyFan"), SubResource("StaticVolleyNoPierce")])
+
+[sub_resource type="Resource" id="NodeCentaurVolley"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_chiron_centaur_volley"
+display_name = "Volée du centaure"
+description = "Tir devient un éventail de trois cases, portée 2–5, à 70 % par cible ; il n’est plus perforant."
+discipline_id = &"achilles_lesson_of_chiron"
+rank = 5
+requires_any_node_ids = Array[StringName]([&"achilles_chiron_piercing_arrow", &"achilles_chiron_mobile_hunt"])
+excluded_node_ids = Array[StringName]([&"achilles_chiron_death_line"])
+mastery_cost = 2
+required_champion_level = 13
+tier = 5
+node_type = 3
+exclusive_group = &"achilles_chiron_capstone"
+doctrine_id = &"achilles_lesson_of_chiron"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetVolleyShot")])
+effect_axis = &"fan_volley"
+reaction_group = &"shot_shape"
+stackable = false
+priority = 170
+affected_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="Rank1"]
+script = ExtResource("2_rank")
+rank = 1
+required_total_xp = 0
+choices = Array[ExtResource("3_node")]([SubResource("NodeCentaurEye")])
+
+[sub_resource type="Resource" id="Rank2"]
+script = ExtResource("2_rank")
+rank = 2
+required_total_xp = 1
+choices = Array[ExtResource("3_node")]([SubResource("NodePelionReach"), SubResource("NodeCloseShot")])
+
+[sub_resource type="Resource" id="Rank3"]
+script = ExtResource("2_rank")
+rank = 3
+required_total_xp = 2
+choices = Array[ExtResource("3_node")]([SubResource("NodeImpossibleAngle"), SubResource("NodeStoppingArrow")])
+
+[sub_resource type="Resource" id="Rank4"]
+script = ExtResource("2_rank")
+rank = 4
+required_total_xp = 3
+choices = Array[ExtResource("3_node")]([SubResource("NodePiercingArrow"), SubResource("NodeMobileHunt")])
+
+[sub_resource type="Resource" id="Rank5"]
+script = ExtResource("2_rank")
+rank = 5
+required_total_xp = 4
+choices = Array[ExtResource("3_node")]([SubResource("NodeDeathLine"), SubResource("NodeCentaurVolley")])
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"achilles_lesson_of_chiron"
+display_name = "Leçon de Chiron"
+description = "Doctrine de tir, de mobilité et de contrôle des lignes."
+presentation_color = Color(0.22, 0.58, 0.78, 1)
+progression_mode = 1
+ranks = Array[ExtResource("2_rank")]([SubResource("Rank1"), SubResource("Rank2"), SubResource("Rank3"), SubResource("Rank4"), SubResource("Rank5")])

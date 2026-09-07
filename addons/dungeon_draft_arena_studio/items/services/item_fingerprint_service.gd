@@ -39,6 +39,8 @@ static func semantic_snapshot(definition: ItemDefinition) -> Dictionary:
 		"compatible_character_ids": _string_array(
 			definition.compatible_character_ids
 		),
+		"guard_effectiveness_melee": definition.guard_effectiveness_melee,
+		"guard_effectiveness_projectile": definition.guard_effectiveness_projectile,
 		"stat_modifiers": stat_snapshots,
 		"spell_modifiers": spell_snapshots,
 		"reactive_effects": reactive_snapshots,

@@ -42,7 +42,7 @@ const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
 	"res://data/items/catalogs/default_item_catalog.tres"
 )
 const INVENTORY_CAPACITY := 24
-const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 3
+const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 5
 const POST_COMBAT_LOOT_ITEM_ID: StringName = &"minor_healing_potion"
 const STARTING_INVENTORY := [
 	{"item_id": &"warrior_training_sword", "quantity": 1},
@@ -72,6 +72,13 @@ var _awaiting_post_battle_progression: bool = false
 var _room_outcome_resolved: bool = false
 var _active_progression_screen_ref: WeakRef = null
 var _progression_service := CharacterProgressionService.new()
+var _last_champion_progression_results: Dictionary = {}
+var _glory_challenge_states: Dictionary = {}
+var _odyssey_run_state: OdysseyRunState = null
+var _odyssey_reward_service := OdysseyRewardService.new()
+var _champion_camp_service := ChampionCampService.new()
+var last_restore_error: StringName = &""
+var _encounter_consumables_used := 0
 var _persistent_run_ui: PersistentRunUI = null
 var _battle_outcome_generation := 0
 var _battle_outcome_pending := false
@@ -105,6 +112,8 @@ signal room_cleared(index)
 signal wave_cleared(room_index, wave_index, reward_multiplier)
 signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
 signal discipline_xp_evaluated(snapshot)
+signal champion_progression_awarded(snapshot)
+signal champion_build_changed(character_id)
 signal scene_change_requested(path)
 signal combat_report_ready(report)
 signal post_combat_reward_applied(result)
@@ -290,7 +299,8 @@ func _prepare_preconfigured_run(
 		var hero := Unit.from_data(data)
 		hero.reset_combat_resources()
 		var character_state := CharacterRunState.new()
-		if not character_state.initialize(hero, data, data.active_spell_slots):
+		if not character_state.initialize(hero, data, data.active_spell_slots,
+				RunContentCatalogService.progression_profile_for(run_data, data.get_effective_unit_id())):
 			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
 			_dispose_prepared_characters(prepared_heroes, prepared_states)
 			return false
@@ -342,6 +352,10 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_active_run_name = run_data.run_name
 	_active_run_data = run_data
 	_active_economy_profile = run_data.economy_profile
+	_odyssey_run_state = null
+	if _active_economy_profile != null and _active_economy_profile.isolated_catalog_required:
+		_odyssey_run_state = OdysseyRunState.new()
+		_odyssey_run_state.initialize(_active_economy_profile.starting_currency)
 	_equipment_rewards_enabled = (
 		_active_economy_profile.equipment_rewards_enabled
 		if _active_economy_profile != null else true
@@ -352,6 +366,8 @@ func _initialize_run_state(run_data: RunData) -> void:
 		else RunEconomyProfile.DEFAULT_EQUIPMENT_REWARD_POOL_TAG
 	)
 	_last_run_result = {}
+	_last_champion_progression_results.clear()
+	_glory_challenge_states.clear()
 	_awaiting_post_battle_progression = false
 	_room_outcome_resolved = false
 	_battle_outcome_generation += 1
@@ -427,6 +443,9 @@ func cleanup_run_state() -> void:
 	_active_run_name = ""
 	_active_run_data = null
 	_active_economy_profile = null
+	_odyssey_run_state = null
+	_last_champion_progression_results.clear()
+	_glory_challenge_states.clear()
 	_equipment_rewards_enabled = true
 	_equipment_reward_pool_tag = (
 		RunEconomyProfile.DEFAULT_EQUIPMENT_REWARD_POOL_TAG
@@ -438,6 +457,8 @@ func cleanup_run_state() -> void:
 func _initialize_inventory_state(run_data: RunData = null) -> bool:
 	_clear_inventory_state()
 	item_catalog = DEFAULT_ITEM_CATALOG
+	if run_data != null and run_data.economy_profile != null and run_data.economy_profile.item_catalog != null:
+		item_catalog = run_data.economy_profile.item_catalog
 	var validation := item_catalog.validate_catalog()
 	if not validation.get("valid", false):
 		item_catalog = null
@@ -473,7 +494,8 @@ func _initialize_inventory_state(run_data: RunData = null) -> bool:
 		if not result.get("success", false):
 			_clear_inventory_state()
 			return false
-	return _relic_runtime_service.initialize(run_inventory, item_catalog, heroes)
+	return _relic_runtime_service.initialize(run_inventory, item_catalog, heroes,
+		_active_run_data.action_classification_catalog if _active_run_data != null else null)
 
 
 func _clear_inventory_state() -> void:
@@ -665,6 +687,8 @@ func use_inventory_item(
 		instance_id,
 	)
 	if result.get("success", false):
+		if _combat_report_tracker.is_active():
+			_encounter_consumables_used += 1
 		item_used.emit(result.duplicate(true))
 	return result
 
@@ -684,23 +708,60 @@ func get_inventory_equipment_snapshot() -> Dictionary:
 		"equipment": equipment,
 		"equipment_reward": _equipment_reward_service.snapshot(),
 		"progression": progression,
+		"champion_economy": _odyssey_run_state.get_snapshot() if _odyssey_run_state != null else {},
+		"glory_challenge_states": _glory_challenge_states.duplicate(true),
+		"last_champion_progression_results": (
+			_last_champion_progression_results.duplicate(true)
+		),
 	}
 
 
 func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
+	last_restore_error = &""
 	var snapshot_version := int(snapshot.get("version", -1))
+	for state in get_ordered_character_states():
+		if state.uses_champion_progression() and snapshot_version != INVENTORY_EQUIPMENT_SNAPSHOT_VERSION:
+			last_restore_error = &"CHAMPION_LEGACY_SAVE_INCOMPATIBLE"
+			return false
 	if not run_active \
 			or item_catalog == null \
-			or snapshot_version not in [1, 2, INVENTORY_EQUIPMENT_SNAPSHOT_VERSION]:
+			or snapshot_version not in [
+				1, 2, 3, INVENTORY_EQUIPMENT_SNAPSHOT_VERSION,
+			]:
+		last_restore_error = &"UNSUPPORTED_SAVE_VERSION"
 		return false
+	var candidate_glory_states := {}
+	var candidate_progression_results := {}
+	if snapshot_version >= 4:
+		var glory_parse := _parse_glory_challenge_states(
+			snapshot.get("glory_challenge_states", null)
+		)
+		if not bool(glory_parse.get("ok", false)):
+			last_restore_error = &"INVALID_GLORY_STATE"
+			return false
+		candidate_glory_states = glory_parse.get("states", {})
+		var raw_progression_results: Variant = snapshot.get(
+			"last_champion_progression_results", null
+		)
+		if not raw_progression_results is Dictionary:
+			last_restore_error = &"INVALID_PROGRESSION_REPORT"
+			return false
+		candidate_progression_results = (
+			raw_progression_results as Dictionary
+		).duplicate(true)
+	var candidate_economy: OdysseyRunState = null
+	if _odyssey_run_state != null:
+		candidate_economy = OdysseyRunState.new()
+		if not snapshot.get("champion_economy") is Dictionary or not candidate_economy.restore_snapshot(snapshot["champion_economy"]):
+			last_restore_error = &"INVALID_CHAMPION_ECONOMY"
+			return false
 	var progression_snapshot := snapshot.get("progression", {}) as Dictionary
-	if snapshot_version >= 3 and not _preflight_progression_restore(progression_snapshot):
-		return false
 	var candidate_inventory := RunInventory.new()
 	if not candidate_inventory.initialize(item_catalog, INVENTORY_CAPACITY) \
 			or not candidate_inventory.restore_snapshot(
 				snapshot.get("inventory", {}) as Dictionary
 			):
+		last_restore_error = &"INVALID_INVENTORY"
 		return false
 	var equipment_snapshot := snapshot.get("equipment", {}) as Dictionary
 	var candidate_loadouts: Dictionary = {}
@@ -711,6 +772,7 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 	for state in get_ordered_character_states():
 		var key := str(state.character_id)
 		if not equipment_snapshot.has(key):
+			last_restore_error = &"MISSING_EQUIPMENT"
 			return false
 		var candidate := EquipmentLoadout.new()
 		if not candidate.initialize(state.character_id) \
@@ -718,12 +780,17 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 					equipment_snapshot[key] as Dictionary,
 					item_catalog,
 				):
+			last_restore_error = &"INVALID_EQUIPMENT"
 			return false
 		for instance in candidate.get_equipped_items():
 			if seen_instance_ids.has(instance.instance_id):
+				last_restore_error = &"DUPLICATE_ITEM_INSTANCE"
 				return false
 			seen_instance_ids[instance.instance_id] = true
 		candidate_loadouts[state.character_id] = candidate
+	if snapshot_version >= 3 and not _preflight_progression_restore(progression_snapshot, candidate_loadouts):
+		last_restore_error = &"INVALID_CHAMPION_PROGRESSION"
+		return false
 	var candidate_reward_service: FirstRunEquipmentRewardService = null
 	if snapshot_version >= 2:
 		candidate_reward_service = FirstRunEquipmentRewardService.new()
@@ -731,7 +798,9 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 				snapshot.get("equipment_reward", {}) as Dictionary,
 				item_catalog,
 				get_ordered_character_states(),
+				_equipment_reward_pool_tag,
 			):
+			last_restore_error = &"INVALID_REWARD_DECK"
 			return false
 	for state in get_ordered_character_states():
 		_equipment_service.clear_state_stats(state)
@@ -741,39 +810,66 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 	_connect_inventory_signal()
 	for state in get_ordered_character_states():
 		if not _equipment_service.rebuild_state(state):
+			last_restore_error = &"EQUIPMENT_REBUILD_FAILED"
 			return false
 	if candidate_reward_service != null:
 		_equipment_reward_service = candidate_reward_service
-	if not _relic_runtime_service.initialize(run_inventory, item_catalog, heroes):
+	if not _relic_runtime_service.initialize(run_inventory, item_catalog, heroes,
+			_active_run_data.action_classification_catalog if _active_run_data != null else null):
+		last_restore_error = &"RELIC_REBUILD_FAILED"
 		return false
 	if snapshot_version >= 3:
 		for state in get_ordered_character_states():
 			if not state.restore_progression_snapshot(
 					progression_snapshot[str(state.character_id)] as Dictionary
 				):
+				last_restore_error = &"PROGRESSION_RESTORE_FAILED"
 				return false
+	if candidate_economy != null:
+		_odyssey_run_state = candidate_economy
+	_glory_challenge_states = candidate_glory_states
+	_last_champion_progression_results = candidate_progression_results
 	inventory_changed.emit(run_inventory.to_snapshot())
 	return true
 
 
-func _preflight_progression_restore(progression_snapshot: Dictionary) -> bool:
-	var originals := {}
-	var attempted: Array[CharacterRunState] = []
-	var valid := true
+
+func _preflight_progression_restore(progression_snapshot: Dictionary, candidate_loadouts: Dictionary = {}) -> bool:
 	for state in get_ordered_character_states():
 		var key := str(state.character_id)
-		originals[key] = state.get_progression_snapshot()
-		if not progression_snapshot.has(key) \
-				or not state.restore_progression_snapshot(
-					progression_snapshot[key] as Dictionary
-				):
-			valid = false
-			break
-		attempted.append(state)
-	# The validation pass must have no observable effect.
-	for state in attempted:
-		state.restore_progression_snapshot(originals[str(state.character_id)] as Dictionary)
-	return valid
+		if not progression_snapshot.get(key) is Dictionary:
+			return false
+		# Validate on an isolated unit wearing the incoming equipment. Reading a
+		# save must never clamp live HP, emit build changes or reset live effects.
+		var data := UnitData.new()
+		data.unit_id = state.character_id
+		data.unit_name = state.unit.unit_name
+		data.spells = state.loadout.get_known_spells()
+		data.disciplines = state.get_disciplines()
+		for stat_id in [&"max_hp", &"max_ap", &"max_mp", &"attack_power", &"initiative", &"armure", &"resist_magique", &"esquive", &"crit_chance", &"crit_multi", &"force"]:
+			var stat: Stat = state.unit.get(stat_id)
+			data.set(stat_id, stat.base_value)
+		var temporary := CharacterRunState.new()
+		if not temporary.initialize(Unit.from_data(data), data, state.loadout.get_active_slot_count(), state.progression_profile):
+			temporary.dispose()
+			return false
+		if candidate_loadouts.has(state.character_id):
+			# The temporary state's dispose clears its loadout. Clone the candidate
+			# so validation cannot erase equipment that will be committed below.
+			var isolated_loadout := EquipmentLoadout.new()
+			isolated_loadout.initialize(state.character_id)
+			if not isolated_loadout.restore_snapshot(candidate_loadouts[state.character_id].to_snapshot(), item_catalog):
+				temporary.dispose()
+				return false
+			temporary.equipment_loadout = isolated_loadout
+			if not _equipment_service.rebuild_state(temporary):
+				temporary.dispose()
+				return false
+		var valid := temporary.restore_progression_snapshot(progression_snapshot[key])
+		temporary.dispose()
+		if not valid:
+			return false
+	return true
 
 
 func save_inventory_equipment_state(
@@ -1225,7 +1321,9 @@ func _emit_current_room_cleared_once() -> void:
 func begin_combat_report() -> CombatReport:
 	if _combat_report_tracker.is_active():
 		return _combat_report_tracker.get_report()
-	_progression_service.begin_combat()
+	_encounter_consumables_used = 0
+	_progression_service.begin_combat(character_states)
+	_last_champion_progression_results.clear()
 	var room := get_current_room()
 	_post_combat_transition_pending = false
 	_post_combat_background_texture = null
@@ -1560,6 +1658,8 @@ func on_battle_won() -> void:
 	_room_exit_selected = false
 	capture_battle_outcome_background()
 	_last_combat_report = _finalize_current_combat_report(true)
+	_resolve_current_glory_challenge()
+	_award_current_encounter_progression()
 	wave_cleared.emit(
 		current_room_index,
 		current_wave_index,
@@ -1669,3 +1769,209 @@ func _request_scene_change(
 # Les héros encore vivants, à déployer dans la salle.
 func get_living_heroes() -> Array:
 	return get_ordered_heroes().filter(func(u): return u.is_alive)
+
+func _parse_glory_challenge_states(snapshot: Variant) -> Dictionary:
+	if not snapshot is Dictionary:
+		return {"ok": false, "states": {}}
+	var parsed := {}
+	for key_value in snapshot:
+		var encounter_id := StringName(key_value)
+		var value: Variant = snapshot[key_value]
+		if encounter_id == &"" or not value is Dictionary:
+			return {"ok": false, "states": {}}
+		var entry := value as Dictionary
+		if not entry.has("accepted") \
+				or not entry.has("succeeded") \
+				or typeof(entry["accepted"]) != TYPE_BOOL \
+				or typeof(entry["succeeded"]) != TYPE_BOOL:
+			return {"ok": false, "states": {}}
+		var accepted := bool(entry["accepted"])
+		var succeeded := bool(entry["succeeded"])
+		if succeeded and not accepted:
+			return {"ok": false, "states": {}}
+		parsed[str(encounter_id)] = {
+			"accepted": accepted,
+			"succeeded": succeeded,
+		}
+	return {"ok": true, "states": parsed}
+
+
+
+func get_last_champion_progression_results() -> Dictionary:
+	return _last_champion_progression_results.duplicate(true)
+
+
+
+func get_champion_progression_snapshot(character_id: StringName) -> Dictionary:
+	var state := get_character_state(character_id)
+	if state == null or state.champion_progression == null:
+		return {}
+	return state.champion_progression.to_snapshot()
+
+
+
+func _award_current_encounter_progression() -> Dictionary:
+	var encounter := get_current_encounter_definition()
+	if encounter == null:
+		return {}
+	var glory_state := _glory_challenge_states.get(
+		str(encounter.encounter_id), {}
+	) as Dictionary
+	var has_glory := encounter.glory_challenge != null
+	var glory_accepted := has_glory and bool(glory_state.get("accepted", false))
+	var glory_succeeded := (
+		glory_accepted and bool(glory_state.get("succeeded", false))
+	)
+	var character_results := _progression_service.award_encounter_xp(
+		character_states,
+		encounter.encounter_id,
+		encounter.base_xp,
+		true,
+		glory_accepted,
+		glory_succeeded,
+	)
+	var snapshot := {
+		"schema_version": 1,
+		"encounter_id": encounter.encounter_id,
+		"base_xp": encounter.base_xp,
+		"optional_xp_budget": encounter.optional_xp_budget,
+		"glory_accepted": glory_accepted,
+		"glory_succeeded": glory_succeeded,
+		"character_results": character_results,
+	}
+	if _odyssey_run_state != null and _active_economy_profile != null:
+		var reward_id := StringName("victory_currency:%s" % encounter.encounter_id)
+		if _odyssey_run_state.commit_direct_reward(reward_id, reward_id):
+			var currency_gain := _active_economy_profile.victory_currency_reward
+			_odyssey_run_state.add_currency(currency_gain)
+			snapshot["currency_gained"] = currency_gain
+	_last_champion_progression_results = snapshot.duplicate(true)
+	if not character_results.is_empty():
+		champion_progression_awarded.emit(snapshot.duplicate(true))
+	return snapshot
+
+
+
+func set_current_glory_challenge_accepted(accepted: bool) -> bool:
+	var encounter := get_current_encounter_definition()
+	if not run_active \
+			or _combat_report_tracker.is_active() \
+			or encounter == null \
+			or encounter.encounter_id == &"" \
+			or encounter.glory_challenge == null:
+		return false
+	_glory_challenge_states[str(encounter.encounter_id)] = {
+		"accepted": accepted,
+		"succeeded": false,
+	}
+	return true
+
+
+
+func report_current_glory_challenge_success(succeeded: bool) -> bool:
+	var encounter := get_current_encounter_definition()
+	if not run_active \
+			or _room_outcome_resolved \
+			or encounter == null \
+			or encounter.encounter_id == &"" \
+			or encounter.glory_challenge == null:
+		return false
+	var key := str(encounter.encounter_id)
+	var state := _glory_challenge_states.get(key, {}) as Dictionary
+	if not bool(state.get("accepted", false)):
+		return false
+	state["succeeded"] = succeeded
+	_glory_challenge_states[key] = state
+	return true
+
+
+
+func get_current_glory_challenge_state() -> Dictionary:
+	var encounter := get_current_encounter_definition()
+	if encounter == null or encounter.encounter_id == &"":
+		return {}
+	return (
+		_glory_challenge_states.get(str(encounter.encounter_id), {}) as Dictionary
+	).duplicate(true)
+
+
+
+
+## Les points peuvent être conservés. Leur dépense se fait entre les combats,
+## avant la capture de Sagesse de la rencontre suivante.
+func can_edit_champion_build() -> bool:
+	return run_active and not _combat_report_tracker.is_active() and not _battle_outcome_pending
+
+
+func spend_champion_attribute(character_id: StringName, attribute_id: StringName) -> bool:
+	var state := get_character_state(character_id)
+	if not can_edit_champion_build() or state == null or not state.spend_champion_attribute(attribute_id):
+		return false
+	champion_build_changed.emit(character_id)
+	return true
+
+
+func purchase_champion_mastery(character_id: StringName, node_id: StringName) -> Dictionary:
+	var state := get_character_state(character_id)
+	if not can_edit_champion_build() or state == null:
+		return {"purchased": false, "allowed": false, "reason_id": "BUILD_LOCKED_IN_COMBAT"}
+	var result := state.purchase_mastery_node(node_id)
+	if bool(result.get("purchased", false)):
+		champion_build_changed.emit(character_id)
+	return result
+
+
+func _resolve_current_glory_challenge() -> void:
+	var encounter := get_current_encounter_definition()
+	if encounter == null or encounter.glory_challenge == null:
+		return
+	var key := str(encounter.encounter_id)
+	var state: Dictionary = _glory_challenge_states.get(key, {})
+	if not bool(state.get("accepted", false)):
+		return
+	match encounter.glory_challenge.success_condition:
+		GloryChallengeData.SuccessCondition.WIN_WITHOUT_CONSUMABLE:
+			state["succeeded"] = _encounter_consumables_used == 0
+	_glory_challenge_states[key] = state
+
+
+func get_champion_remaining_encounter_xp() -> Array[int]:
+	var result: Array[int] = []
+	for index in range(current_room_index + 1, rooms.size()):
+		var encounter: EncounterDefinition = rooms[index].get_encounter_for_wave(0)
+		if encounter != null:
+			result.append(encounter.base_xp)
+	return result
+
+
+func get_champion_camp_snapshot() -> Dictionary:
+	if _odyssey_run_state == null or _active_economy_profile == null:
+		return {}
+	var states := get_ordered_character_states()
+	if states.is_empty() or not states[0].uses_champion_progression():
+		return {}
+	return _champion_camp_service.presentation(
+		_active_economy_profile.merchant_profile, _odyssey_run_state,
+		states[0], run_inventory, run_seed)
+
+
+func purchase_champion_camp_offer(offer_id: StringName, target_id: StringName = &"") -> Dictionary:
+	if not can_edit_champion_build() or _odyssey_run_state == null or _active_economy_profile == null:
+		return {"success": false, "error": "La préparation est disponible entre les combats."}
+	var states := get_ordered_character_states()
+	if states.is_empty():
+		return {"success": false, "error": "Champion indisponible."}
+	var result := _champion_camp_service.purchase(
+		_active_economy_profile.merchant_profile, _odyssey_run_state,
+		states[0], run_inventory, run_seed, offer_id, target_id)
+	if bool(result.get("success", false)):
+		champion_build_changed.emit(states[0].character_id)
+	return result
+
+
+func get_champion_reaction_priorities() -> Dictionary:
+	return _odyssey_run_state.reaction_priority_overrides.duplicate(true) if _odyssey_run_state != null else {}
+
+
+func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array[StringName]) -> bool:
+	return _odyssey_run_state != null and _odyssey_run_state.set_reaction_priority_override(group, ordered_effect_ids)

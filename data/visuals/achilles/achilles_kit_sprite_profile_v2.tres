@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AchillesSpriteVisualProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/achilles/achilles_sprite_visual_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"achilles_kit_sprites_v2"
+sprite_frames_path = "res://assets/characters/Achilles/sprites_kit_v2/achilles_sprite_frames.tres"
+expanded_kit_enabled = true
+frame_canvas_size = Vector2i(512, 384)
+foot_anchor = Vector2(256, 320)
+display_scale = 0.35
+attack_release_frame = 3
+walk_segment_duration_seconds = 0.28
+run_segment_duration_seconds = 0.2
+attack_duration_seconds = 0.6
+attack_release_seconds = 0.3
+shot_duration_seconds = 0.72
+shot_release_seconds = 0.36
+guard_duration_seconds = 0.48
+guard_release_seconds = 0.24
+sweep_duration_seconds = 0.72
+sweep_release_seconds = 0.36
+advance_duration_seconds = 1.2
+advance_release_seconds = 0.1
+hit_duration_seconds = 0.24
+death_duration_seconds = 0.48
+death_fade_seconds = 0.12

@@ -1,0 +1,9 @@
+{
+  "W": {
+    "attack": {
+      "body_target_height": 214,
+      "root_local_x": 454,
+      "note": "Reviewed against original W idle and attack. A shared 214px attack body target reduces the source size mismatch. The 8.25px root correction retains full spear margins; every supplemental pose shares this scale and pivot."
+    }
+  }
+}

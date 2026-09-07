@@ -1,25 +1,17 @@
 class_name HudGrayboxFixtureUnit
-extends Node
+extends Unit
 
-signal stats_changed(unit)
-signal hp_changed(unit)
-
-var unit_id: StringName = &"achilles"
-var unit_name := "Achille"
-var character_data: UnitData = null
-var team := 0
-
-var current_hp := 86
-var current_ap := 6
-var current_mp := 4
-var max_hp := Stat.new(110.0)
-var max_ap := Stat.new(6.0)
-var max_mp := Stat.new(4.0)
-var basic_attack_enabled := true
-var spells: Array[Spell] = []
+## Keep the production Unit type contract without starting a run or a battle.
+## Unit is RefCounted: this fixture must not be added to the scene tree.
 
 var availability_by_spell: Dictionary = {}
 var cooldown_by_spell: Dictionary = {}
+
+
+func _init() -> void:
+	super("Achille", 0, 110.0, 10.0, 6.0, 4.0, 20.0)
+	unit_id = &"achilles"
+	current_hp = 86
 
 
 func configure_for_state(state_id: StringName, source_spells: Array[Spell]) -> void:

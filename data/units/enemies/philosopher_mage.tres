@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="PackedScene" path="res://characters/philosopher_mage/PhilosopherMageIsoUnitView.tscn" id="2_visual"]
+[ext_resource type="SpriteFrames" path="res://assets/characters/philosopher_mage/sprites_v1/philosopher_portrait.tres" id="3_preview"]
+[ext_resource type="Resource" path="res://data/characters/philosopher_mage/animations.tres" id="4_animations"]
+[ext_resource type="Script" path="res://data/spell.gd" id="5_spell"]
+[ext_resource type="Resource" path="res://data/spells/enemies/philosopher_axiom.tres" id="6_axiom"]
+[ext_resource type="Resource" path="res://data/spells/enemies/philosopher_refutation.tres" id="7_refutation"]
+[ext_resource type="Resource" path="res://data/spells/enemies/philosopher_mending.tres" id="8_mending"]
+[ext_resource type="Resource" path="res://data/spells/enemies/philosopher_aporia.tres" id="9_aporia"]
+[ext_resource type="Resource" path="res://data/spells/enemies/philosopher_aegis.tres" id="10_aegis"]
+[ext_resource type="Resource" path="res://data/ai/profiles/philosopher_support_ai.tres" id="11_ai"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"philosopher_mage"
+unit_name = "Le Dialecticien"
+description = "Un philosophe grec manie le Logos comme une magie : il frappe à distance, ralentit ses adversaires et préserve ses alliés par le soin et la protection."
+team = 1
+max_hp = 76
+initiative = 12
+max_ap = 4
+max_mp = 3
+attack_power = 8
+visual_scene = ExtResource("2_visual")
+preview_sprite_frames = ExtResource("3_preview")
+preview_sprite_animation = &"idle_E"
+animation_set = ExtResource("4_animations")
+role = "Mage de soutien et de contrôle"
+presentation_summary = "Écartez son protecteur pour atteindre le philosophe. Ses soins, son égide et son ralentissement reviennent une activation sur deux."
+presentation_badge = "DIALECTICIEN"
+basic_attack_enabled = false
+active_spell_slots = 5
+spells = Array[ExtResource("5_spell")]([ExtResource("6_axiom"), ExtResource("7_refutation"), ExtResource("8_mending"), ExtResource("9_aporia"), ExtResource("10_aegis")])
+ai_behavior = 2
+combat_style = 1
+preferred_range = 4
+minimum_range = 2
+maximum_range = 5
+keep_distance = true
+ai_profile = ExtResource("11_ai")
+faction_id = &"logos_wardens"
+tactical_role_id = &"philosopher_mage"

@@ -1,0 +1,204 @@
+[gd_resource type="SpriteFrames" load_steps=26 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/achilles_kit_v2/effects.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_arrow_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_sweep_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_sweep_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_sweep_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_sweep_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_guard_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_guard_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_guard_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_guard_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_dust_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_dust_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_dust_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_dust_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_barrier_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_barrier_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_barrier_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_barrier_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1280, 256, 256)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_arrow_3")
+}],
+"loop": false,
+"name": &"arrow",
+"speed": 20.000000
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_impact_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_3")
+}],
+"loop": false,
+"name": &"impact",
+"speed": 18.181818
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_sweep_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_sweep_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_sweep_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_sweep_3")
+}],
+"loop": false,
+"name": &"sweep",
+"speed": 16.666667
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_guard_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_guard_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_guard_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_guard_3")
+}],
+"loop": false,
+"name": &"guard",
+"speed": 16.666667
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_dust_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_dust_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_dust_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_dust_3")
+}],
+"loop": false,
+"name": &"dust",
+"speed": 16.666667
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_barrier_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_barrier_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_barrier_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_barrier_3")
+}],
+"loop": false,
+"name": &"barrier",
+"speed": 16.666667
+}]

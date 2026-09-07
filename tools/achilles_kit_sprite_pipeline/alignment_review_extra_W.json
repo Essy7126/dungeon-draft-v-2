@@ -1,0 +1,14 @@
+{
+  "extra_W": {
+    "scale": 0.95,
+    "roots": [[181,293],[520,306],[842,303],[1107,308],[187,629],[502,635],[807,637],[1107,637],[179,919],[478,918],[809,925],[1115,933],[193,1184],[514,1189],[805,1161],[1126,1163]],
+    "notes": [
+      "Global source coordinates; source_extra_W.png is 1254x1254, sixteen poses row-major 4x4. Rows sweep, volley, hit, death. Fixed scale .95. Final upright hit crest-to-sole is approximately 224px, giving approximately 213px, close to canonical idle_W approximately 218px; its root sits 4px below the sole. Bow and raised-weapon stances are somewhat taller but remain at one sheet scale.",
+      "First twelve roots use X between sole supports and Y just below the lowest sole. Actual sole alpha extents were measured in the lower leg regions. Estimate +/-3px. No root uses the weapon bbox.",
+      "Volley's last three right feet extend slightly below the nominal y627 tile edge, to y631..633. Retain their complete connected character components; there is a visible gap to the hit-row weapons below.",
+      "Death roots follow planted feet, kneeling pelvis support, seated pelvis [805,1161], then prone pelvis [1126,1163]. The head is allowed to fall left of that root naturally. The dropped spear below the body is deliberately excluded from the ground-root estimate. Estimate +/-6px for kneel/seated and +/-8px for prone.",
+      "All sixteen poses retain bronze helmet, red crest, blonde nape, ivory back plate, petrol pteruges, red belt, teal shield and ivory chevron. The shield and spear remain on the back during volley including release. Multiple arrows are visibly nocked in the draw pose. Weapon grips, elbows and connected limbs are readable; no missing shield like the excluded north volley pose was found.",
+      "No visibly clipped weapon tip, disconnected hand, duplicated limb or opaque contact with another pose was found. The final prone shield overlaps the upper back, with its arm connection occluded by the body, as in the other prone views."
+    ]
+  }
+}

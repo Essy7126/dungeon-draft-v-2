@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="PackedScene" path="res://characters/enemies/spectre_greatsword/SpectreGreatswordIsoUnitView.tscn" id="2_visual"]
+[ext_resource type="SpriteFrames" path="res://assets/characters/spectre_greatsword/sprites_v1/spectre_portrait.tres" id="3_preview"]
+[ext_resource type="Resource" path="res://data/characters/spectre_greatsword/animations.tres" id="4_animations"]
+[ext_resource type="Script" path="res://data/spell.gd" id="5_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/enemies/spectre_heavy_cleave.tres" id="6_cleave"]
+[ext_resource type="Resource" path="res://data/ai/profiles/spectre_melee_ai.tres" id="7_ai"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"spectre_greatsword"
+unit_name = "Spectre errant"
+description = "Une silhouette encapuchonnée glisse au-dessus du sol et abat une lourde épée à deux mains sur les adversaires proches."
+team = 1
+max_hp = 64
+initiative = 10
+max_ap = 2
+max_mp = 3
+attack_power = 18
+visual_scene = ExtResource("2_visual")
+preview_sprite_frames = ExtResource("3_preview")
+preview_sprite_animation = &"idle_E"
+animation_set = ExtResource("4_animations")
+role = "Combattant de mêlée"
+presentation_summary = "Un adversaire mobile à la coupe lourde, dont le visage reste caché dans l’ombre de sa capuche."
+presentation_badge = "SPECTRE"
+basic_attack_enabled = false
+spells = Array[ExtResource("5_spell_type")]([ExtResource("6_cleave")])
+ai_behavior = 0
+combat_style = 0
+preferred_range = 1
+minimum_range = 1
+maximum_range = 1
+keep_distance = false
+ai_profile = ExtResource("7_ai")
+faction_id = &"catabase_underworld"
+tactical_role_id = &"spectre_greatsword"

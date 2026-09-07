@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyAIProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/ai/enemy_ai_profile.gd" id="1_ai"]
+
+[resource]
+script = ExtResource("1_ai")
+profile_id = &"philosopher_support"
+strategy = 6
+marked_status_id = &""
+normal_role_id = &"philosopher_mage"
+chief_role_id = &""
+commander_role_id = &""
+ideal_minimum_range = 3
+ideal_maximum_range = 5
+avoid_hero_adjacency = true
+support_heal_threshold = 0.70
+support_protection_distance = 3

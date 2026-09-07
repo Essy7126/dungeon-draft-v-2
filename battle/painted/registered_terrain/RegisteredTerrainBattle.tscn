@@ -1,0 +1,5 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="1"]
+[ext_resource type="Script" path="res://battle/painted/registered_terrain/registered_terrain_battle.gd" id="2"]
+[node name="RegisteredTerrainBattle" instance=ExtResource("1")]
+script = ExtResource("2")

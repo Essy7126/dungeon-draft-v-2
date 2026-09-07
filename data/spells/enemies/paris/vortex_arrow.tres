@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/vortex_arrow.tres" id="paris_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("paris_icon")
+spell_id = &"paris_vortex_arrow"
+spell_name = "Flèche du vortex"
+description = "8 dégâts spectraux et attire la cible d’une case. Le déplacement déclenche réellement les dalles et les vortex rencontrés."
+ap_cost = 2
+minimum_range = 2
+spell_range = 5
+required_combat_form = &"spectral"
+damage = 8
+damage_type = 1
+element = 4
+impact_delay_seconds = 0.2
+once_per_activation = false
+cooldown_activations = 2
+pull_distance = 1

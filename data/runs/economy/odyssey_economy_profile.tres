@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dpeih0k2iosi8" path="res://data/runs/economy/run_economy_profile.gd" id="1_profile"]
 [ext_resource type="Script" uid="uid://b78r0omrbl31c" path="res://data/runs/economy/run_starting_item_data.gd" id="2_item"]
+[ext_resource type="Resource" path="res://data/items/catalogs/odyssey_item_catalog.tres" id="3_catalog"]
+[ext_resource type="Resource" path="res://data/runs/economy/odyssey_merchant_profile.tres" id="4_merchant"]
+
 
 [sub_resource type="Resource" id="HealingPotions"]
 script = ExtResource("2_item")
@@ -12,8 +15,14 @@ quantity = 2
 script = ExtResource("2_item")
 item_id = &"minor_action_scroll"
 
+
 [resource]
 script = ExtResource("1_profile")
 starting_items = Array[ExtResource("2_item")]([SubResource("HealingPotions"), SubResource("ActionScroll")])
 equipment_rewards_enabled = true
-equipment_reward_pool_tag = &"first_run_equipment_reward"
+equipment_reward_pool_tag = &"odyssey"
+item_catalog = ExtResource("3_catalog")
+isolated_catalog_required = true
+starting_currency = 120
+victory_currency_reward = 60
+merchant_profile = ExtResource("4_merchant")

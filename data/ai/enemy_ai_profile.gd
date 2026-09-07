@@ -11,6 +11,8 @@ enum Strategy {
 	FORMATION_MELEE,
 	GUARDIAN_CHIEF,
 	RANGED_COMMANDER,
+	SUPPORT_MAGE,
+	SPECTRAL_ARCHER,
 }
 
 @export var profile_id: StringName = &""
@@ -35,3 +37,7 @@ enum Strategy {
 @export var protect_commander_paths: bool = false
 @export var commander_distance_penalty_per_cell: int = 0
 @export var commander_path_block_bonus: int = 0
+
+@export_group("Soutien")
+@export_range(0.0, 1.0, 0.01) var support_heal_threshold: float = 0.70
+@export var support_protection_distance: int = 3

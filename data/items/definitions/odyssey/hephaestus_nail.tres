@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="3_parameter"]
+
+[sub_resource type="Resource" id="ArmorLoss"]
+script = ExtResource("3_parameter")
+parameter_id = &"armor_loss"
+value_type = 1
+integer_value = 40
+
+[sub_resource type="Resource" id="Followup"]
+script = ExtResource("3_parameter")
+parameter_id = &"followup_ratio"
+float_value = 0.50
+
+[sub_resource type="Resource" id="Behind"]
+script = ExtResource("3_parameter")
+parameter_id = &"behind_cells"
+value_type = 1
+integer_value = 1
+
+[sub_resource type="Resource" id="FollowupAbility"]
+script = ExtResource("3_parameter")
+parameter_id = &"followup_ability_id"
+value_type = 3
+string_name_value = &"achilles_peleid_strike"
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2_effect")
+trigger_id = &"collision_impact"
+target_id = &"event_target"
+result_id = &"collision_armor_followup"
+value = 0.0
+parameters = Array[ItemReactiveParameterData]([SubResource("ArmorLoss"), SubResource("Followup"), SubResource("Behind"), SubResource("FollowupAbility")])
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_hephaestus_nail"
+display_name = "Clou d’Héphaïstos"
+description = "Une collision provoquée retire 40 Armure ; la prochaine Frappe touche la case derrière pour 50 %."
+rarity = &"legendary"
+tags = Array[StringName]([&"odyssey", &"wrath"])
+category = 5
+reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])

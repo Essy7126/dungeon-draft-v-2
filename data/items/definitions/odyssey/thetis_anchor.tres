@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
+[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+
+[sub_resource type="Resource" id="Dash"]
+script = ExtResource("3_condition")
+condition_id = &"ability_id"
+string_name_value = &"achilles_fulminant_dash"
+
+[sub_resource type="Resource" id="GuardActive"]
+script = ExtResource("3_condition")
+condition_id = &"guard_active"
+
+[sub_resource type="Resource" id="Consume"]
+script = ExtResource("4_parameter")
+parameter_id = &"guard_consume_ratio"
+float_value = 0.30
+
+[sub_resource type="Resource" id="SameDamage"]
+script = ExtResource("4_parameter")
+parameter_id = &"damage_equals_consumed"
+value_type = 2
+boolean_value = true
+
+[sub_resource type="Resource" id="Push"]
+script = ExtResource("4_parameter")
+parameter_id = &"push_distance"
+value_type = 1
+integer_value = 1
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2_effect")
+trigger_id = &"spell_cast"
+conditions = Array[ItemReactiveConditionData]([SubResource("Dash"), SubResource("GuardActive")])
+target_id = &"trigger_hero"
+result_id = &"guard_dash_conversion"
+value = 0.0
+frequency_id = &"per_activation"
+reaction_group = &"guard_dash_conversion"
+stackable = false
+priority = 100
+parameters = Array[ItemReactiveParameterData]([SubResource("Consume"), SubResource("SameDamage"), SubResource("Push")])
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_thetis_anchor"
+display_name = "Ancre de Thétis"
+description = "Percée avec Garde active consomme 30 % de la Garde, inflige cette valeur autour de l’arrivée et pousse d’une case, une fois par activation."
+rarity = &"legendary"
+tags = Array[StringName]([&"odyssey", &"aeacus", &"hybrid"])
+category = 5
+reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])

@@ -52,6 +52,7 @@ const _ARENA_FIELDS := {
 	&"calibration_cells": true,
 	&"calibration_pixels": true,
 	&"presentation_profile_path": true,
+	&"registered_terrain_plan_path": true,
 	&"intentionally_isolated_cells": true,
 }
 

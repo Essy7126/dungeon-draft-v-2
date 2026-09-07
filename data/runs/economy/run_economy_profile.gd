@@ -10,6 +10,11 @@ const DEFAULT_EQUIPMENT_REWARD_POOL_TAG: StringName = (
 @export var equipment_reward_pool_tag: StringName = (
 	DEFAULT_EQUIPMENT_REWARD_POOL_TAG
 )
+@export var item_catalog: ItemCatalog = null
+@export var isolated_catalog_required := false
+@export_range(0, 99999, 1) var starting_currency := 0
+@export_range(0, 99999, 1) var victory_currency_reward := 0
+@export var merchant_profile: MerchantProfile = null
 
 
 func validation_errors() -> PackedStringArray:
@@ -28,6 +33,16 @@ func validation_errors() -> PackedStringArray:
 		errors.append(
 			"Une economie avec recompenses doit declarer un pool tag."
 		)
+	if isolated_catalog_required and item_catalog == null:
+		errors.append(
+			"Une économie isolée avec récompenses doit référencer son catalogue."
+		)
+	if item_catalog != null:
+		var catalog_report := item_catalog.validate_catalog()
+		if not bool(catalog_report.get("valid", false)):
+			errors.append("Le catalogue de l'économie est invalide.")
+	if merchant_profile != null:
+		errors.append_array(merchant_profile.validation_errors())
 	return errors
 
 

@@ -134,7 +134,6 @@ func test_premium_achilles_layout_keeps_exactly_four_actions_and_clean_identity(
 func _spawn_hud_context(premium: bool = false) -> Dictionary:
 	var fixture = FIXTURE_UNIT.new()
 	fixture.configure_for_state(&"idle", SPELLS)
-	add_child_autofree(fixture)
 	var hud = HUD_SCENE.instantiate()
 	hud.skin_variant = 2
 	if premium:

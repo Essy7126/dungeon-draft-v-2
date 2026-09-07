@@ -104,7 +104,31 @@ static func _clear_editable_paths(resource: Resource, visited: Dictionary) -> vo
 		return
 	visited[resource.get_instance_id()] = true
 	resource.set_path_cache("")
-	if resource is UnitData:
+	if resource is CharacterProgressionProfile:
+		for spell in resource.spells:
+			_clear_editable_paths(spell, visited)
+		_clear_editable_paths(resource.champion_progression_profile, visited)
+		_clear_editable_paths(resource.mastery_catalog, visited)
+		_clear_editable_paths(
+			resource.combat_action_classification_catalog, visited
+		)
+	elif resource is ChampionProgressionProfile:
+		for scaling in resource.spell_scaling_profiles.values():
+			if scaling is Resource:
+				_clear_editable_paths(scaling, visited)
+	elif resource is MasteryCatalogData:
+		for doctrine in resource.doctrines:
+			_clear_editable_paths(doctrine, visited)
+		_clear_editable_paths(resource.advanced_catalog, visited)
+		for node in resource.advanced_nodes:
+			_clear_editable_paths(node, visited)
+	elif resource is AdvancedMasteryCatalogData:
+		for node in resource.nodes:
+			_clear_editable_paths(node, visited)
+	elif resource is CombatActionClassificationCatalogData:
+		for entry in resource.entries:
+			_clear_editable_paths(entry, visited)
+	elif resource is UnitData:
 		_clear_editable_paths(resource.animation_set, visited)
 		for spell in resource.spells:
 			_clear_editable_paths(spell, visited)
@@ -117,13 +141,34 @@ static func _clear_editable_paths(resource: Resource, visited: Dictionary) -> vo
 	elif resource is SkillUpgradeData:
 		for modifier in resource.spell_modifiers:
 			_clear_editable_paths(modifier, visited)
+		if resource is SkillTreeNodeData:
+			for targeted in resource.targeted_spell_modifiers:
+				_clear_editable_paths(targeted, visited)
+			for effect in resource.reactive_effects:
+				_clear_editable_paths(effect, visited)
+			for requirement in resource.doctrine_point_requirements:
+				_clear_editable_paths(requirement, visited)
+	elif resource is TargetedSpellModifierData:
+		for modifier in resource.modifiers:
+			_clear_editable_paths(modifier, visited)
+	elif resource is MasteryReactiveEffectData:
+		_clear_editable_paths(resource.directional_guard, visited)
+		_clear_editable_paths(resource.temporary_barrier, visited)
 	elif resource is Spell:
 		_clear_editable_paths(resource.skill_tree, visited)
+		_clear_editable_paths(resource.damage_scaling, visited)
+		_clear_editable_paths(resource.shield_scaling, visited)
 		for modifier in resource.modifiers:
 			_clear_editable_paths(modifier, visited)
 
 
 static func _priority(resource: Resource) -> int:
+	if resource is SpellScalingData \
+			or resource is TargetedSpellModifierData \
+			or resource is MasteryReactiveEffectData \
+			or resource is DoctrinePointRequirementData \
+			or resource is CombatActionClassificationData:
+		return 8
 	if resource is SpellModifier:
 		return 10
 	if resource is SkillUpgradeData:
@@ -134,6 +179,12 @@ static func _priority(resource: Resource) -> int:
 		return 40
 	if resource is DisciplineData:
 		return 50
+	if resource is ChampionProgressionProfile \
+			or resource is AdvancedMasteryCatalogData \
+			or resource is CombatActionClassificationCatalogData:
+		return 52
+	if resource is MasteryCatalogData:
+		return 54
 	# La fiche d'animations s'ecrit avant l'UnitData qui la reference.
 	if resource is CharacterAnimationSetData:
 		return 55
@@ -149,7 +200,39 @@ static func _is_reachable(root: Resource, searched: Resource) -> bool:
 		return false
 	if root == searched:
 		return true
-	if root is UnitData:
+	if root is CharacterProgressionProfile:
+		for spell in root.spells:
+			if _is_reachable(spell, searched):
+				return true
+		for dependency in [
+			root.champion_progression_profile,
+			root.mastery_catalog,
+			root.combat_action_classification_catalog,
+		]:
+			if _is_reachable(dependency, searched):
+				return true
+	elif root is ChampionProgressionProfile:
+		for scaling in root.spell_scaling_profiles.values():
+			if scaling is Resource and _is_reachable(scaling, searched):
+				return true
+	elif root is MasteryCatalogData:
+		for doctrine in root.doctrines:
+			if _is_reachable(doctrine, searched):
+				return true
+		if _is_reachable(root.advanced_catalog, searched):
+			return true
+		for node in root.advanced_nodes:
+			if _is_reachable(node, searched):
+				return true
+	elif root is AdvancedMasteryCatalogData:
+		for node in root.nodes:
+			if _is_reachable(node, searched):
+				return true
+	elif root is CombatActionClassificationCatalogData:
+		for entry in root.entries:
+			if _is_reachable(entry, searched):
+				return true
+	elif root is UnitData:
 		if root.animation_set != null and _is_reachable(root.animation_set, searched):
 			return true
 		for spell in root.spells:
@@ -167,8 +250,28 @@ static func _is_reachable(root: Resource, searched: Resource) -> bool:
 		for modifier in root.spell_modifiers:
 			if _is_reachable(modifier, searched):
 				return true
+		if root is SkillTreeNodeData:
+			for targeted in root.targeted_spell_modifiers:
+				if _is_reachable(targeted, searched):
+					return true
+			for effect in root.reactive_effects:
+				if _is_reachable(effect, searched):
+					return true
+			for requirement in root.doctrine_point_requirements:
+				if _is_reachable(requirement, searched):
+					return true
+	elif root is TargetedSpellModifierData:
+		for modifier in root.modifiers:
+			if _is_reachable(modifier, searched):
+				return true
+	elif root is MasteryReactiveEffectData:
+		return _is_reachable(root.directional_guard, searched) \
+			or _is_reachable(root.temporary_barrier, searched)
 	elif root is Spell:
 		if _is_reachable(root.skill_tree, searched):
+			return true
+		if _is_reachable(root.damage_scaling, searched) \
+				or _is_reachable(root.shield_scaling, searched):
 			return true
 		for modifier in root.modifiers:
 			if _is_reachable(modifier, searched):

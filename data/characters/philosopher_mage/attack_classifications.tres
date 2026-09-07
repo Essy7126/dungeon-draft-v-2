@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1_catalog"]
+[ext_resource type="Script" path="res://data/characters/combat_action_classification_data.gd" id="2_entry"]
+
+[sub_resource type="Resource" id="Axiom"]
+script = ExtResource("2_entry")
+ability_id = &"philosopher_axiom"
+classification = 1
+
+[sub_resource type="Resource" id="Refutation"]
+script = ExtResource("2_entry")
+ability_id = &"philosopher_refutation"
+classification = 2
+
+[sub_resource type="Resource" id="Mending"]
+script = ExtResource("2_entry")
+ability_id = &"philosopher_mending"
+classification = 2
+
+[sub_resource type="Resource" id="Aporia"]
+script = ExtResource("2_entry")
+ability_id = &"philosopher_aporia"
+classification = 2
+
+[sub_resource type="Resource" id="Aegis"]
+script = ExtResource("2_entry")
+ability_id = &"philosopher_aegis"
+classification = 2
+
+[sub_resource type="Resource" id="SpectreCleave"]
+script = ExtResource("2_entry")
+ability_id = &"spectre_heavy_cleave"
+classification = 0
+
+[resource]
+script = ExtResource("1_catalog")
+catalog_id = &"philosopher_trial_action_classifications_v1"
+entries = Array[ExtResource("2_entry")]([SubResource("Axiom"), SubResource("Refutation"), SubResource("Mending"), SubResource("Aporia"), SubResource("Aegis"), SubResource("SpectreCleave")])

@@ -1,0 +1,204 @@
+[gd_resource type="SpriteFrames" load_steps=26 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/philosopher_mage/sprites_v1/effects.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Frame_bolt_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_bolt_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_bolt_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_bolt_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_impact_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_heal_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_heal_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_heal_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_heal_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_control_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_control_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_control_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_control_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_shield_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_shield_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_shield_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_shield_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_repel_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_repel_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_repel_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1280, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Frame_repel_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 1280, 256, 256)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_bolt_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_bolt_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_bolt_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_bolt_3")
+}],
+"loop": false,
+"name": &"bolt",
+"speed": 20.000000
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_impact_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_impact_3")
+}],
+"loop": false,
+"name": &"impact",
+"speed": 16.666667
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_heal_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_heal_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_heal_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_heal_3")
+}],
+"loop": false,
+"name": &"heal",
+"speed": 8.333333
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_control_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_control_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_control_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_control_3")
+}],
+"loop": false,
+"name": &"control",
+"speed": 13.333333
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_shield_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_shield_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_shield_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_shield_3")
+}],
+"loop": false,
+"name": &"shield",
+"speed": 13.333333
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_repel_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_repel_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_repel_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_repel_3")
+}],
+"loop": false,
+"name": &"repel",
+"speed": 11.764706
+}]

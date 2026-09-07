@@ -1,0 +1,474 @@
+[gd_resource type="Resource" script_class="DisciplineData" load_steps=52 format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
+[ext_resource type="Script" path="res://data/characters/targeted_spell_modifier_data.gd" id="4_targeted"]
+[ext_resource type="Script" path="res://data/characters/mastery_spell_modifier_data.gd" id="5_static"]
+[ext_resource type="Script" path="res://data/characters/mastery_reactive_effect_data.gd" id="6_reactive"]
+
+[sub_resource type="Resource" id="FxFocusedFury"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_focused_fury.distinct_offenses"
+effect_id = &"track_distinct_offenses"
+event_id = &"spell_cast"
+scope = 1
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 100
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_fulminant_dash", &"achilles_pelion_shot"])
+multiplier = 1.15
+secondary_multiplier = 1.25
+
+[sub_resource type="Resource" id="NodeFocusedFury"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_focused_fury"
+display_name = "Fureur lucide"
+description = "Pendant une activation, contre une même cible, la deuxième technique offensive distincte gagne 15 % et la troisième 25 %."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 1
+mastery_cost = 1
+tier = 1
+node_type = 1
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxFocusedFury")])
+effect_axis = &"activation_combo"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 100
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxOpeningZeroArmor"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_opening_slash.zero_armor_bonus"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 120
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+target_armor_at_most = 0
+target_spell_id = &"achilles_peleid_strike"
+multiplier = 1.15
+
+[sub_resource type="Resource" id="FxOpeningArmor"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_opening_slash.armor_break"
+effect_id = &"apply_armor_delta"
+event_id = &"damage_dealt"
+scope = 2
+frequency = 0
+reaction_group = &"temporary_armor_delta"
+stackable = false
+priority = 90
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+flat_value = -20
+
+[sub_resource type="Resource" id="NodeOpeningSlash"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_opening_slash"
+display_name = "Entaille d’ouverture"
+description = "Frappe retire 20 Armure jusqu’au début de la prochaine activation ; si la cible possède déjà 0 Armure, Frappe gagne 15 %."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 2
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_focused_fury"])
+mastery_cost = 1
+tier = 2
+node_type = 2
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxOpeningZeroArmor"), SubResource("FxOpeningArmor")])
+effect_axis = &"armor_break"
+reaction_group = &"temporary_armor_delta"
+stackable = false
+priority = 90
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxMomentumSet"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_murderous_momentum.arm"
+effect_id = &"set_flag"
+event_id = &"movement_resolved"
+scope = 1
+frequency = 3
+max_triggers = 1
+priority = 100
+valid_spell_ids = Array[StringName]([&"achilles_fulminant_dash"])
+requires_contact_after_move = true
+minimum_moved_cells = 2
+flag_id = &"wrath_murderous_momentum_ready"
+
+[sub_resource type="Resource" id="FxMomentumConsume"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_murderous_momentum.consume"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 1
+frequency = 3
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 110
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"wrath_murderous_momentum_ready"
+target_spell_id = &"achilles_peleid_strike"
+flag_id = &"wrath_murderous_momentum_ready"
+multiplier = 1.25
+
+[sub_resource type="Resource" id="NodeMurderousMomentum"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_murderous_momentum"
+display_name = "Élan meurtrier"
+description = "Après une Percée d’au moins deux cases terminée au contact, la prochaine Frappe gagne 25 %."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 2
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_focused_fury"])
+mastery_cost = 1
+tier = 2
+node_type = 2
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxMomentumSet"), SubResource("FxMomentumConsume")])
+effect_axis = &"dash_to_strike"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 110
+affected_spell_ids = Array[StringName]([&"achilles_fulminant_dash", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxExecution"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_execution.low_health_bonus"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 0
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 130
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+target_hp_ratio_at_most = 0.35
+multiplier = 1.35
+
+[sub_resource type="Resource" id="NodeExecution"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_execution"
+display_name = "Exécution"
+description = "Frappe et Tir gagnent 35 % contre une cible à 35 % de ses PV ou moins."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 3
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_opening_slash", &"achilles_wrath_murderous_momentum"])
+mastery_cost = 1
+tier = 3
+node_type = 2
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxExecution")])
+effect_axis = &"execute"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 130
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxBloodArm"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_blood_for_blood.arm"
+effect_id = &"set_flag"
+event_id = &"activation_started"
+scope = 1
+frequency = 2
+max_triggers = 1
+priority = 100
+minimum_hp_lost_max_hp_ratio = 0.1
+flag_id = &"wrath_blood_for_blood_ready"
+
+[sub_resource type="Resource" id="FxBloodConsume"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_blood_for_blood.consume"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 140
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+required_flag_id = &"wrath_blood_for_blood_ready"
+flag_id = &"wrath_blood_for_blood_ready"
+multiplier = 1.3
+
+[sub_resource type="Resource" id="NodeBloodForBlood"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_blood_for_blood"
+display_name = "Sang pour sang"
+description = "Après une perte d’au moins 10 % des PV maximum depuis l’activation précédente, la prochaine technique offensive gagne 30 %, une fois par activation."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 3
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_opening_slash", &"achilles_wrath_murderous_momentum"])
+mastery_cost = 1
+tier = 3
+node_type = 2
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxBloodArm"), SubResource("FxBloodConsume")])
+effect_axis = &"damage_taken_reaction"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 140
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxVictoriousStep"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_victorious_step.followup"
+effect_id = &"queue_followup"
+event_id = &"elimination"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"optional_reposition"
+stackable = false
+priority = 80
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+requires_elimination = true
+maximum_cells = 2
+optional = true
+followup_request_type = &"free_move"
+
+[sub_resource type="Resource" id="NodeVictoriousStep"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_victorious_step"
+display_name = "Pas victorieux"
+description = "Une élimination par Frappe ou Tir propose un déplacement optionnel gratuit de deux cases maximum, une fois par activation."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 4
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_execution", &"achilles_wrath_blood_for_blood"])
+mastery_cost = 1
+tier = 4
+node_type = 2
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxVictoriousStep")])
+effect_axis = &"kill_reposition"
+reaction_group = &"optional_reposition"
+stackable = false
+priority = 80
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxBreakArmorMoved"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_break_formation.moved_armor"
+effect_id = &"apply_armor_delta"
+event_id = &"unit_moved"
+scope = 2
+frequency = 0
+reaction_group = &"temporary_armor_delta"
+stackable = false
+priority = 95
+requires_collision_or_forced_move = true
+flat_value = -25
+
+[sub_resource type="Resource" id="FxBreakFlagMoved"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_break_formation.moved_arm"
+effect_id = &"set_flag"
+event_id = &"unit_moved"
+scope = 2
+frequency = 0
+priority = 96
+requires_collision_or_forced_move = true
+flag_id = &"wrath_break_formation_ready"
+flag_target_bound = true
+
+[sub_resource type="Resource" id="FxBreakArmorCollision"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_break_formation.collision_armor"
+effect_id = &"apply_armor_delta"
+event_id = &"collision"
+scope = 2
+frequency = 0
+reaction_group = &"temporary_armor_delta"
+stackable = false
+priority = 95
+requires_collision_or_forced_move = true
+flat_value = -25
+
+[sub_resource type="Resource" id="FxBreakFlagCollision"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_break_formation.collision_arm"
+effect_id = &"set_flag"
+event_id = &"collision"
+scope = 2
+frequency = 0
+priority = 96
+requires_collision_or_forced_move = true
+flag_id = &"wrath_break_formation_ready"
+flag_target_bound = true
+
+[sub_resource type="Resource" id="FxBreakConsume"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_break_formation.consume"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 2
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 125
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"wrath_break_formation_ready"
+target_spell_id = &"achilles_peleid_strike"
+flag_id = &"wrath_break_formation_ready"
+multiplier = 1.25
+
+[sub_resource type="Resource" id="NodeBreakFormation"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_break_formation"
+display_name = "Brise-formation"
+description = "Une cible déplacée ou entrée en collision à cause d’Achille perd 25 Armure et subit 25 % de plus à la prochaine Frappe, jusqu’à la prochaine activation."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 4
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_execution", &"achilles_wrath_blood_for_blood"])
+mastery_cost = 1
+tier = 4
+node_type = 2
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxBreakArmorMoved"), SubResource("FxBreakFlagMoved"), SubResource("FxBreakArmorCollision"), SubResource("FxBreakFlagCollision"), SubResource("FxBreakConsume")])
+effect_axis = &"forced_movement_setup"
+reaction_group = &"temporary_armor_delta"
+stackable = false
+priority = 95
+affected_spell_ids = Array[StringName]([&"achilles_fulminant_dash", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="StaticScourgeLine"]
+script = ExtResource("5_static")
+modifier_name = "Fléau de Troie — ligne"
+effect_type = 6
+maximum_targets = 2
+target_multipliers = PackedFloat32Array(1.2, 0.7)
+
+[sub_resource type="Resource" id="TargetScourgeStrike"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_peleid_strike"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticScourgeLine")])
+
+[sub_resource type="Resource" id="NodeScourgeTroy"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_scourge_of_troy"
+display_name = "Fléau de Troie"
+description = "Frappe devient une ligne de deux cases : 120 % sur la première cible et 70 % sur la seconde."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 5
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_victorious_step", &"achilles_wrath_break_formation"])
+excluded_node_ids = Array[StringName]([&"achilles_wrath_irrepressible_wrath"])
+mastery_cost = 2
+required_champion_level = 10
+tier = 5
+node_type = 3
+exclusive_group = &"achilles_wrath_capstone"
+doctrine_id = &"achilles_wrath_of_peleus"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetScourgeStrike")])
+effect_axis = &"strike_line"
+reaction_group = &"strike_shape"
+stackable = false
+priority = 200
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxIrrepressibleArm"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_irrepressible_wrath.arm"
+effect_id = &"set_flag"
+event_id = &"activation_started"
+scope = 1
+frequency = 2
+max_triggers = 1
+priority = 150
+caster_hp_ratio_at_most = 0.4
+flag_id = &"wrath_irrepressible_active"
+
+[sub_resource type="Resource" id="FxIrrepressibleDamage"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_irrepressible_wrath.damage"
+effect_id = &"damage_multiplier"
+event_id = &"spell_cast"
+scope = 1
+frequency = 0
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 150
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+required_flag_id = &"wrath_irrepressible_active"
+multiplier = 1.3
+
+[sub_resource type="Resource" id="FxIrrepressibleShield"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_wrath_irrepressible_wrath.kill_shield"
+effect_id = &"grant_shield"
+event_id = &"elimination"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"sourced_shield_creation"
+stackable = true
+priority = 145
+requires_elimination = true
+required_flag_id = &"wrath_irrepressible_active"
+ratio_value = 0.08
+
+[sub_resource type="Resource" id="NodeIrrepressibleWrath"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_wrath_irrepressible_wrath"
+display_name = "Colère irrépressible"
+description = "Sous 40 % PV au début de l’activation, Frappe et Tir gagnent 30 % ; la première élimination crée un bouclier de 8 % des PV max."
+discipline_id = &"achilles_wrath_of_peleus"
+rank = 5
+requires_any_node_ids = Array[StringName]([&"achilles_wrath_victorious_step", &"achilles_wrath_break_formation"])
+excluded_node_ids = Array[StringName]([&"achilles_wrath_scourge_of_troy"])
+mastery_cost = 2
+required_champion_level = 13
+tier = 5
+node_type = 3
+exclusive_group = &"achilles_wrath_capstone"
+doctrine_id = &"achilles_wrath_of_peleus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxIrrepressibleArm"), SubResource("FxIrrepressibleDamage"), SubResource("FxIrrepressibleShield")])
+effect_axis = &"low_health_fury"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 150
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="Rank1"]
+script = ExtResource("2_rank")
+rank = 1
+required_total_xp = 0
+choices = Array[ExtResource("3_node")]([SubResource("NodeFocusedFury")])
+
+[sub_resource type="Resource" id="Rank2"]
+script = ExtResource("2_rank")
+rank = 2
+required_total_xp = 1
+choices = Array[ExtResource("3_node")]([SubResource("NodeOpeningSlash"), SubResource("NodeMurderousMomentum")])
+
+[sub_resource type="Resource" id="Rank3"]
+script = ExtResource("2_rank")
+rank = 3
+required_total_xp = 2
+choices = Array[ExtResource("3_node")]([SubResource("NodeExecution"), SubResource("NodeBloodForBlood")])
+
+[sub_resource type="Resource" id="Rank4"]
+script = ExtResource("2_rank")
+rank = 4
+required_total_xp = 3
+choices = Array[ExtResource("3_node")]([SubResource("NodeVictoriousStep"), SubResource("NodeBreakFormation")])
+
+[sub_resource type="Resource" id="Rank5"]
+script = ExtResource("2_rank")
+rank = 5
+required_total_xp = 4
+choices = Array[ExtResource("3_node")]([SubResource("NodeScourgeTroy"), SubResource("NodeIrrepressibleWrath")])
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"achilles_wrath_of_peleus"
+display_name = "Colère du Péléide"
+description = "Doctrine offensive d’enchaînement, d’exécution et de rupture de formation."
+presentation_color = Color(0.82, 0.25, 0.16, 1)
+progression_mode = 1
+ranks = Array[ExtResource("2_rank")]([SubResource("Rank1"), SubResource("Rank2"), SubResource("Rank3"), SubResource("Rank4"), SubResource("Rank5")])

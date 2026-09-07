@@ -7,6 +7,7 @@ extends Resource
 @export var profile_id: StringName = &"painted_room"
 @export_range(1.0, 1.25, 0.01) var camera_zoom_multiplier := 1.0
 @export var camera_offset_adjustment := Vector2.ZERO
+@export var camera_keep_painting_in_view := false
 @export_range(0.8, 1.2, 0.01) var global_unit_scale_multiplier := 1.0
 @export var unit_profiles: Array[UnitVisualProfile] = []
 

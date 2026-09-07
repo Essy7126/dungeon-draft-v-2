@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1"]
+[ext_resource type="Script" path="res://data/characters/combat_action_classification_data.gd" id="2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("2")
+ability_id = &"paris_spectral_arrow"
+classification = 1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+ability_id = &"paris_fire_arrow"
+classification = 1
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("2")
+ability_id = &"paris_ice_arrow"
+classification = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("2")
+ability_id = &"paris_vortex_arrow"
+classification = 1
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("2")
+ability_id = &"paris_infernal_whip"
+classification = 0
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("2")
+ability_id = &"paris_infernal_sweep"
+classification = 2
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("2")
+ability_id = &"paris_infernal_pull"
+classification = 0
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("2")
+ability_id = &"paris_vortex_step"
+classification = 2
+
+[resource]
+script = ExtResource("1")
+catalog_id = &"paris_two_forms_v1"
+entries = Array[ExtResource("2")]([SubResource("s0"), SubResource("s1"), SubResource("s2"), SubResource("s3"), SubResource("s4"), SubResource("s5"), SubResource("s6"), SubResource("s7")])

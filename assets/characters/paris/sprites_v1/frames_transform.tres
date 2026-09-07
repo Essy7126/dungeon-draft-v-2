@@ -1,0 +1,51 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/paris/sprites_v1/atlas_transform_ALL.png" id="transform_ALL"]
+
+[sub_resource type="AtlasTexture" id="transform_ALL_0"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(0,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_1"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(512,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_2"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(1024,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_3"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(1536,0,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_4"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(0,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_5"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(512,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_6"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(1024,384,512,384)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="transform_ALL_7"]
+atlas = ExtResource("transform_ALL")
+region = Rect2(1536,384,512,384)
+filter_clip = true
+
+[resource]
+animations = [
+{ "frames": [{ "duration": 1.0, "texture": SubResource("transform_ALL_0") }, { "duration": 1.0, "texture": SubResource("transform_ALL_1") }, { "duration": 1.0, "texture": SubResource("transform_ALL_2") }, { "duration": 1.0, "texture": SubResource("transform_ALL_3") }], "loop": false, "name": &"transform_E", "speed": 4.444444444444445 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("transform_ALL_4") }, { "duration": 1.0, "texture": SubResource("transform_ALL_5") }, { "duration": 1.0, "texture": SubResource("transform_ALL_6") }, { "duration": 1.0, "texture": SubResource("transform_ALL_7") }], "loop": false, "name": &"transform_N", "speed": 4.444444444444445 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("transform_ALL_0") }, { "duration": 1.0, "texture": SubResource("transform_ALL_1") }, { "duration": 1.0, "texture": SubResource("transform_ALL_2") }, { "duration": 1.0, "texture": SubResource("transform_ALL_3") }], "loop": false, "name": &"transform_S", "speed": 4.444444444444445 },
+{ "frames": [{ "duration": 1.0, "texture": SubResource("transform_ALL_4") }, { "duration": 1.0, "texture": SubResource("transform_ALL_5") }, { "duration": 1.0, "texture": SubResource("transform_ALL_6") }, { "duration": 1.0, "texture": SubResource("transform_ALL_7") }], "loop": false, "name": &"transform_W", "speed": 4.444444444444445 }
+]

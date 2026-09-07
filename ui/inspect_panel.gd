@@ -2,6 +2,7 @@
 
 const KeywordText = preload("res://ui/keyword_rich_text_label.gd")
 const Glossary = preload("res://ui/combat_glossary.gd")
+const ParisInspection = preload("res://ui/paris_enemy_inspection.gd")
 const VisualThemeFactory = preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
@@ -19,6 +20,7 @@ var _pathfinder: Pathfinder = null
 var _grid: GridData = null
 var _last_subject_key := ""
 var _last_subject_fingerprint := ""
+var _paris_form_subject: Unit
 
 func _ready() -> void:
 	layer = 30
@@ -29,6 +31,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_watch_paris_form(null)
 	if get_viewport().size_changed.is_connected(_apply_responsive_layout):
 		get_viewport().size_changed.disconnect(_apply_responsive_layout)
 
@@ -161,6 +164,7 @@ func _on_grid_occupancy_changed(
 func show_unit(unit, locked: bool = false) -> void:
 	if _locked and not locked:
 		return
+	_watch_paris_form(unit as Unit)
 	if unit != _displayed_unit:
 		_details_expanded = false
 	if unit == null:
@@ -179,9 +183,10 @@ func show_unit(unit, locked: bool = false) -> void:
 		return
 	_clear_content()
 	_panel.visible = true
-	_title.text = unit.unit_name
+	_title.text = Glossary.unit_display_name(unit)
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
 	_add_resources(unit)
+	_add_paris_form(unit as Unit)
 	_add_engagement(unit)
 	_add_statuses(unit)
 	_add_details_toggle(unit)
@@ -357,20 +362,21 @@ func _add_details_toggle(unit) -> void:
 
 func _add_detailed_stats(unit) -> void:
 	_add_section("Stats")
-	_add_line("Attaque", str(unit.get_attack()))
+	_add_line("Prouesse" if Glossary.uses_champion_progression(unit) else "Attaque", str(unit.attack_power.get_int() if Glossary.uses_champion_progression(unit) else unit.get_attack()))
 	_add_line("Initiative", str(unit.get_initiative()))
 	_add_line("Armure", _fmt_float(unit.armure.get_value()))
 	_add_line("Resist. magique", _fmt_float(unit.resist_magique.get_value()))
 	_add_line("Esquive", "%d%%" % int(round(unit.esquive.get_value() * 100.0)))
 	_add_line("Critique", "%d%% x%s" % [int(round(unit.crit_chance.get_value() * 100.0)), _fmt_float(unit.crit_multi.get_value())])
 
-func _preview_effect_on_unit(_caster, spell: Spell, _target) -> String:
+func _preview_effect_on_unit(caster, spell: Spell, _target) -> String:
 	var parts: Array = []
-	if spell.damage > 0:
-		parts.append("~%d degats" % spell.damage)
+	var damage := spell.get_scaled_damage(caster)
+	if damage > 0:
+		parts.append("~%d dégâts avant défenses" % damage)
 	if spell.heal > 0:
 		parts.append("~%d PV rendus" % spell.heal)
-	var shield: int = spell.shield_grant
+	var shield: int = spell.get_scaled_shield(caster)
 	if shield > 0:
 		parts.append("%d bouclier" % shield)
 	if spell.applied_status != null:
@@ -382,6 +388,7 @@ func _preview_effect_on_unit(_caster, spell: Spell, _target) -> String:
 	return " | ".join(parts)
 
 func _show_empty() -> void:
+	_watch_paris_form(null)
 	_displayed_unit = null
 	_invalidate_subject_cache()
 	_clear_content()
@@ -458,9 +465,9 @@ func _spell_summary(spell: Spell, unit = null) -> String:
 	var parts: Array = []
 	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
 	parts.append("%d PA" % ap_cost)
-	var damage: int = spell.damage
+	var damage: int = spell.get_scaled_damage(unit) if unit is Unit else spell.damage
 	var heal: int = spell.heal
-	var shield: int = spell.shield_grant
+	var shield: int = spell.get_scaled_shield(unit) if unit is Unit else spell.shield_grant
 	if damage > 0:
 		parts.append("%d degats" % damage)
 	if heal > 0:
@@ -473,6 +480,8 @@ func _spell_summary(spell: Spell, unit = null) -> String:
 		parts.append("Pose %s" % spell.terrain_effect.effect_name)
 	if spell.push_distance > 0:
 		parts.append("Pousse %d" % spell.push_distance)
+	if spell.pull_distance > 0:
+		parts.append("Attire %d" % spell.pull_distance)
 	return " | ".join(parts)
 
 func _add_section(text: String) -> void:
@@ -526,6 +535,8 @@ func _spell_unusable_reason(unit, spell: Spell) -> String:
 func _unit_subject_fingerprint(unit) -> String:
 	var values: Array = [
 		unit.unit_name,
+		Glossary.champion_level(unit),
+		unit.attack_power.get_int(),
 		unit.team,
 		unit.current_hp,
 		unit.max_hp.get_int(),
@@ -665,3 +676,31 @@ func _cell_type_name(cell_type: int) -> String:
 		GridData.CellType.RUNE:
 			return "Rune"
 	return "Case"
+
+
+func _watch_paris_form(unit: Unit) -> void:
+	var next: Unit = unit if unit != null and unit.unit_id == &"catabase_shadow_paris" else null
+	if next == _paris_form_subject:
+		return
+	if is_instance_valid(_paris_form_subject) and _paris_form_subject.combat_form_changed.is_connected(_on_paris_form_changed):
+		_paris_form_subject.combat_form_changed.disconnect(_on_paris_form_changed)
+	_paris_form_subject = next
+	if _paris_form_subject != null:
+		_paris_form_subject.combat_form_changed.connect(_on_paris_form_changed)
+
+
+func _on_paris_form_changed(unit: Unit, _before: StringName, _after: StringName) -> void:
+	if unit == _displayed_unit:
+		_invalidate_subject_cache()
+		show_unit(unit, _locked)
+
+
+func _add_paris_form(unit: Unit) -> void:
+	var description := ParisInspection.describe(unit)
+	if description.is_empty():
+		return
+	_subtitle.text = description.subtitle
+	_add_section(description.heading)
+	_add_paragraph(description.description)
+	if not str(description.future_spells).is_empty():
+		_add_paragraph(description.future_spells)

@@ -1,0 +1,14 @@
+{
+  "extra_S": {
+    "scale": 0.88,
+    "roots": [[195,286],[519,286],[879,292],[1125,291],[194,596],[501,595],[815,603],[1127,599],[197,892],[500,889],[820,897],[1125,892],[199,1174],[510,1170],[824,1148],[1109,1124]],
+    "notes": [
+      "Global source coordinates; source_extra_S.png is 1254x1254, sixteen poses in row-major 4x4. Rows are sweep, volley, hit, death.",
+      "Fixed sheet scale .88. The upright final hit pose is approximately 256px crest-to-sole and its head approximately 67px; output approximately 225px/59px matches canonical V1. Shorter apparent height in the other poses follows knee flexion and torso inclination, not a separate per-pose scale.",
+      "Standing root X is between the sole supports, Y just below the lowest sole. The first twelve sole coordinates were checked against the actual alpha components in the lower leg region. Estimate +/-3px.",
+      "Death roots use the body/pelvis projection onto its support plane: standing feet, kneeling supports, seated pelvis, then prone pelvis/contact. The last two roots deliberately ignore the dropped spear, which extends below the body. Estimate +/-6px, especially the prone contact projection.",
+      "Sweep pose2's right foot crosses x940 into the next nominal tile (visible foot alpha approximately x933..953,y250..265). Keep that foot connected to its original character; do not crop on the 4x4 tile line.",
+      "Red crest, bronze helmet, ivory cuirass, petrol clothing, red belt and chevron shield remain consistent. Volley visibly nocks multiple arrows and returns to bow-low; right/left equipment connections remain readable. Hit clearly recoils then recovers. Death progresses from slump to knee, seated fall and curled prone pose. No visibly clipped weapon tip, disconnected hand or obvious duplicate limb."
+    ]
+  }
+}

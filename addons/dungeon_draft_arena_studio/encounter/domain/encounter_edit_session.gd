@@ -416,6 +416,9 @@ func room_mode_label(room: RoomData = null) -> String:
 func mark_dirty(resource: Resource) -> void:
 	if resource != null:
 		dirty_resources[resource] = true
+		var owner := _embedded_progression_owner(resource)
+		if owner != null:
+			dirty_resources[owner] = true
 
 
 func mark_clean() -> void:
@@ -631,3 +634,19 @@ func _encounter_at_usage(room_index: int, wave_index: int) -> EncounterDefinitio
 
 func _usage_key(room_index: int, wave_index: int) -> String:
 	return "%d:%d" % [room_index, wave_index]
+
+
+func _embedded_progression_owner(resource: Resource) -> EncounterDefinition:
+	if working_run == null or resource == null:
+		return null
+	for room in working_run.rooms:
+		if room == null:
+			continue
+		var encounters: Array[EncounterDefinition] = [room.encounter_definition]
+		for wave in room.waves:
+			if wave != null:
+				encounters.append(wave.encounter_definition)
+		for encounter in encounters:
+			if encounter != null and encounter.glory_challenge == resource:
+				return encounter
+	return null

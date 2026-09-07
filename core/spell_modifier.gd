@@ -38,6 +38,13 @@ func applies_to(spell) -> bool:
 func get_range_bonus(_caster, _spell) -> int:
 	return 0
 
+# Remplace la portée minimale d'un sort avant la validation de cible. Une
+# valeur négative signifie « aucun override ». Lorsque plusieurs sources sont
+# actives, SpellCaster retient la contrainte la plus forte pour que l'ordre des
+# Resources ne puisse jamais neutraliser silencieusement un drawback.
+func get_minimum_range_override(_caster, _spell) -> int:
+	return -1
+
 # Autorise un modifier data-driven à élargir le contrat de ciblage avant le
 # début du cast (par exemple la branche Intercepteur de Charge).
 func allows_free_cell_target(_caster, _spell) -> bool:
@@ -102,3 +109,7 @@ func on_movement_resolved(_ctx) -> void:
 # l'émission de EventBus.spell_cast : dernier point pour amender le rapport.
 func on_cast_complete(_ctx) -> void:
 	pass
+
+
+func ignores_minimum_range(_caster, _spell) -> bool:
+	return false

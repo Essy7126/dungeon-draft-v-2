@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/philosopher_mage/sprites_v1/icons/refutation.tres" id="20_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("20_icon")
+spell_id = &"philosopher_refutation"
+spell_name = "Réfutation"
+description = "Une onde de refus inflige 8 dégâts magiques à un adversaire adjacent et le repousse d’une case."
+ap_cost = 2
+visual_action = 1
+minimum_range = 1
+spell_range = 1
+damage = 8
+element = 5
+push_distance = 1
+needs_line_of_sight = false
+once_per_activation = true

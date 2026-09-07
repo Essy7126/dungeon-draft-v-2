@@ -1,0 +1,1175 @@
+{
+  "version": 1,
+  "canvas_size": [
+    1920,
+    1200
+  ],
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      631.5
+    ],
+    [
+      1893,
+      627
+    ],
+    [
+      1870.5,
+      640.5
+    ],
+    [
+      1837.5,
+      658.5
+    ],
+    [
+      1803,
+      679.5
+    ],
+    [
+      1774.5,
+      691.5
+    ],
+    [
+      1731,
+      702
+    ],
+    [
+      1684.5,
+      711
+    ],
+    [
+      1665,
+      739.5
+    ],
+    [
+      1656,
+      777
+    ],
+    [
+      1636.5,
+      793.5
+    ],
+    [
+      1602,
+      792
+    ],
+    [
+      1579.5,
+      801
+    ],
+    [
+      1542,
+      804
+    ],
+    [
+      1504.5,
+      808.5
+    ],
+    [
+      1494,
+      832.5
+    ],
+    [
+      1473,
+      837
+    ],
+    [
+      1455,
+      859.5
+    ],
+    [
+      1438.5,
+      876
+    ],
+    [
+      1411.5,
+      888
+    ],
+    [
+      1392,
+      900
+    ],
+    [
+      1378.5,
+      915
+    ],
+    [
+      1350,
+      922.5
+    ],
+    [
+      1321.5,
+      928.5
+    ],
+    [
+      1294.5,
+      933
+    ],
+    [
+      1278,
+      922.5
+    ],
+    [
+      1255.5,
+      916.5
+    ],
+    [
+      1239,
+      910.5
+    ],
+    [
+      1216.5,
+      913.5
+    ],
+    [
+      1197,
+      907.5
+    ],
+    [
+      1170,
+      907.5
+    ],
+    [
+      1135.5,
+      894
+    ],
+    [
+      1116,
+      904.5
+    ],
+    [
+      1087.5,
+      901.5
+    ],
+    [
+      1066.5,
+      918
+    ],
+    [
+      1054.5,
+      940.5
+    ],
+    [
+      1036.5,
+      958.5
+    ],
+    [
+      1024.5,
+      984
+    ],
+    [
+      1006.5,
+      997.5
+    ],
+    [
+      981,
+      999
+    ],
+    [
+      946.5,
+      997.5
+    ],
+    [
+      925.5,
+      1003.5
+    ],
+    [
+      892.5,
+      1000.5
+    ],
+    [
+      867,
+      1012.5
+    ],
+    [
+      841.5,
+      1009.5
+    ],
+    [
+      813,
+      1008
+    ],
+    [
+      783,
+      1012.5
+    ],
+    [
+      759,
+      1005
+    ],
+    [
+      735,
+      1018.5
+    ],
+    [
+      645,
+      1069.5
+    ],
+    [
+      562.5,
+      1116
+    ],
+    [
+      510,
+      1149
+    ],
+    [
+      493.5,
+      1167
+    ],
+    [
+      474,
+      1173
+    ],
+    [
+      435,
+      1173
+    ],
+    [
+      414,
+      1168.5
+    ],
+    [
+      376.5,
+      1165.5
+    ],
+    [
+      348,
+      1149
+    ],
+    [
+      315,
+      1140
+    ],
+    [
+      240,
+      1129.5
+    ],
+    [
+      120,
+      1128
+    ],
+    [
+      0,
+      1128
+    ],
+    [
+      0,
+      732
+    ],
+    [
+      57,
+      717
+    ],
+    [
+      99,
+      702
+    ],
+    [
+      132,
+      700.5
+    ],
+    [
+      150,
+      678
+    ],
+    [
+      147,
+      654
+    ],
+    [
+      133.5,
+      634.5
+    ],
+    [
+      139.5,
+      613.5
+    ],
+    [
+      159,
+      594
+    ],
+    [
+      178.5,
+      576
+    ],
+    [
+      202.5,
+      559.5
+    ],
+    [
+      226.5,
+      544.5
+    ],
+    [
+      246,
+      522
+    ],
+    [
+      225,
+      504
+    ],
+    [
+      217.5,
+      483
+    ],
+    [
+      196.5,
+      471
+    ],
+    [
+      190.5,
+      442.5
+    ],
+    [
+      168,
+      430.5
+    ],
+    [
+      147,
+      421.5
+    ],
+    [
+      120,
+      424.5
+    ],
+    [
+      93,
+      421.5
+    ],
+    [
+      60,
+      429
+    ],
+    [
+      30,
+      430.5
+    ],
+    [
+      0,
+      427.5
+    ]
+  ],
+  "water": {
+    "color": "#348f89",
+    "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/water_material.png",
+    "shader_path": "res://battle/painted/registered_terrain/shaders/water_ink.gdshader"
+  },
+  "land": {
+    "color": "#8b965c",
+    "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/land_composed_v4.png",
+    "texture_scale": [
+      1,
+      1
+    ],
+    "texture_repeat": false
+  },
+  "soil_patches": [],
+  "shorelines": [
+    {
+      "id": "west_inlet_visible",
+      "points": [
+        [
+          0,
+          427.5
+        ],
+        [
+          30,
+          430.5
+        ],
+        [
+          60,
+          429
+        ],
+        [
+          93,
+          421.5
+        ],
+        [
+          120,
+          424.5
+        ],
+        [
+          147,
+          421.5
+        ],
+        [
+          168,
+          430.5
+        ],
+        [
+          190.5,
+          442.5
+        ],
+        [
+          196.5,
+          471
+        ],
+        [
+          217.5,
+          483
+        ],
+        [
+          225,
+          504
+        ],
+        [
+          246,
+          522
+        ],
+        [
+          226.5,
+          544.5
+        ],
+        [
+          202.5,
+          559.5
+        ],
+        [
+          178.5,
+          576
+        ],
+        [
+          159,
+          594
+        ],
+        [
+          139.5,
+          613.5
+        ],
+        [
+          133.5,
+          634.5
+        ],
+        [
+          147,
+          654
+        ],
+        [
+          150,
+          678
+        ],
+        [
+          132,
+          700.5
+        ],
+        [
+          99,
+          702
+        ],
+        [
+          57,
+          717
+        ],
+        [
+          0,
+          732
+        ]
+      ],
+      "width": 10.5,
+      "color": "#8E8854",
+      "confidence": "visible"
+    },
+    {
+      "id": "southeast_main_bank",
+      "points": [
+        [
+          1920,
+          631.5
+        ],
+        [
+          1893,
+          627
+        ],
+        [
+          1870.5,
+          640.5
+        ],
+        [
+          1837.5,
+          658.5
+        ],
+        [
+          1803,
+          679.5
+        ],
+        [
+          1774.5,
+          691.5
+        ],
+        [
+          1731,
+          702
+        ],
+        [
+          1684.5,
+          711
+        ],
+        [
+          1665,
+          739.5
+        ],
+        [
+          1656,
+          777
+        ],
+        [
+          1636.5,
+          793.5
+        ],
+        [
+          1602,
+          792
+        ],
+        [
+          1579.5,
+          801
+        ],
+        [
+          1542,
+          804
+        ],
+        [
+          1504.5,
+          808.5
+        ],
+        [
+          1494,
+          832.5
+        ],
+        [
+          1473,
+          837
+        ],
+        [
+          1455,
+          859.5
+        ],
+        [
+          1438.5,
+          876
+        ],
+        [
+          1411.5,
+          888
+        ],
+        [
+          1392,
+          900
+        ],
+        [
+          1378.5,
+          915
+        ],
+        [
+          1350,
+          922.5
+        ],
+        [
+          1321.5,
+          928.5
+        ],
+        [
+          1294.5,
+          933
+        ],
+        [
+          1278,
+          922.5
+        ],
+        [
+          1255.5,
+          916.5
+        ],
+        [
+          1239,
+          910.5
+        ],
+        [
+          1216.5,
+          913.5
+        ],
+        [
+          1197,
+          907.5
+        ],
+        [
+          1170,
+          907.5
+        ],
+        [
+          1135.5,
+          894
+        ],
+        [
+          1116,
+          904.5
+        ],
+        [
+          1087.5,
+          901.5
+        ],
+        [
+          1066.5,
+          918
+        ],
+        [
+          1054.5,
+          940.5
+        ],
+        [
+          1036.5,
+          958.5
+        ],
+        [
+          1024.5,
+          984
+        ],
+        [
+          1006.5,
+          997.5
+        ],
+        [
+          981,
+          999
+        ],
+        [
+          946.5,
+          997.5
+        ],
+        [
+          925.5,
+          1003.5
+        ],
+        [
+          892.5,
+          1000.5
+        ],
+        [
+          867,
+          1012.5
+        ],
+        [
+          841.5,
+          1009.5
+        ],
+        [
+          813,
+          1008
+        ],
+        [
+          783,
+          1012.5
+        ],
+        [
+          759,
+          1005
+        ],
+        [
+          735,
+          1018.5
+        ]
+      ],
+      "width": 10.5,
+      "color": "#8E8854",
+      "confidence": "visible_with_local_inference"
+    },
+    {
+      "id": "south_bank_under_hud",
+      "points": [
+        [
+          735,
+          1018.5
+        ],
+        [
+          645,
+          1069.5
+        ],
+        [
+          562.5,
+          1116
+        ],
+        [
+          510,
+          1149
+        ],
+        [
+          493.5,
+          1167
+        ]
+      ],
+      "width": 10.5,
+      "color": "#8E8854",
+      "confidence": "inferred"
+    },
+    {
+      "id": "southwest_bank_visible",
+      "points": [
+        [
+          493.5,
+          1167
+        ],
+        [
+          474,
+          1173
+        ],
+        [
+          435,
+          1173
+        ],
+        [
+          414,
+          1168.5
+        ],
+        [
+          376.5,
+          1165.5
+        ],
+        [
+          348,
+          1149
+        ]
+      ],
+      "width": 10.5,
+      "color": "#8E8854",
+      "confidence": "visible"
+    },
+    {
+      "id": "southwest_bank_under_chat",
+      "points": [
+        [
+          348,
+          1149
+        ],
+        [
+          315,
+          1140
+        ],
+        [
+          240,
+          1129.5
+        ],
+        [
+          120,
+          1128
+        ],
+        [
+          0,
+          1128
+        ]
+      ],
+      "width": 10.5,
+      "color": "#8E8854",
+      "confidence": "inferred"
+    }
+  ],
+  "world_decor": [
+    {
+      "id": "tree_foreground_left",
+      "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/environment_clusters_v4.png",
+      "anchor": [
+        378,
+        973.5
+      ],
+      "pivot": [
+        0.500443243,
+        0.875748165
+      ],
+      "scale": 0.589622642,
+      "layer": "foreground",
+      "region_px": [
+        0,
+        518,
+        740,
+        506
+      ],
+      "contact_profiles": [
+        [
+          [
+            0.114865,
+            0.93083
+          ],
+          [
+            0.195946,
+            0.938735
+          ],
+          [
+            0.285135,
+            0.944664
+          ]
+        ],
+        [
+          [
+            0.308108,
+            0.936759
+          ],
+          [
+            0.395946,
+            0.924901
+          ],
+          [
+            0.487838,
+            0.91502
+          ],
+          [
+            0.571622,
+            0.913043
+          ],
+          [
+            0.645946,
+            0.944664
+          ]
+        ],
+        [
+          [
+            0.683784,
+            0.944664
+          ],
+          [
+            0.762162,
+            0.934783
+          ],
+          [
+            0.847297,
+            0.934783
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "rock_mass_foreground_right",
+      "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/environment_clusters_v4.png",
+      "anchor": [
+        1728.75,
+        1177.5
+      ],
+      "pivot": [
+        0.565191012,
+        0.82978644
+      ],
+      "scale": 0.849420849,
+      "layer": "foreground",
+      "region_px": [
+        740,
+        528,
+        796,
+        496
+      ],
+      "contact_profiles": [
+        [
+          [
+            0.057789,
+            0.917339
+          ],
+          [
+            0.119347,
+            0.925403
+          ],
+          [
+            0.184673,
+            0.925403
+          ],
+          [
+            0.248744,
+            0.933468
+          ]
+        ],
+        [
+          [
+            0.31407,
+            0.929435
+          ],
+          [
+            0.376884,
+            0.925403
+          ],
+          [
+            0.439698,
+            0.925403
+          ],
+          [
+            0.515075,
+            0.907258
+          ],
+          [
+            0.577889,
+            0.893145
+          ]
+        ],
+        [
+          [
+            0.634422,
+            0.864919
+          ],
+          [
+            0.728643,
+            0.846774
+          ],
+          [
+            0.791457,
+            0.826613
+          ],
+          [
+            0.854271,
+            0.798387
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "cliff_bench_14_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        10,
+        2
+      ],
+      "anchor": [
+        1243.476793205,
+        356.12893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_15_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        11,
+        2
+      ],
+      "anchor": [
+        1295.076793205,
+        381.92893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_16_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        12,
+        2
+      ],
+      "anchor": [
+        1346.676793205,
+        407.72893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_17_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        13,
+        2
+      ],
+      "anchor": [
+        1398.276793205,
+        433.52893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_18_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        14,
+        2
+      ],
+      "anchor": [
+        1449.876793205,
+        459.32893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_19_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        15,
+        2
+      ],
+      "anchor": [
+        1501.476793205,
+        485.12893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_20_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        16,
+        2
+      ],
+      "anchor": [
+        1553.076793205,
+        510.92893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    }
+  ],
+  "excluded_floor_polygons": [
+    {
+      "id": "rear_cliff_ground_foot",
+      "polygon": [
+        [
+          1327.5,
+          317.25
+        ],
+        [
+          1387.5,
+          351
+        ],
+        [
+          1455,
+          399.75
+        ],
+        [
+          1518.75,
+          431.25
+        ],
+        [
+          1567.5,
+          461.25
+        ],
+        [
+          1605,
+          433.5
+        ],
+        [
+          1552.5,
+          391.5
+        ],
+        [
+          1470,
+          345
+        ],
+        [
+          1395,
+          292.5
+        ],
+        [
+          1353.75,
+          277.5
+        ]
+      ]
+    }
+  ],
+  "minimum_floor_margin_px": 0,
+  "western_margin_probe_native": [
+    314.676793205,
+    536.72893691
+  ],
+  "minimum_west_land_margin_tiles": 0.6,
+  "metadata": {
+    "source_plan": "res://artifacts/arena_dofus_greece_2026-09-05/reference_geometry_measurement/terrain_plan_ref.json",
+    "source_canvas_size": [
+      2560,
+      1600
+    ],
+    "uniform_reference_scale": 0.75,
+    "coordinate_contract": "All terrain and image anchors are in one 1920x1200 native space. No independent x/y stretching. Atlas pivots are normalized within region_px. Sprite scales are uniform.",
+    "observed_terrain_preserved": "land_polygon and every shoreline point/width are exactly source*0.75. The source plan remains unchanged.",
+    "composition_limit": "Original painted Greek scenery; visible Dofus geometry is measured, occluded contours inferred. Artwork is not a reconstruction of proprietary map data.",
+    "excluded_floor_polygon_evidence": {
+      "rear_cliff_ground_foot": "Front edge follows the observed source_geometry_plan environment_lines cliff_rock_foot_behind_curb, with an inferred narrow rear footprint. This is a ground rock exclusion, not the full sprite/canopy silhouette."
+    },
+    "peripheral_bench_source": "res://data/arenas/greek_drawn_courtyard_v1/geometry_manifest.json#perimeter_props",
+    "peripheral_bench_count": 7,
+    "peripheral_bench_note": "Seven sections i10..16,j2 are copied from the authoritative geometry manifest, without new floor/obstacle cells. The omitted i9,j2 section overlaps the inferred floor boundary.",
+    "hidden_terrain_segments": [
+      "south_bank_under_hud",
+      "southwest_bank_under_chat"
+    ],
+    "soil_note": "The land painting supplies low ground cover and worn earth; fixed shorelines and clipped bank details remain independent.",
+    "art_completion": {
+      "revision": 4,
+      "method": "Original image_gen landscape painting clipped to the unchanged authored Land polygon; separate alpha foreground atlas; real stone combat sprites.",
+      "land_paint": {
+        "file": "land_composed_v4.png",
+        "prompt": "land_composed_v4_prompt.txt",
+        "source_generated_image": "C:/Users/paolo/.codex/generated_images/01a070fd-3307-7cf0-b040-62863b2b7678/exec-3013b341-22b3-47dd-99a3-fa580331c698.png",
+        "source_dimensions": [
+          1503,
+          1047
+        ],
+        "runtime_dimensions": [
+          1920,
+          1200
+        ],
+        "normalization": "Whole illustration resampled bicubically to native canvas. This normalizes artwork only; no grid vertex, camera, land or shore coordinate is derived from the painting.",
+        "sampling": "Native plane UVs; clamp; same Texture2D instance, UV scale and tint used by 217 stone meadow joins.",
+        "rear_scenery": "Olive grove, Greek ruined arch, columns and continuous broad limestone bluff are painted into Land; old two isolated back sprites removed."
+      },
+      "foreground_atlas": {
+        "file": "environment_clusters_v4.png",
+        "prompt": "environment_clusters_v4_prompt.txt",
+        "source_generated_image": "C:/Users/paolo/.codex/generated_images/01a070fd-3307-7cf0-b040-62863b2b7678/exec-4256012b-853e-4c6d-ac26-a077d4b27567.png",
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "handling": "Exact generated PNG bytes, native alpha; two bottom regions sampled directly, no independent X/Y stretching.",
+        "regions": [
+          {
+            "id": "tree_foreground_left",
+            "region_px": [
+              0,
+              518,
+              740,
+              506
+            ],
+            "alpha_bounds_atlas_xywh": [
+              43,
+              524,
+              636,
+              481
+            ],
+            "alpha_threshold": 32
+          },
+          {
+            "id": "rock_mass_foreground_right",
+            "region_px": [
+              740,
+              528,
+              796,
+              496
+            ],
+            "alpha_bounds_atlas_xywh": [
+              744,
+              554,
+              777,
+              443
+            ],
+            "alpha_threshold": 32
+          }
+        ]
+      },
+      "geometry_invariant": "Land polygon, shorelines, canvas, exclusions, all floor and VOID cells, origin, axes, blocker/spawn data and foreground world anchors unchanged from the accepted registered terrain version.",
+      "art_direction": "Warm sunlit Greek sanctuary; continuous olive grove, limestone bluff, textured meadow, separate foreground vegetation and stones; quiet tactical center."
+    }
+  },
+  "combat_ground_band": {
+    "enabled": true,
+    "width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20.0,
+    "shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+    "description": "Continuous compacted limestone soil around the canonical combat footprint; outer feather, no raised edge or tactical cells."
+  },
+  "geometry_manifest_path": "res://data/arenas/greek_drawn_courtyard_v1/geometry_manifest.json"
+}

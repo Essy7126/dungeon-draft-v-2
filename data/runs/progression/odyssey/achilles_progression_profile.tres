@@ -1,19 +1,21 @@
-[gd_resource type="Resource" script_class="CharacterProgressionProfile" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="1_profile"]
 [ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="3_discipline_type"]
-[ext_resource type="Resource" path="res://data/spells/achilles/spear_thrust.tres" id="4_spear"]
-[ext_resource type="Resource" path="res://data/spells/achilles/advance.tres" id="5_advance"]
-[ext_resource type="Resource" path="res://data/spells/achilles/sweep.tres" id="6_sweep"]
-[ext_resource type="Resource" path="res://data/spells/achilles/guard.tres" id="7_guard"]
-[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/spear.tres" id="8_spear_discipline"]
-[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/advance.tres" id="9_advance_discipline"]
-[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/sweep.tres" id="10_sweep_discipline"]
-[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/guard.tres" id="11_guard_discipline"]
+[ext_resource type="Resource" path="res://data/spells/achilles/peleid_strike.tres" id="3_strike"]
+[ext_resource type="Resource" path="res://data/spells/achilles/fulminant_dash.tres" id="4_dash"]
+[ext_resource type="Resource" path="res://data/spells/achilles/pelion_shot.tres" id="5_shot"]
+[ext_resource type="Resource" path="res://data/spells/achilles/bronze_guard.tres" id="6_guard"]
+[ext_resource type="Resource" path="res://data/runs/progression/odyssey/achilles_champion_progression_v0.tres" id="7_champion"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/achilles_mastery_catalog.tres" id="8_mastery"]
+[ext_resource type="Resource" path="res://data/characters/achilles/attack_classifications.tres" id="9_classifications"]
 
 [resource]
 script = ExtResource("1_profile")
 character_id = &"achilles"
 active_spell_slots = 4
-spells = Array[ExtResource("2_spell_type")]([ExtResource("4_spear"), ExtResource("5_advance"), ExtResource("6_sweep"), ExtResource("7_guard")])
+spells = Array[ExtResource("2_spell_type")]([ExtResource("3_strike"), ExtResource("4_dash"), ExtResource("5_shot"), ExtResource("6_guard")])
+progression_model = 1
+champion_progression_profile = ExtResource("7_champion")
+mastery_catalog = ExtResource("8_mastery")
+combat_action_classification_catalog = ExtResource("9_classifications")

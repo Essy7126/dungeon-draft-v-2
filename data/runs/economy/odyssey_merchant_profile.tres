@@ -1,0 +1,81 @@
+[gd_resource type="Resource" script_class="MerchantProfile" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://data/runs/economy/merchant_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://data/runs/economy/merchant_offer_data.gd" id="2_offer"]
+
+[sub_resource type="Resource" id="Equipment"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_equipment_offer"
+display_name = "Armurerie de Chiron"
+description = "Choisir une pièce pour préparer la prochaine rencontre."
+offer_type = 0
+currency_cost = 60
+catalog_tags = Array[StringName]([&"odyssey", &"achilles"])
+per_run_limit = 3
+
+[sub_resource type="Resource" id="Relic"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_relic_offer"
+display_name = "Trésors anciens"
+description = "Choisir une relique et son pouvoir pour la suite de la Catabase."
+offer_type = 1
+currency_cost = 90
+catalog_tags = Array[StringName]([&"odyssey"])
+per_run_limit = 2
+
+[sub_resource type="Resource" id="Heal"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_heal_offer"
+display_name = "Repos sous la tente"
+description = "Rend 25 % des PV maximum."
+offer_type = 2
+currency_cost = 30
+heal_max_hp_ratio = 0.25
+per_run_limit = 3
+
+[sub_resource type="Resource" id="Forge"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_forge_offer"
+display_name = "Forge"
+description = "Améliore d’un palier une pièce éligible."
+offer_type = 3
+currency_cost = 70
+forge_tier_delta = 1
+per_run_limit = 2
+
+[sub_resource type="Resource" id="Reroll"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_reroll_offer"
+display_name = "Renouveler l’étal"
+description = "Renouvelle les propositions d’équipements et de reliques."
+offer_type = 4
+currency_cost = 25
+reroll_offer_count = 3
+per_run_limit = 3
+
+[sub_resource type="Resource" id="Reorientation"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_reorientation_offer"
+display_name = "Réorientation"
+description = "Rembourse un point de maîtrise éligible."
+offer_type = 5
+currency_cost = 55
+reorientation_refund_limit = 1
+per_run_limit = 1
+
+[sub_resource type="Resource" id="ChironLesson"]
+script = ExtResource("2_offer")
+offer_id = &"odyssey_chiron_lesson"
+display_name = "Leçon de Chiron"
+description = "+1 maîtrise, sans contourner les prérequis de niveau."
+offer_type = 6
+currency_cost = 100
+mastery_amount = 1
+per_run_limit = 3
+
+[resource]
+script = ExtResource("1_profile")
+merchant_id = &"odyssey_chiron_merchant"
+display_name = "L’étape de Chiron"
+maximum_mastery_purchases_per_run = 3
+offers = Array[ExtResource("2_offer")]([SubResource("Equipment"), SubResource("Relic"), SubResource("Heal"), SubResource("Forge"), SubResource("Reroll"), SubResource("Reorientation"), SubResource("ChironLesson")])

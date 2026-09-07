@@ -1,0 +1,66 @@
+{
+  "schema": "dd.philosopher.sprite-ground-alignment.v1",
+  "source_dimensions": [1254, 1254],
+  "target_canvas": [512, 384],
+  "target_ground_anchor": [256, 320],
+  "measurement_notes": [
+    "All eight 4x4 sources were inspected on a neutral grey background at 1200px width; coordinates below are global original-source pixels, not coordinates on the resized review.",
+    "A single scale per sheet is measured from the human cranium to the lowest sandal in an upright pose, excluding the raised staff orb. Target upright human height is approximately 225px. Crouches and prone poses retain the same scale.",
+    "Planted-pose roots sit between the two sandal supports and approximately two source pixels below the contact sole. Walking roots follow the pelvis ground projection and the standing ground plane, rather than the moving staff tip. Manual placement uncertainty approximately 3px, lifted-foot projections approximately 6px.",
+    "Hit roots retain the ground plane below the original support area. Death roots progress from planted supports to the kneeling pelvis and then the prone pelvis contact; the head may fall beside that root. Neither the entire bounding box nor the dropped staff defines the death root. Prone support uncertainty approximately 8px.",
+    "Clip overrides replace four rejected drawings with an already authored compatible pose. The atlas retains all original authored drawings for traceability; no source pixels are repainted or mirrored."
+  ],
+  "base_E": {
+    "scale": 0.773,
+    "roots": [[165,300],[495,303],[806,303],[1118,304],[161,617],[497,614],[808,610],[1107,613],[174,919],[472,905],[789,904],[1124,913],[169,1223],[479,1222],[790,1226],[1118,1222]],
+    "notes": ["Upright cranium y7 to sandal y298: 291 source pixels, approximately 225px after scaling. Open blue mantle, ivory chiton, bronze scroll tube and right-hand staff remain readable. Attack 1/2 swing the same held staff; heal 2 raises the free hand."]
+  },
+  "extra_E": {
+    "scale": 0.773,
+    "roots": [[191,309],[485,308],[795,309],[1107,307],[188,623],[502,621],[808,623],[1111,621],[208,929],[518,918],[817,924],[1116,930],[195,1222],[503,1194],[842,1181],[1154,1180]],
+    "notes": ["The first upright pose has the same approximately 291px human height as base_E. Hit frame 9 uses the sandal support at y916, excluding the lower tilted staff end. Final death roots sit under the kneeling/prone pelvis so the head falls left without centering the whole staff/body bounding box."]
+  },
+  "base_S": {
+    "scale": 0.789,
+    "roots": [[193,304],[492,304],[799,303],[1090,304],[194,612],[502,612],[797,609],[1093,611],[187,910],[511,897],[817,896],[1115,906],[197,1213],[500,1216],[790,1214],[1109,1216]],
+    "notes": ["Upright cranium approximately y17 to sandal y302: 285px, approximately 225px output. Stride roots track the pelvis over the planted and raised sandals. The staff remains in the same hand through attack and healing."]
+  },
+  "extra_S": {
+    "scale": 0.781,
+    "roots": [[181,299],[482,299],[803,299],[1102,299],[173,602],[494,603],[801,599],[1116,602],[171,916],[510,913],[814,903],[1108,918],[180,1208],[515,1180],[833,1153],[1135,1154]],
+    "notes": ["Upright cranium approximately y10 to sandal y297: 287px, approximately 224px output. Control source frame 2 is rejected because the free palm swaps sides while the staff loses its held relationship; runtime holds authored control frame 1 for release. Death 14/15 are anchored below the pelvis contact, not the orb or dropped staff."]
+  },
+  "base_N": {
+    "scale": 0.827,
+    "roots": [[183,298],[493,304],[792,305],[1088,302],[193,612],[484,608],[796,610],[1099,608],[159,905],[460,904],[766,905],[1083,907],[175,1205],[470,1212],[777,1214],[1080,1212]],
+    "notes": ["Upright cranium y24 to sandal y296: 272px, approximately 225px output. Source heal frame 14 has a disconnected staff and contradictory casting arm; it remains mechanically retained as two source components but is replaced in playback by base_N_13."]
+  },
+  "extra_N": {
+    "scale": 0.809,
+    "roots": [[160,311],[450,311],[758,304],[1079,315],[161,617],[463,617],[763,623],[1086,622],[155,927],[470,927],[763,926],[1081,936],[147,1222],[462,1206],[741,1172],[1094,1168]],
+    "notes": ["Upright cranium approximately y31 to sandal y309: 278px, approximately 225px output. Control source frame 2 abandons the right-hand staff grip and is replaced by extra_N_1. Crouching and falling keep the same scale; the prone root follows pelvis support, allowing the torso and head to fall to the right."]
+  },
+  "base_W": {
+    "scale": 0.869,
+    "roots": [[184,301],[493,305],[813,305],[1121,304],[193,615],[512,612],[810,614],[1124,610],[200,911],[510,919],[843,926],[1138,911],[193,1220],[508,1212],[825,1220],[1133,1221]],
+    "notes": ["The staff orb rises above the human head. Human cranium approximately y40 to sandal y299 is 259px, approximately 225px output; using the full staff bbox would incorrectly shrink this direction. Attack and heal roots are between sandal supports, independent of the long raised staff."]
+  },
+  "extra_W": {
+    "scale": 0.849,
+    "roots": [[198,297],[507,299],[818,295],[1103,297],[191,602],[507,605],[814,602],[1116,609],[204,918],[522,917],[830,921],[1112,917],[211,1204],[512,1206],[825,1184],[1138,1175]],
+    "notes": ["Upright cranium approximately y30 to sandal y295 is 265px, approximately 225px output. Control source frame 2 loses the held staff and is replaced by extra_W_1. Death 13 follows kneeling support; 14/15 use pelvis contact while the head and staff fall to the left."]
+  },
+  "portrait_region": [196,84,140,140],
+  "clip_overrides": {
+    "heal_N": {"2": "base_N_13"},
+    "control_S": {"2": "extra_S_1"},
+    "control_N": {"2": "extra_N_1"},
+    "control_W": {"2": "extra_W_1"}
+  },
+  "rejected_pose_notes": [
+    {"clip": "heal_N", "frame": 2, "source": "base_N_14", "replacement": "base_N_13", "reason": "Detached staff, inconsistent hand/arm attachment; preserve the already drawn palm preparation at release."},
+    {"clip": "control_S", "frame": 2, "source": "extra_S_2", "replacement": "extra_S_1", "reason": "Staff grip is lost while the extended palm changes arm; hold the valid palm-out pose."},
+    {"clip": "control_N", "frame": 2, "source": "extra_N_2", "replacement": "extra_N_1", "reason": "The right staff hand becomes a free casting palm without a coherent staff handoff; hold the valid preceding pose."},
+    {"clip": "control_W", "frame": 2, "source": "extra_W_2", "replacement": "extra_W_1", "reason": "The staff remains standing without a held connection during the extended-arm pose; hold the valid preceding pose."}
+  ]
+}

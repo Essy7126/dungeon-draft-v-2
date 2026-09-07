@@ -1,0 +1,535 @@
+{
+  "version": 1,
+  "water": {
+    "color": "#2a5c51",
+    "texture_path": "res://asset/map/painted/underworld/lethe_crossing_v1/lethe_water.png",
+    "texture_scale": [
+      1.6,
+      1.6
+    ],
+    "tint": "#ffffff",
+    "shader_path": "res://asset/map/painted/underworld/lethe_crossing_v1/lethe_water.gdshader",
+    "shader_parameters": {
+      "motion_amount": 0.45,
+      "surface_breath": 0.009
+    }
+  },
+  "land": {
+    "color": "#ccb17d",
+    "texture_path": "res://asset/map/painted/underworld/lethe_crossing_v1/land_composed.png",
+    "texture_scale": [
+      1,
+      1
+    ],
+    "texture_repeat": false,
+    "tint": "#ffffff"
+  },
+  "floor_palette": {
+    "shade": "#747b64",
+    "body": "#b9ae87",
+    "light": "#d4c79e",
+    "warmth": [
+      -0.025,
+      -0.008,
+      0.012,
+      0.025
+    ],
+    "painted_steps": 0.18,
+    "bevel_flatten_strength": 0.92,
+    "shader_parameters": {
+      "interior_joint_land_weight": 0
+    }
+  },
+  "props_palette": {
+    "ink": "#626b58",
+    "top": "#c3b68d",
+    "left": "#9b9573",
+    "right": "#7e886c",
+    "highlight": "#e1d2a4",
+    "moss": [
+      0.39,
+      0.44,
+      0.3,
+      0.14
+    ],
+    "shadow": [
+      0.18,
+      0.23,
+      0.17,
+      0.2
+    ],
+    "edge_shadow": [
+      0.31,
+      0.35,
+      0.24,
+      0.2
+    ],
+    "carving": [
+      0.35,
+      0.39,
+      0.25,
+      0.5
+    ],
+    "crack": [
+      0.32,
+      0.36,
+      0.25,
+      0.4
+    ],
+    "fleck_dark": [
+      0.46,
+      0.47,
+      0.33,
+      0.22
+    ],
+    "fleck_light": [
+      0.8,
+      0.76,
+      0.55,
+      0.4
+    ],
+    "column": [
+      0.37,
+      0.42,
+      0.29,
+      0.32
+    ],
+    "bench": "#d2c294"
+  },
+  "pit_palette": {
+    "floor": "#294c43",
+    "back_wall": "#909a77",
+    "left_wall": "#6b8067",
+    "depth_native_px": 16
+  },
+  "combat_ground_band": {
+    "enabled": true,
+    "width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20.0,
+    "shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+    "shader_parameters": {
+      "band_earth": "#cbb380",
+      "band_light": "#d8be8c",
+      "band_shadow": "#bea677"
+    }
+  },
+  "world_decor": [],
+  "ground_details": {
+    "enabled": false,
+    "mode": "contacts_only"
+  },
+  "soil_patches": [],
+  "canvas_size": [
+    1920,
+    1200
+  ],
+  "geometry_manifest_path": "geometry_manifest.json",
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      620
+    ],
+    [
+      1870,
+      632
+    ],
+    [
+      1820,
+      650
+    ],
+    [
+      1790,
+      678
+    ],
+    [
+      1760,
+      710
+    ],
+    [
+      1738,
+      750
+    ],
+    [
+      1720,
+      790
+    ],
+    [
+      1732,
+      832
+    ],
+    [
+      1750,
+      870
+    ],
+    [
+      1718,
+      916
+    ],
+    [
+      1680,
+      960
+    ],
+    [
+      1624,
+      1000
+    ],
+    [
+      1560,
+      1040
+    ],
+    [
+      1490,
+      1085
+    ],
+    [
+      1420,
+      1120
+    ],
+    [
+      1330,
+      1150
+    ],
+    [
+      1240,
+      1170
+    ],
+    [
+      1125,
+      1190
+    ],
+    [
+      1000,
+      1200
+    ],
+    [
+      900,
+      1192
+    ],
+    [
+      800,
+      1180
+    ],
+    [
+      720,
+      1160
+    ],
+    [
+      650,
+      1140
+    ],
+    [
+      590,
+      1118
+    ],
+    [
+      530,
+      1090
+    ],
+    [
+      476,
+      1054
+    ],
+    [
+      430,
+      1010
+    ],
+    [
+      400,
+      954
+    ],
+    [
+      380,
+      900
+    ],
+    [
+      366,
+      852
+    ],
+    [
+      350,
+      800
+    ],
+    [
+      326,
+      752
+    ],
+    [
+      300,
+      710
+    ],
+    [
+      261,
+      676
+    ],
+    [
+      220,
+      650
+    ],
+    [
+      158,
+      632
+    ],
+    [
+      100,
+      620
+    ],
+    [
+      0,
+      590
+    ]
+  ],
+  "allowed_floor_polygon": [
+    [
+      380,
+      130
+    ],
+    [
+      670,
+      90
+    ],
+    [
+      1100,
+      110
+    ],
+    [
+      1440,
+      150
+    ],
+    [
+      1620,
+      270
+    ],
+    [
+      1670,
+      560
+    ],
+    [
+      1560,
+      850
+    ],
+    [
+      1430,
+      1090
+    ],
+    [
+      1040,
+      1130
+    ],
+    [
+      720,
+      1110
+    ],
+    [
+      420,
+      1000
+    ],
+    [
+      350,
+      700
+    ],
+    [
+      370,
+      410
+    ]
+  ],
+  "excluded_floor_polygons": [],
+  "minimum_floor_margin_px": 60.0,
+  "minimum_floor_shore_clearance_native_px": 60.0,
+  "shorelines": [
+    {
+      "id": "lethe_island_bank",
+      "points": [
+        [
+          1920,
+          620
+        ],
+        [
+          1870,
+          632
+        ],
+        [
+          1820,
+          650
+        ],
+        [
+          1790,
+          678
+        ],
+        [
+          1760,
+          710
+        ],
+        [
+          1738,
+          750
+        ],
+        [
+          1720,
+          790
+        ],
+        [
+          1732,
+          832
+        ],
+        [
+          1750,
+          870
+        ],
+        [
+          1718,
+          916
+        ],
+        [
+          1680,
+          960
+        ],
+        [
+          1624,
+          1000
+        ],
+        [
+          1560,
+          1040
+        ],
+        [
+          1490,
+          1085
+        ],
+        [
+          1420,
+          1120
+        ],
+        [
+          1330,
+          1150
+        ],
+        [
+          1240,
+          1170
+        ],
+        [
+          1125,
+          1190
+        ],
+        [
+          1000,
+          1200
+        ],
+        [
+          900,
+          1192
+        ],
+        [
+          800,
+          1180
+        ],
+        [
+          720,
+          1160
+        ],
+        [
+          650,
+          1140
+        ],
+        [
+          590,
+          1118
+        ],
+        [
+          530,
+          1090
+        ],
+        [
+          476,
+          1054
+        ],
+        [
+          430,
+          1010
+        ],
+        [
+          400,
+          954
+        ],
+        [
+          380,
+          900
+        ],
+        [
+          366,
+          852
+        ],
+        [
+          350,
+          800
+        ],
+        [
+          326,
+          752
+        ],
+        [
+          300,
+          710
+        ],
+        [
+          261,
+          676
+        ],
+        [
+          220,
+          650
+        ],
+        [
+          158,
+          632
+        ],
+        [
+          100,
+          620
+        ],
+        [
+          0,
+          590
+        ]
+      ],
+      "closed": false,
+      "width": 8.0,
+      "color": "#819875"
+    }
+  ],
+  "authoring_geometry": {
+    "source": "res://tools/registered_terrain_authoring/generate_lethe_crossing.py",
+    "art_reserve_native_rect": [
+      240.0,
+      180.0,
+      1660.0,
+      1030.0
+    ],
+    "measured_band_bounds_native": [
+      492.256,
+      206.528,
+      1456.144,
+      946.472
+    ],
+    "minimum_band_to_bank_native_px": 152.8084079362127
+  },
+  "metadata": {
+    "biome": "greek_underworld_lethe_crossing",
+    "art_method": "Built-in image_gen original land and water; whole land painting normalized mechanically to the native canvas.",
+    "land_source": "exec-97991ae8-2e98-4326-892f-18dbb099ff1a.png",
+    "land_source_size": [
+      1586,
+      992
+    ],
+    "water_source": "exec-facfa99c-a344-4cc4-839a-7fd4c5e3e36d.png",
+    "readability": "No cosmetic world_decor, foreground sprite, fog or ground details. Neutral interior joints. Existing gameplay stone sprites, authored variable topology and tactical obstacles only."
+  }
+}

@@ -1,19 +1,72 @@
 class_name ProgressionSnapshotMigrationService
 extends RefCounted
 
-const CURRENT_VERSION := 2
+const CURRENT_VERSION := 3
 
 
-static func migrate(snapshot: Dictionary, spells: Array[Spell]) -> Dictionary:
-	if int(snapshot.get("version", 1)) >= CURRENT_VERSION:
+static func migrate(
+		snapshot: Dictionary,
+		spells: Array[Spell],
+		expected_model: int = CharacterProgressionProfile.ProgressionModel.LEGACY_CAST_XP
+	) -> Dictionary:
+	var version := int(snapshot.get("version", 1))
+	if version > CURRENT_VERSION:
+		return {
+			"ok": false,
+			"snapshot": snapshot.duplicate(true),
+			"diagnostics": PackedStringArray([
+				"Version de snapshot de progression plus recente que le runtime.",
+			]),
+			"unresolved": {},
+		}
+	if version == CURRENT_VERSION:
+		var stored_model := int(snapshot.get("progression_model", -1))
+		if stored_model != expected_model:
+			return {
+				"ok": false,
+				"snapshot": snapshot.duplicate(true),
+				"diagnostics": PackedStringArray([
+					"La politique de progression du snapshot est incompatible.",
+				]),
+				"unresolved": {},
+			}
 		return {
 			"ok": true,
 			"snapshot": snapshot.duplicate(true),
 			"diagnostics": PackedStringArray(),
 			"unresolved": {},
 		}
+	if expected_model \
+			== CharacterProgressionProfile.ProgressionModel.CHAMPION_LEVEL_AND_MASTERY:
+		return {
+			"ok": false,
+			"snapshot": snapshot.duplicate(true),
+			"diagnostics": PackedStringArray([
+				"Une sauvegarde legacy ne peut pas etre convertie silencieusement en progression Champion.",
+			]),
+			"unresolved": {},
+		}
+	if version == 2:
+		var upgraded := snapshot.duplicate(true)
+		upgraded["version"] = CURRENT_VERSION
+		upgraded["progression_model"] = (
+			CharacterProgressionProfile.ProgressionModel.LEGACY_CAST_XP
+		)
+		return {
+			"ok": true,
+			"snapshot": upgraded,
+			"diagnostics": PackedStringArray([
+				"Snapshot legacy v2 migre explicitement vers v3.",
+			]),
+			"unresolved": upgraded.get(
+				"unresolved_legacy_progressions", {}
+			),
+		}
 	var migrated := {
 		"version": CURRENT_VERSION,
+		"progression_model": (
+			CharacterProgressionProfile.ProgressionModel.LEGACY_CAST_XP
+		),
 		"character_id": snapshot.get("character_id", &""),
 		"spell_progressions": {},
 		"unresolved_legacy_progressions": {},

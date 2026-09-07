@@ -86,28 +86,82 @@ func _wait_process_frame_safe(generation: int, enemy: Unit = null) -> bool:
 	return _can_continue(generation, enemy)
 
 
+## Wait for the actual overlay rather than duplicating its UI animation time.
+## The fallback closes a stuck overlay; no action starts beneath an opaque banner.
+func _wait_for_turn_intro_safe(
+		generation: int,
+		enemy: Unit,
+		timeout_seconds: float = 4.0
+	) -> bool:
+	var elapsed := 0.0
+	var last_tick := Time.get_ticks_usec()
+	while _can_continue(generation, enemy):
+		var tree := get_tree()
+		var now := Time.get_ticks_usec()
+		if not tree.paused:
+			elapsed += maxf(0.0, float(now - last_tick) / 1000000.0) * Engine.time_scale
+			var hud: Variant = _battle.get("_hud_port")
+			var banner := hud.get_turn_intro_banner() as Control \
+				if is_instance_valid(hud) and hud.has_method("get_turn_intro_banner") else null
+			if not is_instance_valid(banner) or not banner.is_visible_in_tree():
+				return true
+			if elapsed >= maxf(0.0, timeout_seconds):
+				if banner.has_method("hide_immediately"):
+					banner.call("hide_immediately")
+				banner.hide()
+				return _can_continue(generation, enemy)
+		last_tick = now
+		if not await _wait_process_frame_safe(generation, enemy):
+			return false
+	return false
+
+
 # Exécute le tour complet de l'unité ennemie : décision d'IA puis déroulé des
 # actions, en s'interrompant dès que la salle ferme ou que l'unité disparaît.
+func _wait_for_transformation_safe(generation: int, enemy: Unit) -> bool:
+	if not _can_continue(generation, enemy):
+		return false
+	var view: Variant = _battle._unit_views.get(enemy)
+	if is_instance_valid(view) and view.has_method("wait_for_transformation_visual_finished"):
+		if not await view.wait_for_transformation_visual_finished():
+			return false
+	return _can_continue(generation, enemy)
+
+
 func run(enemy: Unit) -> void:
 	if _closing:
 		return
 	var generation := _operation_generation
 	if not await _wait_seconds_safe(0.3, generation, enemy):
 		return
-	var plan: EnemyActionPlan = _battle.enemy_ai.build_action_plan(
-		enemy,
-		_battle.units,
-	)
-	# La planification est synchrone. Reprendre les actions a la frame suivante
-	# empeche son delta CPU d'etre consomme par le premier tween de mouvement.
+	if not await _wait_for_turn_intro_safe(generation, enemy):
+		return
+	if not await _wait_for_transformation_safe(generation, enemy):
+		return
+	var plan: EnemyActionPlan = _battle.enemy_ai.build_action_plan(enemy, _battle.units)
+	var actions := plan.to_actions()
+	var planned_form := enemy.combat_form_id
+	var action_index := 0
+	# Synchronous planning must not consume the first movement tween frame.
 	if not await _wait_process_frame_safe(generation, enemy):
 		return
 	last_action_count = 0
-	for action in plan.to_actions():
-		if last_action_count >= MAX_ACTION_STEPS:
-			break
-		if not _can_continue(generation, enemy):
+	while last_action_count < MAX_ACTION_STEPS:
+		if not await _wait_for_transformation_safe(generation, enemy):
 			return
+		# Terrain entry can change the kit mid-turn. Replan only that transition,
+		# using the remaining real AP/MP and keeping the global action bound.
+		if enemy.combat_form_id != planned_form:
+			plan = _battle.enemy_ai.build_action_plan(enemy, _battle.units)
+			actions = plan.to_actions()
+			action_index = 0
+			planned_form = enemy.combat_form_id
+			if not await _wait_process_frame_safe(generation, enemy):
+				return
+		if action_index >= actions.size():
+			break
+		var action: Dictionary = actions[action_index]
+		action_index += 1
 		match action["type"]:
 			"move":
 				await _execute_move(enemy, action["path"], generation)
@@ -118,7 +172,6 @@ func run(enemy: Unit) -> void:
 		last_action_count += 1
 		if not await _wait_seconds_safe(0.2, generation, enemy):
 			return
-
 
 func _execute_cast(
 	enemy: Unit,
@@ -222,11 +275,12 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 	if not _can_continue(generation):
 		_battle._finish_outcome_deferral()
 		return
+	var resolved_path: Array = _battle._resolved_walk_paths.get(enemy, path)
 	EventBus.voluntary_movement_resolved.emit(
-		enemy, path.duplicate(), cost, action_id
+		enemy, resolved_path.duplicate(), cost, action_id
 	)
 	EventBus.action_resolved.emit(enemy, action_id, &"voluntary_movement", {
-		"distance": maxi(0, path.size() - 1), "paid_mp": cost,
+		"distance": maxi(0, resolved_path.size() - 1), "paid_mp": cost,
 	})
 	_battle._finish_outcome_deferral()
 
@@ -284,7 +338,7 @@ func _execute_attack(
 		enemy,
 		Spell.DamageType.PHYSICAL,
 		Spell.Element.NONE,
-		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id)}
+		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id), "attack_classification": &"MELEE"}
 	)
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(enemy, target)

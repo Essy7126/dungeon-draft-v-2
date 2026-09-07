@@ -16,6 +16,7 @@ var sequence_index: int = 0
 var source = null
 var target = null
 var ability_id: StringName = &""
+var attack_classification: StringName = &""
 var status_id: StringName = &""
 # Amount resolved by defenses before shield absorption and HP clamping.
 # Used by analytics such as overkill-aware damage dealt, never by HP feedback.
@@ -27,6 +28,9 @@ var is_critical: bool = false
 var damage_type: int = 0
 var element: int = 0
 var is_periodic: bool = false
+var source_absorption: Array[Dictionary] = []
+var broken_source_ids: Array[StringName] = []
+var guard_absorbed: bool = false
 var logical_order: int = 0
 var anchor_offset: Vector2 = Vector2(0.0, -72.0)
 
@@ -48,6 +52,9 @@ static func create(
 	fact.impact_id = StringName(metadata.get("impact_id", &""))
 	fact.sequence_index = maxi(0, int(metadata.get("sequence_index", 0)))
 	fact.ability_id = StringName(metadata.get("ability_id", &""))
+	fact.attack_classification = StringName(metadata.get(
+		"attack_classification", &""
+	))
 	fact.status_id = StringName(metadata.get("status_id", &""))
 	fact.amount_resolved = maxi(0, int(metadata.get("amount_resolved", 0)))
 	fact.amount_applied = maxi(0, int(metadata.get("amount_applied", 0)))
@@ -57,6 +64,16 @@ static func create(
 	fact.damage_type = int(metadata.get("damage_type", 0))
 	fact.element = int(metadata.get("element", 0))
 	fact.is_periodic = bool(metadata.get("is_periodic", false))
+	var raw_absorption: Variant = metadata.get("source_absorption", [])
+	if raw_absorption is Array:
+		fact.source_absorption.assign(raw_absorption)
+	var raw_broken: Variant = metadata.get("broken_source_ids", [])
+	if raw_broken is Array:
+		for value in raw_broken:
+			var source_id := StringName(value)
+			if source_id != &"" and not fact.broken_source_ids.has(source_id):
+				fact.broken_source_ids.append(source_id)
+	fact.guard_absorbed = bool(metadata.get("guard_absorbed", false))
 	fact.logical_order = _event_sequence
 	if metadata.has("anchor_offset"):
 		fact.anchor_offset = metadata["anchor_offset"] as Vector2
@@ -74,6 +91,7 @@ func to_metadata() -> Dictionary:
 		"source_id": _stable_node_id(source),
 		"target_id": _stable_node_id(target),
 		"ability_id": String(ability_id),
+		"attack_classification": String(attack_classification),
 		"status_id": String(status_id),
 		"amount_resolved": amount_resolved,
 		"amount_applied": amount_applied,
@@ -83,8 +101,18 @@ func to_metadata() -> Dictionary:
 		"damage_type": damage_type,
 		"element": element,
 		"is_periodic": is_periodic,
+		"source_absorption": source_absorption.duplicate(true),
+		"broken_source_ids": _string_names_to_strings(broken_source_ids),
+		"guard_absorbed": guard_absorbed,
 		"logical_order": logical_order,
 	}
+
+
+func _string_names_to_strings(values: Array[StringName]) -> Array[String]:
+	var result: Array[String] = []
+	for value in values:
+		result.append(str(value))
+	return result
 
 
 func _stable_node_id(value) -> String:

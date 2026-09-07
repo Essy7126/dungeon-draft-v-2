@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2_effect")
+trigger_id = &"hp_threshold_crossed"
+target_id = &"trigger_hero"
+result_id = &"grant_shield_max_hp"
+value = 0.18
+threshold = 0.25
+frequency_id = &"per_combat"
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_thetis_heel"
+display_name = "Talon de Thétis"
+description = "La première descente sous 25 % PV par combat accorde une Garde égale à 18 % des PV max."
+rarity = &"legendary"
+tags = Array[StringName]([&"odyssey", &"aeacus", &"recovery"])
+category = 5
+reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])

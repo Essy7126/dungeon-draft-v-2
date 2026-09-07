@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="2_icon"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="3_scaling"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/wrath_of_peleus.tres" id="4_tree"]
+
+[sub_resource type="Resource" id="DamageScaling"]
+script = ExtResource("3_scaling")
+prowess_coefficient = 0.55
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"achilles_peleid_strike"
+spell_name = "Frappe du Péléide"
+description = "3 PA · Portée 1 · Inflige 55 % de la Prouesse en dégâts physiques. Une utilisation par activation."
+icon = ExtResource("2_icon")
+ap_cost = 3
+minimum_range = 1
+spell_range = 1
+once_per_activation = true
+damage = 0
+damage_type = 0
+damage_scaling = SubResource("DamageScaling")
+skill_tree = ExtResource("4_tree")

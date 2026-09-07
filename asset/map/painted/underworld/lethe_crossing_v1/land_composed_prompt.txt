@@ -1,0 +1,16 @@
+Use case: stylized-concept.
+Asset type: finished original hand-drawn opaque LAND TEXTURE for a production 2D orthographic tactical RPG map. Landscape format 16:10, native working canvas 1920 by 1200.
+Scene: THE CROSSING OF LETHE, a quiet Greek underworld riverside clearing of pale ochre compacted soil, old honey limestone fragments and restrained sage-green groves at the distant edges. A different composition from a rectangular courtyard. Our engine supplies an asymmetric tactical court, a broad causeway and dark teal water using exact vector geometry.
+
+ABSOLUTE COMPOSITION CONTRACT:
+The entire rectangle from x=240 to1660 and y=180 to1030 of the1920x1200 canvas MUST be empty level unobstructed pale warm sandstone soil, extremely quiet with very broad low-contrast soft washes. This empty area is reserved for our real gameplay tiles and moving characters. No objects and no long cast shadows inside it. No paving, tiles, diamonds, grids, lines, floor boundary, platform, cliffs, holes, sculpted paths, circular dais, bushes, grass tufts, rocks, fallen leaves, roots, or fog within this central reserve. Clear visual separation, never clutter.
+Compose scenery exclusively outside that reserve, with silhouettes stopping well before it:
+Far UPPER LEFT corner (x<210,y<170): a beautiful worn Greek river gate of two modest limestone piers, green bronze lintel remnants, slender dark cypresses and a low windswept olive grove, connected drawn shapes and a few deliberately designed carved details.
+Far UPPER RIGHT edge (x>1720 or y<140): ancient mellow limestone retaining wall and fragments of an aqueduct disappearing along the far top edge, small muted sage foliage. Do not extend a wall, arch or bridge diagonally into the central empty reserve.
+Far SIDE edges outside x<150 or x>1770: sparse connected low weathered rock/earth banks with soft olive-green vegetation, flattening toward the clearing. Far bottom corners only: a little low ochre gravel and thin pale reeds. Keep middle-bottom clear. No foreground tree, canopy or oversized prop.
+All the main scenery stays at the canvas edges. Do not create a horizon or sky: this is a continuous ground-plane image under a fixed orthographic dimetric2:1 camera, no vanishing-point perspective.
+
+NO WATER anywhere in this image. No river drawn across the ground and no shoreline. The engine clips this full opaque painted land texture to an authored island/causeway silhouette and supplies water separately. Artwork must not invent a second land or gameplay outline.
+Colour: pale warm beige-ochre earth, light honey limestone, muted sage olive and small verdigris accents. Peripheral masses darker/cooler than the central soil, soft warm diffuse late-afternoon light from upper left. Gentle intentional brush shading, restrained dark outline accents on ruins only.
+Style: polished French fantasy tactical RPG hand drawing, confident coherent painted shapes, clean controlled edge design, beautiful softly stylized ruins, clear readable game environment. No photorealism, no gritty noise, no sketchy scribbles, no 3D render, no pixel art. Not a concept sheet. No characters, HUD, text, logos, watermark, particles, bloom, light shafts or screen fog.
+Deliver one complete opaque16:10 land painting. The enormous quiet center is essential.

@@ -1,0 +1,170 @@
+{
+  "spectral_E": {
+    "segmentation": true,
+    "scale": 0.93,
+    "roots": [
+      [
+        225,
+        269
+      ],
+      [
+        565,
+        269
+      ],
+      [
+        935,
+        269
+      ],
+      [
+        1307,
+        269
+      ],
+      [
+        210,
+        520
+      ],
+      [
+        563,
+        519
+      ],
+      [
+        919,
+        527
+      ],
+      [
+        1295,
+        525
+      ],
+      [
+        220,
+        768
+      ],
+      [
+        562,
+        768
+      ],
+      [
+        915,
+        770
+      ],
+      [
+        1300,
+        775
+      ],
+      [
+        200,
+        1015
+      ],
+      [
+        568,
+        1019
+      ],
+      [
+        927,
+        1020
+      ],
+      [
+        1310,
+        1005
+      ]
+    ]
+  },
+  "spectral_N": {
+    "segmentation": true,
+    "scale": 0.93,
+    "roots": [
+      [
+        212,
+        272
+      ],
+      [
+        589,
+        267
+      ],
+      [
+        945,
+        269
+      ],
+      [
+        1316,
+        264
+      ],
+      [
+        201,
+        526
+      ],
+      [
+        555,
+        527
+      ],
+      [
+        900,
+        530
+      ],
+      [
+        1288,
+        526
+      ],
+      [
+        209,
+        763
+      ],
+      [
+        570,
+        764
+      ],
+      [
+        945,
+        765
+      ],
+      [
+        1315,
+        762
+      ],
+      [
+        199,
+        1007
+      ],
+      [
+        562,
+        1004
+      ],
+      [
+        934,
+        1013
+      ],
+      [
+        1327,
+        1014
+      ]
+    ]
+  },
+  "clip_overrides": {
+    "spectral_E:cast": [
+      9,
+      9,
+      11
+    ],
+    "spectral_N:attack": [
+      5,
+      6,
+      6,
+      8
+    ],
+    "spectral_N:cast": [
+      9,
+      10,
+      10
+    ],
+    "spectral_N:hit": [
+      9,
+      13
+    ]
+  },
+  "review_notes": {
+    "spectral_E:cast": "La pose 10 perd la prise d'arc ; concentration de la pose 9 maintenue à la release.",
+    "spectral_N:attack": "La pose 7 inverse la position de l'arc ; maintien du dessin 6 pendant le départ du projectile, puis récupération 8.",
+    "spectral_N:cast": "La pose 11 détache l'arc ; récupération sur la prise complète 10.",
+    "spectral_N:hit": "La pose 12 détache l'arc ; contraction du torse 9 puis reprise 13."
+  }
+}

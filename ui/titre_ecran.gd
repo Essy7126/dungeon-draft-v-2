@@ -9,7 +9,7 @@ extends Node2D
 @onready var bouton_quitter: Button = $UI/Boutons/BoutonQuitter
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-const START_HUB_SCENE_PATH := "res://hub/StartHub.tscn"
+const CHARACTER_SELECTION_SCENE_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
 const REFERENCE_VIEWPORT := Vector2(1200.0, 896.0)
 
 var _intro_en_cours: bool = true
@@ -50,7 +50,7 @@ func _on_intro_terminee(anim_name: StringName) -> void:
 
 func _on_nouvelle_partie() -> void:
 	GameManager.cleanup_run_state()
-	get_tree().change_scene_to_file(START_HUB_SCENE_PATH)
+	get_tree().change_scene_to_file(CHARACTER_SELECTION_SCENE_PATH)
 
 
 func _on_quitter() -> void:

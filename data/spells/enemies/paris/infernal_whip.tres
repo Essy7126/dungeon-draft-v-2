@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/infernal_whip.tres" id="paris_icon"]
+
+[resource]
+script = ExtResource("1_spell")
+icon = ExtResource("paris_icon")
+spell_id = &"paris_infernal_whip"
+spell_name = "Fouet du Tartare"
+description = "20 dégâts de feu à portée courte."
+ap_cost = 2
+minimum_range = 1
+spell_range = 3
+required_combat_form = &"infernal"
+damage = 20
+damage_type = 1
+element = 1
+impact_delay_seconds = 0
+once_per_activation = true

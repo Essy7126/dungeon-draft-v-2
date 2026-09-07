@@ -43,6 +43,15 @@ const MOTION_TOKEN_IDS: Array[StringName] = [
 @export var surface_recessed := Color(0.045, 0.045, 0.045, 1.0)
 @export var surface_scrim := Color(0.015, 0.015, 0.015, 0.88)
 
+@export_category("Tactile material (optional)")
+@export var material_enabled := false
+@export var material_texture: Texture2D
+@export_range(0.0, 1.0, 0.01) var material_texture_strength := 0.55
+@export_range(32.0, 1024.0, 1.0) var material_tile_size := 256.0
+@export var material_edge_highlight := Color(0.94, 0.79, 0.5, 1.0)
+@export_range(1.0, 8.0, 0.25) var material_rim_width := 3.0
+@export_range(0.0, 32.0, 1.0) var material_corner_cut := 13.0
+
 @export_category("Text and contrast")
 @export var text_primary := Color(0.96, 0.96, 0.96, 1.0)
 @export var text_secondary := Color(0.76, 0.76, 0.76, 1.0)
@@ -289,6 +298,10 @@ func validation_issues() -> PackedStringArray:
 		issues.append("skin_id must not be empty")
 	if revision < 1:
 		issues.append("revision must be at least 1")
+	if material_enabled and material_texture == null:
+		issues.append("enabled material requires a texture")
+	if material_tile_size < 32.0 or material_rim_width < 1.0:
+		issues.append("material tile size and rim width must be positive and legible")
 	if neutral_grayscale and not uses_only_neutral_colors():
 		issues.append("neutral_grayscale is enabled but chromatic colors are present")
 	if font_regular == null or font_emphasis == null or font_numeric == null:

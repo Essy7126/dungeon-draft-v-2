@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "status": "CONCEPT_PROPOSAL_NOT_RUNTIME_ASSET",
+  "date": "2026-09-05",
+  "generator": "Built-in image_gen.imagegen",
+  "mode": "generate",
+  "chosen_master": "achilles_master_v1.png",
+  "production_board": "achilles_production_board_v1.png",
+  "brief": "../../../../../../docs/design/achilles/achilles_cour_des_sources_concept_v1.md",
+  "reference_context": "User-supplied Cour des Sources screenshot and inspected local project documentation. Images generated from text and conversation context.",
+  "source_outputs": {
+    "master": "C:/Users/paolo/.codex/generated_images/01a07142-7204-75f3-8756-a631e644ed0d/exec-4295bea0-75d9-462b-8eb1-ed6eacfa0834.png",
+    "board": "C:/Users/paolo/.codex/generated_images/01a07142-7204-75f3-8756-a631e644ed0d/exec-0f8cfc6c-52c8-49b6-94d1-feb2b9d5f215.png"
+  },
+  "verification": "Generated master and board visually inspected. No rig, skinned mesh, animation clip or in-engine integration produced. Board contains illustrative key poses and an imagined combat vignette.",
+  "production_notes": [
+    "Final master is primary appearance reference; board demonstrates poses and may show minor illustrative proportion differences.",
+    "Exact four-direction model, prop grip, topology, skin weights, camera fit and actual map readability require production validation.",
+    "Preserve right-hand spear and left-arm shield; do not mirror asymmetric equipment to obtain directions."
+  ]
+}

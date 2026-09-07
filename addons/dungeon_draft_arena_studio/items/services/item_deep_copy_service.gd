@@ -21,6 +21,8 @@ func duplicate_definition(source: ItemDefinition) -> ItemDefinition:
 	copy.stack_limit = source.stack_limit
 	copy.equipment_slot = source.equipment_slot
 	copy.compatible_character_ids = source.compatible_character_ids.duplicate()
+	copy.guard_effectiveness_melee = source.guard_effectiveness_melee
+	copy.guard_effectiveness_projectile = source.guard_effectiveness_projectile
 	var stat_copies: Array[ItemStatModifierData] = []
 	for modifier in source.stat_modifiers:
 		stat_copies.append(_duplicate_resource(modifier) as ItemStatModifierData)

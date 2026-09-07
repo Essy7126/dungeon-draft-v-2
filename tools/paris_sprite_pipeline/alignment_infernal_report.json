@@ -1,0 +1,706 @@
+{
+  "schema": 1,
+  "status": "prepared_in_memory_no_runtime_asset_write",
+  "canvas": [
+    512,
+    384
+  ],
+  "pivot": [
+    256,
+    320
+  ],
+  "source_pixel_policy": "Every nonzero native-alpha pixel assigned exactly once; no filtering, painting or alpha removal; fixed scale only.",
+  "clip_overrides": {
+    "infernal_E:attack": [
+      5,
+      6,
+      7,
+      10
+    ],
+    "infernal_E:cast": [
+      8,
+      9,
+      10
+    ],
+    "infernal_E:hit": [
+      11,
+      12
+    ]
+  },
+  "sheets": [
+    {
+      "key": "infernal_E",
+      "source": "art/source/characters/paris/sprites_v1/source_infernal_E.png",
+      "source_sha256": "ddf21b37c7cd1a3000019f4608dc4befbd3a0254d875c4bd9f71de4f0df19f3c",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "scale": 0.94,
+      "alpha": {
+        "zero": 995287,
+        "opaque": 1909,
+        "max": 255,
+        "transparent_fraction": 0.63292646942861
+      },
+      "coverage": {
+        "nonzero_source_pixels": 577229,
+        "omitted_nonzero_pixels": 0,
+        "duplicated_nonzero_pixels": 0
+      },
+      "source_core_border_pixels": 0,
+      "verified_frames": 16,
+      "frame_placements": [
+        {
+          "index": 0,
+          "root": [
+            191,
+            306
+          ],
+          "placement": [
+            139,
+            46,
+            197,
+            278
+          ],
+          "output_bbox": [
+            146,
+            48,
+            334,
+            321
+          ]
+        },
+        {
+          "index": 1,
+          "root": [
+            483,
+            311
+          ],
+          "placement": [
+            126,
+            44,
+            225,
+            285
+          ],
+          "output_bbox": [
+            131,
+            50,
+            347,
+            321
+          ]
+        },
+        {
+          "index": 2,
+          "root": [
+            763,
+            311
+          ],
+          "placement": [
+            142,
+            40,
+            222,
+            287
+          ],
+          "output_bbox": [
+            151,
+            42,
+            351,
+            321
+          ]
+        },
+        {
+          "index": 3,
+          "root": [
+            1048,
+            307
+          ],
+          "placement": [
+            120,
+            46,
+            287,
+            277
+          ],
+          "output_bbox": [
+            152,
+            48,
+            340,
+            320
+          ]
+        },
+        {
+          "index": 4,
+          "root": [
+            181,
+            617
+          ],
+          "placement": [
+            111,
+            50,
+            270,
+            276
+          ],
+          "output_bbox": [
+            115,
+            62,
+            356,
+            320
+          ]
+        },
+        {
+          "index": 5,
+          "root": [
+            468,
+            617
+          ],
+          "placement": [
+            135,
+            41,
+            212,
+            287
+          ],
+          "output_bbox": [
+            157,
+            69,
+            345,
+            320
+          ]
+        },
+        {
+          "index": 6,
+          "root": [
+            744,
+            621
+          ],
+          "placement": [
+            143,
+            40,
+            241,
+            290
+          ],
+          "output_bbox": [
+            169,
+            43,
+            365,
+            320
+          ]
+        },
+        {
+          "index": 7,
+          "root": [
+            1003,
+            617
+          ],
+          "placement": [
+            145,
+            43,
+            315,
+            285
+          ],
+          "output_bbox": [
+            166,
+            68,
+            456,
+            320
+          ]
+        },
+        {
+          "index": 8,
+          "root": [
+            175,
+            925
+          ],
+          "placement": [
+            132,
+            54,
+            211,
+            275
+          ],
+          "output_bbox": [
+            145,
+            55,
+            338,
+            319
+          ]
+        },
+        {
+          "index": 9,
+          "root": [
+            461,
+            925
+          ],
+          "placement": [
+            124,
+            54,
+            258,
+            272
+          ],
+          "output_bbox": [
+            130,
+            61,
+            371,
+            320
+          ]
+        },
+        {
+          "index": 10,
+          "root": [
+            764,
+            922
+          ],
+          "placement": [
+            139,
+            57,
+            229,
+            270
+          ],
+          "output_bbox": [
+            143,
+            64,
+            365,
+            321
+          ]
+        },
+        {
+          "index": 11,
+          "root": [
+            1054,
+            922
+          ],
+          "placement": [
+            157,
+            55,
+            257,
+            282
+          ],
+          "output_bbox": [
+            168,
+            58,
+            344,
+            320
+          ]
+        },
+        {
+          "index": 12,
+          "root": [
+            136,
+            1208
+          ],
+          "placement": [
+            128,
+            74,
+            241,
+            290
+          ],
+          "output_bbox": [
+            176,
+            77,
+            363,
+            321
+          ]
+        },
+        {
+          "index": 13,
+          "root": [
+            450,
+            1190
+          ],
+          "placement": [
+            134,
+            101,
+            228,
+            232
+          ],
+          "output_bbox": [
+            142,
+            120,
+            360,
+            322
+          ]
+        },
+        {
+          "index": 14,
+          "root": [
+            749,
+            1197
+          ],
+          "placement": [
+            112,
+            83,
+            274,
+            262
+          ],
+          "output_bbox": [
+            116,
+            164,
+            364,
+            336
+          ]
+        },
+        {
+          "index": 15,
+          "root": [
+            1065,
+            1199
+          ],
+          "placement": [
+            91,
+            77,
+            292,
+            267
+          ],
+          "output_bbox": [
+            113,
+            177,
+            372,
+            332
+          ]
+        }
+      ],
+      "minimum_core_alpha_over_24_margin": 42,
+      "minimum_preserved_rectangle_margin": 20,
+      "visual_review": "artifacts/paris_sprite_production/alignment_infernal_E_review.jpg",
+      "cranium_to_support_estimate": {
+        "source_cranium_y": 45,
+        "source_support_y": 306,
+        "output_height_px": 245
+      }
+    },
+    {
+      "key": "infernal_N",
+      "source": "art/source/characters/paris/sprites_v1/source_infernal_N.png",
+      "source_sha256": "4f5587f90bd2f58c48ff507ce03ffb43aa68439913bc73099625f06e58557d36",
+      "dimensions": [
+        1367,
+        1151
+      ],
+      "scale": 0.98,
+      "alpha": {
+        "zero": 998908,
+        "opaque": 1707,
+        "max": 255,
+        "transparent_fraction": 0.6348653916920943
+      },
+      "coverage": {
+        "nonzero_source_pixels": 574509,
+        "omitted_nonzero_pixels": 0,
+        "duplicated_nonzero_pixels": 0
+      },
+      "source_core_border_pixels": 0,
+      "verified_frames": 16,
+      "frame_placements": [
+        {
+          "index": 0,
+          "root": [
+            192,
+            294
+          ],
+          "placement": [
+            110,
+            42,
+            283,
+            284
+          ],
+          "output_bbox": [
+            164,
+            44,
+            373,
+            320
+          ]
+        },
+        {
+          "index": 1,
+          "root": [
+            496,
+            296
+          ],
+          "placement": [
+            151,
+            42,
+            220,
+            284
+          ],
+          "output_bbox": [
+            156,
+            44,
+            368,
+            320
+          ]
+        },
+        {
+          "index": 2,
+          "root": [
+            821,
+            291
+          ],
+          "placement": [
+            146,
+            50,
+            298,
+            281
+          ],
+          "output_bbox": [
+            153,
+            57,
+            367,
+            321
+          ]
+        },
+        {
+          "index": 3,
+          "root": [
+            1183,
+            292
+          ],
+          "placement": [
+            168,
+            49,
+            249,
+            273
+          ],
+          "output_bbox": [
+            173,
+            51,
+            371,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "root": [
+            174,
+            584
+          ],
+          "placement": [
+            126,
+            51,
+            297,
+            274
+          ],
+          "output_bbox": [
+            176,
+            59,
+            377,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "root": [
+            499,
+            581
+          ],
+          "placement": [
+            111,
+            47,
+            302,
+            278
+          ],
+          "output_bbox": [
+            149,
+            66,
+            361,
+            320
+          ]
+        },
+        {
+          "index": 6,
+          "root": [
+            829,
+            585
+          ],
+          "placement": [
+            154,
+            43,
+            257,
+            280
+          ],
+          "output_bbox": [
+            166,
+            48,
+            358,
+            320
+          ]
+        },
+        {
+          "index": 7,
+          "root": [
+            1141,
+            583
+          ],
+          "placement": [
+            106,
+            51,
+            357,
+            271
+          ],
+          "output_bbox": [
+            161,
+            68,
+            461,
+            319
+          ]
+        },
+        {
+          "index": 8,
+          "root": [
+            204,
+            853
+          ],
+          "placement": [
+            94,
+            62,
+            285,
+            265
+          ],
+          "output_bbox": [
+            148,
+            68,
+            334,
+            320
+          ]
+        },
+        {
+          "index": 9,
+          "root": [
+            512,
+            853
+          ],
+          "placement": [
+            106,
+            65,
+            236,
+            262
+          ],
+          "output_bbox": [
+            148,
+            68,
+            340,
+            321
+          ]
+        },
+        {
+          "index": 10,
+          "root": [
+            838,
+            854
+          ],
+          "placement": [
+            97,
+            65,
+            319,
+            261
+          ],
+          "output_bbox": [
+            143,
+            68,
+            374,
+            320
+          ]
+        },
+        {
+          "index": 11,
+          "root": [
+            1154,
+            853
+          ],
+          "placement": [
+            144,
+            67,
+            281,
+            260
+          ],
+          "output_bbox": [
+            148,
+            70,
+            333,
+            320
+          ]
+        },
+        {
+          "index": 12,
+          "root": [
+            211,
+            1118
+          ],
+          "placement": [
+            76,
+            67,
+            317,
+            256
+          ],
+          "output_bbox": [
+            140,
+            73,
+            340,
+            320
+          ]
+        },
+        {
+          "index": 13,
+          "root": [
+            525,
+            1119
+          ],
+          "placement": [
+            95,
+            66,
+            257,
+            256
+          ],
+          "output_bbox": [
+            139,
+            72,
+            340,
+            320
+          ]
+        },
+        {
+          "index": 14,
+          "root": [
+            798,
+            1120
+          ],
+          "placement": [
+            136,
+            65,
+            299,
+            269
+          ],
+          "output_bbox": [
+            175,
+            113,
+            392,
+            330
+          ]
+        },
+        {
+          "index": 15,
+          "root": [
+            1173,
+            1120
+          ],
+          "placement": [
+            77,
+            65,
+            321,
+            271
+          ],
+          "output_bbox": [
+            119,
+            161,
+            394,
+            330
+          ]
+        }
+      ],
+      "minimum_core_alpha_over_24_margin": 44,
+      "minimum_preserved_rectangle_margin": 42,
+      "visual_review": "artifacts/paris_sprite_production/alignment_infernal_N_review.jpg",
+      "cranium_to_support_estimate": {
+        "source_cranium_y": 44,
+        "source_support_y": 294,
+        "output_height_px": 245
+      }
+    }
+  ]
+}

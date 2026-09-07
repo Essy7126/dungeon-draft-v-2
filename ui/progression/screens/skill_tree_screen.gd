@@ -5,6 +5,8 @@ signal screen_closed
 signal evolution_choice_resolved(request_id, upgrade_id)
 signal evolution_choice_rejected(request_id, upgrade_id, reason)
 
+const CODEX_STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
+
 const TAB_SCENE := preload(
 	"res://ui/progression/components/skill_tree_discipline_tab.tscn"
 )
@@ -41,6 +43,20 @@ const TAB_SCENE := preload(
 @onready var _footer_label: Label = %FooterLabel
 @onready var _close_button: Button = %CloseButton
 
+var _champion_codex: Control = null
+var _champion_read_only := true
+
+var _search_field: LineEdit
+var _filter_buttons: Array[Button] = []
+var _filter_id: StringName = &"all"
+var _search_empty: Label
+var _catalog_count: Label
+var _spell_banner: PanelContainer
+var _spell_banner_icon: TextureRect
+var _spell_banner_title: Label
+var _spell_banner_meta: Label
+var _spell_banner_progress: ProgressBar
+var _spell_banner_xp: Label
 var progression_controller = null
 var character_id: StringName = &""
 var current_discipline_id: StringName = &"archer"
@@ -51,6 +67,7 @@ var _last_inspected_by_discipline: Dictionary = {}
 var _layout_profile: StringName = &"large"
 var _active_theme: CharacterHUDThemeData = null
 var _pan_active := false
+var _recenter_tween: Tween
 var _pan_mouse_origin := Vector2.ZERO
 var _pan_scroll_origin := Vector2.ZERO
 var _evolution_mode := false
@@ -73,6 +90,10 @@ func _ready() -> void:
 	_center_graph_button.pressed.connect(center_on_inspected_node)
 	_graph.node_inspected.connect(_on_node_inspected)
 	_graph_scroll.gui_input.connect(_on_graph_scroll_gui_input)
+	_graph_scroll.follow_focus = true
+	_tabs_scroll.follow_focus = true
+	_build_catalog_tools()
+	_apply_codex_chrome()
 	resized.connect(_on_resized)
 	_graph_scroll.resized.connect(_on_graph_scroll_resized)
 	hide()
@@ -91,6 +112,7 @@ func open_for_character(
 	if _get_character_state() == null:
 		hide()
 		return false
+	reset_catalog_filters()
 	_capture_previous_focus()
 	show()
 	move_to_front()
@@ -110,6 +132,7 @@ func open_for_state(
 	if character_state == null:
 		hide()
 		return false
+	reset_catalog_filters()
 	_capture_previous_focus()
 	show()
 	move_to_front()
@@ -143,6 +166,7 @@ func open_for_evolution(
 	_evolution_rank = request.pending_rank
 	_evolution_request_id = request.request_id
 	_evolution_source_spell_id = request.source_spell_id
+	reset_catalog_filters()
 	_capture_previous_focus()
 	show()
 	move_to_front()
@@ -157,6 +181,12 @@ func refresh_from_state() -> void:
 	if character_state == null:
 		hide()
 		return
+	if character_state.uses_champion_progression():
+		_show_champion_codex(character_state)
+		return
+	_outer_margin.show()
+	if is_instance_valid(_champion_codex):
+		_champion_codex.hide()
 	_resolve_current_discipline(character_state)
 	_apply_character_identity(character_state)
 	_build_tabs(character_state)
@@ -185,6 +215,8 @@ func _force_close_screen() -> void:
 	if not visible:
 		return
 	_pan_active = false
+	_graph_scroll.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	_stop_recenter()
 	hide()
 	screen_closed.emit()
 	if is_instance_valid(_previous_focus_owner):
@@ -201,6 +233,9 @@ func get_detail_panel() -> SkillTreeNodeDetailPanel:
 
 
 func get_tab_count() -> int:
+	var state := _get_character_state()
+	if state != null and state.uses_champion_progression():
+		return state.progression_profile.mastery_catalog.doctrines.size()
 	return _tab_buttons.size()
 
 
@@ -218,7 +253,7 @@ func get_active_theme() -> CharacterHUDThemeData:
 
 func is_progression_defined() -> bool:
 	var state := _get_character_state()
-	return state != null and not state.get_disciplines().is_empty()
+	return state != null and (state.uses_champion_progression() or not state.get_disciplines().is_empty())
 
 
 func get_last_inspected_id(
@@ -262,6 +297,8 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 
 
 func is_consultative() -> bool:
+	if is_instance_valid(_champion_codex) and _champion_codex.visible:
+		return _champion_read_only
 	return not _evolution_mode
 
 
@@ -349,21 +386,46 @@ func center_on_inspected_node() -> void:
 	if view == null:
 		view = _graph.get_first_node_view()
 	if view == null:
-		_graph_scroll.scroll_horizontal = 0
-		_graph_scroll.scroll_vertical = 0
+		_stop_recenter()
+		_set_graph_scroll(Vector2.ZERO)
 		return
-	var target := view.position + view.size * 0.5
-	_graph_scroll.scroll_horizontal = maxi(
-		int(target.x - _graph_scroll.size.x * 0.5), 0
-	)
-	_graph_scroll.scroll_vertical = maxi(
-		int(target.y - _graph_scroll.size.y * 0.5), 0
-	)
+	var target := view.position + view.size * 0.5 - _graph_scroll.size * 0.5
+	target.x = clampf(target.x, 0.0, maxf(_graph.size.x - _graph_scroll.size.x, 0.0))
+	target.y = clampf(target.y, 0.0, maxf(_graph.size.y - _graph_scroll.size.y, 0.0))
+	_stop_recenter()
+	if GameManager.is_reduced_motion_enabled():
+		_set_graph_scroll(target)
+		return
+	var start := Vector2(_graph_scroll.scroll_horizontal, _graph_scroll.scroll_vertical)
+	_recenter_tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_recenter_tween.tween_method(_set_graph_scroll, start, target, 0.24)
+
+
+func _set_graph_scroll(value: Vector2) -> void:
+	_graph_scroll.scroll_horizontal = roundi(value.x)
+	_graph_scroll.scroll_vertical = roundi(value.y)
+
+
+func _stop_recenter() -> void:
+	if _recenter_tween != null and _recenter_tween.is_valid():
+		_recenter_tween.kill()
+	_recenter_tween = null
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
+	var champion_visible := is_instance_valid(_champion_codex) and _champion_codex.visible
+	if not champion_visible and event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_F and event.ctrl_pressed and not _evolution_mode:
+			_search_field.grab_focus()
+			_search_field.select_all()
+			get_viewport().set_input_as_handled()
+			return
+		if event.physical_keycode == KEY_F and not event.ctrl_pressed and not get_viewport().gui_get_focus_owner() is LineEdit:
+			center_on_inspected_node()
+			get_viewport().set_input_as_handled()
+			return
 	var closes_with_shortcut: bool = (
 		event is InputEventKey
 		and event.pressed
@@ -406,11 +468,15 @@ func _build_tabs(character_state: CharacterRunState) -> void:
 			character_state.character_id,
 			_branch_icon(character_state, discipline_index, discipline)
 		)
+		var tab_spell := _base_spell_for_discipline(character_state, discipline)
+		if tab_spell != null:
+			button.set_spell_label(tab_spell.spell_name)
 		button.apply_layout_profile(_layout_profile)
 		button.disabled = _evolution_mode
 		if not _evolution_mode:
 			button.pressed.connect(_show_discipline.bind(discipline.discipline_id))
 		_tab_buttons.append(button)
+	_apply_catalog_filter()
 
 
 func _show_discipline(discipline_id: StringName) -> void:
@@ -423,13 +489,15 @@ func _show_discipline(discipline_id: StringName) -> void:
 	var progress := character_state.get_discipline_progress(discipline_id)
 	if discipline == null or progress == null:
 		return
+	_stop_recenter()
 	current_discipline_id = discipline_id
 	_empty_state.hide()
 	_graph_scroll.show()
-	_canvas_title_label.text = "%s · CHEMIN DE PROGRESSION" % discipline.display_name.to_upper()
+	_canvas_title_label.text = "ÉVOLUTIONS"
 	for button in _tab_buttons:
 		button.set_selected(button.discipline_id == discipline_id)
 	var base_spell := _base_spell_for_discipline(character_state, discipline)
+	_update_spell_banner(base_spell, discipline, progress)
 	var base_icon := _base_icon_for_graph(character_state, base_spell)
 	_graph.rebuild(
 		discipline,
@@ -485,6 +553,7 @@ func _show_undefined_progression(character_state: CharacterRunState) -> void:
 	current_discipline_id = &""
 	_empty_state.show()
 	_graph_scroll.hide()
+	_spell_banner.hide()
 	_graph.rebuild(null, null, "")
 	_canvas_title_label.text = "PROGRESSION"
 	var character_name := (
@@ -513,6 +582,7 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 	if character_state == null or discipline == null:
 		return
 	_last_inspected_by_discipline[discipline.discipline_id] = view.presentation_id
+	_detail_panel.set_spell_context(_base_spell_for_discipline(character_state, discipline))
 	if not view.is_content_revealed():
 		_detail_panel.configure_locked(discipline, view.get_rank(), character_id)
 		return
@@ -549,35 +619,42 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 
 
 func _configure_focus_navigation() -> void:
-	for index in range(_tab_buttons.size()):
-		var button := _tab_buttons[index]
+	var visible_tabs := get_visible_tab_buttons()
+	_search_field.focus_neighbor_top = _search_field.get_path_to(_close_button)
+	_search_field.focus_neighbor_bottom = _search_field.get_path_to(_filter_buttons[0])
+	for filter_button in _filter_buttons:
+		filter_button.focus_neighbor_top = filter_button.get_path_to(_search_field)
+		filter_button.focus_neighbor_bottom = filter_button.get_path_to(visible_tabs[0] if not visible_tabs.is_empty() else _center_graph_button)
+	for index in range(visible_tabs.size()):
+		var button := visible_tabs[index]
 		if index > 0:
-			button.focus_neighbor_top = button.get_path_to(_tab_buttons[index - 1])
+			button.focus_neighbor_top = button.get_path_to(visible_tabs[index - 1])
 		else:
-			button.focus_neighbor_top = button.get_path_to(_close_button)
-		if index + 1 < _tab_buttons.size():
-			button.focus_neighbor_bottom = button.get_path_to(_tab_buttons[index + 1])
+			button.focus_neighbor_top = button.get_path_to(_filter_buttons[0])
+		if index + 1 < visible_tabs.size():
+			button.focus_neighbor_bottom = button.get_path_to(visible_tabs[index + 1])
 		else:
 			button.focus_neighbor_bottom = button.get_path_to(_center_graph_button)
 	var nodes := _graph.get_node_views_in_focus_order()
 	if not nodes.is_empty():
-		for button in _tab_buttons:
+		for button in visible_tabs:
 			button.focus_neighbor_right = button.get_path_to(nodes[0])
 		for node in nodes:
-			if node.focus_neighbor_left.is_empty():
+			var old_left := node.get_node_or_null(node.focus_neighbor_left) as Control
+			if node.focus_neighbor_left.is_empty() or old_left is SkillTreeDisciplineTab:
 				var active_tab := _active_tab()
-				if active_tab != null:
-					node.focus_neighbor_left = node.get_path_to(active_tab)
+				var left_target: Control = active_tab if active_tab != null and active_tab.visible else _search_field
+				node.focus_neighbor_left = node.get_path_to(left_target)
 	_close_button.focus_neighbor_bottom = _close_button.get_path_to(
-		_tab_buttons[0] if not _tab_buttons.is_empty() else _center_graph_button
+		visible_tabs[0] if not visible_tabs.is_empty() else _center_graph_button
 	)
 	_close_button.focus_neighbor_left = _close_button.get_path_to(
 		_center_graph_button
 	)
 	_center_graph_button.focus_neighbor_top = _center_graph_button.get_path_to(_close_button)
-	if not _tab_buttons.is_empty():
+	if not visible_tabs.is_empty():
 		_center_graph_button.focus_neighbor_left = _center_graph_button.get_path_to(
-			_tab_buttons[_tab_buttons.size() - 1]
+			visible_tabs[visible_tabs.size() - 1]
 		)
 	if not nodes.is_empty():
 		_center_graph_button.focus_neighbor_bottom = _center_graph_button.get_path_to(
@@ -586,6 +663,8 @@ func _configure_focus_navigation() -> void:
 
 
 func _focus_last_or_first() -> void:
+	if is_instance_valid(_champion_codex) and _champion_codex.visible:
+		return
 	if not visible:
 		return
 	var wanted_id := get_last_inspected_id()
@@ -655,12 +734,12 @@ func _reset_evolution_mode() -> void:
 	_evolution_request_id = &""
 	_evolution_source_spell_id = &""
 	if is_instance_valid(_close_button):
-		_close_button.text = "FERMER"
+		_close_button.text = "Fermer  ×"
 		_close_button.disabled = false
 	if is_instance_valid(_consultative_label):
-		_consultative_label.text = "CONSULTATION\nProgression de la run"
+		_consultative_label.text = "GRIMOIRE\nApprenez par l’action"
 	if is_instance_valid(_branch_title_label):
-		_branch_title_label.text = "BRANCHES"
+		_branch_title_label.text = "VOS SORTS"
 
 
 func _capture_previous_focus() -> void:
@@ -747,7 +826,7 @@ func _apply_responsive_layout(viewport_size: Vector2) -> void:
 	)
 	_consultative_label.visible = viewport_size.x >= 1460.0
 	_branch_navigation.custom_minimum_size.x = (
-		206.0 if compact else 226.0 if medium else 252.0 * presentation_scale
+		226.0 if compact else 248.0 if medium else 270.0 * presentation_scale
 	)
 	_branch_title_label.add_theme_font_size_override(
 		"font_size",
@@ -757,7 +836,7 @@ func _apply_responsive_layout(viewport_size: Vector2) -> void:
 	for button in _tab_buttons:
 		button.apply_layout_profile(_layout_profile)
 	var detail_width := (
-		286.0 if compact else 326.0 if medium else 360.0 * presentation_scale
+		304.0 if compact else 346.0 if medium else 388.0 * presentation_scale
 	)
 	_detail_panel.custom_minimum_size.x = detail_width
 	_detail_panel.apply_layout_profile(_layout_profile)
@@ -765,7 +844,10 @@ func _apply_responsive_layout(viewport_size: Vector2) -> void:
 		94.0 if compact else 104.0 if medium else 112.0 * presentation_scale,
 		34.0 if compact else 38.0 if medium else 42.0 * presentation_scale
 	)
-	_canvas_hint_label.visible = not compact
+	_canvas_hint_label.visible = viewport_size.x >= 1800.0
+	_spell_banner_title.add_theme_font_size_override("font_size", 21 if compact else 25)
+	_spell_banner_meta.add_theme_font_size_override("font_size", 13 if compact else 15)
+	_spell_banner.custom_minimum_size.y = 114 if compact else 124
 	_footer_label.custom_minimum_size.y = 18.0 if compact else 20.0 if medium else 22.0
 	_footer_label.add_theme_font_size_override(
 		"font_size",
@@ -791,14 +873,20 @@ func _apply_graph_layout() -> void:
 
 
 func _on_graph_scroll_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+		_stop_recenter()
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
 		_pan_active = event.pressed
 		if _pan_active:
+			_stop_recenter()
+			_graph_scroll.mouse_default_cursor_shape = Control.CURSOR_DRAG
 			_pan_mouse_origin = event.position
 			_pan_scroll_origin = Vector2(
 				_graph_scroll.scroll_horizontal,
 				_graph_scroll.scroll_vertical
 			)
+		else:
+			_graph_scroll.mouse_default_cursor_shape = Control.CURSOR_ARROW
 		_graph_scroll.accept_event()
 	elif event is InputEventMouseMotion and _pan_active:
 		var delta: Vector2 = event.position - _pan_mouse_origin
@@ -830,7 +918,7 @@ func _apply_character_identity(character_state: CharacterRunState) -> void:
 	var unit := character_state.unit
 	_active_theme = CharacterHUDThemeCatalog.resolve_refined(unit)
 	var character_name := unit.unit_name if unit != null else str(character_state.character_id)
-	_title_label.text = "%s · PROGRESSION" % character_name.to_upper()
+	_title_label.text = "Sorts & maîtrises"
 	var accent := Color(0.62, 0.48, 0.26, 1.0)
 	if _active_theme != null:
 		accent = _active_theme.primary_color
@@ -849,7 +937,8 @@ func _apply_character_identity(character_state: CharacterRunState) -> void:
 	_header_portrait.set_active(true)
 	_header_accent.modulate = accent.lightened(0.22)
 	_identity_badge.modulate = Color.WHITE
-	_title_label.add_theme_color_override("font_color", accent.lightened(0.34))
+	_identity_badge.hide()
+	_title_label.add_theme_color_override("font_color", CODEX_STYLE.TEXT)
 	_detail_panel.set_accent(accent)
 	_update_header_summary(character_state)
 
@@ -863,16 +952,15 @@ func _update_header_summary(character_state: CharacterRunState) -> void:
 			continue
 		acquired += progress.get_selected_upgrade_ids().size()
 		pending += progress.get_pending_rank_choices().size()
-	_header_summary_label.text = "%d choix acquis · %d choix disponibles" % [acquired, pending]
+	_header_summary_label.text = "%d évolutions acquises · %d choix en attente" % [acquired, pending]
 
 
 func _update_header_branch_summary(
 		character_state: CharacterRunState,
 		discipline: DisciplineData
 	) -> void:
-	_discipline_summary_label.text = "%d branches · %s active" % [
-		character_state.get_disciplines().size(),
-		discipline.display_name,
+	_discipline_summary_label.text = "%s  ·  %d sorts  ·  %s" % [
+		character_state.unit.unit_name, character_state.get_disciplines().size(), discipline.display_name,
 	]
 	_update_header_summary(character_state)
 
@@ -964,3 +1052,234 @@ func _maximum_progress_label(
 		if has_choices
 		else "%d XP · PROGRESSION NON DÉFINIE" % progress.xp
 	)
+
+
+func _build_catalog_tools() -> void:
+	var branch_content := _branch_title_label.get_parent() as VBoxContainer
+	_branch_title_label.text = "VOS SORTS"
+	_catalog_count = Label.new()
+	_catalog_count.name = "CatalogCount"
+	CODEX_STYLE.label(_catalog_count)
+	_catalog_count.add_theme_font_size_override("font_size", 13)
+	branch_content.add_child(_catalog_count)
+	branch_content.move_child(_catalog_count, 1)
+	_search_field = LineEdit.new()
+	_search_field.name = "SpellSearch"
+	_search_field.placeholder_text = "Rechercher un sort…"
+	_search_field.tooltip_text = "Rechercher un sort ou une discipline · Ctrl + F"
+	_search_field.clear_button_enabled = true
+	_search_field.custom_minimum_size = Vector2(0, 38)
+	_search_field.add_theme_font_override("font", CODEX_STYLE.BODY)
+	_search_field.add_theme_font_size_override("font_size", 14)
+	_search_field.add_theme_color_override("font_color", CODEX_STYLE.TEXT)
+	_search_field.add_theme_stylebox_override("normal", CODEX_STYLE.box(CODEX_STYLE.INK, CODEX_STYLE.BORDER, 5, 9))
+	_search_field.add_theme_stylebox_override("focus", CODEX_STYLE.box(CODEX_STYLE.INK, CODEX_STYLE.GOLD, 5, 9))
+	branch_content.add_child(_search_field)
+	branch_content.move_child(_search_field, 2)
+	_search_field.text_changed.connect(func(_value: String): _apply_catalog_filter())
+	var filters := HBoxContainer.new()
+	filters.add_theme_constant_override("separation", 5)
+	branch_content.add_child(filters)
+	branch_content.move_child(filters, 3)
+	for index in range(2):
+		var button := Button.new()
+		button.text = ["Tous", "Choix prêts"][index]
+		button.toggle_mode = true
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.add_theme_font_size_override("font_size", 13)
+		filters.add_child(button)
+		CODEX_STYLE.button(button)
+		button.pressed.connect(set_spell_filter.bind([&"all", &"pending"][index]))
+		_filter_buttons.append(button)
+	_search_empty = Label.new()
+	_search_empty.text = "Aucun sort correspondant.\nEffacez la recherche ou affichez tous les sorts."
+	_search_empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_search_empty.add_theme_font_size_override("font_size", 14)
+	CODEX_STYLE.label(_search_empty)
+	branch_content.add_child(_search_empty)
+	branch_content.move_child(_search_empty, 4)
+	_search_empty.hide()
+	var canvas_content := _canvas_title_label.get_parent().get_parent() as VBoxContainer
+	_spell_banner = PanelContainer.new()
+	_spell_banner.name = "ActiveSpellBanner"
+	CODEX_STYLE.panel(_spell_banner, Color("30271f"), CODEX_STYLE.BORDER, 7, 15)
+	canvas_content.add_child(_spell_banner)
+	canvas_content.move_child(_spell_banner, 0)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	_spell_banner.add_child(row)
+	_spell_banner_icon = TextureRect.new()
+	_spell_banner_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_spell_banner_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_spell_banner_icon.custom_minimum_size = Vector2(66, 66)
+	_spell_banner_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(_spell_banner_icon)
+	var copy := VBoxContainer.new()
+	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	copy.add_theme_constant_override("separation", 5)
+	row.add_child(copy)
+	_spell_banner_title = Label.new()
+	_spell_banner_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	CODEX_STYLE.label(_spell_banner_title, true)
+	copy.add_child(_spell_banner_title)
+	_spell_banner_meta = Label.new()
+	_spell_banner_meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	CODEX_STYLE.label(_spell_banner_meta)
+	copy.add_child(_spell_banner_meta)
+	_spell_banner_progress = ProgressBar.new()
+	_spell_banner_progress.custom_minimum_size.y = 5
+	_spell_banner_progress.show_percentage = false
+	_spell_banner_progress.add_theme_stylebox_override("background", CODEX_STYLE.box(CODEX_STYLE.INK, Color.TRANSPARENT, 2))
+	_spell_banner_progress.add_theme_stylebox_override("fill", CODEX_STYLE.box(CODEX_STYLE.GOLD, Color.TRANSPARENT, 2))
+	copy.add_child(_spell_banner_progress)
+	_spell_banner_xp = Label.new()
+	_spell_banner_xp.add_theme_font_size_override("font_size", 12)
+	CODEX_STYLE.label(_spell_banner_xp)
+	copy.add_child(_spell_banner_xp)
+
+
+func _apply_codex_chrome() -> void:
+	_main_frame.hide()
+	for node in find_children("*Ornament", "Control", true, false):
+		node.hide()
+	var frame := _outer_margin.get_node("Frame") as PanelContainer
+	CODEX_STYLE.panel(frame, Color("171411"), Color("8c7252"), 12)
+	CODEX_STYLE.panel(_character_header, CODEX_STYLE.INK)
+	CODEX_STYLE.panel(_branch_navigation)
+	CODEX_STYLE.panel(_canvas_surface, Color("1b1714"))
+	# Keep branch structure in ash/bronze; semantic acquired states keep their own accent.
+	var graph_colors := {
+		&"branch_eagle": Color(0.28, 0.23, 0.17, 0.24),
+		&"branch_repel": Color(0.23, 0.19, 0.16, 0.22),
+		&"branch_eagle_accent": Color("b6996d"),
+		&"branch_repel_accent": Color("9e8268"),
+		&"connection_compatible": Color("9a8770"),
+		&"rank_title": CODEX_STYLE.TEXT,
+	}
+	for key in graph_colors:
+		_graph.add_theme_color_override(key, graph_colors[key])
+	for scroll in [_graph_scroll, _tabs_scroll]:
+		CODEX_STYLE.scroll(scroll)
+	var graph_stage := _graph_scroll.get_parent() as Control
+	var atmosphere := TextureRect.new()
+	atmosphere.name = "GraphAtmosphere"
+	atmosphere.texture = preload("res://asset/ui/progression/mastery_atlas/canvas_v1.png")
+	atmosphere.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	atmosphere.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	atmosphere.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	atmosphere.modulate = Color(0.82, 0.75, 0.65, 0.18)
+	graph_stage.add_child(atmosphere)
+	graph_stage.move_child(atmosphere, 0)
+	atmosphere.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_header_accent.hide()
+	_identity_badge.hide()
+	for label in [_discipline_summary_label, _header_summary_label, _consultative_label, _branch_title_label, _canvas_title_label, _canvas_hint_label, _footer_label]:
+		CODEX_STYLE.label(label)
+	CODEX_STYLE.label(_title_label, true)
+	_title_label.add_theme_color_override("font_color", CODEX_STYLE.TEXT)
+	_branch_title_label.add_theme_color_override("font_color", CODEX_STYLE.GOLD)
+	_canvas_title_label.add_theme_color_override("font_color", CODEX_STYLE.GOLD)
+	_consultative_label.text = "GRIMOIRE\nApprenez par l’action"
+	_canvas_hint_label.text = "Glisser : clic central  ·  F : recentrer"
+	_close_button.text = "Fermer  ×"
+	_close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_center_graph_button.text = "Recentrer"
+	_center_graph_button.tooltip_text = "Recentrer sur le choix inspecté · F"
+	CODEX_STYLE.button(_close_button)
+	CODEX_STYLE.button(_center_graph_button)
+
+
+func set_search_query(query: String) -> void:
+	if _search_field == null or _evolution_mode:
+		return
+	_search_field.text = query
+	_apply_catalog_filter()
+
+
+func set_spell_filter(filter_id: StringName) -> void:
+	if filter_id not in [&"all", &"pending"] or _evolution_mode:
+		return
+	_filter_id = filter_id
+	_apply_catalog_filter()
+
+
+func reset_catalog_filters() -> void:
+	_filter_id = &"all"
+	if _search_field != null:
+		_search_field.text = ""
+
+
+func get_visible_tab_buttons() -> Array[SkillTreeDisciplineTab]:
+	var result: Array[SkillTreeDisciplineTab] = []
+	for tab in _tab_buttons:
+		if is_instance_valid(tab) and tab.visible:
+			result.append(tab)
+	return result
+
+
+func _apply_catalog_filter() -> void:
+	if _search_field == null:
+		return
+	_search_field.editable = not _evolution_mode
+	var state := _get_character_state()
+	var query := _search_field.text.strip_edges().to_lower()
+	var visible_count := 0
+	for tab in _tab_buttons:
+		var discipline := _find_discipline(state, tab.discipline_id) if state != null else null
+		var spell := _base_spell_for_discipline(state, discipline)
+		var haystack := discipline.display_name.to_lower() if discipline != null else ""
+		if spell != null:
+			haystack += " " + spell.spell_name.to_lower()
+		# Future upgrade names and mechanics are never searched before revelation.
+		var matches_query := query.is_empty() or haystack.contains(query)
+		var matches_filter := _filter_id == &"all" or tab.has_pending_badge()
+		tab.visible = _evolution_mode or (matches_query and matches_filter)
+		if tab.visible:
+			visible_count += 1
+	_catalog_count.text = "%d / %d sorts" % [visible_count, _tab_buttons.size()]
+	_search_empty.visible = visible_count == 0
+	for i in range(_filter_buttons.size()):
+		_filter_buttons[i].disabled = _evolution_mode
+		CODEX_STYLE.selected(_filter_buttons[i], _filter_id == [&"all", &"pending"][i])
+	_configure_focus_navigation()
+
+
+func _update_spell_banner(spell: Spell, discipline: DisciplineData, progress: DisciplineProgressState) -> void:
+	_spell_banner.visible = spell != null
+	if spell == null:
+		return
+	_spell_banner_title.text = spell.spell_name
+	_spell_banner_icon.texture = _active_theme.get_spell_icon_for(spell) if _active_theme != null else spell.icon
+	_spell_banner_meta.text = "%s  ·  Rang %d  ·  %d PA" % [discipline.display_name, progress.rank, spell.ap_cost]
+	var next_rank := progress.get_next_rank_data()
+	_spell_banner_progress.max_value = maxf(float(next_rank.required_total_xp), 1.0) if next_rank != null else maxf(float(progress.xp), 1.0)
+	_spell_banner_progress.value = progress.xp if next_rank != null else _spell_banner_progress.max_value
+	if not progress.get_pending_rank_choices().is_empty():
+		_spell_banner_xp.text = "Un choix d’évolution est prêt · inspectez les voies"
+	elif next_rank != null:
+		_spell_banner_xp.text = "%d / %d XP  ·  Utilisez ce sort pour progresser" % [progress.xp, next_rank.required_total_xp]
+	else:
+		_spell_banner_xp.text = "%d XP  ·  Maîtrise au rang maximum" % progress.xp
+
+
+func _show_champion_codex(state: CharacterRunState) -> void:
+	_outer_margin.hide()
+	if not is_instance_valid(_champion_codex):
+		var codex_script = load("res://ui/progression/champion/champion_codex.gd")
+		_champion_codex = codex_script.new()
+		add_child(_champion_codex)
+		_champion_codex.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_champion_codex.close_requested.connect(close_screen)
+		_champion_codex.build_changed.connect(func() -> void:
+			if GameManager.get_character_state(character_id) == _get_character_state():
+				GameManager.champion_build_changed.emit(character_id)
+		)
+	_champion_read_only = _preview_character_state != null or not GameManager.can_edit_champion_build()
+	_champion_codex.configure(state, _champion_read_only)
+	_champion_codex.select_section(current_discipline_id)
+	_champion_codex.show()
+	_champion_codex.move_to_front()
+
+
+func get_champion_codex() -> Control:
+	return _champion_codex

@@ -69,6 +69,11 @@ func _validate_definition(
 		_error(messages, &"CONSUMABLE_WITHOUT_EFFECT", "Un consommable doit posséder un effet d’usage.", "use_effect")
 	if definition.is_consumable() and definition.is_equippable():
 		_error(messages, &"CONSUMABLE_EQUIPPED", "Un consommable ne peut pas être équipé.", "equipment_slot")
+	if not is_finite(definition.guard_effectiveness_melee) \
+			or not is_finite(definition.guard_effectiveness_projectile) \
+			or definition.guard_effectiveness_melee <= 0.0 \
+			or definition.guard_effectiveness_projectile <= 0.0:
+		_error(messages, &"GUARD_EFFECTIVENESS_INVALID", "Les multiplicateurs de Garde doivent être finis et strictement positifs.", "guard_effectiveness")
 	if definition.is_relic():
 		if definition.stack_limit != 1:
 			_error(messages, &"RELIC_STACKABLE", "Une relique est unique et non empilable.", "stack_limit")
@@ -115,7 +120,7 @@ func _validate_definition(
 			_error(messages, &"EFFECT_UNSUPPORTED", "%s — Effet non pris en charge par le Studio." % _runtime_class(modifier), "spell_modifiers")
 		if modifier is ItemSpellModifierData:
 			var item_modifier := modifier as ItemSpellModifierData
-			for value in [item_modifier.damage_percent, item_modifier.target_hp_at_or_below, item_modifier.healing_and_shield_percent]:
+			for value in [item_modifier.damage_percent, item_modifier.target_hp_at_or_below, item_modifier.target_hp_at_or_above, item_modifier.healing_and_shield_percent]:
 				if not is_finite(float(value)):
 					_error(messages, &"VALUE_NOT_FINITE", "Une valeur de modificateur de sort est NaN ou infinie.", "spell_modifiers")
 			if item_modifier.range_bonus != 0:

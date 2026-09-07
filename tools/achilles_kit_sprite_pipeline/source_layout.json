@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "source_sha256": "edcf150bf5c16ece3b51b4aa3b220c13e5d9995ed9dfa8cf4ef4ca0dbef48cdb",
+  "source_size": [1024, 1536],
+  "bands": [[0, 238], [238, 478], [478, 735], [735, 988], [988, 1212], [1212, 1536]],
+  "columns": [
+    [0, 256, 512, 768, 1024],
+    [0, 256, 512, 768, 1024],
+    [0, 248, 502, 804, 1024],
+    [0, 230, 521, 776, 1024],
+    [0, 248, 502, 768, 1024],
+    [0, 256, 512, 768, 1024]
+  ],
+  "centers": [
+    [[128, 128], [384, 128], [640, 128], [896, 128]],
+    [[128, 360], [384, 360], [640, 360], [896, 360]],
+    [[128, 610], [384, 610], [640, 610], [896, 610]],
+    [[128, 860], [384, 860], [640, 860], [896, 860]],
+    [[128, 1100], [384, 1100], [640, 1100], [896, 1100]],
+    [[128, 1360], [384, 1360], [640, 1360], [896, 1360]]
+  ],
+  "boundary_cleaning": { "width": 1, "maximum_alpha": 32 },
+  "review": "Reviewed light/dark flattened source and alpha scans. Rows are irregular. Column cuts for sweep, guard and dust follow real gaps; strongest accepted boundary residue is the faint guard halo at x520/521 (alpha31/19). Only the one-pixel window rim is cleared. Interior glows, detached sparks, all alpha>32 pixels and declared centers remain intact."
+}

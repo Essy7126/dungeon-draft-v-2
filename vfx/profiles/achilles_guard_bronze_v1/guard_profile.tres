@@ -1,0 +1,79 @@
+[gd_resource type="Resource" script_class="VFXProfile" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://vfx/data/vfx_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://vfx/data/vfx_sequence_data.gd" id="2_sequence"]
+[ext_resource type="Script" path="res://vfx/data/vfx_flipbook_module_data.gd" id="3_module"]
+[ext_resource type="Resource" path="res://vfx/profiles/achilles_guard_bronze_v1/activation_asset.tres" id="activation_asset"]
+[ext_resource type="Resource" path="res://vfx/profiles/achilles_guard_bronze_v1/hold_asset.tres" id="hold_asset"]
+[ext_resource type="Resource" path="res://vfx/profiles/achilles_guard_bronze_v1/hit_asset.tres" id="hit_asset"]
+[ext_resource type="Resource" path="res://vfx/profiles/achilles_guard_bronze_v1/end_asset.tres" id="end_asset"]
+
+[sub_resource type="Resource" id="Module_activation"]
+script = ExtResource("3_module")
+module_id = &"activation"
+duration = 0.5
+anchor = &"TARGET_WORLD"
+asset = ExtResource("activation_asset")
+opacity = 0.9
+
+[sub_resource type="Resource" id="Sequence_activation"]
+script = ExtResource("2_sequence")
+sequence_id = &"activation"
+display_name = "activation"
+modules = Array[ExtResource("3_module")]([SubResource("Module_activation")])
+
+[sub_resource type="Resource" id="Module_hold"]
+script = ExtResource("3_module")
+module_id = &"hold"
+duration = 1
+anchor = &"TARGET_WORLD"
+asset = ExtResource("hold_asset")
+opacity = 0.38
+
+[sub_resource type="Resource" id="Sequence_hold"]
+script = ExtResource("2_sequence")
+sequence_id = &"hold"
+display_name = "hold"
+modules = Array[ExtResource("3_module")]([SubResource("Module_hold")])
+
+[sub_resource type="Resource" id="Module_hit"]
+script = ExtResource("3_module")
+module_id = &"hit"
+duration = 0.25
+anchor = &"TARGET_WORLD"
+asset = ExtResource("hit_asset")
+opacity = 0.85
+
+[sub_resource type="Resource" id="Sequence_hit"]
+script = ExtResource("2_sequence")
+sequence_id = &"hit"
+display_name = "hit"
+modules = Array[ExtResource("3_module")]([SubResource("Module_hit")])
+
+[sub_resource type="Resource" id="Module_end"]
+script = ExtResource("3_module")
+module_id = &"end"
+duration = 0.3
+anchor = &"TARGET_WORLD"
+asset = ExtResource("end_asset")
+opacity = 0.65
+
+[sub_resource type="Resource" id="Sequence_end"]
+script = ExtResource("2_sequence")
+sequence_id = &"end"
+display_name = "end"
+modules = Array[ExtResource("3_module")]([SubResource("Module_end")])
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"achilles.guard.bronze.v1"
+display_name = "Garde d'airain - sprites bronze"
+category = &"SHIELD"
+render_policy = &"SIGNATURE_ASSET"
+art_status = &"READY_FOR_HUMAN_REVIEW"
+tags = Array[StringName]([&"achilles", &"shield", &"sprite", &"status_bound"])
+sequences = Array[ExtResource("2_sequence")]([SubResource("Sequence_activation"), SubResource("Sequence_hold"), SubResource("Sequence_hit"), SubResource("Sequence_end")])
+context_requirements = Array[StringName]([&"target_world"])
+maximum_duration = 1.1
+quality_policy = &"SCALABLE"
+

@@ -1,0 +1,91 @@
+{
+  "ok": true,
+  "scope": "Independent Python authoring checks, not a Godot/GPU validation",
+  "floor_cells": 152,
+  "void_cells": 172,
+  "blocked_cells": 8,
+  "walkable_cells": 144,
+  "connected_walkable_cells": 144,
+  "pit_cells": 8,
+  "pit_groups": 2,
+  "domain_cells": 160,
+  "passage_width_cells": 6,
+  "passage_length_cells": 14,
+  "all_passage_cells_walkable": true,
+  "route_cells": 12,
+  "hero_to_enemy_route": [
+    [
+      7,
+      14
+    ],
+    [
+      7,
+      13
+    ],
+    [
+      7,
+      12
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      7,
+      7
+    ],
+    [
+      7,
+      6
+    ],
+    [
+      7,
+      5
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ]
+  ],
+  "boundary_edges": 60,
+  "simplified_contour_vertices": 12,
+  "floor_bounds_px": [
+    392.4,
+    279.8,
+    1527.6,
+    847.4
+  ],
+  "band_bounds_px": [
+    349.056,
+    258.128,
+    1570.944,
+    869.072
+  ],
+  "minimum_floor_land_clearance_native_px": 279.8,
+  "minimum_floor_allowed_clearance_native_px": 72.39999999999998,
+  "minimum_floor_shoreline_clearance_native_px": null,
+  "minimum_band_shoreline_clearance_native_px": null,
+  "minimum_band_land_clearance_native_px": 258.128,
+  "art_reserve_native_rect": [
+    320.0,
+    200.0,
+    1600.0,
+    950.0
+  ]
+}

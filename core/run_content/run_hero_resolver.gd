@@ -48,6 +48,7 @@ static func resolve_runtime_hero_data(
 				hero_profile.base_unit_data,
 				progression.spells,
 				progression.active_spell_slots,
+				progression,
 			)
 		)
 	if not result.errors.is_empty():
@@ -59,7 +60,8 @@ static func resolve_runtime_hero_data(
 static func _runtime_copy(
 		base: UnitData,
 		spells_source: Array[Spell],
-		active_spell_slots: int
+		active_spell_slots: int,
+		progression: CharacterProgressionProfile = null
 	) -> UnitData:
 	var runtime := base.duplicate(false) as UnitData
 	runtime.set_path_cache("")
@@ -67,4 +69,5 @@ static func _runtime_copy(
 	spells.assign(spells_source)
 	runtime.spells = spells
 	runtime.active_spell_slots = active_spell_slots
+	runtime.progression_profile = progression if progression != null else base.progression_profile
 	return runtime

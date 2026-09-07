@@ -1,0 +1,168 @@
+{
+  "asset_id": "black_oath_temple_v1",
+  "revision": 1,
+  "created_at": "2026-09-06",
+  "title": "Le Temple du Serment Noir",
+  "method": "built_in_image_gen_and_shared_registered_terrain_runtime",
+  "native_canvas_size": [
+    1920,
+    1200
+  ],
+  "production_scene": "battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+  "terrain_plan": "data/arenas/black_oath_temple_v1/terrain_plan.json",
+  "geometry_manifest": "data/arenas/black_oath_temple_v1/geometry_manifest.json",
+  "campaign_room": "data/rooms/odyssey/room_05.tres",
+  "artwork": [
+    {
+      "file": "temple_composed.png",
+      "source_generated_image": "exec-fcecaffc-b495-4fa1-a0ee-5bc2aa8ab042.png",
+      "source_size": [
+        1586,
+        992
+      ],
+      "output_size": [
+        1920,
+        1200
+      ],
+      "method": "Original built-in image_gen landscape, then two image_gen edits for dimetric wall orientation and recessed architecture. Whole-canvas bicubic resample only.",
+      "sha256": "cdd6a814fa001467b75d0bd552e05819cef1e9309a3660a39ff03a683a118e0a",
+      "prompts": [
+        {
+          "file": "temple_initial_prompt.txt",
+          "source": "exec-91b10b5a-c855-4217-83eb-c4f0e41c655c.png",
+          "selected": false,
+          "sha256": "fb59b19ef65d44a509155ce3dd9c377119c046c994ebd884f9a3f2957e03b34f"
+        },
+        {
+          "file": "temple_camera_prompt.txt",
+          "source": "exec-12191c80-58f2-40e4-891a-96c9ee2f0060.png",
+          "selected": false,
+          "sha256": "19422d2006df0c2373c89cb777fdb34509220a1a9c60e109b3cd1883c5154846"
+        },
+        {
+          "file": "temple_final_prompt.txt",
+          "source": "exec-fcecaffc-b495-4fa1-a0ee-5bc2aa8ab042.png",
+          "selected": true,
+          "sha256": "fd2497a308c500f28d77773b31ff30f9ec2d484b4c4b48ac49682b7c33da7c8d"
+        }
+      ]
+    }
+  ],
+  "shaders": {
+    "new_map_specific": [],
+    "shared_stones": "battle/painted/registered_terrain/shaders/stone_palette.gdshaderinc",
+    "shared_ground_band": "battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+    "water_texture_and_shader_disabled": true
+  },
+  "readability_contract": {
+    "world_decor_count": 0,
+    "foreground_sprite_count": 0,
+    "ground_details_enabled": false,
+    "interior_joint_land_weight": 0,
+    "geometry_from_raster": false,
+    "land_covers_native_canvas": true,
+    "shoreline_count": 0,
+    "shore_clearance_applicable": false
+  },
+  "geometry_contract": {
+    "grid_size": [
+      18,
+      18
+    ],
+    "origin": [
+      960,
+      125
+    ],
+    "axis_x": [
+      51.6,
+      25.8
+    ],
+    "axis_y": [
+      -51.6,
+      25.8
+    ],
+    "floor_cells": 152,
+    "blocked_cells": 8,
+    "walkable_cells": 144,
+    "connected_walkable_cells": 144,
+    "pit_cells": 8,
+    "pit_groups": 2,
+    "passage_width_cells": 6,
+    "passage_length_cells": 14,
+    "ground_band_width_cells": 0.42,
+    "minimum_floor_allowed_margin_native_px": 72.4,
+    "land_and_allowed_floor_polygon_are_distinct": true,
+    "generator": "tools/registered_terrain_authoring/generate_black_oath_temple.py",
+    "authoring_report": "data/arenas/black_oath_temple_v1/authoring_validation.json"
+  },
+  "camera_contract": {
+    "strategy": "cover",
+    "camera_zoom_multiplier": 1,
+    "desired_camera_offset_adjustment": [
+      160,
+      0
+    ],
+    "camera_keep_painting_in_view": true,
+    "room_global_unit_multiplier": 1.08,
+    "achilles_profile_final_scale": 1.7064,
+    "unit_profiles_unchanged": true
+  },
+  "validation": {
+    "status": "map_and_catabase_flow_validated",
+    "date": "2026-09-06",
+    "tests": {
+      "total": 38,
+      "passed": 38,
+      "assertions": 10614,
+      "groups": [
+        {
+          "name": "Catabase geometry/content/progression/production contract",
+          "tests": 26,
+          "passed": 26,
+          "assertions": 9822,
+          "log": "artifacts/catabase_fifth_map_2026-09-06/gut_primary.log"
+        },
+        {
+          "name": "SoloRun five-room and Studio catalog routes",
+          "tests": 2,
+          "passed": 2,
+          "assertions": 60,
+          "filter": "five",
+          "log": "artifacts/catabase_fifth_map_2026-09-06/gut_solo_studio_routes.log"
+        },
+        {
+          "name": "Hub prepared run route",
+          "tests": 1,
+          "passed": 1,
+          "assertions": 13,
+          "log": "artifacts/catabase_fifth_map_2026-09-06/gut_hub_route.log"
+        },
+        {
+          "name": "Arena direct-test/runtime parity and camera bounds",
+          "tests": 9,
+          "passed": 9,
+          "assertions": 719,
+          "log": "artifacts/catabase_fifth_map_2026-09-06/gut_camera_framing.log"
+        }
+      ]
+    },
+    "gpu_reports": [
+      "artifacts/catabase_fifth_map_2026-09-06/1920x1080_final/registered_terrain_report.json",
+      "artifacts/catabase_fifth_map_2026-09-06/1200x896_final/registered_terrain_report.json"
+    ],
+    "visually_reviewed_captures": [
+      "artifacts/catabase_fifth_map_2026-09-06/1920x1080_final/room_05_combat_1920x1080.png",
+      "artifacts/catabase_fifth_map_2026-09-06/1200x896_final/room_05_after_move_guard_1200x896.png"
+    ],
+    "preserved_resources_report": "artifacts/catabase_fifth_map_2026-09-06/preserved_resources_report.json",
+    "cross_resolution_maximum_relative_ratio_change": 1.26961728584707e-7,
+    "limits": [
+      "GPU movement and guard use live GridView/controller APIs; native OS mouse event routing is not certified.",
+      "GPU victories I-IV are QA-forced after real movement and guard; production rewards/transitions lead to V, left live before process exit.",
+      "GUT progression simulates five victories; full player victories and encounter balance are not certified.",
+      "Framing measures the current sprite alpha poses and HUD rectangles before/after actions; it does not certify all future positions, animation frames or shader effects.",
+      "Godot reports retained resources at shutdown. This is a scoped functional validation, not a project-wide clean-runtime claim.",
+      "Legacy full SoloRun/theorycraft kit/economy suites were not run; only the explicitly listed suites and filters are certified."
+    ]
+  }
+}

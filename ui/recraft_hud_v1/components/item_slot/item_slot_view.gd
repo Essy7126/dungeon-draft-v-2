@@ -30,7 +30,7 @@ func configure_item(
 	instance_id = p_instance_id
 	definition = p_definition
 	shortcut_label.text = shortcut
-	shortcut_label.visible = true
+	shortcut_label.visible = not shortcut.is_empty()
 	cost_badge.visible = false
 	set_icon_override(p_definition.get_inventory_icon() if p_definition != null else null)
 	if is_node_ready():
@@ -59,6 +59,38 @@ func is_empty_slot() -> bool:
 	return definition == null
 
 
+func _refresh_visuals() -> void:
+	super._refresh_visuals()
+	if not is_node_ready() or not is_empty_slot():
+		return
+	# An unoccupied slot is inert, not an action refused by the game rules.
+	# Keep the public DISABLED state while removing its error-like cues.
+	disabled = true
+	for overlay in [
+		selection_overlay, focus_overlay, hover_overlay, hover_rail,
+		disabled_overlay, disabled_bar, unavailable_cross_a, unavailable_cross_b,
+		cooldown_overlay, cooldown_disc, cooldown_glyph, cooldown_label,
+		state_glyph, selected_marker, lock_icon, lock_rail_left, lock_rail_right,
+	]:
+		overlay.visible = false
+	shortcut_label.visible = false
+	cost_badge.visible = false
+	fallback_label.visible = false
+	tooltip_text = "Emplacement d’objet vide"
+	background.color = (
+		_visual_skin.surface_recessed if _visual_skin != null
+		else Color(0.035, 0.035, 0.045, 0.6)
+	)
+	frame.modulate = Color(0.7, 0.7, 0.7, 0.7)
+	refined_frame.modulate = Color.WHITE
+	if _visual_skin != null:
+		var quiet_style := refined_frame.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+		if quiet_style != null:
+			quiet_style.draw_center = false
+			quiet_style.border_color = _visual_skin.border_subtle_color
+			refined_frame.add_theme_stylebox_override("panel", quiet_style)
+
+
 # Traduit la réponse de RelicRuntimeService.manual_activation_state() en état
 # visuel. L'interface ne rejoue jamais les règles de conditions ou de fréquence :
 # elle se contente d'afficher le verdict du service.
@@ -74,6 +106,24 @@ func apply_availability(state: Dictionary, controls_enabled: bool) -> void:
 	else:
 		set_visual_state(VisualState.UNAFFORDABLE)
 	tooltip_text = _tooltip_for(message)
+	if not message.is_empty():
+		accessibility_name += ". " + message
+
+
+func _accessible_description(_ap_cost: int) -> String:
+	return _item_name()
+
+
+func _update_accessibility_name() -> void:
+	if not is_node_ready():
+		return
+	if is_empty_slot():
+		accessibility_name = "Emplacement d’objet vide"
+		return
+	super._update_accessibility_name()
+	if visual_state == VisualState.UNAFFORDABLE:
+		# Shared visual state, not a PA rule: the service supplies the reason.
+		accessibility_name = _item_name() + ", indisponible"
 
 
 func _tooltip_for(message: String) -> String:
