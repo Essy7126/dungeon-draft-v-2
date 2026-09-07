@@ -8,7 +8,7 @@ signal confirmation_finished
 const REVEAL_SFX := preload(
 	"res://asset/bruitage sort/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3"
 )
-const CARD_ASPECT := 0.57
+const CARD_ASPECT := 0.535
 
 @export var reduced_motion := false
 
@@ -110,7 +110,6 @@ func select_item_by_id(item_id: StringName, focus_card: bool = false) -> bool:
 		_cards[index].set_selected(index == selected_index)
 		_cards[index].set_peer_dimmed(index != selected_index)
 	confirm_button.disabled = false
-	confirm_button.focus_neighbor_top = _cards[selected_index].interaction.get_path()
 	if focus_card:
 		_cards[selected_index].grab_card_focus()
 	selection_changed.emit(item_id)
@@ -211,7 +210,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_card_choice_requested(item_id: StringName) -> void:
-	select_item_by_id(item_id, true)
+	select_item_by_id(item_id)
 
 
 func _on_card_hover_changed(card_index: int, hovered: bool) -> void:
@@ -226,13 +225,13 @@ func _apply_responsive_layout() -> void:
 		return
 	var compact := size.y <= 760.0
 	var card_height := clampf(
-		size.y * (0.61 if compact else 0.60),
-		400.0 if compact else 430.0,
-		660.0,
+		size.y * (0.59 if compact else 0.655),
+		400.0 if compact else 410.0,
+		735.0,
 	)
 	var vertical_allowance := maxf(330.0, size.y - (252.0 if compact else 224.0))
 	card_height = minf(card_height, vertical_allowance)
-	var gap := clampf(size.x * 0.045, 52.0, 88.0)
+	var gap := clampf(size.x * 0.055, 56.0, 110.0)
 	var card_width := card_height * CARD_ASPECT
 	var horizontal_allowance := maxf(220.0, (size.x - gap - 96.0) * 0.5)
 	if card_width > horizontal_allowance:

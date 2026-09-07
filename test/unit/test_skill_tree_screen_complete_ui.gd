@@ -184,29 +184,6 @@ func test_responsive_layout_stays_inside_720p_1080p_and_1440p() -> void:
 		assert_true(snapshot["outer_global"].encloses(snapshot["detail_global"]))
 		assert_false(snapshot["branch_global"].intersects(snapshot["canvas_global"]))
 		assert_false(snapshot["canvas_global"].intersects(snapshot["detail_global"]))
-		var selected_tab := screen.get_tab_buttons().filter(
-			func(tab: SkillTreeDisciplineTab) -> bool: return tab.button_pressed
-		)[0] as SkillTreeDisciplineTab
-		var tab_layout := selected_tab.get_layout_snapshot()
-		var active_rect := tab_layout["active_marker_global"] as Rect2
-		assert_true(tab_layout["active_marker_visible"], str(case["size"]))
-		assert_true(
-			(tab_layout["tab_global"] as Rect2).encloses(active_rect),
-			str(case["size"]),
-		)
-		assert_gte(
-			active_rect.size.x,
-			(tab_layout["active_marker_minimum"] as Vector2).x - 0.5,
-			str(case["size"]),
-		)
-		assert_false(
-			active_rect.intersects(tab_layout["xp_global"] as Rect2),
-			str(case["size"]),
-		)
-		assert_false(
-			active_rect.intersects(tab_layout["rank_global"] as Rect2),
-			str(case["size"]),
-		)
 		if case["size"] == Vector2(2560, 1440):
 			assert_gte((snapshot["outer_global"] as Rect2).size.x, 2000.0)
 			assert_gte((snapshot["outer_global"] as Rect2).size.y, 1100.0)

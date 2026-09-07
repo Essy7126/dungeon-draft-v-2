@@ -14,8 +14,6 @@ grid_cols = 14
 temporary_iso_placeholders = true
 iso_unit_view_scale = 0.58
 show_auxiliary_panels = true
-show_transient_inspection = false
-orient_enemies_at_battle_start = true
 
 [node name="PaintedBackground" type="Node2D" parent="." unique_id=1760266783]
 z_index = -100

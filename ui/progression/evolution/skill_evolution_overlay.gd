@@ -189,13 +189,7 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 func get_visual_snapshot() -> Dictionary:
 	return {
 		"overlay_rect": get_global_rect(),
-		"header_rect": ($TopHeader/HeaderPlate as Control).get_global_rect(),
-		"footer_rect": ($BottomCenter/BottomPlate as Control).get_global_rect(),
 		"card_rects": [card_left.get_global_rect(), card_right.get_global_rect()],
-		"card_visual_rects": [
-			card_left.get_decorated_global_rect(),
-			card_right.get_decorated_global_rect(),
-		],
 		"card_sizes": [card_left.size, card_right.size],
 		"card_scales": [card_left.visual_root.scale, card_right.visual_root.scale],
 		"card_layouts": [card_left.get_layout_snapshot(), card_right.get_layout_snapshot()],
@@ -255,8 +249,6 @@ func _apply_responsive_layout() -> void:
 	)
 	var vertical_allowance := maxf(300.0, size.y - 304.0 * presentation_scale)
 	card_height = minf(card_height, vertical_allowance)
-	if size.y <= 760.0:
-		card_height = minf(card_height, size.y * 0.545)
 	var compact_cards := card_height <= 500.0 or size.x <= 1320.0
 	var gap := clampf(size.x * 0.045, 42.0, 82.0 * presentation_scale)
 	var maximum_width := maxf(210.0, (size.x - gap - 96.0) * 0.5)
@@ -266,7 +258,7 @@ func _apply_responsive_layout() -> void:
 		card.set_presentation_scale(presentation_scale)
 		card.set_card_height(card_height, maximum_width)
 	card_zone.offset_top = (
-		126.0 if size.y <= 760.0 else 130.0 * presentation_scale
+		118.0 if size.y <= 760.0 else 130.0 * presentation_scale
 	)
 	card_zone.offset_bottom = (
 		-166.0 if size.y <= 760.0 else -174.0 * presentation_scale

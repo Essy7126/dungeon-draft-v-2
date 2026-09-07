@@ -1,315 +1,68 @@
-[gd_scene load_steps=3 format=3 uid="uid://cu4745fuo5o2c"]
+[gd_scene format=3 uid="uid://cu4745fuo5o2c"]
 
-[ext_resource type="Script" uid="uid://c7kkujg43dfem" path="res://ui/transition_salle.gd" id="1_script"]
-[ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="2_ornament"]
+[ext_resource type="Script" uid="uid://c7kkujg43dfem" path="res://ui/transition_salle.gd" id="1_fkna3"]
 
-[node name="Transitionsalle" type="Control"]
+[node name="Transitionsalle" type="Control" unique_id=1688673201]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_script")
+script = ExtResource("1_fkna3")
 
-[node name="FondFallback" type="ColorRect" parent="."]
+[node name="FondImage" type="TextureRect" parent="." unique_id=1688002770]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-color = Color(0.018, 0.024, 0.031, 1)
-
-[node name="FondImage" type="TextureRect" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Atmosphere" type="Node" parent="."]
-unique_name_in_owner = true
-
-[node name="FondOverlay" type="ColorRect" parent="."]
-unique_name_in_owner = true
+[node name="FondOverlay" type="ColorRect" parent="." unique_id=1292475070]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-color = Color(0.012, 0.016, 0.022, 0.72)
+color = Color(0, 0, 0, 0.5019608)
 
-[node name="EdgeVeil" type="ColorRect" parent="."]
+[node name="Contenu" type="VBoxContainer" parent="." unique_id=1142014223]
+z_index = 1
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -33.0
+offset_right = 4.0
+offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-color = Color(0.04, 0.025, 0.02, 0.12)
-
-[node name="SafeMargin" type="MarginContainer" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 16
-
-[node name="Center" type="CenterContainer" parent="SafeMargin"]
-layout_mode = 2
-
-[node name="Dossier" type="PanelContainer" parent="SafeMargin/Center"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(860, 660)
-layout_mode = 2
-theme_type_variation = &"PremiumScreen"
-
-[node name="Ornament" type="Control" parent="SafeMargin/Center/Dossier"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("2_ornament")
-variant = "screen"
-
-[node name="DossierMargin" type="MarginContainer" parent="SafeMargin/Center/Dossier"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 24
-
-[node name="Contenu" type="VBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 24
 alignment = 1
 
-[node name="RunEyebrow" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
+[node name="Nomsalle" type="Label" parent="Contenu" unique_id=1124718546]
 layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "DOSSIER DE L’ARCHIVISTE · CATABASE"
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 
-[node name="RoomNumber" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
+[node name="Description" type="Label" parent="Contenu" unique_id=1646303248]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-theme_override_colors/font_color = Color(1, 0.72, 0.22, 1)
-theme_override_font_sizes/font_size = 20
-text = "SALLE II / III"
-horizontal_alignment = 1
-
-[node name="Nomsalle" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumDisplay"
-theme_override_font_sizes/font_size = 38
-text = "LA PORTE DES CENDRES"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Description" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 34)
-layout_mode = 2
-theme_type_variation = &"PremiumMuted"
-text = "Le seuil est ouvert. Préparez votre entrée."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="Rule" type="HSeparator" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-layout_mode = 2
-theme_type_variation = &"PremiumSeparator"
-
-[node name="IntelGrid" type="GridContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 148)
-layout_mode = 2
-theme_override_constants/h_separation = 14
-theme_override_constants/v_separation = 12
-columns = 2
-
-[node name="HeroCard" type="PanelContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(384, 148)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"PremiumPanel"
-
-[node name="HeroMargin" type="MarginContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/HeroCard"]
-layout_mode = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 13
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 13
-
-[node name="HeroContent" type="VBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/HeroCard/HeroMargin"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="HeroEyebrow" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/HeroCard/HeroMargin/HeroContent"]
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "PORTEUR DU SERMENT"
-
-[node name="Heroes" type="VBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/HeroCard/HeroMargin/HeroContent"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="HeroCondition" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/HeroCard/HeroMargin/HeroContent"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumPositive"
-text = "PRÊT À COMBATTRE"
-
-[node name="ThreatCard" type="PanelContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(384, 148)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"PremiumPanel"
-
-[node name="ThreatMargin" type="MarginContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/ThreatCard"]
-layout_mode = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 13
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 13
-
-[node name="ThreatContent" type="VBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/ThreatCard/ThreatMargin"]
-layout_mode = 2
-theme_override_constants/separation = 9
-
-[node name="ThreatEyebrow" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/ThreatCard/ThreatMargin/ThreatContent"]
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "RELEVÉ DE MENACE"
-
-[node name="ThreatValue" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/ThreatCard/ThreatMargin/ThreatContent"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumDanger"
-theme_override_font_sizes/font_size = 22
-text = "MENACE · SIGNIFICATIVE"
-
-[node name="ThreatDetail" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/ThreatCard/ThreatMargin/ThreatContent"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumBody"
-text = "2 adversaires · 1 engagement"
-autowrap_mode = 2
-
-[node name="ThreatFootnote" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/IntelGrid/ThreatCard/ThreatMargin/ThreatContent"]
-layout_mode = 2
-theme_type_variation = &"PremiumMuted"
-text = "Les détails tactiques seront révélés au déploiement."
-autowrap_mode = 2
-
-[node name="ProgressPanel" type="PanelContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 92)
-layout_mode = 2
-theme_type_variation = &"PremiumInset"
-
-[node name="ProgressMargin" type="MarginContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 10
-
-[node name="ProgressContent" type="VBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel/ProgressMargin"]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="ProgressHeader" type="HBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel/ProgressMargin/ProgressContent"]
+[node name="Heroes" type="HBoxContainer" parent="Contenu" unique_id=216261430]
 layout_mode = 2
 
-[node name="ProgressEyebrow" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel/ProgressMargin/ProgressContent/ProgressHeader"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"PremiumEyebrow"
-text = "PROGRESSION DU PARCOURS"
-
-[node name="ProgressValue" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel/ProgressMargin/ProgressContent/ProgressHeader"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-text = "2 / 3"
-
-[node name="RouteProgress" type="ProgressBar" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel/ProgressMargin/ProgressContent"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 16)
-layout_mode = 2
-theme_type_variation = &"PremiumProgress"
-max_value = 3.0
-value = 2.0
-show_percentage = false
-
-[node name="ProgressSteps" type="HBoxContainer" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu/ProgressPanel/ProgressMargin/ProgressContent"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
-
-[node name="BoutonContinuer" type="Button" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 58)
+[node name="BoutonContinuer" type="Button" parent="Contenu" unique_id=1608383894]
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 size_flags_horizontal = 4
-focus_neighbor_top = NodePath(".")
-focus_neighbor_bottom = NodePath(".")
-theme_type_variation = &"PremiumPrimaryButton"
-text = "ENTRER DANS LA SALLE II"
-
-[node name="InputHint" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumMuted"
-text = "ENTRÉE / A · CONFIRMER"
-horizontal_alignment = 1
-
-[node name="StatusLabel" type="Label" parent="SafeMargin/Center/Dossier/DossierMargin/Contenu"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "OUVERTURE DU PASSAGE…"
-horizontal_alignment = 1
-
-[node name="TransitionLayer" type="ColorRect" parent="."]
-unique_name_in_owner = true
-z_index = 20
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.006, 0.008, 0.012, 1)
-modulate = Color(1, 1, 1, 0)
+text = "Continuer →"

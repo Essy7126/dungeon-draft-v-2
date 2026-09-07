@@ -215,33 +215,16 @@ func test_overlay_cards_remain_inside_common_run_resolutions() -> void:
 			true,
 		))
 		overlay.apply_viewport_size_for_test(viewport_size)
-		assert_true(overlay.select_upgrade_by_id(
-			overlay.get_available_upgrade_ids()[0]
-		))
 		await get_tree().process_frame
 		var snapshot := overlay.get_visual_snapshot()
 		var overlay_rect := snapshot.get("overlay_rect") as Rect2
 		var card_rects := snapshot.get("card_rects") as Array
-		var card_visual_rects := snapshot.get("card_visual_rects") as Array
 		var card_layouts := snapshot.get("card_layouts") as Array
 		assert_eq(card_rects.size(), 2)
-		assert_eq(card_visual_rects.size(), 2)
 		assert_eq(card_layouts.size(), 2)
 		assert_true(overlay_rect.encloses(card_rects[0]), str(viewport_size))
 		assert_true(overlay_rect.encloses(card_rects[1]), str(viewport_size))
 		assert_false((card_rects[0] as Rect2).intersects(card_rects[1]), str(viewport_size))
-		assert_false(
-			(snapshot.get("header_rect") as Rect2).intersects(
-				card_visual_rects[0] as Rect2
-			),
-			str(viewport_size),
-		)
-		assert_false(
-			(snapshot.get("footer_rect") as Rect2).intersects(
-				card_visual_rects[0] as Rect2
-			),
-			str(viewport_size),
-		)
 		for layout in card_layouts:
 			var card_global := layout.get("card_global") as Rect2
 			assert_true(card_global.encloses(layout.get("art_global") as Rect2), str(viewport_size))

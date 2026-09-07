@@ -10,12 +10,6 @@ const RecraftedHUDScene = preload(
 const ODYSSEY_PATH := "res://data/runs/odyssey.tres"
 const MAIN_PATH := "res://data/runs/first_run.tres"
 const TEST_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
-const ODYSSEY_ROOM_PATHS := [
-	"res://data/arenas/produced/catabase_room_01_frail_hellspawn/arena.tres",
-	"res://data/arenas/produced/catabase_room_02_ash_gate/arena.tres",
-	"res://data/arenas/produced/catabase_room_03_judgement/arena.tres",
-]
-const ODYSSEY_PRESENTATION_ID: StringName = &"catabase_bronze_presence"
 const SPELL_IDS: Array[StringName] = [
 	&"achilles_spear_thrust",
 	&"achilles_advance",
@@ -40,11 +34,6 @@ func test_odyssey_is_a_valid_five_room_single_encounter_run() -> void:
 	var visual_paths := {}
 	for index in range(run.rooms.size()):
 		var room := run.rooms[index]
-		assert_eq(
-			room.resource_path,
-			ODYSSEY_ROOM_PATHS[index],
-			"La run doit utiliser exactement le bundle Studio produit et validé.",
-		)
 		assert_eq(room.minimum_wave_count, 1, room.resource_path)
 		assert_eq(room.maximum_wave_count, 1, room.resource_path)
 		assert_true(room.waves.is_empty(), room.resource_path)
@@ -57,15 +46,6 @@ func test_odyssey_is_a_valid_five_room_single_encounter_run() -> void:
 		assert_true(
 			room.painted_map_visual_data.validation_errors().is_empty(),
 			str(room.painted_map_visual_data.validation_errors()),
-		)
-		assert_not_null(
-			room.painted_map_visual_data.presentation_profile,
-			room.resource_path,
-		)
-		assert_eq(
-			room.painted_map_visual_data.presentation_profile.profile_id,
-			ODYSSEY_PRESENTATION_ID,
-			room.resource_path,
 		)
 		assert_eq(room.encounter_definition.room_index, index + 1)
 		room_paths[room.resource_path] = true

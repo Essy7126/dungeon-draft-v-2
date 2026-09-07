@@ -126,6 +126,15 @@ theme_override_colors/font_color = Color(0.93, 0.78, 0.46, 1)
 theme_override_font_sizes/font_size = 13
 text = "RANG 1"
 
+[node name="ActiveMarker" type="Label" parent="ContentMargin/Content/Information/ProgressRow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.76, 0.36, 1)
+theme_override_font_sizes/font_size = 11
+text = "BRANCHE ACTIVE"
+
 [node name="NextRankLabel" type="Label" parent="ContentMargin/Content/Information"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -134,16 +143,6 @@ theme_type_variation = &"SkillTreeMutedLabel"
 theme_override_colors/font_color = Color(0.62, 0.67, 0.72, 1)
 theme_override_font_sizes/font_size = 11
 text = "Prochain rang : 2"
-
-[node name="ActiveMarker" type="Label" parent="ContentMargin/Content/Information"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.94, 0.76, 0.36, 1)
-theme_override_font_sizes/font_size = 11
-text = "BRANCHE ACTIVE"
-horizontal_alignment = 2
 
 [node name="PathLabel" type="Label" parent="ContentMargin/Content/Information"]
 unique_name_in_owner = true

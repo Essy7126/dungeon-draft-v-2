@@ -75,6 +75,7 @@ class RunnerBattleSpy extends Node:
 	func _finish_outcome_deferral() -> bool:
 		if _outcome_deferral_depth > 0:
 			_outcome_deferral_depth -= 1
+		# This spy has no queued battle outcome; tests explicitly close the room.
 		return _battle_over
 
 
@@ -180,12 +181,14 @@ func test_room_finish_during_melee_recovery_is_cancelled() -> void:
 	await wait_process_frames(2)
 	var hp_after_impact: int = fixture.target.current_hp
 	assert_lt(hp_after_impact, 100)
+	assert_eq(fixture.battle._outcome_deferral_depth, 1, "Outcome stays deferred through recovery")
 	fixture.battle._battle_over = true
 	fixture.runner.cancel_pending_actions()
 	fixture.view.cancel_pending_visual_actions()
 	await wait_process_frames(2)
 	assert_true(state.done)
 	assert_eq(fixture.target.current_hp, hp_after_impact)
+	assert_eq(fixture.battle._outcome_deferral_depth, 0, "Cancelled recovery closes its outcome deferral")
 	_cleanup_fixture(fixture)
 
 
@@ -205,12 +208,14 @@ func test_room_finish_during_ranged_recovery_is_cancelled() -> void:
 	await get_tree().create_timer(0.27).timeout
 	var hp_after_impact: int = fixture.target.current_hp
 	assert_lt(hp_after_impact, 100)
+	assert_eq(fixture.battle._outcome_deferral_depth, 1, "Outcome stays deferred through recovery")
 	fixture.battle._battle_over = true
 	fixture.runner.cancel_pending_actions()
 	fixture.view.cancel_pending_visual_actions()
 	await wait_process_frames(2)
 	assert_true(state.done)
 	assert_eq(fixture.target.current_hp, hp_after_impact)
+	assert_eq(fixture.battle._outcome_deferral_depth, 0, "Cancelled recovery closes its outcome deferral")
 	_cleanup_fixture(fixture)
 
 
@@ -350,6 +355,7 @@ func test_old_room_ranged_action_cannot_affect_next_room() -> void:
 	fixture.visual.release()
 	await wait_process_frames(2)
 	assert_eq(fixture.target.current_hp, 100)
+	assert_eq(fixture.battle._outcome_deferral_depth, 1, "The released projectile is still in flight")
 	fixture.battle._battle_over = true
 	fixture.runner.cancel_pending_actions()
 	fixture.view.cancel_pending_visual_actions()
@@ -357,4 +363,5 @@ func test_old_room_ranged_action_cannot_affect_next_room() -> void:
 	assert_true(state.done)
 	assert_eq(fixture.target.current_hp, 100)
 	assert_eq(next_room_target.current_hp, 100)
+	assert_eq(fixture.battle._outcome_deferral_depth, 0, "Cancelled flight closes its outcome deferral")
 	_cleanup_fixture(fixture)

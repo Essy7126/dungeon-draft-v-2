@@ -8,17 +8,6 @@ const Glossary = preload("res://ui/combat_glossary.gd")
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 
 const UNIT_SIZE = 48
-const DEFAULT_HP_BAR_SIZE := Vector2(UNIT_SIZE, 6.0)
-const DEFAULT_HP_BAR_POSITION := Vector2(-UNIT_SIZE / 2.0, -45.0)
-const DEFAULT_SHIELD_BAR_SIZE := Vector2(UNIT_SIZE, 4.0)
-const DEFAULT_SHIELD_BAR_POSITION := Vector2(-UNIT_SIZE / 2.0, -51.0)
-const DEFAULT_STATUS_ROW_POSITION := Vector2(-UNIT_SIZE / 2.0, -66.0)
-const EMPHASIS_HOVER: StringName = &"hover"
-const EMPHASIS_TARGET_VALID: StringName = &"target_valid"
-const EMPHASIS_TARGET_INVALID: StringName = &"target_invalid"
-const TACTICAL_HOVER_COLOR := Color(0.72, 0.9, 1.0, 0.9)
-const TACTICAL_VALID_COLOR := Color(1.0, 0.76, 0.24, 0.98)
-const TACTICAL_INVALID_COLOR := Color(1.0, 0.32, 0.24, 0.98)
 
 var unit: Unit
 var _sprite: AnimatedSprite2D
@@ -46,7 +35,6 @@ var _painted_optional_base_scale := Vector2.ONE
 var _painted_visual_scale := 1.0
 var _painted_readability_enabled := false
 var _runtime_signals_connected := false
-var _tactical_emphasis: StringName = &""
 
 func setup(p_unit: Unit, connect_runtime_signals := true) -> void:
 	unit = p_unit
@@ -212,19 +200,15 @@ func _build_visual() -> void:
 			_sprite.play(anims[0])
 	add_child(_sprite)
 
-	_hp_bar = _make_bar(DEFAULT_HP_BAR_SIZE, DEFAULT_HP_BAR_POSITION, Color(0.3, 0.8, 0.3))
+	_hp_bar = _make_bar(Vector2(UNIT_SIZE, 6), Vector2(-UNIT_SIZE / 2.0, -45), Color(0.3, 0.8, 0.3))
 	add_child(_hp_bar)
 
-	_shield_bar = _make_bar(
-		DEFAULT_SHIELD_BAR_SIZE,
-		DEFAULT_SHIELD_BAR_POSITION,
-		Color(1.0, 0.82, 0.30),
-	)
+	_shield_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, -51), Color(1.0, 0.82, 0.30))
 	_shield_bar.visible = false
 	add_child(_shield_bar)
 
 	_status_row = HBoxContainer.new()
-	_status_row.position = DEFAULT_STATUS_ROW_POSITION
+	_status_row.position = Vector2(-UNIT_SIZE / 2.0, -66)
 	_status_row.add_theme_constant_override("separation", 2)
 	add_child(_status_row)
 
@@ -310,18 +294,6 @@ func apply_painted_presentation(
 	if is_instance_valid(_optional_visual):
 		_optional_visual.scale = _painted_optional_base_scale * _painted_visual_scale
 		_apply_optional_readability()
-	if _painted_readability_enabled:
-		_hp_bar.size = Vector2(56.0, 7.0)
-		_hp_bar.position = Vector2(-28.0, -72.0)
-		_shield_bar.size = Vector2(56.0, 4.0)
-		_shield_bar.position = Vector2(-28.0, -77.0)
-		_status_row.position = Vector2(-28.0, -94.0)
-	else:
-		_hp_bar.size = DEFAULT_HP_BAR_SIZE
-		_hp_bar.position = DEFAULT_HP_BAR_POSITION
-		_shield_bar.size = DEFAULT_SHIELD_BAR_SIZE
-		_shield_bar.position = DEFAULT_SHIELD_BAR_POSITION
-		_status_row.position = DEFAULT_STATUS_ROW_POSITION
 	var optional_owns_readability := (
 		_painted_readability_enabled
 		and is_instance_valid(_optional_visual)
@@ -333,7 +305,6 @@ func apply_painted_presentation(
 			# dalle sombre n'est remplacee que si le visuel fournit sa propre
 			# lisibilite peinte (contour et ombre de contact).
 			child.visible = not optional_owns_readability
-	_refresh_bar_visibility()
 	queue_redraw()
 
 
@@ -353,22 +324,13 @@ func _apply_optional_readability() -> void:
 	var shadow_scale := 1.0
 	var shadow_opacity := 0.28
 	if _painted_presentation != null:
-		match _tactical_emphasis:
-			EMPHASIS_TARGET_VALID:
-				outline_color = TACTICAL_VALID_COLOR
-			EMPHASIS_TARGET_INVALID:
-				outline_color = TACTICAL_INVALID_COLOR
-			EMPHASIS_HOVER:
-				outline_color = TACTICAL_HOVER_COLOR
-			_:
-				outline_color = (
-					_painted_presentation.active_outline_color
-					if _is_active else (
-						_painted_presentation.ally_outline_color
-							if unit.team == 0
-							else _painted_presentation.enemy_outline_color
-					)
-				)
+		outline_color = (
+			_painted_presentation.active_outline_color
+			if _is_active else (
+				_painted_presentation.ally_outline_color
+				if unit.team == 0 else _painted_presentation.enemy_outline_color
+			)
+		)
 	if _painted_family_profile != null:
 		shadow_scale = _painted_family_profile.contact_shadow_scale
 		shadow_opacity = _painted_family_profile.contact_shadow_opacity
@@ -606,20 +568,7 @@ func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var fill := StyleBoxFlat.new()
 	fill.bg_color = color
-	fill.corner_radius_top_left = 2
-	fill.corner_radius_top_right = 2
-	fill.corner_radius_bottom_left = 2
-	fill.corner_radius_bottom_right = 2
 	bar.add_theme_stylebox_override("fill", fill)
-	var background := StyleBoxFlat.new()
-	background.bg_color = Color(0.025, 0.028, 0.035, 0.9)
-	background.border_color = Color(0.76, 0.58, 0.32, 0.7)
-	background.set_border_width_all(1)
-	background.corner_radius_top_left = 2
-	background.corner_radius_top_right = 2
-	background.corner_radius_bottom_left = 2
-	background.corner_radius_bottom_right = 2
-	bar.add_theme_stylebox_override("background", background)
 	return bar
 
 func _update_all_bars() -> void:
@@ -641,12 +590,7 @@ func _update_hp_bar() -> void:
 		bar_color = Color(0.9, 0.3, 0.2)
 	var style = StyleBoxFlat.new()
 	style.bg_color = bar_color
-	style.corner_radius_top_left = 2
-	style.corner_radius_top_right = 2
-	style.corner_radius_bottom_left = 2
-	style.corner_radius_bottom_right = 2
 	_hp_bar.add_theme_stylebox_override("fill", style)
-	_refresh_bar_visibility()
 
 func _update_shield_bar() -> void:
 	if _shield_bar == null:
@@ -656,7 +600,6 @@ func _update_shield_bar() -> void:
 	if shield > 0:
 		_shield_bar.max_value = max(shield, unit.max_hp.get_int())
 		_shield_bar.value = shield
-	_refresh_bar_visibility()
 	queue_redraw()
 
 func _update_status_icons() -> void:
@@ -685,41 +628,7 @@ func _update_status_icons() -> void:
 func set_active(active: bool) -> void:
 	_is_active = active
 	_apply_optional_readability()
-	_refresh_bar_visibility()
 	queue_redraw()
-
-
-func set_tactical_emphasis(emphasis: StringName) -> void:
-	if emphasis not in [
-		&"", EMPHASIS_HOVER, EMPHASIS_TARGET_VALID, EMPHASIS_TARGET_INVALID,
-	]:
-		emphasis = &""
-	if _tactical_emphasis == emphasis:
-		return
-	_tactical_emphasis = emphasis
-	_apply_optional_readability()
-	_refresh_bar_visibility()
-	queue_redraw()
-
-
-func get_tactical_emphasis() -> StringName:
-	return _tactical_emphasis
-
-
-func _refresh_bar_visibility() -> void:
-	if not is_instance_valid(unit) or not is_instance_valid(_hp_bar):
-		return
-	var damaged := unit.current_hp < unit.max_hp.get_int()
-	_hp_bar.visible = not _painted_readability_enabled \
-		or damaged \
-		or _tactical_emphasis != &""
-	if is_instance_valid(_shield_bar):
-		_shield_bar.visible = unit.current_shield > 0 and (
-			not _painted_readability_enabled
-			or _is_active
-			or _tactical_emphasis != &""
-			or damaged
-		)
 
 ## Applique un materiau lumiere (golden hour) aux visuels du perso pour qu'il se
 ## fonde dans le decor. Parcourt TOUT le sous-arbre et vise les sprites
@@ -1049,7 +958,6 @@ func _tooltip_layer():
 	return get_tree().get_first_node_in_group("keyword_tooltip_layer")
 
 func _draw() -> void:
-	_draw_tactical_emphasis()
 	if unit != null and unit.current_shield > 0:
 		var ratio := float(unit.current_shield) / float(max(unit.current_shield, unit.max_hp.get_int()))
 		var arc_end := TAU * ratio
@@ -1072,72 +980,6 @@ func _draw() -> void:
 			draw_polyline(diamond, Color(1.0, 0.9, 0.2, 0.62), 1.5, true)
 		else:
 			draw_arc(Vector2.ZERO, UNIT_SIZE * 0.75, 0, TAU, 32, Color(1.0, 0.9, 0.2), 3.0)
-
-
-func _draw_tactical_emphasis() -> void:
-	if _tactical_emphasis == &"":
-		return
-	var color := TACTICAL_HOVER_COLOR
-	var fill_alpha := 0.07
-	var line_width := 1.5
-	match _tactical_emphasis:
-		EMPHASIS_TARGET_VALID:
-			color = TACTICAL_VALID_COLOR
-			fill_alpha = 0.15
-			line_width = 3.0
-		EMPHASIS_TARGET_INVALID:
-			color = TACTICAL_INVALID_COLOR
-			fill_alpha = 0.12
-			line_width = 3.0
-		_:
-			pass
-	var footprint := _active_cell_footprint()
-	if footprint.size() >= 3:
-		var fill := color
-		fill.a = fill_alpha
-		draw_colored_polygon(footprint, fill)
-		var outline := PackedVector2Array(footprint)
-		outline.append(footprint[0])
-		draw_polyline(outline, Color(0.01, 0.015, 0.02, 0.86), line_width + 3.0, true)
-		draw_polyline(outline, color, line_width, true)
-		_draw_focus_corners(_bounds_for_points(footprint).grow(5.0), color)
-		return
-	var radius := UNIT_SIZE * (0.86 if has_optional_visual() else 0.72)
-	draw_circle(Vector2.ZERO, radius, Color(color, fill_alpha))
-	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 36, Color(0.01, 0.015, 0.02, 0.86), line_width + 3.0, true)
-	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 36, color, line_width, true)
-	_draw_focus_corners(
-		Rect2(Vector2(-radius, -radius), Vector2.ONE * radius * 2.0), color
-	)
-
-
-func _bounds_for_points(points: PackedVector2Array) -> Rect2:
-	if points.is_empty():
-		return Rect2()
-	var bounds := Rect2(points[0], Vector2.ZERO)
-	for point in points:
-		bounds = bounds.expand(point)
-	return bounds
-
-
-func _draw_focus_corners(bounds: Rect2, color: Color) -> void:
-	var length := clampf(minf(bounds.size.x, bounds.size.y) * 0.22, 5.0, 11.0)
-	var corners := [
-		[bounds.position + Vector2(length, 0.0), bounds.position,
-			bounds.position + Vector2(0.0, length)],
-		[Vector2(bounds.end.x - length, bounds.position.y),
-			Vector2(bounds.end.x, bounds.position.y),
-			Vector2(bounds.end.x, bounds.position.y + length)],
-		[Vector2(bounds.position.x, bounds.end.y - length),
-			Vector2(bounds.position.x, bounds.end.y),
-			Vector2(bounds.position.x + length, bounds.end.y)],
-		[Vector2(bounds.end.x - length, bounds.end.y), bounds.end,
-			Vector2(bounds.end.x, bounds.end.y - length)],
-	]
-	for corner in corners:
-		var points := PackedVector2Array(corner)
-		draw_polyline(points, Color(0.01, 0.015, 0.02, 0.9), 5.0, true)
-		draw_polyline(points, color, 2.0, true)
 
 
 ## Contour de la case skewee, recupere aupres de l'ombre au sol (iso). Vide dans

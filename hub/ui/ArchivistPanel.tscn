@@ -1,9 +1,7 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://hub/ui/archivist_panel.gd" id="1_panel"]
 [ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="2_ornament"]
-[ext_resource type="Texture2D" path="res://asset/map/painted/greece/map2-_achilles.png" id="3_odyssey_art"]
-[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_00.png" id="4_achilles_portrait"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
 bg_color = Color(0.035, 0.045, 0.065, 0.97)
@@ -16,59 +14,6 @@ corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_illustration"]
-bg_color = Color(0.012, 0.014, 0.02, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.62, 0.4, 0.16, 0.9)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_hero"]
-bg_color = Color(0.055, 0.052, 0.055, 0.94)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.72, 0.5, 0.23, 0.72)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_meta"]
-bg_color = Color(0.16, 0.105, 0.045, 0.72)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.88, 0.61, 0.26, 0.72)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_flow"]
-bg_color = Color(0.035, 0.043, 0.057, 0.96)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.48, 0.4, 0.28, 0.78)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_caption"]
-bg_color = Color(0.015, 0.014, 0.018, 0.84)
-border_width_top = 1
-border_color = Color(0.82, 0.56, 0.24, 0.72)
 
 [node name="ArchivistPanel" type="Control"]
 visible = false
@@ -92,7 +37,6 @@ mouse_filter = 1
 color = Color(0.008, 0.007, 0.01, 0.72)
 
 [node name="Panel" type="PanelContainer" parent="."]
-unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -119,7 +63,6 @@ script = ExtResource("2_ornament")
 variant = "screen"
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
-unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 24
@@ -127,7 +70,6 @@ theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 24
 
 [node name="Content" type="VBoxContainer" parent="Panel/Margin"]
-unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 18
 
@@ -135,7 +77,7 @@ theme_override_constants/separation = 18
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumTitle"
-text = "ARCHIVISTE DES LANTERNES"
+text = "Lanternbound Archivist"
 horizontal_alignment = 1
 
 [node name="Separator" type="HSeparator" parent="Panel/Margin/Content"]
@@ -201,361 +143,46 @@ text = "Retour"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 11
+theme_override_constants/separation = 18
 
 [node name="RoomSelectionPrompt" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(420, 64)
 layout_mode = 2
 theme_type_variation = &"PremiumSubtitle"
-text = "CHOISIS TON DOSSIER D’EXPÉDITION"
+text = "Choisis ton parcours."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="RunSelector" type="OptionButton" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 theme_type_variation = &"PremiumOptionButton"
 
-[node name="RunDossier" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 330)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBox_panel")
-
-[node name="RunDossierMargin" type="MarginContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
-
-[node name="DossierBody" type="HBoxContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 18
-
-[node name="IllustrationPanel" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(430, 0)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBox_illustration")
-
-[node name="IllustrationLayer" type="Control" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="RunIllustration" type="TextureRect" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("3_odyssey_art")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="IllustrationFallback" type="ColorRect" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.045, 0.052, 0.066, 1)
-
-[node name="FallbackGlyph" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer/IllustrationFallback"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_type_variation = &"PremiumDisplay"
-theme_override_colors/font_color = Color(0.74, 0.55, 0.28, 0.72)
-theme_override_font_sizes/font_size = 72
-text = "◆"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="IllustrationWash" type="ColorRect" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.035, 0.026, 0.025, 0.2)
-
-[node name="IllustrationCaption" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer"]
-layout_mode = 1
-anchors_preset = 12
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -86.0
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBox_caption")
-
-[node name="CaptionMargin" type="MarginContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer/IllustrationCaption"]
-layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 9
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 9
-
-[node name="Caption" type="VBoxContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer/IllustrationCaption/CaptionMargin"]
-layout_mode = 2
-theme_override_constants/separation = 1
-alignment = 1
-
-[node name="IllustrationTitle" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer/IllustrationCaption/CaptionMargin/Caption"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-text = "LES PORTES DE CATABASE"
-horizontal_alignment = 1
-
-[node name="IllustrationSubtitle" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/IllustrationPanel/IllustrationLayer/IllustrationCaption/CaptionMargin/Caption"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumMuted"
-text = "Une Odyssée en trois affrontements"
-horizontal_alignment = 1
-
-[node name="DossierDetails" type="VBoxContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 7
-
-[node name="DossierEyebrow" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "DOSSIER D’EXPÉDITION · ODYSSÉE"
-
-[node name="RunDisplayName" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-theme_type_variation = &"PremiumTitle"
-theme_override_font_sizes/font_size = 26
-text = "CATABASE — L’ODYSSÉE D’ACHILLE"
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="RunSummary" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 52)
-layout_mode = 2
-theme_type_variation = &"PremiumBody"
-theme_override_font_sizes/font_size = 14
-text = "Achille avance seul à travers trois salles liées. Chaque victoire ouvre un choix de relique avant l’affrontement suivant."
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="RunMetaPanel" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBox_meta")
-
-[node name="RunMeta" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/RunMetaPanel"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "3 SALLES · DÉPART IMPOSÉ EN SALLE I"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HeroPanel" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-custom_minimum_size = Vector2(0, 96)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBox_hero")
-
-[node name="HeroMargin" type="MarginContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 9
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 7
-
-[node name="HeroRow" type="HBoxContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="HeroPortraitFrame" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow"]
-custom_minimum_size = Vector2(78, 78)
-layout_mode = 2
-theme_type_variation = &"PremiumInset"
-
-[node name="HeroPortrait" type="TextureRect" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow/HeroPortraitFrame"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("4_achilles_portrait")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="HeroGlyph" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow/HeroPortraitFrame"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_type_variation = &"PremiumTitle"
-text = "◆"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HeroCopy" type="VBoxContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="HeroBadge" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow/HeroCopy"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "HÉROS UNIQUE"
-
-[node name="HeroName" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow/HeroCopy"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-text = "HÉROS"
-
-[node name="HeroRole" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow/HeroCopy"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumBody"
-theme_override_font_sizes/font_size = 13
-text = "Données du parcours sélectionné"
-
-[node name="HeroStats" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/HeroPanel/HeroMargin/HeroRow/HeroCopy"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumMuted"
-text = "PV —   ◆   PA —   ◆   PM —"
-
-[node name="FlowTitle" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "RYTHME DE LA RUN"
-
-[node name="FlowRow" type="HBoxContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails"]
-custom_minimum_size = Vector2(0, 52)
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="CombatStep" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBox_flow")
-
-[node name="FlowCombat" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow/CombatStep"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "1  COMBAT"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="ArrowA" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow"]
-layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-text = "→"
-vertical_alignment = 1
-
-[node name="RewardStep" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBox_meta")
-
-[node name="FlowReward" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow/RewardStep"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "2  RELIQUE"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="ArrowB" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow"]
-layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-text = "→"
-vertical_alignment = 1
-
-[node name="NextRoomStep" type="PanelContainer" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBox_flow")
-
-[node name="FlowNextRoom" type="Label" parent="Panel/Margin/Content/RoomSelectionView/RunDossier/RunDossierMargin/DossierBody/DossierDetails/FlowRow/NextRoomStep"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PremiumEyebrow"
-text = "3  SALLE SUIVANTE"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="StartRoomRow" type="HBoxContainer" parent="Panel/Margin/Content/RoomSelectionView"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="RoomSelectionLabel" type="Label" parent="Panel/Margin/Content/RoomSelectionView/StartRoomRow"]
+[node name="RoomSelectionLabel" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumEyebrow"
 text = "Salle de départ"
-vertical_alignment = 1
+horizontal_alignment = 1
 
-[node name="RoomSelector" type="OptionButton" parent="Panel/Margin/Content/RoomSelectionView/StartRoomRow"]
+[node name="RoomSelector" type="OptionButton" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_type_variation = &"PremiumOptionButton"
 
-[node name="RunActions" type="HBoxContainer" parent="Panel/Margin/Content/RoomSelectionView"]
-custom_minimum_size = Vector2(0, 52)
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="RoomBackButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView/RunActions"]
+[node name="ConfirmRunButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(190, 52)
-layout_mode = 2
-theme_type_variation = &"PremiumButton"
-text = "RETOUR"
-
-[node name="ActionSpacer" type="Control" parent="Panel/Margin/Content/RoomSelectionView/RunActions"]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="ConfirmRunButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView/RunActions"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(310, 52)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 theme_type_variation = &"PremiumPrimaryButton"
-text = "ENTRER DANS CATABASE"
+text = "Lancer la run"
+
+[node name="RoomBackButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_type_variation = &"PremiumButton"
+text = "Retour"

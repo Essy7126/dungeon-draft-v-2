@@ -620,11 +620,7 @@ func test_reward_layout_is_full_screen_without_legacy_panel_at_supported_resolut
 				str(viewport_size),
 			)
 		var card_sizes := snapshot["card_sizes"] as Array
-		assert_almost_eq(
-			card_sizes[0].x / card_sizes[0].y,
-			EquipmentRewardOverlay.CARD_ASPECT,
-			0.01,
-		)
+		assert_almost_eq(card_sizes[0].x / card_sizes[0].y, 0.535, 0.01)
 
 
 func test_victory_routes_to_post_combat_only_after_report_finalization() -> void:

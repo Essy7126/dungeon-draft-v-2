@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://ui/post_combat/reward_card_choice.gd" id="1_script"]
 [ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="2_ornament"]
@@ -37,18 +37,6 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 shadow_color = Color(0, 0, 0, 0.72)
 shadow_size = 14
-
-[sub_resource type="StyleBoxFlat" id="FocusRingStyle"]
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.76, 0.3, 0.96)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [node name="RewardCardChoice" type="Control"]
 custom_minimum_size = Vector2(360, 680)
@@ -237,23 +225,6 @@ theme_type_variation = &"PremiumSelectionBadge"
 text = "◆ CHOISI"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="FocusRing" type="PanelContainer" parent="FloatingRoot/VisualRoot"]
-unique_name_in_owner = true
-z_index = 6
-modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -5.0
-offset_top = -5.0
-offset_right = 5.0
-offset_bottom = 5.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("FocusRingStyle")
 
 [node name="Interaction" type="Button" parent="FloatingRoot/VisualRoot"]
 unique_name_in_owner = true

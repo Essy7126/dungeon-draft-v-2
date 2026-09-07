@@ -12,6 +12,7 @@
 extends Node2D
 
 signal runtime_ready(snapshot: Dictionary)
+signal _mastery_choice_finished
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
@@ -41,7 +42,6 @@ const COMBAT_HUD_PORT := preload("res://ui/combat/combat_hud_port.gd")
 const COMBAT_HIGHLIGHT_MARKER := preload(
 	"res://battle/combat_highlight_marker.gd"
 )
-const INVALID_GRID_CELL := Vector2i(-1, -1)
 
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
@@ -93,21 +93,20 @@ const INVALID_GRID_CELL := Vector2i(-1, -1)
 ## conserver une vue de combat lisible.
 @export var show_auxiliary_panels := true
 
-## Le panneau contextuel au survol reste le comportement par défaut des
-## combats historiques. Les cartes peintes privilégient la lecture directe
-## du plateau et conservent l'inspection détaillée au clic / via la timeline.
-@export var show_transient_inspection := true
-
-## Les combats historiques conservent le facing logique défini par leurs scènes.
-## Les plateaux peints peuvent explicitement orienter leurs ennemis vers le
-## héros une fois le déploiement terminé, quand les deux équipes sont connues.
-@export var orient_enemies_at_battle_start := false
-
 # --- Logique ---
 var grid: GridData
 var pathfinder: Pathfinder
 var spell_caster: SpellCaster
 var terrain_effects: TerrainEffects
+var _mastery_adapter: MasteryCombatAdapter
+var _mastery_panel
+var _mastery_choice_actor: Unit
+var _mastery_choice: TacticalFollowupRequest
+var _mastery_facing_cast: Dictionary = {}
+var _mastery_facing_confirmed := false
+var _mastery_processing := false
+var _mastery_barrier_overlay: Node2D
+var _resolved_walk_paths: Dictionary = {}
 var enemy_ai: EnemyAI
 var encounter_runtime_state: EncounterRuntimeState = null
 var encounter_formation_snapshot: Dictionary = {}
@@ -119,6 +118,7 @@ var _enemy_turn: EnemyTurnRunner = null
 var _spell_impact_scheduler: SpellImpactScheduler = null
 var _spell_resolution_pending := false
 var _active_spell_movement_caster: Unit = null
+var _deferred_spell_reaction_context: CastContext = null
 var _spell_movement_feedback_unit: Unit = null
 var _spell_movement_feedback_tween: Tween = null
 var _spell_movement_feedback_generation := 0
@@ -170,8 +170,6 @@ var _outcome_overlay: CombatOutcomeOverlay = null
 var _end_turn_confirmation: EndTurnConfirmation = null
 var _skip_end_turn_confirmation := false
 var _target_feedback = null
-var _grid_cursor_cell := INVALID_GRID_CELL
-var _tactical_focus_unit: Unit = null
 
 # --- Fin de combat ---
 var _battle_over: bool = false
@@ -276,6 +274,34 @@ func _publish_runtime_ready() -> void:
 # MISE EN PLACE — LOGIQUE
 # ============================================================
 
+func _configure_action_classifications(active_run: RunData, character_states: Array) -> void:
+	if spell_caster == null:
+		return
+	var catalogs: Array[CombatActionClassificationCatalogData] = []
+	for value in character_states:
+		var state := value as CharacterRunState
+		if state != null and state.progression_profile != null:
+			var profile_catalog := state.progression_profile.combat_action_classification_catalog
+			if profile_catalog != null:
+				catalogs.append(profile_catalog)
+	# Explicit run entries override shared character defaults for this battle.
+	if active_run != null and active_run.action_classification_catalog != null:
+		catalogs.append(active_run.action_classification_catalog)
+	var by_ability: Dictionary = {}
+	for catalog in catalogs:
+		if not catalog.is_valid():
+			continue
+		for entry in catalog.entries:
+			by_ability[entry.ability_id] = entry
+	if by_ability.is_empty():
+		return
+	var merged := CombatActionClassificationCatalogData.new()
+	merged.catalog_id = &"battle_explicit_action_classifications"
+	for entry: CombatActionClassificationData in by_ability.values():
+		merged.entries.append(entry)
+	spell_caster.set_action_classification_catalog(merged)
+
+
 func _setup_logic() -> void:
 	grid = EncounterGridFactory.build_for_battle(
 		room_data, self, grid_cols, grid_rows
@@ -288,6 +314,9 @@ func _setup_logic() -> void:
 		)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
+	_configure_action_classifications(
+		GameManager.get_active_run_data(), GameManager.get_ordered_character_states()
+	)
 	_target_feedback = COMBAT_TARGET_FEEDBACK.new(
 		grid, pathfinder, spell_caster
 	)
@@ -315,9 +344,6 @@ func _setup_logic() -> void:
 		add_child(_deployment)
 		_deployment.setup(self)
 		_deployment.deployment_completed.connect(_start_battle)
-		_deployment.spatial_focus_requested.connect(
-			_on_deployment_spatial_focus_requested
-		)
 	if not GameManager.discipline_xp_gained.is_connected(
 		_on_discipline_xp_gained
 	):
@@ -375,11 +401,6 @@ func _setup_view() -> void:
 	# variation de nuages ni de teinte). Seuls les persos sont eclaires.
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
-	if grid_view.has_signal(&"spatial_cursor_released"):
-		grid_view.connect(
-			&"spatial_cursor_released",
-			Callable(self, "_on_grid_spatial_cursor_released"),
-		)
 	_unit_view_parent = _find_unit_view_parent()
 	_setup_movement_path_preview()
 
@@ -678,10 +699,6 @@ func set_reduced_motion(enabled: bool) -> void:
 	if is_instance_valid(turn_order_timeline) \
 			and turn_order_timeline.has_method("set_reduced_motion"):
 		turn_order_timeline.set_reduced_motion(enabled)
-	var impact_feedback := get_node_or_null("ImpactJuice")
-	if is_instance_valid(impact_feedback) \
-			and impact_feedback.has_method("set_reduced_motion"):
-		impact_feedback.set_reduced_motion(enabled)
 
 
 func _setup_state() -> void:
@@ -749,12 +766,6 @@ func _on_turn_state_changed(
 		current: TurnState.State
 	) -> void:
 	_sync_hud_mode_from_turn_state(current)
-	if current not in [
-		TurnState.State.MOVE,
-		TurnState.State.TARGET_MELEE,
-		TurnState.State.TARGET_SPELL,
-	]:
-		_clear_grid_cursor()
 	if presentation_state == null:
 		return
 	match current:
@@ -775,15 +786,6 @@ func _on_turn_state_changed(
 		TurnState.State.SKILL_EVOLUTION_PENDING, \
 		TurnState.State.SKILL_EVOLUTION_UI:
 			presentation_state.begin_modal()
-	if current in [
-		TurnState.State.MOVE,
-		TurnState.State.TARGET_MELEE,
-		TurnState.State.TARGET_SPELL,
-	] and is_inside_tree():
-		# Une commande choisie au pad transfere le focus du bouton vers le
-		# plateau. Sinon les fleches continuent de naviguer entre les boutons et
-		# n'atteignent jamais le curseur spatial.
-		get_viewport().gui_release_focus()
 
 
 func _sync_hud_mode_from_turn_state(current: TurnState.State) -> void:
@@ -1091,22 +1093,11 @@ func _start_battle() -> void:
 			_process_evolution_queue_at_safe_point.call_deferred()
 		return
 
-	_orient_enemies_for_battle_start()
-
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
 	_reset_combat_resources()
 	_launch_combat()
-
-
-func _orient_enemies_for_battle_start() -> void:
-	if not orient_enemies_at_battle_start:
-		return
-	for combatant_value in units:
-		var combatant := combatant_value as Unit
-		if combatant != null and combatant.is_alive and combatant.team != 0:
-			_orient_unit_toward_nearest_opponent(combatant)
 
 
 func _reset_combat_resources() -> void:
@@ -1115,6 +1106,19 @@ func _reset_combat_resources() -> void:
 			unit.reset_combat_resources()
 
 func _launch_combat() -> void:
+	_mastery_adapter = MasteryCombatAdapter.new()
+	_mastery_adapter.reaction_priority_overrides = GameManager.get_champion_reaction_priorities()
+	_mastery_adapter.reaction_priority_selected.connect(GameManager.set_champion_reaction_priority)
+	_mastery_adapter.configure(grid, spell_caster, terrain_effects, pathfinder, units,
+		GameManager.get_relic_runtime_service())
+	pathfinder.set_voluntary_cost_modifier(_mastery_adapter.modify_movement_cost)
+	_mastery_barrier_overlay = preload("res://battle/mastery_barrier_overlay.gd").new()
+	grid_view.add_child(_mastery_barrier_overlay)
+	_mastery_adapter.barrier_changed.connect(_mastery_barrier_overlay.set_cells)
+	_mastery_panel = preload("res://battle/mastery_tactical_panel.gd").new()
+	add_child(_mastery_panel)
+	_mastery_panel.option_selected.connect(_on_mastery_option)
+	_mastery_panel.declined.connect(_on_mastery_decline)
 	turn_queue = TurnQueue.new()
 	turn_queue.setup(units)
 	turn_queue.turn_started.connect(_on_turn_started)
@@ -1172,6 +1176,7 @@ func _start_spell_movement_feedback(
 	var feedback_generation := _spell_movement_feedback_generation
 	_spell_movement_feedback_unit = unit
 	_spell_movement_feedback_tween = create_tween()
+	preload("res://characters/presentation_tween_clock.gd").drive(self, _spell_movement_feedback_tween)
 	_spell_movement_feedback_tween.set_trans(Tween.TRANS_QUAD)
 	_spell_movement_feedback_tween.set_ease(Tween.EASE_OUT)
 	_spell_movement_feedback_tween.tween_property(
@@ -1199,9 +1204,19 @@ func _on_spell_movement_feedback_finished(
 		view.position = destination_local
 		if view.has_method("synchronize_external_movement"):
 			view.synchronize_external_movement()
-		# L'arrivee est le terme artistique de la ruee. Le backend de course est
-		# explicitement remis au repos, meme si son clip source est boucle.
-		if view.has_method("cancel_pending_visual_actions"):
+		# Acquitter le contact avant de reveiller les attentes du UnitView :
+		# finish_external_spell_movement peut reprendre le cast synchroniquement.
+		if not _closing and not _battle_over and is_instance_valid(unit) and unit.is_alive \
+				and feedback_generation == _spell_movement_feedback_generation:
+			EventBus.unit_visual_movement_finished.emit(unit)
+		if not is_instance_valid(view) or _closing or _battle_over \
+				or feedback_generation != _spell_movement_feedback_generation:
+			return
+		# La pose de reception commence seulement une fois la case atteinte.
+		# Les autres visuels conservent leur annulation habituelle.
+		if view.has_method("finish_external_spell_movement"):
+			view.finish_external_spell_movement()
+		elif view.has_method("cancel_pending_visual_actions"):
 			view.cancel_pending_visual_actions()
 
 
@@ -1221,6 +1236,13 @@ func _cancel_spell_movement_feedback(snap_to_grid: bool) -> void:
 	view.position = grid_cell_to_parent_local(moved_unit.grid_pos, view.get_parent())
 	if view.has_method("synchronize_external_movement"):
 		view.synchronize_external_movement()
+	# Un recalage engage acquitte sa vraie position avant le reglement des
+	# reactions. Il ne joue pas de reception et ne recree aucun marqueur de sort.
+	var context := _deferred_spell_reaction_context
+	if context != null and context.resolved and not context.failed \
+			and context.caster == moved_unit and moved_unit.is_alive \
+			and not _closing and not _battle_over:
+		EventBus.unit_visual_movement_finished.emit(moved_unit)
 
 
 func _wait_for_spell_movement_feedback(unit: Unit, generation: int) -> void:
@@ -1329,10 +1351,14 @@ func _on_turn_started(unit: Unit) -> void:
 				or not is_instance_valid(unit):
 			return
 		if not _battle_over:
-			_finish_active_turn(&"enemy_completed")
+			_mastery_adapter.flush_automatic()
+			await _process_mastery_choices_at_safe_point()
+			if _is_operation_current(lifecycle_generation):
+				_finish_active_turn(&"enemy_completed")
 	else:
 		turn_state.begin_player_turn()
 		_hud_port.set_active_mode("")
+		await _process_mastery_choices_at_safe_point()
 
 
 func _resolve_pending_ability(unit: Unit) -> Dictionary:
@@ -1363,6 +1389,8 @@ func _resolve_pending_ability(unit: Unit) -> Dictionary:
 
 
 func _on_pending_unit_spawned(unit: Unit) -> void:
+	if _mastery_adapter != null:
+		_mastery_adapter.attach_unit(unit)
 	if unit == null or not unit.is_alive:
 		return
 	if not unit.died.is_connected(_on_unit_died):
@@ -1587,6 +1615,10 @@ func _on_end_turn_confirmation_cancelled() -> void:
 
 
 func dismiss_top_combat_modal() -> bool:
+	if is_instance_valid(_mastery_panel) and _mastery_panel.is_open():
+		if _mastery_panel.can_decline():
+			_on_mastery_decline()
+		return true
 	return is_instance_valid(_end_turn_confirmation) \
 		and _end_turn_confirmation.dismiss()
 
@@ -1600,16 +1632,13 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
-	# Le losange `selected` de la vue est une primitive generique d'edition. En
-	# combat, l'intention est deja representee par le curseur, le reticule et le
-	# mode actif du HUD : le conserver apres un clic creerait un faux etat.
-	if is_instance_valid(grid_view) and grid_view.has_method("clear_selection"):
-		grid_view.clear_selection()
+	if _mastery_choice != null and _mastery_choice_actor != null:
+		_resolve_mastery_cell(cell)
+		return
 	if _is_evolution_locked():
 		return
 	if _deployment != null and _deployment.is_active():
 		_deployment.on_cell_clicked(cell)
-		_clear_grid_cursor()
 		return
 	if turn_state == null:
 		if inspect_panel != null:
@@ -1646,25 +1675,11 @@ func _on_turn_order_unit_selected(unit: Unit) -> void:
 
 
 func _on_cell_hovered(cell: Vector2i) -> void:
-	_sync_grid_cursor_from_view()
-	# Pendant le déploiement, seule l'intention de placement reste pertinente.
-	if _deployment != null and _deployment.is_active():
-		if is_instance_valid(inspect_panel) \
-				and inspect_panel.has_method("release_transient_preview"):
-			inspect_panel.release_transient_preview()
-		_clear_movement_path_preview()
-		_clear_target_hover_feedback()
-		_set_tactical_unit_focus(cell, &"hover")
-		return
-	if is_instance_valid(inspect_panel):
-		if show_transient_inspection:
-			inspect_panel.show_cell(cell, grid, terrain_effects, false)
-		elif inspect_panel.has_method("release_transient_preview"):
-			inspect_panel.release_transient_preview()
+	if inspect_panel != null:
+		inspect_panel.show_cell(cell, grid, terrain_effects, false)
 	if turn_state == null:
 		_clear_movement_path_preview()
 		_clear_target_hover_feedback()
-		_set_tactical_unit_focus(cell, &"hover")
 		return
 	if turn_state.current == TurnState.State.MOVE:
 		var moving_unit = (
@@ -1698,8 +1713,6 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 		return
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		_clear_target_hover_feedback()
-		if turn_state.current == TurnState.State.IDLE:
-			_set_tactical_unit_focus(cell, &"hover")
 		return
 	var spell = turn_state.selected_spell
 	var unit = turn_queue.get_current_unit()
@@ -1715,202 +1728,28 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	)
 	if targetable.has(cell):
 		grid_view.highlight(
-			spell_caster.get_aoe_cells(spell, cell),
+			spell_caster.get_aoe_cells(spell, cell, unit.grid_pos),
 			AOE_COLOR,
 			COMBAT_HIGHLIGHT_MARKER.AOE,
 		)
-		if show_transient_inspection and is_instance_valid(inspect_panel):
+		if inspect_panel != null:
 			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _is_evolution_locked():
 		return
-	if _handle_grid_navigation_input(event):
-		get_viewport().set_input_as_handled()
-		return
-	var cancel_requested := (
-		event.is_action_pressed("ui_cancel", true) and not event.is_echo()
-	)
+	var cancel_requested := event.is_action_pressed("ui_cancel")
 	if event is InputEventMouseButton:
 		cancel_requested = cancel_requested or (
 			event.pressed and event.button_index == MOUSE_BUTTON_RIGHT
 		)
 	if not cancel_requested:
 		return
-	if _deployment != null and _deployment.is_active() \
-			and _deployment.undo_last_deploy():
-		get_viewport().set_input_as_handled()
-		return
 	if dismiss_top_combat_modal():
 		get_viewport().set_input_as_handled()
 		return
 	if cancel_active_selection():
 		get_viewport().set_input_as_handled()
-
-
-func _handle_grid_navigation_input(event: InputEvent) -> bool:
-	if not _is_grid_navigation_available():
-		return false
-	var direction := Vector2i.ZERO
-	if event.is_action_pressed("ui_left", true):
-		direction = Vector2i.LEFT
-	elif event.is_action_pressed("ui_right", true):
-		direction = Vector2i.RIGHT
-	elif event.is_action_pressed("ui_up", true):
-		direction = Vector2i.UP
-	elif event.is_action_pressed("ui_down", true):
-		direction = Vector2i.DOWN
-	elif event.is_action_pressed("ui_accept", true):
-		if event.is_echo():
-			return true
-		var accepted_cell := _grid_cursor_cell
-		if not _is_interactable_grid_cell(accepted_cell):
-			accepted_cell = _preferred_grid_cursor_cell()
-			_set_grid_cursor(accepted_cell)
-		if _is_interactable_grid_cell(accepted_cell):
-			_on_cell_clicked(accepted_cell)
-		return true
-	else:
-		return false
-
-	var origin := _grid_cursor_cell
-	if not _is_interactable_grid_cell(origin):
-		origin = _preferred_grid_cursor_cell()
-	var destination := _next_interactable_grid_cell(origin, direction)
-	if not _is_interactable_grid_cell(destination):
-		destination = origin
-	_set_grid_cursor(destination)
-	return true
-
-
-func _is_grid_navigation_available() -> bool:
-	if _closing or _battle_over or grid == null or not is_instance_valid(grid_view):
-		return false
-	if _deployment != null and _deployment.is_active():
-		return true
-	return is_action_selection_active() and _can_accept_player_intent()
-
-
-func _preferred_grid_cursor_cell() -> Vector2i:
-	if _deployment != null and _deployment.is_active() \
-			and _deployment.has_method("get_preferred_cursor_cell"):
-		return _deployment.get_preferred_cursor_cell()
-	var active_unit: Unit = (
-		turn_queue.get_current_unit() as Unit if turn_queue != null else null
-	)
-	if active_unit == null:
-		return INVALID_GRID_CELL
-	var candidates: Array = []
-	match turn_state.current if turn_state != null else TurnState.State.IDLE:
-		TurnState.State.TARGET_MELEE:
-			candidates = _get_attackable_cells(active_unit)
-		TurnState.State.TARGET_SPELL:
-			if turn_state.selected_spell != null:
-				candidates = spell_caster.get_targetable_cells(
-					active_unit, turn_state.selected_spell
-				)
-		TurnState.State.MOVE:
-			return active_unit.grid_pos
-		_:
-			pass
-	if candidates.is_empty():
-		return active_unit.grid_pos
-	var nearest := candidates[0] as Vector2i
-	var nearest_distance := grid.manhattan(active_unit.grid_pos, nearest)
-	for candidate_value in candidates:
-		var candidate := candidate_value as Vector2i
-		var distance := grid.manhattan(active_unit.grid_pos, candidate)
-		if distance < nearest_distance:
-			nearest = candidate
-			nearest_distance = distance
-	return nearest
-
-
-func _next_interactable_grid_cell(
-		origin: Vector2i,
-		direction: Vector2i
-	) -> Vector2i:
-	if not grid.is_valid(origin) or direction == Vector2i.ZERO:
-		return INVALID_GRID_CELL
-	var candidate := origin + direction
-	var guard := maxi(grid.cols, grid.rows)
-	while guard > 0 and grid.is_valid(candidate):
-		if _is_interactable_grid_cell(candidate):
-			return candidate
-		candidate += direction
-		guard -= 1
-	return INVALID_GRID_CELL
-
-
-func _is_interactable_grid_cell(cell: Vector2i) -> bool:
-	return grid != null and grid.is_terrain_interactable(cell)
-
-
-func _set_grid_cursor(cell: Vector2i) -> void:
-	if not _is_interactable_grid_cell(cell):
-		return
-	_grid_cursor_cell = cell
-	if grid_view.has_method("set_cursor_cell"):
-		grid_view.set_cursor_cell(cell)
-	_on_cell_hovered(cell)
-
-
-func _clear_grid_cursor() -> void:
-	_grid_cursor_cell = INVALID_GRID_CELL
-	if is_instance_valid(grid_view) and grid_view.has_method("clear_cursor"):
-		grid_view.clear_cursor()
-
-
-func _on_grid_spatial_cursor_released() -> void:
-	# `cell_hovered` n'est pas réémis lorsque la souris reste dans la même case.
-	# Ce signal dédié maintient malgré tout le curseur logique en phase avec la vue.
-	_grid_cursor_cell = INVALID_GRID_CELL
-
-
-func _on_deployment_spatial_focus_requested(cell: Vector2i) -> void:
-	_clear_grid_cursor()
-	if _is_interactable_grid_cell(cell):
-		_set_grid_cursor(cell)
-
-
-func _sync_grid_cursor_from_view() -> void:
-	if not is_instance_valid(grid_view) \
-			or not grid_view.has_method("get_cursor_cell"):
-		return
-	var view_cursor: Vector2i = grid_view.get_cursor_cell()
-	# Les vues effacent leur curseur des qu'un vrai mouvement souris reprend la
-	# main. Aligner l'etat du chef d'orchestre evite qu'Entrée confirme ensuite
-	# une ancienne case invisible.
-	if view_cursor == INVALID_GRID_CELL:
-		_grid_cursor_cell = INVALID_GRID_CELL
-
-
-func _set_tactical_unit_focus(cell: Vector2i, emphasis: StringName) -> void:
-	var focused_unit: Unit = null
-	if grid != null and grid.is_valid(cell):
-		focused_unit = grid.get_unit(cell) as Unit
-	if focused_unit == _tactical_focus_unit:
-		var current_view = _unit_views.get(focused_unit)
-		if is_instance_valid(current_view) \
-				and current_view.has_method("set_tactical_emphasis"):
-			current_view.set_tactical_emphasis(emphasis)
-		return
-	_clear_tactical_unit_focus()
-	if focused_unit == null or not focused_unit.is_alive:
-		return
-	var view = _unit_views.get(focused_unit)
-	if not is_instance_valid(view) or not view.has_method("set_tactical_emphasis"):
-		return
-	_tactical_focus_unit = focused_unit
-	view.set_tactical_emphasis(emphasis)
-
-
-func _clear_tactical_unit_focus() -> void:
-	if _tactical_focus_unit != null:
-		var view = _unit_views.get(_tactical_focus_unit)
-		if is_instance_valid(view) and view.has_method("set_tactical_emphasis"):
-			view.set_tactical_emphasis(&"")
-	_tactical_focus_unit = null
 
 # ============================================================
 # INTENTIONS — DÉPLACEMENT
@@ -1974,7 +1813,6 @@ func _on_request_show_move_range() -> void:
 func _on_request_clear_highlights() -> void:
 	_clear_movement_path_preview()
 	_clear_target_hover_feedback()
-	_clear_grid_cursor()
 	grid_view.clear_highlights()
 
 
@@ -1984,17 +1822,12 @@ func _set_target_hover_feedback(cell: Vector2i, valid_target: bool) -> void:
 		return
 	grid_view.clear_cell_feedback_markers()
 	grid_view.set_cell_feedback_marker(cell, valid_target)
-	_set_tactical_unit_focus(
-		cell,
-		&"target_valid" if valid_target else &"target_invalid",
-	)
 
 
 func _clear_target_hover_feedback() -> void:
 	if is_instance_valid(grid_view) \
 			and grid_view.has_method("clear_cell_feedback_markers"):
 		grid_view.clear_cell_feedback_markers()
-	_clear_tactical_unit_focus()
 
 
 func _update_movement_path_preview(cell: Vector2i) -> void:
@@ -2061,11 +1894,12 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	if not _is_operation_current(lifecycle_generation):
 		_finish_outcome_deferral()
 		return
+	var resolved_path: Array = _resolved_walk_paths.get(unit, path)
 	EventBus.voluntary_movement_resolved.emit(
-		unit, path.duplicate(), paid_cost, action_id
+		unit, resolved_path.duplicate(), paid_cost, action_id
 	)
 	EventBus.action_resolved.emit(unit, action_id, &"voluntary_movement", {
-		"distance": maxi(0, path.size() - 1), "paid_mp": paid_cost,
+		"distance": maxi(0, resolved_path.size() - 1), "paid_mp": paid_cost,
 	})
 	if _finish_outcome_deferral():
 		return
@@ -2073,12 +1907,14 @@ func _on_request_move_to(cell: Vector2i) -> void:
 		return
 	turn_state.end_animating()
 	_hud_port.update_info(unit)
+	await _process_mastery_choices_at_safe_point()
 
 # Animation de déplacement BLINDÉE contre les objets détruits.
 # Une unité peut mourir en cours de route (lave via on_enter_cell) : on
 # vérifie is_instance_valid(view) ET unit.is_alive avant/après chaque await.
 # Sans ça : erreur "Freed Object" + tour figé (cause des freezes passés).
 func _animate_move(unit: Unit, path: Array) -> void:
+	_resolved_walk_paths[unit] = [unit.grid_pos]
 	if _closing or _battle_over or path.size() < 2:
 		return
 	var lifecycle_generation := _lifecycle_generation
@@ -2106,17 +1942,29 @@ func _animate_move(unit: Unit, path: Array) -> void:
 			else:
 				view.face_direction(from_pos, target_pos)
 			var tween = create_tween()
+			preload("res://characters/presentation_tween_clock.gd").drive(self, tween)
+			tween.set_parallel(true)
 			tween.tween_property(
 				view,
 				"position",
 				target_pos,
 				segment_duration
 			)
+			if view.has_method("update_movement_stride"):
+				var stride_index := i - 1
+				view.update_movement_stride(stride_index, 0.0)
+				tween.tween_method(func(progress: float) -> void:
+					if is_instance_valid(view):
+						view.update_movement_stride(stride_index, progress)
+				, 0.0, 1.0, segment_duration)
 			await tween.finished
 			if not _is_operation_current(lifecycle_generation):
 				break
+		var form_before_entry := unit.combat_form_id
 		if not grid.relocate_unit(unit, path[i]):
 			break
+		unit.record_runtime_movement(1)
+		_resolved_walk_paths[unit].append(unit.grid_pos)
 		var entry_result := terrain_effects.consume_last_entry_result(unit)
 		if bool(entry_result.get("teleported", false)) \
 				and is_instance_valid(view):
@@ -2128,6 +1976,15 @@ func _animate_move(unit: Unit, path: Array) -> void:
 			break
 		if bool(entry_result.get("end_movement", false)):
 			break
+		# A terrain-triggered reveal must finish on this cell before the next
+		# segment translates the body. The original paid path remains intact.
+		if unit.combat_form_id != form_before_entry and i + 1 < path.size() \
+				and is_instance_valid(view) and view.has_method("wait_for_transformation_visual_finished"):
+			if not await view.wait_for_transformation_visual_finished() \
+					or not _is_operation_current(lifecycle_generation) or not unit.is_alive:
+				break
+			if view.has_method("begin_movement_feedback"):
+				view.begin_movement_feedback(path[i], path[i + 1])
 	terrain_effects.end_unit_resolution(unit)
 	if is_instance_valid(view):
 		view.end_movement_feedback()
@@ -2228,7 +2085,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 		unit,
 		Spell.DamageType.PHYSICAL,
 		Spell.Element.NONE,
-		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id)})
+		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id), "attack_classification": &"MELEE"})
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
 	if not _is_operation_current(lifecycle_generation):
@@ -2242,6 +2099,8 @@ func _on_request_attack(cell: Vector2i) -> void:
 	if not _is_operation_current(lifecycle_generation):
 		_finish_outcome_deferral()
 		return
+	if _mastery_adapter != null:
+		_mastery_adapter.flush_automatic()
 	EventBus.ap_after_action_changed.emit(unit, ap_before, unit.current_ap, action_id)
 	EventBus.action_resolved.emit(unit, action_id, &"basic_attack", {"target": target})
 	_hud_port.update_info(unit)
@@ -2367,13 +2226,38 @@ func _spell_cast_rejection_reason(
 			return "Cette capacité ne peut pas être utilisée maintenant."
 
 
+func _flush_deferred_spell_reactions() -> void:
+	# Drop ownership before executing callbacks: a reentrant abort or shutdown
+	# cannot replay the command, charge its source twice, or flush a later cast.
+	var context := _deferred_spell_reaction_context
+	_deferred_spell_reaction_context = null
+	if context == null or not context.resolved or context.failed:
+		return
+	if _mastery_adapter != null and not _closing and not _battle_over:
+		_mastery_adapter.flush_automatic()
+
+
 func _abort_spell_resolution(unit: Unit, show_player_turn := true) -> void:
-	_spell_resolution_pending = false
+	var settles_committed_reactions := _deferred_spell_reaction_context != null \
+		and _deferred_spell_reaction_context.resolved and not _deferred_spell_reaction_context.failed
 	_active_spell_movement_caster = null
 	_cancel_spell_movement_feedback(true)
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view) and view.has_method("cancel_pending_visual_actions"):
 		view.cancel_pending_visual_actions()
+	# A cancelled presentation is snapped above. Already committed gameplay
+	# still settles once while input is locked; shutdown disposes its queues.
+	_flush_deferred_spell_reactions()
+	_spell_resolution_pending = false
+	if settles_committed_reactions and not _closing and not _battle_over:
+		if _evolution_queue.has_pending():
+			_process_evolution_queue_at_safe_point.call_deferred()
+			return
+		if _battle_outcome_waiting:
+			_commit_waiting_battle_outcome()
+			return
+		if _end_active_turn_if_dead(unit):
+			return
 	if not show_player_turn or _closing or _battle_over \
 			or not is_instance_valid(unit) or not unit.is_alive \
 			or unit.team != 0 or turn_queue == null \
@@ -2386,6 +2270,8 @@ func _abort_spell_resolution(unit: Unit, show_player_turn := true) -> void:
 	if _hud_port != null:
 		_hud_port.update_info(unit)
 		_hud_port.set_active_mode("")
+	if settles_committed_reactions:
+		_process_mastery_choices_at_safe_point()
 
 
 func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
@@ -2404,6 +2290,14 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 			_spell_cast_rejection_reason(unit, spell, cell, failure_reason)
 		)
 		return
+	if _mastery_adapter != null and spell.shield_tags.has(&"guard") \
+			and _mastery_adapter.has_directional_guard(unit) and not _mastery_facing_confirmed:
+		_mastery_facing_cast = {"spell": spell, "cell": cell, "unit": unit}
+		set_external_interaction_lock(&"mastery_choice", true)
+		_mastery_panel.present("Orienter la Garde", "Choisissez la direction protégée par votre bouclier.",
+			{&"north": "↑ Nord", &"east": "→ Est", &"south": "↓ Sud", &"west": "← Ouest"}, true)
+		return
+	_mastery_facing_confirmed = false
 	_spell_resolution_pending = true
 	_active_spell_movement_caster = (
 		unit if spell_caster.spell_moves_caster(unit, spell) else null
@@ -2429,6 +2323,10 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 		)
 		_abort_spell_resolution(unit)
 		return
+	if _active_spell_movement_caster == unit and is_instance_valid(view) \
+			and _mastery_adapter != null:
+		context.set_meta("defer_automatic_reactions", true)
+		_deferred_spell_reaction_context = context
 	if spell.impact_delay_seconds > 0.0:
 		VFXManager.play_spell_vfx(unit, spell, cell)
 		if _spell_impact_scheduler.schedule(context, spell.impact_delay_seconds):
@@ -2453,6 +2351,8 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		_abort_spell_resolution(unit)
 		return
 	var lifecycle_generation := _lifecycle_generation
+	var reaction_context := _deferred_spell_reaction_context
+	var trigger_sequence := _active_trigger_sequence
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view) \
 			and view.has_method("has_optional_visual") \
@@ -2466,12 +2366,23 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 	if not _is_operation_current(lifecycle_generation):
 		_abort_spell_resolution(unit, false)
 		return
+	# An explicit cancellation may have settled this context while we waited.
+	# Its suspended completion must not publish a stale action over a new cast.
+	if reaction_context != null and _deferred_spell_reaction_context != reaction_context:
+		return
+	_flush_deferred_spell_reactions()
+	if not _is_operation_current(lifecycle_generation):
+		_abort_spell_resolution(unit, false)
+		return
 	var tree := get_tree()
 	if tree != null:
 		await tree.process_frame
 		if not _is_operation_current(lifecycle_generation):
 			_abort_spell_resolution(unit, false)
 			return
+	if reaction_context != null and (not _spell_resolution_pending \
+			or trigger_sequence != _active_trigger_sequence):
+		return
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
 	if _hud_port != null:
@@ -2497,6 +2408,7 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		return
 	if turn_state != null:
 		turn_state.begin_player_turn()
+	await _process_mastery_choices_at_safe_point()
 
 
 func _on_discipline_xp_gained(
@@ -2704,6 +2616,8 @@ func _resume_combat_after_evolutions() -> void:
 		turn_state.begin_enemy_turn()
 
 
+	_process_mastery_choices_at_safe_point.call_deferred()
+
 func _is_evolution_locked() -> bool:
 	return _evolution_processing \
 		or _evolution_queue.has_pending() \
@@ -2730,12 +2644,20 @@ func _exit_tree() -> void:
 
 
 func _begin_battle_shutdown() -> void:
+	_deferred_spell_reaction_context = null
+	if _mastery_adapter != null:
+		_mastery_adapter.dispose()
+		_mastery_adapter = null
+	_mastery_choice = null
+	_mastery_choice_actor = null
+	_mastery_facing_cast.clear()
+	if is_instance_valid(_mastery_panel):
+		_mastery_panel.close()
+	_mastery_choice_finished.emit()
 	if not _closing:
 		_closing = true
 		_lifecycle_generation += 1
 	_cancel_evolution_retry()
-	_clear_grid_cursor()
-	_clear_tactical_unit_focus()
 	_outcome_deferral_depth = 0
 	_active_spell_movement_caster = null
 	_cancel_spell_movement_feedback(false)
@@ -2773,6 +2695,8 @@ func _on_round_started(number: int) -> void:
 		grid_view.queue_redraw()
 
 func _on_unit_died(unit: Unit) -> void:
+	if _mastery_adapter != null:
+		_mastery_adapter.on_unit_died(unit)
 	# Logique de combat uniquement. Le LOG ("est vaincu") est désormais produit
 	# par le CombatLogger, abonné au signal unit_died du bus. battle.gd ne logge
 	# plus la mort : il réagit à ses conséquences sur le terrain et le combat.
@@ -2916,3 +2840,108 @@ func _show_end_screen(victory: bool) -> void:
 	_outcome_overlay = COMBAT_OUTCOME_OVERLAY.new()
 	add_child(_outcome_overlay)
 	_outcome_overlay.present(victory, GameManager.is_reduced_motion_enabled())
+
+
+func _process_mastery_choices_at_safe_point() -> void:
+	if _mastery_processing or _mastery_adapter == null or _closing or _battle_over or _is_evolution_locked():
+		return
+	_mastery_processing = true
+	while not _closing and not _battle_over:
+		_mastery_choice = null
+		_mastery_choice_actor = null
+		for actor in units:
+			if actor.team == 0 and actor.is_alive:
+				var request := _mastery_adapter.pending_choice(actor)
+				if request != null:
+					_mastery_choice_actor = actor
+					_mastery_choice = request
+					break
+		if _mastery_choice == null:
+			break
+		set_external_interaction_lock(&"mastery_choice", true)
+		var title := "Suivi tactique"
+		for node in _mastery_choice_actor.mastery_nodes:
+			for effect in node.reactive_effects:
+				if effect.source_id == _mastery_choice.source_id:
+					title = node.display_name
+		var body := "Choisissez une case surlignée. Ce déplacement est gratuit."
+		var options := {}
+		match _mastery_choice.request_type:
+			&"projectile_origin":
+				body = "D’où partira votre prochain Tir du Pélion ?"
+				options = {&"dash_start": "Depuis le départ de la Percée", &"dash_end": "Depuis l’arrivée de la Percée"}
+			&"shield_conversion":
+				body = "Votre Garde expire. Choisissez comment employer son bouclier restant."
+				options = {&"retain_half_as_new_shield": "Conserver la moitié en bouclier", &"convert_remaining_to_next_strike": "Renforcer la prochaine Frappe"}
+			&"reaction_choice":
+				body = "Ces effets partagent le même déclenchement. Choisissez celui à activer."
+				for option in _mastery_choice.valid_option_ids:
+					options[option] = _mastery_adapter.reaction_option_label(option)
+		grid_view.clear_highlights()
+		grid_view.highlight(_mastery_choice.valid_cells, MOVE_COLOR, COMBAT_HIGHLIGHT_MARKER.MOVE)
+		_mastery_panel.present(title, body, options, _mastery_choice.optional)
+		await _mastery_choice_finished
+	if is_instance_valid(_mastery_panel):
+		_mastery_panel.close()
+	set_external_interaction_lock(&"mastery_choice", false)
+	_mastery_processing = false
+	if not _closing and not _battle_over:
+		grid_view.clear_highlights()
+		if _hud_port != null and get_active_unit() != null:
+			_hud_port.update_info(get_active_unit())
+
+func _on_mastery_option(option: StringName) -> void:
+	if not _mastery_facing_cast.is_empty():
+		var pending := _mastery_facing_cast.duplicate()
+		var actor := pending.unit as Unit
+		actor.facing_dir = {&"north": Vector2i.UP, &"east": Vector2i.RIGHT,
+			&"south": Vector2i.DOWN, &"west": Vector2i.LEFT}.get(option, actor.facing_dir)
+		_mastery_facing_cast.clear()
+		_mastery_panel.close()
+		set_external_interaction_lock(&"mastery_choice", false)
+		_mastery_facing_confirmed = true
+		_on_request_cast_spell(pending.spell, pending.cell)
+		return
+	if _mastery_choice_actor != null and _mastery_choice != null:
+		var result := _mastery_adapter.resolve_choice(_mastery_choice_actor, _mastery_choice, null, option)
+		if result.get("resolved", false):
+			_mastery_choice = null
+			_mastery_adapter.flush_automatic()
+			_mastery_choice_finished.emit()
+
+func _on_mastery_decline() -> void:
+	if not _mastery_facing_cast.is_empty():
+		_mastery_facing_cast.clear()
+		_mastery_facing_confirmed = false
+		_mastery_panel.close()
+		set_external_interaction_lock(&"mastery_choice", false)
+		return
+	if _mastery_choice_actor != null and _mastery_choice != null:
+		var result := _mastery_choice_actor.mastery_runtime.followup_queue.decline(_mastery_choice.request_id)
+		if result.get("resolved", false):
+			_mastery_choice = null
+			_mastery_choice_finished.emit()
+
+func _resolve_mastery_cell(cell: Vector2i) -> void:
+	if _mastery_choice == null or _mastery_choice_actor == null or _mastery_adapter == null:
+		return
+	var actor := _mastery_choice_actor
+	var request := _mastery_choice
+	var path := _mastery_adapter.choice_path(actor, request, cell)
+	if path.size() < 2:
+		_show_intent_feedback("Choisissez une case surlignée encore accessible.")
+		return
+	var result := _mastery_adapter.resolve_choice(actor, request, cell)
+	if not result.get("resolved", false):
+		return
+	_mastery_choice = null
+	_mastery_panel.close()
+	_begin_outcome_deferral()
+	var generation := _lifecycle_generation
+	await _animate_move(actor, path)
+	if _is_operation_current(generation) and actor.is_alive:
+		var resolved_path: Array = _resolved_walk_paths.get(actor, path)
+		_mastery_adapter.movement_resolved(actor, {"unit": actor, "from": path[0], "to": actor.grid_pos,
+			"distance": maxi(0, resolved_path.size() - 1)}, &"", _next_action_id(&"mastery_move"))
+	_finish_outcome_deferral()
+	_mastery_choice_finished.emit()

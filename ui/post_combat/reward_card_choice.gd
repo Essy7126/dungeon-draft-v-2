@@ -4,7 +4,6 @@ signal choice_requested(item_id: StringName)
 signal hover_changed(card_index: int, hovered: bool)
 
 const CONTENT_PADDING := 8
-const CARD_SHADER := preload("res://ui/post_combat/shaders/reward_card.gdshader")
 
 @onready var floating_root: Control = %FloatingRoot
 @onready var visual_root: Control = %VisualRoot
@@ -21,7 +20,6 @@ const CARD_SHADER := preload("res://ui/post_combat/shaders/reward_card.gdshader"
 @onready var fallback_description: Label = %FallbackDescription
 @onready var fallback_footer: Label = %FallbackFooter
 @onready var selection_badge: Label = %SelectionBadge
-@onready var focus_ring: PanelContainer = %FocusRing
 @onready var particles: GPUParticles2D = %Particles
 @onready var interaction: Button = %Interaction
 
@@ -97,11 +95,7 @@ func configure(option: Dictionary, index: int, use_reduced_motion: bool) -> void
 		else "ÉQUIPEMENT · ATTRIBUTION IMMÉDIATE"
 	)
 	interaction.tooltip_text = ""
-	_material = ShaderMaterial.new()
-	_material.shader = CARD_SHADER
-	_material.set_shader_parameter("outline_color", Color(0.98, 0.75, 0.30, 1.0))
-	_material.set_shader_parameter("tint", Color(1.02, 0.99, 0.94, 1.0))
-	card_texture.material = _material
+	_material = null
 	_refresh_state(false)
 
 
@@ -131,24 +125,16 @@ func set_card_size(card_size: Vector2) -> void:
 func set_compact_mode(value: bool) -> void:
 	_compact = value
 	clip_contents = false
-	var side_margin := 16 if value else 24
+	var side_margin := 18 if value else 28
 	fallback_margin.add_theme_constant_override("margin_left", side_margin)
 	fallback_margin.add_theme_constant_override("margin_right", side_margin)
-	fallback_margin.add_theme_constant_override("margin_top", 16 if value else 24)
-	fallback_margin.add_theme_constant_override("margin_bottom", 14 if value else 22)
-	fallback_content.add_theme_constant_override("separation", 5 if value else 9)
-	# L'illustration absorbe l'espace disponible. La description conserve une
-	# hauteur de lecture bornee au lieu de devenir un immense espaceur central.
-	illustration_frame.custom_minimum_size.y = 154.0 if value else 238.0
-	fallback_description.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	fallback_description.custom_minimum_size.y = 78.0 if value else 96.0
-	fallback_title.custom_minimum_size.y = 50.0 if value else 54.0
-	fallback_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	fallback_meta.custom_minimum_size.y = 16.0
-	fallback_footer.custom_minimum_size.y = 16.0
+	fallback_margin.add_theme_constant_override("margin_top", 17 if value else 32)
+	fallback_margin.add_theme_constant_override("margin_bottom", 15 if value else 28)
+	fallback_content.add_theme_constant_override("separation", 6 if value else 12)
+	illustration_frame.custom_minimum_size.y = 154.0 if value else 260.0
 	if value:
 		fallback_meta.add_theme_font_size_override("font_size", 10)
-		fallback_title.add_theme_font_size_override("font_size", 19)
+		fallback_title.add_theme_font_size_override("font_size", 20)
 		fallback_description.add_theme_font_size_override("font_size", 13)
 		fallback_footer.add_theme_font_size_override("font_size", 10)
 		selection_badge.add_theme_font_size_override("font_size", 11)
@@ -163,6 +149,7 @@ func set_compact_mode(value: bool) -> void:
 
 func set_selected(value: bool) -> void:
 	_selected = value
+	selection_badge.visible = value
 	particles.emitting = value and not reduced_motion and not _locked
 	_refresh_state(true)
 
@@ -257,36 +244,27 @@ func _refresh_state(animated: bool) -> void:
 	var outline := 0.0
 	var visual_tint := Color.WHITE
 	if _selected:
-		scale_value = 1.035 if _compact else 1.045
-		y_value = -5.0 if _compact else -8.0
+		scale_value = 1.045 if _compact else 1.085
+		y_value = 0.0
 		rotation_value = 0.0
-		brightness = 1.05
-		saturation = 1.04
-		outline = 0.70
-		visual_tint = Color(1.02, 1.0, 0.96, 1.0)
-	elif _focused:
-		scale_value = 1.02 if _compact else 1.03
-		y_value = -4.0 if _compact else -6.0
-		rotation_value = 0.0
-		brightness = 1.03
-		outline = 0.42
-		visual_tint = Color(1.02, 1.0, 0.97, 1.0)
-	elif _hovered:
-		scale_value = 1.015 if _compact else 1.025
-		y_value = -3.0 if _compact else -5.0
-		rotation_value = _rest_rotation * 0.35
-		brightness = 1.02
-		outline = 0.24
-		visual_tint = Color(1.01, 1.0, 0.98, 1.0)
+		brightness = 1.08
+		saturation = 1.08
+		outline = 0.88
+		visual_tint = Color(1.04, 1.02, 0.96, 1.0)
 	elif _peer_dimmed:
-		# Une option non pointee doit rester entierement lisible. La selection est
-		# portee par l'elevation, le contour et le badge, pas par son effacement.
-		scale_value = 0.99
-		y_value = 2.0
-		rotation_value = _rest_rotation * 0.65
-		brightness = 0.96
-		saturation = 0.92
-		visual_tint = Color(0.95, 0.94, 0.92, 1.0)
+		scale_value = 0.96
+		y_value = 4.0
+		rotation_value = _rest_rotation * 1.35
+		brightness = 0.64
+		saturation = 0.44
+		visual_tint = Color(0.58, 0.56, 0.53, 1.0)
+	elif _hovered or _focused:
+		scale_value = 1.025 if _compact else 1.048
+		y_value = -6.0 if _compact else -14.0
+		rotation_value = 0.0
+		brightness = 1.04
+		outline = 0.34
+		visual_tint = Color(1.03, 1.01, 0.96, 1.0)
 	_state_y = y_value
 	if animated and _entrance_tween != null and _entrance_tween.is_valid():
 		_entrance_tween.kill()
@@ -298,15 +276,8 @@ func _refresh_state(animated: bool) -> void:
 		_material.set_shader_parameter("outline_intensity", outline)
 		_material.set_shader_parameter("selected_amount", 1.0 if _selected else 0.0)
 		_material.set_shader_parameter("sweep_intensity", 0.28 if _selected and not reduced_motion else 0.0)
-	selection_badge.visible = _selected or _focused
-	selection_badge.text = "◆ CHOISI" if _selected else "◇ SÉLECTIONNER"
-	focus_ring.modulate.a = 0.92 if _focused else (0.48 if _selected else 0.0)
-	back_glow.modulate.a = (
-		0.34 if _selected else (0.20 if _focused else (0.10 if _hovered else 0.0))
-	)
-	card_shadow.modulate.a = (
-		0.66 if _selected else (0.58 if _hovered or _focused else 0.48)
-	)
+	back_glow.modulate.a = 0.44 if _selected else (0.15 if _hovered or _focused else 0.0)
+	card_shadow.modulate.a = 0.72 if _selected else (0.58 if _hovered or _focused else 0.42)
 	if _state_tween != null and _state_tween.is_valid():
 		_state_tween.kill()
 	if not animated or reduced_motion:
