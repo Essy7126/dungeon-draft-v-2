@@ -1,7 +1,7 @@
 class_name SanctuaryPanels
 extends Control
 
-## Interactions du sanctuaire, sur un état local fourni par la scène appelante.
+## Présentation des services et de l'inventaire réels fournis par Catabase.
 signal closed
 signal session_changed
 
@@ -19,7 +19,8 @@ const SUCCESS := Color("b5d4a7")
 
 var _session: SESSION
 var _mode: StringName = &""
-var _draft_blessing: StringName = &""
+var _draft_service := ""
+var _context: Dictionary = {}
 var _panel: PanelContainer
 var _title: Label
 var _intro: Label
@@ -48,7 +49,7 @@ func _ready() -> void:
 
 func setup(session: SESSION) -> void:
 	_session = session
-	_draft_blessing = &""
+	_draft_service = ""
 	_feedback_text = ""
 	if is_node_ready() and is_open():
 		_refresh()
@@ -59,7 +60,7 @@ func open_shop() -> void:
 
 
 func open_oracle() -> void:
-	_draft_blessing = &""
+	_draft_service = ""
 	_show_panel(&"oracle")
 
 
@@ -92,6 +93,13 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
 		get_viewport().set_input_as_handled()
 		close_panel()
+	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_TAB:
+		var controls := _focusable_buttons()
+		if controls.is_empty():
+			return
+		var index := controls.find(get_viewport().gui_get_focus_owner())
+		controls[posmod(index + (-1 if event.shift_pressed else 1), controls.size())].grab_focus()
+		get_viewport().set_input_as_handled()
 
 
 func _build_interface() -> void:
@@ -137,7 +145,7 @@ func _build_interface() -> void:
 	var rule := HSeparator.new()
 	layout.add_child(rule)
 	_balance = _label("", 19, BRONZE)
-	_balance.name = "DrachmesBalance"
+	_balance.name = "SanctuaryBalance"
 	_balance.add_theme_font_override("font", BOLD_FONT)
 	layout.add_child(_balance)
 
@@ -154,6 +162,7 @@ func _build_interface() -> void:
 	scroll.add_child(_content)
 
 	_confirmation = VBoxContainer.new()
+	_confirmation.name = "FixedActions"
 	_confirmation.add_theme_constant_override("separation", 8)
 	layout.add_child(_confirmation)
 	_feedback = _label("", 17, SUCCESS)
@@ -186,13 +195,16 @@ func _show_panel(mode: StringName) -> void:
 	_refresh()
 	show()
 	_resize_panel()
+	(_panel.find_child("ContentScroll", true, false) as ScrollContainer).set_deferred("scroll_vertical", 0)
 	_close_button.grab_focus()
 
 
 func _refresh() -> void:
 	_clear(_content)
 	_clear(_confirmation)
-	_balance.text = "%d drachmes" % _session.get_drachmes()
+	_context = _session.get_context()
+	_balance.text = "%d %s" % [int(_context.get("balance", 0)), str(_context.get("currency_label", "oboles"))] if str(_context.get("mode", "")) == "halt" else "Les préparatifs suivent votre aventure"
+	_balance.name = "SanctuaryBalance"
 	_feedback.text = _feedback_text
 	_feedback.add_theme_color_override("font_color", SUCCESS if _feedback_success else Color("e4ac91"))
 	match _mode:
@@ -204,149 +216,200 @@ func _refresh() -> void:
 			_build_inventory()
 		&"departure":
 			_build_departure()
+	_wire_modal_focus.call_deferred()
+
+
+func _focusable_buttons() -> Array[Button]:
+	var controls: Array[Button] = []
+	for node in _panel.find_children("*", "Button", true, false):
+		if node.is_visible_in_tree() and not node.disabled:
+			controls.append(node)
+	return controls
+
+
+func _wire_modal_focus() -> void:
+	var controls := _focusable_buttons()
+	for index in controls.size():
+		var current := controls[index]
+		var next := controls[(index + 1) % controls.size()]
+		var previous := controls[posmod(index - 1, controls.size())]
+		current.focus_next = current.get_path_to(next)
+		current.focus_previous = current.get_path_to(previous)
+		current.focus_neighbor_bottom = current.focus_next
+		current.focus_neighbor_top = current.focus_previous
 
 
 func _build_shop() -> void:
 	_title.text = "Le comptoir des voyageurs"
-	_intro.text = "Quelques biens précieux attendent Achille. Chaque achat rejoint sa besace."
-	for item: Dictionary in _session.get_shop_items():
+	_intro.text = "Équipements de cette halte. Les achats rejoignent votre inventaire de Catabase."
+	var services := _services(true)
+	if services.is_empty():
+		_empty_preparations("Les offres du marchand seront disponibles pendant une halte. Les oboles et les objets suivent votre expédition.")
+		return
+	for item: Dictionary in services:
 		var card := _card()
 		_content.add_child(card.panel)
 		var body: VBoxContainer = card.body
-		body.add_child(_label(String(item.name), 21, INK, true))
-		body.add_child(_label(String(item.description), 17, MUTED))
-		body.add_child(_label("%d drachmes  ·  Stock : %d" % [int(item.price), int(item.stock)], 17, BRONZE))
-		var reason := ""
-		if int(item.stock) <= 0:
-			reason = "Épuisé — le marchand n'en a plus."
-		elif int(item.price) > _session.get_drachmes():
-			reason = "Il manque %d drachmes pour cet achat." % (int(item.price) - _session.get_drachmes())
-		var buy := _button("Acheter · %d drachmes" % int(item.price))
-		buy.name = "Buy_" + String(item.id)
-		buy.disabled = not reason.is_empty()
-		buy.tooltip_text = reason
-		buy.pressed.connect(_buy.bind(StringName(item.id)))
+		_service_description(body, item)
+		var caption := "Déjà acheté" if bool(item.get("used", false)) else "Acheter · %d oboles" % int(item.get("cost", 0))
+		var buy := _button(caption)
+		buy.name = "Buy_" + str(item.id).replace(":", "_")
+		buy.disabled = not bool(item.get("available", false))
+		buy.tooltip_text = _unavailable_reason(item)
+		buy.pressed.connect(_use_service.bind(str(item.id)))
 		body.add_child(buy)
-		if not reason.is_empty():
-			body.add_child(_label(reason, 16, MUTED))
-
-
-func _buy(item_id: StringName) -> void:
-	var result: Dictionary = _session.buy_item(item_id)
-	_feedback_text = String(result.message)
-	_feedback_success = bool(result.ok)
-	_refresh()
-	if bool(result.ok):
-		session_changed.emit()
-	var next_button := _content.find_child("Buy_" + String(item_id), true, false) as Button
-	if next_button != null and not next_button.disabled:
-		next_button.grab_focus()
-	else:
-		_close_button.grab_focus()
+		if buy.disabled:
+			body.add_child(_label(buy.tooltip_text, 15, MUTED))
 
 
 func _build_oracle() -> void:
-	_title.text = "La parole de l'oracle"
-	_intro.text = "Trois divinités tendent la main à Achille. Une seule bénédiction peut l'accompagner."
-	var chosen: Dictionary = _session.get_selected_blessing()
-	var chosen_id := StringName(chosen.get("id", &""))
-	if not chosen.is_empty():
-		_content.add_child(_label("Bénédiction reçue : %s" % String(chosen.name), 18, SUCCESS, true))
-	for blessing: Dictionary in _session.get_blessings():
-		var id := StringName(blessing.id)
-		var selected := id == chosen_id or (chosen.is_empty() and id == _draft_blessing)
-		var card := _card(selected)
+	_title.text = "Auprès de l'oracle"
+	_intro.text = "Écoutez les mémoires du lieu, découvrez une voie ou retrouvez vos forces."
+	var services := _services(false)
+	if services.is_empty():
+		_empty_preparations("Les conseils et les soins dépendent de la halte rencontrée. Aucune faveur ne modifie Achille avant son premier combat.")
+		return
+	var selected: Dictionary = {}
+	for service: Dictionary in services:
+		var id := str(service.id)
+		var card := _card(id == _draft_service)
 		_content.add_child(card.panel)
 		var body: VBoxContainer = card.body
-		body.add_child(_label(String(blessing.name), 21, INK, true))
-		body.add_child(_label(String(blessing.description), 17, MUTED))
-		body.add_child(_label(String(blessing.effect), 17, INK))
-		var caption := "Sélectionner"
-		if id == chosen_id:
-			caption = "Bénédiction reçue"
-		elif not chosen.is_empty():
-			caption = "Un choix a déjà été scellé"
-		elif selected:
-			caption = "Sélectionnée · à confirmer"
-		var select := _button(caption)
-		select.name = "Select_" + String(id)
+		_service_description(body, service)
+		var used := bool(service.get("used", false))
+		var select := _button("Accompli" if used else ("Sélectionné" if id == _draft_service else "Choisir"))
+		select.name = "Select_" + id.replace(":", "_")
 		select.toggle_mode = true
-		select.button_pressed = selected
-		select.disabled = not chosen.is_empty()
-		select.pressed.connect(_select_blessing.bind(id))
+		select.button_pressed = id == _draft_service
+		select.disabled = not bool(service.get("available", false))
+		select.tooltip_text = _unavailable_reason(service)
+		select.pressed.connect(_select_service.bind(id))
 		body.add_child(select)
-	if chosen.is_empty():
-		_confirmation.add_child(_label("Ce choix est définitif pendant cette visite.", 16, MUTED))
-		var confirm := _button("Confirmer la bénédiction")
-		confirm.name = "ConfirmBlessing"
-		confirm.disabled = _draft_blessing == &""
-		confirm.pressed.connect(_confirm_blessing)
-		_confirmation.add_child(confirm)
-	else:
-		_confirmation.add_child(_label("Le choix d'Achille est scellé.", 17, BRONZE))
+		if id == _draft_service and not select.disabled:
+			selected = service
+		elif select.disabled:
+			body.add_child(_label(select.tooltip_text, 15, MUTED))
+	var confirm := _button("Confirmer le choix" if selected.is_empty() else "Confirmer · %s" % str(selected.title))
+	confirm.name = "ConfirmService"
+	confirm.disabled = selected.is_empty()
+	confirm.pressed.connect(_confirm_service)
+	_confirmation.add_child(confirm)
 
 
-func _select_blessing(id: StringName) -> void:
-	if not _session.get_selected_blessing().is_empty():
-		return
-	_draft_blessing = id
-	_feedback_text = ""
+func _select_service(id: String) -> void:
+	_draft_service = id
 	_refresh()
-	var confirm := _confirmation.find_child("ConfirmBlessing", true, false) as Button
-	if confirm != null:
+	var confirm := _confirmation.find_child("ConfirmService", true, false) as Button
+	if confirm != null and not confirm.disabled:
 		confirm.grab_focus()
 
 
-func _confirm_blessing() -> void:
-	if _draft_blessing == &"":
-		return
-	var result: Dictionary = _session.choose_blessing(_draft_blessing)
-	_feedback_text = String(result.message)
-	_feedback_success = bool(result.ok)
+func _confirm_service() -> void:
+	if not _draft_service.is_empty():
+		_use_service(_draft_service)
+
+
+func _use_service(id: String) -> void:
+	var result := _session.use_service(id)
+	_feedback_text = str(result.get("message", result.get("error", result.get("reason", "Action indisponible."))))
+	var applied := bool(result.get("success", false))
+	_feedback_success = applied and bool(result.get("saved", true))
+	if applied:
+		_draft_service = ""
 	_refresh()
+	session_changed.emit()
 	_close_button.grab_focus()
-	if bool(result.ok):
-		session_changed.emit()
+
+
+func _services(merchant: bool) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for service: Dictionary in _context.get("services", []):
+		if (str(service.get("kind", "")) == "merchant") == merchant:
+			result.append(service)
+	return result
+
+
+func _service_description(body: VBoxContainer, service: Dictionary) -> void:
+	body.add_child(_label(str(service.get("title", "Service")), 21, INK, true))
+	body.add_child(_label(str(service.get("description", "")), 17, MUTED))
+	var cost := int(service.get("cost", 0))
+	body.add_child(_label("%d oboles" % cost if cost > 0 else "Sans coût en oboles", 16, BRONZE))
+
+
+func _unavailable_reason(service: Dictionary) -> String:
+	if bool(service.get("used", false)):
+		return "Ce service a déjà été utilisé dans cette halte."
+	var cost := int(service.get("cost", 0))
+	var balance := int(_context.get("balance", 0))
+	if balance < cost:
+		return "Il manque %d oboles." % (cost - balance)
+	return str(service.get("unavailable_reason", "Ce service n'est pas disponible actuellement."))
+
+
+func _empty_preparations(message: String) -> void:
+	var card := _card()
+	_content.add_child(card.panel)
+	card.body.add_child(_label(message, 18, INK))
+	var departure := _button(str(_context.get("departure_label", "Rejoindre le passage")))
+	departure.name = "OpenDeparture"
+	departure.pressed.connect(open_departure)
+	_confirmation.add_child(departure)
 
 
 func _build_inventory() -> void:
 	_title.text = "La besace d'Achille"
-	_intro.text = "Les biens acquis et la faveur reçue au fil de cette visite."
-	var inventory: Dictionary = _session.get_inventory()
-	_content.add_child(_label("BIENS EMPORTÉS", 14, BRONZE, true))
+	_intro.text = "Vos objets de Catabase vous accompagnent d'une rencontre à l'autre."
+	var inventory: Array = _context.get("inventory", [])
 	if inventory.is_empty():
-		_content.add_child(_label("La besace est encore vide. Le marchand peut préparer quelques provisions.", 18, MUTED))
-	for item: Dictionary in _session.get_shop_items():
-		var quantity := int(inventory.get(item.id, 0))
-		if quantity == 0:
-			continue
+		var message := "Votre inventaire est vide." if str(_context.get("mode", "")) == "halt" else "Vous retrouverez ici les objets de votre expédition pendant une halte."
+		_content.add_child(_label(message, 18, MUTED))
+	for entry: Dictionary in inventory:
 		var card := _card()
 		_content.add_child(card.panel)
 		var body: VBoxContainer = card.body
-		body.add_child(_label("%s  × %d" % [String(item.name), quantity], 21, INK, true))
-		body.add_child(_label(String(item.description), 17, MUTED))
-	_content.add_child(_label("FAVEUR DIVINE", 14, BRONZE, true))
-	var chosen: Dictionary = _session.get_selected_blessing()
-	if chosen.is_empty():
-		_content.add_child(_label("Aucune bénédiction reçue. L'oracle attend le choix d'Achille.", 18, MUTED))
-	else:
-		var card := _card(true)
-		_content.add_child(card.panel)
-		var body: VBoxContainer = card.body
-		body.add_child(_label(String(chosen.name), 21, INK, true))
-		body.add_child(_label(String(chosen.description), 17, MUTED))
-		body.add_child(_label(String(chosen.effect), 17, INK))
+		var icon_path := str(entry.get("icon_path", ""))
+		if not icon_path.is_empty() and ResourceLoader.exists(icon_path):
+			var texture := load(icon_path) as Texture2D
+			if texture != null:
+				var icon := TextureRect.new()
+				icon.name = "ItemIcon_" + str(entry.get("item_id", "item"))
+				icon.texture = texture
+				icon.custom_minimum_size = Vector2(52, 52)
+				icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+				icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				body.add_child(icon)
+		body.add_child(_label("%s  × %d" % [str(entry.get("name", entry.get("item_id", "Objet"))), int(entry.get("quantity", 1))], 20, INK, true))
+		var description := str(entry.get("description", ""))
+		if not description.is_empty():
+			body.add_child(_label(description, 16, MUTED))
 
 
 func _build_departure() -> void:
 	_build_inventory()
-	_title.text = "Derniers préparatifs"
-	_intro.text = "Avant le départ, retrouvez les provisions et la faveur qui accompagnent Achille."
-	_confirmation.add_child(_label("La traversée n'est pas encore ouverte. Vous pouvez poursuivre vos préparatifs.", 17, MUTED))
-	var return_button := _button("Revenir au sanctuaire")
-	return_button.name = "ReturnToSanctuary"
-	return_button.pressed.connect(close_panel)
-	_confirmation.add_child(return_button)
+	_title.text = "Le passage"
+	_intro.text = str(_context.get("departure_description", "Choisissez la suite de votre aventure."))
+	var depart := _button(str(_context.get("departure_label", "Continuer")))
+	depart.name = "ContinueJourney"
+	depart.disabled = not bool(_context.get("departure_enabled", false))
+	depart.pressed.connect(func() -> void:
+		depart.disabled = true
+		_continue_journey.call_deferred()
+	)
+	_confirmation.add_child(depart)
+	var stay := _button("Poursuivre la visite")
+	stay.name = "ReturnToSanctuary"
+	stay.pressed.connect(close_panel)
+	_confirmation.add_child(stay)
+
+
+func _continue_journey() -> void:
+	var result := _session.continue_journey()
+	if not bool(result.get("success", false)):
+		_feedback_text = str(result.get("message", "Le départ n'a pas pu être confirmé."))
+		_feedback_success = false
+		_refresh()
+
 
 func _label(value: String, font_size: int, color: Color, bold := false) -> Label:
 	var label := Label.new()
@@ -364,6 +427,8 @@ func _button(caption: String) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.custom_minimum_size.y = 44
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.add_theme_font_override("font", BOLD_FONT)
 	button.add_theme_font_size_override("font_size", 17)
 	button.add_theme_color_override("font_color", INK)

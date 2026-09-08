@@ -58,6 +58,7 @@ var navigation_grid: HubNavigationGrid = null
 
 
 func _ready() -> void:
+	_build_exit_controls()
 	navigation_region.rebuild()
 	navigation_grid_node.rebuild()
 	navigation_grid = navigation_grid_node.model
@@ -87,6 +88,10 @@ func _exit_tree() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and _state not in [HubState.UI_LOCKED, HubState.TRANSITIONING]:
+		get_viewport().set_input_as_handled()
+		return_to_menu()
+		return
 	if event is InputEventKey and event.pressed and not event.echo \
 		and event.keycode == KEY_F1:
 		set_debug_enabled(not debug_enabled)
@@ -95,6 +100,30 @@ func _unhandled_input(event: InputEvent) -> void:
 		and event.pressed:
 		request_primary_click_at_screen(event.position)
 		get_viewport().set_input_as_handled()
+
+
+func _build_exit_controls() -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "HubNavigation"
+	layer.layer = 15
+	add_child(layer)
+	var menu := Button.new()
+	menu.name = "HubMenuButton"
+	menu.text = "Menu principal · Échap"
+	menu.position = Vector2(20, 20)
+	menu.custom_minimum_size = Vector2(218, 46)
+	menu.theme = PremiumUI.get_theme()
+	menu.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	menu.pressed.connect(return_to_menu)
+	layer.add_child(menu)
+	menu.grab_focus.call_deferred()
+
+
+func return_to_menu() -> void:
+	if _state == HubState.TRANSITIONING:
+		return
+	_cancel_active_intent()
+	GameManager.return_to_title.call_deferred()
 
 
 func request_primary_click_at_screen(screen_position: Vector2) -> bool:

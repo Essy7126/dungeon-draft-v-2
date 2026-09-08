@@ -107,9 +107,19 @@ var _reduced_motion_enabled := false
 var expedition: ExpeditionSession = null
 var expedition_save_path: String = ExpeditionSaveService.SAVE_PATH
 const EXPEDITION_SCREEN_PATH := "res://ui/expedition/ExpeditionScreen.tscn"
+const SANCTUARY_SCREEN_PATH := "res://hub/sanctuary_prototype/SanctuaryPrototype.tscn"
+const CHARACTER_SELECTION_SCREEN_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
+var _expedition_boundary_snapshot: Dictionary = {}
+var _expedition_save_status: Dictionary = {"success": true, "pending": false, "operation": "", "message": ""}
+var _pending_expedition_action := ""
+var _replacement_guard_token := ""
+var _replacement_guard_fingerprint := ""
+var _replacement_consent := ""
+var _sanctuary_return_path := TITLE_SCREEN_PATH
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
+signal expedition_save_status_changed(status: Dictionary)
 signal run_lost
 signal room_cleared(index)
 signal wave_cleared(room_index, wave_index, reward_multiplier)
@@ -209,6 +219,9 @@ func start_configured_run() -> bool:
 	if selected_run == null:
 		return false
 	_next_run_data = null
+	if selected_run.catabase_route_enabled:
+		_next_run_start_room_index = 0
+		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants)
 	start_run(selected_run)
 	return run_active
 
@@ -421,6 +434,9 @@ func _clear_heroes() -> void:
 
 func cleanup_run_state() -> void:
 	expedition = null
+	_expedition_boundary_snapshot.clear()
+	_pending_expedition_action = ""
+	_expedition_save_status = {"success": true, "pending": false, "operation": "", "message": ""}
 	_battle_outcome_generation += 1
 	_battle_outcome_pending = false
 	_combat_report_tracker.discard()
@@ -556,11 +572,12 @@ func _release_persistent_run_ui() -> void:
 	if not is_instance_valid(_persistent_run_ui):
 		_persistent_run_ui = null
 		return
-	_persistent_run_ui.unbind_combat_context()
-	if _persistent_run_ui.get_parent() != null:
-		_persistent_run_ui.get_parent().remove_child(_persistent_run_ui)
-	_persistent_run_ui.free()
+	var released := _persistent_run_ui
 	_persistent_run_ui = null
+	# A pause/inventory signal may be on the stack. Retire the UI immediately,
+	# but defer destruction until every emitting control has returned.
+	released.prepare_for_run_cleanup()
+	released.queue_free()
 
 
 func has_persistent_run_ui() -> bool:
@@ -667,7 +684,7 @@ func equip_inventory_item(
 	if result.get("success", false):
 		equipment_changed.emit(result.duplicate(true))
 		if expedition != null:
-			save_expedition()
+			_save_expedition_transaction(result)
 	return result
 
 
@@ -687,7 +704,7 @@ func unequip_inventory_item(
 	if result.get("success", false):
 		equipment_changed.emit(result.duplicate(true))
 		if expedition != null:
-			save_expedition()
+			_save_expedition_transaction(result)
 	return result
 
 
@@ -707,7 +724,7 @@ func use_inventory_item(
 			_encounter_consumables_used += 1
 		item_used.emit(result.duplicate(true))
 		if expedition != null and expedition.is_editable():
-			save_expedition()
+			_save_expedition_transaction(result)
 	return result
 
 
@@ -1738,7 +1755,12 @@ func on_battle_lost() -> void:
 
 func _finish_run(victory: bool) -> void:
 	if expedition != null:
-		DirAccess.remove_absolute(expedition_save_path)
+		if not ExpeditionSaveService.remove_snapshot(expedition_save_path):
+			_pending_expedition_action = "finish_victory" if victory else "finish_defeat"
+			_set_expedition_save_status(false, _pending_expedition_action)
+			return
+		_pending_expedition_action = ""
+		_set_expedition_save_status(true, "finish_victory" if victory else "finish_defeat")
 	_battle_outcome_generation += 1
 	_battle_outcome_pending = false
 	run_active = false
@@ -1782,13 +1804,131 @@ func get_last_run_result() -> Dictionary:
 	return _last_run_result.duplicate(true)
 
 func return_to_title() -> void:
-	cleanup_run_state()
-	_request_scene_change(TITLE_SCREEN_PATH)
+	request_return_to_title()
 
 
 func return_to_hub() -> void:
+	_request_saved_exit("return_to_hub")
+
+
+func request_return_to_title() -> bool:
+	return _request_saved_exit("return_to_title")
+
+
+func request_abandon_run() -> bool:
+	if expedition != null and not ExpeditionSaveService.remove_snapshot(expedition_save_path):
+		_pending_expedition_action = "abandon"
+		_set_expedition_save_status(false, "abandon")
+		return false
+	cancel_expedition_replacement()
 	cleanup_run_state()
-	_request_scene_change(START_HUB_SCREEN_PATH)
+	_request_scene_change(TITLE_SCREEN_PATH)
+	return true
+
+
+func _request_saved_exit(operation: String) -> bool:
+	if expedition != null and run_active:
+		_pending_expedition_action = operation
+		if not save_expedition():
+			return false
+	_complete_saved_action(operation)
+	return true
+
+
+func _complete_saved_action(operation: String) -> void:
+	_pending_expedition_action = ""
+	match operation:
+		"return_to_title", "return_to_hub":
+			cleanup_run_state()
+			_request_scene_change(TITLE_SCREEN_PATH if operation == "return_to_title" else START_HUB_SCREEN_PATH)
+		"start_combat":
+			start_next_battle()
+		"open_sanctuary":
+			_request_scene_change(SANCTUARY_SCREEN_PATH)
+		"return_to_halt", "leave_sanctuary", "open_destination":
+			_request_scene_change(EXPEDITION_SCREEN_PATH)
+
+
+func get_expedition_save_status() -> Dictionary:
+	return _expedition_save_status.duplicate(true)
+
+
+func _set_expedition_save_status(success: bool, operation: String) -> void:
+	var message := "Progression enregistrée."
+	if not success:
+		message = "Enregistrement impossible. Votre progression reste ouverte. Réessayez avant de quitter."
+		if operation == "start_combat":
+			message = "Le départ attend l’enregistrement. Votre expédition reste ouverte ; réessayez pour entrer en combat."
+		if operation == "open_destination":
+			message = "Cette étape attend l’enregistrement. Votre expédition reste ouverte ; réessayez pour continuer."
+		if operation == "abandon" or operation.begins_with("finish_"):
+			message = "Impossible de supprimer la reprise. La partie reste ouverte ; réessayez pour terminer."
+	_expedition_save_status = {"success": success, "pending": not success, "operation": operation, "message": message}
+	expedition_save_status_changed.emit(get_expedition_save_status())
+
+
+func retry_expedition_save() -> bool:
+	var operation := _pending_expedition_action
+	if operation == "abandon":
+		return request_abandon_run()
+	if operation.begins_with("finish_"):
+		_finish_run(operation == "finish_victory")
+		return not run_active
+	if expedition == null or not run_active:
+		return false
+	if not save_expedition():
+		return false
+	_complete_saved_action(operation)
+	return true
+
+
+func postpone_expedition_exit() -> void:
+	# Dismissing an exit error means staying; a later unrelated save must not exit.
+	if _pending_expedition_action in ["return_to_title", "return_to_hub", "open_sanctuary", "return_to_halt", "abandon"]:
+		_pending_expedition_action = "save"
+		_expedition_save_status["operation"] = "save"
+
+
+## Applied transactions stay in memory on disk failure; never repeat a purchase.
+func _save_expedition_transaction(result: Dictionary) -> void:
+	result["saved"] = save_expedition()
+	if not bool(result.saved):
+		result["message"] = str(result.get("message", result.get("reason", "Action appliquée."))) + "\n" + str(_expedition_save_status.message)
+
+
+func _has_expedition_to_replace() -> bool:
+	return FileAccess.file_exists(expedition_save_path) or (expedition != null and run_active)
+
+
+func _current_replacement_fingerprint() -> String:
+	var live := get_expedition_snapshot()
+	if live.is_empty() and expedition != null and run_active:
+		live = _expedition_boundary_snapshot
+	return expedition_save_path + ":" + ExpeditionSaveService.fingerprint(expedition_save_path) + ":" + JSON.stringify(live).sha256_text()
+
+
+func get_expedition_replacement_guard() -> Dictionary:
+	var exists := _has_expedition_to_replace()
+	_replacement_guard_fingerprint = _current_replacement_fingerprint()
+	_replacement_guard_token = (str(Time.get_ticks_usec()) + _replacement_guard_fingerprint).sha256_text()
+	return {"exists": exists, "token": _replacement_guard_token,
+		"resumable": not ExpeditionSaveService.read_snapshot(expedition_save_path).is_empty(),
+		"message": "Une expédition Catabase est déjà en cours. Commencer une nouvelle Catabase remplacera sa reprise." if exists else ""}
+
+
+func confirm_expedition_replacement(token: String) -> bool:
+	if token.is_empty() or token != _replacement_guard_token or _replacement_guard_fingerprint != _current_replacement_fingerprint():
+		cancel_expedition_replacement()
+		return false
+	_replacement_consent = _replacement_guard_fingerprint
+	_replacement_guard_token = ""
+	return true
+
+
+func cancel_expedition_replacement() -> void:
+	_replacement_guard_token = ""
+	_replacement_guard_fingerprint = ""
+	_replacement_consent = ""
 
 
 func _request_scene_change(
@@ -2032,6 +2172,10 @@ func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array
 func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}) -> bool:
 	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
+	var fingerprint := _current_replacement_fingerprint()
+	if _has_expedition_to_replace() and _replacement_consent != fingerprint:
+		last_restore_error = &"EXPEDITION_REPLACEMENT_CONFIRMATION_REQUIRED"
+		return false
 	if seed_value < 0:
 		var random := RandomNumberGenerator.new()
 		random.randomize()
@@ -2040,8 +2184,10 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	var resolution := resolve_run_hero_data(data, false)
 	if not resolution.is_valid() or not _prepare_preconfigured_run(data, resolution.heroes):
 		return false
+	cancel_expedition_replacement()
 	expedition = ExpeditionSession.new()
 	expedition.initialize(get_character_state(&"achilles"), run_seed)
+	last_restore_error = &""
 	# The cinematic and selected hero lead directly to the same authored opening.
 	return choose_expedition_node("d01_0")
 
@@ -2060,7 +2206,10 @@ func choose_expedition_node(node_id: String) -> bool:
 	_cleared_room_emitted = false
 	if expedition.route.phase == "reward":
 		expedition.reward_options(item_catalog)
-	save_expedition()
+	_pending_expedition_action = "start_combat" if expedition.route.phase == "combat" else "open_destination"
+	if not save_expedition():
+		return false
+	_pending_expedition_action = ""
 	if expedition.route.phase == "combat":
 		start_next_battle()
 	return true
@@ -2073,8 +2222,9 @@ func claim_expedition_reward(option_id: String) -> Dictionary:
 	if bool(result.get("success", false)):
 		if expedition.route.phase == "complete":
 			_finish_run(true)
+			result["saved"] = not run_active
 		else:
-			save_expedition()
+			_save_expedition_transaction(result)
 	return result
 
 
@@ -2084,7 +2234,7 @@ func use_catabase_hub_service(service_id: String) -> Dictionary:
 	var result: Dictionary = expedition.use_hub_service(service_id, run_inventory, item_catalog)
 	if bool(result.get("success", false)):
 		champion_build_changed.emit(&"achilles")
-		save_expedition()
+		_save_expedition_transaction(result)
 	return result
 
 
@@ -2094,7 +2244,7 @@ func purchase_expedition_technique(node_id: String) -> Dictionary:
 	var result: Dictionary = expedition.build.purchase(node_id)
 	if bool(result.get("success", false)):
 		champion_build_changed.emit(&"achilles")
-		save_expedition()
+		_save_expedition_transaction(result)
 	return result
 
 
@@ -2104,7 +2254,7 @@ func undo_expedition_technique() -> Dictionary:
 	var result: Dictionary = expedition.build.undo_last_purchase()
 	if bool(result.get("success", false)):
 		champion_build_changed.emit(&"achilles")
-		save_expedition()
+		_save_expedition_transaction(result)
 	return result
 
 
@@ -2121,7 +2271,7 @@ func choose_expedition_capacity(option: String) -> Dictionary:
 		return {"success": false, "reason": "Choix indisponible."}
 	var result: Dictionary = expedition.build.choose_depth_eight(option)
 	if bool(result.get("success", false)):
-		save_expedition()
+		_save_expedition_transaction(result)
 	return result
 
 
@@ -2135,7 +2285,19 @@ func get_expedition_snapshot() -> Dictionary:
 func save_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 	if path == ExpeditionSaveService.SAVE_PATH:
 		path = expedition_save_path
-	return ExpeditionSaveService.write_snapshot(get_expedition_snapshot(), path)
+	var snapshot := get_expedition_snapshot()
+	if not snapshot.is_empty():
+		_expedition_boundary_snapshot = snapshot.duplicate(true)
+	elif expedition != null and run_active and _combat_report_tracker.is_active():
+		# Combat exit resumes from the committed entry, never a half-played turn.
+		snapshot = _expedition_boundary_snapshot.duplicate(true)
+	var saved := ExpeditionSaveService.write_snapshot(snapshot, path)
+	if not saved and _pending_expedition_action.is_empty():
+		_pending_expedition_action = "save"
+	_set_expedition_save_status(saved, _pending_expedition_action)
+	if saved and _pending_expedition_action == "save":
+		_pending_expedition_action = ""
+	return saved
 
 
 func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
@@ -2155,6 +2317,7 @@ func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
 	_connect_inventory_signal()
 	_relic_runtime_service.initialize(run_inventory, item_catalog, heroes, _active_run_data.action_classification_catalog)
 	expedition = prepared.session
+	_expedition_boundary_snapshot = snapshot.duplicate(true)
 	for node_id in expedition.route.completed_node_ids:
 		for node in expedition.route.nodes:
 			if str(node.id) == node_id:
@@ -2178,3 +2341,76 @@ func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 	else:
 		_request_scene_change(EXPEDITION_SCREEN_PATH)
 	return true
+
+
+func get_sanctuary_context() -> Dictionary:
+	var context := {"mode": "preparation", "title": "Le refuge des braises", "balance": 0,
+		"currency_label": "oboles", "services": [], "inventory": [],
+		"departure_label": "Choisir un personnage", "departure_enabled": true,
+		"departure_description": "Choisissez votre personnage avant le départ. Les services s’ouvrent pendant une halte de Catabase.",
+		"return_label": "Revenir aux personnages" if _sanctuary_return_path == CHARACTER_SELECTION_SCREEN_PATH else "Revenir au menu"}
+	if run_active:
+		var node: Dictionary = expedition.route.get_current_node() if expedition != null else {}
+		if expedition == null or expedition.route.phase != "reward" or not ExpeditionRouteCatalog.is_halt(str(node.get("kind", ""))):
+			context.merge({"mode": "blocked", "departure_enabled": false,
+				"departure_description": "Le refuge est accessible depuis une halte, après le combat."}, true)
+			return context
+		context.merge({"mode": "halt", "balance": expedition.gold,
+			"services": expedition.hub_services(item_catalog), "departure_label": "Reprendre le chemin",
+			"departure_description": "Les achats et les faveurs de cette halte suivent votre expédition.",
+			"return_label": "Revenir à la halte"}, true)
+		for instance in run_inventory.get_slots():
+			if instance == null:
+				continue
+			var item: ItemDefinition = item_catalog.get_definition(instance.definition_id)
+			if item == null:
+				continue
+			var icon := item.inventory_icon if item.inventory_icon != null else item.icon
+			context.inventory.append({"item_id": str(item.item_id), "name": item.display_name,
+				"quantity": instance.quantity, "description": item.description,
+				"icon_path": icon.resource_path if icon != null else ""})
+	elif not ExpeditionSaveService.read_snapshot(expedition_save_path).is_empty():
+		context.departure_label = "Reprendre Catabase"
+		context.departure_description = "Retrouvez votre expédition au dernier point enregistré. Les services seront disponibles à la prochaine halte."
+	return context
+
+
+func open_sanctuary(return_path: String = TITLE_SCREEN_PATH) -> Dictionary:
+	var context := get_sanctuary_context()
+	if context.mode == "blocked":
+		return {"success": false, "message": context.departure_description}
+	cancel_expedition_replacement()
+	_sanctuary_return_path = return_path if return_path in [TITLE_SCREEN_PATH, CHARACTER_SELECTION_SCREEN_PATH] else TITLE_SCREEN_PATH
+	var success := _request_saved_exit("open_sanctuary")
+	return {"success": success, "message": "" if success else _expedition_save_status.message}
+
+
+func continue_from_sanctuary() -> Dictionary:
+	var context := get_sanctuary_context()
+	if context.mode == "blocked":
+		return {"success": false, "message": context.departure_description}
+	if context.mode == "halt":
+		_pending_expedition_action = "leave_sanctuary"
+		var result := claim_expedition_reward("leave_hub")
+		if not bool(result.get("success", false)):
+			_pending_expedition_action = ""
+			return result
+		if not bool(result.get("saved", false)):
+			return {"success": false, "message": _expedition_save_status.message, "applied": true}
+		_complete_saved_action("leave_sanctuary")
+		return result
+	if not ExpeditionSaveService.read_snapshot(expedition_save_path).is_empty():
+		var resumed := resume_expedition()
+		return {"success": resumed, "message": "" if resumed else "Cette reprise ne peut pas être ouverte. Votre fichier est conservé."}
+	_request_scene_change(CHARACTER_SELECTION_SCREEN_PATH)
+	return {"success": true, "message": ""}
+
+
+func return_from_sanctuary() -> Dictionary:
+	if expedition != null and run_active:
+		if get_sanctuary_context().mode == "blocked":
+			return {"success": false, "message": "Terminez le combat avant de rejoindre une halte."}
+		var saved := _request_saved_exit("return_to_halt")
+		return {"success": saved, "message": "" if saved else _expedition_save_status.message}
+	_request_scene_change(_sanctuary_return_path)
+	return {"success": true, "message": ""}

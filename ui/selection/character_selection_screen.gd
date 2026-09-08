@@ -60,6 +60,8 @@ var _spell_scroll: ScrollContainer
 var _hero_counter: Label
 var _zoom_label: Label
 var _zoom := 1.0
+var _replacement_dialog: ConfirmationDialog
+var _replacement_token := ""
 
 
 func _ready() -> void:
@@ -76,9 +78,10 @@ func _ready() -> void:
 	else:
 		start_button.disabled = true
 		_status.text = "Aucun personnage disponible. Revenez à l’accueil."
-	_canvas.modulate.a = 0.0
-	_entry_tween = create_tween()
-	_entry_tween.tween_property(_canvas, "modulate:a", 1.0, 0.35)
+	if not GameManager.is_reduced_motion_enabled():
+		_canvas.modulate.a = 0.0
+		_entry_tween = create_tween()
+		_entry_tween.tween_property(_canvas, "modulate:a", 1.0, 0.35)
 
 
 func _build_screen() -> void:
@@ -95,10 +98,10 @@ func _build_screen() -> void:
 	_label(_canvas, "CATABASE", Rect2(96, 24, 306, 35), 28, TEXT, HEADING)
 	_label(_canvas, "LE SEUIL DES LÉGENDES", Rect2(98, 61, 300, 19), 13, GOLD, BOLD)
 	_label(_canvas, "CHOISISSEZ VOTRE LÉGENDE", Rect2(511, 37, 480, 29), 17, GOLD, BOLD, HORIZONTAL_ALIGNMENT_CENTER)
-	var refuge := _button(_canvas, "Le refuge", Rect2(1190, 31, 139, 44))
-	refuge.tooltip_text = "Explorer le refuge et rencontrer l’Archiviste"
+	var refuge := _button(_canvas, "Sanctuaire", Rect2(1178, 20, 151, 56))
+	refuge.tooltip_text = "Visiter le Sanctuaire et retrouver les services de votre halte"
 	refuge.pressed.connect(open_refuge)
-	var back := _button(_canvas, "Retour à l’accueil", Rect2(1341, 31, 227, 44))
+	var back := _button(_canvas, "Retour à l’accueil", Rect2(1341, 20, 227, 56))
 	back.pressed.connect(func(): request_back())
 	_line(_canvas, Rect2(32, 95, 1536, 1), Color(LINE, 0.55))
 	_build_roster()
@@ -171,28 +174,28 @@ func _build_stage() -> void:
 	_preview.size = Vector2(596, 462)
 	_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_preview.set_showcase_mode(true)
-	var left := _button(_canvas, "‹", Rect2(429, 605, 48, 50))
+	var left := _button(_canvas, "‹", Rect2(429, 605, 54, 54))
 	left.name = "RotateLeft"
 	left.tooltip_text = "Tourner vers la gauche"
 	left.pressed.connect(rotate_preview.bind(-1))
-	var right := _button(_canvas, "›", Rect2(1007, 605, 48, 50))
+	var right := _button(_canvas, "›", Rect2(1007, 605, 54, 54))
 	right.name = "RotateRight"
 	right.tooltip_text = "Tourner vers la droite"
 	right.pressed.connect(rotate_preview.bind(1))
-	var zoom_out := _button(_canvas, "−", Rect2(941, 676, 34, 33))
+	var zoom_out := _button(_canvas, "−", Rect2(907, 673, 54, 54))
 	zoom_out.tooltip_text = "Réduire l’aperçu"
 	zoom_out.pressed.connect(_change_zoom.bind(-0.05))
-	_zoom_label = _label(_canvas, "100 %", Rect2(977, 677, 59, 31), 14, TEXT, BOLD, HORIZONTAL_ALIGNMENT_CENTER)
-	var zoom_in := _button(_canvas, "+", Rect2(1038, 676, 34, 33))
+	_zoom_label = _label(_canvas, "100 %", Rect2(965, 679, 63, 42), 16, TEXT, BOLD, HORIZONTAL_ALIGNMENT_CENTER)
+	var zoom_in := _button(_canvas, "+", Rect2(1033, 673, 54, 54))
 	zoom_in.tooltip_text = "Agrandir l’aperçu"
 	zoom_in.pressed.connect(_change_zoom.bind(0.05))
-	_orientation = _label(_canvas, "", Rect2(554, 700, 376, 21), 14, TEXT, BODY, HORIZONTAL_ALIGNMENT_CENTER)
+	_orientation = _label(_canvas, "", Rect2(554, 698, 342, 25), 16, TEXT, BODY, HORIZONTAL_ALIGNMENT_CENTER)
 	for i in range(3):
-		var pose_button := _button(_canvas, ["Repos", "Marche", "Attaque"][i], Rect2(541 + i * 136, 730, 128, 43))
+		var pose_button := _button(_canvas, ["Repos", "Marche", "Attaque"][i], Rect2(541 + i * 136, 730, 128, 54))
 		pose_button.toggle_mode = true
 		pose_button.pressed.connect(set_preview_pose.bind([&"idle", &"walk", &"attack"][i]))
 		_pose_buttons.append(pose_button)
-	_appearance = _label(_canvas, "", Rect2(475, 779, 534, 23), 15, MUTED, BODY, HORIZONTAL_ALIGNMENT_CENTER)
+	_appearance = _label(_canvas, "", Rect2(475, 789, 534, 23), 15, MUTED, BODY, HORIZONTAL_ALIGNMENT_CENTER)
 	_appearance.tooltip_text = "L’apparence montrée est celle disponible en jeu."
 
 
@@ -201,7 +204,7 @@ func _build_details() -> void:
 	card.name = "CharacterFolio"
 	_ornament(card, Rect2(6, 6, 430, 656), &"corners")
 	for i in range(2):
-		var tab := _button(card, ["Caractéristiques", "Histoire & voies"][i], Rect2(16 + i * 205, 16, 198, 44))
+		var tab := _button(card, ["Caractéristiques", "Histoire & voies"][i], Rect2(16 + i * 205, 16, 198, 54))
 		tab.toggle_mode = true
 		tab.pressed.connect(show_details.bind(i))
 		_tab_buttons.append(tab)
@@ -237,16 +240,16 @@ func _build_details() -> void:
 	_spell_scroll.name = "SpellDescriptionScroll"
 	_details.add_child(_spell_scroll)
 	_spell_scroll.position = Vector2(0, 411)
-	_spell_scroll.size = Vector2(400, 84)
+	_spell_scroll.size = Vector2(400, 68)
 	_spell_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_spell_description = _label(_spell_scroll, "", Rect2(0, 0, 383, 84), 18, TEXT)
 	_spell_description.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_spell_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_spell_description.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_spell_description.clip_text = false
-	_spell_limit = _label(_details, "", Rect2(0, 503, 400, 25), 14, MUTED)
+	_spell_limit = _label(_details, "", Rect2(0, 484, 400, 24), 14, MUTED)
 	_spell_limit.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var spell_tree_button := _button(_details, "Explorer les maîtrises   ›", Rect2(0, 536, 400, 34))
+	var spell_tree_button := _button(_details, "Explorer les maîtrises   ›", Rect2(0, 512, 400, 54))
 	spell_tree_button.name = "ExploreMasteries"
 	spell_tree_button.pressed.connect(open_spell_tree)
 	_lore = Control.new()
@@ -533,7 +536,54 @@ func prepare_adventure(manager: Node) -> bool:
 
 
 func _start_adventure() -> void:
+	if _transitioning or _is_spell_tree_open() or get_selected_entry().is_empty():
+		return
+	var selected_run := get_selected_entry()["run"] as RunData
+	if selected_run != null and selected_run.catabase_route_enabled:
+		var guard := GameManager.get_expedition_replacement_guard()
+		if bool(guard.get("exists", false)):
+			_show_replacement_confirmation(guard)
+			return
+	_launch_adventure()
+
+
+func _show_replacement_confirmation(guard: Dictionary) -> void:
+	_replacement_token = str(guard.get("token", ""))
+	if not is_instance_valid(_replacement_dialog):
+		_replacement_dialog = ConfirmationDialog.new()
+		_replacement_dialog.name = "ReplaceExpeditionConfirmation"
+		_replacement_dialog.title = "Commencer une nouvelle Catabase ?"
+		_replacement_dialog.ok_button_text = "Remplacer et commencer"
+		_replacement_dialog.cancel_button_text = "Garder ma partie"
+		_replacement_dialog.dialog_autowrap = true
+		add_child(_replacement_dialog)
+		_replacement_dialog.theme = preload("res://ui/expedition/catabase_ui_theme.gd").get_theme()
+		for action in [_replacement_dialog.get_ok_button(), _replacement_dialog.get_cancel_button()]:
+			action.custom_minimum_size.y = 46
+		_replacement_dialog.confirmed.connect(_confirm_replacement)
+		_replacement_dialog.canceled.connect(_cancel_replacement)
+	_replacement_dialog.dialog_text = "Une partie de Catabase est déjà enregistrée. Commencer cette aventure remplacera sa progression.\n\nVous pouvez conserver votre partie et la reprendre depuis l’accueil."
+	_replacement_dialog.popup_centered_clamped(Vector2i(580, 240), 0.9)
+	_replacement_dialog.get_cancel_button().grab_focus.call_deferred()
+
+
+func _confirm_replacement() -> void:
+	if not GameManager.confirm_expedition_replacement(_replacement_token):
+		_status.text = "La sauvegarde a changé. Votre partie est conservée ; réessayez."
+		start_button.grab_focus.call_deferred()
+		return
+	_launch_adventure.call_deferred()
+
+
+func _cancel_replacement() -> void:
+	_replacement_token = ""
+	GameManager.cancel_expedition_replacement()
+	start_button.grab_focus.call_deferred()
+
+
+func _launch_adventure() -> void:
 	if not prepare_adventure(GameManager):
+		GameManager.cancel_expedition_replacement()
 		return
 	_transitioning = true
 	start_button.disabled = true
@@ -545,27 +595,38 @@ func _start_adventure() -> void:
 	else:
 		succeeded = GameManager.start_configured_run()
 	if not succeeded:
+		if bool(GameManager.get_expedition_save_status().get("pending", false)):
+			return
 		GameManager.clear_next_run_configuration()
+		GameManager.cancel_expedition_replacement()
 		_transitioning = false
 		start_button.disabled = false
 		_status.text = "Impossible d’ouvrir l’aventure. Réessayez."
 
 
 func request_back(navigate: bool = true) -> void:
-	if _transitioning or _is_spell_tree_open():
+	if _transitioning or _is_spell_tree_open() or _is_replacement_open():
 		return
+	GameManager.cancel_expedition_replacement()
 	back_requested.emit()
 	if navigate:
 		get_tree().change_scene_to_file("res://ui/TitreEcran.tscn")
 
 
 func open_refuge() -> void:
-	if not _transitioning and not _is_spell_tree_open():
-		get_tree().change_scene_to_file("res://hub/StartHub.tscn")
+	if not _transitioning and not _is_spell_tree_open() and not _is_replacement_open():
+		GameManager.cancel_expedition_replacement()
+		var result := GameManager.open_sanctuary("res://ui/selection/CharacterSelectionScreen.tscn")
+		if not bool(result.get("success", false)):
+			_status.text = str(result.get("message", "Le Sanctuaire est indisponible."))
+
+
+func _is_replacement_open() -> bool:
+	return is_instance_valid(_replacement_dialog) and _replacement_dialog.visible
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _is_spell_tree_open():
+	if _is_spell_tree_open() or _is_replacement_open():
 		return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()

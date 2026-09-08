@@ -133,6 +133,8 @@ func _ready() -> void:
 	_status = _label(_root, "", 15, GOLD)
 	_render()
 	ART_THEME.reveal(_root)
+	if _navigation_buttons.has(_page):
+		(_navigation_buttons[_page] as Button).grab_focus.call_deferred()
 	if GameManager.expedition != null and not inspection_only:
 		GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.NON_COMBAT)
 		var persistent := GameManager.get_persistent_run_ui()
@@ -228,6 +230,7 @@ func _render_map() -> void:
 	_label(left, "LE PARCHEMIN DE LA DESCENTE", 14, GOLD)
 	_label(left, "Traits pleins : parcouru · pointillés : chemins possibles · ? : inconnu", 14, MUTED)
 	_map_scroll = ScrollContainer.new()
+	_map_scroll.follow_focus = true
 	_map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_map_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	left.add_child(_map_scroll)
@@ -275,7 +278,8 @@ func _render_map() -> void:
 		_label(card, "Élite : +20 % PV et puissance par rapport au même combat normal. Victoire : 65 oboles au lieu de 35.", 16, RED)
 	if str(selected.kind) in ["normal", "elite", "boss"]:
 		_label(card, "Le danger augmente avec la profondeur. Votre kit et votre équipement seront engagés jusqu'à la fin du combat.", 16, MUTED)
-	var engage := _button(card, "S'engager sur ce chemin  →" if available else "Repérer cette destination", true)
+	# The commitment stays visible while the destination description scrolls.
+	var engage := _button(right, "S'engager sur ce chemin  →" if available else "Repérer cette destination", true)
 	engage.name = "CommitDestination"
 	engage.disabled = not available or inspection_only
 	engage.pressed.connect(func():
@@ -285,12 +289,17 @@ func _render_map() -> void:
 				if _is_hub(): _page = "hub"
 				_render()
 		else:
-			_status.text = "Ce chemin n'est plus accessible."
+			var save_status: Dictionary = GameManager.get_expedition_save_status()
+			var pending := bool(save_status.get("pending", false))
+			engage.disabled = pending or session.route.phase != "map"
+			_status.text = str(save_status.get("message", "")) if pending else "Ce chemin n'est plus accessible."
+			_status.modulate = RED
 	)
 	var advice := _card(details)
 	_label(advice, "AVANT DE PARTIR", 14, GOLD)
 	_label(advice, "%d techniques actives, %d connues. Les sorts retirés restent disponibles dans votre réserve." % [session.character.loadout.get_equipped_spells().size(), session.character.loadout.get_known_spells().size()], 17)
 	var workshop := _button(advice, "Composer le kit")
+	workshop.name = "ComposeCatabaseKit"
 	workshop.pressed.connect(func(): _page = "build"; _render())
 	if _is_hub():
 		var visit := _button(advice, "Revenir dans la halte", true)
@@ -397,7 +406,7 @@ func _render_build() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(right)
 	var details := _scroll_column(right)
-	if not selected.is_empty(): _render_technique(details, selected)
+	if not selected.is_empty(): _render_technique(details, selected, right)
 	var tip := _card(details)
 	_label(tip, "UNE LÉGENDE, PLUSIEURS CHEMINS", 13, GOLD)
 	_label(tip, "Les liens indiquent les prérequis réels. Les trois doctrines peuvent se mêler. Les formes d'une même famille occupent un seul emplacement.", 16, MUTED)
@@ -405,12 +414,13 @@ func _render_build() -> void:
 		_label(tip, "Certaines branches restent inconnues. Cherchez des sanctuaires et des mémoires sur la carte.", 16, TEAL)
 	if not session.build.correction_used:
 		var undo := _button(tip, "Corriger le dernier achat · 1/run")
+		undo.name = "UndoCatabaseTechnique"
 		undo.tooltip_text = "Rembourse le dernier achat de l'arbre. Une seule correction pour toute la descente ; les cartes, caractéristiques et découvertes restent acquises."
 		undo.disabled = inspection_only or not session.is_editable() or session.build.unlocked_node_ids.is_empty()
 		undo.pressed.connect(func(): _action_result(GameManager.undo_expedition_technique()))
 
 
-func _render_technique(parent: Control, offer: Dictionary) -> void:
+func _render_technique(parent: Control, offer: Dictionary, actions: Control) -> void:
 	var session := GameManager.expedition
 	var card := _card(parent, TEAL if bool(offer.owned) else GOLD)
 	var cost := int(offer.cost)
@@ -423,7 +433,7 @@ func _render_technique(parent: Control, offer: Dictionary) -> void:
 		var names := PackedStringArray()
 		for id in prereq: names.append(str(session.build.catalog.get_node(str(id)).get("title", id)))
 		_label(card, "Requiert : " + " + ".join(names), 14, MUTED)
-	var buy := _button(card, "Acquis" if bool(offer.owned) else "Choisir · %d %s" % [cost, point_label], bool(offer.available))
+	var buy := _button(actions, "Acquis" if bool(offer.owned) else "Choisir · %d %s" % [cost, point_label], bool(offer.available))
 	buy.name = "PurchaseTechnique"
 	buy.disabled = inspection_only or not bool(offer.available)
 	buy.tooltip_text = str(offer.get("reason", ""))
@@ -464,6 +474,17 @@ func _render_hub() -> void:
 	var details := _scroll_column(right)
 	_label(details, str(node.title), 26, TEXT, true)
 	_label(details, "%d oboles · prenez le temps de préparer la suite." % session.gold, 16, GOLD)
+	var sanctuary := _button(right, "Rejoindre le Sanctuaire")
+	sanctuary.name = "EnterSanctuary"
+	ART_THEME.apply_button(sanctuary, false, false, "halt")
+	sanctuary.disabled = inspection_only
+	sanctuary.tooltip_text = "Retrouvez les services de cette halte dans le refuge. Vous pourrez revenir ici sans reprendre la route."
+	sanctuary.pressed.connect(func():
+		var result: Dictionary = GameManager.open_sanctuary()
+		if not bool(result.get("success", false)):
+			_status.text = str(result.get("message", "Le Sanctuaire n'est pas accessible pour le moment."))
+			_status.modulate = RED
+	)
 	if int(node.depth) == ExpeditionBuildState.CAPACITY_DEPTH and session.build.depth_eight_choice.is_empty():
 		_render_rewards(details, true)
 		return
@@ -484,7 +505,7 @@ func _render_hub() -> void:
 		accept.disabled = inspection_only or used or session.gold < cost
 		accept.pressed.connect(func(): _action_result(GameManager.use_catabase_hub_service(str(selected.id))))
 		if session.gold < cost: _label(card, "Il vous manque %d oboles." % (cost - session.gold), 15, RED)
-	var leave := _button(details, "Reprendre la route  →", true)
+	var leave := _button(right, "Reprendre la route  →", true)
 	leave.name = "LeaveHub"
 	leave.disabled = inspection_only
 	leave.pressed.connect(func():
@@ -510,6 +531,7 @@ func _render_loadout(parent: Control) -> void:
 		slots.add_child(slot_box)
 		_label(slot_box, "EMPLACEMENT %d" % (slot + 1), 12, MUTED)
 		var dropdown := OptionButton.new()
+		dropdown.name = "LoadoutSlot_%d" % slot
 		dropdown.custom_minimum_size = Vector2(242, 44)
 		dropdown.add_item("Emplacement libre")
 		dropdown.set_item_metadata(0, "")
@@ -566,6 +588,7 @@ func _render_gear() -> void:
 		var name_label := _label(row, "%s  ·  %s" % [attr[1], attr[2]], 18)
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var button := _button(row, "+1 " + attr[1])
+		button.name = "Attribute_" + str(attr[0])
 		button.disabled = inspection_only or not session.is_editable() or state.champion_progression.unspent_attribute_points == 0 or (attr[0] == "wisdom" and state.champion_progression.wisdom_points >= 5)
 		button.pressed.connect(func():
 			GameManager.spend_champion_attribute(&"achilles", StringName(attr[0]))
@@ -599,6 +622,7 @@ func _render_gear() -> void:
 		else:
 			_label(equipped, "Les trouvailles de la descente apparaîtront ici une fois équipées.", 15, MUTED)
 	var inventory := _button(gear, "Ouvrir l'inventaire et équiper les trouvailles", true)
+	inventory.name = "OpenCatabaseInventory"
 	ART_THEME.apply_button(inventory, true, false, "equipment")
 	inventory.disabled = inspection_only
 	inventory.pressed.connect(func():
@@ -633,12 +657,15 @@ func _close() -> void:
 		inspection_closed.emit()
 		queue_free()
 	else:
-		GameManager.save_expedition()
-		GameManager.return_to_title()
+		if not GameManager.request_return_to_title():
+			var status: Dictionary = GameManager.get_expedition_save_status()
+			_status.text = str(status.get("message", "Sauvegarde impossible. Votre expédition reste ouverte."))
+			_status.modulate = RED
 
 
 func _scroll_column(parent: Control) -> VBoxContainer:
 	var scroll := ScrollContainer.new()
+	scroll.follow_focus = true
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

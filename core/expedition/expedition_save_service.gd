@@ -14,8 +14,28 @@ static func write_snapshot(snapshot: Dictionary, path: String = SAVE_PATH) -> bo
 		return false
 	file.store_string(JSON.stringify({"payload": payload, "sha256": payload.sha256_text()}))
 	file.flush()
+	var write_error := file.get_error()
 	file.close()
+	if write_error != OK:
+		return false
+	# Never remove the previous checkpoint before its replacement is complete.
+	if read_snapshot(path + ".tmp").is_empty():
+		return false
 	return DirAccess.rename_absolute(path + ".tmp", path) == OK
+
+
+static func remove_snapshot(path: String = SAVE_PATH) -> bool:
+	if not FileAccess.file_exists(path):
+		return not DirAccess.dir_exists_absolute(path)
+	return DirAccess.remove_absolute(path) == OK
+
+
+static func fingerprint(path: String = SAVE_PATH) -> String:
+	if not FileAccess.file_exists(path):
+		return "absent"
+	var digest := FileAccess.get_sha256(path)
+	# An unreadable existing file must still require replacement confirmation.
+	return digest if not digest.is_empty() else "unreadable"
 
 
 static func read_snapshot(path: String = SAVE_PATH) -> Dictionary:

@@ -1,11 +1,22 @@
-extends SceneTree
+extends Node
 
 ## Exercices de la scène réelle. Ajouter -- --capture avec un renderer actif.
 const SCENE_PATH := "res://hub/sanctuary_prototype/SanctuaryPrototype.tscn"
-const OUTPUT_DIR := "res://artifacts/sanctuary_prototype"
+const OUTPUT_DIR := "res://artifacts/project_audit/2026-09-08/sanctuary"
 const STEP := 1.0 / 60.0
 const MAX_MOVEMENT_STEPS := 2400
 
+class HaltFixtureManager:
+	extends "res://core/game_manager.gd"
+	func start_next_battle() -> void:
+		_room_outcome_resolved = false
+
+var root: Window
+var _run_id := ""
+var _live_halt_save := ""
+var _manager: HaltFixtureManager
+var _user_save_before := ""
+var _user_inventory_before := ""
 var _hub: Node
 var _checks: Array[Dictionary] = []
 var _failures: Array[String] = []
@@ -16,7 +27,10 @@ var _capture_enabled := false
 var _started_at := 0
 
 
-func _initialize() -> void:
+func _ready() -> void:
+	root = get_tree().root
+	get_tree().current_scene = null
+	_run_id = str(Time.get_unix_time_from_system()).replace(".", "_") + "_" + str(Time.get_ticks_usec())
 	_started_at = Time.get_ticks_msec()
 	_capture_enabled = "--capture" in OS.get_cmdline_user_args() and DisplayServer.get_name() != "headless"
 	_run.call_deferred()
@@ -24,167 +38,254 @@ func _initialize() -> void:
 
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_DIR))
+	_user_save_before = FileAccess.get_sha256(ExpeditionSaveService.SAVE_PATH) if FileAccess.file_exists(ExpeditionSaveService.SAVE_PATH) else "absent"
+	_user_inventory_before = FileAccess.get_sha256("user://inventory_equipment_v1.json") if FileAccess.file_exists("user://inventory_equipment_v1.json") else "absent"
+	var global_manager := root.get_node("GameManager")
+	global_manager.expedition_save_path = OUTPUT_DIR.path_join("unused_preparation_" + _run_id + ".json")
 	var packed := load(SCENE_PATH) as PackedScene
 	_check("scene_loads", packed != null, SCENE_PATH)
 	if packed != null:
-		for resolution: Vector2i in [Vector2i(1600, 900), Vector2i(1200, 896)]:
+		for resolution: Vector2i in [Vector2i(1200, 896), Vector2i(1280, 720), Vector2i(1920, 1080)]:
 			_resolution = "%dx%d" % [resolution.x, resolution.y]
 			root.size = resolution
+			_manager = _halt_fixture()
 			_hub = packed.instantiate()
 			root.add_child(_hub)
-			current_scene = _hub
+			get_tree().current_scene = _hub
 			var ready_deadline := Time.get_ticks_msec() + 10000
 			while _hub.has_method("is_ready_for_play") and not bool(_hub.call("is_ready_for_play")) and Time.get_ticks_msec() < ready_deadline:
-				await process_frame
+				await get_tree().process_frame
 			var ready := _hub.has_method("is_ready_for_play") and bool(_hub.call("is_ready_for_play"))
 			_check("scene_ready_within_10_seconds", ready)
 			if ready:
 				_hub.set_process(false)
+				_hub.get_session().bind_runtime(_manager)
+				_hub.call("_update_hud")
 				await _exercise_scene()
 			_hub.queue_free()
-			await process_frame
-			await process_frame
+			await get_tree().process_frame
+			await get_tree().process_frame
 			_hub = null
+			_manager.cleanup_run_state()
+			_manager._exit_tree()
+			_manager.free()
+			await get_tree().process_frame
+	await _exercise_live_bridge()
+	global_manager.expedition_save_path = OUTPUT_DIR.path_join("unused_preparation_after_halt_" + _run_id + ".json")
+	await _exercise_exits()
+	var user_save_after := FileAccess.get_sha256(ExpeditionSaveService.SAVE_PATH) if FileAccess.file_exists(ExpeditionSaveService.SAVE_PATH) else "absent"
+	_check("player_save_unchanged", user_save_after == _user_save_before)
+	var user_inventory_after := FileAccess.get_sha256("user://inventory_equipment_v1.json") if FileAccess.file_exists("user://inventory_equipment_v1.json") else "absent"
+	_check("player_inventory_save_unchanged", user_inventory_after == _user_inventory_before)
 	_write_report()
 	for failure: String in _failures:
 		push_error("SANCTUARY_RUNTIME: " + failure)
 	print("SANCTUARY_RUNTIME: %s (%d checks, %d failures)" % ["PASS" if _failures.is_empty() else "FAIL", _checks.size(), _failures.size()])
-	quit(0 if _failures.is_empty() else 1)
+	get_tree().quit(0 if _failures.is_empty() else 1)
+
+
+func _halt_fixture() -> HaltFixtureManager:
+	var manager := HaltFixtureManager.new()
+	manager.expedition_save_path = OUTPUT_DIR.path_join("bridge_save_" + _run_id + "_" + _resolution + ".json")
+	manager._ready()
+	_check("fixture_start", manager.start_expedition(2401))
+	while int(manager.expedition.route.get_current_node().depth) < 4:
+		_check("fixture_victory", manager.expedition.combat_won())
+		_check("fixture_reward", bool(manager.claim_expedition_reward("supplies").get("success", false)))
+		var nodes := manager.expedition.route.get_available_nodes()
+		var chosen: Dictionary = nodes[0]
+		for node: Dictionary in nodes:
+			if int(node.depth) == 4 and str(node.kind) == "hub":
+				chosen = node
+		_check("fixture_next_node", manager.choose_expedition_node(str(chosen.id)))
+	_check("fixture_is_real_halt", manager.get_sanctuary_context().mode == "halt")
+	return manager
 
 
 func _exercise_scene() -> void:
-	var api_ok := true
-	for method: String in ["request_move", "interact_with", "get_player_position", "get_session", "get_panels", "reset_visit", "_process"]:
-		var exists := _hub.has_method(method)
-		_check("public_api_" + method, exists)
-		api_ok = api_ok and exists
-	if not api_ok:
-		return
 	var layout: Dictionary = _hub.get("layout")
 	var nav: RefCounted = _hub.get("nav")
 	var panels: Control = _hub.call("get_panels")
-	var session: RefCounted = _hub.call("get_session")
-	var spawn := _point(layout.get("spawn", [0, 0]))
-	var entities: Array = layout.get("entities", [])
+	var spawn := _point(layout.spawn)
 	_check("no_node3d", _hub.find_children("*", "Node3D", true, false).is_empty())
-	_check("no_subviewport", _hub.find_children("*", "SubViewport", true, false).is_empty())
-	_check("initial_panels_closed", not bool(panels.call("is_open")))
 	_check("initial_spawn_walkable", bool(nav.call("is_walkable", _position())))
-	_check("initial_spawn_matches_layout", _position().distance_to(spawn) <= 2.0)
-	_check("initial_balance", int(session.call("get_drachmes")) == 120)
-	_check("entities_present", entities.size() >= 3)
+	_check("real_currency", _manager.get_sanctuary_context().currency_label == "oboles")
 	_validate_shaders()
 	_validate_residents()
 	_validate_routes(layout, nav)
+	await _settle_ui()
+	for caption: Label in _hub.find_children("NameLabel", "Label", true, false):
+		_check("resident_name_readable_" + caption.get_parent().name, caption.get_theme_font_size("font_size") * caption.get_global_transform_with_canvas().get_scale().y >= 12.5)
+	var player_screen: Vector2 = (_hub.get("world") as Node2D).get_global_transform_with_canvas() * _position()
+	_check("player_clear_of_toolbar", player_screen.y > 88 and player_screen.y < root.size.y - 128)
 	if _capture_enabled:
 		var initial := await _capture("initial")
-		await create_timer(0.8).timeout
+		await get_tree().create_timer(0.8).timeout
 		var animated := await _capture("initial_after800ms")
 		if initial != null and animated != null:
-			var water_motion := _measure_water_motion(initial, animated, layout)
-			_motion_checks.append(water_motion)
-			_check("water_animates_on_rendered_pixels", int(water_motion.changed_samples) > 0, water_motion)
-
+			var motion := _measure_water_motion(initial, animated, layout)
+			_motion_checks.append(motion)
+			_check("water_animates", int(motion.changed_samples) > 0)
 	var merchant := _entity(layout, "merchant")
 	var oracle := _entity(layout, "oracle")
-	_check("merchant_and_oracle_present", not merchant.is_empty() and not oracle.is_empty())
-	if merchant.is_empty() or oracle.is_empty():
-		return
-	var merchant_approach := _point(merchant.approach)
 	var before_move := _position()
 	await _click_native(_point(merchant.position))
-	_check("merchant_stays_closed_before_arrival", not bool(panels.call("is_open")))
-	_check("interaction_does_not_teleport", _position().is_equal_approx(before_move))
-	_hub.call("_process", STEP)
-	_check("merchant_click_starts_approach", _position().distance_to(before_move) > 0.1 and not bool(panels.call("is_open")))
-	var arrived := await _advance_to(merchant_approach, true)
-	_check("merchant_opens_only_at_approach", arrived and bool(panels.call("is_open")) and _position().distance_to(merchant_approach) <= 24.0, _position_data())
-	if not arrived:
-		return
+	_check("merchant_not_teleported", _position().is_equal_approx(before_move) and not panels.is_open())
+	_check("merchant_arrives", await _advance_to(_point(merchant.approach), true))
+	_check("modal_blocks_world", not _hub.request_move(spawn))
 	await _settle_ui()
 	await _capture("shop")
-	var frozen_position := _position()
-	_check("modal_refuses_world_movement", not bool(_hub.call("request_move", spawn)))
-	_hub.call("_process", 0.25)
-	_check("modal_keeps_achilles_still", _position().is_equal_approx(frozen_position))
-	var buy := panels.find_child("Buy_nectar_des_sources", true, false) as Button
-	_check("real_purchase_button_present", buy != null and not buy.disabled)
-	if buy != null and not buy.disabled:
-		await _click_button(buy)
-	_check("button_purchase_debits_balance", int(session.call("get_drachmes")) == 95)
-	var inventory: Dictionary = session.call("get_inventory")
-	_check("button_purchase_adds_inventory", int(inventory.get(&"nectar_des_sources", 0)) == 1)
-	_check("button_purchase_updates_display", (panels.find_child("DrachmesBalance", true, false) as Label).text == "95 drachmes")
-	var stocks: Array = session.call("get_shop_items")
-	var nectar_stock := -1
-	for item: Dictionary in stocks:
-		if String(item.id) == "nectar_des_sources":
-			nectar_stock = int(item.stock)
-	_check("button_purchase_decrements_stock", nectar_stock == 1)
-	await _click_button(panels.find_child("ClosePanel", true, false) as Button)
-	_check("button_close_restores_world", not bool(panels.call("is_open")) and bool(_hub.call("request_move", spawn)))
-	_check("movement_resumes_after_close", await _advance_to(spawn, false))
-
-	# Une intention en cours doit être remplacée par un véritable clic sur le sol.
-	_check("oracle_intent_accepted", bool(_hub.call("interact_with", &"oracle")))
-	_hub.call("_process", STEP * 2.0)
-	_check("oracle_stays_closed_before_arrival", not bool(panels.call("is_open")))
-	await _click_native(spawn)
-	var returned_to_floor := await _advance_to(spawn, false)
-	for _frame in range(180):
-		_hub.call("_process", STEP)
-	_check("floor_click_replaces_entity_intent", returned_to_floor and not bool(panels.call("is_open")) and _position().distance_to(spawn) <= 2.0, _position_data())
-
-	var water_polygons: Array = layout.get("water_polygons", [])
-	_check("water_mask_present", not water_polygons.is_empty())
-	for index in range(water_polygons.size()):
-		var water_point := _interior_point(_polygon(water_polygons[index]))
-		var before_water := _position()
-		_check("water_destination_%d_refused" % index, not bool(_hub.call("request_move", water_point)))
-		_hub.call("_process", 0.25)
-		_check("water_destination_%d_no_teleport" % index, _position().is_equal_approx(before_water))
-
-	_check("oracle_second_intent_accepted", bool(_hub.call("interact_with", &"oracle")))
-	var oracle_approach := _point(oracle.approach)
-	var oracle_arrived := await _advance_to(oracle_approach, true)
-	_check("oracle_opens_only_at_approach", oracle_arrived and bool(panels.call("is_open")) and _position().distance_to(oracle_approach) <= 24.0, _position_data())
-	if not oracle_arrived:
-		return
+	var offers: Array[Dictionary] = _hub.get_session().services_for(&"merchant")
+	_check("real_merchant_offer", not offers.is_empty())
+	if offers.is_empty(): return
+	var offer: Dictionary = offers[0]
+	var buy := panels.find_child("Buy_" + str(offer.id).replace(":", "_"), true, false) as Button
+	var before_gold := _manager.expedition.gold
+	_check("buy_available", buy != null and not buy.disabled)
+	if buy == null: return
+	await _click_button(buy)
+	_check("purchase_debits_exact_oboles", _manager.expedition.gold == before_gold - int(offer.cost))
+	var inventory: Array = _manager.get_sanctuary_context().inventory
+	_check("purchase_enters_real_inventory", inventory.any(func(item: Dictionary) -> bool: return item.item_id == offer.item_id and int(item.quantity) == 1))
+	_check("purchase_saved", not ExpeditionSaveService.read_snapshot(_manager.expedition_save_path).is_empty())
+	buy = panels.find_child("Buy_" + str(offer.id).replace(":", "_"), true, false) as Button
+	_check("receipt_disables_duplicate_purchase", buy != null and buy.disabled)
+	await _capture("shop_purchased")
+	await _key(KEY_ESCAPE)
+	_check("escape_closes_only_panel", not panels.is_open() and is_instance_valid(_hub))
+	await _click_button(_hub.find_child("Visit_oracle", true, false) as Button)
+	_check("shortcut_walks_to_oracle", await _advance_to(_point(oracle.approach), true))
 	await _settle_ui()
 	await _capture("oracle")
-	var confirm := panels.find_child("ConfirmBlessing", true, false) as Button
-	_check("oracle_requires_explicit_selection", confirm != null and confirm.disabled)
-	var athena := panels.find_child("Select_athena", true, false) as Button
-	_check("athena_button_present", athena != null and not athena.disabled)
-	if athena == null or confirm == null:
-		return
-	await _click_button(athena)
-	var chosen: Dictionary = session.call("get_selected_blessing")
-	_check("selection_alone_does_not_commit", chosen.is_empty())
-	confirm = panels.find_child("ConfirmBlessing", true, false) as Button
-	_check("confirmation_becomes_available", confirm != null and not confirm.disabled)
-	if confirm != null:
-		await _click_button(confirm)
-	chosen = session.call("get_selected_blessing")
-	_check("confirmation_commits_athena", String(chosen.get("id", "")) == "athena")
-	var hermes := panels.find_child("Select_hermes", true, false) as Button
-	_check("second_blessing_button_disabled", hermes != null and hermes.disabled)
-	if hermes != null:
-		await _click_button(hermes)
-	chosen = session.call("get_selected_blessing")
-	_check("disabled_button_cannot_replace_blessing", String(chosen.get("id", "")) == "athena")
-	var repeated: Dictionary = session.call("choose_blessing", &"hermes")
-	_check("session_also_rejects_double_choice", not bool(repeated.get("ok", true)))
-	await _capture("oracle_chosen")
-	await _click_button(panels.find_child("ClosePanel", true, false) as Button)
-	_check("oracle_close_restores_control", not bool(panels.call("is_open")) and bool(_hub.call("request_move", spawn)))
-	_check("return_from_oracle", await _advance_to(spawn, false))
-	_hub.call("reset_visit")
+	var before_lore_gold := _manager.expedition.gold
+	var select := panels.find_child("Select_lore", true, false) as Button
+	await _click_button(select)
+	_check("oracle_selection_has_no_effect", _manager.expedition.gold == before_lore_gold)
+	var confirm := panels.find_child("ConfirmService", true, false) as Button
+	_check("oracle_fixed_confirmation", confirm != null and not confirm.disabled and confirm.get_global_rect().end.y <= root.size.y)
+	await _click_button(confirm)
+	_check("oracle_real_reward", _manager.expedition.gold == before_lore_gold + 20)
+	select = panels.find_child("Select_lore", true, false) as Button
+	_check("oracle_receipt_survives_refresh", select != null and select.disabled)
+	var restored := HaltFixtureManager.new()
+	restored.expedition_save_path = OUTPUT_DIR.path_join("unused_restore_" + _run_id + ".json")
+	restored._ready()
+	_check("restore_real_save", restored.resume_expedition(_manager.expedition_save_path))
+	_check("restored_gold_and_inventory", restored.expedition.gold == _manager.expedition.gold and restored.get_sanctuary_context().inventory == _manager.get_sanctuary_context().inventory)
+	_check("restored_receipt", restored.expedition.hub_used_ids == _manager.expedition.hub_used_ids)
+	if _live_halt_save.is_empty():
+		_live_halt_save = OUTPUT_DIR.path_join("live_halt_" + _run_id + ".json")
+		_check("isolated_live_halt_copy", DirAccess.copy_absolute(ProjectSettings.globalize_path(_manager.expedition_save_path), ProjectSettings.globalize_path(_live_halt_save)) == OK)
+	restored.cleanup_run_state()
+	restored._exit_tree()
+	restored.free()
+	await _capture("oracle_confirmed")
+	await _key(KEY_TAB)
+	var focus := root.gui_get_focus_owner()
+	_check("keyboard_focus_stays_in_modal", focus != null and panels.is_ancestor_of(focus))
+	await _key(KEY_ESCAPE)
+	await _click_button(_hub.find_child("InventoryButton", true, false) as Button)
+	await _capture("inventory")
+	await _key(KEY_ESCAPE)
+	await _key(KEY_3)
+	_check("keyboard_reaches_passage", await _advance_to(_point(_entity(layout, "passage").approach), true))
 	await _settle_ui()
-	_check("reset_restores_balance", int(session.call("get_drachmes")) == 120)
-	_check("reset_clears_inventory", (session.call("get_inventory") as Dictionary).is_empty())
-	_check("reset_clears_blessing", (session.call("get_selected_blessing") as Dictionary).is_empty())
-	_check("reset_returns_to_spawn", _position().distance_to(spawn) <= 2.0)
+	_check("new_panel_starts_at_top", (panels.find_child("ContentScroll", true, false) as ScrollContainer).scroll_vertical == 0)
+	await _capture("departure")
+	var departure := panels.find_child("ContinueJourney", true, false) as Button
+	_check("departure_visible_and_available", departure != null and not departure.disabled and departure.get_global_rect().end.y <= root.size.y)
+	await _click_button(departure)
+	await get_tree().process_frame
+	_check("departure_commits_halt", _manager.expedition.route.phase == "map")
+	var saved := ExpeditionSaveService.read_snapshot(_manager.expedition_save_path)
+	_check("departure_persists_map", str(saved.get("session", {}).get("route", {}).get("phase", "")) == "map")
+
+
+func _exercise_live_bridge() -> void:
+	_resolution = "1200x896"
+	root.size = Vector2i(1200, 896)
+	var live_manager := root.get_node("GameManager")
+	live_manager.expedition_save_path = _live_halt_save
+	_check("live_resume_halt", live_manager.resume_expedition(_live_halt_save))
+	await _wait_scene("res://ui/expedition/ExpeditionScreen.tscn")
+	_check("live_open_sanctuary", bool(live_manager.open_sanctuary().get("success", false)))
+	await _wait_scene(SCENE_PATH)
+	_hub = get_tree().current_scene
+	var deadline := Time.get_ticks_msec() + 10000
+	while not _hub.is_ready_for_play() and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	_check("live_halt_context", _hub.get_session().get_context().mode == "halt")
+	await _capture("live_halt")
+	await _click_button(_hub.find_child("InventoryButton", true, false) as Button)
+	await _capture("live_halt_inventory")
+	await _key(KEY_ESCAPE)
+	_check("live_escape_closes_panel", not _hub.get_panels().is_open() and get_tree().current_scene == _hub)
+	await _click_button(_hub.find_child("SanctuaryMenuButton", true, false) as Button)
+	await _wait_scene("res://ui/expedition/ExpeditionScreen.tscn")
+	_check("live_return_keeps_halt", live_manager.expedition.route.phase == "reward")
+	_check("live_reenter_sanctuary", bool(live_manager.open_sanctuary().get("success", false)))
+	await _wait_scene(SCENE_PATH)
+	_hub = get_tree().current_scene
+	deadline = Time.get_ticks_msec() + 10000
+	while not _hub.is_ready_for_play() and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	await _key(KEY_ESCAPE)
+	await _wait_scene("res://ui/expedition/ExpeditionScreen.tscn")
+	_check("live_escape_returns_halt", live_manager.expedition.route.phase == "reward")
+	live_manager.return_to_title()
+	await _wait_scene("res://ui/TitreEcran.tscn")
+	_hub = null
+
+
+func _wait_scene(path: String) -> void:
+	var deadline := Time.get_ticks_msec() + 10000
+	while Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+		if get_tree().current_scene != null and get_tree().current_scene.scene_file_path == path:
+			await _settle_ui()
+			return
+	_check("scene_transition_" + path.get_file(), false)
+
+
+func _exercise_exits() -> void:
+	_resolution = "1200x896"
+	root.size = Vector2i(1200, 896)
+	get_tree().change_scene_to_file(SCENE_PATH)
+	await _wait_scene(SCENE_PATH)
+	_hub = get_tree().current_scene
+	var deadline := Time.get_ticks_msec() + 10000
+	while not _hub.is_ready_for_play() and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	_hub.set_process(false)
+	var panels: Control = _hub.get_panels()
+	panels.open_shop()
+	await _settle_ui()
+	_check("preparation_has_no_shop", panels.find_children("Buy_*", "Button", true, false).is_empty())
+	await _capture("preparation")
+	await _key(KEY_ESCAPE)
+	await _key(KEY_ESCAPE)
+	for frame in 16: await get_tree().process_frame
+	_check("sanctuary_escape_returns_title", get_tree().current_scene != null and get_tree().current_scene.scene_file_path == "res://ui/TitreEcran.tscn")
+	get_tree().change_scene_to_file("res://hub/StartHub.tscn")
+	for frame in 24: await get_tree().process_frame
+	var menu := get_tree().current_scene.find_child("HubMenuButton", true, false) as Button
+	_check("legacy_hub_has_menu", menu != null and menu.is_visible_in_tree())
+	await _key(KEY_ESCAPE)
+	for frame in 16: await get_tree().process_frame
+	_check("legacy_escape_returns_title", get_tree().current_scene != null and get_tree().current_scene.scene_file_path == "res://ui/TitreEcran.tscn")
+	_hub = null
+
+
+func _key(code: Key) -> void:
+	var event := InputEventKey.new()
+	event.keycode = code
+	event.pressed = true
+	Input.parse_input_event(event)
+	await get_tree().process_frame
+	event = InputEventKey.new()
+	event.keycode = code
+	Input.parse_input_event(event)
+	await get_tree().process_frame
 
 
 func _validate_routes(layout: Dictionary, nav: RefCounted) -> void:
@@ -256,7 +357,7 @@ func _advance_to(destination: Vector2, expect_panel: bool) -> bool:
 			_check("movement_samples_remain_walkable", unsafe_samples == 0, {"samples": frame + 1, "unsafe_samples": unsafe_samples})
 			return true
 		if frame % 120 == 0:
-			await process_frame
+			await get_tree().process_frame
 	_check("movement_arrives_within_40_simulated_seconds", false, {"target": [destination.x, destination.y], "position": _position_data()})
 	return false
 
@@ -291,20 +392,20 @@ func _click_screen(point: Vector2) -> void:
 	down.global_position = point
 	down.pressed = true
 	Input.parse_input_event(down)
-	await process_frame
+	await get_tree().process_frame
 	var up := InputEventMouseButton.new()
 	up.button_index = MOUSE_BUTTON_LEFT
 	up.position = point
 	up.global_position = point
 	up.pressed = false
 	Input.parse_input_event(up)
-	await process_frame
+	await get_tree().process_frame
 
 
 func _settle_ui() -> void:
-	await process_frame
-	await process_frame
-	await process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
 
 
 func _capture(label: String) -> Image:
@@ -406,7 +507,7 @@ func _write_report() -> void:
 		"checks": _checks,
 		"captures": _captures,
 		"water_animation": _motion_checks,
-		"method": "Real SanctuaryPrototype scene; fixed-step controller movement; native floor click; viewport clicks on actual UI buttons. Pixel animation checks use only the painted water polygons.",
+		"method": "Real Sanctuary scene, mouse/key events and fixed-step movement. Three earlier combat victories are explicit fixtures; all halt purchases, discoveries, departure and isolated snapshot restore use production GameManager services. Original player save is hash-checked unchanged.",
 	}
 	var file := FileAccess.open(OUTPUT_DIR + "/runtime_validation.json", FileAccess.WRITE)
 	if file == null:

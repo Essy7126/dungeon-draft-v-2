@@ -68,6 +68,8 @@ func test_catabase_selection_starts_real_champion_manager_at_first_room_without_
 		return
 	assert_same(_screen.get_selected_entry().get("run"), run)
 	_manager = SelectionManager.new()
+	_manager.expedition_save_path = "res://artifacts/project_audit/2026-09-08/selection-no-write-%d.json" % Time.get_ticks_usec()
+	assert_false(FileAccess.file_exists(_manager.expedition_save_path))
 	_manager._ready()
 	watch_signals(_manager)
 	assert_true(_screen.prepare_adventure(_manager))
@@ -92,6 +94,7 @@ func test_catabase_selection_starts_real_champion_manager_at_first_room_without_
 	assert_eq(state.unit.max_mp.get_int(), 3)
 	assert_eq(state.unit.spells.size(), 4)
 	assert_false(_manager.start_configured_run(), "The same selection cannot launch twice")
+	assert_false(FileAccess.file_exists(_manager.expedition_save_path), "The no-write manager never creates a checkpoint")
 
 
 func _entry_ids(entries: Array[Dictionary]) -> Array:

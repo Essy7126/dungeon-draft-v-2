@@ -1,7 +1,7 @@
 class_name SanctuaryController
 extends Node2D
 
-## Autonomous visit to the approved Refuge des Braises. All movement/navigation
+## Interactive visit to the approved Refuge des Braises. All movement/navigation
 ## coordinates are native image pixels; World alone handles viewport fitting.
 const Player := preload("res://hub/sanctuary_prototype/sanctuary_player.gd")
 const Navigation := preload("res://hub/sanctuary_prototype/sanctuary_navigation.gd")
@@ -34,6 +34,9 @@ var _actors: Node2D
 var _balance_label: Label
 var _status_label: Label
 var _debug_label: Label
+var _hint_label: Label
+var _menu_button: Button
+var _world_actions: Array[Button] = []
 var _entity_data: Dictionary = {}
 var _native_size := Vector2(1536, 1024)
 var _ready_for_play := false
@@ -59,6 +62,7 @@ class EntityMarker extends Node2D:
 
 
 func _ready() -> void:
+	_session.bind_runtime(GameManager)
 	_build_interface()
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(LAYOUT_PATH))
 	if not parsed is Dictionary:
@@ -86,6 +90,7 @@ func _ready() -> void:
 		return
 	_status("Achille retrouve le refuge. Approchez-vous d'un habitant.")
 	_update_hud()
+	_menu_button.grab_focus.call_deferred()
 
 
 func _exit_tree() -> void:
@@ -147,12 +152,11 @@ func reset_visit() -> void:
 	if not _ready_for_play or _panels.is_open():
 		return
 	_cancel_movement()
-	_session.reset()
 	player.position = _point(layout.spawn)
 	player.face_for_direction(Vector2(-2.0, 1.0))
 	player.play_idle()
 	_update_hud()
-	_status("Une nouvelle visite commence. Achille dispose de 120 drachmes.")
+	_status("Achille retrouve l'entrée du sanctuaire.")
 
 
 func _can_move() -> bool:
@@ -164,6 +168,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		if nav != null:
 			nav.debug_enabled = not nav.debug_enabled
 			_debug_label.visible = nav.debug_enabled
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("ui_cancel") and not _panels.is_open():
+		return_to_menu()
 		get_viewport().set_input_as_handled()
 		return
 	if not _can_move():
@@ -183,19 +191,20 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 	elif event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
-			KEY_ESCAPE:
-				_cancel_movement()
-				_status("Achille s'arrête.")
 			KEY_E:
 				var nearest := _nearest_entity()
 				if nearest != &"":
 					interact_with(nearest)
 				else:
 					_status("Approchez-vous d'un habitant pour lui parler.")
-			KEY_R:
-				reset_visit()
 			KEY_I:
 				_open_inventory()
+			KEY_1:
+				interact_with(&"merchant")
+			KEY_2:
+				interact_with(&"oracle")
+			KEY_3:
+				interact_with(&"passage")
 			_:
 				return
 		get_viewport().set_input_as_handled()
@@ -208,6 +217,8 @@ func _process(delta: float) -> void:
 		if not _path.is_empty():
 			_cancel_movement()
 		return
+	for action in _world_actions:
+		action.disabled = not _ready_for_play
 	_update_hover()
 	if _debug_label.visible:
 		_debug_label.text = "Achille %.0f, %.0f · %d étapes restantes · F1 : masquer" % [player.position.x, player.position.y, maxi(0, _path.size() - _path_index)]
@@ -270,11 +281,13 @@ func _complete_path() -> void:
 	match id:
 		&"merchant":
 			_panels.open_shop()
+			_status("Achille consulte les offres du marchand.")
 		&"oracle":
 			_panels.open_oracle()
+			_status("Achille écoute l'oracle.")
 		&"passage":
 			_panels.open_departure()
-	_status("Achille échange avec %s." % String(data.name).to_lower())
+			_status("Achille se prépare à reprendre le chemin.")
 
 
 func _open_inventory() -> void:
@@ -312,6 +325,8 @@ func _update_hover() -> void:
 		var marker: EntityMarker = entities[entity_id]
 		marker.highlighted = entity_id == id
 	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND if id != &"" else Input.CURSOR_ARROW)
+	if _hint_label != null:
+		_hint_label.text = "Cliquer pour rejoindre %s" % String(_entity_data[id].name).to_lower() if id != &"" else "Clic : se déplacer · Clic droit : arrêter · Échap : retour"
 
 
 func _build_world() -> void:
@@ -429,31 +444,31 @@ func _build_interface() -> void:
 	top.add_theme_stylebox_override("panel", _panel_style())
 	hud.add_child(top)
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 20)
+	row.add_theme_constant_override("separation", 16)
 	top.add_child(row)
+	_menu_button = _button("Menu · Échap")
+	_menu_button.name = "SanctuaryMenuButton"
+	_menu_button.tooltip_text = "Revenir au menu principal"
+	_menu_button.pressed.connect(return_to_menu)
+	row.add_child(_menu_button)
 	var title := _label("Refuge des Braises", 24, INK)
 	title.add_theme_font_override("font", TITLE_FONT)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(title)
-	_balance_label = _label("120 drachmes", 18, GOLD)
+	_balance_label = _label("", 18, GOLD)
 	_balance_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(_balance_label)
 	var inventory := _button("Inventaire · I")
 	inventory.name = "InventoryButton"
 	inventory.pressed.connect(_open_inventory)
 	row.add_child(inventory)
-	var restart := _button("Recommencer")
-	restart.name = "ResetVisitButton"
-	restart.tooltip_text = "Recommencer la visite avec 120 drachmes, sans objet ni bénédiction."
-	restart.pressed.connect(reset_visit)
-	row.add_child(restart)
 	var bottom := PanelContainer.new()
 	bottom.name = "VisitHint"
 	bottom.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	bottom.offset_left = 20
 	bottom.offset_right = -20
-	bottom.offset_top = -88
+	bottom.offset_top = -128
 	bottom.offset_bottom = -16
 	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bottom.add_theme_stylebox_override("panel", _panel_style())
@@ -465,7 +480,19 @@ func _build_interface() -> void:
 	_status_label = _label("Le sanctuaire se prépare…", 16, INK)
 	_status_label.name = "VisitStatus"
 	content.add_child(_status_label)
-	content.add_child(_label("Clic : se déplacer ou parler  ·  E : interagir à proximité  ·  Clic droit / Échap : arrêter", 13, Color("b8b7a5")))
+	var shortcuts := HBoxContainer.new()
+	shortcuts.name = "SanctuaryDestinations"
+	shortcuts.add_theme_constant_override("separation", 10)
+	content.add_child(shortcuts)
+	for target in [[&"merchant", "Marchand · 1"], [&"oracle", "Oracle · 2"], [&"passage", "Passage · 3"]]:
+		var action := _button(target[1])
+		action.name = "Visit_" + String(target[0])
+		action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		action.pressed.connect(interact_with.bind(target[0]))
+		shortcuts.add_child(action)
+		_world_actions.append(action)
+	_hint_label = _label("Clic : se déplacer · Clic droit : arrêter · Échap : retour", 13, Color("b8b7a5"))
+	content.add_child(_hint_label)
 	_debug_label = _label("", 12, GOLD)
 	_debug_label.hide()
 	content.add_child(_debug_label)
@@ -478,19 +505,49 @@ func _build_interface() -> void:
 		_status("Achille reprend sa visite du sanctuaire.")
 		_update_hud()
 	)
+	_wire_world_focus(inventory)
+
+
+func _wire_world_focus(inventory: Button) -> void:
+	var controls: Array[Button] = [_menu_button, inventory]
+	controls.append_array(_world_actions)
+	for index in controls.size():
+		var current := controls[index]
+		current.focus_next = current.get_path_to(controls[(index + 1) % controls.size()])
+		current.focus_previous = current.get_path_to(controls[posmod(index - 1, controls.size())])
+
+
+func return_to_menu() -> void:
+	_cancel_movement()
+	_return_from_visit.call_deferred()
+
+
+func _return_from_visit() -> void:
+	var result := _session.return_from_visit()
+	if not bool(result.get("success", false)):
+		_status(str(result.get("message", "Le retour n'a pas pu être confirmé.")))
 
 
 func _fit_world() -> void:
 	if not is_instance_valid(world):
 		return
 	var viewport_size := get_viewport_rect().size
-	var fit := minf(viewport_size.x / _native_size.x, viewport_size.y / _native_size.y)
+	var usable := Rect2(Vector2(20, 88), Vector2(maxf(1, viewport_size.x - 40), maxf(1, viewport_size.y - 228)))
+	var fit := minf(usable.size.x / _native_size.x, usable.size.y / _native_size.y)
 	world.scale = Vector2.ONE * fit
-	world.position = (viewport_size - _native_size * fit) * 0.5
+	world.position = usable.position + (usable.size - _native_size * fit) * 0.5
+	for caption: Label in world.find_children("NameLabel", "Label", true, false):
+		caption.scale = Vector2.ONE / fit
+		caption.position = Vector2(-80.0 / fit, 14.0 / fit)
+		caption.add_theme_font_size_override("font_size", 13)
+		caption.add_theme_constant_override("outline_size", 2)
 
 
 func _update_hud() -> void:
-	_balance_label.text = "%d drachmes" % _session.get_drachmes()
+	var context := _session.get_context()
+	_balance_label.text = "%d %s" % [int(context.get("balance", 0)), str(context.get("currency_label", "oboles"))] if str(context.get("mode", "")) == "halt" else "Avant le départ"
+	_menu_button.text = str(context.get("return_label", "Menu principal"))
+	_menu_button.tooltip_text = _menu_button.text + " · Échap"
 
 
 func _status(message: String) -> void:
@@ -520,6 +577,12 @@ func _button(text: String) -> Button:
 	hover.bg_color = Color("3b3b2ef2")
 	button.add_theme_stylebox_override("hover", hover)
 	button.add_theme_stylebox_override("pressed", hover)
+	var focus := _panel_style()
+	focus.bg_color = Color.TRANSPARENT
+	focus.border_color = Color("eed1a1")
+	focus.set_border_width_all(2)
+	button.add_theme_stylebox_override("focus", focus)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return button
 
 

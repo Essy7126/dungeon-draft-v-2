@@ -1,143 +1,52 @@
 class_name SanctuarySession
 extends RefCounted
-
-## Etat temporaire du prototype : aucune sauvegarde ni dependance au combat.
-const INITIAL_DRACHMES := 120
-const SHOP_ITEMS := [
-	{
-		"id": &"nectar_des_sources", "name": "Nectar des sources",
-		"description": "Une fiole de nectar préparée par le marchand du sanctuaire.",
-		"price": 25, "initial_stock": 2,
-	},
-	{
-		"id": &"fil_d_ariane", "name": "Fil d'Ariane",
-		"description": "Un fil doré pour garder la mémoire du chemin parcouru.",
-		"price": 60, "initial_stock": 2,
-	},
-	{
-		"id": &"sceau_de_bronze", "name": "Sceau de bronze",
-		"description": "Un sceau gravé à l'effigie des gardiens du sanctuaire.",
-		"price": 90, "initial_stock": 1,
-	},
-]
-const BLESSINGS := [
-	{
-		"id": &"athena", "name": "Clairvoyance d'Athéna",
-		"description": "Athéna éclaire les décisions d'Achille.",
-		"effect": "Intention pour l'expédition : révéler un indice avant un choix.",
-	},
-	{
-		"id": &"hermes", "name": "Faveur d'Hermès",
-		"description": "Hermès veille sur les rencontres et les échanges.",
-		"effect": "Intention pour l'expédition : découvrir une occasion de commerce.",
-	},
-	{
-		"id": &"hestia", "name": "Chaleur d'Hestia",
-		"description": "Hestia offre à Achille la promesse d'un refuge.",
-		"effect": "Intention pour l'expédition : trouver un lieu de repos.",
-	},
-]
-
-var _drachmes := INITIAL_DRACHMES
-var _inventory: Dictionary = {}
-var _stocks: Dictionary = {}
-var _selected_blessing: StringName = &""
+## Presentation bridge. GameManager owns every transaction and its persistence.
+var _manager: Node
 
 
-func _init() -> void:
-	reset()
+func bind_runtime(manager: Node) -> void:
+	_manager = manager
 
 
-func reset() -> void:
-	_drachmes = INITIAL_DRACHMES
-	_inventory.clear()
-	_stocks.clear()
-	_selected_blessing = &""
-	for item: Dictionary in SHOP_ITEMS:
-		_stocks[item.id] = item.initial_stock
+func get_context() -> Dictionary:
+	if is_instance_valid(_manager) and _manager.has_method("get_sanctuary_context"):
+		var context: Variant = _manager.call("get_sanctuary_context")
+		if context is Dictionary:
+			return context.duplicate(true)
+	return {
+		"mode": "blocked", "balance": 0, "currency_label": "oboles",
+		"services": [], "inventory": [], "departure_enabled": false,
+		"departure_label": "Passage indisponible",
+		"departure_description": "Le refuge ne peut pas encore rejoindre votre aventure.",
+		"return_label": "Menu principal",
+	}
 
 
-func get_drachmes() -> int:
-	return _drachmes
-
-
-func get_inventory() -> Dictionary:
-	return _inventory.duplicate(true)
-
-
-func get_shop_items() -> Array[Dictionary]:
+func services_for(kind: StringName) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for source: Dictionary in SHOP_ITEMS:
-		var item := source.duplicate(true)
-		item["stock"] = int(_stocks[item.id])
-		result.append(item)
+	for service: Dictionary in get_context().get("services", []):
+		var is_merchant := str(service.get("kind", "")) == "merchant"
+		if (kind == &"merchant" and is_merchant) or (kind == &"oracle" and not is_merchant):
+			result.append(service)
 	return result
 
 
-func get_blessings() -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for source: Dictionary in BLESSINGS:
-		result.append(source.duplicate(true))
-	return result
+func use_service(service_id: String) -> Dictionary:
+	if str(get_context().get("mode", "")) != "halt":
+		return {"success": false, "message": "Les préparatifs seront disponibles lors d'une halte de Catabase."}
+	return _action("use_catabase_hub_service", service_id)
 
 
-func get_selected_blessing() -> Dictionary:
-	return _find_entry(BLESSINGS, _selected_blessing).duplicate(true)
+func continue_journey() -> Dictionary:
+	return _action("continue_from_sanctuary")
 
 
-func get_snapshot() -> Dictionary:
-	return {
-		"drachmes": _drachmes,
-		"inventory": _inventory.duplicate(true),
-		"stocks": _stocks.duplicate(true),
-		"selected_blessing": _selected_blessing,
-	}
+func return_from_visit() -> Dictionary:
+	return _action("return_from_sanctuary")
 
 
-func buy_item(item_id: StringName, quantity: int = 1) -> Dictionary:
-	var item := _find_entry(SHOP_ITEMS, item_id)
-	if item.is_empty():
-		return _failure(&"unknown_item", "Cet article n'existe pas.")
-	if quantity <= 0:
-		return _failure(&"invalid_quantity", "La quantité doit être positive.")
-	var stock := int(_stocks[item_id])
-	# Check bounded stock before multiplication, including very large requests.
-	if quantity > stock:
-		return _failure(&"insufficient_stock", "Le marchand n'a plus assez de stock.")
-	var total_price := int(item.price) * quantity
-	if total_price > _drachmes:
-		return _failure(&"insufficient_funds", "Achille n'a pas assez de drachmes.")
-
-	# Commit only after every validation has passed; failures leave state intact.
-	_drachmes -= total_price
-	_stocks[item_id] = stock - quantity
-	_inventory[item_id] = int(_inventory.get(item_id, 0)) + quantity
-	return {
-		"ok": true, "error": &"", "item_id": item_id,
-		"quantity": quantity, "total_price": total_price,
-		"message": "%s rejoint l'inventaire." % String(item.name),
-	}
-
-
-func choose_blessing(blessing_id: StringName) -> Dictionary:
-	var blessing := _find_entry(BLESSINGS, blessing_id)
-	if blessing.is_empty():
-		return _failure(&"unknown_blessing", "Cette bénédiction n'existe pas.")
-	if _selected_blessing != &"":
-		return _failure(&"blessing_already_chosen", "Achille a déjà choisi sa bénédiction.")
-	_selected_blessing = blessing_id
-	return {
-		"ok": true, "error": &"", "blessing_id": blessing_id,
-		"message": "%s accompagne désormais Achille." % String(blessing.name),
-	}
-
-
-func _find_entry(entries: Array, entry_id: StringName) -> Dictionary:
-	for entry: Dictionary in entries:
-		if entry.id == entry_id:
-			return entry
-	return {}
-
-
-func _failure(error: StringName, message: String) -> Dictionary:
-	return {"ok": false, "error": error, "message": message}
+func _action(method: String, argument: Variant = null) -> Dictionary:
+	if not is_instance_valid(_manager) or not _manager.has_method(method):
+		return {"success": false, "message": "Cette action est momentanément indisponible."}
+	var result: Variant = _manager.call(method) if argument == null else _manager.call(method, argument)
+	return result if result is Dictionary else {"success": false, "message": "Le refuge n'a pas pu confirmer cette action."}

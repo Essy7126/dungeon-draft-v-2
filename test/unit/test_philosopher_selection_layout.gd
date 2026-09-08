@@ -15,25 +15,43 @@ class AdventureManager:
 		return true
 
 
-func test_all_five_cards_fit_without_covering_note_or_each_other_at_common_sizes() -> void:
+func test_roster_clips_cards_away_from_note_and_focus_reveals_sixth_hero() -> void:
 	var screen := SCREEN_SCENE.instantiate() as CharacterSelectionScreen
 	add_child_autofree(screen)
 	await wait_process_frames(3)
-	assert_eq(screen._roster_buttons.size(), 5)
+	assert_eq(screen._roster_buttons.size(), 6)
 	var note := screen.find_child("RosterNote", true, false) as Control
+	var scroll := screen.find_child("HeroRosterScroll", true, false) as ScrollContainer
 	assert_not_null(note)
+	assert_not_null(scroll)
+	if note == null or scroll == null:
+		return
 	for viewport_size in [Vector2(1280, 720), Vector2(1440, 900), Vector2(1920, 1080)]:
 		screen.size = viewport_size
+		await wait_process_frames(2)
+		screen._roster_buttons[0].grab_focus()
 		await wait_process_frames(2)
 		var rectangles: Array[Rect2] = []
 		for button in screen._roster_buttons:
 			assert_true(button.is_visible_in_tree())
-			var rect := button.get_global_rect()
+			# ScrollContainer clips the unfocused cards; only their drawn portion
+			# can overlap the note or another visible card.
+			var rect := button.get_global_rect().intersection(scroll.get_global_rect())
+			if not rect.has_area():
+				continue
 			assert_true(screen.get_global_rect().encloses(rect), str(viewport_size))
 			assert_false(rect.intersects(note.get_global_rect()), "%s overlaps note at %s" % [button.name, viewport_size])
 			for previous in rectangles:
 				assert_false(rect.intersects(previous), str(viewport_size))
 			rectangles.append(rect)
+		var trial := screen._roster_buttons[5]
+		trial.grab_focus()
+		await wait_process_frames(3)
+		assert_true(trial.has_focus())
+		assert_gt(scroll.scroll_vertical, 0, "Keyboard focus scrolls to the sixth hero")
+		assert_true(scroll.get_global_rect().grow(1.0).encloses(trial.get_global_rect()), str(viewport_size))
+		assert_true(screen.get_global_rect().encloses(trial.get_global_rect()), str(viewport_size))
+		assert_false(trial.get_global_rect().intersects(note.get_global_rect()), str(viewport_size))
 
 
 func test_visible_trial_card_activates_its_own_run_and_displays_its_chapter() -> void:

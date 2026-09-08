@@ -502,6 +502,11 @@ func _execute_continuation() -> void:
 	if manager.has_method("peek_next_run_data"):
 		configured_run = manager.call("peek_next_run_data") as RunData
 	if not bool(manager.call("start_configured_run")):
+		if manager.has_method("get_expedition_save_status"):
+			var save_status: Dictionary = manager.call("get_expedition_save_status")
+			if bool(save_status.get("pending", false)):
+				# The prepared expedition stays in memory while the save dialog retries.
+				return
 		_fail_and_return("La configuration de run a deja ete consommee ou est invalide.")
 		return
 	run_start_committed = true

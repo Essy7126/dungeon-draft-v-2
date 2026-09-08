@@ -49,6 +49,10 @@ var _active_evolution_upgrade_id: StringName = &""
 var _modal_coordinator := CombatModalCoordinator.new()
 var _hud_port = null
 var _expedition_inspection: Control = null
+var _retired := false
+var _save_feedback_layer: CanvasLayer = null
+var _save_failure_dialog: ConfirmationDialog = null
+var _save_retry_button: Button = null
 
 
 func _ready() -> void:
@@ -89,33 +93,57 @@ func _ready() -> void:
 	pause_menu.reduced_motion_changed.connect(
 		_on_reduced_motion_changed
 	)
+	_create_save_feedback()
 	set_reduced_motion(GameManager.is_reduced_motion_enabled())
 	set_ui_mode(_ui_mode)
 
 
 func _exit_tree() -> void:
+	prepare_for_run_cleanup()
+
+
+func prepare_for_run_cleanup() -> void:
+	if _retired:
+		return
+	_retired = true
+	set_process_unhandled_input(false)
+	if is_instance_valid(_save_failure_dialog):
+		_save_failure_dialog.hide()
+	if is_instance_valid(_save_feedback_layer):
+		_save_feedback_layer.hide()
 	_close_expedition_inspection()
 	_close_evolution_overlay_for_cleanup()
 	close_inventory_screen()
 	close_pause_menu()
 	_modal_coordinator.clear()
 	if _hud_port != null:
+		# On direct tree destruction the children have already left their viewport.
+		# The manager's normal retirement happens earlier and can fully unbind.
+		if is_instance_valid(combat_hud) and combat_hud.is_inside_tree():
+			_hud_port.unbind_context()
 		_hud_port.detach()
 		_hud_port = null
+	if is_instance_valid(contextual_ui_layer):
+		contextual_ui_layer.hide()
+	if is_instance_valid(overlay_layer):
+		overlay_layer.hide()
 
 
 func bind_combat_context(context: Node) -> CanvasLayer:
+	if _retired or _hud_port == null:
+		return null
 	if context == null:
 		unbind_combat_context()
 		return null
 	_hud_port.bind_context(context)
-	_apply_combat_visual_skin.call_deferred(context)
+	_apply_combat_visual_skin.call_deferred(weakref(context))
 	set_ui_mode(RunUIMode.COMBAT)
 	skill_tree_status_button.refresh_from_state()
 	return combat_hud
 
 
-func _apply_combat_visual_skin(expected_context: Node) -> void:
+func _apply_combat_visual_skin(context_ref: WeakRef) -> void:
+	var expected_context := context_ref.get_ref() as Node
 	if (
 		not is_instance_valid(expected_context)
 		or _hud_port == null
@@ -130,7 +158,7 @@ func _apply_combat_visual_skin(expected_context: Node) -> void:
 
 
 func unbind_combat_context(expected_context: Node = null) -> void:
-	if not is_instance_valid(combat_hud):
+	if _retired or _hud_port == null or not is_instance_valid(combat_hud):
 		return
 	if (
 		expected_context != null
@@ -411,6 +439,8 @@ func close_pause_menu() -> bool:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _retired or (is_instance_valid(_save_failure_dialog) and _save_failure_dialog.visible):
+		return
 	if not event.is_action_pressed("ui_cancel"):
 		return
 	if is_instance_valid(_expedition_inspection):
@@ -722,7 +752,7 @@ func _begin_evolution_pause() -> void:
 
 
 func _restore_evolution_pause() -> void:
-	var tree := get_tree()
+	var tree: SceneTree = get_tree() if is_inside_tree() else null
 	if _owns_evolution_tree_pause and tree != null:
 		tree.paused = _tree_was_paused_before_evolution
 	_owns_evolution_tree_pause = false
@@ -745,6 +775,74 @@ func _close_evolution_overlay_for_cleanup() -> void:
 	_release_modal(MODAL_EVOLUTION)
 
 
-func _on_pause_return_to_title_requested(_reason: StringName) -> void:
+func _on_pause_return_to_title_requested(reason: StringName) -> void:
 	close_pause_menu()
-	GameManager.return_to_title()
+	var manager := _save_feedback_manager()
+	if reason == &"abandon":
+		manager.request_abandon_run()
+	else:
+		manager.request_return_to_title()
+
+
+func _save_feedback_manager() -> Node:
+	var parent := get_parent()
+	return parent if parent != null and parent.has_method("get_expedition_save_status") else GameManager
+
+
+func _create_save_feedback() -> void:
+	_save_feedback_layer = CanvasLayer.new()
+	_save_feedback_layer.name = "ExpeditionSaveFeedback"
+	_save_feedback_layer.layer = 110
+	add_child(_save_feedback_layer)
+	_save_retry_button = Button.new()
+	_save_retry_button.name = "RetryExpeditionSave"
+	_save_retry_button.text = "Progression non enregistrée · Réessayer"
+	_save_retry_button.position = Vector2(18, 18)
+	_save_retry_button.custom_minimum_size = Vector2(340, 42)
+	_save_retry_button.hide()
+	_save_feedback_layer.add_child(_save_retry_button)
+	CATABASE_UI_THEME.apply_button(_save_retry_button)
+	_save_retry_button.pressed.connect(_show_save_failure)
+	_save_failure_dialog = ConfirmationDialog.new()
+	_save_failure_dialog.name = "ExpeditionSaveFailure"
+	_save_failure_dialog.title = "Progression non enregistrée"
+	_save_failure_dialog.ok_button_text = "Réessayer"
+	_save_failure_dialog.cancel_button_text = "Rester dans la partie"
+	_save_failure_dialog.dialog_autowrap = true
+	_save_failure_dialog.theme = CATABASE_UI_THEME.get_theme()
+	_save_feedback_layer.add_child(_save_failure_dialog)
+	for button in [_save_failure_dialog.get_ok_button(), _save_failure_dialog.get_cancel_button()]:
+		button.custom_minimum_size.y = 46
+	_save_failure_dialog.confirmed.connect(func() -> void:
+		_save_feedback_manager().retry_expedition_save()
+	)
+	_save_failure_dialog.canceled.connect(func() -> void:
+		_save_feedback_manager().postpone_expedition_exit()
+		_focus_save_retry.call_deferred()
+	)
+	var manager := _save_feedback_manager()
+	manager.expedition_save_status_changed.connect(_on_expedition_save_status_changed)
+	_on_expedition_save_status_changed(manager.get_expedition_save_status())
+
+
+func _on_expedition_save_status_changed(status: Dictionary) -> void:
+	if _retired or not is_instance_valid(_save_retry_button):
+		return
+	var failed := bool(status.get("pending", false))
+	_save_retry_button.visible = failed
+	if failed:
+		_save_failure_dialog.dialog_text = str(status.get("message", "Enregistrement impossible."))
+		_save_failure_dialog.cancel_button_text = "Garder cet écran" if status.get("operation", "") in ["start_combat", "open_destination"] else "Rester dans la partie"
+		_show_save_failure.call_deferred()
+	else:
+		_save_failure_dialog.hide()
+
+
+func _show_save_failure() -> void:
+	if not _retired and is_inside_tree() and bool(_save_feedback_manager().get_expedition_save_status().get("pending", false)):
+		_save_failure_dialog.popup_centered(Vector2i(520, 200))
+
+
+func _focus_save_retry() -> void:
+	if not _retired and is_inside_tree() and _save_retry_button.is_visible_in_tree():
+		_save_retry_button.grab_focus()

@@ -240,6 +240,14 @@ func _request_exit_confirmation(reason: StringName) -> void:
 		if reason == &"abandon"
 		else "Quitter la run et revenir au menu principal ?"
 	)
+	if GameManager.expedition != null:
+		_confirmation.dialog_text = (
+			"Abandonner Catabase et supprimer sa reprise ? Cette expédition ne pourra plus être reprise."
+			if reason == &"abandon"
+			else "Enregistrer la progression et revenir au menu ?"
+		)
+		if reason != &"abandon" and GameManager.expedition.route.phase == "combat":
+			_confirmation.dialog_text += "\nLe combat en cours reprendra depuis son début."
 	_confirmation.popup_centered(Vector2i(460, 190))
 
 
