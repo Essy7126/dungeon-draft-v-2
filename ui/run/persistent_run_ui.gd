@@ -71,6 +71,7 @@ func _ready() -> void:
 		_on_inventory_requested
 	)
 	combat_hud.utility_map_requested.connect(_on_map_requested)
+	combat_hud.utility_attributes_requested.connect(_on_attributes_requested)
 	skill_tree_screen.screen_closed.connect(
 		_on_skill_tree_screen_closed
 	)
@@ -522,6 +523,14 @@ func _on_skill_tree_screen_closed() -> void:
 
 
 func _on_map_requested() -> void:
+	_open_expedition_inspection("map")
+
+
+func _on_attributes_requested() -> void:
+	_open_expedition_inspection("attributes")
+
+
+func _open_expedition_inspection(page: String) -> void:
 	if GameManager.expedition == null or _ui_mode != RunUIMode.COMBAT \
 			or is_instance_valid(_expedition_inspection) \
 			or not _combat_context_allows_run_modal():
@@ -531,7 +540,7 @@ func _on_map_requested() -> void:
 		_combat_controls_before_skill_tree = false
 		return
 	_hud_port.set_controls_enabled(false)
-	_show_expedition_inspection("map")
+	_show_expedition_inspection(page)
 
 
 func _show_expedition_inspection(page: String) -> void:

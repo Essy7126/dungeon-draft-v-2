@@ -36,6 +36,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	PremiumUI.apply(self)
 	_close_button.pressed.connect(close_screen)
+	_close_button.tooltip_text = "Fermer l’inventaire et revenir à la run · Échap"
 	_hero_selector.item_selected.connect(_on_hero_selected)
 	_equip_button.pressed.connect(_on_equip_pressed)
 	_use_button.pressed.connect(_on_use_pressed)
@@ -64,6 +65,7 @@ func open_for_character(character_id: StringName, manager = GameManager) -> bool
 	_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
 	_feedback.text = ""
 	_detail_scroll.scroll_vertical = 0
+	_apply_responsive_layout()
 	show()
 	move_to_front()
 	_refresh()
@@ -103,11 +105,22 @@ func _apply_responsive_layout() -> void:
 		if _test_viewport_size != Vector2.ZERO
 		else get_viewport_rect().size
 	)
+	var compact := viewport_size.x < 1180.0
 	_panel.custom_minimum_size = Vector2(
-		clampf(viewport_size.x - 48.0, 960.0, 1240.0),
-		clampf(viewport_size.y - 40.0, 650.0, 820.0),
+		minf(maxf(viewport_size.x - 40.0, 0.0), 1240.0),
+		minf(maxf(viewport_size.y - 40.0, 0.0), 820.0),
 	)
-	_inventory_grid.columns = 3
+	_inventory_grid.columns = 2 if compact else 3
+	var bag := find_child("BagPanel", true, false) as Control
+	var details := find_child("RightPanel", true, false) as Control
+	bag.custom_minimum_size.x = 0.0
+	details.custom_minimum_size.x = 330.0 if compact else 390.0
+	_hero_selector.custom_minimum_size.x = 146.0 if compact else 220.0
+	_hero_selector.visible = _hero_ids.size() > 1
+	(find_child("HeroLabel", true, false) as Control).visible = _hero_selector.visible and not compact
+	(find_child("BagHint", true, false) as Control).visible = not compact
+	for child in _equipment_list.get_children():
+		(child as Control).custom_minimum_size.y = 76.0 if viewport_size.y <= 800.0 else 90.0
 
 
 func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
@@ -210,6 +223,7 @@ func _refresh() -> void:
 	]
 	_rebuild_inventory(inventory, catalog)
 	_rebuild_equipment(state, catalog)
+	_apply_responsive_layout()
 	_refresh_details(state, inventory, catalog)
 	_feedback.visible = not _feedback.text.is_empty()
 	_restore_action_focus.call_deferred()
@@ -313,7 +327,8 @@ func _refresh_details(
 		"Choisissez un objet du sac ou un emplacement équipé."
 	)
 	_modifier_summary.text = _modifier_text(definition)
-	_stats_summary.text = _stats_text(state.unit)
+	_stats_summary.text = _equipment_comparison_text(state, definition, catalog) if GameManager.expedition != null else _stats_text(state.unit)
+	_stats_summary.visible = not _stats_summary.text.is_empty()
 	var from_inventory := instance != null and _selected_instance_id != &""
 	_equip_button.visible = definition != null and definition.is_equippable() and from_inventory
 	_equip_button.disabled = (
@@ -444,6 +459,24 @@ func _modifier_text(definition: ItemDefinition) -> String:
 		)
 		lines.append("%s %s" % [_stat_label(modifier.stat_id), value_text])
 	return "Bonus :\n" + "\n".join(lines)
+
+
+func _equipment_comparison_text(state: CharacterRunState, definition: ItemDefinition, catalog: ItemCatalog) -> String:
+	if definition == null:
+		return "Le sac contient vos objets disponibles. Les emplacements à droite montrent ce que vous portez.\n\nSélectionnez un objet pour lire son effet, puis choisissez Équiper ou Utiliser."
+	if definition.is_relic():
+		return "Cette relique agit automatiquement tant qu’elle est dans le sac. Aucun emplacement d’équipement nécessaire."
+	if definition.is_consumable():
+		return "Une unité sera consommée à l’utilisation."
+	if not definition.is_equippable():
+		return ""
+	if _selected_equipment_slot != ItemDefinition.EquipmentSlot.NONE:
+		return "ACTUELLEMENT ÉQUIPÉ\nCet objet vous accorde les bonus ci-dessus. Retirer cet objet le remet dans le sac."
+	var equipped := state.equipment_loadout.get_item(definition.equipment_slot)
+	var current := catalog.get_definition(equipped.definition_id) if equipped != null else null
+	if current == null:
+		return "EMPLACEMENT LIBRE\nÉquiper cet objet ajoute les bonus ci-dessus."
+	return "REMPLACE : %s\n%s\n\nL’objet remplacé retourne dans le sac." % [current.display_name, _modifier_text(current)]
 
 
 func _stats_text(unit: Unit) -> String:

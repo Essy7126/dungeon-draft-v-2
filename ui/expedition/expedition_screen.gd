@@ -1,6 +1,6 @@
 class_name ExpeditionScreen
 extends Control
-## One readable workshop for route commitments, techniques and their opportunity cost.
+## One decision at a time: progression, reward, preparation, then the full-page route.
 
 signal inspection_closed
 
@@ -15,11 +15,12 @@ const TEAL := ART_THEME.TEAL
 const RED := ART_THEME.DANGER
 const BODY_FONT := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf")
 const TITLE_FONT := preload("res://asset/ui/character_selection/selection_title_font.tres")
-const MAP_CANVAS := preload("res://ui/expedition/expedition_map_canvas.gd")
+const ROUTE_VIEW := preload("res://ui/expedition/expedition_route_view.gd")
+const FLOW := preload("res://core/expedition/expedition_flow.gd")
+const REWARD_CARD := preload("res://ui/expedition/expedition_reward_card.gd")
+const ATTRIBUTES_VIEW := preload("res://ui/expedition/expedition_attributes_view.gd")
 const TREE_CANVAS := preload("res://ui/expedition/expedition_tree_canvas.gd")
 const HUB_CANVAS := preload("res://ui/expedition/catabase_hub_canvas.gd")
-const TYPE_NAMES := {"normal": "Combat", "elite": "Épreuve élite", "hub": "Refuge", "merchant": "Marchand", "sanctuary": "Sanctuaire", "lore": "Mémoire", "event": "Rencontre", "cache": "Cache", "hidden": "Passage secret", "unknown": "Destination inconnue", "boss": "Gardien final"}
-const REWARD_NAMES := {"melee": "Contact et contrôle", "ranged": "Tir et préparation", "armor": "Armure et garde", "mobility": "Mouvement et esquive", "control": "Contrôle", "healing": "Soin et endurance", "elemental": "Feu, givre ou foudre", "discovery": "Découverte", "vitality": "PV et sacrifice", "signature": "Transformation", "victory": "Fin de la traversée"}
 
 var inspection_only := false
 var initial_page := "map"
@@ -44,13 +45,31 @@ var _navigation_buttons: Dictionary = {}
 var _resource_values: Dictionary = {}
 var _resource_strip: HFlowContainer
 var _rendered_page := ""
+var _hero_banner: PanelContainer
+var _navigation: HBoxContainer
+var _flow_rail: HFlowContainer
+var _flow_labels: Array[Label] = []
+var _route_view: Control
+var _selected_reward := ""
+var _selected_reward_node := ""
+var _confirm_reward: Button
+var _reward_choices: Dictionary = {}
+var _reward_summary: Label
+var _reward_offers: Dictionary = {}
+var _attributes_view: Control
+var _progression_continue: Button
+var _close_button: Button
+var _return_page := ""
+var _skills_tab := "equipped"
+var _last_reward: Dictionary = {}
 
 
 func _ready() -> void:
 	_page = initial_page
-	if not inspection_only and _is_hub() and not GameManager.is_merchant_hall_active():
-		_page = "hub"
+	if not inspection_only and GameManager.expedition != null:
+		_page = FLOW.required_step(GameManager.expedition)
 	_build_theme()
+	resized.connect(_on_screen_resized)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var background := ColorRect.new()
 	background.color = INK
@@ -71,93 +90,113 @@ func _ready() -> void:
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 24)
+		margin.add_theme_constant_override("margin_" + side, 18)
 	add_child(margin)
 	_root = VBoxContainer.new()
-	_root.add_theme_constant_override("separation", 14)
+	_root.add_theme_constant_override("separation", 10)
 	margin.add_child(_root)
-	var hero_banner := PanelContainer.new()
-	hero_banner.name = "CatabaseHeroBanner"
-	hero_banner.add_theme_stylebox_override("panel", ART_THEME.style("banner"))
-	_root.add_child(hero_banner)
+	_hero_banner = PanelContainer.new()
+	_hero_banner.name = "CatabaseHeroBanner"
+	var banner_style := ART_THEME.style("banner")
+	banner_style.content_margin_left = 18
+	banner_style.content_margin_right = 18
+	banner_style.content_margin_top = 8
+	banner_style.content_margin_bottom = 8
+	_hero_banner.add_theme_stylebox_override("panel", banner_style)
+	_root.add_child(_hero_banner)
 	var heading := HBoxContainer.new()
-	heading.add_theme_constant_override("separation", 16)
-	hero_banner.add_child(heading)
-	var hero_frame := PanelContainer.new()
-	hero_frame.name = "CatabaseHeroPortraitFrame"
-	var portrait_style := ART_THEME.style("portrait_frame")
-	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
-		portrait_style.set_content_margin(side, 8)
-	hero_frame.add_theme_stylebox_override("panel", portrait_style)
-	heading.add_child(hero_frame)
-	_icon(hero_frame, CatabasePaintedIconCatalog.emblem_icon("achilles"), 64)
+	heading.add_theme_constant_override("separation", 10)
+	_hero_banner.add_child(heading)
+	_icon(heading, CatabasePaintedIconCatalog.emblem_icon("achilles"), 36)
 	var names := VBoxContainer.new()
 	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	names.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	names.custom_minimum_size.x = 110
 	heading.add_child(names)
-	_label(names, "LA DESCENTE D'ACHILLE", 13, GOLD)
-	_label(names, "Catabase", 32, TEXT, true)
-	var close := _button(heading, "Fermer" if inspection_only else "Accueil")
-	ART_THEME.apply_button(close, false, false, "close" if inspection_only else "home")
-	close.pressed.connect(_close)
-	_summary = _label(names, "", 14, MUTED)
+	_label(names, "Catabase", 21, TEXT, true)
+	_summary = _label(names, "", 13, MUTED)
+	_navigation = HBoxContainer.new()
+	_navigation.name = "CatabaseNavigation"
+	_navigation.add_theme_constant_override("separation", 6)
+	_navigation.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(_navigation)
+	for entry in [["gear", "Inventaire", "equipment", "Vos objets, leur équipement et leurs effets."], ["build", "Compétences", "tree", "Vos actions en combat et les nouvelles techniques à apprendre."], ["attributes", "Caractéristiques", "", "Vos points de vie, vos dégâts et votre protection."]]:
+		var tab := _button(_navigation, entry[1])
+		tab.name = "CatabaseTab_" + entry[0]
+		tab.set_meta("catabase_icon", entry[2])
+		tab.tooltip_text = entry[3]
+		if entry[0] == "attributes":
+			tab.icon = ART_THEME.icon("resources", "level")
+			tab.expand_icon = true
+			tab.add_theme_constant_override("icon_max_width", 24)
+		_navigation_buttons[entry[0]] = tab
+		tab.pressed.connect(func(): _open_inventory() if entry[0] == "gear" else _navigate(entry[0]))
+	_close_button = _button(heading, "Menu")
+	_close_button.name = "CloseExpeditionScreen"
+	_close_button.custom_minimum_size.x = 100
+	_close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_close_button.pressed.connect(_close_current_view)
 	_resource_strip = HFlowContainer.new()
 	_resource_strip.name = "CatabaseResources"
-	_resource_strip.add_theme_constant_override("h_separation", 12)
-	_resource_strip.add_theme_constant_override("v_separation", 6)
+	_resource_strip.add_theme_constant_override("h_separation", 18)
+	_resource_strip.add_theme_constant_override("v_separation", 4)
 	_root.add_child(_resource_strip)
-	for resource in [["health", "Vitalité"], ["level", "Niveau"], ["destiny", "Points de destin"], ["oboles", "Oboles"]]:
+	for resource in [["health", "Vitalité", "PV : la vie restante. À zéro, la descente prend fin."], ["level", "Niveau", "L'expérience gagnée augmente votre niveau et donne des points de caractéristique."], ["destiny", "Points de destin", "À dépenser dans Compétences pour apprendre des techniques. Vous pouvez les conserver."], ["oboles", "Oboles", "La monnaie de la run : achats et soins chez les marchands."]]:
 		var row := HBoxContainer.new()
 		row.name = "Resource_" + resource[0]
-		row.add_theme_constant_override("separation", 7)
-		row.custom_minimum_size.x = 145
+		row.add_theme_constant_override("separation", 6)
+		row.tooltip_text = resource[2]
 		_resource_strip.add_child(row)
-		_icon(row, ART_THEME.icon("resources", resource[0]), 28)
-		var value := _label(row, resource[1], 17, GOLD if resource[0] == "oboles" else TEXT)
+		_icon(row, ART_THEME.icon("resources", resource[0]), 26)
+		var value := _label(row, resource[1], 16, GOLD if resource[0] == "oboles" else TEXT)
+		value.tooltip_text = resource[2]
 		value.autowrap_mode = TextServer.AUTOWRAP_OFF
 		_resource_values[resource[0]] = value
-	if GameManager.expedition != null:
-		var navigation := HFlowContainer.new()
-		navigation.name = "CatabaseNavigation"
-		navigation.add_theme_constant_override("h_separation", 8)
-		navigation.add_theme_constant_override("v_separation", 6)
-		_root.add_child(navigation)
-		for entry in [["map", "Carte", "map"], ["build", "Arbre & techniques", "tree"], ["gear", "Équipement & stats", "equipment"], ["hub", "La halte", "halt"], ["journal", "Carnet", "journal"]]:
-			var tab := _button(navigation, entry[1])
-			tab.name = "CatabaseTab_" + entry[0]
-			tab.set_meta("catabase_icon", entry[2])
-			_navigation_buttons[entry[0]] = tab
-			tab.pressed.connect(func(): _page = entry[0]; _render())
+	_flow_rail = HFlowContainer.new()
+	_flow_rail.name = "ExpeditionFlowSteps"
+	_flow_rail.add_theme_constant_override("h_separation", 20)
+	_root.add_child(_flow_rail)
+	for title in ["01  Renforcer", "02  Récompense", "03  Préparer", "04  Explorer"]:
+		var step := _label(_flow_rail, title, 14, MUTED)
+		step.autowrap_mode = TextServer.AUTOWRAP_OFF
+		_flow_labels.append(step)
 	_body = VBoxContainer.new()
 	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_root.add_child(_body)
 	_status = _label(_root, "", 15, GOLD)
 	_render()
 	ART_THEME.reveal(_root)
-	if _navigation_buttons.has(_page):
-		(_navigation_buttons[_page] as Button).grab_focus.call_deferred()
 	if GameManager.expedition != null and not inspection_only:
 		GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.NON_COMBAT)
 		var persistent := GameManager.get_persistent_run_ui()
 		if persistent != null:
-			persistent.inventory_screen.screen_closed.connect(func():
-				GameManager.save_expedition()
-				_render.call_deferred()
-			)
+			persistent.inventory_screen.screen_closed.connect(_on_inventory_closed)
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if inspection_only and event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("ui_cancel"):
+		var persistent := GameManager.get_persistent_run_ui()
+		if persistent != null and persistent.has_active_modal() and not inspection_only:
+			return
 		get_viewport().set_input_as_handled()
-		_close()
+		_close_current_view()
 
 
 func _render() -> void:
+	if not inspection_only and GameManager.expedition != null:
+		var required := FLOW.required_step(GameManager.expedition)
+		if _page in ["map", "preparation"] and required != "map":
+			_page = required
+		elif _page in ["rewards", "capacity"] and _page != required:
+			_page = "preparation" if required == "map" else required
 	var previous_focus := get_viewport().gui_get_focus_owner()
 	var focus_name := ""
 	if previous_focus != null and _body.is_ancestor_of(previous_focus) and not str(previous_focus.name).begins_with("@"):
 		focus_name = str(previous_focus.name)
 	if is_instance_valid(_map_scroll) and _map_scroll.is_inside_tree():
 		_map_scroll_position = _map_scroll.scroll_vertical
+	if is_instance_valid(_route_view) and _route_view.is_inside_tree():
+		_map_scroll_position = _route_view.get_scroll_position()
 	if is_instance_valid(_tree_scroll) and _tree_scroll.is_inside_tree():
 		_tree_scroll_position = _tree_scroll.scroll_vertical
 	for child in _body.get_children():
@@ -165,38 +204,62 @@ func _render() -> void:
 		child.queue_free()
 	var session := GameManager.expedition
 	_resource_strip.visible = session != null
+	_hero_banner.show()
+	_status.visible = false
+	_navigation.visible = session != null
+	var auxiliary := _page in ["build", "gear", "attributes", "journal"]
+	_close_button.text = "Fermer  ×" if inspection_only or auxiliary else "Retour" if _page == "map" else "Menu"
+	_close_button.tooltip_text = "Fermer cet écran et retrouver la run · Échap" if inspection_only else "Revenir à votre écran précédent · Échap" if auxiliary else "Revenir à la préparation · Échap" if _page == "map" else "Pause et options de la run · Échap"
+	if is_instance_valid(_flow_rail):
+		_flow_rail.visible = session != null and not inspection_only and not auxiliary and _page != "map"
+		var step_index := 0 if _page == "progression" else 1 if _page in ["rewards", "capacity", "hub"] else 3 if _page == "map" else 2
+		for index in _flow_labels.size():
+			_flow_labels[index].add_theme_color_override("font_color", GOLD if index == step_index else TEAL if index < step_index else MUTED)
 	for page_id in _navigation_buttons:
 		var tab: Button = _navigation_buttons[page_id]
-		ART_THEME.apply_tab(tab, page_id == _page, str(tab.get_meta("catabase_icon")))
+		ART_THEME.apply_tab(tab, page_id == _page or (page_id == "attributes" and _page == "progression"), str(tab.get_meta("catabase_icon")))
 	if session == null:
 		_render_landing()
 		return
-	var hero := session.character.unit
-	var champion := session.character.champion_progression
-	_summary.text = "ACHILLE  ·  Étapes %d / 20" % session.route.completed_node_ids.size()
-	_resource_values.health.text = "%d / %d PV" % [hero.current_hp, hero.max_hp.get_int()]
-	_resource_values.level.text = "Niveau %d" % champion.current_level
-	_resource_values.destiny.text = "%d %s de destin" % [session.build.points, "point" if session.build.points == 1 else "points"]
-	_resource_values.oboles.text = "%d oboles" % session.gold
-	_status.text = "Consultation en combat · le chemin et le kit se choisissent entre les rencontres." if inspection_only else session.last_message
-	_status.add_theme_color_override("font_color", GOLD)
+	_refresh_resources()
 	match _page:
+		"progression", "attributes": _render_progression()
+		"capacity": _render_choice_screen(true)
+		"rewards": _render_choice_screen()
+		"preparation": _render_preparation()
 		"build": _render_build()
 		"gear": _render_gear()
 		"journal": _render_journal()
 		"hub": _render_hub()
 		_: _render_map()
-	if not _rendered_page.is_empty() and _rendered_page != _page:
+	var page_changed := _rendered_page != _page
+	if not _rendered_page.is_empty() and page_changed:
 		ART_THEME.reveal(_body)
 	_rendered_page = _page
-	if not focus_name.is_empty():
+	if page_changed:
+		_focus_page_action.call_deferred()
+	elif not focus_name.is_empty():
 		_restore_body_focus.call_deferred(focus_name)
 
 
 func _restore_body_focus(control_name: String) -> void:
 	var control := _body.find_child(control_name, true, false) as Control
+	if control is BaseButton and control.disabled:
+		return
 	if control != null and control.is_visible_in_tree() and control.focus_mode != Control.FOCUS_NONE:
 		control.grab_focus()
+
+
+func _focus_page_action() -> void:
+	var target := str({"progression": "Attribute_vitality", "rewards": "RewardOption_0", "capacity": "Capacity_slot", "attributes": "Attribute_vitality", "preparation": "OpenRouteMap", "map": "RecenterRoute"}.get(_page, ""))
+	if _page == "progression" and GameManager.expedition.character.champion_progression.unspent_attribute_points == 0:
+		target = "ContinueExpeditionFlow"
+	if _page == "progression" and GameManager.expedition.character.champion_progression.unspent_attribute_points > 0:
+		_attributes_view.grab_focus()
+	elif _page == "attributes" and (inspection_only or GameManager.expedition.character.champion_progression.unspent_attribute_points == 0):
+		_close_button.grab_focus()
+	elif not target.is_empty():
+		_restore_body_focus(target)
 
 
 func _render_landing() -> void:
@@ -214,153 +277,365 @@ func _render_landing() -> void:
 		resume.pressed.connect(func():
 			if not GameManager.resume_expedition():
 				_status.text = "Cette sauvegarde est incompatible ou endommagée. Elle a été conservée."
+				_status.show()
 		)
 	_status.text = "Quinze combats et cinq haltes · un départ commun, une légende à construire."
 
 
 func _render_map() -> void:
 	var session := GameManager.expedition
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 18)
-	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_body.add_child(row)
-	var left := VBoxContainer.new()
-	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left.size_flags_stretch_ratio = 1.9
-	row.add_child(left)
-	_label(left, "LE PARCHEMIN DE LA DESCENTE", 14, GOLD)
-	_label(left, "Traits pleins : parcouru · pointillés : chemins possibles · ? : inconnu", 14, MUTED)
-	_map_scroll = ScrollContainer.new()
-	_map_scroll.follow_focus = true
-	_map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_map_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	left.add_child(_map_scroll)
-	var canvas := MAP_CANVAS.new()
-	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_map_scroll.add_child(canvas)
-	canvas.set_route(session.route)
-	canvas.node_selected.connect(func(id: String): _selected_node = id; _render())
-	canvas.select_node(_selected_node)
-	var completed_depth := session.route.completed_node_ids.size()
-	if completed_depth != _map_scroll_depth:
-		_map_scroll_position = canvas.get_depth_scroll_position(maxi(1, completed_depth))
-		_map_scroll_depth = completed_depth
-	_map_scroll.set_deferred("scroll_vertical", _map_scroll_position)
-	var right := VBoxContainer.new()
-	right.custom_minimum_size.x = 330
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(right)
-	var details := _scroll_column(right)
-	if GameManager.is_merchant_hall_active():
-		_render_merchant_hall_return(details, right)
+	_route_view = ROUTE_VIEW.new()
+	_route_view.name = "ExpeditionRouteView"
+	_route_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_body.add_child(_route_view)
+	var depth := session.route.completed_node_ids.size()
+	if depth != _map_scroll_depth:
+		_map_scroll_position = -1
+		_map_scroll_depth = depth
+		_selected_node = ""
+	_route_view.configure(session, _selected_node, inspection_only, _map_scroll_position)
+	_map_scroll = _route_view.find_child("RouteMapScroll", true, false) as ScrollContainer
+	_route_view.destination_selected.connect(func(id: String): _selected_node = id)
+	_route_view.destination_committed.connect(_commit_destination)
+	_route_view.preparation_requested.connect(func(): _navigate("preparation"))
+
+
+func _commit_destination(node_id: String) -> void:
+	if inspection_only or GameManager.expedition == null:
 		return
-	if session.route.phase == "reward" and not _is_hub():
-		_render_rewards(details)
+	if FLOW.required_step(GameManager.expedition) != "map":
+		_continue_flow()
 		return
-	var selected: Dictionary = {}
-	for node in session.route.get_visible_nodes():
-		if node.id == _selected_node:
-			selected = node
-	if selected.is_empty():
-		var available := session.route.get_available_nodes()
-		if not available.is_empty():
-			selected = available[0]
-			_selected_node = str(selected.id)
-			canvas.select_node(_selected_node)
-	var card := _card(details, GOLD)
-	if selected.is_empty():
-		_label(card, "Votre prochain seuil", 24, TEXT, true)
-		_label(card, "Sélectionnez une destination sur la carte.")
-		return
-	_label(card, "SEUIL %02d  /  %s" % [int(selected.depth), TYPE_NAMES.get(str(selected.kind), "Horizon incertain")], 14, GOLD)
-	_label(card, str(selected.title), 25, TEXT, true)
-	if str(selected.get("id", "")) == "d04_1" and str(selected.kind) == "merchant":
-		_label(card, "La Halle sous les racines · explorez les étals avec Achille.", 17, TEAL)
-	_label(card, str(selected.get("hint", "Une part du chemin reste à découvrir.")), 18)
-	if str(selected.reward) != "":
-		_label(card, "Promesse : " + str(REWARD_NAMES.get(str(selected.reward), "À découvrir")), 17, TEAL)
-	var available := bool(selected.get("available", false)) and session.route.phase == "map"
-	if str(selected.kind) == "elite":
-		_label(card, "Élite : +20 % PV et puissance par rapport au même combat normal. Victoire : 65 oboles au lieu de 35.", 16, RED)
-	if str(selected.kind) in ["normal", "elite", "boss"]:
-		_label(card, "Le danger augmente avec la profondeur. Votre kit et votre équipement seront engagés jusqu'à la fin du combat.", 16, MUTED)
-	# The commitment stays visible while the destination description scrolls.
-	var engage := _button(right, "S'engager sur ce chemin  →" if available else "Repérer cette destination", true)
-	engage.name = "CommitDestination"
-	engage.disabled = not available or inspection_only
-	engage.pressed.connect(func():
-		engage.disabled = true
-		if GameManager.choose_expedition_node(_selected_node):
-			if GameManager.is_merchant_hall_active():
-				return # The saved destination now opens its own playable scene.
-			if GameManager.expedition.route.phase != "combat":
-				if _is_hub(): _page = "hub"
-				_render()
+	if GameManager.choose_expedition_node(node_id):
+		if GameManager.is_merchant_hall_active():
+			return
+		if GameManager.expedition.route.phase != "combat":
+			_page = FLOW.required_step(GameManager.expedition)
+			_selected_reward = ""
+			_render()
+	else:
+		_render()
+		var save_status: Dictionary = GameManager.get_expedition_save_status()
+		_status.text = str(save_status.get("message", "")) if bool(save_status.get("pending", false)) else "Ce chemin n'est plus accessible."
+		_status.add_theme_color_override("font_color", RED)
+		_status.show()
+
+
+func _on_screen_resized() -> void:
+	if not is_instance_valid(_body): return
+	for card in _reward_choices.values():
+		if is_instance_valid(card) and card.is_inside_tree():
+			card.set_card_extent(_reward_extent())
+
+
+func _reward_extent() -> Vector2:
+	return Vector2(260 if size.x < 1100 else 290, 360 if size.y < 850 else 410)
+
+
+func _refresh_resources() -> void:
+	var session := GameManager.expedition
+	if session == null: return
+	var hero := session.character.unit
+	var champion := session.character.champion_progression
+	_summary.text = "Achille · étape %d / 20" % session.route.completed_node_ids.size()
+	var values := {"health": "%d / %d PV" % [hero.current_hp, hero.max_hp.get_int()], "level": "Niveau %d" % champion.current_level, "destiny": "%d points de destin" % session.build.points, "oboles": "%d oboles" % session.gold}
+	for key in values:
+		var label: Label = _resource_values[key]
+		var changed := label.text != str(values[key])
+		label.text = str(values[key])
+		if changed and not _rendered_page.is_empty():
+			ART_THEME.reveal(label)
+	var points := champion.unspent_attribute_points
+	var attributes: Button = _navigation_buttons.attributes
+	attributes.text = "Caractéristiques" + (" · %d" % points if points > 0 else "")
+	attributes.tooltip_text = "%d point(s) à répartir. Consultez vos PV, vos dégâts et votre protection." % points if points > 0 else "Consultez vos PV, vos dégâts et votre protection."
+
+
+func _navigate(page: String) -> void:
+	if page in ["build", "gear", "attributes", "journal"] and _page not in ["build", "gear", "attributes", "journal"]:
+		_return_page = _page
+	_page = page
+	_render()
+
+
+func _close_current_view() -> void:
+	if inspection_only:
+		_close()
+	elif _page in ["build", "gear", "attributes", "journal"]:
+		if _return_page.is_empty():
+			_continue_flow()
 		else:
-			var save_status: Dictionary = GameManager.get_expedition_save_status()
-			var pending := bool(save_status.get("pending", false))
-			engage.disabled = pending or session.route.phase != "map"
-			_status.text = str(save_status.get("message", "")) if pending else "Ce chemin n'est plus accessible."
-			_status.add_theme_color_override("font_color", RED)
-	)
-	var advice := _card(details)
-	_label(advice, "AVANT DE PARTIR", 14, GOLD)
-	_label(advice, "%d techniques actives, %d connues. Les sorts retirés restent disponibles dans votre réserve." % [session.character.loadout.get_equipped_spells().size(), session.character.loadout.get_known_spells().size()], 17)
-	var workshop := _button(advice, "Composer le kit")
-	workshop.name = "ComposeCatabaseKit"
-	workshop.pressed.connect(func(): _page = "build"; _render())
-	if _is_hub():
-		var visit := _button(advice, "Revenir dans la halte", true)
-		visit.pressed.connect(func(): _page = "hub"; _render())
+			_page = _return_page
+			_return_page = ""
+			_render()
+	elif _page == "map":
+		_navigate("preparation")
+	else:
+		var persistent := GameManager.get_persistent_run_ui()
+		if persistent != null: persistent.open_pause_menu()
+
+
+func _open_inventory() -> void:
+	var persistent := GameManager.get_persistent_run_ui()
+	if persistent == null: return
+	if inspection_only:
+		_close()
+	if persistent.open_inventory_screen(&"achilles"):
+		ART_THEME.apply_tab(_navigation_buttons.gear, true, "equipment")
+	else:
+		_status.text = "L'inventaire sera disponible dès que l'action en cours sera terminée."
+		_status.show()
+
+
+func _on_inventory_closed() -> void:
+	if not is_inside_tree(): return
+	_refresh_resources()
+	ART_THEME.apply_tab(_navigation_buttons.gear, false, "equipment")
+	if is_instance_valid(_attributes_view) and _attributes_view.is_inside_tree():
+		_attributes_view.refresh()
+	_navigation_buttons.gear.grab_focus.call_deferred()
+
+
+func _continue_flow() -> void:
+	var required := FLOW.required_step(GameManager.expedition)
+	_page = "preparation" if required == "map" else required
+	_return_page = ""
+	_render()
+
+
+func _render_progression() -> void:
+	_label(_body, "Caractéristiques", 28, TEXT, true)
+	_attributes_view = ATTRIBUTES_VIEW.new()
+	_attributes_view.name = "ExpeditionAttributesView"
+	_attributes_view.focus_mode = Control.FOCUS_ALL
+	_attributes_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_body.add_child(_attributes_view)
+	_attributes_view.configure(GameManager.expedition, inspection_only)
+	_attributes_view.attribute_requested.connect(_spend_attribute)
+	if _page == "progression":
+		_progression_continue = _button(_body, "Continuer  →", true)
+		_progression_continue.name = "ContinueExpeditionFlow"
+		_progression_continue.pressed.connect(_continue_flow)
+		_refresh_progression_action()
+
+
+func _refresh_progression_action() -> void:
+	if not is_instance_valid(_progression_continue) or not _progression_continue.is_inside_tree(): return
+	var remaining := GameManager.expedition.character.champion_progression.unspent_attribute_points
+	_progression_continue.text = "Continuer vers la récompense  →" if remaining == 0 else "Encore %d point%s à répartir" % [remaining, "s" if remaining > 1 else ""]
+	_progression_continue.disabled = remaining > 0 or inspection_only
+	if remaining == 0: _progression_continue.grab_focus.call_deferred()
+
+
+func _spend_attribute(attribute_id: StringName) -> void:
+	if inspection_only: return
+	var success := GameManager.spend_champion_attribute(&"achilles", attribute_id)
+	if success:
+		_attributes_view.refresh()
+		_refresh_resources()
+		_refresh_progression_action()
+	else:
+		_status.text = "Ce point n'a pas pu être attribué. Consultez les points disponibles."
+		_status.add_theme_color_override("font_color", RED)
+		_status.show()
+
+
+func _render_choice_screen(capacity_only := false) -> void:
+	if not capacity_only:
+		var heading := _label(_body, "Choisissez une carte", 28, TEXT, true)
+		heading.name = "RewardHeading"
+		_label(_body, "Un seul choix. Sélectionnez une carte, puis confirmez en bas de l'écran.", 16, MUTED)
+	var column := _scroll_column(_body)
+	_render_rewards(column, capacity_only)
+	if not capacity_only:
+		_reward_summary = _label(_body, "", 15, TEAL)
+		_reward_summary.name = "RewardSelectionSummary"
+		_confirm_reward = _button(_body, "Confirmer cette carte  →", true)
+		_confirm_reward.name = "ConfirmExpeditionReward"
+		_confirm_reward.disabled = _selected_reward.is_empty() or inspection_only
+		_confirm_reward.pressed.connect(_confirm_reward_selection)
+		_update_reward_selection()
 
 
 func _render_rewards(parent: Control, capacity_only := false) -> void:
 	var session := GameManager.expedition
 	var node := session.route.get_current_node()
-	if not capacity_only:
-		var reward_heading := HBoxContainer.new()
-		reward_heading.add_theme_constant_override("separation", 10)
-		parent.add_child(reward_heading)
-		_icon(reward_heading, ART_THEME.icon("resources", "victory"), 30)
-		var caption := _label(reward_heading, "UNE ÉTAPE FRANCHIE", 14, TEAL)
-		caption.name = "RewardHeading"
-		caption.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_label(parent, str(node.title), 26, TEXT, true)
-		_label(parent, "Choisissez une seule récompense. Les autres occasions restent sur ce seuil.", 17)
-	if int(node.depth) == ExpeditionBuildState.CAPACITY_DEPTH and session.build.depth_eight_choice.is_empty():
-		var fork := _card(parent, GOLD)
-		_label(fork, "L'AMPLEUR OU L'INTENSITÉ", 15, GOLD)
-		_label(fork, "Un choix exclusif pour la suite de votre kit.", 17)
+	if capacity_only:
+		_label(parent, "L'ampleur ou l'intensité", 30, TEXT, true)
+		_label(parent, "Un choix exclusif : élargir votre kit ou transformer Frappe. La récompense de cette étape vient ensuite.", 18, MUTED)
 		for choice in [["slot", "Un sixième emplacement", "Équipez une technique supplémentaire parmi celles que vous connaissez."], ["mutation", "Tempête du Péléide", session.build.catalog.get_spell("exp_tempest").description]]:
-			_label(fork, choice[2], 16, MUTED)
-			var button := _button(fork, choice[1], true)
+			var fork := _card(parent, GOLD)
+			_label(fork, choice[1], 24, TEXT, true)
+			_label(fork, choice[2], 17, MUTED)
+			var button := _button(fork, "Choisir · " + choice[1], true)
+			button.name = "Capacity_" + choice[0]
 			button.disabled = inspection_only
-			button.pressed.connect(func(): _action_result(GameManager.choose_expedition_capacity(choice[0])))
+			button.pressed.connect(func():
+				var result: Dictionary = GameManager.choose_expedition_capacity(choice[0])
+				if bool(result.get("success", false)): _page = FLOW.required_step(session)
+				_action_result(result)
+			)
 		return
-	for offer in session.reward_options(GameManager.item_catalog):
-		var card := _card(parent, TEAL)
-		_label(card, str(offer.title), 21, TEXT, true)
-		_label(card, str(offer.description), 16)
-		var button := _button(card, "Choisir cette récompense", true)
-		button.disabled = inspection_only
-		button.pressed.connect(func(): _action_result(GameManager.claim_expedition_reward(str(offer.id))))
+	if _selected_reward_node != session.route.current_node_id:
+		_selected_reward_node = session.route.current_node_id
+		_selected_reward = ""
+	_reward_choices.clear()
+	_reward_offers.clear()
+	var offers: Array[Dictionary] = session.reward_options(GameManager.item_catalog)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	parent.add_child(margin)
+	var center := CenterContainer.new()
+	margin.add_child(center)
+	var options := GridContainer.new()
+	options.name = "ExpeditionRewardChoices"
+	options.columns = mini(3, maxi(1, offers.size()))
+	options.add_theme_constant_override("h_separation", 24)
+	options.add_theme_constant_override("v_separation", 24)
+	center.add_child(options)
+	for index in offers.size():
+		var offer := offers[index]
+		var card := REWARD_CARD.new()
+		card.name = "ExpeditionRewardCard_%d" % index
+		options.add_child(card)
+		card.configure(offer, index, GameManager.is_reduced_motion_enabled())
+		card.set_card_extent(_reward_extent())
+		card.set_locked(inspection_only)
+		card.choice_requested.connect(_select_reward)
+		_reward_choices[str(offer.id)] = card
+		_reward_offers[str(offer.id)] = offer
+	_update_reward_selection()
+
+
+func _select_reward(reward_id: String) -> void:
+	if inspection_only or not _reward_choices.has(reward_id):
+		return
+	_selected_reward = reward_id
+	_update_reward_selection()
+
+
+func _update_reward_selection() -> void:
+	for id in _reward_choices:
+		_reward_choices[id].set_selected(str(id) == _selected_reward)
+	if is_instance_valid(_confirm_reward) and _confirm_reward.is_inside_tree():
+		_confirm_reward.disabled = _selected_reward.is_empty() or inspection_only
+	if is_instance_valid(_reward_summary) and _reward_summary.is_inside_tree():
+		var offer: Dictionary = _reward_offers.get(_selected_reward, {})
+		_reward_summary.text = "Aucune carte sélectionnée." if offer.is_empty() else "Votre choix : " + str(offer.title)
+		if not offer.is_empty():
+			_reward_summary.text += " · " + _reward_choices[_selected_reward].get_destination_summary()
+			ART_THEME.reveal(_reward_summary)
+
+
+func _confirm_reward_selection() -> void:
+	if inspection_only or _selected_reward.is_empty():
+		return
+	_confirm_reward.disabled = true
+	var chosen: Dictionary = _reward_offers.get(_selected_reward, {}).duplicate()
+	var result: Dictionary = GameManager.claim_expedition_reward(_selected_reward)
+	if bool(result.get("success", false)):
+		_last_reward = chosen
+		_selected_reward = ""
+		if GameManager.expedition == null or not GameManager.run_active:
+			return
+		_page = "preparation"
+		_render()
+	else:
+		_action_result(result)
+
+
+func _render_preparation() -> void:
+	var session := GameManager.expedition
+	var column := _scroll_column(_body)
+	_label(column, "Prêt pour la suite ?", 28, TEXT, true)
+	_label(column, "Préparez votre héros à votre rythme. Vous pouvez conserver vos points de destin pour plus tard.", 17, MUTED)
+	if not _last_reward.is_empty():
+		var receipt := _label(column, "✓ " + str(_last_reward.get("title", "Récompense reçue")) + " · récompense reçue", 16, TEAL)
+		receipt.name = "RewardReceipt"
+	var options := GridContainer.new()
+	options.columns = 3
+	options.add_theme_constant_override("h_separation", 16)
+	column.add_child(options)
+	for entry in [["gear", "Inventaire", "equipment", "Quels objets porter ?", "Équipez vos trouvailles pour profiter de leurs effets.", "Ouvrir l'inventaire", "PrepareExpeditionEquipment"], ["build", "Compétences", "tree", "%d points de destin" % session.build.points, "Découvrez vos actions et apprenez de nouvelles techniques.", "Voir mes compétences", "ComposeCatabaseKit"], ["attributes", "Caractéristiques", "", "Niveau %d" % session.character.champion_progression.current_level, "Comprenez votre vie, vos dégâts et votre protection.", "Voir mes caractéristiques", "PrepareExpeditionAttributes"]]:
+		var card := _card(options, TEAL if entry[0] == "gear" and _last_reward.has("item_id") else GOLD)
+		_icon(card, ART_THEME.icon("resources", "level") if entry[0] == "attributes" else ART_THEME.icon("nav", entry[2]), 60)
+		_label(card, entry[1], 22, TEXT, true)
+		_label(card, entry[3], 16, GOLD)
+		var hint := _label(card, entry[4], 17, MUTED)
+		hint.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		var button := _button(card, entry[5])
+		button.name = entry[6]
+		button.pressed.connect(func(): _open_inventory() if entry[0] == "gear" else _navigate(entry[0]))
+	var journal := _button(column, "Carnet · revoir mes découvertes")
+	journal.name = "OpenExpeditionJournal"
+	journal.pressed.connect(func(): _navigate("journal"))
+	var open_map := _button(_body, "Choisir mon prochain chemin  →", true)
+	open_map.name = "OpenRouteMap"
+	open_map.pressed.connect(func(): _navigate("map"))
 
 
 func _render_build() -> void:
 	var session := GameManager.expedition
-	var kit_row := HBoxContainer.new()
-	_body.add_child(kit_row)
-	var names := PackedStringArray()
-	for spell in session.character.loadout.get_equipped_spells(): names.append(spell.spell_name)
-	var kit := _label(kit_row, "%d EMPLACEMENTS  ·  %s" % [session.character.loadout.get_active_slot_count(), " / ".join(names)], 15, GOLD)
-	kit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var edit := _button(kit_row, "Voir l'arbre" if _show_loadout else "Modifier le kit")
-	edit.name = "ToggleCatabaseLoadout"
-	edit.pressed.connect(func(): _show_loadout = not _show_loadout; _render())
-	if _show_loadout:
-		var loadout_column := _scroll_column(_body)
-		_render_loadout(loadout_column)
+	_label(_body, "Compétences", 28, TEXT, true)
+	var tabs := HBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 10)
+	_body.add_child(tabs)
+	for entry in [["equipped", "Mes actions en combat"], ["learn", "Apprendre · %d points de destin" % session.build.points]]:
+		var tab := _button(tabs, entry[1])
+		tab.name = "SkillsTab_" + entry[0]
+		ART_THEME.apply_tab(tab, _skills_tab == entry[0])
+		tab.pressed.connect(func(): _skills_tab = entry[0]; _show_loadout = false; _render())
+	if _skills_tab == "equipped":
+		_render_equipped_skills()
 		return
+	_render_learning_tree()
+
+
+func _render_equipped_skills() -> void:
+	_label(_body, "Les PA sont vos points d'action : chaque compétence en dépense. Les PM servent à vous déplacer.", 16, MUTED)
+	var column := _scroll_column(_body)
+	if _show_loadout:
+		_render_loadout(column)
+	else:
+		var grid := GridContainer.new()
+		grid.columns = 2
+		grid.add_theme_constant_override("h_separation", 16)
+		grid.add_theme_constant_override("v_separation", 14)
+		column.add_child(grid)
+		var index := 0
+		for spell in GameManager.expedition.character.loadout.get_equipped_spells():
+			var card := _card(grid, GOLD)
+			card.name = "EquippedSkill_%d" % index
+			var row := HBoxContainer.new()
+			row.add_theme_constant_override("separation", 12)
+			card.add_child(row)
+			_icon(row, spell.icon, 56)
+			var title := _label(row, spell.spell_name, 21, TEXT, true)
+			title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_label(card, "%d PA · %s" % [spell.ap_cost, _skill_reach(spell)], 16, GOLD)
+			# Keep targeting details authored in the description, but avoid repeating the cost.
+			_label(card, spell.description.trim_prefix("%d PA · " % spell.ap_cost), 16, TEXT)
+			if spell.cooldown_activations > 0:
+				_label(card, "Recharge : %d tour(s) avant réutilisation." % spell.cooldown_activations, 14, MUTED)
+			index += 1
+	var edit := _button(_body, "Revenir à mes actions" if _show_loadout else "Modifier mes emplacements")
+	edit.name = "ToggleCatabaseLoadout"
+	edit.disabled = inspection_only or not GameManager.expedition.is_editable()
+	edit.pressed.connect(func(): _show_loadout = not _show_loadout; _render())
+
+
+func _skill_reach(spell: Spell) -> String:
+	if spell.spell_range == 0:
+		return "sur vous-même"
+	if spell.minimum_range == spell.spell_range:
+		return "portée %d %s" % [spell.spell_range, "case" if spell.spell_range == 1 else "cases"]
+	return "portée %d–%d cases" % [spell.minimum_range, spell.spell_range]
+
+
+func _render_learning_tree() -> void:
+	var session := GameManager.expedition
+	_label(_body, "Choisissez une voie, puis une technique. Les points de destin servent à apprendre ; vous pouvez les garder pour plus tard.", 16, MUTED)
 	var doctrines: Dictionary = session.build.catalog.doctrines()
 	var tabs := HFlowContainer.new()
 	_body.add_child(tabs)
@@ -418,12 +693,12 @@ func _render_build() -> void:
 	var details := _scroll_column(right)
 	if not selected.is_empty(): _render_technique(details, selected, right)
 	var tip := _card(details)
-	_label(tip, "UNE LÉGENDE, PLUSIEURS CHEMINS", 13, GOLD)
-	_label(tip, "Les liens indiquent les prérequis réels. Les trois doctrines peuvent se mêler. Les formes d'une même famille occupent un seul emplacement.", 16, MUTED)
+	_label(tip, "COMMENT APPRENDRE ?", 13, GOLD)
+	_label(tip, "Suivez les liens : une technique demande parfois un premier apprentissage. Vous pouvez mélanger les trois voies. Retrouvez vos techniques dans « Mes actions en combat ».", 16, MUTED)
 	if not session.build.is_axis_discovered("elements") or not session.build.is_axis_discovered("serment"):
 		_label(tip, "Certaines branches restent inconnues. Cherchez des sanctuaires et des mémoires sur la carte.", 16, TEAL)
 	if not session.build.correction_used:
-		var undo := _button(tip, "Corriger le dernier achat · 1/run")
+		var undo := _button(tip, "Annuler l’achat · 1 fois/run")
 		undo.name = "UndoCatabaseTechnique"
 		undo.tooltip_text = "Rembourse le dernier achat de l'arbre. Une seule correction pour toute la descente ; les cartes, caractéristiques et découvertes restent acquises."
 		undo.disabled = inspection_only or not session.is_editable() or session.build.unlocked_node_ids.is_empty()
@@ -435,7 +710,8 @@ func _render_technique(parent: Control, offer: Dictionary, actions: Control) -> 
 	var card := _card(parent, TEAL if bool(offer.owned) else GOLD)
 	var cost := int(offer.cost)
 	var point_label := "point" if cost == 1 else "points"
-	_label(card, str(offer.kind).to_upper() + "  /  %d %s" % [cost, point_label.to_upper()], 13, GOLD)
+	var kind_label := str({"racine": "Entrée de voie", "apprentissage": "Nouvelle compétence", "liaison": "Bonus permanent", "mutation": "Évolution de compétence", "signature": "Technique signature", "légende": "Technique légendaire", "serment": "Serment"}.get(str(offer.kind), "Apprentissage"))
+	_label(card, "%s · %d %s de destin" % [kind_label, cost, point_label], 13, GOLD)
 	_illustrated_title(card, str(offer.title), CatabasePaintedIconCatalog.node_icon(offer) if bool(offer.get("discovered", true)) else ART_THEME.icon("nav", "lock"), 64)
 	_label(card, str(offer.description), 17)
 	var prereq: Array = offer.get("prerequisites", [])
@@ -443,7 +719,7 @@ func _render_technique(parent: Control, offer: Dictionary, actions: Control) -> 
 		var names := PackedStringArray()
 		for id in prereq: names.append(str(session.build.catalog.get_node(str(id)).get("title", id)))
 		_label(card, "Requiert : " + " + ".join(names), 14, MUTED)
-	var buy := _button(actions, "Acquis" if bool(offer.owned) else "Choisir · %d %s" % [cost, point_label], bool(offer.available))
+	var buy := _button(actions, "Acquis" if bool(offer.owned) else "Apprendre · %d %s" % [cost, point_label], bool(offer.available))
 	buy.name = "PurchaseTechnique"
 	buy.disabled = inspection_only or not bool(offer.available)
 	buy.tooltip_text = str(offer.get("reason", ""))
@@ -454,7 +730,7 @@ func _render_technique(parent: Control, offer: Dictionary, actions: Control) -> 
 
 func _is_hub() -> bool:
 	return GameManager.expedition != null and GameManager.expedition.route.phase == "reward" \
-		and str(GameManager.expedition.route.get_current_node().get("kind", "")) in ["hub", "merchant", "sanctuary", "lore"]
+		and ExpeditionRouteCatalog.is_halt(str(GameManager.expedition.route.get_current_node().get("kind", "")))
 
 
 func _render_hub() -> void:
@@ -506,6 +782,7 @@ func _render_hub() -> void:
 		if not bool(result.get("success", false)):
 			_status.text = str(result.get("message", "Le Sanctuaire n'est pas accessible pour le moment."))
 			_status.add_theme_color_override("font_color", RED)
+			_status.show()
 	)
 	if int(node.depth) == ExpeditionBuildState.CAPACITY_DEPTH and session.build.depth_eight_choice.is_empty():
 		_render_rewards(details, true)
@@ -550,9 +827,10 @@ func _render_merchant_hall_return(parent: Control, actions: Control) -> void:
 		if not GameManager.open_merchant_hall():
 			_status.text = str(GameManager.get_expedition_save_status().get("message", "La Halle n'est plus accessible."))
 			_status.add_theme_color_override("font_color", RED)
+			_status.show()
 	)
 	if _page == "map":
-		var workshop := _button(actions, "Composer le kit")
+		var workshop := _button(actions, "Choisir mes compétences")
 		workshop.name = "ComposeCatabaseKit"
 		workshop.pressed.connect(func(): _page = "build"; _render())
 
@@ -561,8 +839,8 @@ func _render_loadout(parent: Control) -> void:
 	var session := GameManager.expedition
 	var loadout := session.character.loadout
 	var box := _card(parent, GOLD)
-	_label(box, "VOTRE KIT  /  %d EMPLACEMENTS" % loadout.get_active_slot_count(), 15, GOLD)
-	_label(box, "Remplacez même votre garde ou votre déplacement. Une seule forme d'une même famille peut être équipée.", 17)
+	_label(box, "MES ACTIONS ÉQUIPÉES  ·  %d EMPLACEMENTS" % loadout.get_active_slot_count(), 15, GOLD)
+	_label(box, "Choisissez une technique connue pour chaque emplacement. Deux versions d’une même technique ne peuvent pas être équipées ensemble.", 17)
 	var slots := HFlowContainer.new()
 	slots.add_theme_constant_override("h_separation", 12)
 	slots.add_theme_constant_override("v_separation", 12)
@@ -595,10 +873,12 @@ func _render_loadout(parent: Control) -> void:
 		dropdown.item_selected.connect(func(selected: int):
 			var success := GameManager.equip_expedition_spell(StringName(dropdown.get_item_metadata(selected)), slot)
 			_render()
-			if not success: _status.text = "Cette famille de technique occupe déjà un autre emplacement."
+			if not success:
+				_status.text = "Cette famille de technique occupe déjà un autre emplacement."
+				_status.show()
 		)
 	if loadout.get_active_slot_count() < 5:
-		_label(box, "Prochain emplacement : niveau 5. Le départ conserve les quatre techniques d'Achille.", 14, TEAL)
+		_label(box, "Un cinquième emplacement se débloque au niveau 5.", 14, TEAL)
 	elif session.build.depth_eight_choice.is_empty():
 		_label(box, "Étape XII : sixième emplacement ou Tempête du Péléide, une transformation exclusive de Frappe.", 14, TEAL)
 	else:
@@ -614,29 +894,8 @@ func _render_loadout(parent: Control) -> void:
 
 
 func _render_gear() -> void:
-	var session := GameManager.expedition
-	var state := session.character
+	var state := GameManager.expedition.character
 	var column := _scroll_column(_body)
-	var stats := _card(column, GOLD)
-	var available_points := state.champion_progression.unspent_attribute_points
-	_label(stats, "CARACTÉRISTIQUES  /  %d %s" % [available_points, "POINT DISPONIBLE" if available_points == 1 else "POINTS DISPONIBLES"], 15, GOLD)
-	_label(stats, "Prouesse %d   ·   Armure %d   ·   Esquive %d %%   ·   %d PA / %d PM" % [state.unit.attack_power.get_int(), state.unit.armure.get_int(), roundi(state.unit.esquive.get_value() * 100), state.unit.max_ap.get_int(), state.unit.max_mp.get_int()], 21)
-	for attr in [["vitality", "Vitalité", "+6 % des PV de base par point."], ["power", "Puissance", "+5 % de Prouesse par point."], ["resolve", "Résolution", "+4 armure et +5 % aux boucliers créés."], ["wisdom", "Sagesse", "+10 % XP aux prochaines étapes ; accélère les caractéristiques, sans donner de points de destin."]]:
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 12)
-		stats.add_child(row)
-		var stat_id := str({"vitality": "max_hp", "power": "attack_power", "resolve": "armure"}.get(attr[0], ""))
-		_icon(row, ART_THEME.icon("resources", "level") if attr[0] == "wisdom" else CatabasePaintedIconCatalog.stat_icon(stat_id), 36)
-		var name_label := _label(row, "%s  ·  %s" % [attr[1], attr[2]], 18)
-		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var button := _button(row, "+1 " + attr[1])
-		button.name = "Attribute_" + str(attr[0])
-		button.disabled = inspection_only or not session.is_editable() or state.champion_progression.unspent_attribute_points == 0 or (attr[0] == "wisdom" and state.champion_progression.wisdom_points >= 5)
-		button.pressed.connect(func():
-			GameManager.spend_champion_attribute(&"achilles", StringName(attr[0]))
-			GameManager.save_expedition()
-			_render()
-		)
 	var gear := _card(column, TEAL)
 	_label(gear, "ARMES, ARMURES ET ACCESSOIRES", 15, TEAL)
 	var equipment_cards := GridContainer.new()
@@ -692,6 +951,7 @@ func _action_result(result: Dictionary) -> void:
 	_status.text = str(result.get("message", result.get("reason", "Choix enregistré.")))
 	if _status.text.is_empty(): _status.text = "Choix enregistré."
 	_status.add_theme_color_override("font_color", TEAL if bool(result.get("success", false)) else RED)
+	_status.show()
 
 
 func _close() -> void:
@@ -703,6 +963,7 @@ func _close() -> void:
 			var status: Dictionary = GameManager.get_expedition_save_status()
 			_status.text = str(status.get("message", "Sauvegarde impossible. Votre expédition reste ouverte."))
 			_status.add_theme_color_override("font_color", RED)
+			_status.show()
 
 
 func _scroll_column(parent: Control) -> VBoxContainer:

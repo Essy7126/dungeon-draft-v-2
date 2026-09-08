@@ -67,6 +67,7 @@ func configure_inventory(
 		meta_label.theme_type_variation = &"PremiumMuted"
 		meta_label.modulate = Color.WHITE
 		icon_view.texture = null
+		(%IconFrame as Control).hide()
 		quantity_label.hide()
 		state_glyph.text = "·"
 		state_glyph.modulate = PremiumUI.SKIN.text_muted
@@ -74,6 +75,7 @@ func configure_inventory(
 		tooltip_text = ""
 		return
 	disabled = false
+	(%IconFrame as Control).show()
 	var item_name := definition.display_name if definition != null else str(instance.definition_id)
 	var relic := definition != null and definition.is_relic()
 	text = "%s\n%s" % [item_name, "Relique active" if relic else "Objet disponible"]
@@ -118,6 +120,7 @@ func configure_equipment(
 		if definition != null else PremiumUI.SKIN.text_muted
 	)
 	icon_view.texture = presentation_icon(definition)
+	(%IconFrame as Control).visible = definition != null
 	quantity_label.hide()
 	state_glyph.text = "◆" if selected else ("◇" if definition == null else "")
 	state_glyph.modulate = (
@@ -180,6 +183,8 @@ static func presentation_icon(definition: ItemDefinition) -> Texture2D:
 		return null
 	var source := definition.get_inventory_icon()
 	if source == null:
+		source = _category_fallback_icon(definition.category)
+	if source == null:
 		return null
 	var cache_key := source.get_instance_id()
 	if _presentation_icon_cache.has(cache_key):
@@ -208,3 +213,22 @@ static func presentation_icon(definition: ItemDefinition) -> Texture2D:
 	cropped.filter_clip = true
 	_presentation_icon_cache[cache_key] = cropped
 	return cropped
+
+
+static func _category_fallback_icon(category: ItemDefinition.Category) -> Texture2D:
+	# Keep authored art whenever present; only unillustrated items use a clear
+	# category symbol. Empty bag/equipment slots never request a substitute.
+	var generic := CatabaseUITheme.icon("nav", "equipment")
+	match category:
+		ItemDefinition.Category.WEAPON:
+			return CatabasePaintedIconCatalog.stat_icon("attack_power", generic)
+		ItemDefinition.Category.ARMOR:
+			return CatabasePaintedIconCatalog.stat_icon("armure", generic)
+		ItemDefinition.Category.CONSUMABLE:
+			return CatabasePaintedIconCatalog.stat_icon("heal_budget", generic)
+		ItemDefinition.Category.SCROLL:
+			return CatabaseUITheme.icon("nav", "journal")
+		ItemDefinition.Category.RELIC:
+			return CatabasePaintedIconCatalog.route_icon("cache", generic)
+		_:
+			return generic
