@@ -1,0 +1,13 @@
+{
+  "slug": "04_lamie_lethe",
+  "title": "Lamie du Lethe",
+  "role": "Controleuse a distance",
+  "candidate_runtime": null,
+  "design": "An ancient Greek underworld serpent oracle monster. A narrow upright feminine upper torso armored in bronze over opaque ivory ceremonial linen; a sculpted ivory mask-like face with muted teal eyes; three broad short fin-like jade head crests instead of hair. Exactly two arms, each clearly separated from the body. Below the waist one thick muscular desaturated jade serpent tail forms one compact readable S-shaped ground coil with its single tapering tip visible beside the body. No human legs. One simple hooked bronze staff held vertically away from the body in the RIGHT hand; LEFT hand open in a calm threatening spellcasting idle gesture with no spell effect. Three major landmarks: three broad head fins, narrow ivory masked torso, thick jade S-shaped tail. Elegant severe dangerous silhouette, no seductive posing, no exposed chest, no additional snakes, no snake hair, no floating fabric ribbons, no gems or tiny scale details. Closed mouth. Clearly a nonhuman serpent creature.",
+  "palette": [
+    "jade",
+    "ivoire",
+    "bronze"
+  ],
+  "animation_note": "Glissement sans root motion; une seule queue; sort, impact et aura dans des VFX distincts."
+}

@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="PackedScene" path="res://characters/enemies/catabase_monsters/RejetonBraiseIsoUnitView.tscn" id="3_visual"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/braise_trait.tres" id="4_primary"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/braise_fournaise.tres" id="5_special"]
+[ext_resource type="Resource" path="res://data/ai/profiles/catabase_rejeton_braise_ai.tres" id="6_ai"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"catabase_rejeton_braise"
+unit_name = "Rejeton de braise"
+description = "Petit démon agile, fragile au contact. Il crache des braises et annonce une fournaise avant de lancer son projectile."
+team = 1
+max_hp = 42
+max_ap = 4
+max_mp = 3
+initiative = 10
+attack_power = 10
+resistances = {1: 0.35, 2: -0.2}
+visual_scene = ExtResource("3_visual")
+preview_sprite_frames_path = "res://assets/characters/catabase_monsters/rejeton_braise/portrait.tres"
+preview_sprite_animation = &"idle_E"
+basic_attack_enabled = false
+active_spell_slots = 2
+spells = Array[ExtResource("2_spell")]([ExtResource("4_primary"), ExtResource("5_special")])
+ai_behavior = 1
+combat_style = 1
+preferred_range = 4
+minimum_range = 2
+maximum_range = 6
+keep_distance = true
+ai_profile = ExtResource("6_ai")
+faction_id = &"catabase_underworld"
+tactical_role_id = &"catabase_rejeton_braise"
+role = "Artilleur incendiaire"
+presentation_summary = "Brisez la ligne de vue pendant la préparation de la Fournaise. Approchez à une case pour gêner ses tirs."
+presentation_badge = "ENFERS"
+

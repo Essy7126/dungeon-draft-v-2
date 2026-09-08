@@ -1,0 +1,16 @@
+{
+  "id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Draw ONE SINGLE complete fixed idle character view based on the supplied approved reference. No turnaround board, no multiple figures, no animation. Same exact identity, original hand-painted cel-shaded dark-outlined style, proportions, clothing and materials. Orthographic camera elevated25 degrees. Entire figure centered on solid pure magenta #FF00FF with at least15 percent empty margins around ALL extremities and weapons, no shadows, no ground or scenery, no text, no FX. Figure height65-70percent of squarecanvas, never cropped. This is an anatomically correct independent drawing, do not horizontally flip the image. The exact approved squat bronze-and-ivory automaton. Short heavy spear in anatomical RIGHT hand, giant cracked round bronze shield in anatomical LEFT hand. Recessed small hollow helmet, turquoise slit eyes. Maintain its broad heavy armored torso and thick short legs; exact shield crack motif and armor design.\nA FRONT three-quarter view looking diagonally DOWN-LEFT toward viewer. Face looks toward the LEFT side of the canvas; chest is seen from front. HOLD the giant cracked round shield on the RIGHT SIDE OF THE CANVAS, attached to the character left arm. HOLD the short heavy spear on the LEFT SIDE OF THE CANVAS, in the character right hand. Shield and spear MUST BOTH be present and wholly visible. This is the opposite facing to the reference, but NOT a reflection: keep the shield on image-right and spear image-left while the face points LEFT.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788866858315,
+  "started_at": 1788866858319,
+  "finished_at": 1788866999761,
+  "expires_at": 1789126199761,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080c6-0249-74e2-90c3-c0c55169561b_0.png?Expires=1789126199&Signature=DuCUOiFI1AcV7kuvX~J7yAwDoS~e5Eoli6PdEQEn-ghmmw4MM~6HRhkYNBa80IYZKgsQdbNVOiRdCtJGqTA27u5~SxkC2L40GDKSlvCm9pBsITRHG9i0lfdJoHF44GDXHul5nSqbPWbEDdV~KmbdyQKRZtuhaHXrk27x48QTpytbe-wDSIJfwLH3PObp~jmffCS48bS3QnQbAJ-3v7U13vmxito15X~eH0RadPAO~a2vpYFC6Jv7R~YKXBDLzeo6zKfBQWhU9m6y6N5jZnyDSGkKU-RlNE7S-ZhXqLijevHFaVXWVN2Sbb~3Xo9nIjHcX5ic8kcO2kXzKmTz6VWdsQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

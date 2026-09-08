@@ -107,6 +107,7 @@ var _reduced_motion_enabled := false
 var expedition: ExpeditionSession = null
 var expedition_save_path: String = ExpeditionSaveService.SAVE_PATH
 const EXPEDITION_SCREEN_PATH := "res://ui/expedition/ExpeditionScreen.tscn"
+const MERCHANT_HALL_SCREEN_PATH := "res://hub/merchant_hall/MerchantHall.tscn"
 const SANCTUARY_SCREEN_PATH := "res://hub/sanctuary_prototype/SanctuaryPrototype.tscn"
 const CHARACTER_SELECTION_SCREEN_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
 var _expedition_boundary_snapshot: Dictionary = {}
@@ -1845,7 +1846,9 @@ func _complete_saved_action(operation: String) -> void:
 			start_next_battle()
 		"open_sanctuary":
 			_request_scene_change(SANCTUARY_SCREEN_PATH)
-		"return_to_halt", "leave_sanctuary", "open_destination":
+		"return_to_halt", "open_destination":
+			_request_scene_change(get_expedition_destination_scene())
+		"leave_sanctuary", "leave_merchant_hall", "open_expedition_workshop":
 			_request_scene_change(EXPEDITION_SCREEN_PATH)
 
 
@@ -1884,7 +1887,7 @@ func retry_expedition_save() -> bool:
 
 func postpone_expedition_exit() -> void:
 	# Dismissing an exit error means staying; a later unrelated save must not exit.
-	if _pending_expedition_action in ["return_to_title", "return_to_hub", "open_sanctuary", "return_to_halt", "abandon"]:
+	if _pending_expedition_action in ["return_to_title", "return_to_hub", "open_sanctuary", "return_to_halt", "open_expedition_workshop", "abandon"]:
 		_pending_expedition_action = "save"
 		_expedition_save_status["operation"] = "save"
 
@@ -2212,6 +2215,8 @@ func choose_expedition_node(node_id: String) -> bool:
 	_pending_expedition_action = ""
 	if expedition.route.phase == "combat":
 		start_next_battle()
+	elif is_merchant_hall_active():
+		_request_scene_change(MERCHANT_HALL_SCREEN_PATH)
 	return true
 
 
@@ -2339,8 +2344,49 @@ func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 		expedition.build.begin_encounter("catabase:%d:%s" % [run_seed, expedition.route.current_node_id])
 		start_next_battle()
 	else:
-		_request_scene_change(EXPEDITION_SCREEN_PATH)
+		_request_scene_change(get_expedition_destination_scene())
 	return true
+
+
+## Presentation replacement only: keep the authored route identity/fingerprint.
+## The central merchant of depth IV is d04_1 for every seeded lane inversion.
+func is_merchant_hall_active() -> bool:
+	if expedition == null or not run_active or expedition.route.phase != "reward":
+		return false
+	var node := expedition.route.get_current_node()
+	return str(node.get("id", "")) == "d04_1" \
+		and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
+
+
+func get_expedition_destination_scene() -> String:
+	return MERCHANT_HALL_SCREEN_PATH if is_merchant_hall_active() else EXPEDITION_SCREEN_PATH
+
+
+func open_merchant_hall() -> bool:
+	return is_merchant_hall_active() and _request_saved_exit("open_destination")
+
+
+func open_expedition_workshop() -> bool:
+	if expedition == null or not run_active:
+		return false
+	# A halt whose departure was applied may still be on screen after a failed
+	# checkpoint. A later successful inventory save must allow returning to the map.
+	return (is_merchant_hall_active() or expedition.route.phase == "map") \
+		and _request_saved_exit("open_expedition_workshop")
+
+
+func leave_merchant_hall() -> Dictionary:
+	if not is_merchant_hall_active():
+		return {"success": false, "message": "Cette halte n'est pas en cours."}
+	_pending_expedition_action = "leave_merchant_hall"
+	var result := claim_expedition_reward("leave_hub")
+	if not bool(result.get("success", false)):
+		_pending_expedition_action = ""
+		return result
+	if not bool(result.get("saved", false)):
+		return {"success": false, "saved": false, "applied": true, "message": _expedition_save_status.message}
+	_complete_saved_action("leave_merchant_hall")
+	return result
 
 
 func get_sanctuary_context() -> Dictionary:

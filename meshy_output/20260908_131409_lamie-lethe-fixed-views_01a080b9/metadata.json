@@ -1,0 +1,25 @@
+{
+  "project_name": "lamie_lethe fixed orientation reference",
+  "folder": "20260908_131409_lamie-lethe-fixed-views_01a080b9",
+  "root_task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+  "created_at": "2026-09-08T13:14:10.000513",
+  "updated_at": "2026-09-08T13:16:48.034770",
+  "tasks": [
+    {
+      "task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:14:10.000513"
+    },
+    {
+      "task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:16:48.034770"
+    }
+  ]
+}

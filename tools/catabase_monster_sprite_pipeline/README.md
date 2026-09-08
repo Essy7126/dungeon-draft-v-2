@@ -1,0 +1,131 @@
+# Monstres de Catabase : vues fixes et animation locale
+
+Le pipeline conserve les quatre concepts approuvés : Sentinelle d’airain, Rejeton de braise, Molosse du Styx et Lamie du Léthé. **Meshy produit uniquement leurs vues fixes indépendantes. Les animations et les spritesheets sont fabriquées localement.**
+
+`generate_meshy.py`, ancienne commande de génération distante de spritesheets, est retirée : elle affiche les nouvelles commandes puis termine avec le code 2, sans charger Meshy, lire une clé ou envoyer une requête. Les identités et chemins des concepts sont dans `creature_specs.py`. `generate_views.py` les importe directement.
+
+## 1. Obtenir et examiner les vues fixes
+
+Depuis la racine du dépôt, avec Python, Pillow, NumPy et SciPy disponibles :
+
+```powershell
+python tools/catabase_monster_sprite_pipeline/generate_views.py
+```
+
+Cette commande est la seule étape distante du pipeline. Elle utilise les helpers du plugin Meshy, demande la clé de session sans l’afficher, génère les références manquantes et conserve les réponses dans `meshy_output/20260908_monster_views_v1/tasks.json`. Elle peut consommer des crédits. La clé n’est pas écrite dans les fichiers du pipeline.
+
+Chaque turnaround contient quatre dessins indépendants dans une grille 2 × 2 :
+
+| Position | Direction | Vue |
+| --- | --- | --- |
+| Haut gauche | E | Face, vers le bas et la droite |
+| Haut droite | S | Face, vers le bas et la gauche |
+| Bas gauche | N | Dos, vers le haut et la droite |
+| Bas droite | W | Dos, vers le haut et la gauche |
+
+Vérifier visuellement l’identité, la direction, l’anatomie, les membres, les accessoires complets et les marges magenta. La lance et le bouclier de la Sentinelle, ainsi que le bâton de la Lamie, doivent rester dans leurs mains anatomiques respectives. **Aucune texture n’est retournée horizontalement pour inventer une autre vue.** Le repositionnement des articulations du rig selon l’orientation ne constitue pas un retournement de texture.
+
+Une référence téléchargée porte le statut `downloaded_pending_review`. Ce statut décrit son arrivée ; il ne constitue pas une validation anatomique. Les erreurs repérées sont conservées dans les métadonnées. Les corrections complètes rejetées restent dans `rejected_corrections.json`, et le registre actif revient à la dernière source utilisable.
+
+Si une seule vue est incorrecte, demander une nouvelle vue fixe et l’inscrire dans `overrides.json` à côté du registre. La clé identifie exactement la famille et la direction, par exemple :
+
+```json
+{
+  "sentinelle_airain_S": {
+    "source_path": "chemin local de la vue carrée téléchargée",
+    "sha256": "hash SHA-256 des octets originaux",
+    "task_id": "identifiant de la génération Meshy",
+    "status": "approved"
+  }
+}
+```
+
+Le statut `approved` est donné après examen visuel. Un remplacement encore `downloaded_pending_review` conserve un avertissement de revue. Une source rejetée ou un hash incohérent fait échouer la préparation. Le remplacement ne change que sa direction ; les autres vues lisent le turnaround original.
+
+## 2. Détourer et aligner les vues
+
+```powershell
+python tools/catabase_monster_sprite_pipeline/prepare_views.py --inspect
+python tools/catabase_monster_sprite_pipeline/prepare_views.py --prepare
+```
+
+`--inspect` calcule les mesures et écrit uniquement un rapport JSON sur la sortie standard. `--prepare` conserve les octets des originaux et produit, sous `art/source/characters/catabase_monsters/<famille>/` :
+
+- `master.png` et `turnaround_source.png` : copies exactes des sources ;
+- `override_source_<D>.png` : copie exacte d’un remplacement individuel éventuel ;
+- `source_<D>.png` : vue détourée ;
+- `base_frame_<D>.png` : vue sur un canevas RGBA de 512 × 384, ancre (256, 320) ;
+- `alignment.json` : hashes, détourage, mesures, racines proposées et avertissements ;
+- `fixed_views_contact.png` : planche pour la revue visuelle.
+
+Le détourage réutilise l’implémentation magenta éprouvée du projet : décontamination des bords et suppression des seuls points déconnectés de trois pixels source ou moins. Un membre ou accessoire atteignant le bord de son quadrant bloque la préparation. Aucune partie du personnage n’est supprimée pour le faire rentrer.
+
+Un seul facteur d’échelle est appliqué aux quatre vues de chaque famille. Les hauteurs cibles sont 280 pixels pour la Sentinelle, 230 pour le Rejeton, 185 pour le Molosse et 280 pour la Lamie. L’échelle est calculée depuis la hauteur médiane des silhouettes et limitée pour éviter tout découpage. La racine proposée utilise la position horizontale médiane du bas de la silhouette et le pixel opaque le plus bas : vérifier les pieds, la queue et les accessoires sur la planche.
+
+Un remplacement carré est d’abord normalisé uniformément en 512 × 512. Un `capture_scale` explicite, accompagné de `capture_scale_reason`, peut compenser un cadrage initial plus rapproché. Il s’applique une seule fois à la référence complète, jamais séparément à chaque pose. Sentinelle S utilise 369/402 pour conserver la taille physique de sa famille.
+
+Après une correction, reprendre uniquement la famille concernée :
+
+```powershell
+python tools/catabase_monster_sprite_pipeline/prepare_views.py --prepare --slug sentinelle_airain
+```
+
+## 3. Articuler localement et fabriquer les spritesheets
+
+`rig.json` contient les articulations et paramètres par famille et orientation. Examiner leurs positions sur les vues préparées. Les animations sont produites depuis ces vues par `animate.py`, sans génération distante, sans texture en miroir et sans changement de taille entre poses.
+
+Pour conserver une retouche manuelle, ajouter `"manual_reviewed": true` à l’entrée concernée du rig. Sans ce marqueur, le script reconstruit cette entrée depuis `default_rig()` ; les recettes d’action communes se règlent dans `recipe()`.
+
+Chaque direction part d’une seule peinture, animée comme une marionnette 2D avec des mouvements modérés. Le rendu emploie une déformation inverse continue, de larges zones d’influence autour des articulations et un échantillonnage RGBA prémultiplié. Le gradient de déplacement est borné pour préserver la continuité de la silhouette. Cette méthode ne produit ni nouvelles poses repeintes ni modèle 3D.
+
+Pour vérifier d’abord une orientation :
+
+```powershell
+python tools/catabase_monster_sprite_pipeline/animate.py --slug sentinelle_airain --direction E
+```
+
+Examiner la marche, la liaison des bras et des armes, le recul, l’attaque, le geste du sort et la chute dans `output/catabase_monsters/<famille>/`. Corriger le rig et les recettes locales lorsqu’une articulation traverse le corps ou qu’un équipement se détache. Une ressemblance des silhouettes ne suffit pas à valider leur mouvement.
+
+Après revue des articulations, produire les quatre directions :
+
+```powershell
+python tools/catabase_monster_sprite_pipeline/animate.py --slug sentinelle_airain
+# Ou reconstruire les quatre familles :
+python tools/catabase_monster_sprite_pipeline/animate.py --slug all
+```
+
+`animate.py` appelle `build.pack_frames()` pour les vingt poses de chaque direction, puis `build.write_sprite_frames()` pour finaliser la famille. L’assemblage n’ajoute aucun dessin ni transformation : il conserve exactement les pixels RGBA des poses produites localement.
+
+| Action | Indices des poses | Images/s | Boucle |
+| --- | --- | ---: | --- |
+| Repos (`idle`) | 0 | 1 | Oui |
+| Marche (`walk`) | 1–6 | 10 | Oui |
+| Attaque (`attack`) | 7–10 | 6,67 | Non |
+| Sort (`cast`) | 11–14 | 6,67 | Non |
+| Impact reçu (`hit`) | 15 | 1 | Non |
+| Mort (`death`) | 16–19 | 5 | Non |
+
+La pose de libération est l’image locale 2 pour l’attaque et le sort. Les profils Godot règlent leur durée effective ; les projectiles ajoutent leur délai de trajet. Le gameplay reste porté par les sorts et non par les GIF de revue.
+
+## 4. Vérifier les fichiers et le rendu en jeu
+
+```powershell
+python tools/catabase_monster_sprite_pipeline/build.py --verify sentinelle_airain
+python tools/catabase_monster_sprite_pipeline/build.py --verify rejeton_braise
+python tools/catabase_monster_sprite_pipeline/build.py --verify molosse_styx
+python tools/catabase_monster_sprite_pipeline/build.py --verify lamie_lethe
+```
+
+Cette vérification est locale et en lecture seule. Elle exige les quatre directions et contrôle les dimensions, les vingt régions, leurs hashes et l’intégrité des pixels relus. `--allow-partial` sert seulement au développement d’une orientation ; il ne valide pas une famille de production.
+
+Les ressources finales se trouvent dans `assets/characters/catabase_monsters/<famille>/` : `atlas_<D>.png` en grille 4 × 5, manifestes par direction, `sprite_frames.tres`, `portrait.tres` et `manifest.json`. Le portrait est un cadrage de la tête et du haut du corps de la pose E au repos ; vérifier son cadrage pour chaque créature.
+
+Chaque atlas est relu après écriture : ses régions doivent correspondre exactement aux pixels des poses, avec une erreur de reconstruction égale à zéro. Le manifeste conserve la vue source, les hashes, le rig et les recettes de poses. Ce contrôle détecte un fichier corrompu ou un découpage, mais ne remplace pas l’examen de l’anatomie et des animations.
+
+Importer ensuite les assets dans Godot et exécuter les tests d’intégration de `test/unit/test_catabase_monsters_integration.gd`, puis le probe de combat `tools/catabase_monster_validation/combat_probe.tscn`, piloté par `tools/catabase_monster_validation/combat_probe.gd`. Vérifier notamment le déplacement réel, les attaques, les délais des projectiles, les états et la disparition des unités mortes. Les résultats doivent être consignés après exécution ; ce README n’affirme pas que des contrôles runtime non exécutés ont réussi.
+
+## Fichiers conservés et artefacts locaux
+
+Les images finales requises par le jeu, les sources explicitement conservées, les manifestes de provenance et les scripts forment le livrable. Les planches de revue, GIF, captures et journaux de travail restent dans `output/`, déjà ignoré par Git. Les caches `.godot/`, `__pycache__/` et `*.pyc` sont également ignorés. Les marqueurs `.gdignore` présents dans `output/` et `meshy_output/` empêchent Godot d’importer ces fichiers de travail.
+
+`meshy_output/` dans son ensemble n’est pas ignoré par Git : ne pas ajouter en masse ses anciennes tentatives ou dépendances locales. Les générations rejetées sont des références d’audit, pas des sprites runtime. Ne jamais publier une clé de session avec les sources ou les rapports.

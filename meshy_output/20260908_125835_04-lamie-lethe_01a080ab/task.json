@@ -1,0 +1,16 @@
+{
+  "id": "01a080ab-7544-7071-bfc3-99bf44c08287",
+  "type": "text-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "One single full-body enemy creature master image for Catabase, a hand-painted ancient Greek underworld tactical RPG. Original character design. Orthographic three-quarter game view, character facing diagonally toward the viewer's RIGHT, camera looking down about 25 degrees. Entire creature centered in a square canvas, all feet, tail, horns and equipment visible, generous 12 percent empty margins. Quiet balanced idle pose with clear weight and separated limbs, suitable as an identity reference for future animation spritesheets. Visibly hand-DRAWN premium European animated fantasy character art: confident dark colored contours, generous stylized volumes, economical cel-painted light and shadow planes, subtle gouache accents, very large readable material shapes and silhouette, appealing and menacing rather than cute. Restrained palette of ancient bronze, warm ivory, charcoal and blue-petrol shadows, with a single controlled accent color. Soft neutral light from upper left. Readable at 120 pixels tall, minimal tiny detail, anatomically consistent simple repeatable design. Isolate on a perfectly flat solid pale cool grey background #D6DCE1. No floor, no ground tile, no plinth, no cast shadow or contact shadow. No scenery, text, labels, borders, watermark, interface, collage, extra views or sprite grid. No floating particles, mist, aura, motion trails or loose props. No photorealism, glossy 3D rendering, pixel art, chibi proportions or modern clothing.\n\nCHARACTER: An ancient Greek underworld serpent oracle monster. A narrow upright feminine upper torso armored in bronze over opaque ivory ceremonial linen; a sculpted ivory mask-like face with muted teal eyes; three broad short fin-like jade head crests instead of hair. Exactly two arms, each clearly separated from the body. Below the waist one thick muscular desaturated jade serpent tail forms one compact readable S-shaped ground coil with its single tapering tip visible beside the body. No human legs. One simple hooked bronze staff held vertically away from the body in the RIGHT hand; LEFT hand open in a calm threatening spellcasting idle gesture with no spell effect. Three major landmarks: three broad head fins, narrow ivory masked torso, thick jade S-shaped tail. Elegant severe dangerous silhouette, no seductive posing, no exposed chest, no additional snakes, no snake hair, no floating fabric ribbons, no gems or tiny scale details. Closed mouth. Clearly a nonhuman serpent creature.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788865115467,
+  "started_at": 1788865115470,
+  "finished_at": 1788865144800,
+  "expires_at": 1789124344800,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080ab-7544-7071-bfc3-99bf44c08287_0.png?Expires=1789124344&Signature=Cp567oHNAIDyvsSGaTAOwR-mTNNCwNiVpbfJ932sxiA7Vma86g1lv~G1S0AChpS6SpjJz4sDt-9kDvkIU3BMdwL4Qqs4AS9cZcxEmr4Y1EOgU~fcSXq8nx1Q7Z8H6FSHeSYHfcM-nDW-QxIWLB39S4pVv4QmXg3TuvawL0NO-jwcrrAjZYjUNzu0geG1yfUingAsldDe52Q5LWOY8aqEac1ZPPTeECNiKIh-KK6d896NVKWrSPPgNWKWLwXdugJGG8AMq5Z96EQmUURpZW9vci-XviTnUtptHO0FQtVvEwhQ93cQpifymkOWtWw6V5guycuouhoCcsvOSEoMPe8WVw__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

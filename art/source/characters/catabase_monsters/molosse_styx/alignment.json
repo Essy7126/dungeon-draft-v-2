@@ -1,0 +1,493 @@
+{
+  "slug": "molosse_styx",
+  "status": "downloaded_pending_review",
+  "ready": true,
+  "errors": [],
+  "views": {
+    "E": {
+      "bbox": [
+        37,
+        78,
+        472,
+        411
+      ],
+      "margins": [
+        37,
+        78,
+        40,
+        101
+      ],
+      "height": 333,
+      "width": 435,
+      "core_alpha": 32,
+      "core_pixels": 62946,
+      "component_count": 1,
+      "component_areas": [
+        62946
+      ],
+      "centroid": [
+        263.551297937915,
+        222.64790455310902
+      ],
+      "root": [
+        283.0,
+        410.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        37,
+        78,
+        472,
+        411
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 204030,
+        "pixelsChanged": 204030,
+        "transparentPixels": 203192,
+        "softAlphaPixels": 838,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 199918,
+        "source_alpha_changed": 199918,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "d73251680af9297dd4da3d6efc3f607f40abfbe4b3554e8f0919cb40844b70e4",
+      "placement": {
+        "root": [
+          283.0,
+          410.0
+        ],
+        "offset": [
+          108,
+          105
+        ],
+        "placedBbox": [
+          125,
+          143,
+          358,
+          322
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 4372171,
+        "alphaSumAfterPlacement": 4372171,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        127,
+        146,
+        355,
+        320
+      ],
+      "packed_centroid": [
+        245.4268548432806,
+        221.60420563396247
+      ],
+      "root_raster_error": [
+        0.31444759206800654,
+        -0.1274787535410269
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\source_E.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\base_frame_E.png",
+      "source_png_sha256": "3c9b54fcce0a66ba14ef8b77b3d0243d2adc38d26194e4dc82e917505c9e8c63",
+      "base_frame_png_sha256": "c75b68df35c8805bf4bb5346b6a758ffff74e20e2dc02e7e64d5af3388fdc793",
+      "raster_max_error": 0
+    },
+    "S": {
+      "bbox": [
+        40,
+        78,
+        466,
+        410
+      ],
+      "margins": [
+        40,
+        78,
+        46,
+        102
+      ],
+      "height": 332,
+      "width": 426,
+      "core_alpha": 32,
+      "core_pixels": 62572,
+      "component_count": 1,
+      "component_areas": [
+        62572
+      ],
+      "centroid": [
+        246.04283065908075,
+        223.26105925973278
+      ],
+      "root": [
+        228.0,
+        409.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        40,
+        78,
+        466,
+        410
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 204421,
+        "pixelsChanged": 204421,
+        "transparentPixels": 203564,
+        "softAlphaPixels": 857,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 200309,
+        "source_alpha_changed": 200309,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "46df80c7cd1b1e4bac0ce02235b4316be06fbfc688f4ef9e52f9f5a111a3af57",
+      "placement": {
+        "root": [
+          228.0,
+          409.0
+        ],
+        "offset": [
+          137,
+          106
+        ],
+        "placedBbox": [
+          155,
+          144,
+          383,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 4345167,
+        "alphaSumAfterPlacement": 4345167,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        158,
+        147,
+        381,
+        321
+      ],
+      "packed_centroid": [
+        265.8053354614376,
+        222.9834691899903
+      ],
+      "root_raster_error": [
+        0.4900849858357219,
+        0.34844192634562887
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\source_S.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\base_frame_S.png",
+      "source_png_sha256": "c9479408785b4a7b8d6b261bdf0391e0adbfa44846243c17dbddba4cc55bfd95",
+      "base_frame_png_sha256": "c6d909d15ea364151352161f5fd13b2bef3d26d47ab509c9dbd496ade24f3c9d",
+      "raster_max_error": 0
+    },
+    "N": {
+      "bbox": [
+        40,
+        32,
+        457,
+        405
+      ],
+      "margins": [
+        40,
+        32,
+        55,
+        107
+      ],
+      "height": 373,
+      "width": 417,
+      "core_alpha": 32,
+      "core_pixels": 57447,
+      "component_count": 1,
+      "component_areas": [
+        57447
+      ],
+      "centroid": [
+        267.21607742789007,
+        194.88049854648634
+      ],
+      "root": [
+        193.0,
+        404.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        40,
+        32,
+        457,
+        405
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 209463,
+        "pixelsChanged": 209463,
+        "transparentPixels": 208705,
+        "softAlphaPixels": 758,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 205351,
+        "source_alpha_changed": 205351,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "771bc1c0b8f384e4bd7c8bf3079c9ce40c8d8b3ae0e32835d6564c82ad3f51d7",
+      "placement": {
+        "root": [
+          193.0,
+          404.0
+        ],
+        "offset": [
+          155,
+          108
+        ],
+        "placedBbox": [
+          173,
+          122,
+          397,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 3990360,
+        "alphaSumAfterPlacement": 3990360,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        176,
+        124,
+        394,
+        320
+      ],
+      "packed_centroid": [
+        294.40256999192997,
+        210.20218511391147
+      ],
+      "root_raster_error": [
+        0.14730878186969676,
+        -0.27195467422097863
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\source_N.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\base_frame_N.png",
+      "source_png_sha256": "8a39841ff8bc15919b2a075524018dbe28a7cb2d3467674dd6ce19dc3797fc7d",
+      "base_frame_png_sha256": "e2cfb5d441cd1894077c35c83f2d4e8ba5f63b51bc22d2cc9f090d7e444c9f2c",
+      "raster_max_error": 0
+    },
+    "W": {
+      "bbox": [
+        53,
+        32,
+        467,
+        405
+      ],
+      "margins": [
+        53,
+        32,
+        45,
+        107
+      ],
+      "height": 373,
+      "width": 414,
+      "core_alpha": 32,
+      "core_pixels": 57427,
+      "component_count": 1,
+      "component_areas": [
+        57427
+      ],
+      "centroid": [
+        240.99582078116566,
+        194.9057412018737
+      ],
+      "root": [
+        315.0,
+        404.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        53,
+        32,
+        467,
+        405
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 209515,
+        "pixelsChanged": 209515,
+        "transparentPixels": 208713,
+        "softAlphaPixels": 802,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 205403,
+        "source_alpha_changed": 205403,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "d162f00b20c432f22df5b5209fa1c4cd0c5a83df860053797104980301e84210",
+      "placement": {
+        "root": [
+          315.0,
+          404.0
+        ],
+        "offset": [
+          91,
+          108
+        ],
+        "placedBbox": [
+          116,
+          122,
+          338,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 3987209,
+        "alphaSumAfterPlacement": 3987209,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        118,
+        125,
+        336,
+        320
+      ],
+      "packed_centroid": [
+        217.10479562678594,
+        210.1299540315567
+      ],
+      "root_raster_error": [
+        0.08498583569405582,
+        -0.27195467422097863
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\source_W.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\base_frame_W.png",
+      "source_png_sha256": "aae968473720f32c7c3d6d581952aa0ba370adfdb0b7e6b42b631506aa8f8c65",
+      "base_frame_png_sha256": "8dabc20440978af79c040d7a6995c2e68998fdbc811066311b2f63187c1b0c92",
+      "raster_max_error": 0
+    }
+  },
+  "task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131405_molosse-styx-fixed-views_01a080b9\\source.png",
+  "source_sha256": "0cb46a59b677b7fb056647ac39ad732e5813c2abfd0be4ef2e9c4eb8b96512f7",
+  "source_dimensions": [
+    1024,
+    1024
+  ],
+  "master_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_03-molosse-styx_01a080ab\\source.png",
+  "master_sha256": "f996d71f9cfff94c13651fcea077f2b2cc58d25b6439ce8b8b15d6fd3cf8a66b",
+  "common_scale": 0.5240793201133145,
+  "median_source_height": 353.0,
+  "target_height": 185,
+  "canvas": [
+    512,
+    384
+  ],
+  "anchor": [
+    256,
+    320
+  ],
+  "review_required": true,
+  "turnaround_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\turnaround_source.png",
+  "master_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\master.png",
+  "alignment_kind": "measured_ground_root_proposal",
+  "rig_authored": false,
+  "artwork_operations": [
+    "crop",
+    "magenta_key",
+    "unmix_edges",
+    "uniform_scale",
+    "pad"
+  ],
+  "contact_preview": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\molosse_styx\\fixed_views_contact.png"
+}

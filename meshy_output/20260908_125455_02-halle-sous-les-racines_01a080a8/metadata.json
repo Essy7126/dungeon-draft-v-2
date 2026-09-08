@@ -1,0 +1,18 @@
+{
+  "project_name": "La Halle sous les racines",
+  "folder": "20260908_125455_02-halle-sous-les-racines_01a080a8",
+  "root_task_id": "01a080a8-0dcf-7079-ac15-f799fb8f1b74",
+  "created_at": "2026-09-08T12:56:02.622337",
+  "updated_at": "2026-09-08T12:56:02.622337",
+  "tasks": [
+    {
+      "task_id": "01a080a8-0dcf-7079-ac15-f799fb8f1b74",
+      "task_type": "image-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "02_halle_sous_les_racines.png"
+      ],
+      "created_at": "2026-09-08T12:56:02.622337"
+    }
+  ]
+}

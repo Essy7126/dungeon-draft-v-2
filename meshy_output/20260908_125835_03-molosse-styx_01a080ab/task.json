@@ -1,0 +1,16 @@
+{
+  "id": "01a080ab-747f-74b7-86ac-3e90e383f8a7",
+  "type": "text-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "One single full-body enemy creature master image for Catabase, a hand-painted ancient Greek underworld tactical RPG. Original character design. Orthographic three-quarter game view, character facing diagonally toward the viewer's RIGHT, camera looking down about 25 degrees. Entire creature centered in a square canvas, all feet, tail, horns and equipment visible, generous 12 percent empty margins. Quiet balanced idle pose with clear weight and separated limbs, suitable as an identity reference for future animation spritesheets. Visibly hand-DRAWN premium European animated fantasy character art: confident dark colored contours, generous stylized volumes, economical cel-painted light and shadow planes, subtle gouache accents, very large readable material shapes and silhouette, appealing and menacing rather than cute. Restrained palette of ancient bronze, warm ivory, charcoal and blue-petrol shadows, with a single controlled accent color. Soft neutral light from upper left. Readable at 120 pixels tall, minimal tiny detail, anatomically consistent simple repeatable design. Isolate on a perfectly flat solid pale cool grey background #D6DCE1. No floor, no ground tile, no plinth, no cast shadow or contact shadow. No scenery, text, labels, borders, watermark, interface, collage, extra views or sprite grid. No floating particles, mist, aura, motion trails or loose props. No photorealism, glossy 3D rendering, pixel art, chibi proportions or modern clothing.\n\nCHARACTER: A single-headed lean supernatural hound of the Greek underworld, long low athletic quadruped silhouette, charcoal blue hide, broad angular ivory jaw plates and strong ivory brow ridge, muted teal eyes. Exactly three large backward-swept triangular ivory spines along its upper back. One plain thick ancient bronze collar without chains. Four robust clearly constructed canine legs and paws, legs naturally offset for readability, chest low in an alert stalking idle pose. One short sturdy tail curving upward and kept inside the silhouette envelope, fully visible. The head and muzzle turn slightly toward the viewer's right. Closed mouth with only two small visible canine teeth. Three major landmarks: massive ivory jaw, three dorsal spines, bronze collar. Restrained muscular anatomy under smooth hide, no shaggy fur, no extra heads, no extra legs, no wings, no saddle, no leash, no flame effects.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788865115271,
+  "started_at": 1788865115275,
+  "finished_at": 1788865138180,
+  "expires_at": 1789124338180,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080ab-747f-74b7-86ac-3e90e383f8a7_0.png?Expires=1789124338&Signature=ZHE0HXUEjsxBxzmtN8YLAnpDDPI6MBw~kxkwFAyeqFfPEuGfnul1Y0UGsM1s3A17fQBrbNnMQ07a-secH-VOlzZ5EZcBr5xZ8AO4jnqWIL-fWi~Ccbel7b2pYXQ0OdIQFKczN-jhszbqmot6-jRPhQsgGY6iQP9gpLgLFP80hBvSIWcs2i3vd~UswGlgjWX7mQQ612BHJN1wm1vrHV7j0yNifZBLzbi0Yu9EdpCwWoLrha1a~kg5HKmwsWJwWpRqW3A5FODSZqzBwXLWm~tJgk~tc~7lCJU2Q38CeHsqPim~4norPUrUo7dHx69SUrpcm9pN8T0rG3iBuhfOvfPgMQ__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

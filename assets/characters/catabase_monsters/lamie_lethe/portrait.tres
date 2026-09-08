@@ -1,0 +1,10 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/catabase_monsters/lamie_lethe/atlas_E.png" id="atlas"]
+
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(249, 48, 58, 80)
+
+[resource]
+animations = [{"frames": [{"duration": 1.0, "texture": SubResource("portrait")}], "loop": true, "name": &"idle_E", "speed": 1.0}]

@@ -1,4 +1,12 @@
 extends GutTest
+const Cleanup := preload("res://test/support/isolated_battlefield_cleanup.gd")
+var _fixture_grids: Array[GridData] = []
+
+
+func after_each() -> void:
+	for grid in _fixture_grids:
+		Cleanup.dispose_grid(grid)
+	_fixture_grids.clear()
 
 
 class HudSpy:
@@ -291,6 +299,7 @@ func test_stun_preserves_pending_strike_until_next_playable_activation() -> void
 func _battle_fixture() -> OutcomeBattleFixture:
 	var battle := OutcomeBattleFixture.new()
 	battle.grid = GridData.new(2, 1)
+	_fixture_grids.append(battle.grid)
 	battle.turn_state = TurnState.new()
 	battle._hud_port = HudSpy.new()
 	add_child_autofree(battle)

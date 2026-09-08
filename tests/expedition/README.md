@@ -32,6 +32,7 @@ après une erreur d'exécution ; un compteur d'assertions seul ne suffit donc pa
 | `route_state_test.gd` | Déterminisme, chemins de vingt étapes, enveloppe de 14–16 combats, visibilité, secrets, transitions et restauration atomique. |
 | `build_state_test.tscn` | Départ fixe, racines, découvertes, coûts, formes exclusives, kit, capacités, douze équipements, sauvegarde et effets réels de `SpellCaster`. |
 | `session_integration_test.tscn` | Lancement canonique de Catabase, vingt destinations, XP unique par victoire, transactions multiples des haltes, reçus et stocks, équipement, cinquième/sixième emplacements, reprise atomique et isolation du trio. |
+| `MerchantHallIntegration.tscn` | Première halte marchande dans la Halle parcourable : entrée/reprise, achats/repos/mémoire, reçus, préparatifs, sortie et récupération après échec d’écriture. Avec `--capture`, rendu réel à 720p/1080p ; sauvegardes isolées dans `artifacts/merchant_hall/`. |
 | `BattleFlowProbe.tscn` | Vraie première victoire avec les quatre sorts canoniques, puis achat Colère/Crochet, remplacement de Garde, récompense et retour sur la carte. |
 | `CatabaseMapsTest.tscn` | Dix arènes supplémentaires, sources auteur, sérialisation Studio/disque, grille runtime, connexité, formations sur 24 graines et plans de rendu. |
 

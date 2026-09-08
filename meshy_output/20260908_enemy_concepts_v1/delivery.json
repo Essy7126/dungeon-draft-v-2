@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "source_format": "PNG RGB",
+  "dimensions": [
+    1024,
+    1024
+  ],
+  "consumed_credits": 36,
+  "balance_before": 1147,
+  "balance_after": 1111,
+  "runtime_tests": "not_applicable_to_concept_only_delivery",
+  "source_integrity": "4 source SHA-256 verified",
+  "review_notes": [
+    "Silhouette trapue et bouclier tres lisibles; lance tenue en diagonale. Verrouiller le cote des accessoires et harmoniser la plongee avant les quatre directions.",
+    "Anatomie bipede coherente, mains et gorge orange distinctives. Vue plus laterale que la sentinelle; harmoniser la camera avant les spritesheets.",
+    "Quatre pattes visibles et silhouette basse distincte. Prévoir un vrai cycle quadrupede et verifier les occlusions des pattes au changement de direction.",
+    "Queue unique et silhouette en S distinctes. La sortie tient le baton de la main gauche, contrairement au prompt; fixer la lateralite du modele retenu avant toute animation. Crete plus elaboree que les trois pointes demandees."
+  ]
+}

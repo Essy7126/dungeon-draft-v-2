@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"catabase_braise"
+status_name = "Braise persistante"
+description = "4 dégâts de feu au début de chacune des deux prochaines activations."
+damage_per_turn = 4
+damage_type = 1
+element = 1
+ignores_defense = false
+duration = 2
+color = Color(1, 0.35, 0.08, 1)
+

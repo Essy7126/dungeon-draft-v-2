@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CatabaseMonsterSpriteProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/catabase_monsters/catabase_monster_sprite_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"sentinelle_airain_sprites_v1"
+sprite_frames_path = "res://assets/characters/catabase_monsters/sentinelle_airain/sprite_frames.tres"
+display_scale = 0.35
+locomotion = "biped"
+stride_cycles_per_cell = 0.5
+external_stride_distance_pixels = 128
+movement_segment_duration_seconds = 0.36
+primary_spell_ids = Array[StringName]([&"catabase_airain_estoc"])
+action_durations = {"attack": 0.8, "cast": 0.88}
+release_frame = 2
+death_duration_seconds = 0.8

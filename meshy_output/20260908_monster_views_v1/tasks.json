@@ -1,0 +1,126 @@
+{
+  "sentinelle_airain": {
+    "slug": "sentinelle_airain",
+    "task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131356_sentinelle-airain-fixed-views_01a080b9",
+    "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved squat bronze-and-ivory automaton. Short heavy spear in anatomical RIGHT hand, giant cracked round bronze shield in anatomical LEFT hand. Recessed small hollow helmet, turquoise slit eyes. Maintain its broad heavy armored torso and thick short legs; exact shield crack motif and armor design.",
+    "model": "gpt-image-2",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125834_01-sentinelle-airain_01a080ab\\source.png",
+    "reference_sha256": "4c05a186a5bbeb536b73bf7a76ebf0d1d2a52c843c1736d183ec4d5d0668bba2",
+    "view_cells": {
+      "E": [
+        0,
+        0
+      ],
+      "S": [
+        1,
+        0
+      ],
+      "N": [
+        0,
+        1
+      ],
+      "W": [
+        1,
+        1
+      ]
+    },
+    "status": "downloaded_pending_review",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131356_sentinelle-airain-fixed-views_01a080b9\\source.png",
+    "sha256": "2ee9d1f259e78d955fc00e5aed2a1fa4950ffa809df5a1b98109020dee8a8c40",
+    "consumed_credits": 12
+  },
+  "rejeton_braise": {
+    "slug": "rejeton_braise",
+    "task_id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131400_rejeton-braise-fixed-views_01a080b9",
+    "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved small ash-grey imp, large long clawed forearms, two short ivory horns, orange throat pouch, small terracotta waistcloth. Two arms and two legs only. No tail, no equipment. Preserve the master face and short hunched proportions.",
+    "model": "gpt-image-2",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_02-rejeton-braise_01a080ab\\source.png",
+    "reference_sha256": "193b0faa1d4f5f1c531ef6434fdb357bb9d66b9eca0af2638514ca1323b39b41",
+    "view_cells": {
+      "E": [
+        0,
+        0
+      ],
+      "S": [
+        1,
+        0
+      ],
+      "N": [
+        0,
+        1
+      ],
+      "W": [
+        1,
+        1
+      ]
+    },
+    "status": "downloaded_pending_review",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131400_rejeton-braise-fixed-views_01a080b9\\source.png",
+    "sha256": "88484e3bea53ad1185f1f35f3e019a486671249272887f77b801e994b6d3a688",
+    "consumed_credits": 12
+  },
+  "molosse_styx": {
+    "slug": "molosse_styx",
+    "task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131405_molosse-styx-fixed-views_01a080b9",
+    "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved SINGLE-HEADED charcoal-blue underworld hound with broad ivory jaw and brow, three large ivory dorsal spines, plain bronze collar, four canine legs and one tail. Preserve its animal quadruped anatomy, no humanoid limbs.",
+    "model": "gpt-image-2",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_03-molosse-styx_01a080ab\\source.png",
+    "reference_sha256": "f996d71f9cfff94c13651fcea077f2b2cc58d25b6439ce8b8b15d6fd3cf8a66b",
+    "view_cells": {
+      "E": [
+        0,
+        0
+      ],
+      "S": [
+        1,
+        0
+      ],
+      "N": [
+        0,
+        1
+      ],
+      "W": [
+        1,
+        1
+      ]
+    },
+    "status": "downloaded_pending_review",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131405_molosse-styx-fixed-views_01a080b9\\source.png",
+    "sha256": "0cb46a59b677b7fb056647ac39ad732e5813c2abfd0be4ef2e9c4eb8b96512f7",
+    "consumed_credits": 12
+  },
+  "lamie_lethe": {
+    "slug": "lamie_lethe",
+    "task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131409_lamie-lethe-fixed-views_01a080b9",
+    "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved Greek serpent oracle: jade single coiled tail, ivory face, bronze and ivory opaque armor, fan-shaped jade head crest. Exactly TWO arms, no legs. Hooked staff in anatomical LEFT hand as in the approved image, free anatomical RIGHT hand. Keep her exact armor, crest and single tail.",
+    "model": "gpt-image-2",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_04-lamie-lethe_01a080ab\\source.png",
+    "reference_sha256": "c044015ea4dc4ad65ce7b62176cfd0aaa1d779e31b9eefe8a4a3439915813bbc",
+    "view_cells": {
+      "E": [
+        0,
+        0
+      ],
+      "S": [
+        1,
+        0
+      ],
+      "N": [
+        0,
+        1
+      ],
+      "W": [
+        1,
+        1
+      ]
+    },
+    "status": "downloaded_pending_review",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131409_lamie-lethe-fixed-views_01a080b9\\source.png",
+    "sha256": "e457b5dfe11fdfadaed216f0fe4be1ffaeb79eb20ccb9c4537236308593b07f4",
+    "consumed_credits": 12
+  }
+}

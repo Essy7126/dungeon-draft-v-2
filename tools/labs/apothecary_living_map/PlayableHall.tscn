@@ -1,0 +1,15 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tools/labs/apothecary_living_map/playable_hall.gd" id="1"]
+[ext_resource type="Texture2D" path="res://asset/map/painted/merchant/hall_v1/hall.png" id="2"]
+[ext_resource type="Shader" path="res://tools/labs/apothecary_living_map/living_hall.gdshader" id="3"]
+[ext_resource type="Script" path="res://tools/labs/apothecary_living_map/hall_atmosphere.gd" id="4"]
+
+[node name="PlayableHall" type="Node2D"]
+script = ExtResource("1")
+map_texture = ExtResource("2")
+map_shader = ExtResource("3")
+atmosphere_script = ExtResource("4")
+map_title = "La Halle sous les racines"
+magic_caption = "Orbe"
+layout_path = "res://tools/labs/apothecary_living_map/hall_layout.json"

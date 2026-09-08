@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+[ext_resource type="PackedScene" path="res://data/spells/catabase_monsters/vfx/braise_projectile.tscn" id="vfx"]
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/fire_arrow.tres" id="icon"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 1
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_braise_trait"
+spell_name = "Éclat de braise"
+description = "Projette une braise : 10 dégâts de feu de base (100 % de la prouesse), à 2–5 cases. Nécessite une ligne de vue."
+visual_action = 1
+ap_cost = 4
+minimum_range = 2
+spell_range = 5
+once_per_activation = true
+damage = 10
+damage_type = 1
+element = 1
+damage_scaling = SubResource("Scaling_damage")
+impact_delay_seconds = 0.2
+vfx_scene = ExtResource("vfx")
+icon = ExtResource("icon")

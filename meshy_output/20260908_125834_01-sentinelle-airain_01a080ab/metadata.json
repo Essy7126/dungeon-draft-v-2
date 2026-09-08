@@ -1,0 +1,25 @@
+{
+  "project_name": "Sentinelle d'airain",
+  "folder": "20260908_125834_01-sentinelle-airain_01a080ab",
+  "root_task_id": "01a080ab-7311-73c4-8341-3d2c41d37ac6",
+  "created_at": "2026-09-08T12:58:34.986987",
+  "updated_at": "2026-09-08T12:59:17.264679",
+  "tasks": [
+    {
+      "task_id": "01a080ab-7311-73c4-8341-3d2c41d37ac6",
+      "task_type": "text-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T12:58:34.986987"
+    },
+    {
+      "task_id": "01a080ab-7311-73c4-8341-3d2c41d37ac6",
+      "task_type": "text-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T12:59:17.264679"
+    }
+  ]
+}

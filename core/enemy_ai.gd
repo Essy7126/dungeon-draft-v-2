@@ -358,7 +358,10 @@ func _try_offensive_spell(enemy: Unit, all_units: Array) -> Dictionary:
 	for spell in enemy.spells:
 		if spell == null or not spell.deals_damage() or not spell.can_target_enemy:
 			continue
-		if enemy.current_ap < spell.ap_cost:
+		# Geometry alone does not validate cooldowns, per-activation limits or
+		# combat-form restrictions. An unavailable stronger spell must not hide
+		# the primary attack and leave the runner with a rejected plan.
+		if not enemy.can_use_spell(spell):
 			continue
 		var targetable = _spell_caster.get_targetable_cells(enemy, spell)
 		for cell in targetable:

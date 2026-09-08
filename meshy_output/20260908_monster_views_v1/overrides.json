@@ -1,0 +1,40 @@
+{
+  "lamie_lethe_W": {
+    "slug": "lamie_lethe",
+    "direction": "W",
+    "task_id": "01a080c6-1ae7-7070-8ed2-7b50a95bce70",
+    "prompt": "Draw ONE SINGLE complete fixed idle character view based on the supplied approved reference. No turnaround board, no multiple figures, no animation. Same exact identity, original hand-painted cel-shaded dark-outlined style, proportions, clothing and materials. Orthographic camera elevated25 degrees. Entire figure centered on solid pure magenta #FF00FF with at least15 percent empty margins around ALL extremities and weapons, no shadows, no ground or scenery, no text, no FX. Figure height65-70percent of squarecanvas, never cropped. This is an anatomically correct independent drawing, do not horizontally flip the image. The exact approved Greek serpent oracle: jade single coiled tail, ivory face, bronze and ivory opaque armor, fan-shaped jade head crest. Exactly TWO arms, no legs. Hooked staff in anatomical LEFT hand as in the approved image, free anatomical RIGHT hand. Keep her exact armor, crest and single tail.\nA BACK three-quarter view facing diagonally UP-LEFT AWAY from the viewer. Show her BACK armor and back of head and crest, NOT her face or front chest. Her one hooked staff is on the LEFT SIDE OF THE CANVAS in her left hand. Her right hand is open and empty on RIGHT SIDE OF THE CANVAS. Keep the staff fully visible from crook to bottom, no missing staff. Single jade tail coil, same opaque ivory-bronze armor.",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_04-lamie-lethe_01a080ab\\source.png",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_132744_lamie-lethe-w-single-view_01a080c6\\source.png",
+    "sha256": "962b9d03ee718d5ff862a1ac943bbdc2202e6c49da015486db4cd6e37971472c",
+    "consumed_credits": 12,
+    "status": "approved",
+    "review": "Anatomical laterality and complete equipment visually approved in task."
+  },
+  "lamie_lethe_S": {
+    "slug": "lamie_lethe",
+    "direction": "S",
+    "task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+    "prompt": "Draw ONE SINGLE complete fixed idle character view based on the supplied approved reference. No turnaround board, no multiple figures, no animation. Same exact identity, original hand-painted cel-shaded dark-outlined style, proportions, clothing and materials. Orthographic camera elevated25 degrees. Entire figure centered on solid pure magenta #FF00FF with at least15 percent empty margins around ALL extremities and weapons, no shadows, no ground or scenery, no text, no FX. Figure height65-70percent of squarecanvas, never cropped. This is an anatomically correct independent drawing, do not horizontally flip the image. The exact approved Greek serpent oracle: jade single coiled tail, ivory face, bronze and ivory opaque armor, fan-shaped jade head crest. Exactly TWO arms, no legs. Hooked staff in anatomical LEFT hand as in the approved image, free anatomical RIGHT hand. Keep her exact armor, crest and single tail.\nA FRONT three-quarter view facing diagonally DOWN-LEFT toward the viewer. Face looks LEFT. The one hooked staff is held on the RIGHT SIDE OF THE CANVAS by her left hand. Her right hand is open and empty on the LEFT SIDE OF THE CANVAS. DO NOT change staff sides when turning the face left. Front chest and ivory face visible, same jade crest and single tail.",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_04-lamie-lethe_01a080ab\\source.png",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_132741_lamie-lethe-s-single-view_01a080c6\\source.png",
+    "sha256": "07247f4ce1c93707ece33892b29c623cce81c05508d36f739b68994cf90b3bef",
+    "consumed_credits": 12,
+    "status": "approved",
+    "review": "Anatomical laterality and complete equipment visually approved in task."
+  },
+  "sentinelle_airain_S": {
+    "slug": "sentinelle_airain",
+    "direction": "S",
+    "task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+    "prompt": "Draw ONE SINGLE complete fixed idle character view based on the supplied approved reference. No turnaround board, no multiple figures, no animation. Same exact identity, original hand-painted cel-shaded dark-outlined style, proportions, clothing and materials. Orthographic camera elevated25 degrees. Entire figure centered on solid pure magenta #FF00FF with at least15 percent empty margins around ALL extremities and weapons, no shadows, no ground or scenery, no text, no FX. Figure height65-70percent of squarecanvas, never cropped. This is an anatomically correct independent drawing, do not horizontally flip the image. The exact approved squat bronze-and-ivory automaton. Short heavy spear in anatomical RIGHT hand, giant cracked round bronze shield in anatomical LEFT hand. Recessed small hollow helmet, turquoise slit eyes. Maintain its broad heavy armored torso and thick short legs; exact shield crack motif and armor design.\nA FRONT three-quarter view looking diagonally DOWN-LEFT toward viewer. Face looks toward the LEFT side of the canvas; chest is seen from front. HOLD the giant cracked round shield on the RIGHT SIDE OF THE CANVAS, attached to the character left arm. HOLD the short heavy spear on the LEFT SIDE OF THE CANVAS, in the character right hand. Shield and spear MUST BOTH be present and wholly visible. This is the opposite facing to the reference, but NOT a reflection: keep the shield on image-right and spear image-left while the face points LEFT.",
+    "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125834_01-sentinelle-airain_01a080ab\\source.png",
+    "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_132738_sentinelle-airain-s-single-vie_01a080c6\\source.png",
+    "sha256": "0a02edc323a0a5ede6c52a3bb2a11e225224aa384f7348dc21ed818c90b93b5d",
+    "consumed_credits": 12,
+    "status": "approved",
+    "review": "Anatomical laterality and complete equipment visually approved in task.",
+    "capture_scale": 0.917910447761194,
+    "capture_scale_reason": "Single-view capture is 402px high vs 369px for the original S quadrant; uniform one-time capture normalization preserves family physical size."
+  }
+}

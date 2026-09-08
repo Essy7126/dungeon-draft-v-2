@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+[ext_resource type="PackedScene" path="res://data/spells/catabase_monsters/vfx/braise_projectile.tscn" id="vfx"]
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/fire_arrow.tres" id="icon"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/status/braise.tres" id="status"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 1.4
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_braise_fournaise"
+spell_name = "Fournaise annoncée"
+description = "Prépare un projectile pour la prochaine activation : 14 dégâts de feu de base (140 % de la prouesse) et Brûlure de 4 dégâts pendant deux activations. Brisez la ligne de vue ou sortez des 2–6 cases pour l’annuler. La résolution consomme l’activation."
+visual_action = 2
+ap_cost = 4
+minimum_range = 2
+spell_range = 6
+once_per_activation = true
+damage = 14
+damage_type = 1
+element = 1
+damage_scaling = SubResource("Scaling_damage")
+impact_delay_seconds = 0.2
+cooldown_activations = 3
+initial_cooldown = 1
+vfx_scene = ExtResource("vfx")
+icon = ExtResource("icon")
+applied_status = ExtResource("status")
+delayed_resolution = 3
+consumes_activation_on_resolution = true
+telegraph_label = "Fournaise — brisez la ligne de vue"
+telegraph_color = Color(1, 0.42, 0.12, 0.95)

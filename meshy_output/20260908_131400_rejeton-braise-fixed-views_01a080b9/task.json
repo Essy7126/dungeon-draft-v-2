@@ -1,0 +1,16 @@
+{
+  "id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved small ash-grey imp, large long clawed forearms, two short ivory horns, orange throat pouch, small terracotta waistcloth. Two arms and two legs only. No tail, no equipment. Preserve the master face and short hunched proportions.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788866040802,
+  "started_at": 1788866040805,
+  "finished_at": 1788866173670,
+  "expires_at": 1789125373670,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080b9-854f-7114-b627-c38bfc9021d0_0.png?Expires=1789125373&Signature=L~hlxaZIZ1mNyakY4DOYFWevUDtixuKrS2K3oksWuhr~QYvRxjciS7cfA5lGnc-HmgIMobMXQl12OrWIvmKEbxEMcMRMkrA3B3lHH-FJw2rWgame~nTO2G5~vRNSiJw09gEvMehu4ghOyc9BvazxldjPVJB2Ip3EkJ9pqGIU02tQNsHFfmGli21tjIb4gtRSH6ABKF485r3eL59K55UO7f42gYLTYJy4SooiMYXMSndRmC0oyHiR69Hss5wH75zysDG-uNyD8CLOowmzpbWeaXVseGnY8Bju7FRqROiW6qOUnRKM-UNjUi-YAHHbf-Ra1oaZ4AFO74BODuAdQZmFPA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

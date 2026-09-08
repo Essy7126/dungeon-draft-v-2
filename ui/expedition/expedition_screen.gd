@@ -48,7 +48,7 @@ var _rendered_page := ""
 
 func _ready() -> void:
 	_page = initial_page
-	if not inspection_only and _is_hub():
+	if not inspection_only and _is_hub() and not GameManager.is_merchant_hall_active():
 		_page = "hub"
 	_build_theme()
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -251,6 +251,9 @@ func _render_map() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(right)
 	var details := _scroll_column(right)
+	if GameManager.is_merchant_hall_active():
+		_render_merchant_hall_return(details, right)
+		return
 	if session.route.phase == "reward" and not _is_hub():
 		_render_rewards(details)
 		return
@@ -271,6 +274,8 @@ func _render_map() -> void:
 		return
 	_label(card, "SEUIL %02d  /  %s" % [int(selected.depth), TYPE_NAMES.get(str(selected.kind), "Horizon incertain")], 14, GOLD)
 	_label(card, str(selected.title), 25, TEXT, true)
+	if str(selected.get("id", "")) == "d04_1" and str(selected.kind) == "merchant":
+		_label(card, "La Halle sous les racines · explorez les étals avec Achille.", 17, TEAL)
 	_label(card, str(selected.get("hint", "Une part du chemin reste à découvrir.")), 18)
 	if str(selected.reward) != "":
 		_label(card, "Promesse : " + str(REWARD_NAMES.get(str(selected.reward), "À découvrir")), 17, TEAL)
@@ -286,6 +291,8 @@ func _render_map() -> void:
 	engage.pressed.connect(func():
 		engage.disabled = true
 		if GameManager.choose_expedition_node(_selected_node):
+			if GameManager.is_merchant_hall_active():
+				return # The saved destination now opens its own playable scene.
 			if GameManager.expedition.route.phase != "combat":
 				if _is_hub(): _page = "hub"
 				_render()
@@ -458,6 +465,18 @@ func _render_hub() -> void:
 		var map_button := _button(card, "Consulter le parchemin")
 		map_button.pressed.connect(func(): _page = "map"; _render())
 		return
+	if GameManager.is_merchant_hall_active():
+		var column := _scroll_column(_body)
+		var painting := TextureRect.new()
+		painting.name = "MerchantHallPreview"
+		painting.texture = load("res://asset/map/painted/merchant/hall_v1/hall.png")
+		painting.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		painting.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		painting.custom_minimum_size.y = 220
+		painting.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		column.add_child(painting)
+		_render_merchant_hall_return(column, column)
+		return
 	var session := GameManager.expedition
 	var node := session.route.get_current_node()
 	var services: Array[Dictionary] = session.hub_services(GameManager.item_catalog)
@@ -516,6 +535,26 @@ func _render_hub() -> void:
 		if bool(result.get("success", false)): _page = "map"
 		_action_result(result)
 	)
+
+
+func _render_merchant_hall_return(parent: Control, actions: Control) -> void:
+	var card := _card(parent, GOLD)
+	_label(card, "LA HALTE EST OUVERTE", 13, GOLD)
+	_label(card, "La Halle sous les racines", 25, TEXT, true)
+	_label(card, "L'étal du passeur · étape IV", 16, TEAL)
+	_label(card, "Achille vous attend dans la Halle. Retrouvez les trois étals, le repos et les mémoires avant de reprendre la route.", 17)
+	var visit := _button(actions, "Revenir dans la Halle  →", true)
+	visit.name = "EnterMerchantHall"
+	visit.disabled = inspection_only
+	visit.pressed.connect(func():
+		if not GameManager.open_merchant_hall():
+			_status.text = str(GameManager.get_expedition_save_status().get("message", "La Halle n'est plus accessible."))
+			_status.add_theme_color_override("font_color", RED)
+	)
+	if _page == "map":
+		var workshop := _button(actions, "Composer le kit")
+		workshop.name = "ComposeCatabaseKit"
+		workshop.pressed.connect(func(): _page = "build"; _render())
 
 
 func _render_loadout(parent: Control) -> void:

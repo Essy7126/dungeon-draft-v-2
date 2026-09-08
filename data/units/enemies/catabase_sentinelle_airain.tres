@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="PackedScene" path="res://characters/enemies/catabase_monsters/SentinelleAirainIsoUnitView.tscn" id="3_visual"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/airain_estoc.tres" id="4_primary"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/airain_rempart.tres" id="5_special"]
+[ext_resource type="Resource" path="res://data/ai/profiles/catabase_sentinelle_airain_ai.tres" id="6_ai"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"catabase_sentinelle_airain"
+unit_name = "Sentinelle d’airain"
+description = "Gardienne cuirassée au lourd bouclier. Lente, résistante aux dégâts physiques, elle tient un goulet et repousse les intrus."
+team = 1
+max_hp = 78
+max_ap = 4
+max_mp = 2
+initiative = 6
+attack_power = 14
+armure = 35.0
+first_forced_movement_reduction_per_activation = 1
+visual_scene = ExtResource("3_visual")
+preview_sprite_frames_path = "res://assets/characters/catabase_monsters/sentinelle_airain/portrait.tres"
+preview_sprite_animation = &"idle_E"
+basic_attack_enabled = false
+active_spell_slots = 2
+spells = Array[ExtResource("2_spell")]([ExtResource("4_primary"), ExtResource("5_special")])
+ai_behavior = 0
+combat_style = 0
+preferred_range = 1
+minimum_range = 1
+maximum_range = 1
+keep_distance = false
+ai_profile = ExtResource("6_ai")
+faction_id = &"catabase_underworld"
+tactical_role_id = &"catabase_sentinelle_airain"
+role = "Défenseur lourd"
+presentation_summary = "Contournez son bouclier en jouant la distance et les dégâts magiques. Sa lenteur laisse le temps de préparer un assaut."
+presentation_badge = "ENFERS"
+

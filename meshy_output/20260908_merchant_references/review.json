@@ -1,0 +1,41 @@
+{
+  "status": "generated_and_visually_reviewed",
+  "user_approved": false,
+  "consumed_credits": 27,
+  "balance_before": 1174,
+  "balance_after": 1147,
+  "engine_integration": false,
+  "npcs_created": false,
+  "files": [
+    {
+      "title": "Le Comptoir des archives",
+      "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125410_01-comptoir-des-archives_01a080a7\\01_comptoir_des_archives.png",
+      "format": "PNG",
+      "width": 1376,
+      "height": 768,
+      "bytes": 1229333,
+      "task_id": "01a080a7-5c54-766b-baf6-c8504b1daefc",
+      "consumed_credits": 9
+    },
+    {
+      "title": "La Halle sous les racines",
+      "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125455_02-halle-sous-les-racines_01a080a8\\02_halle_sous_les_racines.png",
+      "format": "PNG",
+      "width": 1376,
+      "height": 768,
+      "bytes": 1662772,
+      "task_id": "01a080a8-0dcf-7079-ac15-f799fb8f1b74",
+      "consumed_credits": 9
+    },
+    {
+      "title": "L’Apothicairerie du bassin",
+      "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125605_03-apothicairerie-du-bassin_01a080a9\\03_apothicairerie_du_bassin.png",
+      "format": "PNG",
+      "width": 1376,
+      "height": 768,
+      "bytes": 1584924,
+      "task_id": "01a080a9-2162-7787-a269-873582387d25",
+      "consumed_credits": 9
+    }
+  ]
+}

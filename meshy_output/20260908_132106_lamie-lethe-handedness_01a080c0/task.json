@@ -1,0 +1,16 @@
+{
+  "id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "This is a fixed four-view snake-oracle character reference, not animation. Preserve the exact 2x2 layout, pure magenta background, size, full margins, painted style, and top-left and bottom-left characters unchanged. Correct staff handedness ONLY in the TOP-RIGHT and BOTTOM-RIGHT characters. The approved character ALWAYS holds her hooked staff in her anatomical LEFT hand, with her anatomical RIGHT hand open and empty. For the TOP-RIGHT front view facing diagonally down-left, redraw the staff on the RIGHT SIDE of that quadrant as seen by viewer; free open hand on LEFT SIDE. Keep face facing down-left; do not mirror or turn her face. For BOTTOM-RIGHT rear view facing diagonally up-left away, redraw staff on LEFT SIDE of quadrant; free hand on RIGHT SIDE. Preserve its current rear orientation. Thus BOTH top-row FRONT views have staff image-right and BOTH bottom-row BACK views have staff image-left. Redraw coherent hands and elbows without duplicating any arm or staff. Exactly two arms, one staff and one serpent tail per view. Do NOT horizontally flip the figures. Preserve all armor, masks, fins and the exact tail coils. No crop, no labels, no particles, no shadows.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788866466170,
+  "started_at": 1788866466173,
+  "finished_at": 1788866598352,
+  "expires_at": 1789125798352,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080c0-05c8-70df-a215-b7c2e1a8c247_0.png?Expires=1789125798&Signature=ki6h8fJV1vnehe76mEmhLOAejs4eiO-oVGJDCNMl1kbj9t7VqHfNoec6m5b5DVpOoyV9DbLMgz7EqAofzL4V9so5E4xZW6NQRQP9BqUmDHdMX7Bqr9cp-V-CTbcdviayQw~0RTXKqIlpOerJ0kP-aGbmm-A9tcE9xi~MB006Isp7yD1XYcYGiKPqWQRi65eAmawTJS8Xa7nOOwy7GZUlhRUAMP6DQf4WhZdMeoVoHelGKQjMfnETyzfOBK9RLw~C9BxXWG5Cuz8U5NEjAVwjr4mtjQIyB8-tml3IpHA8UYhIDlCA~LPvMU1NN7UHHm7WCBWTUyWIRtkgE37PdD5LSA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

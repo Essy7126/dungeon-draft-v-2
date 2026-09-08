@@ -1,0 +1,25 @@
+{
+  "project_name": "lamie_lethe S single fixed view",
+  "folder": "20260908_132741_lamie-lethe-s-single-view_01a080c6",
+  "root_task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+  "created_at": "2026-09-08T13:27:41.570412",
+  "updated_at": "2026-09-08T13:29:52.742799",
+  "tasks": [
+    {
+      "task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:27:41.570412"
+    },
+    {
+      "task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:29:52.742799"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "project_name": "rejeton_braise fixed orientation reference",
+  "folder": "20260908_131400_rejeton-braise-fixed-views_01a080b9",
+  "root_task_id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+  "created_at": "2026-09-08T13:14:00.966903",
+  "updated_at": "2026-09-08T13:16:18.022555",
+  "tasks": [
+    {
+      "task_id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:14:00.966903"
+    },
+    {
+      "task_id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:16:18.022555"
+    }
+  ]
+}

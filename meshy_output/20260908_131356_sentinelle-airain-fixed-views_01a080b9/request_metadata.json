@@ -1,0 +1,28 @@
+{
+  "slug": "sentinelle_airain",
+  "task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+  "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131356_sentinelle-airain-fixed-views_01a080b9",
+  "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved squat bronze-and-ivory automaton. Short heavy spear in anatomical RIGHT hand, giant cracked round bronze shield in anatomical LEFT hand. Recessed small hollow helmet, turquoise slit eyes. Maintain its broad heavy armored torso and thick short legs; exact shield crack motif and armor design.",
+  "model": "gpt-image-2",
+  "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125834_01-sentinelle-airain_01a080ab\\source.png",
+  "reference_sha256": "4c05a186a5bbeb536b73bf7a76ebf0d1d2a52c843c1736d183ec4d5d0668bba2",
+  "view_cells": {
+    "E": [
+      0,
+      0
+    ],
+    "S": [
+      1,
+      0
+    ],
+    "N": [
+      0,
+      1
+    ],
+    "W": [
+      1,
+      1
+    ]
+  },
+  "status": "created"
+}

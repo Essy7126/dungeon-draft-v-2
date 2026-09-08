@@ -1,0 +1,16 @@
+{
+  "id": "01a080ab-73c5-7446-81eb-aae8f20432cc",
+  "type": "text-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "One single full-body enemy creature master image for Catabase, a hand-painted ancient Greek underworld tactical RPG. Original character design. Orthographic three-quarter game view, character facing diagonally toward the viewer's RIGHT, camera looking down about 25 degrees. Entire creature centered in a square canvas, all feet, tail, horns and equipment visible, generous 12 percent empty margins. Quiet balanced idle pose with clear weight and separated limbs, suitable as an identity reference for future animation spritesheets. Visibly hand-DRAWN premium European animated fantasy character art: confident dark colored contours, generous stylized volumes, economical cel-painted light and shadow planes, subtle gouache accents, very large readable material shapes and silhouette, appealing and menacing rather than cute. Restrained palette of ancient bronze, warm ivory, charcoal and blue-petrol shadows, with a single controlled accent color. Soft neutral light from upper left. Readable at 120 pixels tall, minimal tiny detail, anatomically consistent simple repeatable design. Isolate on a perfectly flat solid pale cool grey background #D6DCE1. No floor, no ground tile, no plinth, no cast shadow or contact shadow. No scenery, text, labels, borders, watermark, interface, collage, extra views or sprite grid. No floating particles, mist, aura, motion trails or loose props. No photorealism, glossy 3D rendering, pixel art, chibi proportions or modern clothing.\n\nCHARACTER: A small hunched ash-grey underworld imp with a compact pear-shaped body, surprisingly long thick forearms, oversized clawed hands, short bent legs and two broad clearly planted three-toed feet. A narrow mischievous menacing face with a broad brow, exactly two short backward-pointing ivory horns. A warm muted ember-orange throat pouch and eyes, clean contained color with no glow halo. A torn terracotta ancient Greek waistcloth with one simple bronze clasp, otherwise exposed charcoal skin. Both hands visibly empty and separate from the body, slightly cupped as if about to spit or throw a coal later. Alert wary idle stance. Three major landmarks: oversized hands, two short horns, orange throat pouch. No tail, no wings, no flames, no smoke, no projectile, no huge teeth, no armor clutter. Clever hostile little monster, not a cute mascot.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788865115086,
+  "started_at": 1788865115089,
+  "finished_at": 1788865140123,
+  "expires_at": 1789124340123,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080ab-73c5-7446-81eb-aae8f20432cc_0.png?Expires=1789124340&Signature=fhls9Trkf6kqmIn6w6IKnKbAHVtfPFUHHggOdi20G62W1VZdPIroBChmFK-hebDstKPCMmQl2LXK4MqzWOK8x~dleMOVQJq~2Y8o5RnM3WfCI15Ehk9Y3UMC3nWyflVbmPySvtCaxOjeP6aXAUgGwM6mmqw5r9iqDBpWDmGrLSTb0FBJa8Q2O~noX0sYPERVzXVv9lqWCnOMzMCVJcyQsPhmzt1jEImvzpEG-OpDzoZXct1axLGUTu2NKgeon1-iFEUHBMiG-hg-fISxd-aeYgt0NidFiHLjr3tY5Q3i~6MhWctdJtEZQ89pcne8SUY8dgrdxbuaKEwaTnsYMZlpdA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

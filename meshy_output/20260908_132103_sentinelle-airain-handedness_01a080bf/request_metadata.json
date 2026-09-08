@@ -1,0 +1,7 @@
+{
+  "task_id": "01a080bf-f9a3-70ca-af8e-8f7b713e25a0",
+  "slug": "sentinelle_airain",
+  "prompt": "This is a fixed four-view character reference, not animation. Preserve the exact 2x2 layout, pure magenta background, scale, full character margins, painted style, and the top-left, bottom-left and bottom-right views completely. Correct ONLY the TOP-RIGHT character's equipment anatomy: that character faces diagonally down-left toward the viewer and must KEEP facing that direction. Its shield is on the wrong side. Redraw its huge cracked round shield held by its anatomical LEFT arm, on the RIGHT SIDE of that top-right quadrant as seen by the viewer. Redraw its short spear held by its anatomical RIGHT hand, on the LEFT SIDE of that top-right quadrant as seen by the viewer. Thus BOTH top-row front views have shield on image-right and spear on image-left. Both bottom-row back views have shield image-left and spear image-right. DO NOT FLIP the character or change which way it faces: redraw the correct arm and weapon placement in the existing perspective. Exactly one spear and one shield in every view. No new limb, no hand duplication, no removed equipment. Preserve all four feet pairs, no cropping, no text, no particles or shadows.",
+  "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131356_sentinelle-airain-fixed-views_01a080b9\\source.png",
+  "source_sha256": "2ee9d1f259e78d955fc00e5aed2a1fa4950ffa809df5a1b98109020dee8a8c40"
+}

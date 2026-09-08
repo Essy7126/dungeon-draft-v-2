@@ -1,0 +1,25 @@
+{
+  "project_name": "molosse_styx fixed orientation reference",
+  "folder": "20260908_131405_molosse-styx-fixed-views_01a080b9",
+  "root_task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+  "created_at": "2026-09-08T13:14:05.718508",
+  "updated_at": "2026-09-08T13:16:48.350885",
+  "tasks": [
+    {
+      "task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:14:05.718508"
+    },
+    {
+      "task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:16:48.350885"
+    }
+  ]
+}

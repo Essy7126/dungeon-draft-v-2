@@ -1,0 +1,25 @@
+{
+  "project_name": "lamie_lethe handedness correction",
+  "folder": "20260908_132106_lamie-lethe-handedness_01a080c0",
+  "root_task_id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+  "created_at": "2026-09-08T13:21:06.361422",
+  "updated_at": "2026-09-08T13:23:44.643473",
+  "tasks": [
+    {
+      "task_id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:21:06.361422"
+    },
+    {
+      "task_id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:23:44.643473"
+    }
+  ]
+}

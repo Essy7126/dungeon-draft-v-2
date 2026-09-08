@@ -1,0 +1,11 @@
+{
+  "title": "La Halle sous les racines",
+  "source": "meshy_output/20260908_125455_02-halle-sous-les-racines_01a080a8/02_halle_sous_les_racines.png",
+  "provider": "Meshy",
+  "model": "nano-banana-pro",
+  "task_id": "01a080a8-0dcf-7079-ac15-f799fb8f1b74",
+  "native_size": [1376, 768],
+  "asset": "hall.png",
+  "transformation": "Exact copy of the generated source. Animation is performed at runtime using spatially masked shaders and procedural atmosphere.",
+  "purpose": "Merchant environment art and animation study; no NPCs or purchasing gameplay."
+}

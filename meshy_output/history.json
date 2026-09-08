@@ -171,6 +171,168 @@
       "created_at": "2026-09-07T17:32:34.054084",
       "updated_at": "2026-09-07T17:34:42.704580",
       "task_count": 2
+    },
+    {
+      "folder": "20260908_125410_01-comptoir-des-archives_01a080a7",
+      "prompt": "Le Comptoir des archives",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080a7-5c54-766b-baf6-c8504b1daefc",
+      "created_at": "2026-09-08T12:54:52.074759",
+      "updated_at": "2026-09-08T12:54:52.074759",
+      "task_count": 1
+    },
+    {
+      "folder": "20260908_125455_02-halle-sous-les-racines_01a080a8",
+      "prompt": "La Halle sous les racines",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080a8-0dcf-7079-ac15-f799fb8f1b74",
+      "created_at": "2026-09-08T12:56:02.622337",
+      "updated_at": "2026-09-08T12:56:02.622337",
+      "task_count": 1
+    },
+    {
+      "folder": "20260908_125605_03-apothicairerie-du-bassin_01a080a9",
+      "prompt": "L\u2019Apothicairerie du bassin",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080a9-2162-7787-a269-873582387d25",
+      "created_at": "2026-09-08T12:56:47.762752",
+      "updated_at": "2026-09-08T12:56:47.762752",
+      "task_count": 1
+    },
+    {
+      "folder": "20260908_125834_01-sentinelle-airain_01a080ab",
+      "prompt": "Sentinelle d'airain",
+      "task_type": "text-to-image",
+      "root_task_id": "01a080ab-7311-73c4-8341-3d2c41d37ac6",
+      "created_at": "2026-09-08T12:58:34.986987",
+      "updated_at": "2026-09-08T12:59:17.264679",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_125835_02-rejeton-braise_01a080ab",
+      "prompt": "Rejeton de braise",
+      "task_type": "text-to-image",
+      "root_task_id": "01a080ab-73c5-7446-81eb-aae8f20432cc",
+      "created_at": "2026-09-08T12:58:35.167016",
+      "updated_at": "2026-09-08T12:59:00.650188",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_125835_03-molosse-styx_01a080ab",
+      "prompt": "Molosse du Styx",
+      "task_type": "text-to-image",
+      "root_task_id": "01a080ab-747f-74b7-86ac-3e90e383f8a7",
+      "created_at": "2026-09-08T12:58:35.356020",
+      "updated_at": "2026-09-08T12:59:01.009061",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_125835_04-lamie-lethe_01a080ab",
+      "prompt": "Lamie du Lethe",
+      "task_type": "text-to-image",
+      "root_task_id": "01a080ab-7544-7071-bfc3-99bf44c08287",
+      "created_at": "2026-09-08T12:58:35.550042",
+      "updated_at": "2026-09-08T12:59:17.538350",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_130731_sentinelle-airain-e-sprites_01a080b3",
+      "prompt": "sentinelle_airain E sprites",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080b3-9e39-775e-a89f-d59c43477c8c",
+      "created_at": "2026-09-08T13:07:31.157805",
+      "updated_at": "2026-09-08T13:08:13.017431",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_131018_sentinelle-airain-e-sprites_01a080b6",
+      "prompt": "sentinelle_airain E sprites",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080b6-0fb5-7411-85ec-b4c8c5eff5f4",
+      "created_at": "2026-09-08T13:10:18.600262",
+      "updated_at": "2026-09-08T13:12:26.396155",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_131356_sentinelle-airain-fixed-views_01a080b9",
+      "prompt": "sentinelle_airain fixed orientation reference",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+      "created_at": "2026-09-08T13:13:56.839961",
+      "updated_at": "2026-09-08T13:16:17.701563",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_131400_rejeton-braise-fixed-views_01a080b9",
+      "prompt": "rejeton_braise fixed orientation reference",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+      "created_at": "2026-09-08T13:14:00.966903",
+      "updated_at": "2026-09-08T13:16:18.022555",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_131405_molosse-styx-fixed-views_01a080b9",
+      "prompt": "molosse_styx fixed orientation reference",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+      "created_at": "2026-09-08T13:14:05.718508",
+      "updated_at": "2026-09-08T13:16:48.350885",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_131409_lamie-lethe-fixed-views_01a080b9",
+      "prompt": "lamie_lethe fixed orientation reference",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+      "created_at": "2026-09-08T13:14:10.000513",
+      "updated_at": "2026-09-08T13:16:48.034770",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_132103_sentinelle-airain-handedness_01a080bf",
+      "prompt": "sentinelle_airain handedness correction",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080bf-f9a3-70ca-af8e-8f7b713e25a0",
+      "created_at": "2026-09-08T13:21:03.048980",
+      "updated_at": "2026-09-08T13:23:44.250295",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_132106_lamie-lethe-handedness_01a080c0",
+      "prompt": "lamie_lethe handedness correction",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+      "created_at": "2026-09-08T13:21:06.361422",
+      "updated_at": "2026-09-08T13:23:44.643473",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_132738_sentinelle-airain-s-single-vie_01a080c6",
+      "prompt": "sentinelle_airain S single fixed view",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+      "created_at": "2026-09-08T13:27:38.539373",
+      "updated_at": "2026-09-08T13:30:22.287596",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_132741_lamie-lethe-s-single-view_01a080c6",
+      "prompt": "lamie_lethe S single fixed view",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+      "created_at": "2026-09-08T13:27:41.570412",
+      "updated_at": "2026-09-08T13:29:52.742799",
+      "task_count": 2
+    },
+    {
+      "folder": "20260908_132744_lamie-lethe-w-single-view_01a080c6",
+      "prompt": "lamie_lethe W single fixed view",
+      "task_type": "image-to-image",
+      "root_task_id": "01a080c6-1ae7-7070-8ed2-7b50a95bce70",
+      "created_at": "2026-09-08T13:27:44.425009",
+      "updated_at": "2026-09-08T13:29:52.383212",
+      "task_count": 2
     }
   ]
 }

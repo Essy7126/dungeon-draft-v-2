@@ -1,0 +1,513 @@
+{
+  "slug": "sentinelle_airain",
+  "status": "downloaded_pending_review",
+  "ready": true,
+  "errors": [],
+  "views": {
+    "E": {
+      "bbox": [
+        76,
+        66,
+        479,
+        436
+      ],
+      "margins": [
+        76,
+        66,
+        33,
+        76
+      ],
+      "height": 370,
+      "width": 403,
+      "core_alpha": 32,
+      "core_pixels": 82124,
+      "component_count": 1,
+      "component_areas": [
+        82124
+      ],
+      "centroid": [
+        301.9527421947299,
+        232.56347718084848
+      ],
+      "root": [
+        350.0,
+        435.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        76,
+        66,
+        479,
+        436
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 184596,
+        "pixelsChanged": 184596,
+        "transparentPixels": 184044,
+        "softAlphaPixels": 552,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 180484,
+        "source_alpha_changed": 180484,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "4d3547d15ce43464c773164f23cf77516af2f3cb9a59379e7c8640e7ef95f6bb",
+      "placement": {
+        "root": [
+          350.0,
+          435.0
+        ],
+        "offset": [
+          -13,
+          -14
+        ],
+        "placedBbox": [
+          43,
+          34,
+          357,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 12300523,
+        "alphaSumAfterPlacement": 12300523,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "packed_centroid": [
+        218.36974772708658,
+        164.53816856417396
+      ],
+      "root_raster_error": [
+        -0.13854595336079,
+        0.15637860082301813
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\source_E.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\base_frame_E.png",
+      "source_png_sha256": "6e9c4501bb96db06efc3fde373d2a5ec8f15e051382eb4fcc445a6c635566515",
+      "base_frame_png_sha256": "4a0463f8170d5ea0259f2ce29dd2d29549c20fd24692c4d2d26199b9c69fd348",
+      "raster_max_error": 0
+    },
+    "S": {
+      "bbox": [
+        80,
+        70,
+        447,
+        439
+      ],
+      "margins": [
+        80,
+        70,
+        65,
+        73
+      ],
+      "height": 369,
+      "width": 367,
+      "core_alpha": 32,
+      "core_pixels": 77054,
+      "component_count": 1,
+      "component_areas": [
+        77054
+      ],
+      "centroid": [
+        281.55969839333454,
+        239.1114023931269
+      ],
+      "root": [
+        333.0,
+        438.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        80,
+        70,
+        447,
+        439
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 189604,
+        "pixelsChanged": 189604,
+        "transparentPixels": 189137,
+        "softAlphaPixels": 467,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 185492,
+        "source_alpha_changed": 185492,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "4893339fd1d94185acade6fd2e05cb9294fe3d48fd354285f85b64aedfcac6eb",
+      "override": {
+        "task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+        "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_132738_sentinelle-airain-s-single-vie_01a080c6\\source.png",
+        "sha256": "0a02edc323a0a5ede6c52a3bb2a11e225224aa384f7348dc21ed818c90b93b5d",
+        "status": "approved",
+        "original_dimensions": [
+          1024,
+          1024
+        ],
+        "normalized_dimensions": [
+          512,
+          512
+        ],
+        "normalization_scale": 0.5,
+        "mirrored": false,
+        "capture_scale": 0.917910447761194,
+        "capture_scale_reason": "Single-view capture is 402px high vs 369px for the original S quadrant; uniform one-time capture normalization preserves family physical size.",
+        "original_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\override_source_S.png"
+      },
+      "placement": {
+        "root": [
+          333.0,
+          438.0
+        ],
+        "offset": [
+          0,
+          -16
+        ],
+        "placedBbox": [
+          59,
+          35,
+          346,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 11542960,
+        "alphaSumAfterPlacement": 11542960,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        61,
+        37,
+        343,
+        321
+      ],
+      "packed_centroid": [
+        215.66890536415175,
+        167.59921500218056
+      ],
+      "root_raster_error": [
+        -0.19753086419754595,
+        0.46090534979424547
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\source_S.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\base_frame_S.png",
+      "source_png_sha256": "4b341620f125c9edb542e8c39e677a60661098f03588f5f290522a2cf5884b85",
+      "base_frame_png_sha256": "10450cb7583a37989c6a0ab73e4a1996d77b3de042f7c11fcde7d2a830399e06",
+      "raster_max_error": 0
+    },
+    "N": {
+      "bbox": [
+        94,
+        13,
+        475,
+        365
+      ],
+      "margins": [
+        94,
+        13,
+        37,
+        147
+      ],
+      "height": 352,
+      "width": 381,
+      "core_alpha": 32,
+      "core_pixels": 71934,
+      "component_count": 1,
+      "component_areas": [
+        71934
+      ],
+      "centroid": [
+        268.87813829343565,
+        171.8543943058915
+      ],
+      "root": [
+        320.0,
+        364.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        94,
+        13,
+        475,
+        365
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 194879,
+        "pixelsChanged": 194879,
+        "transparentPixels": 194205,
+        "softAlphaPixels": 674,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 190767,
+        "source_alpha_changed": 190767,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "44cb4e9ade8e13fe285e9b8154d80d0199e1dbd14bf32156e71cbc4b3cd060db",
+      "placement": {
+        "root": [
+          320.0,
+          364.0
+        ],
+        "offset": [
+          10,
+          40
+        ],
+        "placedBbox": [
+          80,
+          48,
+          377,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 10762238,
+        "alphaSumAfterPlacement": 10762238,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        82,
+        50,
+        375,
+        320
+      ],
+      "packed_centroid": [
+        216.59005733463852,
+        172.02158206311472
+      ],
+      "root_raster_error": [
+        -0.1838134430727223,
+        -0.384087791495233
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\source_N.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\base_frame_N.png",
+      "source_png_sha256": "0b3e73434f9bb2cee0eb01d512cf528b982c35f5e1247b28a82b5f0f32317241",
+      "base_frame_png_sha256": "349d41886f35446594272b906607195013e5c4156cf5602a891aff2f2e4215e8",
+      "raster_max_error": 0
+    },
+    "W": {
+      "bbox": [
+        42,
+        13,
+        433,
+        373
+      ],
+      "margins": [
+        42,
+        13,
+        79,
+        139
+      ],
+      "height": 360,
+      "width": 391,
+      "core_alpha": 32,
+      "core_pixels": 77967,
+      "component_count": 1,
+      "component_areas": [
+        77967
+      ],
+      "centroid": [
+        212.21920812651507,
+        184.07926430412866
+      ],
+      "root": [
+        179.0,
+        372.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        42,
+        13,
+        433,
+        373
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 188863,
+        "pixelsChanged": 188863,
+        "transparentPixels": 188177,
+        "softAlphaPixels": 686,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 184751,
+        "source_alpha_changed": 184751,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "5ce1c69a2d6c71160d62b5cc1344be80ccea90bd0cecfacb7e904e743fe62286",
+      "placement": {
+        "root": [
+          179.0,
+          372.0
+        ],
+        "offset": [
+          118,
+          34
+        ],
+        "placedBbox": [
+          148,
+          42,
+          453,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 11668008,
+        "alphaSumAfterPlacement": 11668008,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        150,
+        44,
+        450,
+        320
+      ],
+      "packed_centroid": [
+        281.0592074090028,
+        175.35741977169934
+      ],
+      "root_raster_error": [
+        -0.496570644718787,
+        -0.23868312757201693
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\source_W.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\base_frame_W.png",
+      "source_png_sha256": "9e4241df443e500ff223dec9c539a127f1f9cab9b6d7726d4162949aea5e487c",
+      "base_frame_png_sha256": "e352223b6628df5d6c7e56d49ec0f80ce7353ee445ccedd40142c33dc3a8253e",
+      "raster_max_error": 0
+    }
+  },
+  "task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131356_sentinelle-airain-fixed-views_01a080b9\\source.png",
+  "source_sha256": "2ee9d1f259e78d955fc00e5aed2a1fa4950ffa809df5a1b98109020dee8a8c40",
+  "source_dimensions": [
+    1024,
+    1024
+  ],
+  "master_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125834_01-sentinelle-airain_01a080ab\\source.png",
+  "master_sha256": "4c05a186a5bbeb536b73bf7a76ebf0d1d2a52c843c1736d183ec4d5d0668bba2",
+  "equipment_review_flags": {},
+  "common_scale": 0.7681755829903978,
+  "median_source_height": 364.5,
+  "target_height": 280,
+  "canvas": [
+    512,
+    384
+  ],
+  "anchor": [
+    256,
+    320
+  ],
+  "review_required": true,
+  "turnaround_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\turnaround_source.png",
+  "master_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\master.png",
+  "alignment_kind": "measured_ground_root_proposal",
+  "rig_authored": false,
+  "artwork_operations": [
+    "crop",
+    "magenta_key",
+    "unmix_edges",
+    "uniform_scale",
+    "pad"
+  ],
+  "contact_preview": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\sentinelle_airain\\fixed_views_contact.png"
+}

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/status/saignement.tres" id="status"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 1.4545454545454546
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_styx_dechirure"
+spell_name = "Déchirure funèbre"
+description = "Déchire au contact : 16 dégâts physiques de base (145 % de la prouesse), puis Saignement de 3 dégâts pendant deux activations. Revient toutes les trois activations."
+visual_action = 2
+ap_cost = 4
+minimum_range = 1
+spell_range = 1
+once_per_activation = true
+damage = 16
+damage_type = 0
+element = 0
+damage_scaling = SubResource("Scaling_damage")
+impact_delay_seconds = 0.0
+cooldown_activations = 3
+initial_cooldown = 1
+applied_status = ExtResource("status")
+needs_line_of_sight = false

@@ -1,0 +1,23 @@
+{
+  "01_comptoir_des_archives": {
+    "task_id": "01a080a7-5c54-766b-baf6-c8504b1daefc",
+    "status": "downloaded",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125410_01-comptoir-des-archives_01a080a7",
+    "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125410_01-comptoir-des-archives_01a080a7\\01_comptoir_des_archives.png",
+    "consumed_credits": 9
+  },
+  "02_halle_sous_les_racines": {
+    "task_id": "01a080a8-0dcf-7079-ac15-f799fb8f1b74",
+    "status": "downloaded",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125455_02-halle-sous-les-racines_01a080a8",
+    "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125455_02-halle-sous-les-racines_01a080a8\\02_halle_sous_les_racines.png",
+    "consumed_credits": 9
+  },
+  "03_apothicairerie_du_bassin": {
+    "task_id": "01a080a9-2162-7787-a269-873582387d25",
+    "status": "downloaded",
+    "project_dir": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125605_03-apothicairerie-du-bassin_01a080a9",
+    "image_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125605_03-apothicairerie-du-bassin_01a080a9\\03_apothicairerie_du_bassin.png",
+    "consumed_credits": 9
+  }
+}

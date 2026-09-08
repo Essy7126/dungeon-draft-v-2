@@ -1,0 +1,16 @@
+{
+  "id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Produce a precise CHARACTER TURNAROUND REFERENCE from the supplied approved monster illustration. This image contains exactly FOUR fixed neutral idle views of the SAME character. This is NOT an animation sprite sheet. All four views have identical equipment, colors, body proportions and anatomy, preserving the exact hand-drawn painted/cel-shaded graphic style, linework and materials of the approved reference.\nLAYOUT: perfectly regular 2 columns by 2 rows, one complete isolated character in each quadrant, on pure solid magenta #FF00FF background including all holes between limbs and equipment. No magenta on character. All feet, tails, horns, staffs, spearheads and shields remain entirely inside their quadrant with generous 12 percent margins. Never crop or overlap neighboring drawings. No text, labels, numbers, dividers or grid lines. No shadows, floor, scenery, particles, spells or extra props.\nFIXED ORTHOGRAPHIC GAME CAMERA, looking down25 degrees. EXACT VIEW PLACEMENT:\nTOP LEFT: front three-quarter facing diagonally DOWN-RIGHT toward the viewer, front chest visible, face looking right.\nTOP RIGHT: front three-quarter facing diagonally DOWN-LEFT toward the viewer, front chest visible, face looking left.\nBOTTOM LEFT: REAR three-quarter facing diagonally UP-RIGHT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nBOTTOM RIGHT: REAR three-quarter facing diagonally UP-LEFT away from the viewer, BACK of head and back of torso visible; do not draw front face/chest here.\nDraw four real views, not mirrored duplicates. The anatomical left and right hands keep the same equipment in all four views: front and back must be physically coherent. In each view choose an alert neutral idle stance with legs clearly separated and arms a little away from torso so joints can be articulated later. Every body part remains present. All four figures have the SAME scale, each occupying no more than70 percent of quadrant height. Shared upper-left neutral lighting. Include no alternate poses or actions. Preserve large clean dark contours and grouped painted shapes so the result remains legible as a small tactical game character.\nEXACT CHARACTER IDENTITY: The exact approved SINGLE-HEADED charcoal-blue underworld hound with broad ivory jaw and brow, three large ivory dorsal spines, plain bronze collar, four canine legs and one tail. Preserve its animal quadruped anatomy, no humanoid limbs.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788866045407,
+  "started_at": 1788866045410,
+  "finished_at": 1788866184720,
+  "expires_at": 1789125384720,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080b9-956e-769b-8bb3-85a5445a5a23_0.png?Expires=1789125384&Signature=S0cM0PKRYc1pP0sK8MCerhJsmZGshbJRo~gGaHjIUnxuAG4~5YWyebNXhLos3NdWibrD9-aXoG17WYcMa1q5B0V1djcJ9KVHO7hhhKF-gvudnYuGFDXC-dWPPivYT3tkIm~HMN2J6k6jiDnIbtttT8T~iuNVu5zGsEiN1KKA7To-QJr3ETeOAm9Bjl~cRH04-wWBJBkN1bRD-yZWmkPKD4MYc3TxMfqPPJ2vKKg-55fh-~N4pHb2E54xtIa7JiJ9pOGt7n1aT7Dsb8sEiHgs7qSfgR4g7q9nHw5iHKLc3ROK3RzxhOp-8b1HFCSZV2qYjHQwYgiVefXKccbFD0XiAg__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="PackedScene" path="res://characters/enemies/catabase_monsters/LamieLetheIsoUnitView.tscn" id="3_visual"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/lethe_trait.tres" id="4_primary"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/lethe_reflux.tres" id="5_special"]
+[ext_resource type="Resource" path="res://data/ai/profiles/catabase_lamie_lethe_ai.tres" id="6_ai"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"catabase_lamie_lethe"
+unit_name = "Lamie du Léthé"
+description = "Esprit ophidien des eaux de l’oubli. Ses traits spectraux affaiblissent l’approche ; son reflux réduit le mouvement sans voler de tour."
+team = 1
+max_hp = 54
+max_ap = 4
+max_mp = 3
+initiative = 8
+attack_power = 8
+resist_magique = 20.0
+resistances = {4: 0.2, 1: -0.15}
+visual_scene = ExtResource("3_visual")
+preview_sprite_frames_path = "res://assets/characters/catabase_monsters/lamie_lethe/portrait.tres"
+preview_sprite_animation = &"idle_E"
+basic_attack_enabled = false
+active_spell_slots = 2
+spells = Array[ExtResource("2_spell")]([ExtResource("4_primary"), ExtResource("5_special")])
+ai_behavior = 1
+combat_style = 1
+preferred_range = 5
+minimum_range = 2
+maximum_range = 6
+keep_distance = true
+ai_profile = ExtResource("6_ai")
+faction_id = &"catabase_underworld"
+tactical_role_id = &"catabase_lamie_lethe"
+role = "Contrôle à distance"
+presentation_summary = "Utilisez les couverts pour approcher malgré son ralentissement. Elle résiste mieux à la magie qu’aux coups physiques."
+presentation_badge = "ENFERS"
+

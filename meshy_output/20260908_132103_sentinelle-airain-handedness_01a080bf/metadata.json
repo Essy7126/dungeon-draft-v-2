@@ -1,0 +1,25 @@
+{
+  "project_name": "sentinelle_airain handedness correction",
+  "folder": "20260908_132103_sentinelle-airain-handedness_01a080bf",
+  "root_task_id": "01a080bf-f9a3-70ca-af8e-8f7b713e25a0",
+  "created_at": "2026-09-08T13:21:03.048980",
+  "updated_at": "2026-09-08T13:23:44.250295",
+  "tasks": [
+    {
+      "task_id": "01a080bf-f9a3-70ca-af8e-8f7b713e25a0",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:21:03.048980"
+    },
+    {
+      "task_id": "01a080bf-f9a3-70ca-af8e-8f7b713e25a0",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:23:44.250295"
+    }
+  ]
+}

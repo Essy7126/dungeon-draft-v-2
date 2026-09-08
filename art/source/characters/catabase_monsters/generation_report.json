@@ -1,0 +1,287 @@
+{
+  "workflow": "Meshy fixed directional reference images; local 2D articulation and spritesheet packing",
+  "formats": [
+    "PNG RGBA",
+    "Godot SpriteFrames (.tres)",
+    "JSON provenance"
+  ],
+  "tasks": [
+    {
+      "category": "concepts",
+      "task_id": "01a080ab-7311-73c4-8341-3d2c41d37ac6",
+      "consumed_credits": 9,
+      "status": "approved_for_sprite_production",
+      "format": "PNG",
+      "source": "meshy_output/20260908_125834_01-sentinelle-airain_01a080ab/source.png",
+      "bytes": 984819
+    },
+    {
+      "category": "concepts",
+      "task_id": "01a080ab-73c5-7446-81eb-aae8f20432cc",
+      "consumed_credits": 9,
+      "status": "approved_for_sprite_production",
+      "format": "PNG",
+      "source": "meshy_output/20260908_125835_02-rejeton-braise_01a080ab/source.png",
+      "bytes": 752137
+    },
+    {
+      "category": "concepts",
+      "task_id": "01a080ab-747f-74b7-86ac-3e90e383f8a7",
+      "consumed_credits": 9,
+      "status": "approved_for_sprite_production",
+      "format": "PNG",
+      "source": "meshy_output/20260908_125835_03-molosse-styx_01a080ab/source.png",
+      "bytes": 792921
+    },
+    {
+      "category": "concepts",
+      "task_id": "01a080ab-7544-7071-bfc3-99bf44c08287",
+      "consumed_credits": 9,
+      "status": "approved_for_sprite_production",
+      "format": "PNG",
+      "source": "meshy_output/20260908_125835_04-lamie-lethe_01a080ab/source.png",
+      "bytes": 813617
+    },
+    {
+      "category": "obsolete_animation_pilots",
+      "task_id": "01a080b3-9e39-775e-a89f-d59c43477c8c",
+      "consumed_credits": 9,
+      "status": "rejected_visual_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_130731_sentinelle-airain-e-sprites_01a080b3/source.png",
+      "bytes": 1532481
+    },
+    {
+      "category": "obsolete_animation_pilots",
+      "task_id": "01a080b6-0fb5-7411-85ec-b4c8c5eff5f4",
+      "consumed_credits": 12,
+      "status": "downloaded_pending_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_131018_sentinelle-airain-e-sprites_01a080b6/source.png",
+      "bytes": 2093675
+    },
+    {
+      "category": "fixed_views",
+      "task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+      "consumed_credits": 12,
+      "status": "downloaded_pending_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_131356_sentinelle-airain-fixed-views_01a080b9/source.png",
+      "bytes": 1338983
+    },
+    {
+      "category": "fixed_views",
+      "task_id": "01a080b9-854f-7114-b627-c38bfc9021d0",
+      "consumed_credits": 12,
+      "status": "downloaded_pending_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_131400_rejeton-braise-fixed-views_01a080b9/source.png",
+      "bytes": 1084724
+    },
+    {
+      "category": "fixed_views",
+      "task_id": "01a080b9-956e-769b-8bb3-85a5445a5a23",
+      "consumed_credits": 12,
+      "status": "downloaded_pending_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_131405_molosse-styx-fixed-views_01a080b9/source.png",
+      "bytes": 1097034
+    },
+    {
+      "category": "fixed_views",
+      "task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+      "consumed_credits": 12,
+      "status": "downloaded_pending_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_131409_lamie-lethe-fixed-views_01a080b9/source.png",
+      "bytes": 1174418
+    },
+    {
+      "category": "rejected_fixed_view_corrections",
+      "task_id": "01a080bf-f9a3-70ca-af8e-8f7b713e25a0",
+      "consumed_credits": 12,
+      "status": "rejected_visual_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_132103_sentinelle-airain-handedness_01a080bf/source.png",
+      "bytes": 1477589
+    },
+    {
+      "category": "rejected_fixed_view_corrections",
+      "task_id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+      "consumed_credits": 12,
+      "status": "rejected_visual_review",
+      "format": "PNG",
+      "source": "meshy_output/20260908_132106_lamie-lethe-handedness_01a080c0/source.png",
+      "bytes": 1373261
+    },
+    {
+      "category": "accepted_direction_corrections",
+      "task_id": "01a080c6-1ae7-7070-8ed2-7b50a95bce70",
+      "consumed_credits": 12,
+      "status": "approved",
+      "format": "PNG",
+      "source": "meshy_output/20260908_132744_lamie-lethe-w-single-view_01a080c6/source.png",
+      "bytes": 1042730
+    },
+    {
+      "category": "accepted_direction_corrections",
+      "task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+      "consumed_credits": 12,
+      "status": "approved",
+      "format": "PNG",
+      "source": "meshy_output/20260908_132741_lamie-lethe-s-single-view_01a080c6/source.png",
+      "bytes": 1082293
+    },
+    {
+      "category": "accepted_direction_corrections",
+      "task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+      "consumed_credits": 12,
+      "status": "approved",
+      "format": "PNG",
+      "source": "meshy_output/20260908_132738_sentinelle-airain-s-single-vie_01a080c6/source.png",
+      "bytes": 1328366
+    }
+  ],
+  "credits_by_category": {
+    "concepts": 36,
+    "obsolete_animation_pilots": 21,
+    "fixed_views": 48,
+    "rejected_fixed_view_corrections": 24,
+    "accepted_direction_corrections": 36
+  },
+  "total_including_initial_concepts": 165,
+  "credits_after_initial_concepts": 129,
+  "last_verified_balance": 982,
+  "balance_checked_at_utc": "2026-09-08T12:04:59.864793+00:00",
+  "runtime_atlases": [
+    {
+      "path": "assets/characters/catabase_monsters/lamie_lethe/atlas_E.png",
+      "bytes": 1447633,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/lamie_lethe/atlas_N.png",
+      "bytes": 1363471,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/lamie_lethe/atlas_S.png",
+      "bytes": 1424628,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/lamie_lethe/atlas_W.png",
+      "bytes": 1218967,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/molosse_styx/atlas_E.png",
+      "bytes": 898954,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/molosse_styx/atlas_N.png",
+      "bytes": 760006,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/molosse_styx/atlas_S.png",
+      "bytes": 891322,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/molosse_styx/atlas_W.png",
+      "bytes": 757517,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/rejeton_braise/atlas_E.png",
+      "bytes": 1057202,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/rejeton_braise/atlas_N.png",
+      "bytes": 914785,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/rejeton_braise/atlas_S.png",
+      "bytes": 1062203,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/rejeton_braise/atlas_W.png",
+      "bytes": 923662,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png",
+      "bytes": 2381748,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/sentinelle_airain/atlas_N.png",
+      "bytes": 2102585,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/sentinelle_airain/atlas_S.png",
+      "bytes": 2161234,
+      "size": [
+        2048,
+        1920
+      ]
+    },
+    {
+      "path": "assets/characters/catabase_monsters/sentinelle_airain/atlas_W.png",
+      "bytes": 2311798,
+      "size": [
+        2048,
+        1920
+      ]
+    }
+  ],
+  "review": "Initial concepts approved by user. Fixed views and final local poses visually reviewed; anatomically incorrect directions replaced. Obsolete remote animation pilots and rejected corrections are excluded from runtime."
+}

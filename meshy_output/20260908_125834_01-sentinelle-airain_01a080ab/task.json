@@ -1,0 +1,16 @@
+{
+  "id": "01a080ab-7311-73c4-8341-3d2c41d37ac6",
+  "type": "text-to-image",
+  "ai_model": "nano-banana-pro",
+  "prompt": "One single full-body enemy creature master image for Catabase, a hand-painted ancient Greek underworld tactical RPG. Original character design. Orthographic three-quarter game view, character facing diagonally toward the viewer's RIGHT, camera looking down about 25 degrees. Entire creature centered in a square canvas, all feet, tail, horns and equipment visible, generous 12 percent empty margins. Quiet balanced idle pose with clear weight and separated limbs, suitable as an identity reference for future animation spritesheets. Visibly hand-DRAWN premium European animated fantasy character art: confident dark colored contours, generous stylized volumes, economical cel-painted light and shadow planes, subtle gouache accents, very large readable material shapes and silhouette, appealing and menacing rather than cute. Restrained palette of ancient bronze, warm ivory, charcoal and blue-petrol shadows, with a single controlled accent color. Soft neutral light from upper left. Readable at 120 pixels tall, minimal tiny detail, anatomically consistent simple repeatable design. Isolate on a perfectly flat solid pale cool grey background #D6DCE1. No floor, no ground tile, no plinth, no cast shadow or contact shadow. No scenery, text, labels, borders, watermark, interface, collage, extra views or sprite grid. No floating particles, mist, aura, motion trails or loose props. No photorealism, glossy 3D rendering, pixel art, chibi proportions or modern clothing.\n\nCHARACTER: A squat broad ancient Greek bronze automaton animated by a dead spirit. A small hollow Corinthian helmet recessed into huge shoulders, two tiny cold turquoise eye slits. Thick ivory stone torso framed by weathered bronze rib-like armor, broad solid legs, large articulated feet. One enormous round bronze shield on its LEFT arm, slightly turned aside so the torso and both legs remain readable; the shield has one bold diagonal crack with a very subtle turquoise interior. One short heavy spear held upright in its RIGHT hand, fully inside the image, clearly separated from its body. Stable grounded vigilant stance. Three major landmarks: recessed helmet, huge cracked disk shield, thick stone feet. No human face, no cape, no skeletal thin legs, no extra weapons. The result must feel like a threatening animated bronze guardian and not a living human soldier.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1788865114906,
+  "started_at": 1788865114910,
+  "finished_at": 1788865144258,
+  "expires_at": 1789124344258,
+  "image_urls": [
+    "https://assets.meshy.ai/774a5450-77cd-469d-8d99-839fcbcf1cce/uploads/image_01a080ab-7311-73c4-8341-3d2c41d37ac6_0.png?Expires=1789124344&Signature=OesjNwe-xeZe5OmMGZ~Q4d4qHwvksGW9--7DPfrtXAxh8vKOasgrMVgX9PsXuMqLh5q~K6yoD5jV69E-TLibxHgZ5Ks5w0BOF3zCcLM5nudYrgJWpMEW9U79R8AlJmGaqLIjAA9QvdmwlNSj6OMULfSdRaDF2IN~JzhONu3~6Scc~Q9ruUympo5HBgm5ceBnl-4-EvCPGqlfMpHFBxsU6SYWZ0gpNqD5GFWwzMBHjYrK3U4ZjooB5XvNYO3S9g~7dVG5vuvj2py~NyzMdYFSneNH45OqRNubKTiKyFRj1LqkQfs3UiQhNy9WzCLvif4BOiOJXPtRlTG2ETwO1zfU8A__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 9
+}

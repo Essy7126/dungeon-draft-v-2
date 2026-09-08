@@ -1,0 +1,25 @@
+{
+  "project_name": "sentinelle_airain E sprites",
+  "folder": "20260908_131018_sentinelle-airain-e-sprites_01a080b6",
+  "root_task_id": "01a080b6-0fb5-7411-85ec-b4c8c5eff5f4",
+  "created_at": "2026-09-08T13:10:18.600262",
+  "updated_at": "2026-09-08T13:12:26.396155",
+  "tasks": [
+    {
+      "task_id": "01a080b6-0fb5-7411-85ec-b4c8c5eff5f4",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:10:18.600262"
+    },
+    {
+      "task_id": "01a080b6-0fb5-7411-85ec-b4c8c5eff5f4",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:12:26.396155"
+    }
+  ]
+}

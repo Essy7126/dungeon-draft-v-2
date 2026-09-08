@@ -1,0 +1,25 @@
+{
+  "project_name": "Lamie du Lethe",
+  "folder": "20260908_125835_04-lamie-lethe_01a080ab",
+  "root_task_id": "01a080ab-7544-7071-bfc3-99bf44c08287",
+  "created_at": "2026-09-08T12:58:35.550042",
+  "updated_at": "2026-09-08T12:59:17.538350",
+  "tasks": [
+    {
+      "task_id": "01a080ab-7544-7071-bfc3-99bf44c08287",
+      "task_type": "text-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T12:58:35.550042"
+    },
+    {
+      "task_id": "01a080ab-7544-7071-bfc3-99bf44c08287",
+      "task_type": "text-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T12:59:17.538350"
+    }
+  ]
+}

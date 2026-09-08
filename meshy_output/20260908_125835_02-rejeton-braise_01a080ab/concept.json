@@ -1,0 +1,13 @@
+{
+  "slug": "02_rejeton_braise",
+  "title": "Rejeton de braise",
+  "role": "Petit harceleur a distance",
+  "candidate_runtime": "catabase_frail_hellspawn",
+  "design": "A small hunched ash-grey underworld imp with a compact pear-shaped body, surprisingly long thick forearms, oversized clawed hands, short bent legs and two broad clearly planted three-toed feet. A narrow mischievous menacing face with a broad brow, exactly two short backward-pointing ivory horns. A warm muted ember-orange throat pouch and eyes, clean contained color with no glow halo. A torn terracotta ancient Greek waistcloth with one simple bronze clasp, otherwise exposed charcoal skin. Both hands visibly empty and separate from the body, slightly cupped as if about to spit or throw a coal later. Alert wary idle stance. Three major landmarks: oversized hands, two short horns, orange throat pouch. No tail, no wings, no flames, no smoke, no projectile, no huge teeth, no armor clutter. Clever hostile little monster, not a cute mascot.",
+  "palette": [
+    "cendre",
+    "terre cuite",
+    "braise"
+  ],
+  "animation_note": "Attaque crache-braise avec VFX separe; grosses mains et gorge orange constantes."
+}

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+[ext_resource type="PackedScene" path="res://data/spells/catabase_monsters/vfx/lethe_reflux.tscn" id="vfx"]
+[ext_resource type="Texture2D" path="res://assets/vfx/paris/sprites_v1/icons/ice_arrow.tres" id="icon"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/status/oubli.tres" id="status"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 1.25
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_lethe_reflux"
+spell_name = "Reflux du Léthé"
+description = "Une vague d’oubli à 2–5 cases : 10 dégâts d’ombre de base (125 % de la prouesse) et −1 PM à la prochaine activation. Aucun tour sauté. Revient toutes les trois activations."
+visual_action = 2
+ap_cost = 4
+minimum_range = 2
+spell_range = 5
+once_per_activation = true
+damage = 10
+damage_type = 1
+element = 4
+damage_scaling = SubResource("Scaling_damage")
+impact_delay_seconds = 0.32
+cooldown_activations = 3
+initial_cooldown = 1
+vfx_scene = ExtResource("vfx")
+icon = ExtResource("icon")
+applied_status = ExtResource("status")

@@ -1,0 +1,154 @@
+[
+  {
+    "title": "Sentinelle d’airain",
+    "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125834_01-sentinelle-airain_01a080ab\\source.png",
+    "format": "PNG",
+    "dimensions": [
+      1024,
+      1024
+    ],
+    "mode": "RGB",
+    "bytes": 984819,
+    "sha256_verified": true,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "corners_rgb": [
+      [
+        206,
+        216,
+        220
+      ],
+      [
+        208,
+        217,
+        224
+      ],
+      [
+        206,
+        215,
+        222
+      ],
+      [
+        205,
+        215,
+        219
+      ]
+    ]
+  },
+  {
+    "title": "Rejeton de braise",
+    "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_02-rejeton-braise_01a080ab\\source.png",
+    "format": "PNG",
+    "dimensions": [
+      1024,
+      1024
+    ],
+    "mode": "RGB",
+    "bytes": 752137,
+    "sha256_verified": true,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "corners_rgb": [
+      [
+        203,
+        214,
+        220
+      ],
+      [
+        203,
+        212,
+        221
+      ],
+      [
+        201,
+        211,
+        222
+      ],
+      [
+        201,
+        210,
+        217
+      ]
+    ]
+  },
+  {
+    "title": "Molosse du Styx",
+    "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_03-molosse-styx_01a080ab\\source.png",
+    "format": "PNG",
+    "dimensions": [
+      1024,
+      1024
+    ],
+    "mode": "RGB",
+    "bytes": 792921,
+    "sha256_verified": true,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "corners_rgb": [
+      [
+        204,
+        214,
+        218
+      ],
+      [
+        206,
+        217,
+        223
+      ],
+      [
+        204,
+        215,
+        221
+      ],
+      [
+        208,
+        215,
+        220
+      ]
+    ]
+  },
+  {
+    "title": "Lamie du Léthé",
+    "path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_04-lamie-lethe_01a080ab\\source.png",
+    "format": "PNG",
+    "dimensions": [
+      1024,
+      1024
+    ],
+    "mode": "RGB",
+    "bytes": 813617,
+    "sha256_verified": true,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "corners_rgb": [
+      [
+        203,
+        214,
+        220
+      ],
+      [
+        207,
+        216,
+        225
+      ],
+      [
+        205,
+        214,
+        221
+      ],
+      [
+        207,
+        216,
+        223
+      ]
+    ]
+  }
+]

@@ -628,6 +628,19 @@ func resolve_pending_activation(
 			spell.damage_type,
 			spell.element,
 		)
+		# Delayed projectiles apply their authored status only after a valid
+		# impact. Cancelled telegraphs and lethal hits cannot leave a status.
+		if target.is_alive and spell.applied_status != null:
+			if spell.replaces_same_source_status:
+				for unit_value in _grid.get_units():
+					var existing_unit := unit_value as Unit
+					if existing_unit != null:
+						existing_unit.remove_status(
+							spell.applied_status.get_effective_status_id(), caster, true
+						)
+			target.apply_status(
+				spell.applied_status, caster if spell.status_source_scoped else null
+			)
 		if target.is_alive and spell.push_distance > 0:
 			_push_unit(caster, target, spell.push_distance)
 		result["resolved"] = true

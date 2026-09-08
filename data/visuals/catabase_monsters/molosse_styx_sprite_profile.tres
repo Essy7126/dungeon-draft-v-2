@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CatabaseMonsterSpriteProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/catabase_monsters/catabase_monster_sprite_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"molosse_styx_sprites_v1"
+sprite_frames_path = "res://assets/characters/catabase_monsters/molosse_styx/sprite_frames.tres"
+display_scale = 0.35
+locomotion = "quadruped"
+stride_cycles_per_cell = 1
+external_stride_distance_pixels = 74
+movement_segment_duration_seconds = 0.23
+primary_spell_ids = Array[StringName]([&"catabase_styx_morsure"])
+action_durations = {"attack": 0.56, "cast": 0.72}
+release_frame = 2
+death_duration_seconds = 0.64
+cast_origins = {"N": Vector2(14, -30), "E": Vector2(34, -24), "S": Vector2(-14, -22), "W": Vector2(-34, -26)}

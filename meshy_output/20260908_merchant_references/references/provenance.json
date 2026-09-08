@@ -1,0 +1,15 @@
+{
+  "source": "user attachments, copied unchanged",
+  "files": [
+    {
+      "name": "golem.png",
+      "sha256": "2306970bb343e9a84c8795a2d253060914ee889289d3df7d24251212f67ab206",
+      "bytes": 4650300
+    },
+    {
+      "name": "library.png",
+      "sha256": "066b2bbe2cec5d902963cb3a4a1bd06fbd83202d0e4de9bb7417e464f0db1678",
+      "bytes": 6753363
+    }
+  ]
+}

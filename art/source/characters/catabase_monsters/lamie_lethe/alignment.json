@@ -1,0 +1,532 @@
+{
+  "slug": "lamie_lethe",
+  "status": "downloaded_pending_review",
+  "ready": true,
+  "errors": [],
+  "views": {
+    "E": {
+      "bbox": [
+        89,
+        27,
+        436,
+        457
+      ],
+      "margins": [
+        89,
+        27,
+        76,
+        55
+      ],
+      "height": 430,
+      "width": 347,
+      "core_alpha": 32,
+      "core_pixels": 64183,
+      "component_count": 1,
+      "component_areas": [
+        64183
+      ],
+      "centroid": [
+        256.9167069161616,
+        294.1279778134397
+      ],
+      "root": [
+        235.0,
+        456.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        89,
+        27,
+        436,
+        457
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 202875,
+        "pixelsChanged": 202875,
+        "transparentPixels": 201929,
+        "softAlphaPixels": 946,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 198763,
+        "source_alpha_changed": 198763,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "81d798efef70cc35739e9cce2b72fe1dd541184f41ba7e375efbd5c1722342ef",
+      "placement": {
+        "root": [
+          235.0,
+          456.0
+        ],
+        "offset": [
+          102,
+          22
+        ],
+        "placedBbox": [
+          158,
+          37,
+          390,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 6960041,
+        "alphaSumAfterPlacement": 6960041,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        160,
+        39,
+        388,
+        321
+      ],
+      "packed_centroid": [
+        270.4259292256156,
+        213.59384911442928
+      ],
+      "root_raster_error": [
+        -0.26168224299067333,
+        0.3177570093457689
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\source_E.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\base_frame_E.png",
+      "source_png_sha256": "ecf8dca3ef2bdb0ecfeb44d1580bf3bdeb9b49b6adf55f9c711f95b6e0e46447",
+      "base_frame_png_sha256": "6a76712fbf3d77b9f9237a81c490acf75100c2808fe60b6ff544b9c31b9283ec",
+      "raster_max_error": 0
+    },
+    "S": {
+      "bbox": [
+        103,
+        34,
+        422,
+        475
+      ],
+      "margins": [
+        103,
+        34,
+        90,
+        37
+      ],
+      "height": 441,
+      "width": 319,
+      "core_alpha": 32,
+      "core_pixels": 61529,
+      "component_count": 1,
+      "component_areas": [
+        61529
+      ],
+      "centroid": [
+        248.70230297908304,
+        302.09507711810693
+      ],
+      "root": [
+        235.0,
+        474.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        103,
+        34,
+        422,
+        475
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 205358,
+        "pixelsChanged": 205358,
+        "transparentPixels": 204614,
+        "softAlphaPixels": 744,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 201246,
+        "source_alpha_changed": 201246,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "172ab278e793974b4370670ead9840b61f896ed09ca60892fa21590eafed0212",
+      "override": {
+        "task_id": "01a080c6-0f2b-7035-8b88-ebd2a1c141af",
+        "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_132741_lamie-lethe-s-single-view_01a080c6\\source.png",
+        "sha256": "07247f4ce1c93707ece33892b29c623cce81c05508d36f739b68994cf90b3bef",
+        "status": "approved",
+        "original_dimensions": [
+          1024,
+          1024
+        ],
+        "normalized_dimensions": [
+          512,
+          512
+        ],
+        "normalization_scale": 0.5,
+        "mirrored": false,
+        "capture_scale": 1.0,
+        "capture_scale_reason": "",
+        "original_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\override_source_S.png"
+      },
+      "placement": {
+        "root": [
+          235.0,
+          474.0
+        ],
+        "offset": [
+          102,
+          10
+        ],
+        "placedBbox": [
+          167,
+          30,
+          381,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 6679739,
+        "alphaSumAfterPlacement": 6679739,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        169,
+        32,
+        378,
+        321
+      ],
+      "packed_centroid": [
+        265.0145105024865,
+        206.82231128924516
+      ],
+      "root_raster_error": [
+        -0.26168224299067333,
+        0.09345794392521611
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\source_S.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\base_frame_S.png",
+      "source_png_sha256": "a9f5b6a83c32fd6521536f00307bf8a0517b9a857a0e56fdc02c5b57ab37d40e",
+      "base_frame_png_sha256": "44a07ef24e5c86a84534e63a6bdf8ff899b832d8c344c9b59765b1c8da3bc077",
+      "raster_max_error": 0
+    },
+    "N": {
+      "bbox": [
+        86,
+        21,
+        425,
+        442
+      ],
+      "margins": [
+        86,
+        21,
+        87,
+        70
+      ],
+      "height": 421,
+      "width": 339,
+      "core_alpha": 32,
+      "core_pixels": 60840,
+      "component_count": 1,
+      "component_areas": [
+        60840
+      ],
+      "centroid": [
+        265.0511998685076,
+        285.78139381985534
+      ],
+      "root": [
+        245.0,
+        441.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        86,
+        21,
+        425,
+        442
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 206116,
+        "pixelsChanged": 206116,
+        "transparentPixels": 205294,
+        "softAlphaPixels": 822,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 202004,
+        "source_alpha_changed": 202004,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "a9530c1d382dcc735eff46689551240ed14c4c5022eacb7a7873bb6d50c28da4",
+      "placement": {
+        "root": [
+          245.0,
+          441.0
+        ],
+        "offset": [
+          96,
+          31
+        ],
+        "placedBbox": [
+          150,
+          42,
+          377,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 6600773,
+        "alphaSumAfterPlacement": 6600773,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        152,
+        44,
+        374,
+        321
+      ],
+      "packed_centroid": [
+        268.8155412768196,
+        217.07545184684176
+      ],
+      "root_raster_error": [
+        0.2803738317757052,
+        -0.49532710280374204
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\source_N.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\base_frame_N.png",
+      "source_png_sha256": "4d59c9f4e5934b0172c48771fb502c3d890be5e216f7e462a773697f63621552",
+      "base_frame_png_sha256": "59c9a7eab620a53ee1db7b78cb5a3d8724e7092a4b2a7fd5cb593f9bc542b676",
+      "raster_max_error": 0
+    },
+    "W": {
+      "bbox": [
+        110,
+        35,
+        392,
+        461
+      ],
+      "margins": [
+        110,
+        35,
+        120,
+        51
+      ],
+      "height": 426,
+      "width": 282,
+      "core_alpha": 32,
+      "core_pixels": 47938,
+      "component_count": 1,
+      "component_areas": [
+        47938
+      ],
+      "centroid": [
+        264.08794693145313,
+        289.4139722141099
+      ],
+      "root": [
+        278.0,
+        460.0
+      ],
+      "root_method": "median_x_of_lowest_15pct_foreground; max_core_y",
+      "touches_edge": false,
+      "source_cell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_cell_size": [
+        512,
+        512
+      ],
+      "source_bbox": [
+        110,
+        35,
+        392,
+        461
+      ],
+      "key": {
+        "keyType": "magenta",
+        "keyColor": [
+          255,
+          0,
+          255
+        ],
+        "dominanceTransparentAt": 110,
+        "dominanceOpaqueBelow": 40,
+        "borderForegroundFraction": 0.0,
+        "alphaChanged": 219021,
+        "pixelsChanged": 219021,
+        "transparentPixels": 218225,
+        "softAlphaPixels": 796,
+        "removedSpeckPixels": 0,
+        "removedSpeckComponents": [],
+        "removalPolicy": "Remove disconnected <=3px specks only.",
+        "temporary_padding_pixels": 2,
+        "source_pixels_changed": 214909,
+        "source_alpha_changed": 214909,
+        "source_size": [
+          512,
+          512
+        ]
+      },
+      "keyed_rgba_sha256": "6bb8f87b53a04f66c056e3d71a50dca98b8783772a6d7522efd3401bc38a4cd0",
+      "override": {
+        "task_id": "01a080c6-1ae7-7070-8ed2-7b50a95bce70",
+        "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_132744_lamie-lethe-w-single-view_01a080c6\\source.png",
+        "sha256": "962b9d03ee718d5ff862a1ac943bbdc2202e6c49da015486db4cd6e37971472c",
+        "status": "approved",
+        "original_dimensions": [
+          1024,
+          1024
+        ],
+        "normalized_dimensions": [
+          512,
+          512
+        ],
+        "normalization_scale": 0.5,
+        "mirrored": false,
+        "capture_scale": 1.0,
+        "capture_scale_reason": "",
+        "original_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\override_source_W.png"
+      },
+      "placement": {
+        "root": [
+          278.0,
+          460.0
+        ],
+        "offset": [
+          74,
+          19
+        ],
+        "placedBbox": [
+          144,
+          40,
+          333,
+          323
+        ],
+        "clipped": false,
+        "alphaSumBeforePlacement": 5197048,
+        "alphaSumAfterPlacement": 5197048,
+        "alphaLoss": 0
+      },
+      "packed_bbox": [
+        146,
+        42,
+        331,
+        321
+      ],
+      "packed_centroid": [
+        246.1738409812,
+        207.5742292939338
+      ],
+      "root_raster_error": [
+        -0.13084112149533667,
+        -0.06542056074766833
+      ],
+      "source_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\source_W.png",
+      "base_frame_file": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\base_frame_W.png",
+      "source_png_sha256": "7fe7bb8ff9a32807455c2ee65499c45f8602474c600a68c38fdc6e34bf4abda8",
+      "base_frame_png_sha256": "74451f1751d736cce8774c4d73bc3b2c3ccf5e5003724994215e619e4d3a8ee3",
+      "raster_max_error": 0
+    }
+  },
+  "task_id": "01a080b9-a7fc-763a-8801-c0e2f75fc8dd",
+  "source_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131409_lamie-lethe-fixed-views_01a080b9\\source.png",
+  "source_sha256": "e457b5dfe11fdfadaed216f0fe4be1ffaeb79eb20ccb9c4537236308593b07f4",
+  "source_dimensions": [
+    1024,
+    1024
+  ],
+  "master_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_125835_04-lamie-lethe_01a080ab\\source.png",
+  "master_sha256": "c044015ea4dc4ad65ce7b62176cfd0aaa1d779e31b9eefe8a4a3439915813bbc",
+  "equipment_review_flags": {},
+  "common_scale": 0.6542056074766355,
+  "median_source_height": 428.0,
+  "target_height": 280,
+  "canvas": [
+    512,
+    384
+  ],
+  "anchor": [
+    256,
+    320
+  ],
+  "review_required": true,
+  "turnaround_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\turnaround_source.png",
+  "master_copy": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\master.png",
+  "alignment_kind": "measured_ground_root_proposal",
+  "rig_authored": false,
+  "artwork_operations": [
+    "crop",
+    "magenta_key",
+    "unmix_edges",
+    "uniform_scale",
+    "pad"
+  ],
+  "contact_preview": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\art\\source\\characters\\catabase_monsters\\lamie_lethe\\fixed_views_contact.png"
+}

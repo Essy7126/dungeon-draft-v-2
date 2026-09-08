@@ -1,0 +1,13 @@
+{
+  "slug": "03_molosse_styx",
+  "title": "Molosse du Styx",
+  "role": "Poursuivant rapide de melee",
+  "candidate_runtime": null,
+  "design": "A single-headed lean supernatural hound of the Greek underworld, long low athletic quadruped silhouette, charcoal blue hide, broad angular ivory jaw plates and strong ivory brow ridge, muted teal eyes. Exactly three large backward-swept triangular ivory spines along its upper back. One plain thick ancient bronze collar without chains. Four robust clearly constructed canine legs and paws, legs naturally offset for readability, chest low in an alert stalking idle pose. One short sturdy tail curving upward and kept inside the silhouette envelope, fully visible. The head and muzzle turn slightly toward the viewer's right. Closed mouth with only two small visible canine teeth. Three major landmarks: massive ivory jaw, three dorsal spines, bronze collar. Restrained muscular anatomy under smooth hide, no shaggy fur, no extra heads, no extra legs, no wings, no saddle, no leash, no flame effects.",
+  "palette": [
+    "charbon bleute",
+    "ivoire",
+    "bronze"
+  ],
+  "animation_note": "Quadrupede: quatre appuis, morsure et bond; camera et masse constantes."
+}

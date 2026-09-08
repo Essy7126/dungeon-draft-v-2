@@ -1,0 +1,18 @@
+{
+  "project_name": "Le Comptoir des archives",
+  "folder": "20260908_125410_01-comptoir-des-archives_01a080a7",
+  "root_task_id": "01a080a7-5c54-766b-baf6-c8504b1daefc",
+  "created_at": "2026-09-08T12:54:52.074759",
+  "updated_at": "2026-09-08T12:54:52.074759",
+  "tasks": [
+    {
+      "task_id": "01a080a7-5c54-766b-baf6-c8504b1daefc",
+      "task_type": "image-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "01_comptoir_des_archives.png"
+      ],
+      "created_at": "2026-09-08T12:54:52.074759"
+    }
+  ]
+}

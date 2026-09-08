@@ -1,0 +1,7 @@
+{
+  "task_id": "01a080c0-05c8-70df-a215-b7c2e1a8c247",
+  "slug": "lamie_lethe",
+  "prompt": "This is a fixed four-view snake-oracle character reference, not animation. Preserve the exact 2x2 layout, pure magenta background, size, full margins, painted style, and top-left and bottom-left characters unchanged. Correct staff handedness ONLY in the TOP-RIGHT and BOTTOM-RIGHT characters. The approved character ALWAYS holds her hooked staff in her anatomical LEFT hand, with her anatomical RIGHT hand open and empty. For the TOP-RIGHT front view facing diagonally down-left, redraw the staff on the RIGHT SIDE of that quadrant as seen by viewer; free open hand on LEFT SIDE. Keep face facing down-left; do not mirror or turn her face. For BOTTOM-RIGHT rear view facing diagonally up-left away, redraw staff on LEFT SIDE of quadrant; free hand on RIGHT SIDE. Preserve its current rear orientation. Thus BOTH top-row FRONT views have staff image-right and BOTH bottom-row BACK views have staff image-left. Redraw coherent hands and elbows without duplicating any arm or staff. Exactly two arms, one staff and one serpent tail per view. Do NOT horizontally flip the figures. Preserve all armor, masks, fins and the exact tail coils. No crop, no labels, no particles, no shadows.",
+  "reference_path": "C:\\Users\\p.montebello\\Documents\\GitHub\\dungeon-draft-v-2\\meshy_output\\20260908_131409_lamie-lethe-fixed-views_01a080b9\\source.png",
+  "source_sha256": "e457b5dfe11fdfadaed216f0fe4be1ffaeb79eb20ccb9c4537236308593b07f4"
+}

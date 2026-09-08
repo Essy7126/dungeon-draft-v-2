@@ -1,0 +1,13 @@
+{
+  "slug": "01_sentinelle_airain",
+  "title": "Sentinelle d'airain",
+  "role": "Defenseur lourd / bloqueur",
+  "candidate_runtime": "odyssey_guard",
+  "design": "A squat broad ancient Greek bronze automaton animated by a dead spirit. A small hollow Corinthian helmet recessed into huge shoulders, two tiny cold turquoise eye slits. Thick ivory stone torso framed by weathered bronze rib-like armor, broad solid legs, large articulated feet. One enormous round bronze shield on its LEFT arm, slightly turned aside so the torso and both legs remain readable; the shield has one bold diagonal crack with a very subtle turquoise interior. One short heavy spear held upright in its RIGHT hand, fully inside the image, clearly separated from its body. Stable grounded vigilant stance. Three major landmarks: recessed helmet, huge cracked disk shield, thick stone feet. No human face, no cape, no skeletal thin legs, no extra weapons. The result must feel like a threatening animated bronze guardian and not a living human soldier.",
+  "palette": [
+    "bronze",
+    "ivoire",
+    "turquoise"
+  ],
+  "animation_note": "Bouclier gauche et lance droite a conserver sans miroir; attaque courte, garde et marche lourde."
+}

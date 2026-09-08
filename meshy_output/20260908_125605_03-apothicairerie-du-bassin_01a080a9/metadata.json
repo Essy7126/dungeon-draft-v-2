@@ -1,0 +1,18 @@
+{
+  "project_name": "L\u2019Apothicairerie du bassin",
+  "folder": "20260908_125605_03-apothicairerie-du-bassin_01a080a9",
+  "root_task_id": "01a080a9-2162-7787-a269-873582387d25",
+  "created_at": "2026-09-08T12:56:47.762752",
+  "updated_at": "2026-09-08T12:56:47.762752",
+  "tasks": [
+    {
+      "task_id": "01a080a9-2162-7787-a269-873582387d25",
+      "task_type": "image-to-image",
+      "stage": "completed_review_pending",
+      "files": [
+        "03_apothicairerie_du_bassin.png"
+      ],
+      "created_at": "2026-09-08T12:56:47.762752"
+    }
+  ]
+}

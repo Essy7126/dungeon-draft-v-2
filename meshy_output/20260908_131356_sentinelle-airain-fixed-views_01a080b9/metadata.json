@@ -1,0 +1,25 @@
+{
+  "project_name": "sentinelle_airain fixed orientation reference",
+  "folder": "20260908_131356_sentinelle-airain-fixed-views_01a080b9",
+  "root_task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+  "created_at": "2026-09-08T13:13:56.839961",
+  "updated_at": "2026-09-08T13:16:17.701563",
+  "tasks": [
+    {
+      "task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:13:56.839961"
+    },
+    {
+      "task_id": "01a080b9-72f7-7003-93d4-c14a69cd911b",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:16:17.701563"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "project_name": "sentinelle_airain S single fixed view",
+  "folder": "20260908_132738_sentinelle-airain-s-single-vie_01a080c6",
+  "root_task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+  "created_at": "2026-09-08T13:27:38.539373",
+  "updated_at": "2026-09-08T13:30:22.287596",
+  "tasks": [
+    {
+      "task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+      "task_type": "image-to-image",
+      "stage": "created",
+      "files": [],
+      "created_at": "2026-09-08T13:27:38.539373"
+    },
+    {
+      "task_id": "01a080c6-0249-74e2-90c3-c0c55169561b",
+      "task_type": "image-to-image",
+      "stage": "complete",
+      "files": [
+        "source.png"
+      ],
+      "created_at": "2026-09-08T13:30:22.287596"
+    }
+  ]
+}

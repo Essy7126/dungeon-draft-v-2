@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="PackedScene" path="res://characters/enemies/catabase_monsters/MolosseStyxIsoUnitView.tscn" id="3_visual"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/styx_morsure.tres" id="4_primary"]
+[ext_resource type="Resource" path="res://data/spells/catabase_monsters/styx_dechirure.tres" id="5_special"]
+[ext_resource type="Resource" path="res://data/ai/profiles/catabase_molosse_styx_ai.tres" id="6_ai"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"catabase_molosse_styx"
+unit_name = "Molosse du Styx"
+description = "Bête infernale qui parcourt cinq cases par activation et traque les cibles isolées. Ses crocs laissent une plaie persistante."
+team = 1
+max_hp = 50
+max_ap = 4
+max_mp = 5
+initiative = 13
+attack_power = 11
+visual_scene = ExtResource("3_visual")
+preview_sprite_frames_path = "res://assets/characters/catabase_monsters/molosse_styx/portrait.tres"
+preview_sprite_animation = &"idle_E"
+basic_attack_enabled = false
+active_spell_slots = 2
+spells = Array[ExtResource("2_spell")]([ExtResource("4_primary"), ExtResource("5_special")])
+ai_behavior = 0
+combat_style = 0
+preferred_range = 1
+minimum_range = 1
+maximum_range = 1
+keep_distance = false
+ai_profile = ExtResource("6_ai")
+faction_id = &"catabase_underworld"
+tactical_role_id = &"catabase_molosse_styx"
+role = "Prédateur mobile"
+presentation_summary = "Gardez un chemin de retraite et utilisez les obstacles pour contenir ses cinq PM. Fragile, il cède à une attaque concentrée."
+presentation_badge = "ENFERS"
+

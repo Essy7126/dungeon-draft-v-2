@@ -1320,7 +1320,14 @@ func _on_turn_started(unit: Unit) -> void:
 	# d'activation forment une seule transaction : une frappe létale ne peut pas
 	# fermer le combat avant pending_ability_resolved puis turn_ended.
 	_begin_outcome_deferral()
-	var pending_result := _resolve_pending_ability(unit)
+	var pending_result := await _resolve_pending_ability(unit)
+	if not _is_operation_current(lifecycle_generation):
+		_finish_outcome_deferral()
+		return
+	if not is_instance_valid(unit) or not unit.is_alive:
+		_end_active_turn_if_dead(unit)
+		_finish_outcome_deferral()
+		return
 	if bool(pending_result.get("consume_activation", false)):
 		if not unit.is_alive:
 			_end_active_turn_if_dead(unit)
@@ -1369,23 +1376,84 @@ func _resolve_pending_ability(unit: Unit) -> Dictionary:
 			"blocked": false,
 			"consume_activation": false,
 		}
-	var pending := unit.pending_ability as Dictionary
+	var pending := unit.pending_ability.duplicate()
 	var pending_spell := pending.get("spell") as Spell
 	var target := pending.get("target") as Unit
 	var impact_cell: Vector2i = pending.get("cell", unit.grid_pos)
 	if target != null and target.is_alive:
 		impact_cell = target.grid_pos
+	var lifecycle_generation := _lifecycle_generation
+	var view: Variant = _unit_views.get(unit)
+	var projectile_started := false
+	# Delayed ranged spells with authored flight timing opt into the same
+	# anticipation -> release -> flight -> impact order as an immediate cast.
+	# Legacy pending strikes and summons retain their synchronous resolution.
+	if pending_spell != null \
+			and pending_spell.delayed_resolution == Spell.DelayedResolution.RANGED_STRIKE \
+			and pending_spell.impact_delay_seconds > 0.0 \
+			and target != null and target.is_alive \
+			and spell_caster.is_valid_target(unit, pending_spell, target.grid_pos):
+		if is_instance_valid(view) and view.has_method("prepare_spell_visual"):
+			var visual_ready: bool = await view.prepare_spell_visual(impact_cell, pending_spell)
+			if not visual_ready or not _pending_presentation_current(unit, pending, lifecycle_generation):
+				if _is_operation_current(lifecycle_generation) and unit.pending_ability == pending:
+					spell_caster.cancel_pending_for_unit(unit, &"visual_cancelled")
+				return {"had_pending": true, "resolved": false, "blocked": true,
+					"consume_activation": false, "reason": &"visual_cancelled"}
+		# Revalidate after anticipation: escaping a warning never launches a
+		# projectile or inflicts damage, and SpellCaster clears it authoritatively.
+		if _pending_presentation_current(unit, pending, lifecycle_generation) \
+				and target.is_alive and spell_caster.is_valid_target(unit, pending_spell, target.grid_pos):
+			impact_cell = target.grid_pos
+			var projectile := _play_pending_spell_projectile(unit, pending_spell, impact_cell)
+			projectile_started = true
+			if not await _wait_pending_spell_flight(unit, pending, lifecycle_generation,
+					pending_spell.impact_delay_seconds):
+				if is_instance_valid(projectile):
+					projectile.queue_free()
+				return {"had_pending": true, "resolved": false, "blocked": true,
+					"consume_activation": false, "reason": &"presentation_cancelled"}
 	var result := spell_caster.resolve_pending_activation(
 		unit,
 		units,
 		turn_queue,
 		Callable(self, "_on_pending_unit_spawned"),
 	)
-	if bool(result.get("resolved", false)) and pending_spell != null:
+	if bool(result.get("resolved", false)) and pending_spell != null and not projectile_started:
 		VFXManager.play_spell_vfx(unit, pending_spell, impact_cell)
+	if projectile_started and is_instance_valid(view) \
+			and view.has_method("wait_for_action_visual_finished"):
+		await view.wait_for_action_visual_finished()
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
 	return result
+
+
+func _pending_presentation_current(unit: Unit, pending: Dictionary, generation: int) -> bool:
+	return _is_operation_current(generation) and not _battle_over \
+		and is_instance_valid(unit) and unit.is_alive and unit.pending_ability == pending
+
+
+func _play_pending_spell_projectile(unit: Unit, spell: Spell, cell: Vector2i) -> Node:
+	return VFXManager.play_spell_vfx(unit, spell, cell)
+
+
+func _wait_pending_spell_flight(
+		unit: Unit, pending: Dictionary, generation: int, seconds: float) -> bool:
+	var remaining := maxf(seconds, 0.0)
+	var previous_tick := Time.get_ticks_usec()
+	while remaining > 0.0:
+		if not _pending_presentation_current(unit, pending, generation):
+			return false
+		var tree := get_tree()
+		await tree.process_frame
+		if not _pending_presentation_current(unit, pending, generation):
+			return false
+		var now := Time.get_ticks_usec()
+		if not tree.paused:
+			remaining -= maxf(0.0, float(now - previous_tick) / 1000000.0) * Engine.time_scale
+		previous_tick = now
+	return _pending_presentation_current(unit, pending, generation)
 
 
 func _on_pending_unit_spawned(unit: Unit) -> void:
@@ -2331,7 +2399,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 			and _mastery_adapter != null:
 		context.set_meta("defer_automatic_reactions", true)
 		_deferred_spell_reaction_context = context
-	if spell.impact_delay_seconds > 0.0:
+	if spell.impact_delay_seconds > 0.0 and not spell.is_delayed():
 		VFXManager.play_spell_vfx(unit, spell, cell)
 		if _spell_impact_scheduler.schedule(context, spell.impact_delay_seconds):
 			return

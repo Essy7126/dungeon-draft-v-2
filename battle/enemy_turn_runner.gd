@@ -207,7 +207,7 @@ func _execute_cast(
 			view.cancel_pending_visual_actions()
 		return
 	_battle._begin_outcome_deferral()
-	if spell.impact_delay_seconds > 0.0:
+	if spell.impact_delay_seconds > 0.0 and not spell.is_delayed():
 		VFXManager.play_spell_vfx(enemy, spell, cell)
 		if not await _wait_seconds_safe(
 			spell.impact_delay_seconds,

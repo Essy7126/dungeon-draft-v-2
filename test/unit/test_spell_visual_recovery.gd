@@ -2,6 +2,14 @@ extends GutTest
 
 const UNIT_VIEW_SCRIPT := preload("res://battle/unit_view.gd")
 const Factory := preload("res://test/support/factory.gd")
+const Cleanup := preload("res://test/support/isolated_battlefield_cleanup.gd")
+var _fixture_grids: Array[GridData] = []
+
+
+func after_each() -> void:
+	for grid in _fixture_grids:
+		Cleanup.dispose_grid(grid)
+	_fixture_grids.clear()
 
 
 class ActionVisualStub extends Node2D:
@@ -39,6 +47,7 @@ class ActionVisualStub extends Node2D:
 
 func test_distinct_once_per_activation_spells_chain_with_independent_state() -> void:
 	var field := Factory.make_battlefield(5, 1)
+	_fixture_grids.append(field.grid)
 	var caster := Unit.new("Lanceur", 0, 30, 10, 6, 3, 10)
 	var target := Unit.new("Cible", 1, 30)
 	field.grid.place_unit(caster, Vector2i.ZERO)
@@ -63,6 +72,7 @@ func test_distinct_once_per_activation_spells_chain_with_independent_state() -> 
 
 func test_spell_caster_exposes_caster_movement_semantics_from_modifier() -> void:
 	var field := Factory.make_battlefield(3, 1)
+	_fixture_grids.append(field.grid)
 	var caster := Unit.new("Lanceur", 0)
 	var rush := _combat_spell(&"rush")
 	var movement := SpellModSkillTreeEffect.new()
@@ -105,6 +115,7 @@ func test_missing_spell_release_cancels_backend_before_next_action() -> void:
 	assert_true(await view.prepare_spell_visual(Vector2i.RIGHT, spell, 10))
 	await view.wait_for_action_visual_finished(10)
 	assert_eq(visual.start_count, 2)
+	await wait_process_frames(1)
 
 
 func test_missing_attack_release_and_recovery_timeout_both_cancel_backend() -> void:
@@ -126,6 +137,7 @@ func test_missing_attack_release_and_recovery_timeout_both_cancel_backend() -> v
 	assert_eq(missing_finish.cancel_count, 1)
 	assert_false(missing_finish.active)
 	assert_false(spell_view.is_action_visual_pending())
+	await wait_process_frames(1)
 
 
 func test_looping_charge_finishes_one_cycle_and_returns_warrior_to_idle() -> void:
