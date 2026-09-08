@@ -1,17 +1,23 @@
 # core/vfx_manager.gd
 extends Node
 
-const ACHILLES_EFFECTS_PATH := "res://assets/vfx/achilles_kit_v2/effects.tres"
+const ACHILLES_EFFECTS_PATH := "res://assets/vfx/achilles_polish_v3/effects.tres"
 const AchillesFX := preload("res://vfx/achilles_kit/achilles_spell_sprite_vfx.gd")
 const ParisRouter := preload("res://vfx/paris/paris_spell_vfx_router.gd")
 const PHILOSOPHER_EFFECTS_PATH := "res://assets/vfx/philosopher_mage/sprites_v1/effects.tres"
 const PhilosopherFX := preload("res://vfx/philosopher_mage/philosopher_spell_sprite_vfx.gd")
+const ACHILLES_ADDITIONAL_EFFECTS_PATHS := {
+	&"paris": ParisRouter.EFFECTS_PATH,
+	&"philosopher": PHILOSOPHER_EFFECTS_PATH,
+	&"lightning": "res://assets/vfx/achilles_polish_v3/lightning.tres",
+}
 const PHILOSOPHER_SPELLS := [&"philosopher_axiom", &"philosopher_refutation",
 	&"philosopher_mending", &"philosopher_aporia", &"philosopher_aegis"]
 
 var _battle_view : Node = null
 var _paris_router: ParisSpellVFXRouter
 var _achilles_frames: SpriteFrames
+var _achilles_source_frames: Dictionary = {}
 var _achilles_flights: Dictionary = {}
 var _achilles_arrivals: Dictionary = {}
 var _achilles_effects: Array[Node] = []
@@ -35,6 +41,8 @@ func register_battle_view(view: Node) -> void:
 		_achilles_frames = load(ACHILLES_EFFECTS_PATH) as SpriteFrames
 	if _philosopher_frames == null and ResourceLoader.exists(PHILOSOPHER_EFFECTS_PATH):
 		_philosopher_frames = load(PHILOSOPHER_EFFECTS_PATH) as SpriteFrames
+	for source: StringName in ACHILLES_ADDITIONAL_EFFECTS_PATHS:
+		_achilles_effect_frames(source)
 
 func unregister_battle_view(view: Node = null) -> void:
 	if view == null or _battle_view == view:
@@ -58,7 +66,14 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 	if _is_philosopher_spell(caster, spell):
 		_resolve_philosopher_vfx(caster, spell, report)
 		return
-	if caster == null or spell == null or bool(report.get("failed", false)):
+	if caster == null or spell == null:
+		return
+	if bool(report.get("failed", false)):
+		var key := _flight_key(caster, spell)
+		var flight: Variant = _achilles_flights.get(key)
+		if is_instance_valid(flight):
+			flight.cancel()
+		_achilles_flights.erase(key)
 		return
 	var presentation := _achilles_presentation(caster, spell, report)
 	if _is_achilles_presentation(presentation) and not spell.is_delayed():
@@ -223,6 +238,10 @@ func _launch_achilles_projectile(caster: Unit, spell: Spell, cell: Vector2i,
 	if adapter != null:
 		origin_cell = adapter.projectile_origin(caster, spell)
 		var shaped: Array = adapter.preview_target_cells(caster, spell, cell)
+		# Native expedition CROSS/LINE areas use the same legal cells as combat.
+		# Mastery fan/piercing previews above retain their existing priority.
+		if shaped.is_empty() and adapter.caster != null:
+			shaped = adapter.caster.get_aoe_cells(spell, cell, caster.grid_pos)
 		if not shaped.is_empty():
 			cells = shaped
 	# A piercing arrow traverses the real preview line; a volley separates into
@@ -235,6 +254,7 @@ func _launch_achilles_projectile(caster: Unit, spell: Spell, cell: Vector2i,
 	var targets: Array[Vector2] = []
 	for target_cell in cells:
 		targets.append(_impact_cell_position(target_cell))
+	presentation = AchillesSpellVisualResolver.with_cast_context(presentation, origin_cell, cell, caster.grid_pos)
 	var fx := _new_achilles_effect(presentation, origin, targets, _cell_visual_width() * 0.85)
 	if fx == null:
 		return null
@@ -255,6 +275,14 @@ func _resolve_achilles_vfx(caster: Unit, spell: Spell, report: Dictionary,
 	var targets := _resolved_impact_positions(report)
 	var family := StringName(presentation.get("action_family", &"generic"))
 	var origin := _caster_effect_origin(caster)
+	if family == &"shot":
+		_append_confirmed_spell_change_positions(targets, report)
+		var origin_cell: Vector2i = presentation.get("origin_cell", caster.grid_pos)
+		presentation = AchillesSpellVisualResolver.with_cast_context(presentation, origin_cell, cell, caster.grid_pos)
+		if origin_cell != caster.grid_pos:
+			origin += _grid_cell_global(origin_cell) - _grid_cell_global(caster.grid_pos)
+	if family != &"dash":
+		_play_achilles_heal_feedback(caster, report, presentation)
 	match family:
 		&"shot":
 			var key := _flight_key(caster, spell)
@@ -277,6 +305,7 @@ func _resolve_achilles_vfx(caster: Unit, spell: Spell, report: Dictionary,
 			_bind_barrier_visuals(caster.mastery_combat_adapter)
 		&"dash":
 			if int(report.get("movement_count", 0)) <= 0:
+				_play_achilles_heal_feedback(caster, report, presentation)
 				return
 			var from_cell: Vector2i = presentation.get("origin_cell", caster.grid_pos)
 			var departure := _grid_cell_global(from_cell)
@@ -320,6 +349,7 @@ func _on_unit_visual_movement_finished(unit: Unit) -> void:
 	var arrival := _grid_cell_global(unit.grid_pos)
 	if not bool(pending.get("arrived", false)):
 		_burst(presentation, &"dust", arrival, [arrival], 0.65, 0.18)
+		_play_achilles_heal_feedback(unit, pending.report, presentation)
 	pending["arrived"] = true
 	_play_bastion_feedback(unit, pending)
 
@@ -361,6 +391,43 @@ func _resolved_impact_positions(report: Dictionary) -> Array[Vector2]:
 	return targets
 
 
+func _append_confirmed_spell_change_positions(targets: Array[Vector2], report: Dictionary) -> void:
+	# Fire on an empty tile and ice/status hits are visible only when combat
+	# confirms a change. Missed arrows still cancel with no invented impact.
+	for cell in report.get("terrain_changed", []):
+		var point := _impact_cell_position(cell)
+		if not targets.has(point):
+			targets.append(point)
+	for value in report.get("status_changed_units", []):
+		var target := value as Unit
+		# A damaged victim already has its captured pre-push impact cell.
+		if is_instance_valid(target) and not (report.get("damaged_enemies", []) as Array).has(target):
+			var point := _impact_cell_position(target.grid_pos)
+			if not targets.has(point):
+				targets.append(point)
+
+
+func _play_achilles_heal_feedback(caster: Unit, report: Dictionary, presentation: Dictionary) -> void:
+	var animation := StringName(presentation.get("heal_animation", &""))
+	var healed: Array = report.get("healed_units", [])
+	if animation == &"" or (int(report.get("healing_total", 0)) <= 0 and healed.is_empty()):
+		return
+	var targets: Array[Vector2] = []
+	for value in healed:
+		var target := value as Unit
+		if is_instance_valid(target):
+			var point := _impact_cell_position(target.grid_pos)
+			if not targets.has(point):
+				targets.append(point)
+	if targets.is_empty() and int(report.get("healing_total", 0)) > 0:
+		targets.append(_impact_cell_position(report.get("cell", caster.grid_pos)))
+	if targets.is_empty():
+		return
+	var heal_visual := presentation.duplicate(true)
+	heal_visual["effects_source"] = presentation.get("heal_effects_source", &"philosopher")
+	_burst(heal_visual, animation, _caster_effect_origin(caster), targets, 0.9, 0.48)
+
+
 func _burst(presentation: Dictionary, animation: StringName, origin: Vector2,
 		targets: Array[Vector2], width_ratio: float, duration: float = 0.24) -> Node:
 	var fx := _new_achilles_effect(presentation, origin, targets, _cell_visual_width() * width_ratio)
@@ -371,11 +438,13 @@ func _burst(presentation: Dictionary, animation: StringName, origin: Vector2,
 
 func _new_achilles_effect(presentation: Dictionary, origin: Vector2,
 		targets: Array[Vector2], width: float) -> Node:
-	if not _has_battle_view() or not ResourceLoader.exists(ACHILLES_EFFECTS_PATH):
+	if not _has_battle_view():
 		return null
-	if _achilles_frames == null:
-		_achilles_frames = load(ACHILLES_EFFECTS_PATH) as SpriteFrames
-	if _achilles_frames == null:
+	var fallback_frames := _achilles_effect_frames(&"achilles")
+	var frames := _achilles_effect_frames(StringName(presentation.get("effects_source", &"achilles")))
+	if frames == null:
+		frames = fallback_frames
+	if frames == null:
 		return null
 	var parent := _vfx_parent()
 	if not is_instance_valid(parent) or not parent.is_inside_tree():
@@ -385,10 +454,24 @@ func _new_achilles_effect(presentation: Dictionary, origin: Vector2,
 	# A mastery accent changes visual weight only, never its affected cells.
 	var tier := clampi(int(presentation.get("intensity_tier", 0)), 0, 2)
 	var visual_width := width * (1.0 + 0.08 * float(tier))
-	fx.configure(_achilles_frames, presentation, origin, targets, visual_width)
+	fx.configure(frames, presentation, origin, targets, visual_width, fallback_frames)
 	_prune_achilles_effects()
 	_achilles_effects.append(fx)
 	return fx
+
+
+func _achilles_effect_frames(source: StringName) -> SpriteFrames:
+	if source == &"achilles":
+		if _achilles_frames == null and ResourceLoader.exists(ACHILLES_EFFECTS_PATH):
+			_achilles_frames = load(ACHILLES_EFFECTS_PATH) as SpriteFrames
+		return _achilles_frames
+	if not ACHILLES_ADDITIONAL_EFFECTS_PATHS.has(source):
+		return null
+	if not _achilles_source_frames.has(source):
+		var path: String = ACHILLES_ADDITIONAL_EFFECTS_PATHS[source]
+		if ResourceLoader.exists(path):
+			_achilles_source_frames[source] = load(path) as SpriteFrames
+	return _achilles_source_frames.get(source) as SpriteFrames
 
 
 func _prune_achilles_effects() -> void:

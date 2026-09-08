@@ -279,6 +279,11 @@ func _fixture(ids: Array[StringName] = []) -> Dictionary:
 	add_child_autofree(view)
 	var manager := EffectManager.new()
 	manager._achilles_frames = _frames()
+	manager._achilles_source_frames = {
+		&"paris": _additional_frames([&"fire", &"frost", &"hellfire", &"impact"]),
+		&"philosopher": _additional_frames([&"heal"]),
+		&"lightning": _additional_frames([&"arrow_lightning", &"impact_lightning"]),
+	}
 	add_child_autofree(manager)
 	manager.register_battle_view(view)
 	var fixture := {"field": field, "hero": hero, "enemy": enemy, "adapter": adapter,
@@ -314,6 +319,281 @@ func _effect() -> AchillesSpellSpriteVFX:
 func _frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	for animation in [&"arrow", &"impact", &"sweep", &"guard", &"dust", &"barrier"]:
+		frames.add_animation(animation)
+		for _index in 4:
+			var texture := GradientTexture2D.new()
+			texture.width = 16
+			texture.height = 16
+			frames.add_frame(animation, texture)
+	return frames
+
+
+func test_authored_evolution_clips_are_selected_for_flight_and_the_confirmed_hit() -> void:
+	var frames := _evolved_frames()
+	for variant in ["reach", "heavy", "piercing", "death_line", "volley"]:
+		var effect := FX.new()
+		add_child_autofree(effect)
+		var projectile := StringName("arrow_" + variant)
+		var impact := StringName("impact_" + variant)
+		effect.configure(frames, {"action_family": &"shot", "projectile_animation": projectile,
+			"impact_animation": impact, "projectile_scale": Vector2(1.3, 0.7)},
+			Vector2(0, 20), [Vector2(100, 20)], 32.0)
+		effect.start_flight(0.2)
+		effect.set_process(false)
+		assert_eq(effect.get_visual_runtime_state().animation, projectile)
+		assert_false(effect.get_visual_runtime_state().used_animation_fallback)
+		assert_eq(effect._sprites[0].texture, frames.get_frame_texture(projectile, 0))
+		assert_eq(effect._sprites[0].global_scale, Vector2(2, 2), "Native art keeps its authored proportions.")
+		effect.advance_simulation(0.2)
+		assert_false(effect.get_visual_runtime_state().impact_reached)
+		effect.confirm_impact([Vector2(100, 20)])
+		assert_eq(effect.get_visual_runtime_state().animation, impact)
+		assert_eq(effect._sprites[0].texture, frames.get_frame_texture(impact, 0))
+		assert_true(effect.get_visual_runtime_state().impact_reached)
+
+
+func test_legacy_effect_atlas_has_an_explicit_readable_evolution_fallback() -> void:
+	var effect := FX.new()
+	add_child_autofree(effect)
+	effect.configure(_frames(), {"action_family": &"shot", "projectile_animation": &"arrow_piercing",
+		"impact_animation": &"impact_piercing", "projectile_scale": Vector2(1.2, 0.8)},
+		Vector2(0, 20), [Vector2(100, 20)], 32.0)
+	effect.start_flight(0.2)
+	effect.set_process(false)
+	var state := effect.get_visual_runtime_state()
+	assert_eq(state.requested_animation, &"arrow_piercing")
+	assert_eq(state.animation, &"arrow")
+	assert_true(state.used_animation_fallback)
+	assert_almost_eq(effect._sprites[0].global_scale, Vector2(2.4, 1.6), Vector2.ONE * 0.001)
+	effect.confirm_impact([Vector2(100, 20)])
+	assert_eq(effect.get_visual_runtime_state().requested_animation, &"impact_piercing")
+	assert_eq(effect.get_visual_runtime_state().animation, &"impact")
+	assert_true(effect.get_visual_runtime_state().used_animation_fallback)
+
+
+func test_trails_remain_behind_each_real_arrow_and_are_removed_on_confirmation() -> void:
+	var effect := FX.new()
+	add_child_autofree(effect)
+	var points: Array[Vector2] = [Vector2(100, 20), Vector2(100, 60), Vector2(100, -20)]
+	effect.configure(_evolved_frames(), {"action_family": &"shot",
+		"projectile_animation": &"arrow_volley", "impact_animation": &"impact_volley",
+		"projectile_trail_count": 2}, Vector2(0, 20), points, 32.0)
+	effect.start_flight(0.2)
+	effect.set_process(false)
+	assert_eq(effect.get_visual_runtime_state().head_count, 3)
+	assert_eq(effect.get_visual_runtime_state().trail_count, 6)
+	effect.advance_simulation(0.1)
+	for index in points.size():
+		var head := effect._sprites[index]
+		assert_eq(head.global_position, Vector2(0, 20).lerp(points[index], 0.5))
+		for tail_index in 2:
+			var tail := effect._trails[index * 2 + tail_index]
+			assert_gte(tail.global_position.x, 0.0)
+			assert_lt(tail.global_position.x, head.global_position.x)
+			assert_gt(tail.modulate.a, 0.0)
+			assert_lte(tail.modulate.a, 0.3)
+	assert_eq(effect.get_visual_runtime_state().targets, points, "Trails never fabricate fan cells.")
+	effect.confirm_impact([points[1]])
+	assert_true(effect._trails.is_empty())
+	assert_eq(effect.get_visual_runtime_state().head_count, 1)
+	assert_eq(effect._sprites[0].global_position, points[1], "Only the actual damaged cell receives an impact.")
+
+
+func test_resolved_automatic_shot_uses_its_dedicated_impact_without_a_flight() -> void:
+	var effect := FX.new()
+	add_child_autofree(effect)
+	effect.configure(_evolved_frames(), {"action_family": &"shot",
+		"projectile_animation": &"arrow_death_line", "impact_animation": &"impact_death_line",
+		"automatic": true, "projectile_trail_count": 3},
+		Vector2(0, 20), [Vector2(100, 20)], 32.0)
+	effect.start_burst(&"impact", 0.16)
+	effect.set_process(false)
+	assert_eq(effect.get_visual_runtime_state().animation, &"impact_death_line")
+	assert_true(effect.get_visual_runtime_state().automatic)
+	assert_eq(effect.get_visual_runtime_state().trail_count, 0)
+	assert_true(effect.get_visual_runtime_state().impact_reached)
+
+
+func test_real_factory_uses_evolved_art_and_preserves_the_chosen_origin_snapshot() -> void:
+	var fixture := _fixture([&"achilles_chiron_centaur_volley"])
+	fixture.manager._achilles_frames = _evolved_frames()
+	fixture.adapter._data(fixture.hero).origin = {"spell_id": SHOT.spell_id, "cell": Vector2i(2, 1)}
+	var flight: Node = fixture.manager.play_spell_vfx(fixture.hero, SHOT, fixture.enemy.grid_pos)
+	flight.set_process(false)
+	var state: Dictionary = flight.get_visual_runtime_state()
+	assert_eq(state.animation, &"arrow_volley")
+	assert_false(state.used_animation_fallback)
+	assert_eq(state.head_count, 3)
+	assert_eq(state.cast_distance, 2)
+	assert_true(state.alternate_origin)
+	assert_eq(fixture.hero.grid_pos, Vector2i(1, 1))
+	assert_eq(fixture.adapter.projectile_origin(fixture.hero, SHOT), Vector2i(2, 1),
+		"Reading presentation does not consume the chosen origin.")
+
+
+func _evolved_frames() -> SpriteFrames:
+	var frames := _frames()
+	for variant in ["reach", "heavy", "piercing", "death_line", "volley"]:
+		for prefix in ["arrow_", "impact_"]:
+			var animation := StringName(prefix + variant)
+			frames.add_animation(animation)
+			for _index in 4:
+				var texture := GradientTexture2D.new()
+				texture.width = 16
+				texture.height = 16
+				frames.add_frame(animation, texture)
+	return frames
+
+func test_elemental_sources_keep_their_art_palette_and_confirmed_impact() -> void:
+	var fixture := _fixture()
+	var catalog := ExpeditionBuildCatalog.new()
+	for entry in [
+		["exp_braise", &"paris", &"fire", &"hellfire"],
+		["exp_givre", &"paris", &"frost", &"frost"],
+		["exp_foudre", &"lightning", &"arrow_lightning", &"impact_lightning"],
+	]:
+		var spell := catalog.get_spell(entry[0])
+		var hp: int = fixture.enemy.current_hp
+		var flight: Node = fixture.manager.play_spell_vfx(fixture.hero, spell, fixture.enemy.grid_pos)
+		assert_not_null(flight, entry[0])
+		if flight == null:
+			continue
+		flight.set_process(false)
+		var state: Dictionary = flight.get_visual_runtime_state()
+		assert_eq(state.effects_source, entry[1])
+		assert_eq(state.animation, entry[2])
+		assert_false(state.used_source_fallback)
+		var frames: SpriteFrames = fixture.manager._achilles_source_frames[entry[1]]
+		assert_eq(flight._sprites[0].texture, frames.get_frame_texture(entry[2], 0))
+		assert_eq(flight._sprites[0].modulate, Color.WHITE, "Authored elemental colors stay intact.")
+		flight.advance_simulation(0.1)
+		assert_eq(fixture.enemy.current_hp, hp, "Rendering does not apply combat damage.")
+		assert_false(flight.get_visual_runtime_state().impact_reached)
+		fixture.manager._on_spell_cast(fixture.hero, spell, {"cell": fixture.enemy.grid_pos,
+			"visual_impact_cells": [fixture.enemy.grid_pos], "damaged_enemies": [fixture.enemy]})
+		assert_eq(flight.get_visual_runtime_state().animation, entry[3])
+		assert_eq(flight._sprites[0].texture, frames.get_frame_texture(entry[3], 0))
+		assert_true(flight.get_visual_runtime_state().impact_reached)
+		assert_true(fixture.manager._achilles_flights.is_empty())
+
+
+func test_native_expedition_volley_uses_actual_cross_cells_and_line_keeps_one_arrow() -> void:
+	var fixture := _fixture()
+	var catalog := ExpeditionBuildCatalog.new()
+	var spell := catalog.get_spell("exp_braise_mutation")
+	var target: Vector2i = fixture.enemy.grid_pos
+	var flight: Node = fixture.manager.play_spell_vfx(fixture.hero, spell, target)
+	assert_not_null(flight)
+	if flight == null:
+		return
+	flight.set_process(false)
+	var cells: Array = fixture.field.caster.get_aoe_cells(spell, target, fixture.hero.grid_pos)
+	var expected: Array[Vector2] = []
+	for cell in cells:
+		expected.append(fixture.manager._impact_cell_position(cell))
+	assert_gt(cells.size(), 1)
+	assert_eq(flight.get_visual_runtime_state().targets, expected)
+	assert_eq(flight.get_visual_runtime_state().head_count, cells.size())
+	var line := catalog.get_spell("exp_rupture_legend")
+	var piercing: Node = fixture.manager.play_spell_vfx(fixture.hero, line, target)
+	assert_not_null(piercing)
+	if piercing != null:
+		piercing.set_process(false)
+		assert_eq(piercing.get_visual_runtime_state().head_count, 1)
+		assert_eq(piercing.get_visual_runtime_state().target, fixture.manager._impact_cell_position(target))
+
+
+func test_failed_elemental_cast_cancels_flight_and_ground_change_has_only_real_impact() -> void:
+	var fixture := _fixture()
+	var spell := ExpeditionBuildCatalog.new().get_spell("exp_braise")
+	var flight: Node = fixture.manager.play_spell_vfx(fixture.hero, spell, fixture.enemy.grid_pos)
+	assert_not_null(flight)
+	if flight == null:
+		return
+	fixture.manager._on_spell_cast(fixture.hero, spell, {"failed": true})
+	assert_true(flight.get_visual_runtime_state().closed)
+	assert_false(flight.get_visual_runtime_state().impact_reached)
+	assert_true(fixture.manager._achilles_flights.is_empty())
+	# A direct/no-delay resolution never starts a projectile after its fact.
+	spell = spell.duplicate(true) as Spell
+	spell.impact_delay_seconds = 0.0
+	var ground := Vector2i(3, 2)
+	fixture.manager._on_spell_cast(fixture.hero, spell, {
+		"cell": ground, "visual_impact_cells": [], "terrain_changed": [ground]})
+	var effects := _active_effects(fixture.manager)
+	assert_eq(effects.size(), 1)
+	if effects.is_empty():
+		return
+	assert_eq(effects[0].get_visual_runtime_state().animation, &"hellfire")
+	assert_eq(effects[0].get_visual_runtime_state().targets,
+		[fixture.manager._impact_cell_position(ground)])
+	assert_eq(effects[0].get_visual_runtime_state().phase, &"impact")
+	assert_true(fixture.manager._achilles_flights.is_empty())
+
+
+func test_expedition_melee_fire_uses_its_zone_and_impact_art() -> void:
+	var fixture := _fixture()
+	var spell := ExpeditionBuildCatalog.new().get_spell("exp_serment_brasier")
+	fixture.manager._on_spell_cast(fixture.hero, spell, {
+		"cell": fixture.hero.grid_pos, "visual_impact_cells": [fixture.enemy.grid_pos]})
+	var effects := _active_effects(fixture.manager)
+	assert_eq(effects.size(), 2, "One area gesture and one confirmed victim impact.")
+	for effect in effects:
+		assert_eq(effect.get_visual_runtime_state().animation, &"hellfire")
+		assert_eq(effect.get_visual_runtime_state().effects_source, &"paris")
+		assert_false(effect.get_visual_runtime_state().used_animation_fallback)
+
+
+func test_expedition_heal_requires_recovery_and_movement_heal_waits_for_arrival_once() -> void:
+	var fixture := _fixture()
+	var catalog := ExpeditionBuildCatalog.new()
+	var heal := catalog.get_spell("exp_souffle")
+	fixture.manager._on_spell_cast(fixture.hero, heal,
+		{"cell": fixture.hero.grid_pos, "healing_total": 0, "healed_units": []})
+	assert_eq(_animation_count(fixture.manager, &"heal"), 0)
+	fixture.manager._on_spell_cast(fixture.hero, heal,
+		{"cell": fixture.hero.grid_pos, "healing_total": 12, "healed_units": [fixture.hero]})
+	assert_eq(_animation_count(fixture.manager, &"heal"), 1)
+	var recovery: Node = _active_effects(fixture.manager)[0]
+	assert_eq(recovery.get_visual_runtime_state().effects_source, &"philosopher")
+	assert_eq(recovery.get_visual_runtime_state().target,
+		fixture.manager._impact_cell_position(fixture.hero.grid_pos))
+	var march := catalog.get_spell("exp_marche")
+	var presentation := AchillesSpellVisualResolver.resolve(march, fixture.hero)
+	presentation["origin_cell"] = fixture.hero.grid_pos
+	var destination := Vector2i(3, 1)
+	fixture.field.grid.move_unit(fixture.hero.grid_pos, destination)
+	fixture.manager._on_spell_cast(fixture.hero, march, {
+		"cell": destination, "movement_count": 2, "healing_total": 8,
+		"healed_units": [fixture.hero], "visual_presentation": presentation})
+	assert_eq(_animation_count(fixture.manager, &"heal"), 1, "The second heal waits for visible arrival.")
+	EventBus.unit_visual_movement_finished.emit(fixture.hero)
+	assert_eq(_animation_count(fixture.manager, &"heal"), 2)
+	EventBus.unit_visual_movement_finished.emit(fixture.hero)
+	assert_eq(_animation_count(fixture.manager, &"heal"), 2, "Repeated arrival does not replay recovery.")
+
+
+func test_elemental_source_can_borrow_utility_clip_then_restore_its_native_source() -> void:
+	var fixture := _fixture()
+	var frames: SpriteFrames = fixture.manager._achilles_source_frames[&"paris"]
+	var effect := FX.new()
+	add_child_autofree(effect)
+	effect.configure(frames, {"effects_source": &"paris", "projectile_animation": &"fire",
+		"impact_animation": &"hellfire"}, Vector2.ZERO, [Vector2(100, 20)], 32, _frames())
+	effect.start_burst(&"guard")
+	effect.set_process(false)
+	assert_eq(effect.get_visual_runtime_state().animation, &"guard")
+	assert_true(effect.get_visual_runtime_state().used_source_fallback)
+	effect.start_flight(0.2)
+	effect.set_process(false)
+	assert_eq(effect.get_visual_runtime_state().animation, &"fire")
+	assert_false(effect.get_visual_runtime_state().used_source_fallback)
+	assert_eq(effect._sprites[0].texture, frames.get_frame_texture(&"fire", 0))
+
+
+func _additional_frames(names: Array[StringName]) -> SpriteFrames:
+	var frames := SpriteFrames.new()
+	for animation in names:
 		frames.add_animation(animation)
 		for _index in 4:
 			var texture := GradientTexture2D.new()

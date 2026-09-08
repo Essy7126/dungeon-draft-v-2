@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "tool": "OpenAI built-in image_gen",
+  "date": "2026-09-08",
+  "user_approved_script_matting": true,
+  "prompts": {
+    "arrows": "Generate a game VFX sprite atlas: SIX DIFFERENT PHYSICAL GREEK ARROWS, four consecutive flight-animation frames per arrow. EXACT GRID 4 columns x6 rows (24 cells). Pure flat MAGENTA #FF00FF background for later removal. No text, no grid lines, no shadows. Each arrow centered in its equal cell, pointing exactly RIGHT, horizontal shaft. Crisp hand-painted tactical RPG effect style with clean tapered strokes, bronze teal ivory palette. Thin dark edges so the arrows read on a pale golden map. Every arrow alone, no bow or character. Row1 BASIC: compact wooden arrow, bronze triangular point, ivory feathers, two tiny white speed streaks. Row2 REACH: elegant slender long arrow, narrow aerodynamic point, long ivory white wake behind it. Row3 HEAVY STOPPING: short broad bronze arrowhead with very obvious barbed wings, thicker shaft, blunt wedge-shaped teal pressure wake. Row4 PIERCING: very long narrow bronze needle point with two teal razor slipstreams, focused narrow spear silhouette. Row5 DEATH LINE: powerful larger long arrow with triple bronze serrated penetrator point and two nested sharp ivory shock cones trailing BEHIND, extremely focused forceful silhouette. Row6 VOLLEY: one compact light bronze arrow with a curved teal-white feather-like wake, suitable for each of three actual arrows in a fan. Do NOT draw multiple arrows per cell. Four frames per row show wake building, peak, taper and recovery, arrow shape stable, 30px clear margins within every cell, no contact with neighboring cells. Physical air/pressure effects, not fire, ice, lightning or magical explosions. All 24 complete sprites sharp and readable at small scale.",
+    "impacts": "Game VFX sprite atlas with 24 hand-painted arrow HIT effects arranged EXACTLY 4 columns by6rows. Pure flat bright magenta #FF00FF background, no ground or scene, no text, no grid. Four consecutive frames per row: small initial sharp contact, strong peak, widening particles, tiny fading fragments. Every burst centered exactly within equal cell with generous margins. Effects designed for bronze teal ivory Greek tactical RPG on a golden stone map, sharp attractive tapered brush strokes, crisp readable silhouettes. Row1 BASIC physical hit: small ivory starburst with two bronze flecks. Row2 REACH: long narrow white directional cut with delicate feather trails, oriented horizontal. Row3 HEAVY STOPPING: wide angular teal-bronze pressure burst like a shield-shaped impact, heavier compact chunks. Row4 PIERCING: needle-thin ivory cross cut with two sharp teal slits, penetrative directional thrust. Row5 DEATH LINE: large double crossed bronze ivory lance-shaped rupture with pointed shockwave, dramatic focus and a few bronze fragments. Row6 VOLLEY: lighter curved crescent brush wisps and white feather motes around small central point. These are physical impacts, not elemental fire/ice, not circles or glowing spheres. No projectile bodies, characters, weapons or arrows in this sheet, only impacts. Keep each drawing wholly inside its cell and clear space between all cells, same center through four-phase evolution."
+  },
+  "runtime_semantics": {
+    "scope": "Art direction labels in the verbatim prompts are historical descriptions, not gameplay activation rules.",
+    "heavy_stopping_prompt_label": "Row 3 maps to arrow_heavy/impact_heavy only when push_distance > 0 in the resolved spell profile, such as acquired close_shot. Selecting stopping_arrow alone does not select this row.",
+    "stopping_arrow": "Retains the resolved posture projectile: reach with pelion_reach, heavy only with resolved pushing posture, bronze without either. No unconfirmed control is inferred.",
+    "priority": [
+      "resolved FAN volley",
+      "resolved piercing LINE/death_line",
+      "resolved push_distance > 0",
+      "acquired pelion_reach",
+      "base physical bronze"
+    ],
+    "elemental_effects": "No fire, freeze or elemental damage inferred from color.",
+    "impact_authority": "Hits and controls remain authoritative combat reports; art never applies them."
+  }
+}

@@ -88,6 +88,8 @@ func _create_visual() -> AchillesIsoUnitView:
 	var owner := Node2D.new()
 	add_child_autofree(owner)
 	var visual := ADAPTER.instantiate() as AchillesIsoUnitView
+	# These exact uniform frame indices describe the preserved v2 stride.
+	visual.sprite_profile = load("res://data/visuals/achilles/achilles_kit_sprite_profile_v2.tres") as AchillesSpriteVisualProfile
 	owner.add_child(visual)
 	await wait_process_frames(4)
 	return visual

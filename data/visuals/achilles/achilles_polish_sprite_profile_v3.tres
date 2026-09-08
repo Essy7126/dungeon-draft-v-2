@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="AchillesSpriteVisualProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/achilles/achilles_sprite_visual_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"achilles_polish_sprites_v3"
+sprite_frames_path = "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres"
+expanded_kit_enabled = true
+frame_canvas_size = Vector2i(512, 384)
+foot_anchor = Vector2(256, 320)
+display_scale = 0.35
+attack_release_frame = 3
+walk_segment_duration_seconds = 0.28
+run_segment_duration_seconds = 0.2
+attack_duration_seconds = 0.6
+attack_release_seconds = 0.3
+shot_duration_seconds = 0.74
+shot_release_seconds = 0.34
+guard_duration_seconds = 0.48
+guard_release_seconds = 0.24
+sweep_duration_seconds = 0.72
+sweep_release_seconds = 0.36
+advance_duration_seconds = 1.2
+advance_release_seconds = 0.1
+hit_duration_seconds = 0.24
+death_duration_seconds = 0.48
+death_fade_seconds = 0.12
+
+action_clip_settings = {
+"bow": {"frame_count": 8, "duration_seconds": 0.74, "release_seconds": 0.34, "release_frame": 4, "cast_origins": {"N": Vector2(28.7, -55.3), "E": Vector2(30.8, -52.5), "S": Vector2(-28.7, -50.75), "W": Vector2(-32.55, -61.6)}},
+"bow_piercing": {"frame_count": 8, "duration_seconds": 0.78, "release_seconds": 0.38, "release_frame": 4, "cast_origins": {"N": Vector2(25.2, -47.25), "E": Vector2(28.35, -37.45), "S": Vector2(-34.3, -44.8), "W": Vector2(-25.9, -46.9)}},
+"bow_death": {"frame_count": 8, "duration_seconds": 0.86, "release_seconds": 0.44, "release_frame": 4, "cast_origins": {"N": Vector2(25.2, -60.2), "E": Vector2(30.1, -46.9), "S": Vector2(-33.95, -52.85), "W": Vector2(-26.95, -58.45)}},
+"volley": {"frame_count": 8, "duration_seconds": 0.84, "release_seconds": 0.42, "release_frame": 4, "cast_origins": {"N": Vector2(17.85, -77.35), "E": Vector2(25.55, -68.95), "S": Vector2(-32.9, -72.45), "W": Vector2(-27.65, -79.8)}}
+}

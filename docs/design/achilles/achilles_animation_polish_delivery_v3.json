@@ -1,0 +1,317 @@
+{
+  "schema": "dd.achilles.animation-polish-delivery.v3",
+  "generated_at": "2026-09-08T20:47:12.739Z",
+  "appearance": "classic",
+  "art_authority": "Original directional idle sprites in art/source/characters/achilles/sprites_cour_des_sources_v1",
+  "generation": "OpenAI ImageGen integrated; original generated sources and prompts retained; scripted matting explicitly authorized by user",
+  "inventory": {
+    "selected_source_sheets": 11,
+    "selected_source_regions": 112,
+    "new_directional_clips": 20,
+    "total_clips": 48,
+    "preserved_legacy_clips": 28
+  },
+  "assets": [
+    {
+      "path": "assets/characters/Achilles/sprites_polish_v3/manifest.json",
+      "sha256": "a00c3502ecab59c4b4260ba1a5aedcf633840282990644a05e65fbc78fd044ff"
+    },
+    {
+      "path": "assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "sha256": "d56c99fafbb8a1f155fc32a9ed0ad9db6880195acf473672feb262a762fb5a05"
+    },
+    {
+      "path": "data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "sha256": "119d95c51de589294c8846099b98ad9928aed4751d933482be3f0f1a20c128ef"
+    },
+    {
+      "path": "assets/vfx/achilles_polish_v3/manifest.json",
+      "sha256": "1032e30d710c83d9952d109a630ad34c5501d209fc3f676eca664f9bde905b0b"
+    },
+    {
+      "path": "assets/vfx/achilles_polish_v3/lightning_manifest.json",
+      "sha256": "04b067586095c77cf51017d29ddc4e69c11262f78945b0d72c9eb889a6b8f45a"
+    }
+  ],
+  "gut": {
+    "schema": 3,
+    "import": {
+      "stage": "import",
+      "finished": true,
+      "exit_code": 0,
+      "elapsed_seconds": 26.315,
+      "ok": true,
+      "runtime_errors": [],
+      "known_shutdown_diagnostics": [
+        "ERROR: 1 RID allocations of type 'N16RendererViewport8ViewportE' were leaked at exit.",
+        "ERROR: 19 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.",
+        "ERROR: 75 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.",
+        "ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.",
+        "WARNING: 866 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 24 resources still in use at exit (run with --verbose for details)."
+      ],
+      "stdout": "artifacts/achilles_animation_polish_v3_validation/gut_despill_final/import/stdout.log",
+      "stderr": "artifacts/achilles_animation_polish_v3_validation/gut_despill_final/import/stderr.log"
+    },
+    "gut": {
+      "stage": "gut",
+      "finished": true,
+      "exit_code": 0,
+      "elapsed_seconds": 38.826,
+      "ok": true,
+      "runtime_errors": [],
+      "known_shutdown_diagnostics": [
+        "ERROR: 12 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.",
+        "WARNING: 1634 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 305 resources still in use at exit (run with --verbose for details)."
+      ],
+      "stdout": "artifacts/achilles_animation_polish_v3_validation/gut_despill_final/gut/stdout.log",
+      "stderr": "artifacts/achilles_animation_polish_v3_validation/gut_despill_final/gut/stderr.log"
+    },
+    "ok": true,
+    "scripts": [
+      "test_achilles_polish_v3_assets",
+      "test_achilles_expedition_visual_contract",
+      "test_achilles_sprite_motion_sampling",
+      "test_achilles_kit_sprite_runtime_v2",
+      "test_achilles_sprite_runtime",
+      "test_achilles_sprite_assets",
+      "test_achilles_sprite_stride",
+      "test_achilles_sprite_advance_timing",
+      "test_achilles_spell_visual_resolver",
+      "test_achilles_kit_sprite_vfx",
+      "test_achilles_guard_sprite_vfx",
+      "test_achilles_kit_movement_v2",
+      "test_achilles_kit_reaction_arrival",
+      "test_achilles_painted_g_runtime",
+      "test_achilles_visual_variant_run",
+      "test_achilles_canonical_kit",
+      "test_unit_movement_presentation"
+    ],
+    "script_count": 17,
+    "tests": 146,
+    "passing": 146,
+    "assertions": 8962
+  },
+  "node_checks": [
+    {
+      "command": "node --test tools/achilles_polish_v3_pipeline/build.test.cjs",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "command": "node --test tools/achilles_polish_v3_pipeline/build_effects.test.cjs",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "command": "node --test tools/achilles_polish_v3_pipeline/build_lightning.test.cjs",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "command": "node tools/achilles_kit_sprite_validation/assemble_clip.test.cjs",
+      "checks_passed": 3
+    }
+  ],
+  "combat_validation": [
+    {
+      "report": "docs/design/achilles/achilles_animation_polish_validation_v3.json",
+      "sha256": "669d1fd0d9e783af23c9c0bf3c9ddb10c7356eedc6baec19cc09e9a6159bdfe6",
+      "passed": 23,
+      "total": 23
+    },
+    {
+      "report": "docs/design/achilles/achilles_expedition_animation_validation_v3.json",
+      "sha256": "bd125e32d3f665b6db9791555307a060e9395db1bdc02fdef52df95d977e056c",
+      "passed": 7,
+      "total": 7
+    }
+  ],
+  "final_south_visual_capture": {
+    "report": "artifacts/achilles_animation_polish_v3_validation/visual_south_clean_final/base_shot_S_classic_walk3/runtime_validation.json",
+    "report_sha256": "41c523089387fc0e74afb90b7c74d9cb70f052208d3b1782f1b6ab0543e18cf0",
+    "ok": true,
+    "clean_timing_run": false,
+    "errors": []
+  },
+  "final_edge_cleanup": {
+    "alpha_differences": {
+      "bow_S": 0,
+      "bow_piercing_S": 0,
+      "bow_death_S": 0,
+      "volley_S": 0
+    },
+    "geometry_unchanged": [
+      "bow_S",
+      "bow_piercing_S",
+      "bow_death_S",
+      "volley_S"
+    ],
+    "unchanged_other_atlases": [
+      "walk_N",
+      "walk_E",
+      "walk_S",
+      "walk_W",
+      "bow_N",
+      "bow_E",
+      "bow_W",
+      "bow_piercing_N",
+      "bow_piercing_E",
+      "bow_piercing_W",
+      "bow_death_N",
+      "bow_death_E",
+      "bow_death_W",
+      "volley_N",
+      "volley_E",
+      "volley_W"
+    ],
+    "origins_unchanged": [
+      {
+        "key": "bow_S",
+        "origin": [
+          -28.7,
+          -50.75
+        ]
+      },
+      {
+        "key": "bow_piercing_S",
+        "origin": [
+          -34.3,
+          -44.8
+        ]
+      },
+      {
+        "key": "bow_death_S",
+        "origin": [
+          -33.95,
+          -52.85
+        ]
+      },
+      {
+        "key": "volley_S",
+        "origin": [
+          -32.9,
+          -72.45
+        ]
+      }
+    ],
+    "active_edge_despill_clips": [
+      "bow_S",
+      "bow_piercing_S",
+      "bow_death_S",
+      "volley_S"
+    ],
+    "source_pixel_policy": "Source originals retained. Matting removes keyed background and declared neutral dust. Optional magenta-edge RGB recovery is reported per source and preserves alpha; all other retained RGBA is byte-identical before one fixed uniform scale per action/direction.",
+    "source_reports": [
+      {
+        "key": "bow_S",
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 26294,
+          "minimum_estimated_coverage": 0.2196078431372549,
+          "maximum_recomposition_error": 0.4745098039215634,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        }
+      },
+      {
+        "key": "bow_piercing_S",
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 34817,
+          "minimum_estimated_coverage": 0.22352941176470587,
+          "maximum_recomposition_error": 0.4705882352941444,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        }
+      },
+      {
+        "key": "bow_death_S",
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 34817,
+          "minimum_estimated_coverage": 0.22352941176470587,
+          "maximum_recomposition_error": 0.4705882352941444,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        }
+      },
+      {
+        "key": "volley_S",
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 34817,
+          "minimum_estimated_coverage": 0.22352941176470587,
+          "maximum_recomposition_error": 0.4705882352941444,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        }
+      }
+    ],
+    "node_tests": {
+      "pass": 14,
+      "fail": 0
+    }
+  },
+  "media": [
+    {
+      "path": "docs/design/achilles/media/achilles_classic_walk_bow_S.gif",
+      "sha256": "7cb5479f0b60b2a63c1933d0f6f6aec2cbc5ad0ac85fc2b08359bc5e29548d06",
+      "encode_report": "docs/design/achilles/media/achilles_classic_walk_bow_S.encode.json",
+      "captured_frames": 65,
+      "images_checked_in_order": 65,
+      "comparison": "full_resolution_rgb_l1",
+      "source_duration_ms": 3997.733,
+      "gif_duration_ms": 4000
+    },
+    {
+      "path": "docs/design/achilles/media/achilles_lightning_E.gif",
+      "sha256": "6fbdcdc25d1c2a2209f572a6b32d900d5963e8feaeea4452cfde86403b052abb",
+      "encode_report": "docs/design/achilles/media/achilles_lightning_E.encode.json",
+      "captured_frames": 68,
+      "images_checked_in_order": 68,
+      "comparison": "full_resolution_rgb_l1",
+      "source_duration_ms": 4125.037,
+      "gif_duration_ms": 4130
+    }
+  ],
+  "limits": [
+    "Real isolated battle fixtures, not a full campaign. Seven expedition combat cases plus resource coverage of all 42 current spell identities.",
+    "Clean timing matrices precede the final RGB-only southern edge cleanup. Alpha, geometry, origins and timings were proved unchanged; GUT and the southern visual capture were rerun after cleanup.",
+    "GIF timestamps are rounded to centiseconds and preserve captured order; GPU readback can perturb playback. Separate non-capture runs provide timing checks.",
+    "Known ObjectDB, resource and RID shutdown diagnostics are retained in the GUT record and were not fixed by this task."
+  ]
+}

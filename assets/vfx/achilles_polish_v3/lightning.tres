@@ -1,0 +1,80 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/vfx/achilles_polish_v3/lightning.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Lightning_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 0, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 0, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 0, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 0, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_4"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 256, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_5"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 256, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_6"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 256, 256, 256)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Lightning_7"]
+atlas = ExtResource("1_atlas")
+region = Rect2(768, 256, 256, 256)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Lightning_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Lightning_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Lightning_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Lightning_3")
+}],
+"loop": false,
+"name": &"arrow_lightning",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Lightning_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("Lightning_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("Lightning_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("Lightning_7")
+}],
+"loop": false,
+"name": &"impact_lightning",
+"speed": 18.1818181818
+}]

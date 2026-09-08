@@ -30,6 +30,10 @@ extends Resource
 # after arrival, outside this cast budget; it never publishes another marker.
 @export_range(0.05, 2.0, 0.01) var advance_duration_seconds := 0.75
 @export_range(0.0, 1.0, 0.01) var advance_release_seconds := 0.1
+## Optional authored action contracts. Each stem declares frame_count,
+## duration_seconds, release_seconds, release_frame and optional cast_origins.
+## Empty keeps the established classic and painted-G clips unchanged.
+@export var action_clip_settings: Dictionary = {}
 @export var cast_origins: Dictionary = {
 	"N": Vector2(0.0, -62.0), "E": Vector2(30.0, -42.0),
 	"S": Vector2(0.0, -38.0), "W": Vector2(-30.0, -42.0),
@@ -52,28 +56,40 @@ func validation_error(candidate: SpriteFrames) -> StringName:
 			or advance_duration_seconds < advance_release_seconds + 0.48 \
 			or hit_duration_seconds <= 0.0 or death_duration_seconds <= 0.0 or death_fade_seconds <= 0.0):
 		return &"SPRITE_ACTION_TIMING_INVALID"
+	var settings_error := _action_settings_validation_error()
+	if settings_error != &"":
+		return settings_error
 	var stems: Array[String] = ["idle", "walk", "attack"]
 	if expanded_kit_enabled:
 		stems.append_array(["dash", "bow", "guard", "sweep", "volley", "hit", "death"])
+	for stem: String in action_clip_settings:
+		if not stems.has(stem):
+			stems.append(stem)
 	for direction: String in ["N", "E", "S", "W"]:
 		for stem: String in stems:
 			var clip := StringName(stem + "_" + direction)
 			if not candidate.has_animation(clip) or candidate.get_frame_count(clip) < 1:
 				return &"SPRITE_DIRECTION_CLIP_MISSING"
 			var count := candidate.get_frame_count(clip)
-			if expanded_kit_enabled:
+			var settings := get_action_clip_settings(stem)
+			if not settings.is_empty():
+				if count != int(settings.frame_count):
+					return &"SPRITE_FRAME_COUNT_INVALID"
+			elif expanded_kit_enabled:
 				var expected_count := 6 if stem in ["bow", "guard", "sweep", "volley"] else 4
 				if stem in ["dash", "bow", "guard", "sweep", "volley", "death"] and count != expected_count:
 					return &"SPRITE_FRAME_COUNT_INVALID"
 				if stem == "hit" and count not in [3, 4]:
 					return &"SPRITE_FRAME_COUNT_INVALID"
+			if stem == "walk" and (count < 2 or count % 2 != 0):
+				return &"SPRITE_WALK_CYCLE_INVALID"
 			if candidate.get_animation_speed(clip) <= 0.0:
 				return &"SPRITE_CLIP_SPEED_INVALID"
 			# Dash is sampled by the movement owner; its resource loop flag does
 			# not determine when the charge returns to idle.
 			if stem != "dash" and candidate.get_animation_loop(clip) != (stem in ["idle", "walk"]):
 				return &"SPRITE_CLIP_LOOP_INVALID"
-			if stem == "attack" and (attack_release_frame < 0 or attack_release_frame >= count):
+			if stem == "attack" and settings.is_empty() and (attack_release_frame < 0 or attack_release_frame >= count):
 				return &"SPRITE_ATTACK_MARKER_INVALID"
 			for frame_index in count:
 				var texture := candidate.get_frame_texture(clip, frame_index)
@@ -81,4 +97,50 @@ func validation_error(candidate: SpriteFrames) -> StringName:
 					return &"SPRITE_FRAME_TEXTURE_INVALID"
 				if candidate.get_frame_duration(clip, frame_index) <= 0.0:
 					return &"SPRITE_FRAME_DURATION_INVALID"
+	return &""
+
+
+func get_action_clip_settings(stem: String) -> Dictionary:
+	var settings: Variant = action_clip_settings.get(stem, {})
+	return (settings as Dictionary).duplicate(true) if settings is Dictionary else {}
+
+
+func get_cast_origin(stem: String, direction: String) -> Vector2:
+	var settings := get_action_clip_settings(stem)
+	var origins: Dictionary = settings.get("cast_origins", {})
+	return origins.get(direction, cast_origins.get(direction, Vector2(0.0, -48.0)))
+
+
+func _action_settings_validation_error() -> StringName:
+	for raw_stem: Variant in action_clip_settings:
+		if not (raw_stem is String or raw_stem is StringName):
+			return &"SPRITE_ACTION_SETTINGS_INVALID"
+		var stem := String(raw_stem)
+		# Locomotion, arrival and lifecycle clips keep their dedicated owners.
+		if stem.is_empty() or stem in ["idle", "walk", "dash", "hit", "death"]:
+			return &"SPRITE_ACTION_SETTINGS_INVALID"
+		var raw_settings: Variant = action_clip_settings[raw_stem]
+		if not raw_settings is Dictionary:
+			return &"SPRITE_ACTION_SETTINGS_INVALID"
+		var settings := raw_settings as Dictionary
+		for key: String in ["frame_count", "duration_seconds", "release_seconds", "release_frame"]:
+			var value: Variant = settings.get(key)
+			if not (value is int or value is float) or not is_finite(float(value)):
+				return &"SPRITE_ACTION_SETTINGS_INVALID"
+		var count := int(settings.frame_count)
+		var marker := int(settings.release_frame)
+		var duration := float(settings.duration_seconds)
+		var release := float(settings.release_seconds)
+		if float(count) != float(settings.frame_count) or count < 2 \
+				or float(marker) != float(settings.release_frame) or marker < 0 or marker >= count \
+				or duration <= 0.0 or release < 0.0 or release >= duration:
+			return &"SPRITE_ACTION_SETTINGS_INVALID"
+		var raw_origins: Variant = settings.get("cast_origins", {})
+		if not raw_origins is Dictionary:
+			return &"SPRITE_ACTION_SETTINGS_INVALID"
+		for direction: Variant in raw_origins:
+			var origin: Variant = raw_origins[direction]
+			if String(direction) not in ["N", "E", "S", "W"] \
+					or not origin is Vector2 or not (origin as Vector2).is_finite():
+				return &"SPRITE_ACTION_SETTINGS_INVALID"
 	return &""

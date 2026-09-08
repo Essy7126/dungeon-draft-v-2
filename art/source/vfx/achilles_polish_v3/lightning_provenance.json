@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "tool": "OpenAI built-in image_gen",
+  "date": "2026-09-08",
+  "source_generation": "exec-28ac622d-2f67-42af-bd9c-ca0931d2ceca.png",
+  "prompt": "Production game VFX sprite sheet for a polished hand-painted cel-shaded Greek myth tactical RPG. EXACT regular 4 columns by 2 rows, 8 isolated sprites, generous margins inside each cell. Genuine transparent background with alpha; no checkerboard, no ground, no text, no numbers, no grid. TOP ROW: four animation frames of the SAME lightning arrow projectile flying horizontally to the RIGHT. A clearly readable thin bronze arrow shaft and ivory triangular point surrounded by elegant angular branching lightning, white ivory hot core, pale golden yellow main energy, restrained azure secondary sparks. Tip aligned at same position throughout. Animate different branching electric forks and small rear sparks, with compact controlled silhouette, not a huge laser. BOTTOM ROW: four chronological impact frames, centered same point: 1 tiny electric contact star, 2 sharp satisfying medium branching electric burst, 3 opening broken ring and angular fading forks, 4 few small fading electric sparks. Impact frame4 much smaller and less dense than frame2. Clean sharp painterly edges and broad graphic shapes, minimal bloom, readable at 50 pixel game size, sophisticated cartoon game FX with subtle hand-painted shading. No character, no bow, no environment. No color outside the isolated effect silhouettes. All8 sprites fully contained in their own equal cell; no overlap.",
+  "user_approved_script_matting": true,
+  "intent": "Dedicated lightning projectile and impact for real expedition lightning spells. No changes to character artwork."
+}

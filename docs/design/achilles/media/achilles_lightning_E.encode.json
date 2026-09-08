@@ -1,0 +1,378 @@
+{
+  "input": "artifacts/achilles_animation_polish_v3_validation/visual_specials_final/exp_foudre_E_classic_walk3/clip/clip_manifest.json",
+  "output": "docs/design/achilles/media/achilles_lightning_E.gif",
+  "frames": 68,
+  "encoded_frames": 44,
+  "distinct_source_states": 44,
+  "merged_capture_frames": 24,
+  "source_images_checked_in_order": 68,
+  "image_order_signature_size": [
+    910,
+    754
+  ],
+  "image_order_comparison": "full_resolution_rgb_l1",
+  "maximum_palette_mean_error": 0.8216607883716637,
+  "encoded_timeline": [
+    {
+      "encoded_frame": 0,
+      "first_source_frame": 0,
+      "last_source_frame": 0,
+      "start_ms": 0,
+      "end_ms": 60
+    },
+    {
+      "encoded_frame": 1,
+      "first_source_frame": 1,
+      "last_source_frame": 1,
+      "start_ms": 60,
+      "end_ms": 120
+    },
+    {
+      "encoded_frame": 2,
+      "first_source_frame": 2,
+      "last_source_frame": 2,
+      "start_ms": 120,
+      "end_ms": 180
+    },
+    {
+      "encoded_frame": 3,
+      "first_source_frame": 3,
+      "last_source_frame": 3,
+      "start_ms": 180,
+      "end_ms": 240
+    },
+    {
+      "encoded_frame": 4,
+      "first_source_frame": 4,
+      "last_source_frame": 4,
+      "start_ms": 240,
+      "end_ms": 290
+    },
+    {
+      "encoded_frame": 5,
+      "first_source_frame": 5,
+      "last_source_frame": 5,
+      "start_ms": 290,
+      "end_ms": 350
+    },
+    {
+      "encoded_frame": 6,
+      "first_source_frame": 6,
+      "last_source_frame": 6,
+      "start_ms": 350,
+      "end_ms": 420
+    },
+    {
+      "encoded_frame": 7,
+      "first_source_frame": 7,
+      "last_source_frame": 7,
+      "start_ms": 420,
+      "end_ms": 480
+    },
+    {
+      "encoded_frame": 8,
+      "first_source_frame": 8,
+      "last_source_frame": 8,
+      "start_ms": 480,
+      "end_ms": 540
+    },
+    {
+      "encoded_frame": 9,
+      "first_source_frame": 9,
+      "last_source_frame": 9,
+      "start_ms": 540,
+      "end_ms": 600
+    },
+    {
+      "encoded_frame": 10,
+      "first_source_frame": 10,
+      "last_source_frame": 10,
+      "start_ms": 600,
+      "end_ms": 660
+    },
+    {
+      "encoded_frame": 11,
+      "first_source_frame": 11,
+      "last_source_frame": 11,
+      "start_ms": 660,
+      "end_ms": 720
+    },
+    {
+      "encoded_frame": 12,
+      "first_source_frame": 12,
+      "last_source_frame": 12,
+      "start_ms": 720,
+      "end_ms": 780
+    },
+    {
+      "encoded_frame": 13,
+      "first_source_frame": 13,
+      "last_source_frame": 13,
+      "start_ms": 780,
+      "end_ms": 860
+    },
+    {
+      "encoded_frame": 14,
+      "first_source_frame": 14,
+      "last_source_frame": 30,
+      "start_ms": 860,
+      "end_ms": 1880
+    },
+    {
+      "encoded_frame": 15,
+      "first_source_frame": 31,
+      "last_source_frame": 31,
+      "start_ms": 1880,
+      "end_ms": 1930
+    },
+    {
+      "encoded_frame": 16,
+      "first_source_frame": 32,
+      "last_source_frame": 32,
+      "start_ms": 1930,
+      "end_ms": 2000
+    },
+    {
+      "encoded_frame": 17,
+      "first_source_frame": 33,
+      "last_source_frame": 34,
+      "start_ms": 2000,
+      "end_ms": 2120
+    },
+    {
+      "encoded_frame": 18,
+      "first_source_frame": 35,
+      "last_source_frame": 37,
+      "start_ms": 2120,
+      "end_ms": 2310
+    },
+    {
+      "encoded_frame": 19,
+      "first_source_frame": 38,
+      "last_source_frame": 38,
+      "start_ms": 2310,
+      "end_ms": 2360
+    },
+    {
+      "encoded_frame": 20,
+      "first_source_frame": 39,
+      "last_source_frame": 39,
+      "start_ms": 2360,
+      "end_ms": 2410
+    },
+    {
+      "encoded_frame": 21,
+      "first_source_frame": 40,
+      "last_source_frame": 40,
+      "start_ms": 2410,
+      "end_ms": 2480
+    },
+    {
+      "encoded_frame": 22,
+      "first_source_frame": 41,
+      "last_source_frame": 41,
+      "start_ms": 2480,
+      "end_ms": 2550
+    },
+    {
+      "encoded_frame": 23,
+      "first_source_frame": 42,
+      "last_source_frame": 42,
+      "start_ms": 2550,
+      "end_ms": 2610
+    },
+    {
+      "encoded_frame": 24,
+      "first_source_frame": 43,
+      "last_source_frame": 43,
+      "start_ms": 2610,
+      "end_ms": 2660
+    },
+    {
+      "encoded_frame": 25,
+      "first_source_frame": 44,
+      "last_source_frame": 44,
+      "start_ms": 2660,
+      "end_ms": 2720
+    },
+    {
+      "encoded_frame": 26,
+      "first_source_frame": 45,
+      "last_source_frame": 45,
+      "start_ms": 2720,
+      "end_ms": 2780
+    },
+    {
+      "encoded_frame": 27,
+      "first_source_frame": 46,
+      "last_source_frame": 46,
+      "start_ms": 2780,
+      "end_ms": 2850
+    },
+    {
+      "encoded_frame": 28,
+      "first_source_frame": 47,
+      "last_source_frame": 47,
+      "start_ms": 2850,
+      "end_ms": 2910
+    },
+    {
+      "encoded_frame": 29,
+      "first_source_frame": 48,
+      "last_source_frame": 48,
+      "start_ms": 2910,
+      "end_ms": 2970
+    },
+    {
+      "encoded_frame": 30,
+      "first_source_frame": 49,
+      "last_source_frame": 49,
+      "start_ms": 2970,
+      "end_ms": 3030
+    },
+    {
+      "encoded_frame": 31,
+      "first_source_frame": 50,
+      "last_source_frame": 50,
+      "start_ms": 3030,
+      "end_ms": 3090
+    },
+    {
+      "encoded_frame": 32,
+      "first_source_frame": 51,
+      "last_source_frame": 51,
+      "start_ms": 3090,
+      "end_ms": 3150
+    },
+    {
+      "encoded_frame": 33,
+      "first_source_frame": 52,
+      "last_source_frame": 52,
+      "start_ms": 3150,
+      "end_ms": 3210
+    },
+    {
+      "encoded_frame": 34,
+      "first_source_frame": 53,
+      "last_source_frame": 53,
+      "start_ms": 3210,
+      "end_ms": 3270
+    },
+    {
+      "encoded_frame": 35,
+      "first_source_frame": 54,
+      "last_source_frame": 54,
+      "start_ms": 3270,
+      "end_ms": 3330
+    },
+    {
+      "encoded_frame": 36,
+      "first_source_frame": 55,
+      "last_source_frame": 55,
+      "start_ms": 3330,
+      "end_ms": 3390
+    },
+    {
+      "encoded_frame": 37,
+      "first_source_frame": 56,
+      "last_source_frame": 56,
+      "start_ms": 3390,
+      "end_ms": 3450
+    },
+    {
+      "encoded_frame": 38,
+      "first_source_frame": 57,
+      "last_source_frame": 57,
+      "start_ms": 3450,
+      "end_ms": 3510
+    },
+    {
+      "encoded_frame": 39,
+      "first_source_frame": 58,
+      "last_source_frame": 58,
+      "start_ms": 3510,
+      "end_ms": 3570
+    },
+    {
+      "encoded_frame": 40,
+      "first_source_frame": 59,
+      "last_source_frame": 59,
+      "start_ms": 3570,
+      "end_ms": 3630
+    },
+    {
+      "encoded_frame": 41,
+      "first_source_frame": 60,
+      "last_source_frame": 60,
+      "start_ms": 3630,
+      "end_ms": 3690
+    },
+    {
+      "encoded_frame": 42,
+      "first_source_frame": 61,
+      "last_source_frame": 61,
+      "start_ms": 3690,
+      "end_ms": 3750
+    },
+    {
+      "encoded_frame": 43,
+      "first_source_frame": 62,
+      "last_source_frame": 67,
+      "start_ms": 3750,
+      "end_ms": 4130
+    }
+  ],
+  "size": [
+    910,
+    754
+  ],
+  "source_duration_ms": 4125.037,
+  "encoded_duration_ms": 4130,
+  "delays_ms": [
+    60,
+    60,
+    60,
+    60,
+    50,
+    60,
+    70,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    80,
+    1020,
+    50,
+    70,
+    120,
+    190,
+    50,
+    50,
+    70,
+    70,
+    60,
+    50,
+    60,
+    60,
+    70,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    380
+  ],
+  "note": "Real game capture, fixed crop enlarged 2x. Original timestamps rounded to GIF centiseconds; identical holds may merge without changing duration. Dimensions, total duration, transition timestamps and the nearest full-resolution captured RGB image in chronological order are checked after decoding. GPU capture may perturb playback; use the separate timing report for measurements."
+}

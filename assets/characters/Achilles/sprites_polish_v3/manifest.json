@@ -1,0 +1,7339 @@
+{
+  "schema_version": 3,
+  "asset": "Achilles classic sprite polish v3",
+  "complete": true,
+  "canvas": [
+    512,
+    384
+  ],
+  "foot_anchor": [
+    256,
+    320
+  ],
+  "source_generator": "OpenAI ImageGen",
+  "background_removal_authorized_by_user": true,
+  "source_pixel_policy": "Source originals retained. Matting removes keyed background and declared neutral dust. Optional magenta-edge RGB recovery is reported per source and preserves alpha; all other retained RGBA is byte-identical before one fixed uniform scale per action/direction.",
+  "legacy": {
+    "path": "assets/characters/Achilles/sprites_kit_v2/achilles_sprite_frames.tres",
+    "sha256": "449b3df2783092df8899d939d4a8bcbf46c1d62236b78df9c940a61a463bd8fc",
+    "preserved_clips": [
+      "idle_N",
+      "idle_E",
+      "idle_S",
+      "idle_W",
+      "attack_N",
+      "attack_E",
+      "attack_S",
+      "attack_W",
+      "dash_N",
+      "guard_N",
+      "dash_E",
+      "guard_E",
+      "dash_S",
+      "guard_S",
+      "dash_W",
+      "guard_W",
+      "sweep_N",
+      "hit_N",
+      "death_N",
+      "sweep_E",
+      "hit_E",
+      "death_E",
+      "sweep_S",
+      "hit_S",
+      "death_S",
+      "sweep_W",
+      "hit_W",
+      "death_W"
+    ]
+  },
+  "clip_count": 48,
+  "missing_clips": [],
+  "clip_overrides": {
+    "bow_piercing_E": {
+      "0": {
+        "sheet": "bow_E",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_E",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_E",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_E",
+        "index": 7
+      }
+    },
+    "bow_death_E": {
+      "0": {
+        "sheet": "bow_E",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_E",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_E",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_E",
+        "index": 7
+      }
+    },
+    "volley_E": {
+      "0": {
+        "sheet": "bow_E",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_E",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_E",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_E",
+        "index": 7
+      }
+    },
+    "bow_piercing_N": {
+      "0": {
+        "sheet": "bow_N",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_N",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_N",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_N",
+        "index": 7
+      }
+    },
+    "bow_death_N": {
+      "0": {
+        "sheet": "bow_N",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_N",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_N",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_N",
+        "index": 7
+      }
+    },
+    "volley_N": {
+      "0": {
+        "sheet": "bow_N",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_N",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_N",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_N",
+        "index": 7
+      }
+    },
+    "bow_piercing_S": {
+      "0": {
+        "sheet": "bow_S",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_S",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_S",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_S",
+        "index": 7
+      }
+    },
+    "bow_death_S": {
+      "0": {
+        "sheet": "bow_S",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_S",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_S",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_S",
+        "index": 7
+      }
+    },
+    "volley_S": {
+      "0": {
+        "sheet": "bow_S",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_S",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_S",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_S",
+        "index": 7
+      }
+    },
+    "bow_piercing_W": {
+      "0": {
+        "sheet": "bow_W",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_W",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_W",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_W",
+        "index": 7
+      }
+    },
+    "bow_death_W": {
+      "0": {
+        "sheet": "bow_W",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_W",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_W",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_W",
+        "index": 7
+      }
+    },
+    "volley_W": {
+      "0": {
+        "sheet": "bow_W",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_W",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_W",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_W",
+        "index": 7
+      }
+    }
+  },
+  "sheets": [
+    {
+      "key": "walk_N",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_base_N_harmonized_palette.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping_note": "Source0..7, playback identity, contacts3/7.",
+      "duration_seconds": 0.56,
+      "release_seconds": null,
+      "release_frame": null,
+      "release_grip_atlas": null,
+      "cast_origin_local": null,
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1245191,
+        "exterior_pixels": 1225686,
+        "enclosed_checker_or_key_pixels": 19505,
+        "retained_pixels": 327325,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1225686,
+            "touches_border": true,
+            "dark": 9371,
+            "light": 1210564,
+            "removed": true
+          },
+          {
+            "pixels": 2254,
+            "touches_border": false,
+            "dark": 90,
+            "light": 2111,
+            "removed": true
+          },
+          {
+            "pixels": 2098,
+            "touches_border": false,
+            "dark": 91,
+            "light": 1957,
+            "removed": true
+          },
+          {
+            "pixels": 1597,
+            "touches_border": false,
+            "dark": 116,
+            "light": 1428,
+            "removed": true
+          },
+          {
+            "pixels": 1593,
+            "touches_border": false,
+            "dark": 97,
+            "light": 1438,
+            "removed": true
+          },
+          {
+            "pixels": 1474,
+            "touches_border": false,
+            "dark": 72,
+            "light": 1353,
+            "removed": true
+          },
+          {
+            "pixels": 1469,
+            "touches_border": false,
+            "dark": 77,
+            "light": 1339,
+            "removed": true
+          },
+          {
+            "pixels": 1463,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1344,
+            "removed": true
+          },
+          {
+            "pixels": 1400,
+            "touches_border": false,
+            "dark": 98,
+            "light": 1251,
+            "removed": true
+          },
+          {
+            "pixels": 1304,
+            "touches_border": false,
+            "dark": 103,
+            "light": 1140,
+            "removed": true
+          },
+          {
+            "pixels": 1286,
+            "touches_border": false,
+            "dark": 92,
+            "light": 1144,
+            "removed": true
+          },
+          {
+            "pixels": 1262,
+            "touches_border": false,
+            "dark": 106,
+            "light": 1091,
+            "removed": true
+          },
+          {
+            "pixels": 1144,
+            "touches_border": false,
+            "dark": 92,
+            "light": 1018,
+            "removed": true
+          },
+          {
+            "pixels": 310,
+            "touches_border": false,
+            "dark": 41,
+            "light": 245,
+            "removed": true
+          },
+          {
+            "pixels": 282,
+            "touches_border": false,
+            "dark": 26,
+            "light": 227,
+            "removed": true
+          },
+          {
+            "pixels": 250,
+            "touches_border": false,
+            "dark": 33,
+            "light": 199,
+            "removed": true
+          },
+          {
+            "pixels": 86,
+            "touches_border": false,
+            "dark": 23,
+            "light": 55,
+            "removed": true
+          },
+          {
+            "pixels": 64,
+            "touches_border": false,
+            "dark": 16,
+            "light": 39,
+            "removed": true
+          },
+          {
+            "pixels": 40,
+            "touches_border": false,
+            "dark": 15,
+            "light": 11,
+            "removed": true
+          },
+          {
+            "pixels": 36,
+            "touches_border": false,
+            "dark": 11,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 28,
+            "touches_border": false,
+            "dark": 8,
+            "light": 8,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "50916a56be9e7277ef963469082c8dc41777f6a20b5526bb8875a89ee8872a6b",
+        "dimensions": [
+          1254,
+          1254
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_walk_N.png",
+      "atlas_sha256": "cebb2989257de1017e8ee6d2a0b01c68843be29c29cf011cb05a7580e53c6a02",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            82,
+            6,
+            209,
+            286
+          ],
+          "source_root": [
+            147,
+            286.1727272727273
+          ],
+          "kept_source_pixels": 18010,
+          "crest_top": 54,
+          "scale": 0.8527131782945736,
+          "placement": [
+            201,
+            81,
+            108,
+            239
+          ],
+          "sha256": "7e98a1300d0d5463e72aa25a9e179305d1906336fc47a4f115827dd858931be4",
+          "rgba_sha256": "c18bc900710b67ce273606f3b9286ef6e7a8866396d53991eddb876aa0aa9ace"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            399,
+            7,
+            539,
+            287
+          ],
+          "source_root": [
+            467,
+            287.1727272727273
+          ],
+          "kept_source_pixels": 18663,
+          "crest_top": 28,
+          "scale": 0.8527131782945736,
+          "placement": [
+            198,
+            81,
+            119,
+            239
+          ],
+          "sha256": "a5e7b3799328fd230e727506875ca80fc9e12c892cecc05863983c0560b38777",
+          "rgba_sha256": "a4dc6e8a9f604c76bc955582cd795d8fe4ffb043d9fbc4b2a38c3e92f694d77f"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            699,
+            7,
+            836,
+            290
+          ],
+          "source_root": [
+            765,
+            290.1727272727273
+          ],
+          "kept_source_pixels": 18823,
+          "crest_top": 28,
+          "scale": 0.8527131782945736,
+          "placement": [
+            200,
+            79,
+            117,
+            241
+          ],
+          "sha256": "4fe3d2d7d9a7d8f6ee12d8bf21700bffa49755b276afe7096f0085b69e154aa2",
+          "rgba_sha256": "f0a05afc3a06c3e9da326087a27032e4d9393eaf7c15773c0fb7653cca7ea071"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1025,
+            7,
+            1165,
+            286
+          ],
+          "source_root": [
+            1093,
+            286.1727272727273
+          ],
+          "kept_source_pixels": 19165,
+          "crest_top": 28,
+          "scale": 0.8527131782945736,
+          "placement": [
+            198,
+            82,
+            119,
+            238
+          ],
+          "sha256": "fd7689f2f03a55cd400c53da98adcc34f2dca34be1570de645a9b4d08ba73a62",
+          "rgba_sha256": "23c70a1319e37759b3febf6e2e552d9c145b6f11af4a11abb3e8f0687ed3de4d"
+        },
+        {
+          "index": 4,
+          "source_index": 4,
+          "source_bbox": [
+            79,
+            318,
+            216,
+            599
+          ],
+          "source_root": [
+            147,
+            599.1727272727272
+          ],
+          "kept_source_pixels": 18263,
+          "crest_top": 340,
+          "scale": 0.8527131782945736,
+          "placement": [
+            198,
+            80,
+            117,
+            240
+          ],
+          "sha256": "65131543a08d16403e11da501c0660f807d29f97b97feb05e062fdd55220d31f",
+          "rgba_sha256": "30105d93dc2b6e286cd761f5a47f0aed09062febce5f13324852344a16940e48"
+        },
+        {
+          "index": 5,
+          "source_index": 5,
+          "source_bbox": [
+            400,
+            319,
+            539,
+            600
+          ],
+          "source_root": [
+            469,
+            600.1727272727272
+          ],
+          "kept_source_pixels": 18242,
+          "crest_top": 340,
+          "scale": 0.8527131782945736,
+          "placement": [
+            197,
+            80,
+            119,
+            240
+          ],
+          "sha256": "1fd003c13af7cab478262bf0e3a34f435b8d41891002cef1180f3053a40240a6",
+          "rgba_sha256": "357aeddf2676c089d702ecdacaf7567ddedfc657e1a27f45892e21e0b56c7180"
+        },
+        {
+          "index": 6,
+          "source_index": 6,
+          "source_bbox": [
+            705,
+            318,
+            848,
+            601
+          ],
+          "source_root": [
+            774,
+            601.1727272727272
+          ],
+          "kept_source_pixels": 19075,
+          "crest_top": 364,
+          "scale": 0.8527131782945736,
+          "placement": [
+            197,
+            79,
+            122,
+            241
+          ],
+          "sha256": "258004e25ebcda6697eed466b4b0fd2a718b5bc18b4738238e6a4e5f41d7dd9e",
+          "rgba_sha256": "cbbac290b11209e54b4e97dfb9c617a764029485f2716052f862d0ad4e2fae80"
+        },
+        {
+          "index": 7,
+          "source_index": 7,
+          "source_bbox": [
+            1019,
+            318,
+            1161,
+            598
+          ],
+          "source_root": [
+            1091,
+            598.1727272727272
+          ],
+          "kept_source_pixels": 18922,
+          "crest_top": 339,
+          "scale": 0.8527131782945736,
+          "placement": [
+            195,
+            81,
+            121,
+            239
+          ],
+          "sha256": "c7d2a5dea1cb9d5cffec2074f2ac7af2f6f9003db2a188f097a8d8458806c2c3",
+          "rgba_sha256": "b563eb50ca673ccf344ab912e50f03763b7bf9222a3e88de59b5214d7c69f37a"
+        }
+      ]
+    },
+    {
+      "key": "walk_E",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_walk_E_harmonized.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping_note": "Source0..7; playback[0,1,3,2,4,5,7,6], source2/6 become contacts3/7.",
+      "duration_seconds": 0.56,
+      "release_seconds": null,
+      "release_frame": null,
+      "release_grip_atlas": null,
+      "cast_origin_local": null,
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1169616,
+        "exterior_pixels": 1154000,
+        "enclosed_checker_or_key_pixels": 15616,
+        "retained_pixels": 402912,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1154000,
+            "touches_border": true,
+            "dark": 4178,
+            "light": 1147530,
+            "removed": true
+          },
+          {
+            "pixels": 3316,
+            "touches_border": false,
+            "dark": 111,
+            "light": 3142,
+            "removed": true
+          },
+          {
+            "pixels": 3147,
+            "touches_border": false,
+            "dark": 114,
+            "light": 2981,
+            "removed": true
+          },
+          {
+            "pixels": 3010,
+            "touches_border": false,
+            "dark": 107,
+            "light": 2840,
+            "removed": true
+          },
+          {
+            "pixels": 2795,
+            "touches_border": false,
+            "dark": 77,
+            "light": 2670,
+            "removed": true
+          },
+          {
+            "pixels": 2785,
+            "touches_border": false,
+            "dark": 91,
+            "light": 2652,
+            "removed": true
+          },
+          {
+            "pixels": 125,
+            "touches_border": false,
+            "dark": 14,
+            "light": 97,
+            "removed": true
+          },
+          {
+            "pixels": 100,
+            "touches_border": false,
+            "dark": 15,
+            "light": 72,
+            "removed": true
+          },
+          {
+            "pixels": 92,
+            "touches_border": false,
+            "dark": 11,
+            "light": 69,
+            "removed": true
+          },
+          {
+            "pixels": 91,
+            "touches_border": false,
+            "dark": 12,
+            "light": 71,
+            "removed": true
+          },
+          {
+            "pixels": 91,
+            "touches_border": false,
+            "dark": 11,
+            "light": 66,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 16,
+            "light": 0,
+            "removed": true
+          },
+          {
+            "pixels": 19,
+            "touches_border": false,
+            "dark": 7,
+            "light": 9,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "8426f02a20956af304d07ff8bead0c91e92674fb1fffbbc5d1efe66efd1b5a54",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_walk_E.png",
+      "atlas_sha256": "823715a82cb1d2e855a1afe669825b35dcbb934eab2d8d9000adfc302805d9d2",
+      "mapping": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "weights": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            71,
+            32,
+            299,
+            490
+          ],
+          "source_root": [
+            171,
+            490.84090909090907
+          ],
+          "kept_source_pixels": 49638,
+          "crest_top": 85,
+          "scale": 0.5432098765432098,
+          "placement": [
+            202,
+            71,
+            124,
+            249
+          ],
+          "sha256": "87a0f0c5bf49182e36fca069ab36c2a1605f4842f64aed88410c4c0fbbeadf44",
+          "rgba_sha256": "e0a884cc6cf6a0722854098418cbe674a02f1a6ad1b89846a9da84993cfba5e7"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            427,
+            29,
+            652,
+            490
+          ],
+          "source_root": [
+            530,
+            489
+          ],
+          "kept_source_pixels": 49626,
+          "crest_top": 85,
+          "scale": 0.5432098765432098,
+          "placement": [
+            200,
+            70,
+            122,
+            250
+          ],
+          "sha256": "5f8f1f16b858455a5e5b00abb76042780057f412c12cb82e03e8036e4c1c8519",
+          "rgba_sha256": "4dd5b67e0b9e774e467d96f83e25ca27b26c87a53e429c268795138106182255"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            790,
+            28,
+            1023,
+            490
+          ],
+          "source_root": [
+            892,
+            490.84090909090907
+          ],
+          "kept_source_pixels": 52123,
+          "crest_top": 85,
+          "scale": 0.5432098765432098,
+          "placement": [
+            201,
+            69,
+            127,
+            251
+          ],
+          "sha256": "a3d202ae6eb4d55beba770a573bde92acfd6e25aeb404efdbeba7d153fd2e1b8",
+          "rgba_sha256": "d96a289013c6e04b6240dc88badbdba4809cc57c1c9fa6d86a994eee331f421e"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1151,
+            27,
+            1378,
+            490
+          ],
+          "source_root": [
+            1255,
+            490.84090909090907
+          ],
+          "kept_source_pixels": 49491,
+          "crest_top": 85,
+          "scale": 0.5432098765432098,
+          "placement": [
+            200,
+            68,
+            123,
+            252
+          ],
+          "sha256": "9eaf9f581ae26de49c2dd08d41556204012555bffe4d3c0671bef3a3182bb0b5",
+          "rgba_sha256": "41c8fcb9e8804402ce311454cde5e234644e656b68fda7ee14522dc8c2b7fc44"
+        },
+        {
+          "index": 4,
+          "source_index": 4,
+          "source_bbox": [
+            78,
+            541,
+            303,
+            1012
+          ],
+          "source_root": [
+            179,
+            1012.8409090909091
+          ],
+          "kept_source_pixels": 48932,
+          "crest_top": 596,
+          "scale": 0.5432098765432098,
+          "placement": [
+            201,
+            64,
+            122,
+            256
+          ],
+          "sha256": "c67d90bf67186b640ae37edb3c84abccc294e00e441003d98fc27c8954a11f9b",
+          "rgba_sha256": "2f8e7c69ee3b5a23f7f76e375099f368fced6edf51d7399c44eaf3e8fd7804a6"
+        },
+        {
+          "index": 5,
+          "source_index": 5,
+          "source_bbox": [
+            427,
+            540,
+            659,
+            1013
+          ],
+          "source_root": [
+            531,
+            1013.8409090909091
+          ],
+          "kept_source_pixels": 50392,
+          "crest_top": 596,
+          "scale": 0.5432098765432098,
+          "placement": [
+            200,
+            63,
+            126,
+            257
+          ],
+          "sha256": "3186b2f8302351ae1a992b636ee71e0353014e43944673c49884ca2101267188",
+          "rgba_sha256": "fed735d069cc731dc14ef3b36c18bea520dd7ffa1e66f14bdff6d7d24f413b4c"
+        },
+        {
+          "index": 6,
+          "source_index": 6,
+          "source_bbox": [
+            790,
+            541,
+            1022,
+            1005
+          ],
+          "source_root": [
+            891,
+            1004
+          ],
+          "kept_source_pixels": 52614,
+          "crest_top": 596,
+          "scale": 0.5432098765432098,
+          "placement": [
+            201,
+            68,
+            126,
+            252
+          ],
+          "sha256": "9ac1b63ec7df4ea54575c1a41fcb0865741f89c5ae5f58d85c8ca7ba548c4d4c",
+          "rgba_sha256": "348441276033712b88a4918be7fb7363023e5f96b88542ac1f205ae9c195d1d7"
+        },
+        {
+          "index": 7,
+          "source_index": 7,
+          "source_bbox": [
+            1150,
+            539,
+            1383,
+            1014
+          ],
+          "source_root": [
+            1254,
+            1014.8409090909091
+          ],
+          "kept_source_pixels": 50096,
+          "crest_top": 596,
+          "scale": 0.5432098765432098,
+          "placement": [
+            200,
+            62,
+            127,
+            258
+          ],
+          "sha256": "344ee07b3a18ae4f89b9beeda9281cc248d36c374d30218e2f96b9ab64b49f14",
+          "rgba_sha256": "395117307417cd9d7365747596b15e94385b5a8892e485db5009f80cca637f5d"
+        }
+      ]
+    },
+    {
+      "key": "walk_S",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_base_S_harmonized.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping_note": "Source0..7, playback identity, contacts3/7.",
+      "duration_seconds": 0.56,
+      "release_seconds": null,
+      "release_frame": null,
+      "release_grip_atlas": null,
+      "cast_origin_local": null,
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1345254,
+        "exterior_pixels": 1343588,
+        "enclosed_checker_or_key_pixels": 1666,
+        "retained_pixels": 227274,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1343588,
+            "touches_border": true,
+            "dark": 3907,
+            "light": 1336802,
+            "removed": true
+          },
+          {
+            "pixels": 1463,
+            "touches_border": false,
+            "dark": 39,
+            "light": 1391,
+            "removed": true
+          },
+          {
+            "pixels": 102,
+            "touches_border": false,
+            "dark": 19,
+            "light": 70,
+            "removed": true
+          },
+          {
+            "pixels": 49,
+            "touches_border": false,
+            "dark": 4,
+            "light": 40,
+            "removed": true
+          },
+          {
+            "pixels": 47,
+            "touches_border": false,
+            "dark": 1,
+            "light": 43,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "993ff0ef52b1ae44a038622415e1f462015b23ecd5117f2505559d3c52c167a3",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_walk_S.png",
+      "atlas_sha256": "c324733a5fd942e736a11fdc78aabc3d7f3165e8f30af152a6063e6efa43f828",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            137,
+            26,
+            265,
+            255
+          ],
+          "source_root": [
+            178,
+            254.95454545454547
+          ],
+          "kept_source_pixels": 14639,
+          "crest_top": 46,
+          "scale": 1.0476190476190477,
+          "placement": [
+            213,
+            80,
+            134,
+            240
+          ],
+          "sha256": "303627a7a12dd907e993242b22318931ba9772d1cdeeebd721a701f165af4fe7",
+          "rgba_sha256": "60576a5212a3a65485f7d375117069b10f9b39bacbd12d579c9802acfb1a870d"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            480,
+            24,
+            609,
+            253
+          ],
+          "source_root": [
+            540,
+            252.95454545454547
+          ],
+          "kept_source_pixels": 14673,
+          "crest_top": 44,
+          "scale": 1.0476190476190477,
+          "placement": [
+            193,
+            80,
+            135,
+            240
+          ],
+          "sha256": "786c49127384ff1aa4585f77db8a731be61300a59576080d8abbb18cc43252ad",
+          "rgba_sha256": "dfdd37868f653f3f594b14ac42a6b80b86f42ba32dd960280dadf59e97390a68"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            843,
+            26,
+            976,
+            253
+          ],
+          "source_root": [
+            902,
+            252.95454545454547
+          ],
+          "kept_source_pixels": 15215,
+          "crest_top": 47,
+          "scale": 1.0476190476190477,
+          "placement": [
+            194,
+            82,
+            139,
+            238
+          ],
+          "sha256": "9c62bfb12112a0e7351f3cea55d5d5cb0bb5811f38efd9609c4b73a9ee693851",
+          "rgba_sha256": "07b1c53f5c77a14f34183e8a4a1518d72b7f72577fd4c69fa6fd46a81a4f573f"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1204,
+            25,
+            1333,
+            255
+          ],
+          "source_root": [
+            1264,
+            254.95454545454547
+          ],
+          "kept_source_pixels": 14804,
+          "crest_top": 45,
+          "scale": 1.0476190476190477,
+          "placement": [
+            193,
+            79,
+            135,
+            241
+          ],
+          "sha256": "c77544a31b6428bc5bbc08da38b283d3a64bd9a03a0012a5c2c8ad12f4f6fc6f",
+          "rgba_sha256": "a73cdf2a32590cb14b6ea19de5693c0c5f187fee0074d4ee4ae2fa9d556d5158"
+        },
+        {
+          "index": 4,
+          "source_index": 4,
+          "source_bbox": [
+            135,
+            290,
+            265,
+            519
+          ],
+          "source_root": [
+            184,
+            518.9545454545455
+          ],
+          "kept_source_pixels": 14631,
+          "crest_top": 309,
+          "scale": 1.0476190476190477,
+          "placement": [
+            205,
+            80,
+            136,
+            240
+          ],
+          "sha256": "d2c9a723f7385afeaf6ce5b08a03076ac368cbca7df5b71a145063c98c2e3074",
+          "rgba_sha256": "f613764d56e53947d63e65e22a2a3c003e1d4914f10831f759e64ca5ee223298"
+        },
+        {
+          "index": 5,
+          "source_index": 5,
+          "source_bbox": [
+            485,
+            287,
+            618,
+            519
+          ],
+          "source_root": [
+            546,
+            518.9545454545455
+          ],
+          "kept_source_pixels": 14538,
+          "crest_top": 309,
+          "scale": 1.0476190476190477,
+          "placement": [
+            192,
+            77,
+            139,
+            243
+          ],
+          "sha256": "13c8ef56553642a40c65d32464f59ebe3fa0d8672b95e171e9f9a4ab19edb4f7",
+          "rgba_sha256": "7c74ebcaf0ade390e6f927f6fc5596e19e4dbe9f59dc1ff5c4deca16de6f27c7"
+        },
+        {
+          "index": 6,
+          "source_index": 6,
+          "source_bbox": [
+            839,
+            286,
+            973,
+            519
+          ],
+          "source_root": [
+            908,
+            518.9545454545455
+          ],
+          "kept_source_pixels": 14702,
+          "crest_top": 308,
+          "scale": 1.0476190476190477,
+          "placement": [
+            184,
+            76,
+            140,
+            244
+          ],
+          "sha256": "dabae094cf8310a15b8214522542cd210edb858a139778a0c1e3e0efa3fd3d1b",
+          "rgba_sha256": "56fcd7c48c206e043940b95a2a64990ff17cf7f03b8418178c9f091a2575ad52"
+        },
+        {
+          "index": 7,
+          "source_index": 7,
+          "source_bbox": [
+            1206,
+            286,
+            1337,
+            519
+          ],
+          "source_root": [
+            1270,
+            518.9545454545455
+          ],
+          "kept_source_pixels": 14975,
+          "crest_top": 309,
+          "scale": 1.0476190476190477,
+          "placement": [
+            189,
+            76,
+            137,
+            244
+          ],
+          "sha256": "b1132c336d96de5d2a64504859a797ef39d90c3c161f0d1cdce60bd1c05d7202",
+          "rgba_sha256": "41b1f69302979f22a3755d49bce75c3061c3e466b835eb6099c12dbe80f69327"
+        }
+      ]
+    },
+    {
+      "key": "walk_W",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_walk_W_harmonized.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping_note": "Source sheet already ordered from approved historical mapping[0,0,2,3,1,5,6,7]; playback identity, contacts3/7.",
+      "duration_seconds": 0.56,
+      "release_seconds": null,
+      "release_frame": null,
+      "release_grip_atlas": null,
+      "cast_origin_local": null,
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1170430,
+        "exterior_pixels": 1163550,
+        "enclosed_checker_or_key_pixels": 6880,
+        "retained_pixels": 402434,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1163550,
+            "touches_border": true,
+            "dark": 3768,
+            "light": 1157736,
+            "removed": true
+          },
+          {
+            "pixels": 3464,
+            "touches_border": false,
+            "dark": 62,
+            "light": 3369,
+            "removed": true
+          },
+          {
+            "pixels": 3416,
+            "touches_border": false,
+            "dark": 72,
+            "light": 3312,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "87159c54a5ba5c922d70bd4ec7b4d98c2b97e01493a8b0d3c83f7bb48ea5d4a0",
+        "dimensions": [
+          1536,
+          1024
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_walk_W.png",
+      "atlas_sha256": "fa195a96c0a25883a4db6310604db9a057f4198fa8b2e584e5cd7facd78c8382",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            57,
+            22,
+            290,
+            458
+          ],
+          "source_root": [
+            187,
+            457
+          ],
+          "kept_source_pixels": 48755,
+          "crest_top": 62,
+          "scale": 0.5555555555555556,
+          "placement": [
+            184,
+            78,
+            129,
+            242
+          ],
+          "sha256": "7615fdcadebc2a3e7ebb55166c6f3490d0496290a772ab81402c9c5c367aa8a0",
+          "rgba_sha256": "42e1a595ddbbfcfec0d24892147dbd9ca1f2f2cd6c0e928b805e506bb4c4d1fd"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            441,
+            22,
+            676,
+            458
+          ],
+          "source_root": [
+            571,
+            457
+          ],
+          "kept_source_pixels": 48823,
+          "crest_top": 62,
+          "scale": 0.5555555555555556,
+          "placement": [
+            184,
+            78,
+            131,
+            242
+          ],
+          "sha256": "fa243671cd027a6bdf7397f9a99e963c9e4bdf4f0ca44ede6f5fcc90dc988848",
+          "rgba_sha256": "8f12f70e27f4a23919891aeb240ebac5752e76c2c3f5e8fefda776964110256b"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            827,
+            22,
+            1062,
+            462
+          ],
+          "source_root": [
+            955,
+            461
+          ],
+          "kept_source_pixels": 51579,
+          "crest_top": 62,
+          "scale": 0.5555555555555556,
+          "placement": [
+            185,
+            76,
+            131,
+            244
+          ],
+          "sha256": "8699ce1e6c49e8dabc338a2a4e49ab255ff0925556f4800b24381989c3d583a7",
+          "rgba_sha256": "787e7099b00225c4f7ce73dac4bded6607d30f094229fef678927d6a5d8ec4c4"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1210,
+            22,
+            1446,
+            458
+          ],
+          "source_root": [
+            1339,
+            457
+          ],
+          "kept_source_pixels": 51558,
+          "crest_top": 62,
+          "scale": 0.5555555555555556,
+          "placement": [
+            184,
+            78,
+            131,
+            242
+          ],
+          "sha256": "df19ab2ade9c5f5756804548e63d970719d99baffc55cad7db44190a296a6b7e",
+          "rgba_sha256": "5896217cbe18be4b7397b152a24d7d6570ad3e02c006342c4e01827a30415b02"
+        },
+        {
+          "index": 4,
+          "source_index": 4,
+          "source_bbox": [
+            57,
+            511,
+            291,
+            943
+          ],
+          "source_root": [
+            183,
+            943.8
+          ],
+          "kept_source_pixels": 48930,
+          "crest_top": 550,
+          "scale": 0.5555555555555556,
+          "placement": [
+            186,
+            80,
+            130,
+            240
+          ],
+          "sha256": "83f6f04ddf74afb4bfa3ecbc6a9ab69d1157ae1c4da801690ab708aae92e026b",
+          "rgba_sha256": "c0c658c75f54ef761d7a871aa8ecc26d89a48e068f2bb6fc3dac0898754f69d2"
+        },
+        {
+          "index": 5,
+          "source_index": 5,
+          "source_bbox": [
+            441,
+            512,
+            676,
+            943
+          ],
+          "source_root": [
+            567,
+            942
+          ],
+          "kept_source_pixels": 49757,
+          "crest_top": 550,
+          "scale": 0.5555555555555556,
+          "placement": [
+            186,
+            81,
+            131,
+            239
+          ],
+          "sha256": "272a9d6b3b9bc46671782035cd97d1c58270c0c98b0bd7e0f6f22195df697fb6",
+          "rgba_sha256": "1e13e749a0f48330b19f946d2cd5af21ba664e38497ae6d056ca521a31e2beb0"
+        },
+        {
+          "index": 6,
+          "source_index": 6,
+          "source_bbox": [
+            827,
+            511,
+            1062,
+            945
+          ],
+          "source_root": [
+            951,
+            944
+          ],
+          "kept_source_pixels": 51370,
+          "crest_top": 550,
+          "scale": 0.5555555555555556,
+          "placement": [
+            187,
+            79,
+            131,
+            241
+          ],
+          "sha256": "687b2bdb0014c7a76a1229e0327ef68271fbb826fd66279a24c02dec576551ab",
+          "rgba_sha256": "8c7073e89951615ffa874724f934b429b3c630017ebfdccd70f0f222cc14abea"
+        },
+        {
+          "index": 7,
+          "source_index": 7,
+          "source_bbox": [
+            1209,
+            511,
+            1446,
+            944
+          ],
+          "source_root": [
+            1335,
+            944.8
+          ],
+          "kept_source_pixels": 51662,
+          "crest_top": 550,
+          "scale": 0.5555555555555556,
+          "placement": [
+            186,
+            79,
+            132,
+            241
+          ],
+          "sha256": "c61fb2418782ad599d88ffe6530b2f382516c472705471a0fb72dfaaec4bc729",
+          "rgba_sha256": "f771fb07b6c325780a142477f0d2efe80c5fe9d92c7b90626071a68ae87205eb"
+        }
+      ]
+    },
+    {
+      "key": "bow_N",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_base_N_harmonized_palette.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11,12,13,14,15] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.74,
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        338,
+        162
+      ],
+      "cast_origin_local": [
+        28.7,
+        -55.3
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1245191,
+        "exterior_pixels": 1225686,
+        "enclosed_checker_or_key_pixels": 19505,
+        "retained_pixels": 327325,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1225686,
+            "touches_border": true,
+            "dark": 9371,
+            "light": 1210564,
+            "removed": true
+          },
+          {
+            "pixels": 2254,
+            "touches_border": false,
+            "dark": 90,
+            "light": 2111,
+            "removed": true
+          },
+          {
+            "pixels": 2098,
+            "touches_border": false,
+            "dark": 91,
+            "light": 1957,
+            "removed": true
+          },
+          {
+            "pixels": 1597,
+            "touches_border": false,
+            "dark": 116,
+            "light": 1428,
+            "removed": true
+          },
+          {
+            "pixels": 1593,
+            "touches_border": false,
+            "dark": 97,
+            "light": 1438,
+            "removed": true
+          },
+          {
+            "pixels": 1474,
+            "touches_border": false,
+            "dark": 72,
+            "light": 1353,
+            "removed": true
+          },
+          {
+            "pixels": 1469,
+            "touches_border": false,
+            "dark": 77,
+            "light": 1339,
+            "removed": true
+          },
+          {
+            "pixels": 1463,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1344,
+            "removed": true
+          },
+          {
+            "pixels": 1400,
+            "touches_border": false,
+            "dark": 98,
+            "light": 1251,
+            "removed": true
+          },
+          {
+            "pixels": 1304,
+            "touches_border": false,
+            "dark": 103,
+            "light": 1140,
+            "removed": true
+          },
+          {
+            "pixels": 1286,
+            "touches_border": false,
+            "dark": 92,
+            "light": 1144,
+            "removed": true
+          },
+          {
+            "pixels": 1262,
+            "touches_border": false,
+            "dark": 106,
+            "light": 1091,
+            "removed": true
+          },
+          {
+            "pixels": 1144,
+            "touches_border": false,
+            "dark": 92,
+            "light": 1018,
+            "removed": true
+          },
+          {
+            "pixels": 310,
+            "touches_border": false,
+            "dark": 41,
+            "light": 245,
+            "removed": true
+          },
+          {
+            "pixels": 282,
+            "touches_border": false,
+            "dark": 26,
+            "light": 227,
+            "removed": true
+          },
+          {
+            "pixels": 250,
+            "touches_border": false,
+            "dark": 33,
+            "light": 199,
+            "removed": true
+          },
+          {
+            "pixels": 86,
+            "touches_border": false,
+            "dark": 23,
+            "light": 55,
+            "removed": true
+          },
+          {
+            "pixels": 64,
+            "touches_border": false,
+            "dark": 16,
+            "light": 39,
+            "removed": true
+          },
+          {
+            "pixels": 40,
+            "touches_border": false,
+            "dark": 15,
+            "light": 11,
+            "removed": true
+          },
+          {
+            "pixels": 36,
+            "touches_border": false,
+            "dark": 11,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 28,
+            "touches_border": false,
+            "dark": 8,
+            "light": 8,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "50916a56be9e7277ef963469082c8dc41777f6a20b5526bb8875a89ee8872a6b",
+        "dimensions": [
+          1254,
+          1254
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_N.png",
+      "atlas_sha256": "957cbdd03cc12d1ca224ed9c04691ec0985f77a6cb6fa3ca5fcc0f15cca3229a",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            81,
+            637,
+            253,
+            919
+          ],
+          "source_root": [
+            151,
+            918
+          ],
+          "kept_source_pixels": 21563,
+          "crest_top": 676,
+          "scale": 0.8148148148148148,
+          "placement": [
+            199,
+            91,
+            140,
+            230
+          ],
+          "sha256": "a6eabd1485508dfebf75019ebf4972fd13b8a0844a14126e329bd4a7f8c15d02",
+          "rgba_sha256": "a74672267c6191782609eeccd05f69304bae04fb0ca86c678c1c88f176a3eaa5"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            392,
+            633,
+            565,
+            920
+          ],
+          "source_root": [
+            463,
+            919
+          ],
+          "kept_source_pixels": 22406,
+          "crest_top": 649,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            87,
+            141,
+            234
+          ],
+          "sha256": "b818f00e891a69499799a19473df726534c1584724708fa558f6254d0789b863",
+          "rgba_sha256": "8653f5f3878e592bb55192116db5594562b96456859fe490a399f02546af07d2"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            705,
+            635,
+            895,
+            920
+          ],
+          "source_root": [
+            776,
+            919
+          ],
+          "kept_source_pixels": 22891,
+          "crest_top": 676,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            89,
+            155,
+            232
+          ],
+          "sha256": "d2295698b33424c9c1307e6545a71cee87e3d08f32e3d37a8e37a5e379f4c1dc",
+          "rgba_sha256": "fa17694c7df90635e129296faa5224e654399cae7922cb3ea5776ce6c92e87e0"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            1018,
+            623,
+            1219,
+            920
+          ],
+          "source_root": [
+            1089,
+            919
+          ],
+          "kept_source_pixels": 23140,
+          "crest_top": 649,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            79,
+            164,
+            242
+          ],
+          "sha256": "27027ade367ca6e547089bc9313205dbcca2d178f8b4c8f2826b5501c19a6415",
+          "rgba_sha256": "537e01a74f04cbc9d1c73781fc48f5adb39b8810be5c30eef62d4d26e96793f4"
+        },
+        {
+          "index": 4,
+          "source_index": 12,
+          "source_bbox": [
+            80,
+            937,
+            267,
+            1235
+          ],
+          "source_root": [
+            151,
+            1234
+          ],
+          "kept_source_pixels": 23215,
+          "crest_top": 962,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            78,
+            152,
+            243
+          ],
+          "sha256": "31d28da25845fdf119323bb6d21e13978ddf7f76a17aba97694d3e2a7a0d0559",
+          "rgba_sha256": "bacca027a7821b16d9a78e6c7b4f936438a80f343191c1fb5e75fbb4f959d174"
+        },
+        {
+          "index": 5,
+          "source_index": 13,
+          "source_bbox": [
+            392,
+            950,
+            568,
+            1235
+          ],
+          "source_root": [
+            463,
+            1234
+          ],
+          "kept_source_pixels": 22402,
+          "crest_top": 962,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            89,
+            143,
+            232
+          ],
+          "sha256": "7ddfca73986f6890ab6656a0b07828c1c88dcc5c81fdd67bf562f16ef97ef06c",
+          "rgba_sha256": "c768925d80b4e8fca224d0187ac1c79a5c76a11a93bf41a24a5bdf605e5682d0"
+        },
+        {
+          "index": 6,
+          "source_index": 14,
+          "source_bbox": [
+            705,
+            954,
+            863,
+            1235
+          ],
+          "source_root": [
+            776,
+            1234
+          ],
+          "kept_source_pixels": 21173,
+          "crest_top": 990,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            92,
+            129,
+            229
+          ],
+          "sha256": "44ca038324753dcdc87a7235b5f0a4117fc0b0c0b945f833831d7ee9367c8ab4",
+          "rgba_sha256": "fbccaff2dce2806979837d8982dc8ccd2d68349609ab945b30ccdda459fd8e8a"
+        },
+        {
+          "index": 7,
+          "source_index": 15,
+          "source_bbox": [
+            1018,
+            954,
+            1191,
+            1235
+          ],
+          "source_root": [
+            1089,
+            1234
+          ],
+          "kept_source_pixels": 21372,
+          "crest_top": 989,
+          "scale": 0.8148148148148148,
+          "placement": [
+            198,
+            92,
+            141,
+            229
+          ],
+          "sha256": "a46f5c5bf5c9a83bc8b6c961e1830fae0884e0bde2a40aab50d39d2d18210ec8",
+          "rgba_sha256": "53ba8df1c7fb74bd45210c3351cdb90b46d4f3771708fa662e428a8e373dc27e"
+        }
+      ]
+    },
+    {
+      "key": "bow_E",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_bow_E_harmonized_crest.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[0,1,2,3,4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.74,
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        344,
+        170
+      ],
+      "cast_origin_local": [
+        30.8,
+        -52.5
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1244253,
+        "exterior_pixels": 1202195,
+        "enclosed_checker_or_key_pixels": 42058,
+        "retained_pixels": 329099,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1202195,
+            "touches_border": true,
+            "dark": 4223,
+            "light": 1195679,
+            "removed": true
+          },
+          {
+            "pixels": 7748,
+            "touches_border": false,
+            "dark": 72,
+            "light": 7602,
+            "removed": true
+          },
+          {
+            "pixels": 5596,
+            "touches_border": false,
+            "dark": 83,
+            "light": 5463,
+            "removed": true
+          },
+          {
+            "pixels": 5059,
+            "touches_border": false,
+            "dark": 87,
+            "light": 4930,
+            "removed": true
+          },
+          {
+            "pixels": 4839,
+            "touches_border": false,
+            "dark": 92,
+            "light": 4695,
+            "removed": true
+          },
+          {
+            "pixels": 3949,
+            "touches_border": false,
+            "dark": 75,
+            "light": 3838,
+            "removed": true
+          },
+          {
+            "pixels": 2605,
+            "touches_border": false,
+            "dark": 70,
+            "light": 2500,
+            "removed": true
+          },
+          {
+            "pixels": 2402,
+            "touches_border": false,
+            "dark": 62,
+            "light": 2306,
+            "removed": true
+          },
+          {
+            "pixels": 2160,
+            "touches_border": false,
+            "dark": 64,
+            "light": 2058,
+            "removed": true
+          },
+          {
+            "pixels": 1592,
+            "touches_border": false,
+            "dark": 71,
+            "light": 1493,
+            "removed": true
+          },
+          {
+            "pixels": 1394,
+            "touches_border": false,
+            "dark": 52,
+            "light": 1307,
+            "removed": true
+          },
+          {
+            "pixels": 1252,
+            "touches_border": false,
+            "dark": 39,
+            "light": 1184,
+            "removed": true
+          },
+          {
+            "pixels": 1200,
+            "touches_border": false,
+            "dark": 35,
+            "light": 1143,
+            "removed": true
+          },
+          {
+            "pixels": 1163,
+            "touches_border": false,
+            "dark": 36,
+            "light": 1104,
+            "removed": true
+          },
+          {
+            "pixels": 184,
+            "touches_border": false,
+            "dark": 18,
+            "light": 149,
+            "removed": true
+          },
+          {
+            "pixels": 184,
+            "touches_border": false,
+            "dark": 13,
+            "light": 163,
+            "removed": true
+          },
+          {
+            "pixels": 83,
+            "touches_border": false,
+            "dark": 15,
+            "light": 63,
+            "removed": true
+          },
+          {
+            "pixels": 80,
+            "touches_border": false,
+            "dark": 4,
+            "light": 66,
+            "removed": true
+          },
+          {
+            "pixels": 80,
+            "touches_border": false,
+            "dark": 13,
+            "light": 60,
+            "removed": true
+          },
+          {
+            "pixels": 79,
+            "touches_border": false,
+            "dark": 9,
+            "light": 65,
+            "removed": true
+          },
+          {
+            "pixels": 77,
+            "touches_border": false,
+            "dark": 8,
+            "light": 62,
+            "removed": true
+          },
+          {
+            "pixels": 72,
+            "touches_border": false,
+            "dark": 6,
+            "light": 60,
+            "removed": true
+          },
+          {
+            "pixels": 70,
+            "touches_border": false,
+            "dark": 10,
+            "light": 55,
+            "removed": true
+          },
+          {
+            "pixels": 62,
+            "touches_border": false,
+            "dark": 10,
+            "light": 47,
+            "removed": true
+          },
+          {
+            "pixels": 19,
+            "touches_border": false,
+            "dark": 1,
+            "light": 13,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "c2e23221b71eeb65de34d6b76d23465a71cf50078c161134688024c527e1c64e",
+        "dimensions": [
+          1672,
+          941
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_E.png",
+      "atlas_sha256": "0c79db3aea5021282e06167f89012d4ce5ab3ea027b400c01c437a135c7d89cb",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            79,
+            60,
+            361,
+            445
+          ],
+          "source_root": [
+            177,
+            444
+          ],
+          "kept_source_pixels": 39660,
+          "crest_top": 71,
+          "scale": 0.5882352941176471,
+          "placement": [
+            198,
+            94,
+            166,
+            226
+          ],
+          "sha256": "7768544ef3a645eda64529474b48d3fd69308a3398383e8adc016d2dd8fdee00",
+          "rgba_sha256": "cd54c0b5032332976ebd6e65f42137ccce4389b7c87bbcf030c9f7824cbb27ab"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            491,
+            49,
+            748,
+            445
+          ],
+          "source_root": [
+            589,
+            444
+          ],
+          "kept_source_pixels": 40768,
+          "crest_top": 73,
+          "scale": 0.5882352941176471,
+          "placement": [
+            198,
+            88,
+            151,
+            233
+          ],
+          "sha256": "445a165607987c07fac814edd983fd72f815776168af1549d8825f3a1e2124e2",
+          "rgba_sha256": "34152a517d3bf5f9da88f5d1dae166d63dfed56a9b4d639d158d86c623104d53"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            912,
+            61,
+            1197,
+            446
+          ],
+          "source_root": [
+            1011,
+            444
+          ],
+          "kept_source_pixels": 41038,
+          "crest_top": 73,
+          "scale": 0.5882352941176471,
+          "placement": [
+            198,
+            95,
+            168,
+            226
+          ],
+          "sha256": "709ded8555674fa3dd8436e5d46e50e3587d8d47caef8f6cb81a25d4621f126a",
+          "rgba_sha256": "b3c777838f525b9ad5515827a6f3b29cb84dc1a0d484738592ad979bd837918e"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1341,
+            40,
+            1622,
+            445
+          ],
+          "source_root": [
+            1441,
+            444
+          ],
+          "kept_source_pixels": 41320,
+          "crest_top": 73,
+          "scale": 0.5882352941176471,
+          "placement": [
+            197,
+            82,
+            165,
+            238
+          ],
+          "sha256": "2bc4ee58f8d83d7cd6bad347a617eb1de97649fb1d99488295dfcf4f2b6a93f3",
+          "rgba_sha256": "ebc94abe099faf74fc1b117c494543a6401a605697f514dfb5876dc009db379a"
+        },
+        {
+          "index": 4,
+          "source_index": 4,
+          "source_bbox": [
+            72,
+            513,
+            340,
+            915
+          ],
+          "source_root": [
+            175,
+            913
+          ],
+          "kept_source_pixels": 42834,
+          "crest_top": 537,
+          "scale": 0.5882352941176471,
+          "placement": [
+            195,
+            85,
+            158,
+            236
+          ],
+          "sha256": "5d4a5dde6ec7931ccb9c0f42f4f92beca977b7febce1e36eeb61f6dccd2b3479",
+          "rgba_sha256": "4f0206ba3b54bf3fbd8f481641c9e43f78fbd5cdfdc0e77129ce23495abb0b7b"
+        },
+        {
+          "index": 5,
+          "source_index": 5,
+          "source_bbox": [
+            473,
+            519,
+            755,
+            915
+          ],
+          "source_root": [
+            589,
+            913
+          ],
+          "kept_source_pixels": 42606,
+          "crest_top": 539,
+          "scale": 0.5882352941176471,
+          "placement": [
+            188,
+            88,
+            166,
+            233
+          ],
+          "sha256": "dc548f3638d5fe8e358bf5f052062d4e8cf7327bcbdde31276bb02b5f37224d4",
+          "rgba_sha256": "feab1b16a091e65f890816d46e4dfa0878b773a575eb07bf780eb938a406987e"
+        },
+        {
+          "index": 6,
+          "source_index": 6,
+          "source_bbox": [
+            912,
+            528,
+            1196,
+            915
+          ],
+          "source_root": [
+            1011,
+            913
+          ],
+          "kept_source_pixels": 40496,
+          "crest_top": 536,
+          "scale": 0.5882352941176471,
+          "placement": [
+            198,
+            94,
+            167,
+            228
+          ],
+          "sha256": "2f3c0568c376cd5b77837c71e60185cc2ce562db6fec705caed05de80b369767",
+          "rgba_sha256": "5388ac64f4e197ddcec016c4e872231446d4d081b1ad5126e1a40fd8de15042d"
+        },
+        {
+          "index": 7,
+          "source_index": 7,
+          "source_bbox": [
+            1331,
+            528,
+            1610,
+            915
+          ],
+          "source_root": [
+            1428,
+            913
+          ],
+          "kept_source_pixels": 40377,
+          "crest_top": 536,
+          "scale": 0.5882352941176471,
+          "placement": [
+            199,
+            94,
+            164,
+            228
+          ],
+          "sha256": "2b168dba5ea33a32ac69fe8aa232484f8985e3d88aec92507937a5b1fbf6df0a",
+          "rgba_sha256": "4b19d2d5eae8884ce5d0bbe55c3b751bccddc10815f63583219ad9811fc86c05"
+        }
+      ]
+    },
+    {
+      "key": "bow_S",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_base_S_reference_only_v6.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11,12,13,14,15] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.74,
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        174,
+        175
+      ],
+      "cast_origin_local": [
+        -28.7,
+        -50.75
+      ],
+      "source_report": {
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 26294,
+          "minimum_estimated_coverage": 0.2196078431372549,
+          "maximum_recomposition_error": 0.4745098039215634,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        },
+        "mode": "magenta",
+        "removed_pixels": 1232649,
+        "exterior_pixels": 1217419,
+        "enclosed_checker_or_key_pixels": 15230,
+        "retained_pixels": 339291,
+        "kept_pixel_policy": "Alpha is unchanged for every retained pixel. RGB changes only in the declared magenta-contaminated edge mask; all other retained RGBA is byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1217419,
+            "touches_border": true,
+            "dark": 0,
+            "light": 1217419,
+            "removed": true
+          },
+          {
+            "pixels": 2392,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2392,
+            "removed": true
+          },
+          {
+            "pixels": 2236,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2236,
+            "removed": true
+          },
+          {
+            "pixels": 2081,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2081,
+            "removed": true
+          },
+          {
+            "pixels": 2042,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2042,
+            "removed": true
+          },
+          {
+            "pixels": 1269,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1269,
+            "removed": true
+          },
+          {
+            "pixels": 1064,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1064,
+            "removed": true
+          },
+          {
+            "pixels": 1045,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1045,
+            "removed": true
+          },
+          {
+            "pixels": 926,
+            "touches_border": false,
+            "dark": 0,
+            "light": 926,
+            "removed": true
+          },
+          {
+            "pixels": 884,
+            "touches_border": false,
+            "dark": 0,
+            "light": 884,
+            "removed": true
+          },
+          {
+            "pixels": 636,
+            "touches_border": false,
+            "dark": 0,
+            "light": 636,
+            "removed": true
+          },
+          {
+            "pixels": 301,
+            "touches_border": false,
+            "dark": 0,
+            "light": 301,
+            "removed": true
+          },
+          {
+            "pixels": 90,
+            "touches_border": false,
+            "dark": 0,
+            "light": 90,
+            "removed": true
+          },
+          {
+            "pixels": 76,
+            "touches_border": false,
+            "dark": 0,
+            "light": 76,
+            "removed": true
+          },
+          {
+            "pixels": 62,
+            "touches_border": false,
+            "dark": 0,
+            "light": 62,
+            "removed": true
+          },
+          {
+            "pixels": 45,
+            "touches_border": false,
+            "dark": 0,
+            "light": 45,
+            "removed": true
+          },
+          {
+            "pixels": 20,
+            "touches_border": false,
+            "dark": 0,
+            "light": 20,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "0e555d6370cd17c1316b6daad98e75b255abe9739b1f3126c65be1d85a75919b",
+        "dimensions": [
+          1230,
+          1278
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_S.png",
+      "atlas_sha256": "2e731497cfd9b99614ece0a32ea32d0f5fff86d3ef3b07a336a0978a1f58798c",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            79,
+            629,
+            242,
+            922
+          ],
+          "source_root": [
+            159,
+            922
+          ],
+          "kept_source_pixels": 19938,
+          "crest_top": 671,
+          "scale": 0.88,
+          "placement": [
+            186,
+            62,
+            143,
+            258
+          ],
+          "sha256": "01a8202eac5ebc9c6458920c87f78abb1adea622692aa4e50abce84c92d71e6a",
+          "rgba_sha256": "755b4fdcb6171378e939cb9b8cb12e560903a8c153fa76f2c8550783269b832d"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            382,
+            629,
+            526,
+            922
+          ],
+          "source_root": [
+            462,
+            922
+          ],
+          "kept_source_pixels": 20736,
+          "crest_top": 672,
+          "scale": 0.88,
+          "placement": [
+            186,
+            62,
+            127,
+            258
+          ],
+          "sha256": "ef996c4654c850406d80d1826cda04f8894a0a5bc2096d3654050a92a0773c9a",
+          "rgba_sha256": "128954121908bb05c25b3dec07e2848e018d2a2da82e9862f985bb82d5f7c0ea"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            641,
+            629,
+            829,
+            922
+          ],
+          "source_root": [
+            763.25,
+            922
+          ],
+          "kept_source_pixels": 21885,
+          "crest_top": 672,
+          "scale": 0.88,
+          "placement": [
+            148,
+            62,
+            165,
+            258
+          ],
+          "sha256": "5f21eef369757a3c432d176b5c02b2ec31eae3380e11a26a36230162b5fc892b",
+          "rgba_sha256": "616cead2a3cb4f669ef56e155ba694f5f5e35e10d6e6e1decf6acca710c0dfbc"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            942,
+            630,
+            1133,
+            922
+          ],
+          "source_root": [
+            1065.5,
+            922
+          ],
+          "kept_source_pixels": 21956,
+          "crest_top": 672,
+          "scale": 0.88,
+          "placement": [
+            147,
+            63,
+            168,
+            257
+          ],
+          "sha256": "c515445d9b575593991d616f053c59f8b556637b00a6c198b50c1999c2567837",
+          "rgba_sha256": "1ed49e5f78f15f2c9754408189fb4244fd58049c0e07c0eba5c912e9fb09ceb9"
+        },
+        {
+          "index": 4,
+          "source_index": 12,
+          "source_bbox": [
+            64,
+            937,
+            235,
+            1229
+          ],
+          "source_root": [
+            168.25,
+            1229
+          ],
+          "kept_source_pixels": 21430,
+          "crest_top": 978,
+          "scale": 0.88,
+          "placement": [
+            164,
+            63,
+            150,
+            257
+          ],
+          "sha256": "593af0d3425340330857b9db7c240673db34528ad467cb767aede4575f678066",
+          "rgba_sha256": "0d410678796da797a89227d746552db8aa7db4f6c846c4f53abdf10fae4fe2ae"
+        },
+        {
+          "index": 5,
+          "source_index": 13,
+          "source_bbox": [
+            364,
+            937,
+            534,
+            1229
+          ],
+          "source_root": [
+            468.75,
+            1229.1363636363637
+          ],
+          "kept_source_pixels": 21115,
+          "crest_top": 978,
+          "scale": 0.88,
+          "placement": [
+            164,
+            63,
+            150,
+            257
+          ],
+          "sha256": "871914881e9b83fa17e654aa985259cd925620d9e57a00d6b054140660b9d256",
+          "rgba_sha256": "e4b96d92c08428d9712e80c3a803ec44e9ae90c3e79da4d13303b46cb17e35b8"
+        },
+        {
+          "index": 6,
+          "source_index": 14,
+          "source_bbox": [
+            691,
+            937,
+            833,
+            1229
+          ],
+          "source_root": [
+            764.25,
+            1229
+          ],
+          "kept_source_pixels": 19803,
+          "crest_top": 978,
+          "scale": 0.88,
+          "placement": [
+            192,
+            63,
+            125,
+            257
+          ],
+          "sha256": "d5337cc76dcfd6f404a34f498012b76ccb582bbc6365055e83df52cd7a724cfc",
+          "rgba_sha256": "ba78f8bf2c6d7f972394e44718aefd9699a8847ea1bc25b1546f8f66def65242"
+        },
+        {
+          "index": 7,
+          "source_index": 15,
+          "source_bbox": [
+            982,
+            936,
+            1144,
+            1229
+          ],
+          "source_root": [
+            1064.25,
+            1229
+          ],
+          "kept_source_pixels": 19916,
+          "crest_top": 978,
+          "scale": 0.88,
+          "placement": [
+            184,
+            62,
+            143,
+            258
+          ],
+          "sha256": "d1fb76b656a84993ad93dd704a2d9e826bc18e2cf107fa58cd4e6d936306c5f2",
+          "rgba_sha256": "570eb4374f5503ef4525e6bf53891e28877a9ca9b4118f6569114a04186b7b92"
+        }
+      ]
+    },
+    {
+      "key": "bow_W",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_base_W_harmonized.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11,12,13,14,15] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.74,
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        163,
+        144
+      ],
+      "cast_origin_local": [
+        -32.55,
+        -61.6
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1289404,
+        "exterior_pixels": 1274860,
+        "enclosed_checker_or_key_pixels": 14544,
+        "retained_pixels": 283124,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1274860,
+            "touches_border": true,
+            "dark": 4683,
+            "light": 1267550,
+            "removed": true
+          },
+          {
+            "pixels": 1748,
+            "touches_border": false,
+            "dark": 37,
+            "light": 1682,
+            "removed": true
+          },
+          {
+            "pixels": 1466,
+            "touches_border": false,
+            "dark": 42,
+            "light": 1406,
+            "removed": true
+          },
+          {
+            "pixels": 1426,
+            "touches_border": false,
+            "dark": 50,
+            "light": 1349,
+            "removed": true
+          },
+          {
+            "pixels": 1264,
+            "touches_border": false,
+            "dark": 57,
+            "light": 1174,
+            "removed": true
+          },
+          {
+            "pixels": 1123,
+            "touches_border": false,
+            "dark": 44,
+            "light": 1050,
+            "removed": true
+          },
+          {
+            "pixels": 1014,
+            "touches_border": false,
+            "dark": 43,
+            "light": 950,
+            "removed": true
+          },
+          {
+            "pixels": 982,
+            "touches_border": false,
+            "dark": 45,
+            "light": 918,
+            "removed": true
+          },
+          {
+            "pixels": 920,
+            "touches_border": false,
+            "dark": 30,
+            "light": 873,
+            "removed": true
+          },
+          {
+            "pixels": 912,
+            "touches_border": false,
+            "dark": 29,
+            "light": 862,
+            "removed": true
+          },
+          {
+            "pixels": 798,
+            "touches_border": false,
+            "dark": 34,
+            "light": 748,
+            "removed": true
+          },
+          {
+            "pixels": 627,
+            "touches_border": false,
+            "dark": 28,
+            "light": 587,
+            "removed": true
+          },
+          {
+            "pixels": 572,
+            "touches_border": false,
+            "dark": 26,
+            "light": 527,
+            "removed": true
+          },
+          {
+            "pixels": 551,
+            "touches_border": false,
+            "dark": 29,
+            "light": 509,
+            "removed": true
+          },
+          {
+            "pixels": 463,
+            "touches_border": false,
+            "dark": 21,
+            "light": 422,
+            "removed": true
+          },
+          {
+            "pixels": 344,
+            "touches_border": false,
+            "dark": 12,
+            "light": 318,
+            "removed": true
+          },
+          {
+            "pixels": 173,
+            "touches_border": false,
+            "dark": 12,
+            "light": 151,
+            "removed": true
+          },
+          {
+            "pixels": 25,
+            "touches_border": false,
+            "dark": 5,
+            "light": 17,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 2,
+            "light": 19,
+            "removed": true
+          },
+          {
+            "pixels": 16,
+            "touches_border": false,
+            "dark": 3,
+            "light": 12,
+            "removed": true
+          },
+          {
+            "pixels": 16,
+            "touches_border": false,
+            "dark": 1,
+            "light": 13,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "6420431df50e4292c4232c5aa015b328a5aa9bb4022f0530bb0111e0db9194bb",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_W.png",
+      "atlas_sha256": "afeaccead482ca903786d535740b6689bd08ece1f50b7e0d94e15bb4df4f1951",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            79,
+            569,
+            266,
+            787
+          ],
+          "source_root": [
+            185,
+            786
+          ],
+          "kept_source_pixels": 16240,
+          "crest_top": 574,
+          "scale": 1.0328638497652582,
+          "placement": [
+            147,
+            96,
+            193,
+            225
+          ],
+          "sha256": "95f7939fe60e1adafa2916c2f9e8b7a169d09332edf9f167c4bc645db582268f",
+          "rgba_sha256": "d426af736790036800f5486ef8703d5f07e4051d781420ecac75b000f52fc9af"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            449,
+            540,
+            624,
+            788
+          ],
+          "source_root": [
+            542,
+            787
+          ],
+          "kept_source_pixels": 17871,
+          "crest_top": 573,
+          "scale": 1.0328638497652582,
+          "placement": [
+            160,
+            65,
+            181,
+            256
+          ],
+          "sha256": "46349ea095f01fad1efe5a5305c4f52648865d959a74fbc647623cd6eb3d6e7f",
+          "rgba_sha256": "d790b9f953e62a8da17a71b391dc09c2b8b915d66bd7a5cc45e43132b3300829"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            780,
+            551,
+            990,
+            790
+          ],
+          "source_root": [
+            908,
+            789
+          ],
+          "kept_source_pixels": 18343,
+          "crest_top": 572,
+          "scale": 1.0328638497652582,
+          "placement": [
+            124,
+            74,
+            217,
+            247
+          ],
+          "sha256": "8d096a2e650da380af5b74bb2da760f21d010ff93df4aca96abc496b7aa99ba7",
+          "rgba_sha256": "540df19d39014aac31671619713257739763e0b49e58306b970a1e8b0abc0eaf"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            1134,
+            541,
+            1350,
+            790
+          ],
+          "source_root": [
+            1267,
+            789
+          ],
+          "kept_source_pixels": 18473,
+          "crest_top": 572,
+          "scale": 1.0328638497652582,
+          "placement": [
+            119,
+            64,
+            223,
+            257
+          ],
+          "sha256": "1ca11a48fd096704e350be5f4d1013b573c353831cb3f60dc286039cb941dec7",
+          "rgba_sha256": "89bcf9280774007913d32bcc13a88c67d30f9ea29c7b26ad148ec213107cd7ea"
+        },
+        {
+          "index": 4,
+          "source_index": 12,
+          "source_bbox": [
+            88,
+            809,
+            266,
+            1060
+          ],
+          "source_root": [
+            183,
+            1059
+          ],
+          "kept_source_pixels": 18478,
+          "crest_top": 839,
+          "scale": 1.0328638497652582,
+          "placement": [
+            158,
+            62,
+            184,
+            259
+          ],
+          "sha256": "c62dddeb8657dd4f9b4eb955d4105205c410ef33f3c208a68f7734b03ecad258",
+          "rgba_sha256": "b725ee5954affe5d1ca86bcd485d47b4d7ac883d081815746046aabc6e87279b"
+        },
+        {
+          "index": 5,
+          "source_index": 13,
+          "source_bbox": [
+            446,
+            810,
+            628,
+            1062
+          ],
+          "source_root": [
+            543,
+            1061
+          ],
+          "kept_source_pixels": 18865,
+          "crest_top": 840,
+          "scale": 1.0328638497652582,
+          "placement": [
+            156,
+            61,
+            188,
+            260
+          ],
+          "sha256": "6ea6d4a3758fc8de6d8d759531b9f46972975adcc8d4eb21e96e4208b66929a8",
+          "rgba_sha256": "256962ed2455d1a292656119b0e63a30086648c0f1544361cad842ed1e256246"
+        },
+        {
+          "index": 6,
+          "source_index": 14,
+          "source_bbox": [
+            815,
+            837,
+            992,
+            1060
+          ],
+          "source_root": [
+            909,
+            1059
+          ],
+          "kept_source_pixels": 17089,
+          "crest_top": 839,
+          "scale": 1.0328638497652582,
+          "placement": [
+            159,
+            91,
+            183,
+            230
+          ],
+          "sha256": "bb902580d080ae6d77d5d7eb109da5dfffb6ee007b99306759aa07f140056d51",
+          "rgba_sha256": "cbda0f547ad3a326489fe96815a8d83f100826ea3a626533af7a1947c16016a3"
+        },
+        {
+          "index": 7,
+          "source_index": 15,
+          "source_bbox": [
+            1168,
+            840,
+            1353,
+            1059
+          ],
+          "source_root": [
+            1273,
+            1058
+          ],
+          "kept_source_pixels": 16263,
+          "crest_top": 841,
+          "scale": 1.0328638497652582,
+          "placement": [
+            148,
+            95,
+            191,
+            226
+          ],
+          "sha256": "0200a6003d05ea5e72211ecc3954446cf9c876f6c044826825025211b7339b13",
+          "rgba_sha256": "ae242c0dd1d88ca3a04b130a63654158f40f32f9860518a304b56eef13692463"
+        }
+      ]
+    },
+    {
+      "key": "bow_piercing_N",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_special_N_harmonized_palette.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.78,
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        328,
+        185
+      ],
+      "cast_origin_local": [
+        25.2,
+        -47.25
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1193326,
+        "exterior_pixels": 1160626,
+        "enclosed_checker_or_key_pixels": 32700,
+        "retained_pixels": 379190,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1160626,
+            "touches_border": true,
+            "dark": 7565,
+            "light": 1148933,
+            "removed": true
+          },
+          {
+            "pixels": 3369,
+            "touches_border": false,
+            "dark": 108,
+            "light": 3206,
+            "removed": true
+          },
+          {
+            "pixels": 3118,
+            "touches_border": false,
+            "dark": 100,
+            "light": 2961,
+            "removed": true
+          },
+          {
+            "pixels": 2742,
+            "touches_border": false,
+            "dark": 103,
+            "light": 2591,
+            "removed": true
+          },
+          {
+            "pixels": 1545,
+            "touches_border": false,
+            "dark": 51,
+            "light": 1466,
+            "removed": true
+          },
+          {
+            "pixels": 1541,
+            "touches_border": false,
+            "dark": 84,
+            "light": 1412,
+            "removed": true
+          },
+          {
+            "pixels": 1539,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1419,
+            "removed": true
+          },
+          {
+            "pixels": 1528,
+            "touches_border": false,
+            "dark": 80,
+            "light": 1407,
+            "removed": true
+          },
+          {
+            "pixels": 1516,
+            "touches_border": false,
+            "dark": 55,
+            "light": 1419,
+            "removed": true
+          },
+          {
+            "pixels": 1480,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1356,
+            "removed": true
+          },
+          {
+            "pixels": 1388,
+            "touches_border": false,
+            "dark": 63,
+            "light": 1299,
+            "removed": true
+          },
+          {
+            "pixels": 1377,
+            "touches_border": false,
+            "dark": 67,
+            "light": 1273,
+            "removed": true
+          },
+          {
+            "pixels": 1355,
+            "touches_border": false,
+            "dark": 62,
+            "light": 1255,
+            "removed": true
+          },
+          {
+            "pixels": 1253,
+            "touches_border": false,
+            "dark": 89,
+            "light": 1125,
+            "removed": true
+          },
+          {
+            "pixels": 1168,
+            "touches_border": false,
+            "dark": 66,
+            "light": 1070,
+            "removed": true
+          },
+          {
+            "pixels": 1139,
+            "touches_border": false,
+            "dark": 77,
+            "light": 1035,
+            "removed": true
+          },
+          {
+            "pixels": 1130,
+            "touches_border": false,
+            "dark": 75,
+            "light": 1019,
+            "removed": true
+          },
+          {
+            "pixels": 1014,
+            "touches_border": false,
+            "dark": 38,
+            "light": 893,
+            "removed": true
+          },
+          {
+            "pixels": 609,
+            "touches_border": false,
+            "dark": 67,
+            "light": 518,
+            "removed": true
+          },
+          {
+            "pixels": 520,
+            "touches_border": false,
+            "dark": 50,
+            "light": 447,
+            "removed": true
+          },
+          {
+            "pixels": 454,
+            "touches_border": false,
+            "dark": 38,
+            "light": 389,
+            "removed": true
+          },
+          {
+            "pixels": 453,
+            "touches_border": false,
+            "dark": 31,
+            "light": 402,
+            "removed": true
+          },
+          {
+            "pixels": 403,
+            "touches_border": false,
+            "dark": 47,
+            "light": 331,
+            "removed": true
+          },
+          {
+            "pixels": 399,
+            "touches_border": false,
+            "dark": 39,
+            "light": 328,
+            "removed": true
+          },
+          {
+            "pixels": 383,
+            "touches_border": false,
+            "dark": 47,
+            "light": 314,
+            "removed": true
+          },
+          {
+            "pixels": 379,
+            "touches_border": false,
+            "dark": 47,
+            "light": 304,
+            "removed": true
+          },
+          {
+            "pixels": 370,
+            "touches_border": false,
+            "dark": 53,
+            "light": 301,
+            "removed": true
+          },
+          {
+            "pixels": 323,
+            "touches_border": false,
+            "dark": 51,
+            "light": 236,
+            "removed": true
+          },
+          {
+            "pixels": 81,
+            "touches_border": false,
+            "dark": 11,
+            "light": 59,
+            "removed": true
+          },
+          {
+            "pixels": 34,
+            "touches_border": false,
+            "dark": 9,
+            "light": 18,
+            "removed": true
+          },
+          {
+            "pixels": 30,
+            "touches_border": false,
+            "dark": 6,
+            "light": 20,
+            "removed": true
+          },
+          {
+            "pixels": 23,
+            "touches_border": false,
+            "dark": 5,
+            "light": 12,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "3e0b6e99188e653e9e485feb9ed4c61710d574c222881301eed65e154d37964c",
+        "dimensions": [
+          1254,
+          1254
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_piercing_N.png",
+      "atlas_sha256": "fcb189f642f117f2c024690b634f29e6385d674e69b3138fa1fd7c37c1dd4b52",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            61,
+            66,
+            272,
+            370
+          ],
+          "source_root": [
+            161,
+            369
+          ],
+          "kept_source_pixels": 31138,
+          "crest_top": 109,
+          "scale": 0.6875,
+          "placement": [
+            187,
+            112,
+            145,
+            209
+          ],
+          "sha256": "5659812d770cba56943aa0760a7713d98088cc70811226c9bad78bdd0e769e04",
+          "rgba_sha256": "1d54cc280d67d2880fcf0caacfa1efaead7ed5fc1a720dc3425175205a1ba233"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            367,
+            59,
+            603,
+            370
+          ],
+          "source_root": [
+            469,
+            369
+          ],
+          "kept_source_pixels": 31725,
+          "crest_top": 109,
+          "scale": 0.6875,
+          "placement": [
+            186,
+            107,
+            162,
+            214
+          ],
+          "sha256": "5683b76dffb945f9e770b8feae25797a6ac88aaca2f58c37f6c6c3ae668b3d19",
+          "rgba_sha256": "c25ce190625e8f2d2ce62a3cd9cd88e8847e9d80b894be63669404620d6f86c4"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            671,
+            61,
+            893,
+            370
+          ],
+          "source_root": [
+            774,
+            369
+          ],
+          "kept_source_pixels": 32875,
+          "crest_top": 109,
+          "scale": 0.6875,
+          "placement": [
+            185,
+            108,
+            153,
+            212
+          ],
+          "sha256": "23149c9399616650755e5c1abe6fe1080a1710e0aec1feda8101f7e746802b7b",
+          "rgba_sha256": "061adcb7c20509471b6328ab2013b1420aefb284bad4ec99c92f4567f647755e"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            991,
+            61,
+            1206,
+            370
+          ],
+          "source_root": [
+            1091,
+            369
+          ],
+          "kept_source_pixels": 33003,
+          "crest_top": 109,
+          "scale": 0.6875,
+          "placement": [
+            187,
+            108,
+            148,
+            212
+          ],
+          "sha256": "68a4d2a9a2fd0d9d60ee61780a8d4b47a0e58dfdeb76980026cbdcfd0a7226bd",
+          "rgba_sha256": "b6a64baeae80549bbfd2a22694744b149f46acfe20407b286a10dbc314966bd9"
+        }
+      ]
+    },
+    {
+      "key": "bow_piercing_E",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_special_E_harmonized.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.78,
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        337,
+        213
+      ],
+      "cast_origin_local": [
+        28.35,
+        -37.45
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1254280,
+        "exterior_pixels": 1243118,
+        "enclosed_checker_or_key_pixels": 11162,
+        "retained_pixels": 318248,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1243118,
+            "touches_border": true,
+            "dark": 4601,
+            "light": 1235781,
+            "removed": true
+          },
+          {
+            "pixels": 3623,
+            "touches_border": false,
+            "dark": 66,
+            "light": 3519,
+            "removed": true
+          },
+          {
+            "pixels": 3617,
+            "touches_border": false,
+            "dark": 57,
+            "light": 3528,
+            "removed": true
+          },
+          {
+            "pixels": 2596,
+            "touches_border": false,
+            "dark": 40,
+            "light": 2522,
+            "removed": true
+          },
+          {
+            "pixels": 406,
+            "touches_border": false,
+            "dark": 41,
+            "light": 309,
+            "removed": true
+          },
+          {
+            "pixels": 231,
+            "touches_border": false,
+            "dark": 23,
+            "light": 158,
+            "removed": true
+          },
+          {
+            "pixels": 83,
+            "touches_border": false,
+            "dark": 10,
+            "light": 60,
+            "removed": true
+          },
+          {
+            "pixels": 79,
+            "touches_border": false,
+            "dark": 11,
+            "light": 56,
+            "removed": true
+          },
+          {
+            "pixels": 69,
+            "touches_border": false,
+            "dark": 0,
+            "light": 68,
+            "removed": true
+          },
+          {
+            "pixels": 61,
+            "touches_border": false,
+            "dark": 9,
+            "light": 37,
+            "removed": true
+          },
+          {
+            "pixels": 61,
+            "touches_border": false,
+            "dark": 2,
+            "light": 52,
+            "removed": true
+          },
+          {
+            "pixels": 48,
+            "touches_border": false,
+            "dark": 5,
+            "light": 37,
+            "removed": true
+          },
+          {
+            "pixels": 43,
+            "touches_border": false,
+            "dark": 4,
+            "light": 35,
+            "removed": true
+          },
+          {
+            "pixels": 42,
+            "touches_border": false,
+            "dark": 5,
+            "light": 32,
+            "removed": true
+          },
+          {
+            "pixels": 39,
+            "touches_border": false,
+            "dark": 4,
+            "light": 27,
+            "removed": true
+          },
+          {
+            "pixels": 17,
+            "touches_border": false,
+            "dark": 0,
+            "light": 15,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "61d06a81689b174442e4a62fae13ddf962f7705ff90692eed4224a769963a4f1",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_piercing_E.png",
+      "atlas_sha256": "a8e2d761a211b2f1e57153b67e0c5c16285afe9cc95dbec90e7dfed97f1a1c33",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            58,
+            87,
+            244,
+            327
+          ],
+          "source_root": [
+            158,
+            326
+          ],
+          "kept_source_pixels": 23178,
+          "crest_top": 105,
+          "scale": 0.7508532423208191,
+          "placement": [
+            181,
+            141,
+            140,
+            180
+          ],
+          "sha256": "f00a83c88234443268d60332bf13d6a16d2afbcb0bed3d55a469a5ad3979b769",
+          "rgba_sha256": "918dd0b822fe47e3529cf989ffef725023bfd0d35f347106d0a7e3a92d79dae3"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            439,
+            55,
+            668,
+            327
+          ],
+          "source_root": [
+            532,
+            326
+          ],
+          "kept_source_pixels": 25648,
+          "crest_top": 103,
+          "scale": 0.7508532423208191,
+          "placement": [
+            186,
+            117,
+            172,
+            204
+          ],
+          "sha256": "390c1e63e3347b3b8750b88ff26051714e774427c52188ecbc20e2cec76d5781",
+          "rgba_sha256": "eba1f3af77be977b51e2bf69b0cdce2b7b598787d478474fad6c820fec5b72a1"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            803,
+            52,
+            1019,
+            327
+          ],
+          "source_root": [
+            900,
+            326
+          ],
+          "kept_source_pixels": 26149,
+          "crest_top": 104,
+          "scale": 0.7508532423208191,
+          "placement": [
+            183,
+            114,
+            162,
+            206
+          ],
+          "sha256": "ef714b13798af8382789361255e941d58f9174d447134a569999cb570b4df9af",
+          "rgba_sha256": "9e37feca1ea06baa9013297fc4b65142f2d8909a93f69485ac7ec3e35a69913b"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1170,
+            60,
+            1396,
+            327
+          ],
+          "source_root": [
+            1286,
+            326
+          ],
+          "kept_source_pixels": 25309,
+          "crest_top": 105,
+          "scale": 0.7508532423208191,
+          "placement": [
+            169,
+            120,
+            170,
+            200
+          ],
+          "sha256": "cab867d0c80a11c0ce8febc06e044710a319f9c505603bb896bd05d600985b5d",
+          "rgba_sha256": "4ad9219fd77af91e14e6bcfd362caf77a7549842240c2a96595762339a74e1ae"
+        }
+      ]
+    },
+    {
+      "key": "bow_piercing_S",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_special_S_reference_only_v6.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.78,
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        158,
+        192
+      ],
+      "cast_origin_local": [
+        -34.3,
+        -44.8
+      ],
+      "source_report": {
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 34817,
+          "minimum_estimated_coverage": 0.22352941176470587,
+          "maximum_recomposition_error": 0.4705882352941444,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        },
+        "mode": "magenta",
+        "removed_pixels": 1126922,
+        "exterior_pixels": 1054032,
+        "enclosed_checker_or_key_pixels": 72890,
+        "retained_pixels": 445606,
+        "kept_pixel_policy": "Alpha is unchanged for every retained pixel. RGB changes only in the declared magenta-contaminated edge mask; all other retained RGBA is byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1054032,
+            "touches_border": true,
+            "dark": 0,
+            "light": 1054032,
+            "removed": true
+          },
+          {
+            "pixels": 5703,
+            "touches_border": false,
+            "dark": 0,
+            "light": 5703,
+            "removed": true
+          },
+          {
+            "pixels": 4721,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4721,
+            "removed": true
+          },
+          {
+            "pixels": 4390,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4390,
+            "removed": true
+          },
+          {
+            "pixels": 4019,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4019,
+            "removed": true
+          },
+          {
+            "pixels": 3325,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3325,
+            "removed": true
+          },
+          {
+            "pixels": 3278,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3278,
+            "removed": true
+          },
+          {
+            "pixels": 3094,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3094,
+            "removed": true
+          },
+          {
+            "pixels": 3084,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3084,
+            "removed": true
+          },
+          {
+            "pixels": 2887,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2887,
+            "removed": true
+          },
+          {
+            "pixels": 2815,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2815,
+            "removed": true
+          },
+          {
+            "pixels": 2768,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2768,
+            "removed": true
+          },
+          {
+            "pixels": 2760,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2760,
+            "removed": true
+          },
+          {
+            "pixels": 2615,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2615,
+            "removed": true
+          },
+          {
+            "pixels": 2601,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2601,
+            "removed": true
+          },
+          {
+            "pixels": 2397,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2397,
+            "removed": true
+          },
+          {
+            "pixels": 2383,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2383,
+            "removed": true
+          },
+          {
+            "pixels": 2298,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2298,
+            "removed": true
+          },
+          {
+            "pixels": 2283,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2283,
+            "removed": true
+          },
+          {
+            "pixels": 2182,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2182,
+            "removed": true
+          },
+          {
+            "pixels": 2058,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2058,
+            "removed": true
+          },
+          {
+            "pixels": 1505,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1505,
+            "removed": true
+          },
+          {
+            "pixels": 1482,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1482,
+            "removed": true
+          },
+          {
+            "pixels": 1456,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1456,
+            "removed": true
+          },
+          {
+            "pixels": 1422,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1422,
+            "removed": true
+          },
+          {
+            "pixels": 1225,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1225,
+            "removed": true
+          },
+          {
+            "pixels": 890,
+            "touches_border": false,
+            "dark": 0,
+            "light": 890,
+            "removed": true
+          },
+          {
+            "pixels": 850,
+            "touches_border": false,
+            "dark": 0,
+            "light": 850,
+            "removed": true
+          },
+          {
+            "pixels": 698,
+            "touches_border": false,
+            "dark": 0,
+            "light": 698,
+            "removed": true
+          },
+          {
+            "pixels": 398,
+            "touches_border": false,
+            "dark": 0,
+            "light": 398,
+            "removed": true
+          },
+          {
+            "pixels": 384,
+            "touches_border": false,
+            "dark": 0,
+            "light": 384,
+            "removed": true
+          },
+          {
+            "pixels": 377,
+            "touches_border": false,
+            "dark": 0,
+            "light": 377,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "1a5d0a788237dafc087a95c06076a8a91ad36f78b19ce4f8ddb445ea19c7b3d3",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_piercing_S.png",
+      "atlas_sha256": "f5a77c61117c4d78cec8581233a8fb645eee26e7d94773f346bc917ab870be47",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            31,
+            33,
+            306,
+            335
+          ],
+          "source_root": [
+            199.75,
+            335
+          ],
+          "kept_source_pixels": 38626,
+          "crest_top": 67,
+          "scale": 0.7051282051282052,
+          "placement": [
+            137,
+            107,
+            194,
+            213
+          ],
+          "sha256": "c07105a1a0443cbd92c6895c1deb56bee5efd5086740e6449179ea6a6aeaf07b",
+          "rgba_sha256": "94209b95be209f4aadc28166f3aad5457ee644444106cceaf6ba68346133f211"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            387,
+            31,
+            687,
+            335
+          ],
+          "source_root": [
+            568.75,
+            335
+          ],
+          "kept_source_pixels": 40828,
+          "crest_top": 65,
+          "scale": 0.7051282051282052,
+          "placement": [
+            128,
+            106,
+            212,
+            214
+          ],
+          "sha256": "d7f82483c66f8d5345fbc339e831a04ad9f6481a4bafabd762ddbc5b5492fe19",
+          "rgba_sha256": "ad7fa66aa50b81c1efce4df316ee8b5aaf91217b80694b21ba1ff89b6174f1f6"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            770,
+            35,
+            1030,
+            336
+          ],
+          "source_root": [
+            922.75,
+            336
+          ],
+          "kept_source_pixels": 38538,
+          "crest_top": 66,
+          "scale": 0.7051282051282052,
+          "placement": [
+            148,
+            108,
+            183,
+            212
+          ],
+          "sha256": "4988f4755e5f7195b34ab76617ac35ec9f0bee1a42438ebbbce441a5c1b86129",
+          "rgba_sha256": "a263f86f875e5352c752240521cd3a8d78d8f27fbd7c298f03f94841806ee18e"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1112,
+            34,
+            1407,
+            336
+          ],
+          "source_root": [
+            1267.75,
+            336
+          ],
+          "kept_source_pixels": 40138,
+          "crest_top": 65,
+          "scale": 0.7051282051282052,
+          "placement": [
+            146,
+            107,
+            208,
+            213
+          ],
+          "sha256": "3b34ace90b749c5a6b9c7bf52f4f00b24e7a30bb73bc91bfedc9480dfba83806",
+          "rgba_sha256": "f7a38bc50772e11bc61991ed967f58155d55b62f3ae924d5f2fbdb4b9e32474a"
+        }
+      ]
+    },
+    {
+      "key": "bow_piercing_W",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_special_W_harmonized.png",
+      "selected_source_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.78,
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        182,
+        186
+      ],
+      "cast_origin_local": [
+        -25.9,
+        -46.9
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1302584,
+        "exterior_pixels": 1297135,
+        "enclosed_checker_or_key_pixels": 5449,
+        "retained_pixels": 270305,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1297135,
+            "touches_border": true,
+            "dark": 7053,
+            "light": 1286131,
+            "removed": true
+          },
+          {
+            "pixels": 1859,
+            "touches_border": false,
+            "dark": 103,
+            "light": 1702,
+            "removed": true
+          },
+          {
+            "pixels": 656,
+            "touches_border": false,
+            "dark": 30,
+            "light": 600,
+            "removed": true
+          },
+          {
+            "pixels": 641,
+            "touches_border": false,
+            "dark": 38,
+            "light": 575,
+            "removed": true
+          },
+          {
+            "pixels": 571,
+            "touches_border": false,
+            "dark": 33,
+            "light": 510,
+            "removed": true
+          },
+          {
+            "pixels": 465,
+            "touches_border": false,
+            "dark": 30,
+            "light": 410,
+            "removed": true
+          },
+          {
+            "pixels": 448,
+            "touches_border": false,
+            "dark": 30,
+            "light": 404,
+            "removed": true
+          },
+          {
+            "pixels": 327,
+            "touches_border": false,
+            "dark": 29,
+            "light": 279,
+            "removed": true
+          },
+          {
+            "pixels": 86,
+            "touches_border": false,
+            "dark": 14,
+            "light": 66,
+            "removed": true
+          },
+          {
+            "pixels": 76,
+            "touches_border": false,
+            "dark": 15,
+            "light": 50,
+            "removed": true
+          },
+          {
+            "pixels": 70,
+            "touches_border": false,
+            "dark": 14,
+            "light": 52,
+            "removed": true
+          },
+          {
+            "pixels": 57,
+            "touches_border": false,
+            "dark": 14,
+            "light": 39,
+            "removed": true
+          },
+          {
+            "pixels": 29,
+            "touches_border": false,
+            "dark": 10,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 2,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 5,
+            "light": 14,
+            "removed": true
+          },
+          {
+            "pixels": 21,
+            "touches_border": false,
+            "dark": 2,
+            "light": 14,
+            "removed": true
+          },
+          {
+            "pixels": 16,
+            "touches_border": false,
+            "dark": 0,
+            "light": 15,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "3f87f90dc11fcbaba78a0311124dbd847a7a13247ed6a773e392dabe0b2b0af7",
+        "dimensions": [
+          1447,
+          1087
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_piercing_W.png",
+      "atlas_sha256": "7e8b9fd364de775187ece6f7b83140f41e51e5dbf164f2666a499539e78c7c63",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 0,
+          "source_bbox": [
+            78,
+            99,
+            286,
+            341
+          ],
+          "source_root": [
+            193,
+            340
+          ],
+          "kept_source_pixels": 20446,
+          "crest_top": 121,
+          "scale": 0.8178438661710037,
+          "placement": [
+            162,
+            123,
+            170,
+            198
+          ],
+          "sha256": "f530e56d79a393ad10d0161a641d793975bb850d4750fd94113a2752942a9b6d",
+          "rgba_sha256": "d33cda63b0bdff619abc54365f2497fb0305c9dc1a4a8780376f14c5e2734e7a"
+        },
+        {
+          "index": 1,
+          "source_index": 1,
+          "source_bbox": [
+            430,
+            80,
+            646,
+            341
+          ],
+          "source_root": [
+            555,
+            340
+          ],
+          "kept_source_pixels": 22222,
+          "crest_top": 121,
+          "scale": 0.8178438661710037,
+          "placement": [
+            154,
+            107,
+            177,
+            213
+          ],
+          "sha256": "62ec7901db4f58b9eaef326cc075417e47980f529d30861a95ea4bbd0dcc095c",
+          "rgba_sha256": "69f284447c90efdd6b7f6c83cd0b249388f27dfeb2784fd3c39ce10827d91898"
+        },
+        {
+          "index": 2,
+          "source_index": 2,
+          "source_bbox": [
+            805,
+            80,
+            998,
+            341
+          ],
+          "source_root": [
+            907,
+            340
+          ],
+          "kept_source_pixels": 22288,
+          "crest_top": 121,
+          "scale": 0.8178438661710037,
+          "placement": [
+            173,
+            107,
+            158,
+            213
+          ],
+          "sha256": "b7a916e7350cb2f7165a72bae21ae44b60a2ef72c9d59871dee556264f014f85",
+          "rgba_sha256": "e2194ff99c711ef92a840318e139b6345f9d825d47bf760edeb559592193061b"
+        },
+        {
+          "index": 3,
+          "source_index": 3,
+          "source_bbox": [
+            1143,
+            98,
+            1349,
+            341
+          ],
+          "source_root": [
+            1258,
+            340
+          ],
+          "kept_source_pixels": 21633,
+          "crest_top": 121,
+          "scale": 0.8178438661710037,
+          "placement": [
+            162,
+            122,
+            168,
+            199
+          ],
+          "sha256": "be0c9efedc72785cdac2e36b75546f1f3815957916141bd1063a5426c27c1720",
+          "rgba_sha256": "2e8c9c2da373fe1e20e9304fc03e317de3a56054efdc7d38b90117012d6109a2"
+        }
+      ]
+    },
+    {
+      "key": "bow_death_N",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_special_N_harmonized_palette.png",
+      "selected_source_indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.86,
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        328,
+        148
+      ],
+      "cast_origin_local": [
+        25.2,
+        -60.2
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1193326,
+        "exterior_pixels": 1160626,
+        "enclosed_checker_or_key_pixels": 32700,
+        "retained_pixels": 379190,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1160626,
+            "touches_border": true,
+            "dark": 7565,
+            "light": 1148933,
+            "removed": true
+          },
+          {
+            "pixels": 3369,
+            "touches_border": false,
+            "dark": 108,
+            "light": 3206,
+            "removed": true
+          },
+          {
+            "pixels": 3118,
+            "touches_border": false,
+            "dark": 100,
+            "light": 2961,
+            "removed": true
+          },
+          {
+            "pixels": 2742,
+            "touches_border": false,
+            "dark": 103,
+            "light": 2591,
+            "removed": true
+          },
+          {
+            "pixels": 1545,
+            "touches_border": false,
+            "dark": 51,
+            "light": 1466,
+            "removed": true
+          },
+          {
+            "pixels": 1541,
+            "touches_border": false,
+            "dark": 84,
+            "light": 1412,
+            "removed": true
+          },
+          {
+            "pixels": 1539,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1419,
+            "removed": true
+          },
+          {
+            "pixels": 1528,
+            "touches_border": false,
+            "dark": 80,
+            "light": 1407,
+            "removed": true
+          },
+          {
+            "pixels": 1516,
+            "touches_border": false,
+            "dark": 55,
+            "light": 1419,
+            "removed": true
+          },
+          {
+            "pixels": 1480,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1356,
+            "removed": true
+          },
+          {
+            "pixels": 1388,
+            "touches_border": false,
+            "dark": 63,
+            "light": 1299,
+            "removed": true
+          },
+          {
+            "pixels": 1377,
+            "touches_border": false,
+            "dark": 67,
+            "light": 1273,
+            "removed": true
+          },
+          {
+            "pixels": 1355,
+            "touches_border": false,
+            "dark": 62,
+            "light": 1255,
+            "removed": true
+          },
+          {
+            "pixels": 1253,
+            "touches_border": false,
+            "dark": 89,
+            "light": 1125,
+            "removed": true
+          },
+          {
+            "pixels": 1168,
+            "touches_border": false,
+            "dark": 66,
+            "light": 1070,
+            "removed": true
+          },
+          {
+            "pixels": 1139,
+            "touches_border": false,
+            "dark": 77,
+            "light": 1035,
+            "removed": true
+          },
+          {
+            "pixels": 1130,
+            "touches_border": false,
+            "dark": 75,
+            "light": 1019,
+            "removed": true
+          },
+          {
+            "pixels": 1014,
+            "touches_border": false,
+            "dark": 38,
+            "light": 893,
+            "removed": true
+          },
+          {
+            "pixels": 609,
+            "touches_border": false,
+            "dark": 67,
+            "light": 518,
+            "removed": true
+          },
+          {
+            "pixels": 520,
+            "touches_border": false,
+            "dark": 50,
+            "light": 447,
+            "removed": true
+          },
+          {
+            "pixels": 454,
+            "touches_border": false,
+            "dark": 38,
+            "light": 389,
+            "removed": true
+          },
+          {
+            "pixels": 453,
+            "touches_border": false,
+            "dark": 31,
+            "light": 402,
+            "removed": true
+          },
+          {
+            "pixels": 403,
+            "touches_border": false,
+            "dark": 47,
+            "light": 331,
+            "removed": true
+          },
+          {
+            "pixels": 399,
+            "touches_border": false,
+            "dark": 39,
+            "light": 328,
+            "removed": true
+          },
+          {
+            "pixels": 383,
+            "touches_border": false,
+            "dark": 47,
+            "light": 314,
+            "removed": true
+          },
+          {
+            "pixels": 379,
+            "touches_border": false,
+            "dark": 47,
+            "light": 304,
+            "removed": true
+          },
+          {
+            "pixels": 370,
+            "touches_border": false,
+            "dark": 53,
+            "light": 301,
+            "removed": true
+          },
+          {
+            "pixels": 323,
+            "touches_border": false,
+            "dark": 51,
+            "light": 236,
+            "removed": true
+          },
+          {
+            "pixels": 81,
+            "touches_border": false,
+            "dark": 11,
+            "light": 59,
+            "removed": true
+          },
+          {
+            "pixels": 34,
+            "touches_border": false,
+            "dark": 9,
+            "light": 18,
+            "removed": true
+          },
+          {
+            "pixels": 30,
+            "touches_border": false,
+            "dark": 6,
+            "light": 20,
+            "removed": true
+          },
+          {
+            "pixels": 23,
+            "touches_border": false,
+            "dark": 5,
+            "light": 12,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "3e0b6e99188e653e9e485feb9ed4c61710d574c222881301eed65e154d37964c",
+        "dimensions": [
+          1254,
+          1254
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_death_N.png",
+      "atlas_sha256": "272c01fd5841051fabd034dd346d5905bbcfc2cc26481f67e24c2b8593146781",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 4,
+          "source_bbox": [
+            51,
+            435,
+            276,
+            765
+          ],
+          "source_root": [
+            153,
+            764
+          ],
+          "kept_source_pixels": 31336,
+          "crest_top": 463,
+          "scale": 0.6875,
+          "placement": [
+            186,
+            94,
+            155,
+            227
+          ],
+          "sha256": "7720e5fdd1a8d4d290e3a9be4cba0e34d8c4f6cab441b7afa0a6addb2f4ceded",
+          "rgba_sha256": "9506d32d8c6bcf864a7b7310165e6abd93351eed37832a8c37d2d157bc6d6c18"
+        },
+        {
+          "index": 1,
+          "source_index": 5,
+          "source_bbox": [
+            357,
+            416,
+            611,
+            765
+          ],
+          "source_root": [
+            463,
+            764
+          ],
+          "kept_source_pixels": 31976,
+          "crest_top": 497,
+          "scale": 0.6875,
+          "placement": [
+            183,
+            81,
+            175,
+            240
+          ],
+          "sha256": "3fb6bce5f35822bd47abd3833b6f4b8d527cec48f7ace064016962ab94980143",
+          "rgba_sha256": "5771ef704c4beeb1a44dfb61f82dc8d394a23b2b44cc0fcec20cbe49073d223f"
+        },
+        {
+          "index": 2,
+          "source_index": 6,
+          "source_bbox": [
+            668,
+            415,
+            897,
+            765
+          ],
+          "source_root": [
+            773,
+            764
+          ],
+          "kept_source_pixels": 32226,
+          "crest_top": 463,
+          "scale": 0.6875,
+          "placement": [
+            184,
+            80,
+            157,
+            241
+          ],
+          "sha256": "1b2a0d066f6d78354140e15f5f448a472037b36ce4684aa0917c1a0f50ef53c1",
+          "rgba_sha256": "6d541af5122ea519b6b70c1a59438a4270e706a5476aeb0dc91fb585b7c37207"
+        },
+        {
+          "index": 3,
+          "source_index": 7,
+          "source_bbox": [
+            983,
+            416,
+            1204,
+            765
+          ],
+          "source_root": [
+            1088,
+            764
+          ],
+          "kept_source_pixels": 32793,
+          "crest_top": 463,
+          "scale": 0.6875,
+          "placement": [
+            184,
+            81,
+            152,
+            240
+          ],
+          "sha256": "469a0d3c3a8f5a47b0888b2b4770a8a1ff84ad6cce9d13b965a3663296579695",
+          "rgba_sha256": "99f0498b9b754f3dfdfc3c4567e9482c074da79a9d70f92bf42cfd7221bb6f39"
+        }
+      ]
+    },
+    {
+      "key": "bow_death_E",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_special_E_harmonized.png",
+      "selected_source_indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.86,
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        342,
+        186
+      ],
+      "cast_origin_local": [
+        30.1,
+        -46.9
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1254280,
+        "exterior_pixels": 1243118,
+        "enclosed_checker_or_key_pixels": 11162,
+        "retained_pixels": 318248,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1243118,
+            "touches_border": true,
+            "dark": 4601,
+            "light": 1235781,
+            "removed": true
+          },
+          {
+            "pixels": 3623,
+            "touches_border": false,
+            "dark": 66,
+            "light": 3519,
+            "removed": true
+          },
+          {
+            "pixels": 3617,
+            "touches_border": false,
+            "dark": 57,
+            "light": 3528,
+            "removed": true
+          },
+          {
+            "pixels": 2596,
+            "touches_border": false,
+            "dark": 40,
+            "light": 2522,
+            "removed": true
+          },
+          {
+            "pixels": 406,
+            "touches_border": false,
+            "dark": 41,
+            "light": 309,
+            "removed": true
+          },
+          {
+            "pixels": 231,
+            "touches_border": false,
+            "dark": 23,
+            "light": 158,
+            "removed": true
+          },
+          {
+            "pixels": 83,
+            "touches_border": false,
+            "dark": 10,
+            "light": 60,
+            "removed": true
+          },
+          {
+            "pixels": 79,
+            "touches_border": false,
+            "dark": 11,
+            "light": 56,
+            "removed": true
+          },
+          {
+            "pixels": 69,
+            "touches_border": false,
+            "dark": 0,
+            "light": 68,
+            "removed": true
+          },
+          {
+            "pixels": 61,
+            "touches_border": false,
+            "dark": 9,
+            "light": 37,
+            "removed": true
+          },
+          {
+            "pixels": 61,
+            "touches_border": false,
+            "dark": 2,
+            "light": 52,
+            "removed": true
+          },
+          {
+            "pixels": 48,
+            "touches_border": false,
+            "dark": 5,
+            "light": 37,
+            "removed": true
+          },
+          {
+            "pixels": 43,
+            "touches_border": false,
+            "dark": 4,
+            "light": 35,
+            "removed": true
+          },
+          {
+            "pixels": 42,
+            "touches_border": false,
+            "dark": 5,
+            "light": 32,
+            "removed": true
+          },
+          {
+            "pixels": 39,
+            "touches_border": false,
+            "dark": 4,
+            "light": 27,
+            "removed": true
+          },
+          {
+            "pixels": 17,
+            "touches_border": false,
+            "dark": 0,
+            "light": 15,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "61d06a81689b174442e4a62fae13ddf962f7705ff90692eed4224a769963a4f1",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_death_E.png",
+      "atlas_sha256": "f0cc8f9e9e188df8d41992e64bef4109222d3aafccaceaa4d8380d6f70c9ffd1",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 4,
+          "source_bbox": [
+            38,
+            391,
+            278,
+            662
+          ],
+          "source_root": [
+            155,
+            661
+          ],
+          "kept_source_pixels": 25459,
+          "crest_top": 408,
+          "scale": 0.7508532423208191,
+          "placement": [
+            168,
+            117,
+            180,
+            203
+          ],
+          "sha256": "397bbdbe495a6a76563ac43047fa27366f89d021219bd2ab6c3cc91286221369",
+          "rgba_sha256": "effa9fb79483fcfbd9dfc04f984e591ac5f0d44532eee92cdb2199eb836432cb"
+        },
+        {
+          "index": 1,
+          "source_index": 5,
+          "source_bbox": [
+            410,
+            374,
+            666,
+            662
+          ],
+          "source_root": [
+            531,
+            661
+          ],
+          "kept_source_pixels": 27127,
+          "crest_top": 409,
+          "scale": 0.7508532423208191,
+          "placement": [
+            165,
+            105,
+            192,
+            216
+          ],
+          "sha256": "47b0a9ea34bbcc710a0f510649bcbc4e65e6e4ba0f0d63b31dd1d054d402a3d4",
+          "rgba_sha256": "403dd2530cdb9c0740de3f456e32d3774ff8504af2866a4d5cd8e69b35874429"
+        },
+        {
+          "index": 2,
+          "source_index": 6,
+          "source_bbox": [
+            777,
+            373,
+            1027,
+            662
+          ],
+          "source_root": [
+            899,
+            661
+          ],
+          "kept_source_pixels": 27203,
+          "crest_top": 409,
+          "scale": 0.7508532423208191,
+          "placement": [
+            164,
+            104,
+            188,
+            217
+          ],
+          "sha256": "0e9601d62cdb8c532ac7eb55965bbb5cee76b76dce5c1a7fa4966e326cb46eae",
+          "rgba_sha256": "813848a264fece13d6287bc8e7875b4299cc741c8500caef6a57194d89f4f036"
+        },
+        {
+          "index": 3,
+          "source_index": 7,
+          "source_bbox": [
+            1163,
+            379,
+            1411,
+            662
+          ],
+          "source_root": [
+            1286,
+            661
+          ],
+          "kept_source_pixels": 26433,
+          "crest_top": 409,
+          "scale": 0.7508532423208191,
+          "placement": [
+            164,
+            108,
+            186,
+            212
+          ],
+          "sha256": "2baec20c9605d048520a9d5f798fb84031050ebe47619c7b45b4ab8daa759237",
+          "rgba_sha256": "3d2642a2b5e5466651d25bc2e46467817b21749fdd79498361e8baf0a3d4bfa5"
+        }
+      ]
+    },
+    {
+      "key": "bow_death_S",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_special_S_reference_only_v6.png",
+      "selected_source_indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.86,
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        159,
+        169
+      ],
+      "cast_origin_local": [
+        -33.95,
+        -52.85
+      ],
+      "source_report": {
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 34817,
+          "minimum_estimated_coverage": 0.22352941176470587,
+          "maximum_recomposition_error": 0.4705882352941444,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        },
+        "mode": "magenta",
+        "removed_pixels": 1126922,
+        "exterior_pixels": 1054032,
+        "enclosed_checker_or_key_pixels": 72890,
+        "retained_pixels": 445606,
+        "kept_pixel_policy": "Alpha is unchanged for every retained pixel. RGB changes only in the declared magenta-contaminated edge mask; all other retained RGBA is byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1054032,
+            "touches_border": true,
+            "dark": 0,
+            "light": 1054032,
+            "removed": true
+          },
+          {
+            "pixels": 5703,
+            "touches_border": false,
+            "dark": 0,
+            "light": 5703,
+            "removed": true
+          },
+          {
+            "pixels": 4721,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4721,
+            "removed": true
+          },
+          {
+            "pixels": 4390,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4390,
+            "removed": true
+          },
+          {
+            "pixels": 4019,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4019,
+            "removed": true
+          },
+          {
+            "pixels": 3325,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3325,
+            "removed": true
+          },
+          {
+            "pixels": 3278,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3278,
+            "removed": true
+          },
+          {
+            "pixels": 3094,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3094,
+            "removed": true
+          },
+          {
+            "pixels": 3084,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3084,
+            "removed": true
+          },
+          {
+            "pixels": 2887,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2887,
+            "removed": true
+          },
+          {
+            "pixels": 2815,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2815,
+            "removed": true
+          },
+          {
+            "pixels": 2768,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2768,
+            "removed": true
+          },
+          {
+            "pixels": 2760,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2760,
+            "removed": true
+          },
+          {
+            "pixels": 2615,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2615,
+            "removed": true
+          },
+          {
+            "pixels": 2601,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2601,
+            "removed": true
+          },
+          {
+            "pixels": 2397,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2397,
+            "removed": true
+          },
+          {
+            "pixels": 2383,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2383,
+            "removed": true
+          },
+          {
+            "pixels": 2298,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2298,
+            "removed": true
+          },
+          {
+            "pixels": 2283,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2283,
+            "removed": true
+          },
+          {
+            "pixels": 2182,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2182,
+            "removed": true
+          },
+          {
+            "pixels": 2058,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2058,
+            "removed": true
+          },
+          {
+            "pixels": 1505,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1505,
+            "removed": true
+          },
+          {
+            "pixels": 1482,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1482,
+            "removed": true
+          },
+          {
+            "pixels": 1456,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1456,
+            "removed": true
+          },
+          {
+            "pixels": 1422,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1422,
+            "removed": true
+          },
+          {
+            "pixels": 1225,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1225,
+            "removed": true
+          },
+          {
+            "pixels": 890,
+            "touches_border": false,
+            "dark": 0,
+            "light": 890,
+            "removed": true
+          },
+          {
+            "pixels": 850,
+            "touches_border": false,
+            "dark": 0,
+            "light": 850,
+            "removed": true
+          },
+          {
+            "pixels": 698,
+            "touches_border": false,
+            "dark": 0,
+            "light": 698,
+            "removed": true
+          },
+          {
+            "pixels": 398,
+            "touches_border": false,
+            "dark": 0,
+            "light": 398,
+            "removed": true
+          },
+          {
+            "pixels": 384,
+            "touches_border": false,
+            "dark": 0,
+            "light": 384,
+            "removed": true
+          },
+          {
+            "pixels": 377,
+            "touches_border": false,
+            "dark": 0,
+            "light": 377,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "1a5d0a788237dafc087a95c06076a8a91ad36f78b19ce4f8ddb445ea19c7b3d3",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_death_S.png",
+      "atlas_sha256": "38fc584a3788ee016a78964cc282844ccde51c1558069aa997688d597f88311d",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 4,
+          "source_bbox": [
+            39,
+            366,
+            314,
+            695
+          ],
+          "source_root": [
+            202.25,
+            695
+          ],
+          "kept_source_pixels": 35588,
+          "crest_top": 395,
+          "scale": 0.7051282051282052,
+          "placement": [
+            141,
+            88,
+            194,
+            232
+          ],
+          "sha256": "c6867627d689379e13eafd01715ad267edcec2cdc2b42e7132fe74c2a6d06247",
+          "rgba_sha256": "660d451a6537097d24b04c16a8fbe881d703f5175dc9589b25933f6f7d3d817e"
+        },
+        {
+          "index": 1,
+          "source_index": 5,
+          "source_bbox": [
+            384,
+            366,
+            680,
+            695
+          ],
+          "source_root": [
+            567.75,
+            695
+          ],
+          "kept_source_pixels": 36879,
+          "crest_top": 394,
+          "scale": 0.7051282051282052,
+          "placement": [
+            126,
+            88,
+            209,
+            232
+          ],
+          "sha256": "f65ad9c6705d05c5112a61702ab65c11859fcf6d5f29cc83b5548957902309d9",
+          "rgba_sha256": "2d65b38efb3bfb7db9a3c379d1113fe2d5905c7aabe22e61ab2c82870327d789"
+        },
+        {
+          "index": 2,
+          "source_index": 6,
+          "source_bbox": [
+            775,
+            367,
+            1039,
+            695
+          ],
+          "source_root": [
+            925.75,
+            695
+          ],
+          "kept_source_pixels": 34758,
+          "crest_top": 395,
+          "scale": 0.7051282051282052,
+          "placement": [
+            150,
+            89,
+            186,
+            231
+          ],
+          "sha256": "53a826d71da0d697e4117f79ece88bf58b5e15da9bcba1172512ed751575886c",
+          "rgba_sha256": "6e97ca66441a8b259a1008ac6c081b7243c563252f4694df248feb1caab77d5b"
+        },
+        {
+          "index": 3,
+          "source_index": 7,
+          "source_bbox": [
+            1124,
+            366,
+            1421,
+            695
+          ],
+          "source_root": [
+            1285,
+            695
+          ],
+          "kept_source_pixels": 36240,
+          "crest_top": 395,
+          "scale": 0.7051282051282052,
+          "placement": [
+            142,
+            88,
+            209,
+            232
+          ],
+          "sha256": "b6f736cb53a2de06e47ce110392c2ea2907dd3f465d10b5ce6d51cb51f9fc6af",
+          "rgba_sha256": "65364afea83ebc6e22b7232cd69582ab58b00ac1f1fdd3653e0d8147dc722390"
+        }
+      ]
+    },
+    {
+      "key": "bow_death_W",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_special_W_harmonized.png",
+      "selected_source_indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.86,
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        179,
+        153
+      ],
+      "cast_origin_local": [
+        -26.95,
+        -58.45
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1302584,
+        "exterior_pixels": 1297135,
+        "enclosed_checker_or_key_pixels": 5449,
+        "retained_pixels": 270305,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1297135,
+            "touches_border": true,
+            "dark": 7053,
+            "light": 1286131,
+            "removed": true
+          },
+          {
+            "pixels": 1859,
+            "touches_border": false,
+            "dark": 103,
+            "light": 1702,
+            "removed": true
+          },
+          {
+            "pixels": 656,
+            "touches_border": false,
+            "dark": 30,
+            "light": 600,
+            "removed": true
+          },
+          {
+            "pixels": 641,
+            "touches_border": false,
+            "dark": 38,
+            "light": 575,
+            "removed": true
+          },
+          {
+            "pixels": 571,
+            "touches_border": false,
+            "dark": 33,
+            "light": 510,
+            "removed": true
+          },
+          {
+            "pixels": 465,
+            "touches_border": false,
+            "dark": 30,
+            "light": 410,
+            "removed": true
+          },
+          {
+            "pixels": 448,
+            "touches_border": false,
+            "dark": 30,
+            "light": 404,
+            "removed": true
+          },
+          {
+            "pixels": 327,
+            "touches_border": false,
+            "dark": 29,
+            "light": 279,
+            "removed": true
+          },
+          {
+            "pixels": 86,
+            "touches_border": false,
+            "dark": 14,
+            "light": 66,
+            "removed": true
+          },
+          {
+            "pixels": 76,
+            "touches_border": false,
+            "dark": 15,
+            "light": 50,
+            "removed": true
+          },
+          {
+            "pixels": 70,
+            "touches_border": false,
+            "dark": 14,
+            "light": 52,
+            "removed": true
+          },
+          {
+            "pixels": 57,
+            "touches_border": false,
+            "dark": 14,
+            "light": 39,
+            "removed": true
+          },
+          {
+            "pixels": 29,
+            "touches_border": false,
+            "dark": 10,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 2,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 5,
+            "light": 14,
+            "removed": true
+          },
+          {
+            "pixels": 21,
+            "touches_border": false,
+            "dark": 2,
+            "light": 14,
+            "removed": true
+          },
+          {
+            "pixels": 16,
+            "touches_border": false,
+            "dark": 0,
+            "light": 15,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "3f87f90dc11fcbaba78a0311124dbd847a7a13247ed6a773e392dabe0b2b0af7",
+        "dimensions": [
+          1447,
+          1087
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_bow_death_W.png",
+      "atlas_sha256": "a85eff496613b1ed32b844be34da95475b98e388a3cf3e650dd11b2c4be4aec2",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 4,
+          "source_bbox": [
+            88,
+            409,
+            293,
+            661
+          ],
+          "source_root": [
+            199,
+            660
+          ],
+          "kept_source_pixels": 21009,
+          "crest_top": 422,
+          "scale": 0.8178438661710037,
+          "placement": [
+            165,
+            115,
+            168,
+            206
+          ],
+          "sha256": "278d11f0916306096ca55d4a4719474f4825843d1e8adad24b33d46beae1b2b1",
+          "rgba_sha256": "0935a7217ccfaae4ccd6e3d201f5abf17e1e106562033980afab61c6efabb719"
+        },
+        {
+          "index": 1,
+          "source_index": 5,
+          "source_bbox": [
+            435,
+            371,
+            654,
+            661
+          ],
+          "source_root": [
+            557,
+            660
+          ],
+          "kept_source_pixels": 22859,
+          "crest_top": 422,
+          "scale": 0.8178438661710037,
+          "placement": [
+            156,
+            84,
+            179,
+            237
+          ],
+          "sha256": "4634b9c71b6b70d673d57dfd4571a3cd3835c50ceb417230545b99e6c0780f39",
+          "rgba_sha256": "5d3052b44c4e8b12e2882e7dd0ac45bff67707aac95bacbc4ce117eb40732f45"
+        },
+        {
+          "index": 2,
+          "source_index": 6,
+          "source_bbox": [
+            806,
+            372,
+            1009,
+            661
+          ],
+          "source_root": [
+            911,
+            660
+          ],
+          "kept_source_pixels": 23060,
+          "crest_top": 422,
+          "scale": 0.8178438661710037,
+          "placement": [
+            170,
+            84,
+            166,
+            236
+          ],
+          "sha256": "8f566190f97e0c22cc17c18d4ff8b07e5df1c374516436611dae6aa3f3f356d6",
+          "rgba_sha256": "8f6a6422d7a48efca98851e946213837cb355336346bf1912189ad30f003823b"
+        },
+        {
+          "index": 3,
+          "source_index": 7,
+          "source_bbox": [
+            1165,
+            390,
+            1367,
+            661
+          ],
+          "source_root": [
+            1271,
+            660
+          ],
+          "kept_source_pixels": 21939,
+          "crest_top": 422,
+          "scale": 0.8178438661710037,
+          "placement": [
+            169,
+            99,
+            165,
+            222
+          ],
+          "sha256": "08d48825f2d6f3705c7f3b52af190f00c29db247549e2324b99b341f083b4233",
+          "rgba_sha256": "c158f1d053d28d01b097eb7539ee4af98259461feb33d39aa17edd4d294f6b88"
+        }
+      ]
+    },
+    {
+      "key": "volley_N",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_special_N_harmonized_palette.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.84,
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        307,
+        99
+      ],
+      "cast_origin_local": [
+        17.85,
+        -77.35
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1193326,
+        "exterior_pixels": 1160626,
+        "enclosed_checker_or_key_pixels": 32700,
+        "retained_pixels": 379190,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1160626,
+            "touches_border": true,
+            "dark": 7565,
+            "light": 1148933,
+            "removed": true
+          },
+          {
+            "pixels": 3369,
+            "touches_border": false,
+            "dark": 108,
+            "light": 3206,
+            "removed": true
+          },
+          {
+            "pixels": 3118,
+            "touches_border": false,
+            "dark": 100,
+            "light": 2961,
+            "removed": true
+          },
+          {
+            "pixels": 2742,
+            "touches_border": false,
+            "dark": 103,
+            "light": 2591,
+            "removed": true
+          },
+          {
+            "pixels": 1545,
+            "touches_border": false,
+            "dark": 51,
+            "light": 1466,
+            "removed": true
+          },
+          {
+            "pixels": 1541,
+            "touches_border": false,
+            "dark": 84,
+            "light": 1412,
+            "removed": true
+          },
+          {
+            "pixels": 1539,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1419,
+            "removed": true
+          },
+          {
+            "pixels": 1528,
+            "touches_border": false,
+            "dark": 80,
+            "light": 1407,
+            "removed": true
+          },
+          {
+            "pixels": 1516,
+            "touches_border": false,
+            "dark": 55,
+            "light": 1419,
+            "removed": true
+          },
+          {
+            "pixels": 1480,
+            "touches_border": false,
+            "dark": 76,
+            "light": 1356,
+            "removed": true
+          },
+          {
+            "pixels": 1388,
+            "touches_border": false,
+            "dark": 63,
+            "light": 1299,
+            "removed": true
+          },
+          {
+            "pixels": 1377,
+            "touches_border": false,
+            "dark": 67,
+            "light": 1273,
+            "removed": true
+          },
+          {
+            "pixels": 1355,
+            "touches_border": false,
+            "dark": 62,
+            "light": 1255,
+            "removed": true
+          },
+          {
+            "pixels": 1253,
+            "touches_border": false,
+            "dark": 89,
+            "light": 1125,
+            "removed": true
+          },
+          {
+            "pixels": 1168,
+            "touches_border": false,
+            "dark": 66,
+            "light": 1070,
+            "removed": true
+          },
+          {
+            "pixels": 1139,
+            "touches_border": false,
+            "dark": 77,
+            "light": 1035,
+            "removed": true
+          },
+          {
+            "pixels": 1130,
+            "touches_border": false,
+            "dark": 75,
+            "light": 1019,
+            "removed": true
+          },
+          {
+            "pixels": 1014,
+            "touches_border": false,
+            "dark": 38,
+            "light": 893,
+            "removed": true
+          },
+          {
+            "pixels": 609,
+            "touches_border": false,
+            "dark": 67,
+            "light": 518,
+            "removed": true
+          },
+          {
+            "pixels": 520,
+            "touches_border": false,
+            "dark": 50,
+            "light": 447,
+            "removed": true
+          },
+          {
+            "pixels": 454,
+            "touches_border": false,
+            "dark": 38,
+            "light": 389,
+            "removed": true
+          },
+          {
+            "pixels": 453,
+            "touches_border": false,
+            "dark": 31,
+            "light": 402,
+            "removed": true
+          },
+          {
+            "pixels": 403,
+            "touches_border": false,
+            "dark": 47,
+            "light": 331,
+            "removed": true
+          },
+          {
+            "pixels": 399,
+            "touches_border": false,
+            "dark": 39,
+            "light": 328,
+            "removed": true
+          },
+          {
+            "pixels": 383,
+            "touches_border": false,
+            "dark": 47,
+            "light": 314,
+            "removed": true
+          },
+          {
+            "pixels": 379,
+            "touches_border": false,
+            "dark": 47,
+            "light": 304,
+            "removed": true
+          },
+          {
+            "pixels": 370,
+            "touches_border": false,
+            "dark": 53,
+            "light": 301,
+            "removed": true
+          },
+          {
+            "pixels": 323,
+            "touches_border": false,
+            "dark": 51,
+            "light": 236,
+            "removed": true
+          },
+          {
+            "pixels": 81,
+            "touches_border": false,
+            "dark": 11,
+            "light": 59,
+            "removed": true
+          },
+          {
+            "pixels": 34,
+            "touches_border": false,
+            "dark": 9,
+            "light": 18,
+            "removed": true
+          },
+          {
+            "pixels": 30,
+            "touches_border": false,
+            "dark": 6,
+            "light": 20,
+            "removed": true
+          },
+          {
+            "pixels": 23,
+            "touches_border": false,
+            "dark": 5,
+            "light": 12,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "3e0b6e99188e653e9e485feb9ed4c61710d574c222881301eed65e154d37964c",
+        "dimensions": [
+          1254,
+          1254
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_volley_N.png",
+      "atlas_sha256": "13e73eb0213b7c9193a012a7baef9bcf283553f4add2cbff71adb500bde63d21",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            80,
+            787,
+            247,
+            1198
+          ],
+          "source_root": [
+            157,
+            1197
+          ],
+          "kept_source_pixels": 29887,
+          "crest_top": 878,
+          "scale": 0.6875,
+          "placement": [
+            203,
+            38,
+            115,
+            283
+          ],
+          "sha256": "a4258c3134c2a73b27db8af3efe30190eb9be09b39ca671c7f8f18d03edf15d3",
+          "rgba_sha256": "46d66e1a54a3705f8b894bfb7e3a8155ed466612fe3563d6281a3ff7b8f45921"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            381,
+            787,
+            562,
+            1198
+          ],
+          "source_root": [
+            467,
+            1197
+          ],
+          "kept_source_pixels": 30576,
+          "crest_top": 853,
+          "scale": 0.6875,
+          "placement": [
+            197,
+            38,
+            124,
+            283
+          ],
+          "sha256": "0d81043008cae25abfd76abfdbc416054b72d17d374d4a6c6c292d50ca36689c",
+          "rgba_sha256": "b6506e248c82c92c46aa3f66b9563859a74a69f33d662bd5731511eef807fef7"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            701,
+            790,
+            878,
+            1199
+          ],
+          "source_root": [
+            783,
+            1198
+          ],
+          "kept_source_pixels": 30288,
+          "crest_top": 877,
+          "scale": 0.6875,
+          "placement": [
+            200,
+            40,
+            122,
+            281
+          ],
+          "sha256": "9619a764e2c426428c9e30fd9711f3d566139ae4fcbef7e98ea2b797fb8ba98e",
+          "rgba_sha256": "dbea474ee67397963f17a5ebb3ddeb30b912f02e89f6b1a25309061cc3daf609"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            1019,
+            789,
+            1194,
+            1199
+          ],
+          "source_root": [
+            1097,
+            1198
+          ],
+          "kept_source_pixels": 31367,
+          "crest_top": 878,
+          "scale": 0.6875,
+          "placement": [
+            202,
+            39,
+            120,
+            282
+          ],
+          "sha256": "681f46c7cb62fa8cc812218853f729e8b5a9529f678f41174946ed35931d41bd",
+          "rgba_sha256": "89ee94a4bd26d752c2ae4638b7e4b304edea2d68915784916def51d3a1c9e0e4"
+        }
+      ]
+    },
+    {
+      "key": "volley_E",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_special_E_harmonized.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.84,
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        329,
+        123
+      ],
+      "cast_origin_local": [
+        25.55,
+        -68.95
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1254280,
+        "exterior_pixels": 1243118,
+        "enclosed_checker_or_key_pixels": 11162,
+        "retained_pixels": 318248,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1243118,
+            "touches_border": true,
+            "dark": 4601,
+            "light": 1235781,
+            "removed": true
+          },
+          {
+            "pixels": 3623,
+            "touches_border": false,
+            "dark": 66,
+            "light": 3519,
+            "removed": true
+          },
+          {
+            "pixels": 3617,
+            "touches_border": false,
+            "dark": 57,
+            "light": 3528,
+            "removed": true
+          },
+          {
+            "pixels": 2596,
+            "touches_border": false,
+            "dark": 40,
+            "light": 2522,
+            "removed": true
+          },
+          {
+            "pixels": 406,
+            "touches_border": false,
+            "dark": 41,
+            "light": 309,
+            "removed": true
+          },
+          {
+            "pixels": 231,
+            "touches_border": false,
+            "dark": 23,
+            "light": 158,
+            "removed": true
+          },
+          {
+            "pixels": 83,
+            "touches_border": false,
+            "dark": 10,
+            "light": 60,
+            "removed": true
+          },
+          {
+            "pixels": 79,
+            "touches_border": false,
+            "dark": 11,
+            "light": 56,
+            "removed": true
+          },
+          {
+            "pixels": 69,
+            "touches_border": false,
+            "dark": 0,
+            "light": 68,
+            "removed": true
+          },
+          {
+            "pixels": 61,
+            "touches_border": false,
+            "dark": 9,
+            "light": 37,
+            "removed": true
+          },
+          {
+            "pixels": 61,
+            "touches_border": false,
+            "dark": 2,
+            "light": 52,
+            "removed": true
+          },
+          {
+            "pixels": 48,
+            "touches_border": false,
+            "dark": 5,
+            "light": 37,
+            "removed": true
+          },
+          {
+            "pixels": 43,
+            "touches_border": false,
+            "dark": 4,
+            "light": 35,
+            "removed": true
+          },
+          {
+            "pixels": 42,
+            "touches_border": false,
+            "dark": 5,
+            "light": 32,
+            "removed": true
+          },
+          {
+            "pixels": 39,
+            "touches_border": false,
+            "dark": 4,
+            "light": 27,
+            "removed": true
+          },
+          {
+            "pixels": 17,
+            "touches_border": false,
+            "dark": 0,
+            "light": 15,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "61d06a81689b174442e4a62fae13ddf962f7705ff90692eed4224a769963a4f1",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_volley_E.png",
+      "atlas_sha256": "31cd63c0a679f328ff4aed2f661556b70154f8eb0af66a3c641d0f23c8ad22d4",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            62,
+            688,
+            264,
+            1040
+          ],
+          "source_root": [
+            147,
+            1039
+          ],
+          "kept_source_pixels": 26990,
+          "crest_top": 747,
+          "scale": 0.7508532423208191,
+          "placement": [
+            192,
+            56,
+            152,
+            264
+          ],
+          "sha256": "88a6395c9157d3ac905ad79383c6e8f4bbdcf31e764b96452f6ffcfcfdbc23f8",
+          "rgba_sha256": "d4239401e993aed837b117f8f8b7ad2adcee246d771dcbfffa0dd607c354fadc"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            445,
+            688,
+            666,
+            1040
+          ],
+          "source_root": [
+            533,
+            1039
+          ],
+          "kept_source_pixels": 28964,
+          "crest_top": 751,
+          "scale": 0.7508532423208191,
+          "placement": [
+            190,
+            56,
+            166,
+            264
+          ],
+          "sha256": "20e2d8ef00c8061e71bd84df61223fdb62d544b4ec010286c47a36e907d488b1",
+          "rgba_sha256": "ab6fd2ee85b6a60149aa4b3683844819bb6d9ad503042b0ef9bfad5df025b70c"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            809,
+            676,
+            1017,
+            1040
+          ],
+          "source_root": [
+            897,
+            1039
+          ],
+          "kept_source_pixels": 27883,
+          "crest_top": 749,
+          "scale": 0.7508532423208191,
+          "placement": [
+            190,
+            47,
+            156,
+            273
+          ],
+          "sha256": "55b022509bdedf0fff3e75432b28e273811376004c71d56e642647951c4c1033",
+          "rgba_sha256": "e84822c21e0507f2c3a57d4b2d2ffea8a04c8226d51158c30aa1ba96dfb1f1e5"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            1163,
+            686,
+            1410,
+            1040
+          ],
+          "source_root": [
+            1287,
+            1039
+          ],
+          "kept_source_pixels": 27905,
+          "crest_top": 753,
+          "scale": 0.7508532423208191,
+          "placement": [
+            163,
+            55,
+            185,
+            266
+          ],
+          "sha256": "6800f8068b7e527e6cdeb5914648b555409836197d9e2ded463103398fd7d927",
+          "rgba_sha256": "90335ea87888671b0f4e4124a16ceceb502886cf19be381420989bd5d12cd72f"
+        }
+      ]
+    },
+    {
+      "key": "volley_S",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_special_S_reference_only_v6.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.84,
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        162,
+        113
+      ],
+      "cast_origin_local": [
+        -32.9,
+        -72.45
+      ],
+      "source_report": {
+        "edge_despill": {
+          "mode": "magenta_edge_rgb_unmix_preserve_alpha",
+          "radius": 2,
+          "minimum_excess": 12,
+          "protected_red_ratio": 2,
+          "background": [
+            255,
+            0,
+            255
+          ],
+          "corrected_pixels": 34817,
+          "minimum_estimated_coverage": 0.22352941176470587,
+          "maximum_recomposition_error": 0.4705882352941444,
+          "alpha_unchanged": true,
+          "interior_outside_edge_band_unchanged": true
+        },
+        "mode": "magenta",
+        "removed_pixels": 1126922,
+        "exterior_pixels": 1054032,
+        "enclosed_checker_or_key_pixels": 72890,
+        "retained_pixels": 445606,
+        "kept_pixel_policy": "Alpha is unchanged for every retained pixel. RGB changes only in the declared magenta-contaminated edge mask; all other retained RGBA is byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1054032,
+            "touches_border": true,
+            "dark": 0,
+            "light": 1054032,
+            "removed": true
+          },
+          {
+            "pixels": 5703,
+            "touches_border": false,
+            "dark": 0,
+            "light": 5703,
+            "removed": true
+          },
+          {
+            "pixels": 4721,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4721,
+            "removed": true
+          },
+          {
+            "pixels": 4390,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4390,
+            "removed": true
+          },
+          {
+            "pixels": 4019,
+            "touches_border": false,
+            "dark": 0,
+            "light": 4019,
+            "removed": true
+          },
+          {
+            "pixels": 3325,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3325,
+            "removed": true
+          },
+          {
+            "pixels": 3278,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3278,
+            "removed": true
+          },
+          {
+            "pixels": 3094,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3094,
+            "removed": true
+          },
+          {
+            "pixels": 3084,
+            "touches_border": false,
+            "dark": 0,
+            "light": 3084,
+            "removed": true
+          },
+          {
+            "pixels": 2887,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2887,
+            "removed": true
+          },
+          {
+            "pixels": 2815,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2815,
+            "removed": true
+          },
+          {
+            "pixels": 2768,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2768,
+            "removed": true
+          },
+          {
+            "pixels": 2760,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2760,
+            "removed": true
+          },
+          {
+            "pixels": 2615,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2615,
+            "removed": true
+          },
+          {
+            "pixels": 2601,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2601,
+            "removed": true
+          },
+          {
+            "pixels": 2397,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2397,
+            "removed": true
+          },
+          {
+            "pixels": 2383,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2383,
+            "removed": true
+          },
+          {
+            "pixels": 2298,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2298,
+            "removed": true
+          },
+          {
+            "pixels": 2283,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2283,
+            "removed": true
+          },
+          {
+            "pixels": 2182,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2182,
+            "removed": true
+          },
+          {
+            "pixels": 2058,
+            "touches_border": false,
+            "dark": 0,
+            "light": 2058,
+            "removed": true
+          },
+          {
+            "pixels": 1505,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1505,
+            "removed": true
+          },
+          {
+            "pixels": 1482,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1482,
+            "removed": true
+          },
+          {
+            "pixels": 1456,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1456,
+            "removed": true
+          },
+          {
+            "pixels": 1422,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1422,
+            "removed": true
+          },
+          {
+            "pixels": 1225,
+            "touches_border": false,
+            "dark": 0,
+            "light": 1225,
+            "removed": true
+          },
+          {
+            "pixels": 890,
+            "touches_border": false,
+            "dark": 0,
+            "light": 890,
+            "removed": true
+          },
+          {
+            "pixels": 850,
+            "touches_border": false,
+            "dark": 0,
+            "light": 850,
+            "removed": true
+          },
+          {
+            "pixels": 698,
+            "touches_border": false,
+            "dark": 0,
+            "light": 698,
+            "removed": true
+          },
+          {
+            "pixels": 398,
+            "touches_border": false,
+            "dark": 0,
+            "light": 398,
+            "removed": true
+          },
+          {
+            "pixels": 384,
+            "touches_border": false,
+            "dark": 0,
+            "light": 384,
+            "removed": true
+          },
+          {
+            "pixels": 377,
+            "touches_border": false,
+            "dark": 0,
+            "light": 377,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "1a5d0a788237dafc087a95c06076a8a91ad36f78b19ce4f8ddb445ea19c7b3d3",
+        "dimensions": [
+          1448,
+          1086
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_volley_S.png",
+      "atlas_sha256": "80b384d833dc0ac10b8ec4d3a485cef85fef8963b1700f26b356994e90dbf20e",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            50,
+            703,
+            302,
+            1066
+          ],
+          "source_root": [
+            204,
+            1066
+          ],
+          "kept_source_pixels": 35938,
+          "crest_top": 756,
+          "scale": 0.7051282051282052,
+          "placement": [
+            147,
+            64,
+            178,
+            256
+          ],
+          "sha256": "38d08380d9bbd5103ed522df19dbaad2f22276054f0a2db9876a827e78612970",
+          "rgba_sha256": "ef36ae2030a516439ec1a89131a06742f0e36cc0b10007f5c3af1b574f5fb98d"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            404,
+            703,
+            670,
+            1066
+          ],
+          "source_root": [
+            570.75,
+            1066
+          ],
+          "kept_source_pixels": 37314,
+          "crest_top": 756,
+          "scale": 0.7051282051282052,
+          "placement": [
+            138,
+            64,
+            188,
+            256
+          ],
+          "sha256": "da06e28584fa4e763b1cb942b471040cff87747bb48b192c2b1fe80454642590",
+          "rgba_sha256": "7c1844e81af6a76c59c2de0ea6afeb6eb869625d815a9c088dbb27d65a415394"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            785,
+            703,
+            1034,
+            1066
+          ],
+          "source_root": [
+            933.5,
+            1066
+          ],
+          "kept_source_pixels": 35190,
+          "crest_top": 757,
+          "scale": 0.7051282051282052,
+          "placement": [
+            151,
+            64,
+            176,
+            256
+          ],
+          "sha256": "cecc1ad261f238c1423a637d427853a65d7acb95c00688dd92834e06bb6ed242",
+          "rgba_sha256": "c1d63fd9c4dcfd3202c6d57304e6eda72eba191ac9fe1678f1863431d1ca1f4d"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            1136,
+            703,
+            1426,
+            1066
+          ],
+          "source_root": [
+            1289,
+            1066
+          ],
+          "kept_source_pixels": 35569,
+          "crest_top": 755,
+          "scale": 0.7051282051282052,
+          "placement": [
+            148,
+            64,
+            204,
+            256
+          ],
+          "sha256": "a3d376a4ff1bdb23480188490e628feced4aa00874288bed030afbe0bf2f9a76",
+          "rgba_sha256": "7d2739172e9010475bafbadf2632d645f32b0425df7d885b0a5f9724b68973da"
+        }
+      ]
+    },
+    {
+      "key": "volley_W",
+      "source": "art/source/characters/achilles/sprites_polish_v3/source_special_W_harmonized.png",
+      "selected_source_indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2.",
+      "duration_seconds": 0.84,
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        177,
+        92
+      ],
+      "cast_origin_local": [
+        -27.65,
+        -79.8
+      ],
+      "source_report": {
+        "edge_despill": null,
+        "mode": "magenta",
+        "removed_pixels": 1302584,
+        "exterior_pixels": 1297135,
+        "enclosed_checker_or_key_pixels": 5449,
+        "retained_pixels": 270305,
+        "kept_pixel_policy": "RGB and alpha of all kept source pixels remain byte-identical.",
+        "component_summary": [
+          {
+            "pixels": 1297135,
+            "touches_border": true,
+            "dark": 7053,
+            "light": 1286131,
+            "removed": true
+          },
+          {
+            "pixels": 1859,
+            "touches_border": false,
+            "dark": 103,
+            "light": 1702,
+            "removed": true
+          },
+          {
+            "pixels": 656,
+            "touches_border": false,
+            "dark": 30,
+            "light": 600,
+            "removed": true
+          },
+          {
+            "pixels": 641,
+            "touches_border": false,
+            "dark": 38,
+            "light": 575,
+            "removed": true
+          },
+          {
+            "pixels": 571,
+            "touches_border": false,
+            "dark": 33,
+            "light": 510,
+            "removed": true
+          },
+          {
+            "pixels": 465,
+            "touches_border": false,
+            "dark": 30,
+            "light": 410,
+            "removed": true
+          },
+          {
+            "pixels": 448,
+            "touches_border": false,
+            "dark": 30,
+            "light": 404,
+            "removed": true
+          },
+          {
+            "pixels": 327,
+            "touches_border": false,
+            "dark": 29,
+            "light": 279,
+            "removed": true
+          },
+          {
+            "pixels": 86,
+            "touches_border": false,
+            "dark": 14,
+            "light": 66,
+            "removed": true
+          },
+          {
+            "pixels": 76,
+            "touches_border": false,
+            "dark": 15,
+            "light": 50,
+            "removed": true
+          },
+          {
+            "pixels": 70,
+            "touches_border": false,
+            "dark": 14,
+            "light": 52,
+            "removed": true
+          },
+          {
+            "pixels": 57,
+            "touches_border": false,
+            "dark": 14,
+            "light": 39,
+            "removed": true
+          },
+          {
+            "pixels": 29,
+            "touches_border": false,
+            "dark": 10,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 2,
+            "light": 15,
+            "removed": true
+          },
+          {
+            "pixels": 22,
+            "touches_border": false,
+            "dark": 5,
+            "light": 14,
+            "removed": true
+          },
+          {
+            "pixels": 21,
+            "touches_border": false,
+            "dark": 2,
+            "light": 14,
+            "removed": true
+          },
+          {
+            "pixels": 16,
+            "touches_border": false,
+            "dark": 0,
+            "light": 15,
+            "removed": true
+          }
+        ],
+        "neutral_dust": [],
+        "source_sha256": "3f87f90dc11fcbaba78a0311124dbd847a7a13247ed6a773e392dabe0b2b0af7",
+        "dimensions": [
+          1447,
+          1087
+        ]
+      },
+      "atlas": "assets/characters/Achilles/sprites_polish_v3/atlas_volley_W.png",
+      "atlas_sha256": "a31cc137eac7ac5625f08b10864d9706a27fc53316b2c7fb4f6291ff28b8dfcb",
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_index": 8,
+          "source_bbox": [
+            120,
+            685,
+            269,
+            1037
+          ],
+          "source_root": [
+            199,
+            1036
+          ],
+          "kept_source_pixels": 22913,
+          "crest_top": 768,
+          "scale": 0.8178438661710037,
+          "placement": [
+            191,
+            33,
+            122,
+            288
+          ],
+          "sha256": "8f7f13aa868abae2b1f0c4919954f6f03c4af982cd423f8ee81ffb19c3f36bce",
+          "rgba_sha256": "9ed0679a8fe6edd4716ef579774f5f5a6cbe34a3a397ff3cef1aa3f008172ef6"
+        },
+        {
+          "index": 1,
+          "source_index": 9,
+          "source_bbox": [
+            467,
+            681,
+            647,
+            1036
+          ],
+          "source_root": [
+            561,
+            1035
+          ],
+          "kept_source_pixels": 24225,
+          "crest_top": 768,
+          "scale": 0.8178438661710037,
+          "placement": [
+            179,
+            30,
+            147,
+            290
+          ],
+          "sha256": "31d8542ae3f71c9d159e59df19df74b7d406a171979daefc4b6c3ceb8abab85e",
+          "rgba_sha256": "2e765df784c7cc709099b042e6549c1a37fd693cc73b00e46d18181fbfc468bc"
+        },
+        {
+          "index": 2,
+          "source_index": 10,
+          "source_bbox": [
+            836,
+            682,
+            1004,
+            1037
+          ],
+          "source_root": [
+            918,
+            1036
+          ],
+          "kept_source_pixels": 23779,
+          "crest_top": 768,
+          "scale": 0.8178438661710037,
+          "placement": [
+            189,
+            30,
+            137,
+            290
+          ],
+          "sha256": "bd9af933d5966d654cf3fdf2808da7963ffad812c03935fd44ff02c9f79a0d01",
+          "rgba_sha256": "7934049d4e744abc4ceb4f0de856120c48bc42aee0adad4235fab0cecbb57bde"
+        },
+        {
+          "index": 3,
+          "source_index": 11,
+          "source_bbox": [
+            1196,
+            682,
+            1370,
+            1036
+          ],
+          "source_root": [
+            1283,
+            1035
+          ],
+          "kept_source_pixels": 23932,
+          "crest_top": 768,
+          "scale": 0.8178438661710037,
+          "placement": [
+            185,
+            31,
+            142,
+            290
+          ],
+          "sha256": "9f8af6c9f2a9fb85358625885225ed66c36f68e3814be9539d607bb2f9434d6b",
+          "rgba_sha256": "28b41dfb481989050ac3ffd98c2c08b65c5a5915b1f0a60c8893bf7e620b59df"
+        }
+      ]
+    }
+  ]
+}

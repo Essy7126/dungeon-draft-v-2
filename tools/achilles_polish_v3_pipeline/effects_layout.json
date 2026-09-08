@@ -1,0 +1,760 @@
+{
+  "schema_version": 1,
+  "projectiles": {
+    "source_path": "art/source/vfx/achilles_polish_v3/source_projectiles.png",
+    "sha256": "b56f34eea933fa6cef5ec388d0568c2d44faeb4c368ab910b6299786c997ede2",
+    "size": [
+      1536,
+      1024
+    ],
+    "reviewed": true,
+    "review": "Source viewed on gray; six rows in base/reach/heavy/piercing/death_line/volley order. Explicit shafts/impact centers, gutters chosen between all visible cores, faint alpha measured and retained.",
+    "background": {
+      "mode": "native"
+    },
+    "frames": [
+      {
+        "animation": "arrow",
+        "frame": 0,
+        "window": [
+          0,
+          0,
+          388,
+          170
+        ],
+        "anchor": [
+          192,
+          87
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow",
+        "frame": 1,
+        "window": [
+          388,
+          0,
+          380,
+          170
+        ],
+        "anchor": [
+          576,
+          87
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow",
+        "frame": 2,
+        "window": [
+          768,
+          0,
+          384,
+          170
+        ],
+        "anchor": [
+          960,
+          87
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow",
+        "frame": 3,
+        "window": [
+          1152,
+          0,
+          384,
+          170
+        ],
+        "anchor": [
+          1344,
+          87
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_reach",
+        "frame": 0,
+        "window": [
+          0,
+          170,
+          388,
+          152
+        ],
+        "anchor": [
+          192,
+          240
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_reach",
+        "frame": 1,
+        "window": [
+          388,
+          170,
+          380,
+          152
+        ],
+        "anchor": [
+          576,
+          240
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_reach",
+        "frame": 2,
+        "window": [
+          768,
+          170,
+          384,
+          152
+        ],
+        "anchor": [
+          960,
+          240
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_reach",
+        "frame": 3,
+        "window": [
+          1152,
+          170,
+          384,
+          152
+        ],
+        "anchor": [
+          1344,
+          240
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_heavy",
+        "frame": 0,
+        "window": [
+          0,
+          322,
+          382,
+          154
+        ],
+        "anchor": [
+          192,
+          393
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_heavy",
+        "frame": 1,
+        "window": [
+          382,
+          322,
+          386,
+          154
+        ],
+        "anchor": [
+          576,
+          393
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_heavy",
+        "frame": 2,
+        "window": [
+          768,
+          322,
+          384,
+          154
+        ],
+        "anchor": [
+          960,
+          393
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_heavy",
+        "frame": 3,
+        "window": [
+          1152,
+          322,
+          384,
+          154
+        ],
+        "anchor": [
+          1344,
+          393
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_piercing",
+        "frame": 0,
+        "window": [
+          0,
+          476,
+          384,
+          166
+        ],
+        "anchor": [
+          192,
+          562
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_piercing",
+        "frame": 1,
+        "window": [
+          384,
+          476,
+          386,
+          166
+        ],
+        "anchor": [
+          576,
+          562
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_piercing",
+        "frame": 2,
+        "window": [
+          770,
+          476,
+          382,
+          166
+        ],
+        "anchor": [
+          960,
+          562
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_piercing",
+        "frame": 3,
+        "window": [
+          1152,
+          476,
+          384,
+          166
+        ],
+        "anchor": [
+          1344,
+          562
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_death_line",
+        "frame": 0,
+        "window": [
+          0,
+          642,
+          382,
+          188
+        ],
+        "anchor": [
+          192,
+          722
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_death_line",
+        "frame": 1,
+        "window": [
+          382,
+          642,
+          400,
+          188
+        ],
+        "anchor": [
+          576,
+          722
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_death_line",
+        "frame": 2,
+        "window": [
+          782,
+          642,
+          368,
+          188
+        ],
+        "anchor": [
+          960,
+          722
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_death_line",
+        "frame": 3,
+        "window": [
+          1150,
+          642,
+          386,
+          188
+        ],
+        "anchor": [
+          1344,
+          722
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_volley",
+        "frame": 0,
+        "window": [
+          0,
+          830,
+          390,
+          194
+        ],
+        "anchor": [
+          192,
+          897
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_volley",
+        "frame": 1,
+        "window": [
+          390,
+          830,
+          378,
+          194
+        ],
+        "anchor": [
+          576,
+          897
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_volley",
+        "frame": 2,
+        "window": [
+          768,
+          830,
+          384,
+          194
+        ],
+        "anchor": [
+          960,
+          897
+        ],
+        "boundary_alpha_max": 1
+      },
+      {
+        "animation": "arrow_volley",
+        "frame": 3,
+        "window": [
+          1152,
+          830,
+          384,
+          194
+        ],
+        "anchor": [
+          1344,
+          897
+        ],
+        "boundary_alpha_max": 1
+      }
+    ]
+  },
+  "impacts": {
+    "source_path": "art/source/vfx/achilles_polish_v3/source_impacts.png",
+    "sha256": "127d565b3ab7fc38232c72c8a6ec6b730e8b73416b308bab79f7843900893965",
+    "size": [
+      1024,
+      1536
+    ],
+    "reviewed": true,
+    "review": "Source viewed on gray; six rows in base/reach/heavy/piercing/death_line/volley order. Explicit shafts/impact centers, gutters chosen between all visible cores, faint alpha measured and retained.",
+    "background": {
+      "mode": "magenta",
+      "rgb": [
+        255,
+        0,
+        255
+      ],
+      "solid_distance": 50,
+      "feather_distance": 100
+    },
+    "frames": [
+      {
+        "animation": "impact",
+        "frame": 0,
+        "window": [
+          0,
+          0,
+          256,
+          240
+        ],
+        "anchor": [
+          128,
+          129
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact",
+        "frame": 1,
+        "window": [
+          256,
+          0,
+          256,
+          240
+        ],
+        "anchor": [
+          384,
+          129
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact",
+        "frame": 2,
+        "window": [
+          512,
+          0,
+          256,
+          240
+        ],
+        "anchor": [
+          640,
+          129
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact",
+        "frame": 3,
+        "window": [
+          768,
+          0,
+          256,
+          240
+        ],
+        "anchor": [
+          896,
+          129
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_reach",
+        "frame": 0,
+        "window": [
+          0,
+          240,
+          243,
+          210
+        ],
+        "anchor": [
+          128,
+          361
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_reach",
+        "frame": 1,
+        "window": [
+          243,
+          240,
+          269,
+          210
+        ],
+        "anchor": [
+          384,
+          361
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_reach",
+        "frame": 2,
+        "window": [
+          512,
+          240,
+          256,
+          210
+        ],
+        "anchor": [
+          640,
+          361
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_reach",
+        "frame": 3,
+        "window": [
+          768,
+          240,
+          256,
+          210
+        ],
+        "anchor": [
+          896,
+          361
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_heavy",
+        "frame": 0,
+        "window": [
+          0,
+          450,
+          256,
+          250
+        ],
+        "anchor": [
+          128,
+          646
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_heavy",
+        "frame": 1,
+        "window": [
+          256,
+          450,
+          256,
+          250
+        ],
+        "anchor": [
+          384,
+          646
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_heavy",
+        "frame": 2,
+        "window": [
+          512,
+          450,
+          256,
+          250
+        ],
+        "anchor": [
+          640,
+          646
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_heavy",
+        "frame": 3,
+        "window": [
+          768,
+          450,
+          256,
+          250
+        ],
+        "anchor": [
+          896,
+          646
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_piercing",
+        "frame": 0,
+        "window": [
+          0,
+          700,
+          256,
+          230
+        ],
+        "anchor": [
+          128,
+          823
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_piercing",
+        "frame": 1,
+        "window": [
+          256,
+          700,
+          256,
+          230
+        ],
+        "anchor": [
+          384,
+          823
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_piercing",
+        "frame": 2,
+        "window": [
+          512,
+          700,
+          256,
+          230
+        ],
+        "anchor": [
+          640,
+          823
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_piercing",
+        "frame": 3,
+        "window": [
+          768,
+          700,
+          256,
+          230
+        ],
+        "anchor": [
+          896,
+          823
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_death_line",
+        "frame": 0,
+        "window": [
+          0,
+          930,
+          255,
+          290
+        ],
+        "anchor": [
+          128,
+          1070
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_death_line",
+        "frame": 1,
+        "window": [
+          255,
+          930,
+          257,
+          290
+        ],
+        "anchor": [
+          384,
+          1070
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_death_line",
+        "frame": 2,
+        "window": [
+          512,
+          930,
+          256,
+          290
+        ],
+        "anchor": [
+          640,
+          1070
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_death_line",
+        "frame": 3,
+        "window": [
+          768,
+          930,
+          256,
+          290
+        ],
+        "anchor": [
+          896,
+          1070
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_volley",
+        "frame": 0,
+        "window": [
+          0,
+          1220,
+          256,
+          316
+        ],
+        "anchor": [
+          128,
+          1346
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_volley",
+        "frame": 1,
+        "window": [
+          256,
+          1220,
+          256,
+          316
+        ],
+        "anchor": [
+          384,
+          1346
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_volley",
+        "frame": 2,
+        "window": [
+          512,
+          1220,
+          256,
+          316
+        ],
+        "anchor": [
+          640,
+          1346
+        ],
+        "boundary_alpha_max": 0
+      },
+      {
+        "animation": "impact_volley",
+        "frame": 3,
+        "window": [
+          768,
+          1220,
+          256,
+          316
+        ],
+        "anchor": [
+          896,
+          1346
+        ],
+        "boundary_alpha_max": 0
+      }
+    ]
+  }
+}

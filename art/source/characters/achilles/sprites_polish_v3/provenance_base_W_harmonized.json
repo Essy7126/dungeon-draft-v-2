@@ -1,0 +1,53 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "W",
+  "identity_authority": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+  "identity_frame": 0,
+  "identity_source_bbox": [
+    104,
+    7,
+    252,
+    299
+  ],
+  "identity_preview": "artifacts/achilles_identity_audit_v3/identity_idle_source_W_native.png",
+  "pose_guide": "art/source/characters/achilles/sprites_polish_v3/source_base_W.png",
+  "pose_guide_preview": "artifacts/achilles_identity_audit_v3/base_W_pose_guide_small.png",
+  "selected_generation": "exec-68f7ca5e-a705-43cf-9ee7-0839f7203a71",
+  "generated_source": "$CODEX_HOME/generated_images/01a08202-43f3-7443-a33b-aa375a46b1b8/exec-68f7ca5e-a705-43cf-9ee7-0839f7203a71.png",
+  "prompt": "Use case: identity-preserve. Harmonize an EXISTING sprite animation sheet so it is unmistakably the exact original playable character.\nThe FIRST attached image is the large single original Achilles rear-left idle sprite. It is the absolute and ONLY authority for character design, head/body proportions, the curve and size of the red helmet crest, cheek guards, materials, palette, simple hand-painted shading, equipment geometry and costume details. Reproduce that actual character, not an interpretation or a new model. Study the original modest helmet dome and open cheek guard, the particular broad curved red crest, shoulder width relative to head, ivory backplate taper, arms, original dark waist band and red hanging knot/cloth, dark teal tunic and small hem ornaments, and strapped open-toe sandals. Preserve these exact relative sizes; neither enlarge nor shrink the crest. Warm ivory #f8e5c4, muted deep teal, matte warm bronze in simple angular painted planes, fine deep-brown contours. No pure white armor, glossy 3D spheres, new biceps, extra armor, new accessories, invented belts, heavier outlines or cleaner generic redesign.\nThe SECOND attached image, small beige 4-column 4-row sheet, is a POSE AND FRAME-ORDER GUIDE ONLY. Its body design/rendering is less accurate: ignore its proportions, brighter colors, and polished surfaces. Replace the character in EVERY guide pose with the exact character from IMAGE1 while keeping the guide's physical action, facing and equipment state. Think of applying the original model to these same sixteen poses.\n\nOUTPUT: exactly 16 separate full-body painted sprites in exactly 4 columns by 4 rows, same rear three-quarter UP-LEFT camera in every cell. Uniform vivid MAGENTA #FF00FF background including all holes, no ground, cast shadows, text, labels, boxes or grid lines. Leave generous gutters and margins for full bow/spear/feet, no cropping. Same physical scale of the character across all frames; fixed orthographic camera, no perspective changes.\n\nROW1 and ROW2 are the eight existing WALK source poses, read left to right. Copy the precise leg phase from the corresponding guide cell. Do NOT invent a new walk cycle, reorder frames, make poses identical, or swap the legs. Keep exactly the guide's bent/straight knees, lifted/grounded foot choices, stride widths, foot directions and naturally counter-moving body. In particular the fourth cell of row1 and fourth cell of row2 remain their original broad contact/transition stances, so the walking contacts still work. Shield stays on left forearm, spear in right hand upright, both as in the original idle character. Arms do not swing away from their equipment. Preserve shield lambda, original shield thickness, hand grips, strap logic and sandals. Same head-to-torso proportions in every moving pose.\n\nROW3 and ROW4 are the eight existing BOW source poses, keeping the guide's exact feet and actions. Shield and spear are stowed on the back with the same design and scale as IMAGE1, not replaced by a quiver. Bow is held in LEFT hand, RIGHT hand draws, exactly as the guide:\nRow3 col1 low bow anticipation; col2 raises bow and begins draw; col3 stronger draw with a single nocked arrow; col4 full draw with ONE arrow, taut string, right hand near cheek.\nRow4 col1 RELEASE: arrow is entirely gone, no arrowhead or shaft remains on the bow, right drawing hand snaps back beside the head, bow string relaxes toward its resting line; col2 follow-through with no arrow and drawing hand behind; col3 lowers the bow; col4 returns to original low ready pose.\nMaintain the same planted feet across all eight bow frames and exact guide elbow/hand trajectories. No duplicated arms, broken elbow bends, bow shape changing between frames, floating feet, or residual arrow in release.\nNo spell effects, particles, body glow or motion trails. The goal is to alternate these sprites with IMAGE1 during gameplay without a face, body, crest, costume, color, outline or material-style jump. Exact original identity and exact corresponding guide poses have priority over adding detail.",
+  "status": "selected_for_runtime_bow_only",
+  "background_removal_authorized_by_user": true,
+  "review": "Bow source poses 8..15 selected after identity review. Walk source poses 0..7 are excluded: they copied the rejected source_base_W guide and source 3 lacks the required planted contact. WALK_W instead uses source_walk_W_harmonized.png. This corrects the initial visual-review claim that the original contacts were preserved.",
+  "source_sha256": "6420431df50e4292c4232c5aa015b328a5aa9bb4022f0530bb0111e0db9194bb",
+  "pose_guide_sha256": "f4b23b1330a361d18848a3a8384ef5ec5ce55d9a8ddf18404364d9c12cdd6330",
+  "identity_authority_sha256": "448f58e4b2d44fec7ed308ca57101d224e092f54bf5d399c433b8372ed0c3c34",
+  "initial_review_at_generation": "16 source poses retain the previous row/column order; walk indices 3/7 broad contact/transition poses preserved. Bow indices 8..15 have left-hand grip, right-hand draw, arrow visible in 10/11 and absent in release/follow-through 12/13. Camera remains rear upper-left. Palette, crest and anatomical match await independent canonical-scale measurement; no active source overwrite or runtime pipeline switch.",
+  "selected_clips": [
+    "bow_W"
+  ],
+  "selected_source_indices": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "excluded_source_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "runtime_selection": {
+    "authority": "Root approved harmonized source selection after independent motion/identity review.",
+    "alignment": "tools/achilles_polish_v3_pipeline/alignment.json",
+    "manifest": "assets/characters/Achilles/sprites_polish_v3/manifest.json"
+  }
+}
