@@ -578,12 +578,46 @@ func _add_spell_button(unit, spell) -> void:
 	button.set_refined_style(_refined_skin_active())
 	button.set_reduced_motion(_reduced_motion)
 	button.set_meta("spell", spell)
-	button.mouse_entered.connect(func() -> void: _show_spell_card(unit, spell))
-	button.mouse_exited.connect(_hide_keyword_tooltip)
-	button.pressed.connect(func() -> void: spell_pressed.emit(spell))
+	button.mouse_entered.connect(_show_slot_spell_card.bind(unit, spell, button))
+	button.mouse_exited.connect(func() -> void:
+		if button.has_focus():
+			_show_slot_spell_card(unit, spell, button)
+		else:
+			_hide_keyword_tooltip()
+	)
+	button.focus_entered.connect(_show_slot_spell_card.bind(unit, spell, button))
+	button.focus_exited.connect(func() -> void:
+		if not button.is_hovered():
+			_hide_keyword_tooltip()
+	)
+	button.pressed.connect(func() -> void:
+		_hide_keyword_tooltip()
+		spell_pressed.emit(spell)
+	)
 	_spell_buttons.append(button)
 	_apply_spell_button_layout(button)
 	_update_spell_section_geometry()
+
+
+func _show_slot_spell_card(unit, spell: Spell, button: Button) -> void:
+	if not button.is_visible_in_tree():
+		return
+	var layer = _tooltip_layer()
+	if layer != null:
+		var rect := button.get_global_rect()
+		layer.show_spell(unit, spell, _spell_unusable_reason(unit, spell), Vector2(rect.get_center().x, rect.position.y))
+		# The shared tooltip sizes itself on the next frame. Keep this HUD card
+		# above the action bar for both pointer and keyboard inspection.
+		await get_tree().process_frame
+		if not is_instance_valid(button) or not (button.has_focus() or button.is_hovered()):
+			return
+		var panel := layer.get("_panel") as Control
+		if panel != null and panel.visible:
+			var viewport_size := get_viewport().get_visible_rect().size
+			var top := minf(rect.position.y, _move_btn.get_global_rect().position.y)
+			panel.position = Vector2(
+				clampf(rect.get_center().x - panel.size.x * 0.5, 8.0, maxf(8.0, viewport_size.x - panel.size.x - 8.0)),
+				maxf(8.0, top - panel.size.y - 12.0))
 
 
 func build_spell_buttons(unit) -> void:

@@ -13,6 +13,8 @@ var _failures: Array[String] = []
 var _captures: Array[Dictionary] = []
 var _screen: ExpeditionScreen
 var _outcomes_only := false
+var _halt_captured := false
+var _ergonomics_only := false
 
 
 func _ready() -> void:
@@ -28,6 +30,8 @@ func _ready() -> void:
 
 func _run() -> void:
 	for argument in OS.get_cmdline_user_args():
+		if argument == "ergonomics_only=true":
+			_ergonomics_only = true
 		if argument == "outcomes_only=true":
 			_outcomes_only = true
 		if argument.begins_with("resolution="):
@@ -35,8 +39,10 @@ func _run() -> void:
 			if dimensions.size() == 2:
 				_resolution = Vector2i(int(dimensions[0]), int(dimensions[1]))
 	_output_dir = ProjectSettings.globalize_path(OUTPUT.path_join("%dx%d" % [_resolution.x, _resolution.y]))
+	if _ergonomics_only:
+		_output_dir = _output_dir.path_join("ergonomics")
 	DirAccess.make_dir_recursive_absolute(_output_dir)
-	GameManager.expedition_save_path = _output_dir.path_join("probe_save.json")
+	GameManager.expedition_save_path = _output_dir.path_join("probe_%d.json" % Time.get_ticks_usec())
 	get_window().size = _resolution
 	if _outcomes_only:
 		await _probe_result_screens()
@@ -55,6 +61,7 @@ func _run() -> void:
 	await _settle()
 	_check_hud_icons(persistent)
 	await _capture("combat_hud", persistent.combat_hud)
+	await _probe_keyboard_spell(persistent.combat_hud)
 	_check(persistent.open_pause_menu(), "Actual pause menu opens from combat")
 	await _settle()
 	if persistent.is_pause_menu_open():
@@ -94,16 +101,22 @@ func _run() -> void:
 		await _finish()
 		return
 	_check_screen_art()
+	await _check_reward_choices()
 	await _capture("first_reward", _screen)
 	_check(bool(GameManager.claim_expedition_reward("supplies").get("success", false)), "Claim first reward")
 	_screen.call("_render")
 	await _settle()
 	await _capture("route", _screen)
+	await _check_fixed_action("CommitDestination")
 	await _probe_equipment()
+	if _ergonomics_only:
+		await _finish()
+		return
 	await _advance_to_twelfth_reward()
 	if GameManager.expedition.build.completed_depth >= 12:
 		await _probe_discoveries_and_capacity()
 		await _probe_six_spell_combat()
+	await _probe_failed_screen_close()
 	await _finish()
 
 
@@ -206,7 +219,8 @@ func _probe_equipment() -> void:
 		if selected != null:
 			for tile in inventory.find_children("*", "Button", true, false):
 				if tile is InventoryItemTile and tile.instance_id == selected.instance_id:
-					tile.pressed.emit()
+					await _click_button(tile)
+					_check(tile.get_theme_color("font_hover_pressed_color").a == 0.0, "Selected hovered tile never draws its native accessibility text over the item label")
 					break
 		await _settle()
 		_check((inventory.get_node("%DetailIcon") as TextureRect).texture == ICONS.item_icon("catabase_lame_sang"), "Selecting the real item displays the painted detail image")
@@ -226,6 +240,8 @@ func _probe_equipment() -> void:
 		_check(equipped != null and String(equipped.definition_id) == "catabase_lame_sang", "Actual mouse click equips the selected painted weapon")
 		_check(_find_inventory_item("catabase_levier") != null, "The replaced weapon returns to the real inventory")
 		await _capture("inventory_equipped", inventory)
+		_check(not details.is_ancestor_of(inventory.get_node("%Feedback")), "Equipment feedback stays with the fixed actions")
+		_check(get_viewport().gui_get_focus_owner() != null, "Equipping restores keyboard focus after its action hides")
 		(inventory.get_node("%CloseButton") as Button).pressed.emit()
 		await _settle()
 		_check(not persistent.is_inventory_open() and not persistent.has_active_modal(), "Inventory close releases modal")
@@ -243,6 +259,14 @@ func _advance_to_twelfth_reward() -> void:
 	while session.build.completed_depth < 12:
 		if session.route.phase == "reward":
 			var node := session.route.get_current_node()
+			if not _halt_captured and ExpeditionRouteCatalog.is_halt(String(node.kind)):
+				await _navigate("hub")
+				var sanctuary := _screen.find_child("EnterSanctuary", true, false) as Button
+				_check(sanctuary != null and not sanctuary.disabled and sanctuary.icon == ART_THEME.icon("nav", "halt"), "The real halt exposes its Sanctuary entry")
+				await _check_fixed_action("EnterSanctuary")
+				await _check_fixed_action("LeaveHub")
+				await _capture("halt", _screen)
+				_halt_captured = true
 			var claim := "leave_hub" if ExpeditionRouteCatalog.is_halt(String(node.kind)) else "supplies"
 			_check(bool(GameManager.claim_expedition_reward(claim).get("success", false)), "Fixture reward claim " + String(node.id))
 		var available := session.route.get_available_nodes()
@@ -268,6 +292,9 @@ func _probe_discoveries_and_capacity() -> void:
 		_screen.call("_render")
 		await _settle()
 		await _capture("tree_" + doctrine, _screen)
+		await _check_fixed_action("PurchaseTechnique")
+		if doctrine == "colere":
+			await _probe_tree_keyboard()
 	# Compare both exclusive XII choices from the exact same valid build state.
 	var before_choice := session.build.to_snapshot().duplicate(true)
 	_check(bool(GameManager.choose_expedition_capacity("mutation").get("success", false)), "Actual XII mutation choice")
@@ -355,12 +382,132 @@ func _probe_six_spell_combat() -> void:
 	await _capture("six_spell_combat", persistent.combat_hud)
 
 
+func _probe_keyboard_spell(hud: Node) -> void:
+	var buttons: Array = hud.get("_spell_buttons")
+	if buttons.is_empty():
+		_check(false, "A real spell is available for keyboard inspection")
+		return
+	var button := buttons[0] as Button
+	button.grab_focus()
+	await _settle()
+	var tooltip := get_tree().get_first_node_in_group("keyword_tooltip_layer") as KeywordTooltipLayer
+	var panel := tooltip.get("_panel") as Control if tooltip != null else null
+	_check(panel != null and panel.visible, "Keyboard focus displays the real spell card")
+	if panel != null:
+		_check(Rect2(Vector2.ZERO, Vector2(_resolution)).encloses(panel.get_global_rect()), "Keyboard spell card stays inside the viewport")
+		_check(panel.get_global_rect().end.y < (hud.get_node("%MoveButton") as Control).get_global_rect().position.y, "Spell card remains above the combat action bar")
+		await _capture("combat_spell_keyboard", hud)
+	button.release_focus()
+	if tooltip != null:
+		tooltip.hide_all()
+	await _settle()
+
+
+func _check_fixed_action(action_name: String) -> void:
+	var button := _screen.find_child(action_name, true, false) as Button
+	_check(button != null, "Fixed action exists: " + action_name)
+	if button == null:
+		return
+	var rect := button.get_global_rect()
+	_check(Rect2(Vector2.ZERO, Vector2(_resolution)).encloses(rect), "Fixed action is inside the viewport: " + action_name)
+	var scrolls := button.get_parent().find_children("*", "ScrollContainer", true, false)
+	for scroll in scrolls:
+		_check(not scroll.is_ancestor_of(button), "Action is outside the description scroll: " + action_name)
+		var original: int = scroll.scroll_vertical
+		scroll.scroll_vertical = int(scroll.get_v_scroll_bar().max_value)
+		await _settle()
+		_check(button.get_global_rect() == rect, "Description scrolling preserves action position: " + action_name)
+		scroll.scroll_vertical = original
+	await _settle()
+
+
+func _probe_tree_keyboard() -> void:
+	var scroll := _screen.get("_tree_scroll") as ScrollContainer
+	var buttons := scroll.find_children("Technique_*", "Button", true, false)
+	if buttons.is_empty():
+		_check(false, "Tree has actual keyboard destinations")
+		return
+	var previous := scroll.scroll_vertical
+	var button := buttons.back() as Button
+	button.grab_focus()
+	await _settle()
+	_check(scroll.get_global_rect().encloses(button.get_global_rect()), "Focusing a lower tree card scrolls it entirely into view")
+	await _capture("tree_keyboard", _screen)
+	button.release_focus()
+	scroll.scroll_vertical = previous
+	await _settle()
+
+
+func _probe_failed_screen_close() -> void:
+	# The failure is isolated to a unique missing fixture directory; no user save is touched.
+	var session := GameManager.expedition
+	if session == null:
+		return
+	if session.route.phase == "combat":
+		GameManager.get("_combat_report_tracker").discard()
+		session.combat_won()
+	get_tree().change_scene_to_file(SCREEN_PATH)
+	await _settle()
+	_screen = get_tree().current_scene as ExpeditionScreen
+	var path := GameManager.expedition_save_path
+	GameManager.expedition_save_path = _output_dir.path_join("missing_%d/save.json" % Time.get_ticks_usec())
+	_screen.call("_close")
+	await _settle()
+	_check(is_instance_valid(_screen) and get_tree().current_scene == _screen and GameManager.expedition == session, "Failed Accueil save keeps the actual expedition screen and run")
+	_check(not str((_screen.get("_status") as Label).text).is_empty(), "Failed Accueil save gives readable feedback on the actual screen")
+	var persistent := GameManager.get_persistent_run_ui()
+	var dialog := persistent.get("_save_failure_dialog") as ConfirmationDialog
+	_check(dialog != null and dialog.visible, "Failed Accueil save offers retry or stay")
+	await _capture("save_failure", _screen)
+	if dialog != null:
+		dialog.hide()
+		dialog.canceled.emit()
+	GameManager.expedition_save_path = path
+	_check(GameManager.retry_expedition_save(), "The preserved run can retry its save")
+	await _settle()
+	_check(get_tree().current_scene == _screen, "Choosing stay prevents a later retry from leaving the screen")
+
+
 func _settle() -> void:
 	await get_tree().create_timer(0.25, true).timeout
 	for frame in 10:
 		await get_tree().process_frame
 	if DisplayServer.get_name() != "headless":
-		await RenderingServer.frame_post_draw
+		var frame_seen := {"drawn": false}
+		var mark_drawn := func() -> void: frame_seen.drawn = true
+		RenderingServer.frame_post_draw.connect(mark_drawn, CONNECT_ONE_SHOT)
+		# Off-screen verification still needs an explicit draw when the window is idle.
+		RenderingServer.force_draw(false)
+		var deadline := Time.get_ticks_msec() + 1500
+		while not bool(frame_seen.drawn) and Time.get_ticks_msec() < deadline:
+			await get_tree().create_timer(0.05, true).timeout
+		if RenderingServer.frame_post_draw.is_connected(mark_drawn):
+			RenderingServer.frame_post_draw.disconnect(mark_drawn)
+		_check(bool(frame_seen.drawn), "Rendered frame arrives within the bounded wait")
+
+
+func _check_reward_choices() -> void:
+	var heading := _screen.find_child("RewardHeading", true, false) as Label
+	_check(heading != null and heading.size.y < 50, "Reward heading remains horizontal and compact")
+	var choices: Array[Button] = []
+	for button in _screen.find_children("*", "Button", true, false):
+		if button.text == "Choisir cette récompense":
+			choices.append(button)
+	_check(not choices.is_empty(), "The opening reward offers actual choice buttons")
+	var scroll: ScrollContainer
+	for button in choices:
+		button.grab_focus()
+		await _settle()
+		var ancestor := button.get_parent()
+		while ancestor != null and not ancestor is ScrollContainer:
+			ancestor = ancestor.get_parent()
+		scroll = ancestor as ScrollContainer
+		_check(scroll != null and scroll.get_global_rect().encloses(button.get_global_rect()), "Reward choice is fully reachable by keyboard scrolling")
+		_check(Rect2(Vector2.ZERO, Vector2(_resolution)).encloses(button.get_global_rect()), "Reward choice is inside the visible viewport")
+		button.release_focus()
+	if scroll != null:
+		scroll.scroll_vertical = 0
+	await _settle()
 
 
 func _probe_result_screens() -> void:
@@ -425,6 +572,8 @@ func _finish() -> void:
 		"scope": "Real opening, pause/resume, item selection and equipment actions. Intermediate victories, item grants and discoveries are fixtures; exclusive XII alternatives use a restored pre-choice build snapshot."}
 	if _outcomes_only:
 		report["scope"] = "Actual result scene with explicit victory/defeat fixtures and restoration of another adventure's presentation; no claim of playing the final boss."
+	if _ergonomics_only:
+		report["scope"] = "Targeted final ergonomics regression: real opening HUD, keyboard spell card, pause, route inspection, first reward choices and hovered selected inventory actions. One victory and item grants are fixtures; later trees, halts and six-spell combat are not repeated."
 	var file := FileAccess.open(_output_dir.path_join("outcomes_report.json" if _outcomes_only else "report.json"), FileAccess.WRITE)
 	if file != null:
 		file.store_string(JSON.stringify(report, "\t"))

@@ -14,6 +14,7 @@ signal equipment_slot_requested(slot: int)
 var instance_id: StringName = &""
 var equipment_slot := ItemDefinition.EquipmentSlot.NONE
 var _hover_tween: Tween = null
+var _pointer_down := false
 static var _presentation_icon_cache: Dictionary = {}
 
 
@@ -25,7 +26,7 @@ func _ready() -> void:
 	theme_type_variation = &"PremiumTileButton"
 	for color_name in [
 		&"font_color", &"font_hover_color", &"font_focus_color",
-		&"font_pressed_color", &"font_disabled_color",
+		&"font_pressed_color", &"font_hover_pressed_color", &"font_disabled_color",
 	]:
 		add_theme_color_override(color_name, Color.TRANSPARENT)
 	pressed.connect(_on_pressed)
@@ -33,6 +34,17 @@ func _ready() -> void:
 	mouse_exited.connect(_animate_emphasis.bind(false))
 	focus_entered.connect(_animate_emphasis.bind(true))
 	focus_exited.connect(_animate_emphasis.bind(false))
+	button_down.connect(_set_pointer_down.bind(true))
+	button_up.connect(_set_pointer_down.bind(false))
+	# Small item names need a reading face; the screen title carries the display font.
+	title_label.add_theme_font_override("font", PremiumUI.SKIN.font_regular)
+	title_label.add_theme_font_size_override("font_size", 15)
+	meta_label.add_theme_font_override("font", PremiumUI.SKIN.font_regular)
+	meta_label.add_theme_font_size_override("font_size", 11)
+	for label in [title_label, meta_label]:
+		label.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+		label.add_theme_constant_override("outline_size", 0)
+	(%IconFrame as Control).size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	resized.connect(_update_pivot)
 	_update_pivot()
 
@@ -65,7 +77,7 @@ func configure_inventory(
 	var item_name := definition.display_name if definition != null else str(instance.definition_id)
 	var relic := definition != null and definition.is_relic()
 	text = "%s\n%s" % [item_name, "Relique active" if relic else "Objet disponible"]
-	title_label.text = item_name.to_upper()
+	title_label.text = item_name
 	title_label.theme_type_variation = &"PremiumSubtitle"
 	var rarity := definition.rarity if definition != null else &"common"
 	meta_label.text = "RELIQUE ACTIVE" if relic else PremiumUI.rarity_label(rarity)
@@ -98,7 +110,7 @@ func configure_equipment(
 	var slot_name := EquipmentLoadout.get_slot_display_name(slot).to_upper()
 	var item_name := definition.display_name if definition != null else "Emplacement libre"
 	text = "%s : %s" % [slot_name, item_name]
-	title_label.text = item_name.to_upper()
+	title_label.text = item_name
 	meta_label.text = slot_name
 	meta_label.theme_type_variation = &"PremiumEyebrow"
 	meta_label.modulate = (
@@ -126,24 +138,27 @@ func _on_pressed() -> void:
 		inventory_item_requested.emit(instance_id)
 
 
-func _animate_emphasis(enabled: bool) -> void:
-	if disabled:
-		enabled = false
+func _set_pointer_down(down: bool) -> void:
+	_pointer_down = down
+	_animate_emphasis(false)
+
+
+func _animate_emphasis(_enabled: bool) -> void:
+	var highlighted := not disabled and (is_hovered() or has_focus())
+	var gain := 0.92 if not disabled and _pointer_down else 1.04 if highlighted else 1.0
+	var target := Color(gain, gain, gain, 1.0)
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
+	# Feedback never scales a tile over its neighbours or moves its hit target.
+	scale = Vector2.ONE
 	if GameManager.is_reduced_motion_enabled():
-		finish_motion()
+		self_modulate = target
 		return
-	_hover_tween = create_tween().set_parallel(true)
+	_hover_tween = create_tween()
 	_hover_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_hover_tween.tween_property(
-		self, "scale", Vector2.ONE * (1.018 if enabled else 1.0), 0.1
-	)
-	_hover_tween.tween_property(
-		self,
-		"modulate",
-		(Color(1.04, 1.04, 1.04, 1.0) if GameManager.expedition != null else Color(1.04, 1.02, 0.96, 1.0)) if enabled else Color.WHITE,
-		0.1
+		self, "self_modulate", target,
+		PremiumUI.SKIN.motion_duration(&"press" if _pointer_down else &"hover", false)
 	)
 
 
@@ -152,6 +167,8 @@ func finish_motion() -> void:
 		_hover_tween.kill()
 	scale = Vector2.ONE
 	modulate = Color.WHITE
+	self_modulate = Color.WHITE
+	_pointer_down = false
 
 
 func _update_pivot() -> void:

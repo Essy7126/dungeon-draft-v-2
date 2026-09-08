@@ -1,7 +1,7 @@
 extends GutTest
 
 const CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
-const SAVE_PATH := "user://gut_inventory_equipment_state.json"
+var _save_path := ""
 const PREMIUM_BASIC_ITEM_IDS: Array[StringName] = [
 	&"warrior_training_sword",
 	&"reinforced_vest",
@@ -11,10 +11,16 @@ const PREMIUM_BASIC_ITEM_IDS: Array[StringName] = [
 ]
 
 
+func before_each() -> void:
+	var directory := "res://artifacts/meshy_ui"
+	assert_eq(DirAccess.make_dir_recursive_absolute(directory), OK)
+	_save_path = directory.path_join("inventory_roundtrip_%d_%d.json" % [OS.get_process_id(), Time.get_ticks_usec()])
+
+
 func after_each() -> void:
 	GameManager.cleanup_run_state()
-	if FileAccess.file_exists(SAVE_PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	if FileAccess.file_exists(_save_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_save_path))
 
 
 func _make_unit_data(character_id: StringName) -> UnitData:
@@ -280,13 +286,13 @@ func test_inventory_and_equipment_save_file_round_trip() -> void:
 		&"warrior",
 		ItemDefinition.EquipmentSlot.WEAPON,
 	).get("success", false))
-	assert_true(GameManager.save_inventory_equipment_state(SAVE_PATH))
+	assert_true(GameManager.save_inventory_equipment_state(_save_path))
 	assert_eq(warrior_state.add_spell_xp(&"warrior_spell", 1).get("rank", -1), 2)
 	assert_true(GameManager.unequip_inventory_item(
 		&"warrior",
 		ItemDefinition.EquipmentSlot.WEAPON,
 	).get("success", false))
-	assert_true(GameManager.load_inventory_equipment_state(SAVE_PATH))
+	assert_true(GameManager.load_inventory_equipment_state(_save_path))
 	var restored_state := GameManager.get_character_state(&"warrior")
 	assert_eq(restored_state.unit.attack_power.get_int(), 23)
 	assert_eq(restored_state.get_spell_progress(&"warrior_spell").xp, 4)

@@ -179,6 +179,7 @@ func _render() -> void:
 	_resource_values.destiny.text = "%d %s de destin" % [session.build.points, "point" if session.build.points == 1 else "points"]
 	_resource_values.oboles.text = "%d oboles" % session.gold
 	_status.text = "Consultation en combat · le chemin et le kit se choisissent entre les rencontres." if inspection_only else session.last_message
+	_status.add_theme_color_override("font_color", GOLD)
 	match _page:
 		"build": _render_build()
 		"gear": _render_gear()
@@ -293,7 +294,7 @@ func _render_map() -> void:
 			var pending := bool(save_status.get("pending", false))
 			engage.disabled = pending or session.route.phase != "map"
 			_status.text = str(save_status.get("message", "")) if pending else "Ce chemin n'est plus accessible."
-			_status.modulate = RED
+			_status.add_theme_color_override("font_color", RED)
 	)
 	var advice := _card(details)
 	_label(advice, "AVANT DE PARTIR", 14, GOLD)
@@ -314,7 +315,9 @@ func _render_rewards(parent: Control, capacity_only := false) -> void:
 		reward_heading.add_theme_constant_override("separation", 10)
 		parent.add_child(reward_heading)
 		_icon(reward_heading, ART_THEME.icon("resources", "victory"), 30)
-		_label(reward_heading, "UNE ÉTAPE FRANCHIE", 14, TEAL)
+		var caption := _label(reward_heading, "UNE ÉTAPE FRANCHIE", 14, TEAL)
+		caption.name = "RewardHeading"
+		caption.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_label(parent, str(node.title), 26, TEXT, true)
 		_label(parent, "Choisissez une seule récompense. Les autres occasions restent sur ce seuil.", 17)
 	if int(node.depth) == ExpeditionBuildState.CAPACITY_DEPTH and session.build.depth_eight_choice.is_empty():
@@ -483,7 +486,7 @@ func _render_hub() -> void:
 		var result: Dictionary = GameManager.open_sanctuary()
 		if not bool(result.get("success", false)):
 			_status.text = str(result.get("message", "Le Sanctuaire n'est pas accessible pour le moment."))
-			_status.modulate = RED
+			_status.add_theme_color_override("font_color", RED)
 	)
 	if int(node.depth) == ExpeditionBuildState.CAPACITY_DEPTH and session.build.depth_eight_choice.is_empty():
 		_render_rewards(details, true)
@@ -649,7 +652,7 @@ func _action_result(result: Dictionary) -> void:
 	_render()
 	_status.text = str(result.get("message", result.get("reason", "Choix enregistré.")))
 	if _status.text.is_empty(): _status.text = "Choix enregistré."
-	_status.modulate = TEAL if bool(result.get("success", false)) else RED
+	_status.add_theme_color_override("font_color", TEAL if bool(result.get("success", false)) else RED)
 
 
 func _close() -> void:
@@ -660,7 +663,7 @@ func _close() -> void:
 		if not GameManager.request_return_to_title():
 			var status: Dictionary = GameManager.get_expedition_save_status()
 			_status.text = str(status.get("message", "Sauvegarde impossible. Votre expédition reste ouverte."))
-			_status.modulate = RED
+			_status.add_theme_color_override("font_color", RED)
 
 
 func _scroll_column(parent: Control) -> VBoxContainer:

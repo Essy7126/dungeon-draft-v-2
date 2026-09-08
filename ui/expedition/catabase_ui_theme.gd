@@ -213,6 +213,13 @@ static func apply_tab(button: Button, selected: bool, icon_name: String = "") ->
 static func apply_inventory(root: Control, enabled: bool) -> void:
 	_restoreable_theme(root, enabled)
 	_inventory_action_footer(root, enabled)
+	var header_margin := root.find_child("HeaderMargin", true, false) as MarginContainer
+	if header_margin != null:
+		if not header_margin.has_meta("catabase_header_margins"):
+			header_margin.set_meta("catabase_header_margins", Vector2i(header_margin.get_theme_constant("margin_left"), header_margin.get_theme_constant("margin_top")))
+		var original: Vector2i = header_margin.get_meta("catabase_header_margins")
+		header_margin.add_theme_constant_override("margin_left", 44 if enabled else original.x)
+		header_margin.add_theme_constant_override("margin_top", 16 if enabled else original.y)
 	for name in ["CloseButton", "EquipButton", "UseButton", "UnequipButton"]:
 		var button := root.find_child(name, true, false) as Button
 		if button == null:
@@ -225,6 +232,7 @@ static func _inventory_action_footer(root: Control, enabled: bool) -> void:
 	var panel := root.find_child("DetailPanel", true, false) as PanelContainer
 	var scroll := root.find_child("DetailScroll", true, false) as ScrollContainer
 	var actions := root.find_child("Actions", true, false) as HBoxContainer
+	var feedback := root.find_child("Feedback", true, false) as Label
 	if panel == null or scroll == null or actions == null:
 		return
 	var layout := panel.get_node_or_null("CatabaseDetailLayout") as VBoxContainer
@@ -238,19 +246,39 @@ static func _inventory_action_footer(root: Control, enabled: bool) -> void:
 		layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		layout.add_theme_constant_override("separation", 4)
 		panel.add_child(layout)
-		scroll.reparent(layout, false)
+		var inset := MarginContainer.new()
+		inset.name = "CatabaseDetailViewport"
+		inset.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		inset.add_theme_constant_override("margin_top", 14)
+		inset.add_theme_constant_override("margin_left", 8)
+		inset.add_theme_constant_override("margin_right", 8)
+		layout.add_child(inset)
+		scroll.reparent(inset, false)
 		var footer := MarginContainer.new()
-		footer.name = "CatabaseActionFooter"
+		footer.name = "CatabaseActionInset"
 		footer.add_theme_constant_override("margin_left", 16)
 		footer.add_theme_constant_override("margin_right", 16)
 		footer.add_theme_constant_override("margin_bottom", 10)
 		layout.add_child(footer)
-		actions.reparent(footer, false)
+		var footer_content := VBoxContainer.new()
+		footer_content.name = "CatabaseActionFooter"
+		footer_content.add_theme_constant_override("separation", 6)
+		footer.add_child(footer_content)
+		if feedback != null:
+			feedback.set_meta("catabase_original_parent", feedback.get_parent())
+			feedback.set_meta("catabase_original_index", feedback.get_index())
+			feedback.reparent(footer_content, false)
+		actions.reparent(footer_content, false)
 	elif not enabled and layout != null:
 		var original := actions.get_meta("catabase_original_parent") as Node if actions.has_meta("catabase_original_parent") else null
 		if is_instance_valid(original):
 			actions.reparent(original, false)
 			original.move_child(actions, mini(int(actions.get_meta("catabase_original_index")), original.get_child_count() - 1))
+		if feedback != null and feedback.has_meta("catabase_original_parent"):
+			var feedback_parent := feedback.get_meta("catabase_original_parent") as Node
+			if is_instance_valid(feedback_parent):
+				feedback.reparent(feedback_parent, false)
+				feedback_parent.move_child(feedback, mini(int(feedback.get_meta("catabase_original_index")), feedback_parent.get_child_count() - 1))
 		scroll.reparent(panel, false)
 		panel.remove_child(layout)
 		layout.queue_free()

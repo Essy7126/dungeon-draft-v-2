@@ -42,6 +42,8 @@ func _ready() -> void:
 	_unequip_button.pressed.connect(_on_unequip_pressed)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
+	_detail_scroll.follow_focus = true
+	(_inventory_grid.get_parent() as ScrollContainer).follow_focus = true
 	hide()
 
 
@@ -209,6 +211,26 @@ func _refresh() -> void:
 	_rebuild_inventory(inventory, catalog)
 	_rebuild_equipment(state, catalog)
 	_refresh_details(state, inventory, catalog)
+	_feedback.visible = not _feedback.text.is_empty()
+	_restore_action_focus.call_deferred()
+
+
+func _restore_action_focus() -> void:
+	if not visible or get_viewport().gui_get_focus_owner() != null:
+		return
+	# An equip/use action may hide the focused button. Keep keyboard navigation
+	# on the selected slot instead of dropping focus behind this modal.
+	for child in _equipment_list.get_children():
+		var tile := child as InventoryItemTile
+		if tile != null and tile.equipment_slot == _selected_equipment_slot:
+			tile.grab_focus()
+			return
+	for child in _inventory_grid.get_children():
+		var tile := child as InventoryItemTile
+		if tile != null and not tile.disabled:
+			tile.grab_focus()
+			return
+	_close_button.grab_focus()
 
 
 func _rebuild_inventory(inventory: RunInventory, catalog: ItemCatalog) -> void:
@@ -313,19 +335,25 @@ func _refresh_details(
 
 
 func _select_inventory_item(instance_id: StringName) -> void:
+	var changed := _selected_instance_id != instance_id or _selected_equipment_slot != ItemDefinition.EquipmentSlot.NONE
 	_selected_instance_id = instance_id
 	_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
 	_feedback.text = ""
 	_detail_scroll.scroll_vertical = 0
 	_refresh()
+	if changed and GameManager.expedition != null:
+		CatabaseUITheme.reveal(_detail_scroll)
 
 
 func _select_equipment_slot(slot: int) -> void:
+	var changed := _selected_equipment_slot != slot or _selected_instance_id != &""
 	_selected_instance_id = &""
 	_selected_equipment_slot = slot
 	_feedback.text = ""
 	_detail_scroll.scroll_vertical = 0
 	_refresh()
+	if changed and GameManager.expedition != null:
+		CatabaseUITheme.reveal(_detail_scroll)
 
 
 func _on_equip_pressed() -> void:
