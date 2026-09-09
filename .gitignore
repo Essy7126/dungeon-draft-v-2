@@ -22,6 +22,7 @@ tests/characters/elf/screenshots/*.png.import
 
 # Outils locaux propres au poste de développement
 .claude/settings.local.json
+.codex/config.toml
 addons/ziva_agent/
 
 # Local inspection previews and Python caches (source art is versioned).

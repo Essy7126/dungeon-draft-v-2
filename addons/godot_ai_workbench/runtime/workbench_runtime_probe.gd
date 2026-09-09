@@ -55,6 +55,7 @@ var _pending_watches: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	set_process(EngineDebugger.is_active())
 	_register_capture()
 	if EngineDebugger.is_active():
 		EngineDebugger.send_message("%s:probe_ready" % MESSAGE_PREFIX, [JSON.stringify(_probe_status())])

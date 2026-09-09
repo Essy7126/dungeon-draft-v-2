@@ -8,6 +8,7 @@ signal preparation_requested
 const ART_THEME := preload("res://ui/expedition/catabase_ui_theme.gd")
 const MAP_CANVAS := preload("res://ui/expedition/expedition_map_canvas.gd")
 const TITLE_FONT := preload("res://asset/ui/character_selection/selection_title_font.tres")
+const ENCOUNTER_PREVIEW := preload("res://ui/expedition/expedition_encounter_preview.gd")
 const TYPE_NAMES := {
 	"normal": "Combat", "elite": "Épreuve élite", "hub": "Refuge", "merchant": "Marchand",
 	"sanctuary": "Sanctuaire", "lore": "Mémoire", "event": "Rencontre", "cache": "Cache",
@@ -33,6 +34,13 @@ var _destination_meta: Label
 var _destination_hint: Label
 var _destination_promise: Label
 var _destination_icon: TextureRect
+var _encounter_panel: VBoxContainer
+var _encounter_name: Label
+var _encounter_threat: Label
+var _encounter_counterplay: Label
+var _encounter_inspect: Button
+var _encounter_dialog: AcceptDialog
+var _encounter_details: RichTextLabel
 var _guidance: Label
 var _commit: Button
 var _preparation: Button
@@ -165,6 +173,36 @@ func _build_destination_card() -> void:
 	_destination_hint.name = "RouteDestinationHint"
 	_destination_promise = _label(description, "", 15, ART_THEME.TEAL)
 	_destination_promise.name = "RouteDestinationPromise"
+	_encounter_panel = VBoxContainer.new()
+	_encounter_panel.name = "RouteEncounterPreview"
+	_encounter_panel.add_theme_constant_override("separation", 3)
+	add_child(_encounter_panel)
+	var encounter_heading := HBoxContainer.new()
+	_encounter_panel.add_child(encounter_heading)
+	_encounter_name = _label(encounter_heading, "", 16, ART_THEME.GOLD)
+	_encounter_name.name = "RouteEncounterName"
+	_encounter_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_encounter_inspect = _button(encounter_heading, "Forces et techniques")
+	_encounter_inspect.name = "InspectEncounter"
+	_encounter_inspect.custom_minimum_size.y = 30
+	_encounter_inspect.add_theme_font_size_override("font_size", 13)
+	_encounter_inspect.pressed.connect(_show_encounter_details)
+	_encounter_threat = _label(_encounter_panel, "", 14, ART_THEME.TEXT)
+	_encounter_threat.name = "RouteEncounterThreat"
+	_encounter_counterplay = _label(_encounter_panel, "", 14, ART_THEME.TEAL)
+	_encounter_counterplay.name = "RouteEncounterCounterplay"
+	_encounter_dialog = AcceptDialog.new()
+	_encounter_dialog.name = "EncounterDetailsDialog"
+	_encounter_dialog.theme = ART_THEME.get_theme()
+	_encounter_dialog.ok_button_text = "Revenir au chemin"
+	_encounter_dialog.min_size = Vector2i(460, 320)
+	add_child(_encounter_dialog)
+	_encounter_details = RichTextLabel.new()
+	_encounter_details.name = "EncounterTechniques"
+	_encounter_details.add_theme_font_size_override("normal_font_size", 17)
+	_encounter_details.add_theme_color_override("default_color", ART_THEME.TEXT)
+	_encounter_details.selection_enabled = true
+	_encounter_dialog.add_child(_encounter_details)
 
 
 func _on_destination_selected(node_id: String) -> void:
@@ -178,6 +216,7 @@ func _on_destination_selected(node_id: String) -> void:
 
 func _update_destination() -> void:
 	var selected: Dictionary = _visible_nodes.get(_selected_node_id, {})
+	_update_encounter_preview(selected)
 	_commit.disabled = true
 	_commit.text = "Confirmer ce chemin  →"
 	if selected.is_empty():
@@ -210,13 +249,33 @@ func _update_destination() -> void:
 	elif not available:
 		_guidance.text = "Cette destination est en consultation. Sélectionnez un chemin marqué « À choisir »."
 	elif kind == "elite":
-		_guidance.text = "Élite : +20 % PV et puissance · victoire : 65 oboles. Confirmez pour entrer dans l'épreuve."
+		_guidance.text = "Épreuve élite · victoire : 65 oboles. Confirmez pour entrer avec votre préparation actuelle."
 		_guidance.add_theme_color_override("font_color", ART_THEME.DANGER)
 	elif kind in ["normal", "boss"]:
 		_guidance.text = "Confirmer lance le combat avec votre préparation actuelle."
 	else:
 		_guidance.text = "Votre destination est sélectionnée. Confirmez pour vous y rendre."
 	_commit.tooltip_text = _guidance.text
+
+
+func _update_encounter_preview(selected: Dictionary) -> void:
+	var preview := ENCOUNTER_PREVIEW.describe(selected, _session.route.seed if _session != null else 0)
+	_encounter_panel.visible = not preview.is_empty()
+	_encounter_inspect.disabled = preview.is_empty()
+	_encounter_details.text = str(preview.get("details", ""))
+	_encounter_name.text = "%s · %d adversaire%s" % [str(preview.get("name", "")), int(preview.get("count", 0)), "s" if int(preview.get("count", 0)) > 1 else ""]
+	_encounter_threat.text = "Menace : " + str(preview.get("summary", ""))
+	_encounter_counterplay.text = "Piste tactique : " + str(preview.get("counterplay", ""))
+	_encounter_dialog.title = str(preview.get("name", "Les forces en présence"))
+	if _encounter_dialog.visible:
+		_encounter_dialog.hide()
+
+
+func _show_encounter_details() -> void:
+	if not _encounter_panel.visible or _encounter_details.text.is_empty():
+		return
+	var viewport_size := get_viewport_rect().size
+	_encounter_dialog.popup_centered(Vector2i(mini(760, int(viewport_size.x) - 60), mini(520, int(viewport_size.y) - 80)))
 
 
 func _commit_destination() -> void:

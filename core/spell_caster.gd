@@ -4,6 +4,7 @@ class_name SpellCaster
 extends RefCounted
 
 const LogDefinitions = preload("res://debug/log_definitions.gd")
+const CatabaseMonsterSupportRules = preload("res://core/ai/catabase_monster_support_rules.gd")
 
 var _grid: GridData
 var _pathfinder: Pathfinder
@@ -507,6 +508,8 @@ func get_cast_failure_reason(
 
 
 func _special_condition_failure(caster: Unit, spell: Spell) -> StringName:
+	if not CatabaseMonsterSupportRules.can_cast(_grid, caster, spell, caster.grid_pos):
+		return &"support_out_of_range"
 	if not spell.is_delayed():
 		return &""
 	if not caster.pending_ability.is_empty():

@@ -1,0 +1,9 @@
+[
+  "live.bridge_status", "live.editor_state", "live.scene_tree",
+  "live.debug_output", "live.debug_sessions", "script.validate",
+  "runtime.play_scene", "runtime.stop_scene", "runtime.state",
+  "runtime.inspect_node", "runtime.find_ui", "runtime.click_text",
+  "runtime.screenshot", "runtime.compare_screenshots", "runtime.wait_for",
+  "runtime.assert", "runtime.input_sequence", "runtime.animation_state",
+  "runtime.watch", "editor.inspect_node"
+]

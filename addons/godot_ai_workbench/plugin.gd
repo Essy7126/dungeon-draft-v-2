@@ -14,7 +14,11 @@ func _enter_tree() -> void:
 	set_process(true)
 	_ensure_runtime_probe_autoload()
 	_mount_debug_probe()
-	_mount_panel({})
+	_mount_panel({
+		"connect_desired": bool(ProjectSettings.get_setting("godot_ai_workbench/auto_connect", false)),
+		"profile": str(ProjectSettings.get_setting("godot_ai_workbench/profile", "analysis")),
+		"port": int(ProjectSettings.get_setting("godot_ai_workbench/port", 8765)),
+	})
 
 
 func _mount_panel(settings: Dictionary) -> void:

@@ -12,6 +12,7 @@ class_name EnemyTurnRunner
 extends Node
 
 const MAX_ACTION_STEPS := EnemyActionPlan.MAX_STEPS
+const CatabaseMonsterDecision = preload("res://core/ai/catabase_monster_decision.gd")
 
 var _battle = null
 var _closing := false
@@ -151,7 +152,12 @@ func run(enemy: Unit) -> void:
 			return
 		# Terrain entry can change the kit mid-turn. Replan only that transition,
 		# using the remaining real AP/MP and keeping the global action bound.
-		if enemy.combat_form_id != planned_form:
+		if enemy.combat_form_id != planned_form or (
+				CatabaseMonsterDecision.handles(enemy) and action_index >= actions.size()
+				and last_action_count > 0):
+			# Evolved Catabase monsters choose one action from the current board.
+			# A pull, death or terrain entry can change the next legal target cell;
+			# the existing global action bound also bounds this reactive planning.
 			plan = _battle.enemy_ai.build_action_plan(enemy, _battle.units)
 			actions = plan.to_actions()
 			action_index = 0

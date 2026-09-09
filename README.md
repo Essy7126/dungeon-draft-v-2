@@ -51,6 +51,10 @@ Le bouton **Explorer les maîtrises** ouvre le [grimoire des sorts](docs/design/
 
 ## Lancer les tests
 
+Le [lanceur de développement](tools/dev/README.md) regroupe diagnostic, tests,
+inspection des ressources, formatage et captures avec des rapports compacts :
+`./dev.ps1 help` (PowerShell 7.2+). La version moteur de référence est Godot 4.7.1.
+
 Les tests unitaires utilisent [GUT](https://github.com/bitwes/Gut)
 (installé dans `addons/gut/`, tests dans `test/unit/`).
 

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_tribut"
+spell_name = "Dernier tribut"
+description = "Protège un allié adjacent une seule fois. Le porteur reste fragile après son offrande."
+once_per_activation = true
+ap_cost = 3
+minimum_range = 1
+spell_range = 1
+can_target_enemy = false
+can_target_ally = true
+shield_grant = 8
+shield_duration_activations = 2
+max_uses_per_combat = 1
+visual_action = 2
+

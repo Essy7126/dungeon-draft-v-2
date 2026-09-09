@@ -1,0 +1,20 @@
+{
+  "godot_version": "4.7.1",
+  "godot_version_pattern": "^4\\.7\\.1\\.stable\\.official\\.a13da4feb$",
+  "gut_version": "9.7.1",
+  "formatter": {
+    "version": "0.25.0",
+    "windows_url": "https://github.com/GDQuest/GDScript-formatter/releases/download/0.25.0/gdscript-formatter-0.25.0-windows-x86_64.exe.zip",
+    "windows_sha256": "a17e40ef62db561084c5cc7c3c21c937cc68bbc014a71a50fb1f16519a37aef6",
+    "linux_url": "https://github.com/GDQuest/GDScript-formatter/releases/download/0.25.0/gdscript-formatter-0.25.0-linux-x86_64.zip",
+    "linux_sha256": "4ad2085a1075a73d9fb84a2160df179f64271fb0244a8f40b7c727c592a8c968"
+  },
+  "workbench": {
+    "commit": "6a8f91518624dfe3cb1356ffb269a4ac65a8ddde",
+    "source_url": "https://api.github.com/repos/ZemDen/godot-ai-workbench/zipball/6a8f91518624dfe3cb1356ffb269a4ac65a8ddde",
+    "source_sha256": "4964fcb7e06b0bb6e8b3a32f1b66cdd55b6d5a50b8ac033a040b64cbf9701988",
+    "go_version": "go1.27.1",
+    "go_url": "https://go.dev/dl/go1.27.1.windows-amd64.zip",
+    "go_sha256": "a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d"
+  }
+}

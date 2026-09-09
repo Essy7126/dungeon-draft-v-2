@@ -55,6 +55,45 @@ func configure(grid_data: GridData) -> void:
 	_electrical_region_resolver.reset()
 
 
+## Release the RefCounted terrain graph when a battle leaves the scene. The
+## service normally lives for the whole battle, so keeping its captured base
+## states after shutdown would retain every cell, terrain resource and source
+## spell until process exit.
+func dispose() -> void:
+	for state_value in _states.values():
+		var state := state_value as CellSurfaceState
+		if state != null:
+			state.clear_dynamic()
+	_states.clear()
+	_active_resolution_by_unit.clear()
+	_applied_resolution_keys.clear()
+	_last_entry_results.clear()
+	_vortex_relocation_guard.clear()
+	_void_impulse_round_by_unit.clear()
+	_electrified_trigger_by_unit.clear()
+	_electrical_region_resolver.reset()
+	if grid != null and grid.occupancy_changed.is_connected(_on_occupancy_changed):
+		grid.occupancy_changed.disconnect(_on_occupancy_changed)
+	if grid != null:
+		# GridData mirrors terrain effects for targeting and inspection. Clear
+		# those mirrors too; otherwise they retain terrain resources and source
+		# units even after this service releases its state table.
+		for y in grid.rows:
+			for x in grid.cols:
+				var cell := Vector2i(x, y)
+				grid.clear_effect(cell)
+				grid.clear_surface_properties(cell)
+				grid.clear_terrain_properties(cell)
+		grid.clear_dynamic_blockers()
+		grid.clear_vortex_links()
+		grid.clear_vortex_networks()
+	grid = null
+	for relay in [surface_applied, surface_replaced, surface_refreshed, surface_cleared,
+			surface_reaction, duration_changed, surface_changed, steam_requested]:
+		for connection: Dictionary in relay.get_connections():
+			relay.disconnect(connection.callable)
+
+
 func configure_resolution_context(seed_value: int, current_round: int) -> void:
 	combat_seed = seed_value
 	round_index = maxi(1, current_round)

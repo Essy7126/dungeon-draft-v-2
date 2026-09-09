@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  GODOT_VERSION: "4.7"
+  GODOT_VERSION: "4.7.1"
   GODOT: "/home/runner/godot-bin/godot"
 
 defaults:
@@ -22,8 +22,8 @@ jobs:
       - uses: actions/cache@v4.2.3
         with:
           path: ~/godot-bin
-          key: godot-4.7-stable-linux-x86_64
-      - name: Installer Godot 4.7 stable
+          key: godot-4.7.1-stable-linux-x86_64
+      - name: Installer Godot 4.7.1 stable
         run: |
           set -euo pipefail
           if [ ! -x "$GODOT" ]; then
@@ -39,7 +39,7 @@ jobs:
             rm -f "$archive"
             rmdir "$extract_dir"
           fi
-          "$GODOT" --version | grep '^4.7.stable'
+          "$GODOT" --version | grep '^4\.7\.1\.stable'
       - name: Scan Godot
         run: |
           set -euo pipefail
@@ -120,8 +120,8 @@ jobs:
       - uses: actions/cache@v4.2.3
         with:
           path: ~/godot-bin
-          key: godot-4.7-stable-linux-x86_64
-      - name: Installer Godot 4.7 stable
+          key: godot-4.7.1-stable-linux-x86_64
+      - name: Installer Godot 4.7.1 stable
         run: |
           set -euo pipefail
           if [ ! -x "$GODOT" ]; then
@@ -196,8 +196,8 @@ jobs:
       - uses: actions/cache@v4.2.3
         with:
           path: ~/godot-bin
-          key: godot-4.7-stable-linux-x86_64
-      - name: Installer Godot 4.7 stable
+          key: godot-4.7.1-stable-linux-x86_64
+      - name: Installer Godot 4.7.1 stable
         run: |
           set -euo pipefail
           if [ ! -x "$GODOT" ]; then

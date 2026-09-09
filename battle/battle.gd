@@ -2756,6 +2756,14 @@ func _begin_battle_shutdown() -> void:
 			child.queue_free()
 	if is_instance_valid(grid_view):
 		VFXManager.unregister_battle_view(grid_view)
+	for unit: Unit in units:
+		if unit != null:
+			# Heal/ward facts hold their caster and target for combat deduplication.
+			# No late action can resolve after shutdown; release these cycles while
+			# preserving HP, AP, MP and spell usage for the result/persistence flow.
+			unit.clear_combat_effect_history()
+	if terrain_effects != null and terrain_effects.has_method("dispose"):
+		terrain_effects.dispose()
 
 func _on_round_started(number: int) -> void:
 	DebugLogger.set_turn(number)

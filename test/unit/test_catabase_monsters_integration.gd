@@ -327,13 +327,12 @@ func test_logic_seeded_run_rosters_spawn_all_four_monsters_without_overfilling_r
 				assert_true(bool(plan.get("valid", false)),
 					"Role-distance placement %s seed %d: %s" % [node.id, seed_value, plan.get("reason", "")])
 				assert_eq((plan.get("placements", []) as Array).size(), room.enemies.size())
-			for data: UnitData in room.enemies:
-				if str(data.unit_id).trim_prefix("catabase_") in SLUGS:
-					seen[str(data.unit_id)] = true
+			for role in CatabaseMonsterEncounterCatalog.composition_for(node):
+				seen[CatabaseMonsterEncounterCatalog.Evolution.family_for(role)] = true
 			checked += 1
 	assert_gt(checked, 40, "Full seeded production routes inspected")
-	for slug: String in SLUGS:
-		assert_true(seen.has("catabase_" + slug), slug + ": reachable run encounter")
+	for family in [&"sentinelle", &"rejeton", &"molosse", &"lamie", &"archer", &"officiant"]:
+		assert_true(seen.has(family), str(family) + ": reachable run encounter")
 
 
 func test_logic_runtime_difficulty_copies_do_not_mutate_source_stats_or_spells() -> void:

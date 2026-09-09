@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_egide"
+spell_name = "Égide de la procession"
+description = "Protège le lanceur et ses alliés adjacents pendant deux activations. Trois utilisations par combat."
+once_per_activation = true
+ap_cost = 3
+minimum_range = 0
+spell_range = 0
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
+aoe_shape = 1
+aoe_size = 1
+shield_grant = 14
+shield_duration_activations = 2
+cooldown_activations = 3
+max_uses_per_combat = 3
+visual_action = 2
+

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 0.25
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_marque"
+spell_name = "Appel de la chasse"
+description = "Marque une cible pendant deux activations. Les crocs des molosses infligent des dégâts supplémentaires contre elle."
+once_per_activation = true
+ap_cost = 2
+minimum_range = 2
+spell_range = 6
+damage = 3
+damage_type = 1
+element = 1
+cooldown_activations = 3
+initial_cooldown = 1
+visual_action = 2
+damage_scaling = SubResource("Scaling_damage")
+

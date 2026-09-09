@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_soin"
+spell_name = "Obole de vie"
+description = "Rend des PV à un allié blessé. Trois soins au maximum par combat, une activation sur deux."
+once_per_activation = true
+ap_cost = 3
+minimum_range = 0
+spell_range = 4
+heal = 14
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
+cooldown_activations = 2
+max_uses_per_combat = 3
+visual_action = 2
+

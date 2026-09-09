@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_presage"
+spell_name = "Présage de l’oracle"
+description = "Renforce brièvement les dégâts d’un allié. Deux utilisations par combat ; éliminer l’oracle dissipe son présage."
+once_per_activation = true
+ap_cost = 2
+minimum_range = 1
+spell_range = 4
+can_target_enemy = false
+can_target_ally = true
+cooldown_activations = 3
+max_uses_per_combat = 2
+visual_action = 2
+

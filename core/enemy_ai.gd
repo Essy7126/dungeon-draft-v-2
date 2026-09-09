@@ -4,6 +4,7 @@ extends RefCounted
 const LogDefinitions = preload("res://debug/log_definitions.gd")
 const SupportMageDecision = preload("res://core/ai/support_mage_decision.gd")
 const SpectralArcherDecision = preload("res://core/ai/spectral_archer_decision.gd")
+const CatabaseMonsterDecision = preload("res://core/ai/catabase_monster_decision.gd")
 
 var _grid: GridData
 var _pathfinder: Pathfinder
@@ -34,6 +35,8 @@ func decide(enemy: Unit, all_units: Array) -> Array:
 
 
 func _decide_with_prepared_paths(enemy: Unit, all_units: Array) -> Array:
+	if CatabaseMonsterDecision.handles(enemy):
+		return CatabaseMonsterDecision.decide(self, enemy, all_units)
 	if enemy.ai_profile != null:
 		match enemy.ai_profile.strategy:
 			EnemyAIProfile.Strategy.SUPPORT_MAGE:

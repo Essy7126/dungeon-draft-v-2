@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 0.85
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_fracture"
+spell_name = "Fracture"
+description = "Frappe au contact et retire 15 points d’armure pendant deux activations."
+once_per_activation = true
+ap_cost = 3
+minimum_range = 1
+spell_range = 1
+damage = 12
+damage_type = 0
+needs_line_of_sight = false
+damage_scaling = SubResource("Scaling_damage")
+

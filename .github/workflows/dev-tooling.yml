@@ -1,0 +1,34 @@
+name: Development tooling
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  harness-contracts:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Validate harness and strict analyzer contracts
+        run: ./dev.ps1 selftest
+      - name: Verify engine version alignment
+        run: |
+          $toolchain = Get-Content tools/dev/toolchain.json -Raw | ConvertFrom-Json
+          $workflow = Get-Content .github/workflows/godot-validation.yml -Raw
+          if ($workflow -notmatch ('GODOT_VERSION: "' + [regex]::Escape($toolchain.godot_version) + '"')) {
+            throw 'CI and local engine versions differ.'
+          }
+      - name: Install pinned formatter
+        run: ./dev.ps1 install formatter
+      - name: Check harness GDScript formatting
+        run: ./dev.ps1 format tools/dev/inspect_resource.gd
+      - name: Keep validation reports
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: dev-tooling-reports
+          path: artifacts/dev/

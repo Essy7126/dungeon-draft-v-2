@@ -6,9 +6,8 @@ const BASE_RUN := "res://data/runs/odyssey.tres"
 const MonsterEncounterCatalog = preload("res://core/expedition/catabase_monster_encounter_catalog.gd")
 # Hubs do not manufacture character XP. Rank follows victories.
 const XP_BY_DEPTH := [100, 110, 120, 0, 130, 140, 160, 0, 180, 200, 210, 0, 230, 250, 270, 0, 280, 300, 0, 340]
-# Fixed depth curves for the four Catabase monsters, independent of the hero's
-# build, inventory, current health or optional victories. HP tracks canonical
-# prowess growth; attack tracks the slower pressure budget of one action/foe.
+# Fixed depth curves independent of the hero's build, inventory or current HP.
+# Each authored pack also budgets its numbers, mobility and spell economy.
 # Noncombat entries hold the previous value; protected fights use legacy stats.
 const MONSTER_HP_BY_DEPTH := [1.0, 0.45, 0.55, 0.55, 0.68, 0.82, 1.0, 1.0, 1.05, 1.30, 1.50, 1.50, 1.65, 1.95, 2.15, 2.30, 2.45, 2.90, 2.90, 2.90]
 const MONSTER_ATTACK_BY_DEPTH := [1.0, 0.70, 0.85, 0.85, 0.95, 1.10, 1.0, 1.0, 1.35, 1.60, 1.85, 1.85, 2.05, 2.45, 2.80, 3.00, 3.20, 3.80, 3.80, 3.80]
@@ -68,6 +67,15 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 	encounter.optional_xp_budget = 0
 	encounter.glory_challenge = null
 	MonsterEncounterCatalog.configure_encounter(encounter, node)
+	if MonsterEncounterCatalog.uses_monsters(node) and (
+			template.resource_path.begins_with("res://data/rooms/catabase_expansion/")
+			or room.enemy_spawn_zone.size() < MonsterEncounterCatalog.composition_for(node).size()
+		):
+		# Some historical rooms were authored for two enemies and the expansion
+		# rooms for three or four. Evolved packs can be larger, so rebuild the
+		# runtime candidate zone from actual floor cells when the old marker list
+		# cannot fit the pack. Authored room resources stay immutable.
+		_rebuild_runtime_enemy_spawn_zone(room, template, encounter)
 	var source_roster: Array[UnitData] = encounter.roster_units.duplicate()
 	encounter.roster_units = []
 	var hp_multiplier := enemy_hp_multiplier(node)
@@ -76,10 +84,57 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 		var enemy := data.duplicate(false) as UnitData
 		enemy.max_hp = maxi(1, roundi(float(data.max_hp) * hp_multiplier))
 		enemy.attack_power = maxi(1, roundi(float(data.attack_power) * attack_multiplier))
+		if MonsterEncounterCatalog.uses_monsters(node):
+			MonsterEncounterCatalog.Evolution.scale_secondary_effects(enemy, hp_multiplier, attack_multiplier)
 		encounter.roster_units.append(enemy)
 	room.encounter_definition = encounter
 	room.enemies = encounter.expanded_roster()
 	return room
+
+
+static func _rebuild_runtime_enemy_spawn_zone(room: RoomData, template: RoomData, encounter: EncounterDefinition) -> void:
+	var grid := EncounterGridFactory.build_from_room(template)
+	if grid == null:
+		return
+	encounter.forbidden_initial_spawn_cells = []
+	room.enemy_spawn_zone = []
+	for y in grid.rows:
+		for x in grid.cols:
+			var cell := Vector2i(x, y)
+			if not grid.is_walkable(cell) or grid.get_type(cell) != GridData.CellType.NORMAL \
+					or room.hero_spawn_zone.has(cell) or _initial_cell_is_occluded(template, cell):
+				encounter.forbidden_initial_spawn_cells.append(cell)
+			else:
+				room.enemy_spawn_zone.append(cell)
+
+
+static func _initial_cell_is_occluded(template: RoomData, cell: Vector2i) -> bool:
+	var visual := template.painted_map_visual_data
+	if visual != null:
+		if visual.is_position_fully_occluded(visual.cell_to_display(cell)):
+			return true
+		var native_position := visual.cell_to_image(cell)
+		if visual.foreground_occluder_polygon.size() >= 3 \
+				and native_position.y <= visual.foreground_occluder_sort_y \
+				and Geometry2D.is_point_in_polygon(native_position, visual.foreground_occluder_polygon):
+			return true
+		# A standalone alpha mask has no polygon to inspect here. Preserve the
+		# author’s forbidden cells rather than infer visibility from its pixels.
+		if visual.foreground_texture != null or not visual.foreground_texture_path.is_empty() \
+				or not visual.occlusion_mask_path.is_empty():
+			var authored_encounter := template.get_encounter_for_wave(0)
+			if authored_encounter != null and authored_encounter.forbidden_initial_spawn_cells.has(cell):
+				return true
+	if template is ArenaDefinition:
+		var arena := template as ArenaDefinition
+		var native_position := GridTransformService.cell_to_position(cell, arena.grid_origin, arena.axis_x, arena.axis_y)
+		if arena.foreground_full_hide_rect.has_area() and arena.foreground_full_hide_rect.has_point(native_position):
+			return true
+		if arena.foreground_occluder_polygon.size() >= 3 \
+				and native_position.y <= arena.foreground_occluder_sort_y \
+				and Geometry2D.is_point_in_polygon(native_position, arena.foreground_occluder_polygon):
+			return true
+	return false
 
 
 static func enemy_multiplier(node: Dictionary) -> float:
@@ -91,14 +146,16 @@ static func enemy_hp_multiplier(node: Dictionary) -> float:
 	if not MonsterEncounterCatalog.uses_monsters(node):
 		return enemy_multiplier(node)
 	var depth_index := clampi(int(node.depth) - 1, 0, MONSTER_HP_BY_DEPTH.size() - 1)
-	return MONSTER_HP_BY_DEPTH[depth_index] * (MONSTER_ELITE_HP if str(node.get("kind", "normal")) == "elite" else 1.0)
+	return MONSTER_HP_BY_DEPTH[depth_index] * MonsterEncounterCatalog.hp_factor(node) \
+		* (MONSTER_ELITE_HP if str(node.get("kind", "normal")) == "elite" else 1.0)
 
 
 static func enemy_attack_multiplier(node: Dictionary) -> float:
 	if not MonsterEncounterCatalog.uses_monsters(node):
 		return enemy_multiplier(node)
 	var depth_index := clampi(int(node.depth) - 1, 0, MONSTER_ATTACK_BY_DEPTH.size() - 1)
-	return MONSTER_ATTACK_BY_DEPTH[depth_index] * (MONSTER_ELITE_ATTACK if str(node.get("kind", "normal")) == "elite" else 1.0)
+	return MONSTER_ATTACK_BY_DEPTH[depth_index] * MonsterEncounterCatalog.attack_factor(node) \
+		* (MONSTER_ELITE_ATTACK if str(node.get("kind", "normal")) == "elite" else 1.0)
 
 
 static func xp_for(node: Dictionary) -> int:

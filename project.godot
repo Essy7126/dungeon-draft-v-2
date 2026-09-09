@@ -24,6 +24,7 @@ DebugOverlay="*uid://i5c6lt5m6q0w"
 GameManager="*uid://bkqluvhsrm1gs"
 AudioManager="*uid://b6yj2wg2t5akr"
 VFXManager="*uid://bjqhf4gosaohn"
+GawWorkbenchRuntimeProbe="*res://addons/godot_ai_workbench/runtime/workbench_runtime_probe.gd"
 
 [display]
 
@@ -32,11 +33,17 @@ window/size/viewport_height=896
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/dungeon_draft_arena_studio/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/dungeon_draft_arena_studio/plugin.cfg", "res://addons/godot_ai_workbench/plugin.cfg")
 
 [filesystem]
 
 import/blender/enabled=false
+
+[godot_ai_workbench]
+
+auto_connect=true
+profile="full_control"
+port=8765
 
 [physics]
 

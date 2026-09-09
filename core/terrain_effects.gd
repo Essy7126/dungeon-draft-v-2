@@ -124,6 +124,14 @@ func reset() -> void:
 	runtime_service.reset()
 
 
+func dispose() -> void:
+	if runtime_service == null:
+		return
+	runtime_service.dispose()
+	runtime_service = null
+	_grid = null
+
+
 func can_receive_surface(cell: Vector2i, effect: TerrainEffectData = null) -> bool:
 	return runtime_service.can_receive_surface(cell, effect)
 

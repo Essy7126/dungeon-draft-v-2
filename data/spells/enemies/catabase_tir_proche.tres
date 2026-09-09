@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="2_scaling"]
+
+[sub_resource type="Resource" id="Scaling_damage"]
+script = ExtResource("2_scaling")
+prowess_coefficient = 0.8
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_evolution_tir_proche"
+spell_name = "Tir de poursuite"
+description = "Tire à 1–4 cases. Sa faible zone morte permet de poursuivre un adversaire."
+once_per_activation = true
+ap_cost = 3
+minimum_range = 1
+spell_range = 4
+damage = 8
+damage_type = 0
+visual_action = 1
+damage_scaling = SubResource("Scaling_damage")
+

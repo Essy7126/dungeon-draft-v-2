@@ -1062,9 +1062,15 @@ func spend_ap(amount: int) -> bool:
 # ============================================================
 # ============================================================
 
+func clear_combat_effect_history() -> void:
+	# Applied heal/shield facts retain actor and recipient references. Discard
+	# their idempotency cache only when the combat closes or resources reset.
+	_resolved_combat_effects.clear()
+
+
 func reset_combat_resources() -> void:
 	# SpellCaster impact IDs restart in each battle; keep deduplication combat-local.
-	_resolved_combat_effects.clear()
+	clear_combat_effect_history()
 	reset_ability_runtime()
 	next_turn_ap_modifier = 0
 	next_turn_mp_bonus = 0

@@ -103,7 +103,19 @@ func _build_candidate(
 	var placements: Array = []
 	var occupied := {}
 	var roster := definition.expanded_roster()
+	var evolution_roster := not roster.is_empty() and roster.all(func(data: UnitData) -> bool:
+		return str(data.tactical_role_id).begins_with("catabase_evolution_")
+	)
 	roster.sort_custom(func(a: UnitData, b: UnitData) -> bool:
+		# These packs combine up to eight bodies with different approach budgets.
+		# Legal cells are nested by minimum distance: place the tightest set first
+		# so a flexible guard cannot consume the last safe cell of a fast hunter.
+		# Authored legacy and mixed rosters keep their existing ordering exactly.
+		if evolution_roster:
+			var minimum_a := int(definition.minimum_path_distance_by_role.get(a.tactical_role_id, 0))
+			var minimum_b := int(definition.minimum_path_distance_by_role.get(b.tactical_role_id, 0))
+			if minimum_a != minimum_b:
+				return minimum_a > minimum_b
 		var priority := {
 			&"skeleton_centurion": 0,
 			&"skeleton_chief": 1,
