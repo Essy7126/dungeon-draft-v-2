@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-09",
+  "status": "rejected_for_production",
+  "reviewer": "user",
+  "variants": ["a", "b", "b_held"],
+  "findings": [
+    "Le mouvement du bras n’est pas coordonné avec le buste, la tête et le corps entier.",
+    "Les directions visuelles ne sont pas suffisamment définies.",
+    "La lisibilité accrue de l’arme ne suffit pas à valider une animation."
+  ],
+  "next_experiment": "Choisir une référence animée adaptée au personnage, à l’action et à la caméra. Valider les poses complètes simplifiées et leur coordination avant toute peinture finale.",
+  "reference_catalog": "res://docs/tools/sprite_motion_references_2026-09-09.md",
+  "runtime_report": "res://artifacts/dev/20260909-152838-sentinelle-sprite-pilot-be4f3c72/report.json",
+  "strict_summary": "res://artifacts/dev/20260909-152838-sentinelle-sprite-pilot-be4f3c72/summary.json",
+  "functional_checks_passed": 231,
+  "strict_runtime_passed": false,
+  "remaining_technical_issue": "125 objets et 5 ressources terrain retenus à la fermeture du processus de test.",
+  "production_assets_changed": false
+}

@@ -5,6 +5,7 @@ extends EditorPlugin
 
 const TOOL_MENU_DETACH := "Dungeon Draft Studio : détacher / réintégrer la fenêtre"
 const TOOL_MENU_SKILLS := "Dungeon Draft : ouvrir le Studio des compétences"
+const TOOL_MENU_SPRITES := "Dungeon Draft : ouvrir l'atelier de sprites (F6)"
 const DETACH_SHORTCUT_SETTING := "dungeon_draft_studio/shortcuts/detach_workspace"
 
 var _main_screen: EmbeddedStudioHost = null
@@ -61,6 +62,7 @@ func _enter_tree() -> void:
 	get_editor_interface().get_base_control().add_child(_window_host)
 	add_tool_menu_item(TOOL_MENU_DETACH, _toggle_detached)
 	add_tool_menu_item(TOOL_MENU_SKILLS, _open_skill_studio)
+	add_tool_menu_item(TOOL_MENU_SPRITES, _open_sprite_workshop)
 	_main_screen.hide()
 	# Le workspace est visible avant l'indexation. Le rapport expose durée,
 	# mémoire, ObjectDB, progression et annulation.
@@ -87,6 +89,7 @@ func _exit_tree() -> void:
 	_reintegrate_workspace()
 	remove_tool_menu_item(TOOL_MENU_DETACH)
 	remove_tool_menu_item(TOOL_MENU_SKILLS)
+	remove_tool_menu_item(TOOL_MENU_SPRITES)
 	if is_instance_valid(_skill_window_host):
 		_skill_window_host.close_studio_immediately()
 		var skill_parent := _skill_window_host.get_parent()
@@ -206,6 +209,10 @@ func _open_skill_studio() -> void:
 		)
 		get_editor_interface().get_base_control().add_child(_skill_window_host)
 	_skill_window_host.open_studio()
+
+
+func _open_sprite_workshop() -> void:
+	get_editor_interface().open_scene_from_path("res://tools/sprite_workshop/SpriteWorkshop.tscn")
 
 
 func _save_ui_state() -> void:

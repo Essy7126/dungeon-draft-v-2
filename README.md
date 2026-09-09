@@ -51,6 +51,15 @@ Le bouton **Explorer les maîtrises** ouvre le [grimoire des sorts](docs/design/
 
 ## Lancer les tests
 
+L'[atelier de sprites](tools/sprite_workshop/README.md) compare les clips avec
+leurs références, permet de remplacer les dessins, régler les poses et exporter
+une revue traçable. Ouvrir `tools/sprite_workshop/SpriteWorkshop.tscn` puis **F6**,
+ou lancer `./tools/sprite_workshop/workshop.ps1 open`.
+
+Le [dossier Spine et sa fiche de reprise locale](docs/spine/README.md) rassemble
+les recherches, connecteurs MCP, références de mouvement et prochains essais.
+Lire cette fiche pour reprendre le travail d'animation dans une autre tâche.
+
 Le [lanceur de développement](tools/dev/README.md) regroupe diagnostic, tests,
 inspection des ressources, formatage et captures avec des rapports compacts :
 `./dev.ps1 help` (PowerShell 7.2+). La version moteur de référence est Godot 4.7.1.

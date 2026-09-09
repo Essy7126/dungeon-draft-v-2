@@ -1,0 +1,396 @@
+{
+  "anchor": [
+    256,
+    320
+  ],
+  "animation": "attack_E",
+  "baseline": {
+    "anchor": [
+      256,
+      320
+    ],
+    "display_scale": 0.35,
+    "events": [
+      {
+        "frame": "f004",
+        "name": "release"
+      }
+    ],
+    "frames": [
+      {
+        "duration_ms": 100,
+        "id": "f000",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          43,
+          34
+        ],
+        "region": [
+          962,
+          2,
+          314,
+          289
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f001",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          39,
+          35
+        ],
+        "region": [
+          2,
+          879,
+          310,
+          287
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f002",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          32,
+          38
+        ],
+        "region": [
+          318,
+          1459,
+          307,
+          282
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f003",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          39,
+          35
+        ],
+        "region": [
+          316,
+          879,
+          310,
+          287
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f004",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          100,
+          40
+        ],
+        "region": [
+          1224,
+          1170,
+          284,
+          283
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f005",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          85,
+          38
+        ],
+        "region": [
+          1580,
+          879,
+          292,
+          285
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f006",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          92,
+          35
+        ],
+        "region": [
+          1591,
+          295,
+          272,
+          288
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      },
+      {
+        "duration_ms": 100,
+        "id": "f007",
+        "offset": [
+          0,
+          0
+        ],
+        "placement": [
+          43,
+          34
+        ],
+        "region": [
+          1280,
+          2,
+          314,
+          289
+        ],
+        "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+        "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+      }
+    ],
+    "playback": {
+      "mode": "once"
+    }
+  },
+  "canvas": [
+    512,
+    384
+  ],
+  "direction": "E",
+  "display_scale": 0.35,
+  "events": [
+    {
+      "frame": "f004",
+      "name": "release"
+    }
+  ],
+  "frames": [
+    {
+      "duration_ms": 100,
+      "id": "f000",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        43,
+        34
+      ],
+      "region": [
+        962,
+        2,
+        314,
+        289
+      ],
+      "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+      "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f001",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        39,
+        35
+      ],
+      "region": [
+        2,
+        879,
+        310,
+        287
+      ],
+      "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+      "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f002",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        0,
+        0
+      ],
+      "region": [
+        0,
+        0,
+        512,
+        384
+      ],
+      "sha256": "c8d168136667415ebf4bc3e527fa974c7e3172cf8bbb37251d57141c51828aaf",
+      "source": "res://art/source/sprite_workshop/sentinelle_attack_pilot_2026-09-09/b_pose_0.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f003",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        39,
+        35
+      ],
+      "region": [
+        316,
+        879,
+        310,
+        287
+      ],
+      "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+      "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f004",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        0,
+        0
+      ],
+      "region": [
+        0,
+        0,
+        512,
+        384
+      ],
+      "sha256": "b01831d4f0149519b5f8fde1a139ea151fe9b6d153e64d84de2338f6e055a0d6",
+      "source": "res://art/source/sprite_workshop/sentinelle_attack_pilot_2026-09-09/b_pose_1.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f005",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        0,
+        0
+      ],
+      "region": [
+        0,
+        0,
+        512,
+        384
+      ],
+      "sha256": "42d81b952b52a11a1ea9cc22bd48268cf79a1e11140e8a0e2e271a160c67f52c",
+      "source": "res://art/source/sprite_workshop/sentinelle_attack_pilot_2026-09-09/b_pose_2.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f006",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        92,
+        35
+      ],
+      "region": [
+        1591,
+        295,
+        272,
+        288
+      ],
+      "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+      "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+    },
+    {
+      "duration_ms": 100,
+      "id": "f007",
+      "offset": [
+        0,
+        0
+      ],
+      "placement": [
+        43,
+        34
+      ],
+      "region": [
+        1280,
+        2,
+        314,
+        289
+      ],
+      "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+      "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+    }
+  ],
+  "id": "sentinelle_attack_e_keyposes",
+  "intent": "Pilote contrôlé : remplacer seulement f002, f004 et f005, garder durée et release.",
+  "open_questions": [
+    "Qualité artistique non approuvée. Vérifier les raccords avec les poses conservées et les appuis.",
+    "L’anticipation levée et le retour doivent être évalués en mouvement."
+  ],
+  "playback": {
+    "mode": "once"
+  },
+  "provenance": {
+    "res://assets/characters/catabase_monsters/sentinelle_airain/sprite_frames.tres": "a53905b66ff32735daf42a73ef9e8ad18cc8110cdab25749ce7fac0ec449d2a3",
+    "res://data/visuals/catabase_monsters/sentinelle_airain_sprite_profile.tres": "da108a78da56ec98fd2d8c6cb1a9324e441246a79d38c77fd59857e06f5e3a68",
+    "res://art/source/sprite_workshop/sentinelle_attack_pilot_2026-09-09/variant_b_corrected_source.png": "56820daacf6c0e3574b2cc8c77a3b98b3edf5cc887448b1b94fce2f94f8ad4cf"
+  },
+  "reference": {
+    "duration_ms": 100,
+    "id": "reference",
+    "offset": [
+      0,
+      0
+    ],
+    "placement": [
+      43,
+      34
+    ],
+    "region": [
+      326,
+      2,
+      314,
+      289
+    ],
+    "sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
+    "source": "res://assets/characters/catabase_monsters/sentinelle_airain/atlas_E.png"
+  },
+  "review": {},
+  "schema_version": 1,
+  "title": "B · Nouvelles poses clés"
+}

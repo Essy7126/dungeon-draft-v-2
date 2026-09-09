@@ -1,0 +1,246 @@
+{
+	"anchor": [
+		256,
+		320
+	],
+	"animation": "dash_E",
+	"baseline": {
+		"anchor": [
+			256,
+			320
+		],
+		"display_scale": 0.35,
+		"events": [
+			{
+				"frame": "f002",
+				"name": "release"
+			},
+			{
+				"frame": "f003",
+				"name": "arrival"
+			}
+		],
+		"frames": [
+			{
+				"duration_ms": 50.0,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					512,
+					384
+				],
+				"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+				"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+			},
+			{
+				"duration_ms": 50.0,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					512,
+					0,
+					512,
+					384
+				],
+				"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+				"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+			},
+			{
+				"duration_ms": 400.0,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					1024,
+					0,
+					512,
+					384
+				],
+				"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+				"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+			},
+			{
+				"duration_ms": 80.0,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					1536,
+					0,
+					512,
+					384
+				],
+				"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+				"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+			}
+		],
+		"playback": {
+			"arrival_preview_ms": 500.0,
+			"hold_frame": "f002",
+			"mode": "arrival"
+		}
+	},
+	"canvas": [
+		512,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [
+		{
+			"frame": "f002",
+			"name": "release"
+		},
+		{
+			"frame": "f003",
+			"name": "arrival"
+		}
+	],
+	"frames": [
+		{
+			"duration_ms": 50.0,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				512,
+				384
+			],
+			"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+			"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+		},
+		{
+			"duration_ms": 50.0,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				512,
+				0,
+				512,
+				384
+			],
+			"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+			"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+		},
+		{
+			"duration_ms": 400.0,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				1024,
+				0,
+				512,
+				384
+			],
+			"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+			"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+		},
+		{
+			"duration_ms": 80.0,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				1536,
+				0,
+				512,
+				384
+			],
+			"sha256": "eb7a9af7dcf9f899869c0a2a535780e97c5d47c3fe102a95530829ca284ed863",
+			"source": "res://assets/characters/Achilles/sprites_kit_v2/atlas_base_E.png"
+		}
+	],
+	"id": "achille_dash_e",
+	"intent": "Référence positive conservée : préparation, poussée, vol maintenu, réception. La translation appartient au contrôleur.",
+	"open_questions": [
+		"La durée d'arrivée de l'atelier est un scénario de revue, pas une durée fixe de déplacement en jeu."
+	],
+	"playback": {
+		"arrival_preview_ms": 500.0,
+		"hold_frame": "f002",
+		"mode": "arrival"
+	},
+	"provenance": {
+		"res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres": "d56c99fafbb8a1f155fc32a9ed0ad9db6880195acf473672feb262a762fb5a05",
+		"res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres": "119d95c51de589294c8846099b98ad9928aed4751d933482be3f0f1a20c128ef"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			512,
+			384
+		],
+		"sha256": "153aa2625d154db13cbd0766b60a51f59715e2ca8b08fb1e503fe568c2a69243",
+		"source": "res://assets/characters/Achilles/sprites_cour_des_sources_v1/atlas_E.png"
+	},
+	"review": {},
+	"schema_version": 1,
+	"title": "Ruée d'Achille · référence"
+}

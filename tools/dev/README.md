@@ -61,6 +61,14 @@ SHA256. Les addons tiers sont exclus. Aucun formatage global automatique n'est
 effectué. `--verify-structure` ajoute un contrôle mais ne remplace pas la revue
 du diff et les tests Godot. La CI commence par les scripts de ce harnais.
 
+## Atelier de sprites
+
+`./tools/sprite_workshop/workshop.ps1 open|seed|new|import|check|export|capture`
+partage les services du Studio et ce harnais. Les documents sont versionnés,
+les exports et captures restent dans `artifacts/sprite_workshop/`.
+Voir [le guide de production](../sprite_workshop/README.md) pour la syntaxe,
+la revue des poses et les limites de validation artistique et en combat.
+
 ## Workbench
 
 `./dev.ps1 install workbench` compile la révision fixée dans `toolchain.json`,
