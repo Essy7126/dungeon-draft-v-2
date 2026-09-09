@@ -72,40 +72,39 @@ python tools/catabase_monster_sprite_pipeline/prepare_views.py --prepare --slug 
 
 ## 3. Articuler localement et fabriquer les spritesheets
 
-`rig.json` contient les articulations et paramètres par famille et orientation. Examiner leurs positions sur les vues préparées. Les animations sont produites depuis ces vues par `animate.py`, sans génération distante, sans texture en miroir et sans changement de taille entre poses.
+La version 2 utilise des pièces peintes réellement articulées. `humanoid_parts.py` définit le découpage, les pivots et les dessous reconstruits de la Sentinelle et du Rejeton ; `creature_parts.py` définit ceux du Molosse et de la Lamie. `articulated_animation.py` anime la hiérarchie des articulations, les appuis des pieds et les recettes propres à chaque personnage. `rig.json` est une référence historique de la version 1 et n'est plus lu.
 
-Pour conserver une retouche manuelle, ajouter `"manual_reviewed": true` à l’entrée concernée du rig. Sans ce marqueur, le script reconstruit cette entrée depuis `default_rig()` ; les recettes d’action communes se règlent dans `recipe()`.
+Les bras, avant-bras, mains, cuisses, tibias et pieds tournent séparément. Les zones cachées au repos sont reconstruites avec la palette source, puis recouvertes par les pièces visibles. Les armes suivent leur main. La marche résout deux articulations par patte pour garder un contact au sol pendant l'appui ; les chevilles compensent l'inclinaison du tibia. Seule la queue souple de la Lamie emploie une déformation locale. Les textures des quatre directions sont indépendantes et ne sont jamais retournées.
 
-Chaque direction part d’une seule peinture, animée comme une marionnette 2D avec des mouvements modérés. Le rendu emploie une déformation inverse continue, de larges zones d’influence autour des articulations et un échantillonnage RGBA prémultiplié. Le gradient de déplacement est borné pour préserver la continuité de la silhouette. Cette méthode ne produit ni nouvelles poses repeintes ni modèle 3D.
-
-Pour vérifier d’abord une orientation :
+Pour examiner une orientation sans toucher aux assets runtime :
 
 ```powershell
-python tools/catabase_monster_sprite_pipeline/animate.py --slug sentinelle_airain --direction E
+python tools/catabase_monster_sprite_pipeline/animate.py --slug sentinelle_airain --direction E --review-only
 ```
 
-Examiner la marche, la liaison des bras et des armes, le recul, l’attaque, le geste du sort et la chute dans `output/catabase_monsters/<famille>/`. Corriger le rig et les recettes locales lorsqu’une articulation traverse le corps ou qu’un équipement se détache. Une ressemblance des silhouettes ne suffit pas à valider leur mouvement.
+Les planches et boucles GIF sont dans `output/catabase_monsters_v2/review/<famille>/`. Ces GIF rapides servent à examiner les poses ; juger le rythme réel avec le GIF final de `preview.py` ou son lecteur HTML, qui suivent les profils du jeu. Examiner les mains, les armes, les appuis, les silhouettes et les chutes, puis corriger les découpes et recettes locales.
 
-Après revue des articulations, produire les quatre directions :
+Après revue, reconstruire les quatre familles :
 
 ```powershell
-python tools/catabase_monster_sprite_pipeline/animate.py --slug sentinelle_airain
-# Ou reconstruire les quatre familles :
 python tools/catabase_monster_sprite_pipeline/animate.py --slug all
+python tools/catabase_monster_sprite_pipeline/preview.py
 ```
 
-`animate.py` appelle `build.pack_frames()` pour les vingt poses de chaque direction, puis `build.write_sprite_frames()` pour finaliser la famille. L’assemblage n’ajoute aucun dessin ni transformation : il conserve exactement les pixels RGBA des poses produites localement.
+`preview.py` écrit aussi `output/catabase_monsters_v2/review/animation_review.html` : lecture/pause, choix de la famille, de la direction, de l'action et de la taille, curseur de pose. Les références d'images sont locales et les données sont incluses dans la page. `--html-only` régénère uniquement cet aperçu.
 
-| Action | Indices des poses | Images/s | Boucle |
+Chaque famille possède 48 poses par direction, soit 192 poses ; les quatre familles totalisent 768 poses. La pose 0 conserve exactement la peinture de référence. Le rendu prémultiplie les couleurs pour éviter les franges sombres lors des rotations.
+
+| Action | Indices | Poses | Boucle |
 | --- | --- | ---: | --- |
-| Repos (`idle`) | 0 | 1 | Oui |
-| Marche (`walk`) | 1–6 | 10 | Oui |
-| Attaque (`attack`) | 7–10 | 6,67 | Non |
-| Sort (`cast`) | 11–14 | 6,67 | Non |
-| Impact reçu (`hit`) | 15 | 1 | Non |
-| Mort (`death`) | 16–19 | 5 | Non |
+| Repos (`idle`) | 0–7 | 8 | Oui |
+| Marche (`walk`) | 8–19 | 12 | Oui |
+| Attaque (`attack`) | 20–27 | 8 | Non |
+| Sort (`cast`) | 28–35 | 8 | Non |
+| Impact reçu (`hit`) | 36–39 | 4 | Non |
+| Mort (`death`) | 40–47 | 8 | Non |
 
-La pose de libération est l’image locale 2 pour l’attaque et le sort. Les profils Godot règlent leur durée effective ; les projectiles ajoutent leur délai de trajet. Le gameplay reste porté par les sorts et non par les GIF de revue.
+Les profils Godot règlent la durée effective par espèce ; l'export et les aperçus lisent ces mêmes valeurs. Le repos dure 2,4 s pour la Sentinelle, 1,25 s pour le Rejeton, 1,1 s pour le Molosse et 2,8 s pour la Lamie. Les attaques libèrent leur effet à l'image locale 4, après l'anticipation ; les projectiles ajoutent leur temps de trajet. La marche avance selon la distance parcourue et le repos conserve sa phase lors d'un changement de direction. Les GIF sont des outils de revue, les événements du jeu gardent autorité sur les dégâts.
 
 ## 4. Vérifier les fichiers et le rendu en jeu
 
@@ -116,11 +115,11 @@ python tools/catabase_monster_sprite_pipeline/build.py --verify molosse_styx
 python tools/catabase_monster_sprite_pipeline/build.py --verify lamie_lethe
 ```
 
-Cette vérification est locale et en lecture seule. Elle exige les quatre directions et contrôle les dimensions, les vingt régions, leurs hashes et l’intégrité des pixels relus. `--allow-partial` sert seulement au développement d’une orientation ; il ne valide pas une famille de production.
+Cette vérification est locale et en lecture seule. Elle exige les quatre directions et contrôle les dimensions, les 48 régions, leurs hashes et l’intégrité des pixels relus. `--allow-partial` sert seulement au développement d’une orientation ; il ne valide pas une famille de production.
 
-Les ressources finales se trouvent dans `assets/characters/catabase_monsters/<famille>/` : `atlas_<D>.png` en grille 4 × 5, manifestes par direction, `sprite_frames.tres`, `portrait.tres` et `manifest.json`. Le portrait est un cadrage de la tête et du haut du corps de la pose E au repos ; vérifier son cadrage pour chaque créature.
+Les ressources finales se trouvent dans `assets/characters/catabase_monsters/<famille>/` : `atlas_<D>.png` compactés sans rotation, avec deux pixels de gouttière transparente, manifestes par direction, `sprite_frames.tres`, `portrait.tres`, `portrait.png` et `manifest.json`. Le portrait est un cadrage de la tête et du haut du corps de la pose E au repos ; vérifier son cadrage pour chaque créature.
 
-Chaque atlas est relu après écriture : ses régions doivent correspondre exactement aux pixels des poses, avec une erreur de reconstruction égale à zéro. Le manifeste conserve la vue source, les hashes, le rig et les recettes de poses. Ce contrôle détecte un fichier corrompu ou un découpage, mais ne remplace pas l’examen de l’anatomie et des animations.
+Les marges des `AtlasTexture` restituent le canevas logique 512 × 384 et son ancre commune (256, 320), malgré le rangement compact. Chaque atlas est relu après écriture : ses régions doivent correspondre exactement aux pixels des poses, avec une erreur de reconstruction égale à zéro. Le manifeste conserve la vue source, les hashes du rendu et des sources, la hiérarchie des pièces et les recettes de poses. Ce contrôle détecte un fichier corrompu ou un découpage, mais ne remplace pas l’examen de l’anatomie et des animations.
 
 Importer ensuite les assets dans Godot et exécuter les tests d’intégration de `test/unit/test_catabase_monsters_integration.gd`, puis le probe de combat `tools/catabase_monster_validation/combat_probe.tscn`, piloté par `tools/catabase_monster_validation/combat_probe.gd`. Vérifier notamment le déplacement réel, les attaques, les délais des projectiles, les états et la disparition des unités mortes. Les résultats doivent être consignés après exécution ; ce README n’affirme pas que des contrôles runtime non exécutés ont réussi.
 

@@ -13,5 +13,6 @@ external_stride_distance_pixels = 128
 movement_segment_duration_seconds = 0.36
 primary_spell_ids = Array[StringName]([&"catabase_airain_estoc"])
 action_durations = {"attack": 0.8, "cast": 0.88}
-release_frame = 2
+idle_cycle_seconds = 2.4
+release_frame = 4
 death_duration_seconds = 0.8

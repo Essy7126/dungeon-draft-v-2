@@ -5,7 +5,7 @@ const Factory = preload("res://test/support/factory.gd")
 const Cleanup = preload("res://test/support/isolated_battlefield_cleanup.gd")
 const SLUGS := ["sentinelle_airain", "rejeton_braise", "molosse_styx", "lamie_lethe"]
 const SCENES := ["SentinelleAirain", "RejetonBraise", "MolosseStyx", "LamieLethe"]
-const ACTION_COUNTS := {"idle": 1, "walk": 6, "attack": 4, "cast": 4, "hit": 1, "death": 4}
+const ACTION_COUNTS := {"idle": 8, "walk": 12, "attack": 8, "cast": 8, "hit": 4, "death": 8}
 var _fixture_grids: Array[GridData] = []
 
 
@@ -66,6 +66,7 @@ func test_logic_four_monsters_bind_real_visuals_and_have_distinct_tactical_roles
 
 func test_imported_art_has_all_explicit_directions_and_real_atlas_regions() -> void:
 	for slug: String in SLUGS:
+		var atlas_images := {}
 		var frames := load("res://assets/characters/catabase_monsters/%s/sprite_frames.tres" % slug) as SpriteFrames
 		assert_not_null(frames, slug)
 		if frames == null: continue
@@ -74,6 +75,16 @@ func test_imported_art_has_all_explicit_directions_and_real_atlas_regions() -> v
 		assert_not_null(portrait, slug + ": portrait resource bound for timeline and inspection")
 		if portrait != null:
 			assert_true(portrait.has_animation(data.preview_sprite_animation))
+			var portrait_image := portrait.get_frame_texture(data.preview_sprite_animation, 0).get_image()
+			var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(
+				"res://assets/characters/catabase_monsters/%s/manifest.json" % slug))
+			var source := _load_source_png("res://art/source/characters/catabase_monsters/%s/base_frame_E.png" % slug)
+			var crop: Array = manifest.portrait_rect
+			var expected_portrait := source.get_region(Rect2i(crop[0], crop[1], crop[2], crop[3]))
+			if portrait_image.is_compressed(): assert_eq(portrait_image.decompress(), OK)
+			portrait_image.convert(Image.FORMAT_RGBA8)
+			expected_portrait.convert(Image.FORMAT_RGBA8)
+			_assert_visible_pixels_equal(portrait_image, expected_portrait, "Portrait preserves the fixed E view")
 		for direction: String in ["N", "E", "S", "W"]:
 			for action: String in ACTION_COUNTS:
 				var animation := StringName(action + "_" + direction)
@@ -86,13 +97,28 @@ func test_imported_art_has_all_explicit_directions_and_real_atlas_regions() -> v
 					assert_not_null(texture, slug + ": nonempty atlas frame")
 					if texture == null: continue
 					assert_not_null(texture.atlas, "Imported GPU texture exists")
-					assert_eq(texture.region.size, Vector2(512, 384))
+					assert_eq(texture.get_size(), Vector2(512, 384), "Margins retain the logical canvas")
+					assert_eq(texture.region.size + texture.margin.size, Vector2(512, 384))
+					assert_true(texture.filter_clip, "Linear filtering cannot bleed adjacent poses")
+					assert_true(Rect2(Vector2.ZERO, Vector2(512, 384)).encloses(
+						Rect2(texture.margin.position, texture.region.size)))
 					if texture.atlas != null:
 						assert_true(Rect2(Vector2.ZERO, texture.atlas.get_size()).encloses(texture.region))
-					var pixels := texture.get_image()
-					assert_not_null(pixels, slug + ": real image pixels")
-					if pixels == null: continue
-					if pixels.is_compressed(): assert_eq(pixels.decompress(), OK)
+						if not atlas_images.has(texture.atlas.resource_path):
+							var imported_image := texture.atlas.get_image()
+							if imported_image.is_compressed(): assert_eq(imported_image.decompress(), OK)
+							imported_image.convert(Image.FORMAT_RGBA8)
+							atlas_images[texture.atlas.resource_path] = imported_image
+					else: continue
+					# AtlasTexture.get_image() returns only the packed region. Restore
+					# its logical margin before checking ground/canvas or source bytes.
+					var atlas_image: Image = atlas_images[texture.atlas.resource_path]
+					var pixels := Image.create(512, 384, false, Image.FORMAT_RGBA8)
+					pixels.blit_rect(atlas_image, Rect2i(texture.region), Vector2i(texture.margin.position))
+					if action == "idle" and frame == 0:
+						var reference := _load_source_png("res://art/source/characters/catabase_monsters/%s/base_frame_%s.png" % [slug, direction])
+						reference.convert(Image.FORMAT_RGBA8)
+						_assert_visible_pixels_equal(pixels, reference, "Frame zero preserves source pixels and placement")
 					var used := pixels.get_used_rect()
 					assert_gt(used.size.x, 0, "Every pose is visible")
 					assert_gt(used.size.y, 0, "Every pose is visible")
@@ -103,8 +129,27 @@ func test_imported_art_has_all_explicit_directions_and_real_atlas_regions() -> v
 					assert_almost_eq(pixels.get_pixel(0, 0).a, 0.0, 0.001)
 					assert_almost_eq(pixels.get_pixel(511, 383).a, 0.0, 0.001)
 					distinct_poses[hash(pixels.get_data())] = true
-				if action in ["walk", "attack", "cast", "death"]:
-					assert_gte(distinct_poses.size(), 3, "Actual changing poses: " + str(animation))
+				var minimum_poses := 3 if action == "hit" else (9 if action == "walk" else 6)
+				assert_gte(distinct_poses.size(), minimum_poses, "Actual changing poses: " + str(animation))
+
+
+func _load_source_png(path: String) -> Image:
+	# Read source bytes explicitly; these are authoring references, not exports.
+	var image := Image.new()
+	assert_eq(image.load_png_from_buffer(FileAccess.get_file_as_bytes(path)), OK, path)
+	return image
+
+
+func _assert_visible_pixels_equal(actual: Image, expected: Image, message: String) -> void:
+	# Match the actual importer: fix_alpha_border recolors RGB below alpha 20/255,
+	# including faint visible fringes. Keep exact composited equality afterwards;
+	# the independent Python audit also checks every original PNG RGBA byte.
+	var composited := actual.duplicate() as Image
+	var reference := expected.duplicate() as Image
+	reference.fix_alpha_edges()
+	composited.premultiply_alpha()
+	reference.premultiply_alpha()
+	assert_true(composited.get_data() == reference.get_data(), message)
 
 
 func test_logic_every_primary_attack_spends_ap_and_reduces_health_once() -> void:

@@ -2,7 +2,7 @@ class_name CatabaseMonsterSpriteProfile
 extends Resource
 
 ## All poses use the same authored canvas and ground pivot. UnitView owns translation.
-const CLIP_COUNTS := {"idle": 1, "walk": 6, "attack": 4, "cast": 4, "hit": 1, "death": 4}
+const CLIP_COUNTS := {"idle": 8, "walk": 12, "attack": 8, "cast": 8, "hit": 4, "death": 8}
 const DIRECTIONS := ["N", "E", "S", "W"]
 
 @export var profile_id: StringName
@@ -17,9 +17,10 @@ const DIRECTIONS := ["N", "E", "S", "W"]
 @export_range(0.05, 2.0, 0.05) var stride_cycles_per_cell := 0.5
 @export_range(1.0, 512.0, 1.0) var external_stride_distance_pixels := 128.0
 @export_range(0.05, 1.0, 0.01) var movement_segment_duration_seconds := 0.30
+@export_range(0.2, 5.0, 0.05) var idle_cycle_seconds := 1.6
 @export var primary_spell_ids: Array[StringName] = []
 @export var action_durations: Dictionary = {"attack": 0.64, "cast": 0.80}
-@export_range(0, 3, 1) var release_frame := 2
+@export_range(0, 7, 1) var release_frame := 4
 @export_range(0.05, 1.0, 0.01) var hit_duration_seconds := 0.20
 @export_range(0.05, 2.0, 0.01) var death_duration_seconds := 0.64
 @export_range(0.01, 1.0, 0.01) var death_fade_seconds := 0.16
@@ -37,7 +38,7 @@ func validation_error(candidate: SpriteFrames) -> StringName:
 			or not foot_anchor.is_finite() or foot_anchor.x < 0.0 or foot_anchor.y < 0.0 \
 			or foot_anchor.x > frame_canvas_size.x or foot_anchor.y > frame_canvas_size.y:
 		return &"SPRITE_GEOMETRY_INVALID"
-	for timing: float in [movement_segment_duration_seconds, stride_cycles_per_cell,
+	for timing: float in [idle_cycle_seconds, movement_segment_duration_seconds, stride_cycles_per_cell,
 			external_stride_distance_pixels, hit_duration_seconds,
 			death_duration_seconds, death_fade_seconds]:
 		if not is_finite(timing) or timing <= 0.0:

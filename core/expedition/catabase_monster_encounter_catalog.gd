@@ -9,16 +9,20 @@ const UNIT_PATHS := {
 	&"molosse": "res://data/units/enemies/catabase_molosse_styx.tres",
 	&"lamie": "res://data/units/enemies/catabase_lamie_lethe.tres",
 }
+const RECOVERY_DEPTHS := [5, 9, 13, 17]
+
+
+static func uses_monsters(node: Dictionary) -> bool:
+	var depth := int(node.get("depth", 1))
+	return depth > 1 and depth not in [7, 20] \
+		and str(node.get("kind", "normal")) in ["normal", "elite"]
 
 
 static func configure_encounter(encounter: EncounterDefinition, node: Dictionary) -> void:
-	var depth := int(node.get("depth", 1))
-	var kind := str(node.get("kind", "normal"))
 	# The teaching encounter, bronze champion and final Paris fight keep their
-	# established identities, placement and companion rosters.
-	if depth <= 1 or kind == "boss" or depth == 7:
-		return
-	if kind not in ["normal", "elite"]:
+	# established identities, placement and companion rosters, including the
+	# factory's pending-room placeholders before a real route node is selected.
+	if not uses_monsters(node):
 		return
 	var roles := composition_for(node)
 	encounter.roster_units = []
@@ -28,7 +32,7 @@ static func configure_encounter(encounter: EncounterDefinition, node: Dictionary
 	encounter.shared_normal_summon_budget = 0
 	encounter.shared_chief_summon_budget = 0
 	encounter.disabled_ability_ids = []
-	encounter.formation_profiles.assign([&"split", &"double_line", &"left_flank", &"right_flank"])
+	encounter.formation_profiles = formations_for(node)
 	var counts := {}
 	for role in roles:
 		counts[role] = int(counts.get(role, 0)) + 1
@@ -49,8 +53,8 @@ static func configure_encounter(encounter: EncounterDefinition, node: Dictionary
 static func composition_for(node: Dictionary) -> Array[StringName]:
 	var depth := int(node.get("depth", 1))
 	var reward := str(node.get("reward", "melee"))
-	# Two bodies introduce frontline/range tradeoffs before the bronze trial.
-	# From depth 9, a third role combines pressure without doubling controllers.
+	# Early rooms teach two roles. Each new region opens with a lighter pair;
+	# later rooms combine three distinct threats, never stacked controllers.
 	var roles: Array[StringName] = []
 	match reward:
 		"armor", "melee":
@@ -67,8 +71,25 @@ static func composition_for(node: Dictionary) -> Array[StringName]:
 			roles.assign([&"sentinelle", &"lamie"])
 		_:
 			roles.assign([&"sentinelle", &"rejeton"])
-	if depth >= 9:
-		# Late pressure adds one fragile mobile/ranged threat, never a second
-		# controller or a second heavily armoured defender.
-		roles.append(&"rejeton" if roles.has(&"molosse") else &"molosse")
+	if depth >= 10 and depth not in RECOVERY_DEPTHS:
+		# A ranged pair receives a slow blocker; a defensive/control pair gets
+		# a pursuer. A mobile pair gets a fragile shooter, not a second tank.
+		if not roles.has(&"molosse"):
+			roles.append(&"molosse")
+		elif not roles.has(&"rejeton"):
+			roles.append(&"rejeton")
+		else:
+			roles.append(&"sentinelle")
 	return roles
+
+
+static func formations_for(node: Dictionary) -> Array[StringName]:
+	var formations: Array[StringName] = []
+	match str(node.get("reward", "melee")):
+		"armor", "melee", "vitality", "signature":
+			formations.assign([&"double_line", &"line"])
+		"mobility":
+			formations.assign([&"left_flank", &"right_flank"])
+		_:
+			formations.assign([&"split", &"double_line"])
+	return formations

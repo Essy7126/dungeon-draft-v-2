@@ -37,6 +37,7 @@ var _reaction_elapsed := 0.0
 var _movement_active := false
 var _movement_feedback_owned := false
 var _movement_phase := 0.0
+var _idle_phase := 0.0
 var _movement_stable_time := 0.0
 var _last_parent_position := Vector2.ZERO
 var _last_tick_usec := 0
@@ -67,6 +68,7 @@ func configure_profile(profile: CatabaseMonsterSpriteProfile) -> bool:
 		return false
 	cancel_pending_visual_actions()
 	sprite_profile = profile
+	_idle_phase = 0.0
 	_frames = profile.frames if profile != null else null
 	if profile != null and _frames == null and ResourceLoader.exists(profile.sprite_frames_path):
 		_frames = load(profile.sprite_frames_path) as SpriteFrames
@@ -96,6 +98,7 @@ func bind_unit(unit: Unit) -> void:
 	_dead = false
 	cancel_pending_visual_actions()
 	_unit = unit
+	_idle_phase = 0.0
 	_death_finished = false
 	_death_elapsed = 0.0
 	modulate.a = 1.0
@@ -144,6 +147,13 @@ func advance_simulation(seconds: float) -> void:
 			_hold_idle_pose()
 		return
 	_track_parent_movement(delta)
+	if not _movement_active:
+		_idle_phase = fposmod(_idle_phase + delta / sprite_profile.idle_cycle_seconds, 1.0)
+		# A weighted cycle can sum to 0.999999999 instead of exactly one.
+		# Use the same boundary tolerance as the frame sampler when wrapping.
+		if _idle_phase + 0.0000001 >= 1.0:
+			_idle_phase = 0.0
+		_hold_idle_pose()
 
 
 func set_facing(direction: Vector2i) -> void:
@@ -349,6 +359,7 @@ func get_visual_runtime_state() -> Dictionary:
 		"action_id": String(_pending_action_id),
 		"reaction_pending": _reaction_pending, "reaction_elapsed": _reaction_elapsed,
 		"movement_active": _movement_active, "movement_phase": _movement_phase,
+		"idle_phase": _idle_phase,
 		"locomotion": sprite_profile.locomotion if sprite_profile != null else "",
 		"stride_cycles_per_cell": sprite_profile.stride_cycles_per_cell if sprite_profile != null else 0.0,
 		"movement_feedback_owned": _movement_feedback_owned,
@@ -477,11 +488,7 @@ func _hold_idle_pose() -> void:
 	if not _configured or not is_instance_valid(animated_sprite):
 		return
 	_stem = "idle"
-	var clip := StringName("idle_" + _facing)
-	if animated_sprite.animation != clip:
-		animated_sprite.animation = clip
-	animated_sprite.pause()
-	animated_sprite.set_frame_and_progress(0, 0.0)
+	_sample_normalized("idle", _idle_phase)
 
 
 func _track_parent_movement(delta: float) -> void:

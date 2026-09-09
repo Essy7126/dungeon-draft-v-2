@@ -1,6 +1,8 @@
 # Catabase monster validation
 
-The unit suite loads the four production monsters and all imported atlas frames.
+The unit suite loads the four production monsters and all 768 imported poses
+(48 per direction). Trimmed atlas regions preserve the logical 512×384 canvas
+through AtlasTexture margins; portraits retain the exact fixed E source view.
 It exercises primary and special spell costs, actual health/status/push effects,
 AI movement and casting, delayed cancellation, and three seeded route rosters.
 Missing imports or dependencies are failures.
@@ -23,7 +25,8 @@ played traversal, a full-run victory, or a balance simulation.
 
 The process exits nonzero on failed checks. Reports and viewport PNGs are written
 to ignored `artifacts/catabase_monsters/{resolution}/`. Capture labels include
-the original encounter, actual walk/attack/cast/death frames, and resolved combat.
+the original encounter, an observed eight-frame idle loop, actual
+walk/attack/cast/death frames, and resolved combat.
 The JSON reports contain exact AP/MP/HP changes, observed animations and failures.
 Run the strict suite and graphical probes sequentially after asset generation
 has completed so imports cannot race writes.
@@ -37,4 +40,4 @@ engine errors or failing tests are suppressed.
 
 The wrapper also rejects shutdown resource/ObjectDB leaks even when the probe's
 functional checks pass. See the executed results and recorded limitations in
-[the validation report](../../docs/design/catabase_monsters_validation_v1.md).
+[the validation report](../../docs/design/catabase_monsters_validation_v2.md).

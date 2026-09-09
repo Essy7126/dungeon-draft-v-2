@@ -6,6 +6,14 @@ const BASE_RUN := "res://data/runs/odyssey.tres"
 const MonsterEncounterCatalog = preload("res://core/expedition/catabase_monster_encounter_catalog.gd")
 # Hubs do not manufacture character XP. Rank follows victories.
 const XP_BY_DEPTH := [100, 110, 120, 0, 130, 140, 160, 0, 180, 200, 210, 0, 230, 250, 270, 0, 280, 300, 0, 340]
+# Fixed depth curves for the four Catabase monsters, independent of the hero's
+# build, inventory, current health or optional victories. HP tracks canonical
+# prowess growth; attack tracks the slower pressure budget of one action/foe.
+# Noncombat entries hold the previous value; protected fights use legacy stats.
+const MONSTER_HP_BY_DEPTH := [1.0, 0.45, 0.55, 0.55, 0.68, 0.82, 1.0, 1.0, 1.05, 1.30, 1.50, 1.50, 1.65, 1.95, 2.15, 2.30, 2.45, 2.90, 2.90, 2.90]
+const MONSTER_ATTACK_BY_DEPTH := [1.0, 0.70, 0.85, 0.85, 0.95, 1.10, 1.0, 1.0, 1.35, 1.60, 1.85, 1.85, 2.05, 2.45, 2.80, 3.00, 3.20, 3.80, 3.80, 3.80]
+const MONSTER_ELITE_HP := 1.15
+const MONSTER_ELITE_ATTACK := 1.12
 
 
 static func create(seed_value: int, hero_visual_variants: Dictionary = {}) -> RunData:
@@ -62,11 +70,12 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 	MonsterEncounterCatalog.configure_encounter(encounter, node)
 	var source_roster: Array[UnitData] = encounter.roster_units.duplicate()
 	encounter.roster_units = []
-	var multiplier := enemy_multiplier(node)
+	var hp_multiplier := enemy_hp_multiplier(node)
+	var attack_multiplier := enemy_attack_multiplier(node)
 	for data in source_roster:
 		var enemy := data.duplicate(false) as UnitData
-		enemy.max_hp = roundi(float(data.max_hp) * multiplier)
-		enemy.attack_power = roundi(float(data.attack_power) * multiplier)
+		enemy.max_hp = maxi(1, roundi(float(data.max_hp) * hp_multiplier))
+		enemy.attack_power = maxi(1, roundi(float(data.attack_power) * attack_multiplier))
 		encounter.roster_units.append(enemy)
 	room.encounter_definition = encounter
 	room.enemies = encounter.expanded_roster()
@@ -74,7 +83,22 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 
 
 static func enemy_multiplier(node: Dictionary) -> float:
+	# Preserve authored tutorial/champion/boss behavior and this legacy API.
 	return (1.20 if str(node.get("kind", "")) == "elite" else 1.0) * (1.0 + float(maxi(0, int(node.depth) - 5)) * 0.07)
+
+
+static func enemy_hp_multiplier(node: Dictionary) -> float:
+	if not MonsterEncounterCatalog.uses_monsters(node):
+		return enemy_multiplier(node)
+	var depth_index := clampi(int(node.depth) - 1, 0, MONSTER_HP_BY_DEPTH.size() - 1)
+	return MONSTER_HP_BY_DEPTH[depth_index] * (MONSTER_ELITE_HP if str(node.get("kind", "normal")) == "elite" else 1.0)
+
+
+static func enemy_attack_multiplier(node: Dictionary) -> float:
+	if not MonsterEncounterCatalog.uses_monsters(node):
+		return enemy_multiplier(node)
+	var depth_index := clampi(int(node.depth) - 1, 0, MONSTER_ATTACK_BY_DEPTH.size() - 1)
+	return MONSTER_ATTACK_BY_DEPTH[depth_index] * (MONSTER_ELITE_ATTACK if str(node.get("kind", "normal")) == "elite" else 1.0)
 
 
 static func xp_for(node: Dictionary) -> int:

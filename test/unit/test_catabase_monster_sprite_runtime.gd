@@ -25,7 +25,7 @@ func test_four_profiles_use_distinct_gaits_and_keep_fixed_ground_anchor() -> voi
 		for direction: String in DIRECTIONS:
 			view.set_facing_label(direction)
 			assert_true(view.play_idle())
-			view.advance_simulation(10.0)
+			view.advance_simulation(view.sprite_profile.idle_cycle_seconds)
 			assert_eq(sprite.animation, StringName("idle_" + direction))
 			assert_eq(sprite.frame, 0)
 			assert_false(sprite.is_playing())
@@ -102,7 +102,7 @@ func test_primary_spells_and_specials_have_distinct_poses_and_once_only_signals(
 				assert_eq(events.releases, before_release)
 				view.advance_simulation(0.001)
 				assert_eq(events.releases, before_release + 1)
-				assert_eq(events.release_frame, 2)
+				assert_eq(events.release_frame, 4)
 				view.advance_simulation(duration * 0.5 + 0.001)
 				assert_eq(events.finishes, before_finish + 1)
 				assert_eq(events.finished_id, StringName("cast:" + String(spell.spell_id)))
@@ -116,7 +116,7 @@ func test_large_delta_still_shows_release_pose_before_completion() -> void:
 	var events := _watch_actions(view)
 	assert_true(view.play_basic_attack())
 	view.advance_simulation(20.0)
-	assert_eq(events.release_frame, 2)
+	assert_eq(events.release_frame, 4)
 	assert_eq(events.order, ["release", "finish"])
 	assert_eq(events.finished_id, &"attack")
 
@@ -127,12 +127,12 @@ func test_weighted_pose_duration_keeps_impact_at_authored_release_frame() -> voi
 		view.sprite_profile.frames.get_frame_texture(&"cast_S", 0), 3.0)
 	var events := _watch_actions(view)
 	assert_true(view.play_cast())
-	var release_time := view.sprite_profile.duration_for("cast") * 4.0 / 6.0
+	var release_time := view.sprite_profile.duration_for("cast") * 6.0 / 10.0
 	view.advance_simulation(release_time - 0.001)
 	assert_eq(events.releases, 0)
 	view.advance_simulation(0.001)
 	assert_eq(events.releases, 1)
-	assert_eq(events.release_frame, 2)
+	assert_eq(events.release_frame, 4)
 
 
 func test_cancel_before_release_does_not_leak_into_next_action() -> void:
@@ -220,7 +220,7 @@ func test_damage_events_only_react_on_bound_living_target_and_disconnect_on_rebi
 	assert_true(view.get_visual_runtime_state().dead)
 
 
-func test_death_displays_all_four_authored_poses_before_fading_and_finishes_once() -> void:
+func test_death_displays_all_eight_authored_poses_before_fading_and_finishes_once() -> void:
 	var view := _create_view()
 	var events := _watch_actions(view)
 	var death := {"count": 0}
@@ -230,8 +230,8 @@ func test_death_displays_all_four_authored_poses_before_fading_and_finishes_once
 	assert_true(view.play_death())
 	assert_false(view.play_death())
 	view.cancel_pending_visual_actions()
-	var pose_duration := view.sprite_profile.death_duration_seconds / 4.0
-	for index in 4:
+	var pose_duration := view.sprite_profile.death_duration_seconds / 8.0
+	for index in 8:
 		assert_eq(view.animated_sprite.animation, &"death_S")
 		assert_eq(view.animated_sprite.frame, index)
 		assert_eq(view.modulate.a, 1.0)
@@ -272,7 +272,7 @@ func test_profile_rejects_incomplete_directions_looping_death_and_invalid_marker
 	profile.frames.set_animation_loop(&"death_S", true)
 	assert_eq(profile.validation_error(profile.frames), &"SPRITE_CLIP_LOOP_INVALID")
 	profile = _profile(IDS[0])
-	profile.release_frame = 4
+	profile.release_frame = 8
 	assert_eq(profile.validation_error(profile.frames), &"SPRITE_RELEASE_MARKER_INVALID")
 
 
@@ -302,6 +302,89 @@ func test_pause_and_zero_time_scale_do_not_consume_wall_time_on_resume() -> void
 	assert_eq(events.finishes, 1)
 
 
+func test_idle_loops_through_all_poses_without_moving_the_logical_root() -> void:
+	var view := _create_view()
+	var events := _watch_actions(view)
+	var parent_transform := (view.get_parent() as Node2D).transform
+	var sprite_transform := view.animated_sprite.transform
+	var step := view.sprite_profile.idle_cycle_seconds / 8.0
+	for loop_index in 2:
+		for index in 8:
+			assert_eq(view.animated_sprite.frame, index)
+			view.advance_simulation(step)
+	assert_eq(view.animated_sprite.frame, 0)
+	assert_eq(events.order, [], "Idle never emits action/release completion")
+	assert_eq((view.get_parent() as Node2D).transform, parent_transform)
+	assert_eq(view.animated_sprite.transform, sprite_transform)
+	assert_false(view.animated_sprite.is_playing(), "One explicit runtime clock")
+
+
+func test_idle_phase_survives_facing_changes_and_repeated_idle_requests() -> void:
+	var view := _create_view()
+	view.advance_simulation(view.sprite_profile.idle_cycle_seconds * 0.43)
+	var frame := view.animated_sprite.frame
+	var progress := view.animated_sprite.frame_progress
+	for direction: String in DIRECTIONS:
+		view.set_facing_label(direction)
+		assert_true(view.play_idle())
+		assert_eq(view.animated_sprite.animation, StringName("idle_" + direction))
+		assert_eq(view.animated_sprite.frame, frame)
+		assert_almost_eq(view.animated_sprite.frame_progress, progress, 0.0001)
+	view.advance_simulation(view.sprite_profile.idle_cycle_seconds * 0.125)
+	assert_eq(view.animated_sprite.frame, frame + 1)
+
+
+func test_idle_clock_samples_nonuniform_authored_frame_weights() -> void:
+	var view := _create_view()
+	var frames := view.sprite_profile.frames
+	frames.set_frame(&"idle_S", 0, frames.get_frame_texture(&"idle_S", 0), 3.0)
+	view.advance_simulation(view.sprite_profile.idle_cycle_seconds * 0.25)
+	assert_eq(view.animated_sprite.frame, 0, "Long breathing hold uses three weights")
+	assert_almost_eq(view.animated_sprite.frame_progress, 2.5 / 3.0, 0.0001)
+	view.advance_simulation(view.sprite_profile.idle_cycle_seconds * 0.05)
+	assert_eq(view.animated_sprite.frame, 1)
+	view.advance_simulation(view.sprite_profile.idle_cycle_seconds * 0.7)
+	assert_eq(view.animated_sprite.frame, 0)
+
+
+func test_idle_pause_and_zero_time_scale_freeze_phase_without_resume_jump() -> void:
+	var view := _create_view()
+	view.advance_simulation(0.35)
+	var phase := float(view.get_visual_runtime_state().idle_phase)
+	view.set_process(true)
+	get_tree().paused = true
+	await get_tree().create_timer(0.25, true, false, true).timeout
+	assert_almost_eq(float(view.get_visual_runtime_state().idle_phase), phase, 0.0001)
+	get_tree().paused = false
+	Engine.time_scale = 0.0
+	await get_tree().create_timer(0.25, true, false, true).timeout
+	assert_almost_eq(float(view.get_visual_runtime_state().idle_phase), phase, 0.0001)
+	Engine.time_scale = 1.0
+	await wait_process_frames(1)
+	assert_lt(float(view.get_visual_runtime_state().idle_phase) - phase, 0.15)
+	view.set_process(false)
+
+
+func test_trimmed_atlas_margin_preserves_logical_size_and_native_cropped_image() -> void:
+	var source := Image.create(32, 24, false, Image.FORMAT_RGBA8)
+	source.fill(Color.TRANSPARENT)
+	source.fill_rect(Rect2i(3, 4, 10, 12), Color.RED)
+	var atlas := AtlasTexture.new()
+	atlas.atlas = ImageTexture.create_from_image(source)
+	atlas.region = Rect2(3, 4, 10, 12)
+	atlas.margin = Rect2(219, 286, 502, 372)
+	atlas.filter_clip = true
+	assert_eq(atlas.get_size(), Vector2(512, 384))
+	assert_eq(atlas.get_image().get_size(), Vector2i(10, 12), "get_image excludes logical margins")
+	# The public Sprite2D rect must continue to expose the full anchored canvas.
+	var sprite := Sprite2D.new()
+	sprite.texture = atlas
+	sprite.centered = false
+	sprite.offset = Vector2(-256, -320)
+	assert_eq(sprite.get_rect(), Rect2(-256, -320, 512, 384))
+	sprite.free()
+
+
 func _create_view(id := "sentinelle_airain") -> CatabaseMonsterIsoUnitView:
 	var parent := Node2D.new()
 	parent.position = Vector2(161, 215)
@@ -318,6 +401,12 @@ func _profile(id: String) -> CatabaseMonsterSpriteProfile:
 		as CatabaseMonsterSpriteProfile
 	profile.frames = SpriteFrames.new()
 	profile.frames.remove_animation(&"default")
+	# Timeline tests need resource geometry, not hundreds of separately allocated
+	# 512x384 gradient textures; one shared immutable texture is sufficient.
+	var texture := GradientTexture2D.new()
+	texture.width = 512
+	texture.height = 384
+	texture.gradient = Gradient.new()
 	for direction: String in DIRECTIONS:
 		for stem: String in CatabaseMonsterSpriteProfile.CLIP_COUNTS:
 			var clip := StringName(stem + "_" + direction)
@@ -325,11 +414,6 @@ func _profile(id: String) -> CatabaseMonsterSpriteProfile:
 			profile.frames.set_animation_loop(clip, stem in ["idle", "walk"])
 			profile.frames.set_animation_speed(clip, 8.0)
 			for index in CatabaseMonsterSpriteProfile.CLIP_COUNTS[stem]:
-				var texture := GradientTexture2D.new()
-				texture.width = 512
-				texture.height = 384
-				texture.gradient = Gradient.new()
-				texture.gradient.colors = PackedColorArray([Color(float(index) / 6.0, 0.4, 0.7), Color.WHITE])
 				profile.frames.add_frame(clip, texture)
 	return profile
 

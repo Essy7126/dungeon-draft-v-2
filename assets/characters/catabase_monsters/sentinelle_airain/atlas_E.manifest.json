@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "slug": "sentinelle_airain",
   "direction": "E",
   "source_kind": "fixed_view_with_local_articulation",
@@ -11,525 +11,1913 @@
     256,
     320
   ],
-  "grid": [
-    4,
-    5
+  "packing": "trimmed_shelves_no_rotation",
+  "gutter": 2,
+  "atlas_size": [
+    1924,
+    2302
   ],
+  "rgba_bytes": 17716192,
+  "untrimmed_rgba_bytes": 37748736,
   "atlas": "atlas_E.png",
-  "atlas_sha256": "da5db498b7f9dd107a1d58395047361a3c07436a8af28bb17b5a7397891aabde",
+  "atlas_sha256": "edea1746b94edf617b23bb74715d8718383b8a8913a8d91150849953f703c82f",
   "provenance": {
     "reference_view": "art/source/characters/catabase_monsters/sentinelle_airain/base_frame_E.png",
     "reference_sha256": "4a0463f8170d5ea0259f2ce29dd2d29549c20fd24692c4d2d26199b9c69fd348",
-    "rig_path": "tools/catabase_monster_sprite_pipeline/rig.json",
-    "rig_entry": "sentinelle_airain_E",
-    "rig_entry_sha256": "7c159ea7eab5eefa31cf0603a77dd6a731c8fc419a5d56b9e9692f840c15b5ae",
-    "renderer_sha256": "c69a1d0324642ac02d264d7e3fa3fc8e14d9d9bca25eb9272807a21003c66dff",
-    "method": "Local continuous 2D skeletal articulation of independently drawn Meshy fixed views; bounded inverse deformation, intact painted silhouette, no texture mirroring or synthesized body parts.",
-    "pose_recipes": [
+    "method": "Locally authored rigid painted parts with reconstructed occlusions, two-link planted-foot IK and independent hand/ankle joints; flexible snake coil only; no texture mirroring.",
+    "renderer_files": {
+      "animate.py": "ec2abd990d84d6ffedece38e172d2866ab938240925079e571c615ccde604b2f",
+      "articulated_animation.py": "d7912cb07dc73e96f6a058b8f2fb1786439b8bbe819ce954e80ff171cf869caa",
+      "humanoid_parts.py": "de0a4bc2bf5f7f5a5294e9c9e8990e8c2e869a4371ecb4b02c80ad543918eb39"
+    },
+    "parts": [
       {
-        "angles": {},
-        "shifts": {},
-        "root": {},
-        "extra": {}
+        "name": "leg_right",
+        "pivot": [
+          169,
+          210
+        ],
+        "parent": "torso",
+        "z": 12,
+        "limits": [
+          -26,
+          26
+        ]
       },
       {
+        "name": "foot_right",
+        "pivot": [
+          147.5,
+          279
+        ],
+        "parent": "shin_right",
+        "z": 15.5
+      },
+      {
+        "name": "shin_right",
+        "pivot": [
+          157,
+          242
+        ],
+        "parent": "leg_right",
+        "z": 15,
+        "limits": [
+          -44,
+          44
+        ],
+        "end": [
+          147.5,
+          279
+        ]
+      },
+      {
+        "name": "leg_left",
+        "pivot": [
+          231,
+          211
+        ],
+        "parent": "torso",
+        "z": 18,
+        "limits": [
+          -26,
+          26
+        ]
+      },
+      {
+        "name": "foot_left",
+        "pivot": [
+          270.0,
+          304
+        ],
+        "parent": "shin_left",
+        "z": 22.5
+      },
+      {
+        "name": "shin_left",
+        "pivot": [
+          249,
+          249
+        ],
+        "parent": "leg_left",
+        "z": 22,
+        "limits": [
+          -44,
+          44
+        ],
+        "end": [
+          270.0,
+          304
+        ]
+      },
+      {
+        "name": "torso",
+        "pivot": [
+          198,
+          209
+        ],
+        "parent": "root",
+        "z": 30,
+        "limits": [
+          -18,
+          18
+        ]
+      },
+      {
+        "name": "upper_arm_right",
+        "pivot": [
+          155,
+          96
+        ],
+        "parent": "torso",
+        "z": 40,
+        "limits": [
+          -42,
+          42
+        ]
+      },
+      {
+        "name": "upper_arm_left",
+        "pivot": [
+          244,
+          98
+        ],
+        "parent": "torso",
+        "z": 42,
+        "limits": [
+          -32,
+          32
+        ]
+      },
+      {
+        "name": "head",
+        "pivot": [
+          203,
+          88
+        ],
+        "parent": "torso",
+        "z": 55,
+        "limits": [
+          -16,
+          16
+        ]
+      },
+      {
+        "name": "arm_right",
+        "pivot": [
+          126,
+          154
+        ],
+        "parent": "upper_arm_right",
+        "z": 60,
+        "limits": [
+          -58,
+          58
+        ],
+        "end": [
+          99,
+          191
+        ]
+      },
+      {
+        "name": "arm_left",
+        "pivot": [
+          264,
+          156
+        ],
+        "parent": "upper_arm_left",
+        "z": 70,
+        "limits": [
+          -42,
+          42
+        ],
+        "end": [
+          281,
+          184
+        ]
+      },
+      {
+        "name": "hand_right",
+        "pivot": [
+          99,
+          191
+        ],
+        "parent": "arm_right",
+        "z": 72,
+        "limits": [
+          -135,
+          135
+        ],
+        "weapon_tip": [
+          47,
+          94
+        ],
+        "weapon_axis": [
+          -52,
+          -97
+        ]
+      }
+    ],
+    "pose_recipes": [
+      {
         "angles": {
-          "leg_left": 0.0,
-          "leg_right": -0.0,
-          "shin_left": -4.841491245888316,
-          "shin_right": 0,
-          "head": 0.0,
+          "head": -0.0,
+          "upper_arm_left": 0.0,
           "arm_left": -0.0,
+          "upper_arm_right": -0.0,
           "arm_right": 0.0
         },
         "shifts": {
           "torso": [
             0,
-            -0.0
+            0.0
           ]
         },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "leg_left": 7.794228634059947,
-          "leg_right": -7.794228634059947,
-          "shin_left": -7.9361759676217245,
-          "shin_right": 0,
-          "head": 1.5588457268119895,
-          "arm_left": -4.330127018922193,
-          "arm_right": 4.330127018922193
-        },
-        "shifts": {
+        "scales": {
           "torso": [
+            1.0,
+            1.0
+          ]
+        },
+        "ik": {
+          "leg_left": [
             0,
-            -2.25166604983954
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "leg_left": 7.794228634059948,
-          "leg_right": -7.794228634059948,
-          "shin_left": -3.0946847217334104,
-          "shin_right": 0,
-          "head": 1.5588457268119897,
-          "arm_left": -4.330127018922194,
-          "arm_right": 4.330127018922194
-        },
-        "shifts": {
-          "torso": [
-            0,
-            -2.2516660498395407
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "leg_left": 1.102182119232618e-15,
-          "leg_right": -1.102182119232618e-15,
-          "shin_left": 0,
-          "shin_right": 4.841491245888317,
-          "head": 2.2043642384652358e-16,
-          "arm_left": -6.123233995736766e-16,
-          "arm_right": 6.123233995736766e-16
-        },
-        "shifts": {
-          "torso": [
-            0,
-            -3.1840816777831187e-16
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "leg_left": -7.794228634059946,
-          "leg_right": 7.794228634059946,
-          "shin_left": 0,
-          "shin_right": 7.9361759676217245,
-          "head": -1.5588457268119893,
-          "arm_left": 4.330127018922193,
-          "arm_right": -4.330127018922193
-        },
-        "shifts": {
-          "torso": [
-            0,
-            -2.25166604983954
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 0.8107543012012075
-        }
-      },
-      {
-        "angles": {
-          "leg_left": -7.794228634059947,
-          "leg_right": 7.794228634059947,
-          "shin_left": 0,
-          "shin_right": 3.094684721733412,
-          "head": -1.5588457268119895,
-          "arm_left": 4.330127018922193,
-          "arm_right": -4.330127018922193
-        },
-        "shifts": {
-          "torso": [
-            0,
-            -2.25166604983954
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 0.9238935765668789
-        }
-      },
-      {
-        "angles": {
-          "torso": 1.0499999999999998,
-          "head": 1.4,
-          "arm_left": -3.5,
-          "leg_left": 1.4,
-          "shin_right": -1.75
-        },
-        "shifts": {
-          "torso": [
-            -0.7,
-            -0.7
+            0
           ],
-          "arm_left": [
-            -4.199999999999999,
-            1.0499999999999998
+          "leg_right": [
+            0,
+            0
           ]
         },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
       },
       {
         "angles": {
-          "torso": -1.0499999999999998,
-          "head": -1.4,
-          "arm_left": 3.5,
-          "leg_left": -1.4,
-          "shin_right": 1.75
+          "head": -1.4142135623730951,
+          "upper_arm_left": 1.1313708498984762,
+          "arm_left": -0.848528137423857,
+          "upper_arm_right": -1.2727922061357857,
+          "arm_right": 1.2727922061357857
         },
         "shifts": {
           "torso": [
-            0.7,
-            -0.7
-          ],
-          "arm_left": [
-            4.199999999999999,
-            -1.0499999999999998
+            0,
+            1.5556349186104048
           ]
         },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
+        "scales": {
+          "torso": [
+            1.0084852813742387,
+            1.0056568542494924
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
       },
       {
         "angles": {
-          "torso": -3,
-          "head": -4,
-          "arm_left": 10,
-          "leg_left": -4,
-          "shin_right": 5
+          "head": -2.0,
+          "upper_arm_left": 1.6,
+          "arm_left": -1.2,
+          "upper_arm_right": -1.8,
+          "arm_right": 1.8
         },
         "shifts": {
           "torso": [
-            2,
-            -2
-          ],
-          "arm_left": [
-            12,
-            -3
+            0,
+            2.2
           ]
         },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 0.727391308935882
-        }
+        "scales": {
+          "torso": [
+            1.012,
+            1.008
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
       },
       {
         "angles": {
-          "torso": -0.36,
-          "head": -0.48,
+          "head": -1.4142135623730951,
+          "upper_arm_left": 1.1313708498984762,
+          "arm_left": -0.848528137423857,
+          "upper_arm_right": -1.2727922061357857,
+          "arm_right": 1.2727922061357857
+        },
+        "shifts": {
+          "torso": [
+            0,
+            1.5556349186104048
+          ]
+        },
+        "scales": {
+          "torso": [
+            1.0084852813742387,
+            1.0056568542494924
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
+      },
+      {
+        "angles": {
+          "head": -2.4492935982947064e-16,
+          "upper_arm_left": 1.9594348786357652e-16,
+          "arm_left": -1.4695761589768238e-16,
+          "upper_arm_right": -2.2043642384652358e-16,
+          "arm_right": 2.2043642384652358e-16
+        },
+        "shifts": {
+          "torso": [
+            0,
+            2.6942229581241775e-16
+          ]
+        },
+        "scales": {
+          "torso": [
+            1.0,
+            1.0
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
+      },
+      {
+        "angles": {
+          "head": 1.414213562373095,
+          "upper_arm_left": -1.131370849898476,
+          "arm_left": 0.8485281374238569,
+          "upper_arm_right": 1.2727922061357855,
+          "arm_right": -1.2727922061357855
+        },
+        "shifts": {
+          "torso": [
+            0,
+            -1.5556349186104046
+          ]
+        },
+        "scales": {
+          "torso": [
+            0.9915147186257615,
+            0.9943431457505076
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
+      },
+      {
+        "angles": {
+          "head": 2.0,
+          "upper_arm_left": -1.6,
           "arm_left": 1.2,
-          "leg_left": -0.48,
-          "shin_right": 0.6
-        },
-        "shifts": {
-          "torso": [
-            0.24,
-            -0.24
-          ],
-          "arm_left": [
-            1.44,
-            -0.36
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "torso": 1.0499999999999998,
-          "head": 1.4,
-          "arm_right": -2.8,
-          "leg_left": 1.4,
-          "shin_right": -1.75
-        },
-        "shifts": {
-          "torso": [
-            -1.4,
-            -0.7
-          ],
-          "arm_right": [
-            -2.4499999999999997,
-            1.0499999999999998
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "torso": -1.0499999999999998,
-          "head": -1.4,
-          "arm_right": 2.8,
-          "leg_left": -1.4,
-          "shin_right": 1.75
-        },
-        "shifts": {
-          "torso": [
-            1.4,
-            -0.7
-          ],
-          "arm_right": [
-            2.4499999999999997,
-            -1.0499999999999998
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "torso": -3,
-          "head": -4,
-          "arm_right": 8,
-          "leg_left": -4,
-          "shin_right": 5
-        },
-        "shifts": {
-          "torso": [
-            4,
-            -2
-          ],
-          "arm_right": [
-            7,
-            -3
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "torso": -0.36,
-          "head": -0.48,
-          "arm_right": 0.96,
-          "leg_left": -0.48,
-          "shin_right": 0.6
-        },
-        "shifts": {
-          "torso": [
-            0.48,
-            -0.24
-          ],
-          "arm_right": [
-            0.84,
-            -0.36
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 1.0
-        }
-      },
-      {
-        "angles": {
-          "torso": 5,
-          "head": 7,
-          "arm_left": 5,
-          "arm_right": -4,
-          "leg_left": 5,
-          "leg_right": -4
-        },
-        "shifts": {
-          "torso": [
-            -4,
-            2
-          ]
-        },
-        "root": {},
-        "extra": {
-          "local_motion_strength": 0.7852014584833326
-        }
-      },
-      {
-        "angles": {
-          "torso": -0.6,
-          "head": -0.48,
-          "arm_left": 0.96,
-          "arm_right": -0.72,
-          "leg_left": -1.08,
-          "leg_right": 0.96,
-          "shin_left": 1.44,
-          "shin_right": -1.3199999999999998,
-          "leg_hind_far": -1.08,
-          "leg_fore_far": 1.2,
-          "tail": 0.96
+          "upper_arm_right": 1.8,
+          "arm_right": -1.8
         },
         "shifts": {
           "torso": [
             0,
-            1.68
+            -2.2
           ]
         },
-        "root": {
-          "angle": -10.2,
-          "translation": [
-            9.36,
-            -4.56
+        "scales": {
+          "torso": [
+            0.988,
+            0.992
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
           ],
-          "scale": [
-            1,
-            1
+          "leg_right": [
+            0,
+            0
           ]
         },
-        "extra": {
-          "death_progress": 0.12,
-          "local_motion_strength": 1.0,
-          "grounded_death_offset": [
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
+      },
+      {
+        "angles": {
+          "head": 1.4142135623730954,
+          "upper_arm_left": -1.1313708498984762,
+          "arm_left": 0.8485281374238572,
+          "upper_arm_right": 1.272792206135786,
+          "arm_right": -1.272792206135786
+        },
+        "shifts": {
+          "torso": [
+            0,
+            -1.555634918610405
+          ]
+        },
+        "scales": {
+          "torso": [
+            0.9915147186257615,
+            0.9943431457505076
+          ]
+        },
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "idle"
+      },
+      {
+        "angles": {
+          "torso": 0.0,
+          "head": -0.7422118777635688,
+          "tail": -8.885682891821206,
+          "cloth": 2.6596818599520557,
+          "upper_arm_left": 0.0,
+          "arm_left": 2.474039592545229,
+          "upper_arm_right": 1.2246467991473533e-15,
+          "arm_right": -2.4740395925452305
+        },
+        "shifts": {
+          "torso": [
+            0,
+            10.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            15.0,
+            2.5500000000000003
+          ],
+          "leg_right": [
+            -15.0,
+            -2.5500000000000003
+          ]
+        },
+        "world_angles": {
+          "foot_left": 0,
+          "foot_right": -0.0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": 1.4999999999999998,
+          "head": -2.096142973699768,
+          "tail": -0.4487686767841412,
+          "cloth": -1.9956621443621003,
+          "upper_arm_left": 4.999999999999999,
+          "arm_left": -2.7019809714405527,
+          "upper_arm_right": -4.999999999999997,
+          "arm_right": 2.701980971440551
+        },
+        "shifts": {
+          "torso": [
+            0,
+            8.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            10.000000000000002,
+            1.7000000000000004
+          ],
+          "leg_right": [
+            -12.990381056766578,
+            -8.70836477965032
+          ]
+        },
+        "world_angles": {
+          "foot_left": 0,
+          "foot_right": -7.500000000000002
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": 2.598076211353316,
+          "head": -2.8884142526129426,
+          "tail": 8.108392742785618,
+          "cloth": -6.116270088729069,
+          "upper_arm_left": 8.660254037844386,
+          "arm_left": -7.154007916164579,
+          "upper_arm_right": -8.660254037844386,
+          "arm_right": 7.154007916164576
+        },
+        "shifts": {
+          "torso": [
+            0,
+            5.500000000000001
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            5.000000000000001,
+            0.8500000000000002
+          ],
+          "leg_right": [
+            -7.500000000000005,
+            -12.5333302491977
+          ]
+        },
+        "world_angles": {
+          "foot_left": 0,
+          "foot_right": -12.990381056766577
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": 3.0,
+          "head": -2.9067372651319348,
+          "tail": 14.492916875011597,
+          "cloth": -8.598028402130454,
+          "upper_arm_left": 10.0,
+          "arm_left": -9.689124217106448,
+          "upper_arm_right": -10.0,
+          "arm_right": 9.689124217106448
+        },
+        "shifts": {
+          "torso": [
+            0,
+            4.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
             0.0,
-            3.4675415132433614
+            0.0
+          ],
+          "leg_right": [
+            -9.18485099360515e-16,
+            -13.0
           ]
-        }
+        },
+        "world_angles": {
+          "foot_left": 0,
+          "foot_right": -15.0
+        },
+        "action": "walk"
       },
       {
         "angles": {
-          "torso": -1.9,
-          "head": -1.52,
-          "arm_left": 3.04,
-          "arm_right": -2.2800000000000002,
-          "leg_left": -3.42,
-          "leg_right": 3.04,
-          "shin_left": 4.5600000000000005,
-          "shin_right": -4.18,
-          "leg_hind_far": -3.42,
-          "leg_fore_far": 3.8,
-          "tail": 3.04
+          "torso": 2.598076211353316,
+          "head": -2.1462023748493744,
+          "tail": 16.994075634606826,
+          "cloth": -8.775951948681127,
+          "upper_arm_left": 8.660254037844387,
+          "arm_left": -9.628047508709809,
+          "upper_arm_right": -8.66025403784439,
+          "arm_right": 9.628047508709813
         },
         "shifts": {
           "torso": [
             0,
-            5.32
+            5.499999999999998
           ]
         },
-        "root": {
-          "angle": -32.3,
-          "translation": [
-            29.64,
-            -14.44
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            -4.999999999999999,
+            -0.8499999999999999
           ],
-          "scale": [
-            1,
-            1
+          "leg_right": [
+            7.499999999999991,
+            -9.983330249197708
           ]
         },
-        "extra": {
-          "death_progress": 0.38,
-          "local_motion_strength": 1.0,
-          "grounded_death_offset": [
-            22.019404663676,
-            -37.18528835566235
+        "world_angles": {
+          "foot_left": 0,
+          "foot_right": -12.990381056766585
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": 1.4999999999999998,
+          "head": -0.8105942914321659,
+          "tail": 14.94168555179574,
+          "cloth": -6.6023662577683515,
+          "upper_arm_left": 4.999999999999999,
+          "arm_left": -6.9871432456658935,
+          "upper_arm_right": -4.9999999999999964,
+          "arm_right": 6.987143245665891
+        },
+        "shifts": {
+          "torso": [
+            0,
+            8.5
           ]
-        }
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            -10.000000000000002,
+            -1.7000000000000004
+          ],
+          "leg_right": [
+            12.990381056766584,
+            -4.291635220349676
+          ]
+        },
+        "world_angles": {
+          "foot_left": 0,
+          "foot_right": -7.499999999999993
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": 3.6739403974420594e-16,
+          "head": 0.7422118777635685,
+          "tail": 8.885682891821205,
+          "cloth": -2.6596818599520557,
+          "upper_arm_left": 1.2246467991473533e-15,
+          "arm_left": -2.4740395925452305,
+          "upper_arm_right": -2.4492935982947065e-15,
+          "arm_right": 2.4740395925452314
+        },
+        "shifts": {
+          "torso": [
+            0,
+            10.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            -15.0,
+            -2.5500000000000003
+          ],
+          "leg_right": [
+            15.0,
+            2.5500000000000003
+          ]
+        },
+        "world_angles": {
+          "foot_left": -0.0,
+          "foot_right": 0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": -1.5000000000000004,
+          "head": 2.0961429736997688,
+          "tail": 0.4487686767841338,
+          "cloth": 1.9956621443621039,
+          "upper_arm_left": -5.000000000000001,
+          "arm_left": 2.7019809714405554,
+          "upper_arm_right": 5.0,
+          "arm_right": -2.701980971440554
+        },
+        "shifts": {
+          "torso": [
+            0,
+            8.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            -12.990381056766578,
+            -8.70836477965032
+          ],
+          "leg_right": [
+            9.999999999999991,
+            1.6999999999999986
+          ]
+        },
+        "world_angles": {
+          "foot_left": -7.500000000000002,
+          "foot_right": 0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": -2.5980762113533156,
+          "head": 2.8884142526129426,
+          "tail": -8.108392742785616,
+          "cloth": 6.116270088729068,
+          "upper_arm_left": -8.660254037844386,
+          "arm_left": 7.154007916164576,
+          "upper_arm_right": 8.660254037844384,
+          "arm_right": -7.154007916164576
+        },
+        "shifts": {
+          "torso": [
+            0,
+            5.500000000000002
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            -7.500000000000005,
+            -12.5333302491977
+          ],
+          "leg_right": [
+            5.000000000000009,
+            0.8500000000000015
+          ]
+        },
+        "world_angles": {
+          "foot_left": -12.990381056766577,
+          "foot_right": 0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": -3.0,
+          "head": 2.9067372651319348,
+          "tail": -14.492916875011598,
+          "cloth": 8.598028402130454,
+          "upper_arm_left": -10.0,
+          "arm_left": 9.689124217106448,
+          "upper_arm_right": 10.0,
+          "arm_right": -9.689124217106448
+        },
+        "shifts": {
+          "torso": [
+            0,
+            4.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            -9.18485099360515e-16,
+            -13.0
+          ],
+          "leg_right": [
+            0.0,
+            0.0
+          ]
+        },
+        "world_angles": {
+          "foot_left": -15.0,
+          "foot_right": 0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": -2.598076211353316,
+          "head": 2.1462023748493735,
+          "tail": -16.994075634606826,
+          "cloth": 8.775951948681126,
+          "upper_arm_left": -8.660254037844386,
+          "arm_left": 9.628047508709809,
+          "upper_arm_right": 8.660254037844382,
+          "arm_right": -9.628047508709807
+        },
+        "shifts": {
+          "torso": [
+            0,
+            5.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            7.5000000000000036,
+            -9.983330249197701
+          ],
+          "leg_right": [
+            -5.000000000000009,
+            -0.8500000000000015
+          ]
+        },
+        "world_angles": {
+          "foot_left": -12.990381056766578,
+          "foot_right": 0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": -1.5000000000000013,
+          "head": 0.8105942914321675,
+          "tail": -14.94168555179574,
+          "cloth": 6.602366257768356,
+          "upper_arm_left": -5.000000000000004,
+          "arm_left": 6.987143245665898,
+          "upper_arm_right": 4.999999999999998,
+          "arm_right": -6.987143245665893
+        },
+        "shifts": {
+          "torso": [
+            0,
+            8.499999999999996
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            12.990381056766577,
+            -4.291635220349686
+          ],
+          "leg_right": [
+            -9.999999999999991,
+            -1.6999999999999986
+          ]
+        },
+        "world_angles": {
+          "foot_left": -7.500000000000005,
+          "foot_right": 0
+        },
+        "action": "walk"
+      },
+      {
+        "angles": {
+          "torso": 0,
+          "head": 0,
+          "upper_arm_left": 0,
+          "arm_left": 0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 0.0
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": -1.5,
+          "head": 2.1,
+          "upper_arm_left": 2.4,
+          "arm_left": -3.5999999999999996
+        },
+        "shifts": {
+          "torso": [
+            -4.8,
+            1.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            -14.1,
+            -2.4
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 6.0
+        },
+        "action": "attack"
       },
       {
         "angles": {
           "torso": -3.5999999999999996,
-          "head": -2.88,
-          "arm_left": 5.76,
-          "arm_right": -4.32,
-          "leg_left": -6.4799999999999995,
-          "leg_right": 5.76,
-          "shin_left": 8.64,
-          "shin_right": -7.92,
-          "leg_hind_far": -6.4799999999999995,
-          "leg_fore_far": 7.199999999999999,
-          "tail": 5.76
+          "head": 5.04,
+          "upper_arm_left": 5.76,
+          "arm_left": -8.64
+        },
+        "shifts": {
+          "torso": [
+            -11.52,
+            3.5999999999999996
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            -33.839999999999996,
+            -5.76
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 14.399999999999999
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": -1.5,
+          "head": 2.1,
+          "upper_arm_left": 2.4,
+          "arm_left": -3.5999999999999996
+        },
+        "shifts": {
+          "torso": [
+            -4.8,
+            1.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            -14.1,
+            -2.4
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 6.0
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": 5.0,
+          "head": -7.0,
+          "upper_arm_left": -8.0,
+          "arm_left": 12.0
+        },
+        "shifts": {
+          "torso": [
+            16.0,
+            5.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            47.0,
+            8.0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 143.19497906246215
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": 3.7,
+          "head": -5.18,
+          "upper_arm_left": -5.92,
+          "arm_left": 8.879999999999999
+        },
+        "shifts": {
+          "torso": [
+            11.84,
+            3.7
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            34.78,
+            5.92
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 105.96428450622199
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": 1.25,
+          "head": -1.75,
+          "upper_arm_left": -2.0,
+          "arm_left": 3.0
+        },
+        "shifts": {
+          "torso": [
+            4.0,
+            1.25
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            11.75,
+            2.0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 35.79874476561554
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": 0,
+          "head": 0,
+          "upper_arm_left": 0,
+          "arm_left": 0
         },
         "shifts": {
           "torso": [
             0,
-            10.08
+            0
           ]
         },
-        "root": {
-          "angle": -61.199999999999996,
-          "translation": [
-            56.16,
-            -27.36
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
           ],
-          "scale": [
-            1,
-            1
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_right": [
+            0,
+            0
           ]
         },
-        "extra": {
-          "death_progress": 0.72,
-          "local_motion_strength": 1.0,
-          "grounded_death_offset": [
-            0.0,
-            -81.86763551618037
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0,
+          "hand_right": 0.0
+        },
+        "action": "attack"
+      },
+      {
+        "angles": {
+          "torso": 0,
+          "head": 0,
+          "upper_arm_right": 0,
+          "arm_right": 0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            0
           ]
-        }
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": -1.5,
+          "head": 2.1,
+          "upper_arm_right": 2.4,
+          "arm_right": -3.5999999999999996
+        },
+        "shifts": {
+          "torso": [
+            -4.8,
+            1.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            -9.6,
+            -2.4
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": -3.5999999999999996,
+          "head": 5.04,
+          "upper_arm_right": 5.76,
+          "arm_right": -8.64
+        },
+        "shifts": {
+          "torso": [
+            -11.52,
+            3.5999999999999996
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            -23.04,
+            -5.76
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": -1.5,
+          "head": 2.1,
+          "upper_arm_right": 2.4,
+          "arm_right": -3.5999999999999996
+        },
+        "shifts": {
+          "torso": [
+            -4.8,
+            1.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            -9.6,
+            -2.4
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": 5.0,
+          "head": -7.0,
+          "upper_arm_right": -8.0,
+          "arm_right": 12.0
+        },
+        "shifts": {
+          "torso": [
+            16.0,
+            5.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            32.0,
+            8.0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": 3.7,
+          "head": -5.18,
+          "upper_arm_right": -5.92,
+          "arm_right": 8.879999999999999
+        },
+        "shifts": {
+          "torso": [
+            11.84,
+            3.7
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            23.68,
+            5.92
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": 1.25,
+          "head": -1.75,
+          "upper_arm_right": -2.0,
+          "arm_right": 3.0
+        },
+        "shifts": {
+          "torso": [
+            4.0,
+            1.25
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            8.0,
+            2.0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": 0,
+          "head": 0,
+          "upper_arm_right": 0,
+          "arm_right": 0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ],
+          "upper_arm_left": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "cast"
+      },
+      {
+        "angles": {
+          "torso": -3.5,
+          "head": 4.55,
+          "upper_arm_left": 5.6,
+          "upper_arm_right": -6.3,
+          "arm_left": 4.199999999999999,
+          "arm_right": -5.25,
+          "tail": 3.15
+        },
+        "shifts": {
+          "torso": [
+            -4.55,
+            1.75
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "hit"
+      },
+      {
+        "angles": {
+          "torso": -10.0,
+          "head": 13.0,
+          "upper_arm_left": 16.0,
+          "upper_arm_right": -18.0,
+          "arm_left": 12.0,
+          "arm_right": -15.0,
+          "tail": 9.0
+        },
+        "shifts": {
+          "torso": [
+            -13.0,
+            5.0
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "hit"
       },
       {
         "angles": {
           "torso": -5.0,
-          "head": -4.0,
-          "arm_left": 8.0,
-          "arm_right": -6.0,
-          "leg_left": -9.0,
-          "leg_right": 8.0,
-          "shin_left": 12.0,
-          "shin_right": -11.0,
-          "leg_hind_far": -9.0,
-          "leg_fore_far": 10.0,
-          "tail": 8.0
+          "head": 6.5,
+          "upper_arm_left": 8.0,
+          "upper_arm_right": -9.0,
+          "arm_left": 6.0,
+          "arm_right": -7.5,
+          "tail": 4.5
+        },
+        "shifts": {
+          "torso": [
+            -6.5,
+            2.5
+          ]
+        },
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
+          ],
+          "leg_right": [
+            0,
+            0
+          ]
+        },
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "hit"
+      },
+      {
+        "angles": {
+          "torso": 0,
+          "head": 0,
+          "upper_arm_left": 0,
+          "upper_arm_right": 0,
+          "arm_left": 0,
+          "arm_right": 0,
+          "tail": 0
         },
         "shifts": {
           "torso": [
             0,
-            14.0
+            0
           ]
         },
-        "root": {
-          "angle": -85.0,
-          "translation": [
-            78.0,
-            -38.0
+        "scales": {},
+        "ik": {
+          "leg_left": [
+            0,
+            0
           ],
-          "scale": [
-            1,
-            1
+          "leg_right": [
+            0,
+            0
           ]
         },
-        "extra": {
-          "death_progress": 1.0,
-          "local_motion_strength": 0.751047021662298,
-          "grounded_death_offset": [
-            0.0,
-            -160.51068530506728
+        "world_angles": {
+          "foot_right": 0,
+          "foot_left": 0
+        },
+        "action": "hit"
+      },
+      {
+        "angles": {
+          "head": 0,
+          "upper_arm_right": 0,
+          "arm_right": 0,
+          "upper_arm_left": 0,
+          "arm_left": 0,
+          "torso": 0,
+          "leg_left": 0,
+          "shin_left": 0,
+          "leg_right": 0,
+          "shin_right": 0,
+          "cloth": 0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            0
           ]
-        }
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -0.0
+        },
+        "ground_death": true,
+        "root": {
+          "angle": 0,
+          "shift": [
+            0,
+            0
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "angles": {
+          "head": 2.16,
+          "upper_arm_right": -3.84,
+          "arm_right": 5.279999999999999,
+          "upper_arm_left": 3.0,
+          "arm_left": -4.8,
+          "torso": -0.96,
+          "leg_left": -3.0,
+          "shin_left": 6.6,
+          "leg_right": 3.12,
+          "shin_right": -5.04,
+          "cloth": 3.0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            2.28
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -8.616602512504542
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -8.879999999999999,
+          "shift": [
+            8.4,
+            -3.0
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          0.0,
+          0.8066748032339888
+        ]
+      },
+      {
+        "angles": {
+          "head": 5.3999999999999995,
+          "upper_arm_right": -9.6,
+          "arm_right": 13.2,
+          "upper_arm_left": 7.5,
+          "arm_left": -12.0,
+          "torso": -2.4,
+          "leg_left": -7.5,
+          "shin_left": 16.5,
+          "leg_right": 7.8,
+          "shin_right": -12.6,
+          "cloth": 7.5
+        },
+        "shifts": {
+          "torso": [
+            0,
+            5.7
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -21.541506281261352
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -22.2,
+          "shift": [
+            21.0,
+            -7.5
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          1.2684571479093165,
+          -29.78472328150781
+        ]
+      },
+      {
+        "angles": {
+          "head": 9.0,
+          "upper_arm_right": -16.0,
+          "arm_right": 22.0,
+          "upper_arm_left": 12.5,
+          "arm_left": -20.0,
+          "torso": -4.0,
+          "leg_left": -12.5,
+          "shin_left": 27.5,
+          "leg_right": 13.0,
+          "shin_right": -21.0,
+          "cloth": 12.5
+        },
+        "shifts": {
+          "torso": [
+            0,
+            9.5
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -35.902510468768924
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -37.0,
+          "shift": [
+            35.0,
+            -12.5
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          2.0067366731394145,
+          -62.41694540313881
+        ]
+      },
+      {
+        "angles": {
+          "head": 12.959999999999999,
+          "upper_arm_right": -23.04,
+          "arm_right": 31.68,
+          "upper_arm_left": 18.0,
+          "arm_left": -28.799999999999997,
+          "torso": -5.76,
+          "leg_left": -18.0,
+          "shin_left": 39.6,
+          "leg_right": 18.72,
+          "shin_right": -30.24,
+          "cloth": 18.0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            13.68
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -51.699615075027246
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -53.28,
+          "shift": [
+            50.4,
+            -18.0
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          0.0,
+          -89.42156139686506
+        ]
+      },
+      {
+        "angles": {
+          "head": 16.2,
+          "upper_arm_right": -28.8,
+          "arm_right": 39.6,
+          "upper_arm_left": 22.5,
+          "arm_left": -36.0,
+          "torso": -7.2,
+          "leg_left": -22.5,
+          "shin_left": 49.5,
+          "leg_right": 23.400000000000002,
+          "shin_right": -37.800000000000004,
+          "cloth": 22.5
+        },
+        "shifts": {
+          "torso": [
+            0,
+            17.1
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -64.62451884378406
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -66.60000000000001,
+          "shift": [
+            63.0,
+            -22.5
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          0.0,
+          -101.63002575015224
+        ]
+      },
+      {
+        "angles": {
+          "head": 18.0,
+          "upper_arm_right": -32.0,
+          "arm_right": 44.0,
+          "upper_arm_left": 25.0,
+          "arm_left": -40.0,
+          "torso": -8.0,
+          "leg_left": -25.0,
+          "shin_left": 55.0,
+          "leg_right": 26.0,
+          "shin_right": -42.0,
+          "cloth": 25.0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            19.0
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -71.80502093753785
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -74.0,
+          "shift": [
+            70.0,
+            -25.0
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          0.0,
+          -105.06005576664131
+        ]
+      },
+      {
+        "angles": {
+          "head": 18.0,
+          "upper_arm_right": -32.0,
+          "arm_right": 44.0,
+          "upper_arm_left": 25.0,
+          "arm_left": -40.0,
+          "torso": -8.0,
+          "leg_left": -25.0,
+          "shin_left": 55.0,
+          "leg_right": 26.0,
+          "shin_right": -42.0,
+          "cloth": 25.0
+        },
+        "shifts": {
+          "torso": [
+            0,
+            19.0
+          ]
+        },
+        "scales": {},
+        "ik": {},
+        "world_angles": {
+          "hand_right": -71.80502093753785
+        },
+        "ground_death": true,
+        "root": {
+          "angle": -74.0,
+          "shift": [
+            70.0,
+            -25.0
+          ]
+        },
+        "action": "death",
+        "ground_correction": [
+          0.0,
+          -105.06005576664131
+        ]
       }
     ],
+    "render_sampling": "premultiplied RGBA bicubic rigid transforms; separate underpaint/source passes",
     "source_bbox": [
-      45,
-      36,
-      355,
-      320
-    ],
-    "render_sampling": "premultiplied RGBA bilinear inverse field; smooth local snake-tail wave; no effects or shadows baked"
+      43,
+      34,
+      357,
+      323
+    ]
   },
   "frames": [
     {
@@ -554,107 +1942,155 @@
         218.36974772708658,
         164.53816856417396
       ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
       "region": [
-        0,
-        0,
-        512,
-        384
+        326,
+        2,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
       ],
       "raster_max_error": 0
     },
     {
       "index": 1,
-      "rgba_sha256": "69da4016459063ee5f7f36387e53648c09de3239a944f11a7abbb69bfc7c58c7",
+      "rgba_sha256": "ea6acb5c536d1622733fda38cea7647cbc03b27836732392131eeab1b1f73d66",
       "core_alpha": 32,
       "bbox": [
         45,
-        36,
+        37,
         355,
-        320
+        321
       ],
       "margins": [
         45,
-        36,
+        37,
         157,
-        64
+        63
       ],
-      "core_pixels": 48842,
-      "alpha_sum": 12289489,
+      "core_pixels": 49083,
+      "alpha_sum": 12314442,
       "centroid": [
-        218.3556979648663,
-        164.54309815322878
+        217.89426074200844,
+        165.17014037446774
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        287
       ],
       "region": [
-        512,
-        0,
-        512,
-        384
+        640,
+        588,
+        314,
+        287
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        97
       ],
       "raster_max_error": 0
     },
     {
       "index": 2,
-      "rgba_sha256": "3ea13e3255ec5cb63268520d579de8e71a26ebf17ffda7f2e83dc7ef3684f560",
+      "rgba_sha256": "28530d89ab945d8bf3da217f5ceb34938f48ecb24943acea0b5f7353ee15a0c0",
       "core_alpha": 32,
       "bbox": [
-        44,
-        34,
-        353,
-        318
+        45,
+        37,
+        355,
+        321
       ],
       "margins": [
-        44,
-        34,
-        159,
-        66
+        45,
+        37,
+        157,
+        63
       ],
-      "core_pixels": 48582,
-      "alpha_sum": 12147062,
+      "core_pixels": 49188,
+      "alpha_sum": 12335129,
       "centroid": [
-        217.39848091885884,
-        162.32040673500472
+        217.7366837440026,
+        165.5518215824998
+      ],
+      "crop": [
+        43,
+        35,
+        314,
+        286
       ],
       "region": [
-        1024,
-        0,
-        512,
-        384
+        630,
+        879,
+        314,
+        286
+      ],
+      "margin": [
+        43,
+        35,
+        198,
+        98
       ],
       "raster_max_error": 0
     },
     {
       "index": 3,
-      "rgba_sha256": "09d8e1692a62496885270f53752f10f107f1b490829efb5c9ceb7ba69c7bd4b8",
+      "rgba_sha256": "ea6acb5c536d1622733fda38cea7647cbc03b27836732392131eeab1b1f73d66",
       "core_alpha": 32,
       "bbox": [
-        44,
-        34,
-        353,
-        318
+        45,
+        37,
+        355,
+        321
       ],
       "margins": [
-        44,
-        34,
-        159,
-        66
+        45,
+        37,
+        157,
+        63
       ],
-      "core_pixels": 48623,
-      "alpha_sum": 12158611,
+      "core_pixels": 49083,
+      "alpha_sum": 12314442,
       "centroid": [
-        217.33103675215432,
-        162.41260308907306
+        217.89426074200844,
+        165.17014037446774
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        287
       ],
       "region": [
-        1536,
-        0,
-        512,
-        384
+        958,
+        588,
+        314,
+        287
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        97
       ],
       "raster_max_error": 0
     },
     {
       "index": 4,
-      "rgba_sha256": "7d00e9d659bb686fc5cf0c1337ccea28339c2e0e7d8757a5acb2f37ad9fede96",
+      "rgba_sha256": "fcbe8b7054d513eaa858953c5505af9da5532e2e7d117cf921358d1b1499dc1e",
       "core_alpha": 32,
       "bbox": [
         45,
@@ -668,467 +2104,1835 @@
         157,
         64
       ],
-      "core_pixels": 48914,
-      "alpha_sum": 12301310,
+      "core_pixels": 48885,
+      "alpha_sum": 12316691,
       "centroid": [
-        218.4199411211514,
-        164.72964795355114
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
       ],
       "region": [
-        0,
-        384,
-        512,
-        384
+        644,
+        2,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
       ],
       "raster_max_error": 0
     },
     {
       "index": 5,
-      "rgba_sha256": "afa04dcbd5220202350ed66529ab7c27e352bbe3a2512c99429ad7f42b0b27d5",
+      "rgba_sha256": "4e6c174cb767b553ffe5d208879f9b58ec1361134ccd2d9f77809c6400cf4695",
       "core_alpha": 32,
       "bbox": [
         45,
-        34,
-        357,
-        321
+        36,
+        355,
+        318
       ],
       "margins": [
         45,
-        34,
-        155,
-        63
+        36,
+        157,
+        66
       ],
-      "core_pixels": 50029,
-      "alpha_sum": 12515061,
+      "core_pixels": 48489,
+      "alpha_sum": 12165256,
       "centroid": [
-        218.70675008495073,
-        163.65286134042256
+        218.32182556868568,
+        163.14762110994246
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        287
       ],
       "region": [
-        512,
-        384,
-        512,
-        384
+        1276,
+        588,
+        314,
+        287
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        97
       ],
       "raster_max_error": 0
     },
     {
       "index": 6,
-      "rgba_sha256": "39e0a85715b49eb11f1b0eb2ed31291148b98f8aaaf492ca270b136ecd596768",
+      "rgba_sha256": "ce440c9f8bcbc599004e4e768c093069e5515b9e0109a7edc7b93a587cd2402d",
       "core_alpha": 32,
       "bbox": [
-        46,
-        34,
-        358,
-        321
+        45,
+        35,
+        355,
+        318
       ],
       "margins": [
-        46,
-        34,
-        154,
-        63
+        45,
+        35,
+        157,
+        66
       ],
-      "core_pixels": 50215,
-      "alpha_sum": 12553592,
+      "core_pixels": 48318,
+      "alpha_sum": 12100357,
       "centroid": [
-        218.73599522055162,
-        163.57926914268646
+        218.3789271079101,
+        162.56088828179975
+      ],
+      "crop": [
+        43,
+        33,
+        314,
+        286
       ],
       "region": [
-        1024,
-        384,
-        512,
-        384
+        948,
+        879,
+        314,
+        286
+      ],
+      "margin": [
+        43,
+        33,
+        198,
+        98
       ],
       "raster_max_error": 0
     },
     {
       "index": 7,
-      "rgba_sha256": "fedaeb345e1b58645e699451a56f602616801fd6865720a09dd648f3fdf790c3",
+      "rgba_sha256": "4e6c174cb767b553ffe5d208879f9b58ec1361134ccd2d9f77809c6400cf4695",
       "core_alpha": 32,
       "bbox": [
-        43,
-        35,
-        356,
-        321
+        45,
+        36,
+        355,
+        318
       ],
       "margins": [
-        43,
-        35,
-        156,
-        63
+        45,
+        36,
+        157,
+        66
       ],
-      "core_pixels": 49563,
-      "alpha_sum": 12397471,
+      "core_pixels": 48489,
+      "alpha_sum": 12165256,
       "centroid": [
-        217.60642011177694,
-        164.05257954522526
+        218.32182556868568,
+        163.14762110994246
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        287
       ],
       "region": [
-        1536,
-        384,
-        512,
-        384
+        1594,
+        588,
+        314,
+        287
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        97
       ],
       "raster_max_error": 0
     },
     {
       "index": 8,
-      "rgba_sha256": "01ea140c33e1333bdd670f598def70ff6f2943329e00662de30922bba3247bf9",
+      "rgba_sha256": "0fa5aa2abfa45c25efe62fb0b25915e31d9b0faaed50e94dd5c9b6f8b661f633",
       "core_alpha": 32,
       "bbox": [
+        42,
         46,
-        35,
         355,
-        320
+        323
       ],
       "margins": [
+        42,
         46,
-        35,
         157,
-        64
+        61
       ],
-      "core_pixels": 48993,
-      "alpha_sum": 12246991,
+      "core_pixels": 48258,
+      "alpha_sum": 12117032,
       "centroid": [
-        218.60220847876226,
-        164.29498091564102
+        217.70806912843466,
+        172.81586472709188
+      ],
+      "crop": [
+        40,
+        44,
+        317,
+        280
       ],
       "region": [
-        0,
-        768,
-        512,
-        384
+        936,
+        1459,
+        317,
+        280
+      ],
+      "margin": [
+        40,
+        44,
+        195,
+        104
       ],
       "raster_max_error": 0
     },
     {
       "index": 9,
-      "rgba_sha256": "49f130d42a1838f6f0f73d656872894f46712f197e4eada10c4f9f104a384473",
+      "rgba_sha256": "b0abe99e30abb500f43ad9bcba8563382057cfd77157fac0f6a3051d32f74fc8",
       "core_alpha": 32,
       "bbox": [
-        48,
-        35,
-        355,
-        319
+        50,
+        45,
+        351,
+        322
       ],
       "margins": [
-        48,
-        35,
-        157,
-        65
+        50,
+        45,
+        161,
+        62
       ],
-      "core_pixels": 48714,
-      "alpha_sum": 12178730,
+      "core_pixels": 46656,
+      "alpha_sum": 11709449,
       "centroid": [
-        219.14320318594244,
-        163.75284312517962
+        217.58498371056243,
+        170.947423696845
+      ],
+      "crop": [
+        50,
+        43,
+        303,
+        282
       ],
       "region": [
-        512,
-        768,
-        512,
-        384
+        629,
+        1459,
+        303,
+        282
+      ],
+      "margin": [
+        50,
+        43,
+        209,
+        102
       ],
       "raster_max_error": 0
     },
     {
       "index": 10,
-      "rgba_sha256": "be2df777e771b8b24776e097d0ceee2f877c8a60cbb991b2980d01f1364df023",
+      "rgba_sha256": "20d8ea5626b49c03ea18161e0634eec0c4745812732f646812cb59f4626901e8",
       "core_alpha": 32,
       "bbox": [
-        45,
-        36,
-        355,
-        320
+        57,
+        42,
+        348,
+        321
       ],
       "margins": [
-        45,
-        36,
-        157,
-        64
+        57,
+        42,
+        164,
+        63
       ],
-      "core_pixels": 49063,
-      "alpha_sum": 12282314,
+      "core_pixels": 45774,
+      "alpha_sum": 11485742,
       "centroid": [
-        218.26726861382303,
-        164.44734321178893
+        217.77834578581727,
+        168.53812207803557
+      ],
+      "crop": [
+        57,
+        40,
+        293,
+        284
       ],
       "region": [
-        1024,
-        768,
-        512,
-        384
+        296,
+        1170,
+        293,
+        284
+      ],
+      "margin": [
+        57,
+        40,
+        219,
+        100
       ],
       "raster_max_error": 0
     },
     {
       "index": 11,
-      "rgba_sha256": "ebb92ea861be2dccc698e7951a6ed44240ff1440b5d90704b019f1e98155d0ea",
+      "rgba_sha256": "8452bf342219084fe13e2d0bbd39c4043f1c209ebe3153e3fdcba4b3303a741c",
       "core_alpha": 32,
       "bbox": [
-        45,
-        35,
-        355,
-        321
+        61,
+        41,
+        347,
+        320
       ],
       "margins": [
-        45,
-        35,
-        157,
-        63
+        61,
+        41,
+        165,
+        64
       ],
-      "core_pixels": 49220,
-      "alpha_sum": 12299033,
+      "core_pixels": 45532,
+      "alpha_sum": 11424405,
       "centroid": [
-        217.71926046322633,
-        164.44101991060543
+        217.94331459193535,
+        167.34476851445137
+      ],
+      "crop": [
+        59,
+        38,
+        290,
+        285
       ],
       "region": [
-        1536,
-        768,
-        512,
-        384
+        2,
+        1170,
+        290,
+        285
+      ],
+      "margin": [
+        59,
+        38,
+        222,
+        99
       ],
       "raster_max_error": 0
     },
     {
       "index": 12,
-      "rgba_sha256": "ee0ac50e29adcd993aec8a4cf6589dea797ecff487325d62191046c51df63396",
+      "rgba_sha256": "efd3ef68a95494a65217a619bbec7aafb85ceb4d25500a6bce8e2bd28b6ef98d",
       "core_alpha": 32,
       "bbox": [
-        44,
-        35,
-        356,
+        60,
+        42,
+        348,
         320
       ],
       "margins": [
-        44,
-        35,
-        156,
+        60,
+        42,
+        164,
         64
       ],
-      "core_pixels": 49387,
-      "alpha_sum": 12339470,
+      "core_pixels": 45900,
+      "alpha_sum": 11516463,
       "centroid": [
-        218.3874906351874,
-        163.92089011278273
+        217.97522875816995,
+        168.50002178649237
+      ],
+      "crop": [
+        58,
+        40,
+        292,
+        280
       ],
       "region": [
-        0,
-        1152,
-        512,
-        384
+        1257,
+        1459,
+        292,
+        280
+      ],
+      "margin": [
+        58,
+        40,
+        220,
+        104
       ],
       "raster_max_error": 0
     },
     {
       "index": 13,
-      "rgba_sha256": "8486ebb512c34d3c8d03719abae11fa88ddecbb2b8d10440d028c6102f7e3466",
+      "rgba_sha256": "ce8a1bc83dc646e2fa25c58dc2a85bc93732c4ca764e6d34aa5de957b664ac50",
       "core_alpha": 32,
       "bbox": [
-        42,
-        34,
-        356,
-        318
+        55,
+        45,
+        352,
+        319
       ],
       "margins": [
-        42,
-        34,
-        156,
-        66
+        55,
+        45,
+        160,
+        65
       ],
-      "core_pixels": 49543,
-      "alpha_sum": 12389739,
+      "core_pixels": 46815,
+      "alpha_sum": 11742385,
       "centroid": [
-        218.8194295864199,
-        162.245201138405
+        218.02943501014633,
+        170.65051799636868
+      ],
+      "crop": [
+        53,
+        43,
+        299,
+        277
       ],
       "region": [
-        512,
-        1152,
-        512,
-        384
+        325,
+        1745,
+        299,
+        277
+      ],
+      "margin": [
+        53,
+        43,
+        213,
+        107
       ],
       "raster_max_error": 0
     },
     {
       "index": 14,
-      "rgba_sha256": "b233701007cda463c1de49da9175ea25f9f7e9df7d92a20b9f25bc6609fde2f5",
+      "rgba_sha256": "ff9bea2dcd9acadcd4fe34a2ccb1bb554a2e893b7570a097f0956ca078fa6ace",
       "core_alpha": 32,
       "bbox": [
-        44,
-        36,
-        355,
-        320
+        47,
+        46,
+        356,
+        318
       ],
       "margins": [
-        44,
-        36,
-        157,
-        64
+        47,
+        46,
+        156,
+        66
       ],
-      "core_pixels": 49196,
-      "alpha_sum": 12314800,
+      "core_pixels": 47964,
+      "alpha_sum": 12044281,
       "centroid": [
-        218.22560777298966,
-        164.31982274981706
+        218.05220582103243,
+        171.38028521391044
+      ],
+      "crop": [
+        45,
+        44,
+        313,
+        275
       ],
       "region": [
-        1024,
-        1152,
-        512,
-        384
+        1609,
+        1745,
+        313,
+        275
+      ],
+      "margin": [
+        45,
+        44,
+        199,
+        109
       ],
       "raster_max_error": 0
     },
     {
       "index": 15,
-      "rgba_sha256": "0243cfcf2513312d9f6b4e640d418e8d23d2ae61624a0e79e66061c8a03f9209",
+      "rgba_sha256": "4843cc092c4848ee32f6f73c9a02a03aff0ac3800aa9518cdd3d34770d6cdcfb",
       "core_alpha": 32,
       "bbox": [
-        51,
         39,
-        357,
-        322
+        45,
+        360,
+        314
       ],
       "margins": [
-        51,
         39,
-        155,
-        62
+        45,
+        152,
+        70
       ],
-      "core_pixels": 49158,
-      "alpha_sum": 12289987,
+      "core_pixels": 48609,
+      "alpha_sum": 12176464,
       "centroid": [
-        219.0887546279344,
-        166.38069083363848
+        217.91721697628012,
+        168.38099940340265
+      ],
+      "crop": [
+        37,
+        42,
+        325,
+        274
       ],
       "region": [
-        1536,
-        1152,
-        512,
-        384
+        340,
+        2026,
+        325,
+        274
+      ],
+      "margin": [
+        37,
+        42,
+        187,
+        110
       ],
       "raster_max_error": 0
     },
     {
       "index": 16,
-      "rgba_sha256": "23afa35d1772211c8ed72e39bf6ab3b3ffcc5f394f71e2b70af22d8c0c709aa6",
+      "rgba_sha256": "61d75dfefb70d13abee945b6e9ba324bf89e3380bad38fb95cb3c65e1e53e332",
       "core_alpha": 32,
       "bbox": [
-        16,
-        50,
-        339,
-        321
+        32,
+        42,
+        363,
+        311
       ],
       "margins": [
-        16,
-        50,
-        173,
-        63
+        32,
+        42,
+        149,
+        73
       ],
-      "core_pixels": 49141,
-      "alpha_sum": 12287096,
+      "core_pixels": 48892,
+      "alpha_sum": 12252670,
       "centroid": [
-        200.4661687796341,
-        173.9886449197208
+        217.8866685756361,
+        164.6756524584799
+      ],
+      "crop": [
+        31,
+        39,
+        334,
+        274
       ],
       "region": [
-        0,
-        1536,
-        512,
-        384
+        2,
+        2026,
+        334,
+        274
+      ],
+      "margin": [
+        31,
+        39,
+        178,
+        110
       ],
       "raster_max_error": 0
     },
     {
       "index": 17,
-      "rgba_sha256": "d7965c2b30c1591005a9dd3f1d867320e345486042375b2936a7e25997b4c662",
+      "rgba_sha256": "461a35488eb834e41c57b80357118d687f57b4b03fc7e724ce511d7a05f1535c",
       "core_alpha": 32,
       "bbox": [
-        8,
-        42,
-        339,
-        321
+        29,
+        40,
+        363,
+        311
       ],
       "margins": [
-        8,
-        42,
-        173,
-        63
+        29,
+        40,
+        149,
+        73
       ],
-      "core_pixels": 49029,
-      "alpha_sum": 12253148,
+      "core_pixels": 48958,
+      "alpha_sum": 12272023,
       "centroid": [
-        193.67984254216893,
-        161.13897897162903
+        217.80001225540258,
+        163.21310102536867
+      ],
+      "crop": [
+        27,
+        38,
+        338,
+        275
       ],
       "region": [
-        512,
-        1536,
-        512,
-        384
+        1267,
+        1745,
+        338,
+        275
+      ],
+      "margin": [
+        27,
+        38,
+        174,
+        109
       ],
       "raster_max_error": 0
     },
     {
       "index": 18,
-      "rgba_sha256": "d336f1fde29e82d79385bcd8c74aeba0d9726290dc296253f497ff2b9fad2ac4",
+      "rgba_sha256": "0f7c164f0375e789ba508f61df971ed1ccabb5bfdd74734d3cea76615bfe4820",
       "core_alpha": 32,
       "bbox": [
-        20,
-        43,
-        327,
-        321
+        30,
+        42,
+        362,
+        314
       ],
       "margins": [
-        20,
-        43,
-        185,
-        63
+        30,
+        42,
+        150,
+        70
       ],
-      "core_pixels": 48778,
-      "alpha_sum": 12198411,
+      "core_pixels": 48857,
+      "alpha_sum": 12239367,
       "centroid": [
-        162.92338759276723,
-        174.56480380499406
+        217.69711607343882,
+        165.2373047874409
+      ],
+      "crop": [
+        28,
+        39,
+        336,
+        276
       ],
       "region": [
-        1024,
-        1536,
-        512,
-        384
+        628,
+        1745,
+        336,
+        276
+      ],
+      "margin": [
+        28,
+        39,
+        176,
+        108
       ],
       "raster_max_error": 0
     },
     {
       "index": 19,
-      "rgba_sha256": "9e5282b73c806189db56660441da39b30004ff390512accd640d439a112f8049",
+      "rgba_sha256": "518595180cae23eaca1d5cc3d48c4f523603869478349b823f614bd1af384844",
       "core_alpha": 32,
       "bbox": [
-        57,
-        12,
-        338,
-        321
+        35,
+        45,
+        359,
+        318
       ],
       "margins": [
-        57,
-        12,
-        174,
-        63
+        35,
+        45,
+        153,
+        66
       ],
-      "core_pixels": 48641,
-      "alpha_sum": 12161855,
+      "core_pixels": 48498,
+      "alpha_sum": 12157542,
       "centroid": [
-        183.19785777430562,
-        148.79194506691886
+        217.55055878592933,
+        169.26922759701432
+      ],
+      "crop": [
+        33,
+        42,
+        327,
+        278
       ],
       "region": [
-        1536,
-        1536,
-        512,
-        384
+        1553,
+        1459,
+        327,
+        278
+      ],
+      "margin": [
+        33,
+        42,
+        185,
+        106
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 20,
+      "rgba_sha256": "4d82b338fe73386e9eb1d8ca8935aaf78b524481df27360b6f9e562df5e382d0",
+      "core_alpha": 32,
+      "bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "margins": [
+        45,
+        36,
+        157,
+        64
+      ],
+      "core_pixels": 48885,
+      "alpha_sum": 12315550,
+      "centroid": [
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
+      "region": [
+        962,
+        2,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 21,
+      "rgba_sha256": "0e1151e3e983956ec2cd57ab5608b79aced1199c13b31d50d15c620cca55bccc",
+      "core_alpha": 32,
+      "bbox": [
+        41,
+        38,
+        348,
+        319
+      ],
+      "margins": [
+        41,
+        38,
+        164,
+        65
+      ],
+      "core_pixels": 48576,
+      "alpha_sum": 12185274,
+      "centroid": [
+        211.01856884057972,
+        164.7526968050066
+      ],
+      "crop": [
+        39,
+        35,
+        310,
+        287
+      ],
+      "region": [
+        2,
+        879,
+        310,
+        287
+      ],
+      "margin": [
+        39,
+        35,
+        202,
+        97
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 22,
+      "rgba_sha256": "8bdfbfd54fcff888dd42e128c4877b6e444f0a6dadb91510def9746a2e89e806",
+      "core_alpha": 32,
+      "bbox": [
+        34,
+        40,
+        337,
+        317
+      ],
+      "margins": [
+        34,
+        40,
+        175,
+        67
+      ],
+      "core_pixels": 47796,
+      "alpha_sum": 11985326,
+      "centroid": [
+        201.03307808184786,
+        165.12260440204201
+      ],
+      "crop": [
+        32,
+        38,
+        307,
+        282
+      ],
+      "region": [
+        318,
+        1459,
+        307,
+        282
+      ],
+      "margin": [
+        32,
+        38,
+        205,
+        102
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 23,
+      "rgba_sha256": "0e1151e3e983956ec2cd57ab5608b79aced1199c13b31d50d15c620cca55bccc",
+      "core_alpha": 32,
+      "bbox": [
+        41,
+        38,
+        348,
+        319
+      ],
+      "margins": [
+        41,
+        38,
+        164,
+        65
+      ],
+      "core_pixels": 48576,
+      "alpha_sum": 12185274,
+      "centroid": [
+        211.01856884057972,
+        164.7526968050066
+      ],
+      "crop": [
+        39,
+        35,
+        310,
+        287
+      ],
+      "region": [
+        316,
+        879,
+        310,
+        287
+      ],
+      "margin": [
+        39,
+        35,
+        202,
+        97
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 24,
+      "rgba_sha256": "563dc019eda159ff7c4efeb6ed4c6a7fe4cdde2478fd474f3fe4fdfc9b6cc248",
+      "core_alpha": 32,
+      "bbox": [
+        102,
+        42,
+        382,
+        320
+      ],
+      "margins": [
+        102,
+        42,
+        130,
+        64
+      ],
+      "core_pixels": 46384,
+      "alpha_sum": 11657894,
+      "centroid": [
+        248.0454467057606,
+        173.20078044153155
+      ],
+      "crop": [
+        100,
+        40,
+        284,
+        283
+      ],
+      "region": [
+        1224,
+        1170,
+        284,
+        283
+      ],
+      "margin": [
+        100,
+        40,
+        228,
+        101
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 25,
+      "rgba_sha256": "eeb52dbbe536e203f7d7be8226f53cdbd982ff6ad1f85381bb6c8ca9c2932f3e",
+      "core_alpha": 32,
+      "bbox": [
+        87,
+        40,
+        375,
+        320
+      ],
+      "margins": [
+        87,
+        40,
+        137,
+        64
+      ],
+      "core_pixels": 46183,
+      "alpha_sum": 11601974,
+      "centroid": [
+        241.73815040166295,
+        170.51685685208844
+      ],
+      "crop": [
+        85,
+        38,
+        292,
+        285
+      ],
+      "region": [
+        1580,
+        879,
+        292,
+        285
+      ],
+      "margin": [
+        85,
+        38,
+        220,
+        99
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 26,
+      "rgba_sha256": "9efe7d0386e17bb5718807cc393b9886f075255684f5ea91bcbbf1e300a1f1e4",
+      "core_alpha": 32,
+      "bbox": [
+        94,
+        38,
+        362,
+        320
+      ],
+      "margins": [
+        94,
+        38,
+        150,
+        64
+      ],
+      "core_pixels": 47730,
+      "alpha_sum": 11990008,
+      "centroid": [
+        227.60932327676514,
+        166.5327676513723
+      ],
+      "crop": [
+        92,
+        35,
+        272,
+        288
+      ],
+      "region": [
+        1591,
+        295,
+        272,
+        288
+      ],
+      "margin": [
+        92,
+        35,
+        240,
+        96
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 27,
+      "rgba_sha256": "4d82b338fe73386e9eb1d8ca8935aaf78b524481df27360b6f9e562df5e382d0",
+      "core_alpha": 32,
+      "bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "margins": [
+        45,
+        36,
+        157,
+        64
+      ],
+      "core_pixels": 48885,
+      "alpha_sum": 12315550,
+      "centroid": [
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
+      "region": [
+        1280,
+        2,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 28,
+      "rgba_sha256": "c6b8d833458861ce45f401175b15e41a8d19dbecd0d636abacf54c9346581acb",
+      "core_alpha": 32,
+      "bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "margins": [
+        45,
+        36,
+        157,
+        64
+      ],
+      "core_pixels": 48885,
+      "alpha_sum": 12316699,
+      "centroid": [
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
+      "region": [
+        1598,
+        2,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 29,
+      "rgba_sha256": "651dca529de933cd7d07e408d1a70bde01365aaff00818cd5ea068dd057ee82c",
+      "core_alpha": 32,
+      "bbox": [
+        33,
+        38,
+        344,
+        319
+      ],
+      "margins": [
+        33,
+        38,
+        168,
+        65
+      ],
+      "core_pixels": 47551,
+      "alpha_sum": 11916088,
+      "centroid": [
+        209.2023301297554,
+        165.10954554057747
+      ],
+      "crop": [
+        31,
+        35,
+        315,
+        287
+      ],
+      "region": [
+        2,
+        588,
+        315,
+        287
+      ],
+      "margin": [
+        31,
+        35,
+        197,
+        97
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 30,
+      "rgba_sha256": "ea24d8e3afe82d6af8f53f7efd3b4e5b028af32021b8b363251996ee542fc38d",
+      "core_alpha": 32,
+      "bbox": [
+        17,
+        40,
+        331,
+        317
+      ],
+      "margins": [
+        17,
+        40,
+        181,
+        67
+      ],
+      "core_pixels": 45924,
+      "alpha_sum": 11501417,
+      "centroid": [
+        197.61268617716226,
+        166.07767180559185
+      ],
+      "crop": [
+        16,
+        38,
+        317,
+        282
+      ],
+      "region": [
+        1512,
+        1170,
+        317,
+        282
+      ],
+      "margin": [
+        16,
+        38,
+        195,
+        102
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 31,
+      "rgba_sha256": "651dca529de933cd7d07e408d1a70bde01365aaff00818cd5ea068dd057ee82c",
+      "core_alpha": 32,
+      "bbox": [
+        33,
+        38,
+        344,
+        319
+      ],
+      "margins": [
+        33,
+        38,
+        168,
+        65
+      ],
+      "core_pixels": 47551,
+      "alpha_sum": 11916088,
+      "centroid": [
+        209.2023301297554,
+        165.10954554057747
+      ],
+      "crop": [
+        31,
+        35,
+        315,
+        287
+      ],
+      "region": [
+        321,
+        588,
+        315,
+        287
+      ],
+      "margin": [
+        31,
+        35,
+        197,
+        97
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 32,
+      "rgba_sha256": "6a7ec9b6bb0cd6b391c3f5c9b1a2c0b56b9aa2c9f98e8ed45c57e2d118c85b96",
+      "core_alpha": 32,
+      "bbox": [
+        83,
+        42,
+        387,
+        320
+      ],
+      "margins": [
+        83,
+        42,
+        125,
+        64
+      ],
+      "core_pixels": 49458,
+      "alpha_sum": 12395277,
+      "centroid": [
+        243.00287112297303,
+        169.0851227303975
+      ],
+      "crop": [
+        81,
+        40,
+        308,
+        283
+      ],
+      "region": [
+        912,
+        1170,
+        308,
+        283
+      ],
+      "margin": [
+        81,
+        40,
+        204,
+        101
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 33,
+      "rgba_sha256": "5bfd715509401676c7c2d60b305915b9a9930058f6eab07887078f381b08faea",
+      "core_alpha": 32,
+      "bbox": [
+        73,
+        40,
+        380,
+        320
+      ],
+      "margins": [
+        73,
+        40,
+        132,
+        64
+      ],
+      "core_pixels": 49369,
+      "alpha_sum": 12375593,
+      "centroid": [
+        236.60631165306162,
+        167.82987299722498
+      ],
+      "crop": [
+        71,
+        38,
+        310,
+        285
+      ],
+      "region": [
+        1266,
+        879,
+        310,
+        285
+      ],
+      "margin": [
+        71,
+        38,
+        202,
+        99
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 34,
+      "rgba_sha256": "d708d447da3adae8b8427b0d73ac4c5c1dd96d09e5fa678f9e4d68d6551fdcb0",
+      "core_alpha": 32,
+      "bbox": [
+        54,
+        38,
+        364,
+        320
+      ],
+      "margins": [
+        54,
+        38,
+        148,
+        64
+      ],
+      "core_pixels": 49048,
+      "alpha_sum": 12295324,
+      "centroid": [
+        224.45349453596478,
+        165.47206817811124
+      ],
+      "crop": [
+        52,
+        35,
+        314,
+        288
+      ],
+      "region": [
+        956,
+        295,
+        314,
+        288
+      ],
+      "margin": [
+        52,
+        35,
+        198,
+        96
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 35,
+      "rgba_sha256": "c6b8d833458861ce45f401175b15e41a8d19dbecd0d636abacf54c9346581acb",
+      "core_alpha": 32,
+      "bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "margins": [
+        45,
+        36,
+        157,
+        64
+      ],
+      "core_pixels": 48885,
+      "alpha_sum": 12316699,
+      "centroid": [
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
+      "region": [
+        2,
+        295,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 36,
+      "rgba_sha256": "bff8bae869de197577b008ceefbbdb7213fe5d2c491d0d36532beaa99bf814c4",
+      "core_alpha": 32,
+      "bbox": [
+        30,
+        38,
+        341,
+        319
+      ],
+      "margins": [
+        30,
+        38,
+        171,
+        65
+      ],
+      "core_pixels": 46988,
+      "alpha_sum": 11786965,
+      "centroid": [
+        208.69430492891803,
+        166.33804375585257
+      ],
+      "crop": [
+        28,
+        36,
+        315,
+        283
+      ],
+      "region": [
+        593,
+        1170,
+        315,
+        283
+      ],
+      "margin": [
+        28,
+        36,
+        197,
+        101
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 37,
+      "rgba_sha256": "997d38f5fe56926f37f96d63cb1662b946b73350f693d90f39d6f947fdd36f86",
+      "core_alpha": 32,
+      "bbox": [
+        22,
+        42,
+        312,
+        315
+      ],
+      "margins": [
+        22,
+        42,
+        200,
+        69
+      ],
+      "core_pixels": 42656,
+      "alpha_sum": 10701500,
+      "centroid": [
+        192.67078488372093,
+        170.19992498124532
+      ],
+      "crop": [
+        20,
+        40,
+        295,
+        276
+      ],
+      "region": [
+        968,
+        1745,
+        295,
+        276
+      ],
+      "margin": [
+        20,
+        40,
+        217,
+        108
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 38,
+      "rgba_sha256": "a4bc88ec4d3c2f91651b28db5d0fb1817702f10eefb10391a5d2e44d30a55e02",
+      "core_alpha": 32,
+      "bbox": [
+        26,
+        39,
+        334,
+        318
+      ],
+      "margins": [
+        26,
+        39,
+        178,
+        66
+      ],
+      "core_pixels": 45942,
+      "alpha_sum": 11526131,
+      "centroid": [
+        204.7331635540464,
+        167.0288189456271
+      ],
+      "crop": [
+        24,
+        37,
+        312,
+        282
+      ],
+      "region": [
+        2,
+        1459,
+        312,
+        282
+      ],
+      "margin": [
+        24,
+        37,
+        200,
+        102
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 39,
+      "rgba_sha256": "c6b8d833458861ce45f401175b15e41a8d19dbecd0d636abacf54c9346581acb",
+      "core_alpha": 32,
+      "bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "margins": [
+        45,
+        36,
+        157,
+        64
+      ],
+      "core_pixels": 48885,
+      "alpha_sum": 12316699,
+      "centroid": [
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
+      "region": [
+        320,
+        295,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 40,
+      "rgba_sha256": "98556e73a03bec9c93c36ea4aac226592e34a87a5f4d987c2e48c5224d1198d1",
+      "core_alpha": 32,
+      "bbox": [
+        45,
+        36,
+        355,
+        320
+      ],
+      "margins": [
+        45,
+        36,
+        157,
+        64
+      ],
+      "core_pixels": 48885,
+      "alpha_sum": 12317454,
+      "centroid": [
+        218.30884729467115,
+        164.56234018615118
+      ],
+      "crop": [
+        43,
+        34,
+        314,
+        289
+      ],
+      "region": [
+        638,
+        295,
+        314,
+        289
+      ],
+      "margin": [
+        43,
+        34,
+        198,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 41,
+      "rgba_sha256": "ab08f0943c7dc9bcb4dd660c5641031f92722ed09b47489a61b0abdb37e52d12",
+      "core_alpha": 32,
+      "bbox": [
+        24,
+        47,
+        338,
+        320
+      ],
+      "margins": [
+        24,
+        47,
+        174,
+        64
+      ],
+      "core_pixels": 48370,
+      "alpha_sum": 12129185,
+      "centroid": [
+        202.0971056439942,
+        172.36849286747983
+      ],
+      "crop": [
+        22,
+        45,
+        319,
+        277
+      ],
+      "region": [
+        2,
+        1745,
+        319,
+        277
+      ],
+      "margin": [
+        22,
+        45,
+        193,
+        107
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 42,
+      "rgba_sha256": "14d0163815dc266f5bff2841ae093831f4abaddf49fcabebccd30e18182f9ba1",
+      "core_alpha": 32,
+      "bbox": [
+        8,
+        36,
+        318,
+        320
+      ],
+      "margins": [
+        8,
+        36,
+        194,
+        64
+      ],
+      "core_pixels": 47212,
+      "alpha_sum": 11842604,
+      "centroid": [
+        183.6439888164026,
+        159.04833516902482
+      ],
+      "crop": [
+        7,
+        34,
+        313,
+        288
+      ],
+      "region": [
+        1274,
+        295,
+        313,
+        288
+      ],
+      "margin": [
+        7,
+        34,
+        199,
+        96
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 43,
+      "rgba_sha256": "701fe7c041e892e0a73ec9cab06ea795fb14b0c32546efe5b3ebebc59c4e1eab",
+      "core_alpha": 32,
+      "bbox": [
+        8,
+        34,
+        325,
+        319
+      ],
+      "margins": [
+        8,
+        34,
+        187,
+        65
+      ],
+      "core_pixels": 45789,
+      "alpha_sum": 11487352,
+      "centroid": [
+        170.32824477494594,
+        153.42189172071895
+      ],
+      "crop": [
+        7,
+        32,
+        320,
+        289
+      ],
+      "region": [
+        2,
+        2,
+        320,
+        289
+      ],
+      "margin": [
+        7,
+        32,
+        192,
+        95
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 44,
+      "rgba_sha256": "ef116bd7cda46cdaa16345dc3652629c9a23e77c241890ac34f84f5f8b73c0f8",
+      "core_alpha": 32,
+      "bbox": [
+        24,
+        48,
+        331,
+        319
+      ],
+      "margins": [
+        24,
+        48,
+        181,
+        65
+      ],
+      "core_pixels": 44055,
+      "alpha_sum": 11047961,
+      "centroid": [
+        164.42446941323345,
+        162.53546702984906
+      ],
+      "crop": [
+        23,
+        46,
+        310,
+        274
+      ],
+      "region": [
+        669,
+        2026,
+        310,
+        274
+      ],
+      "margin": [
+        23,
+        46,
+        202,
+        110
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 45,
+      "rgba_sha256": "047944e4f37b9430ca3b39b166c30b3d8478abb8a4135846bcc84e4727924829",
+      "core_alpha": 32,
+      "bbox": [
+        37,
+        66,
+        337,
+        319
+      ],
+      "margins": [
+        37,
+        66,
+        175,
+        65
+      ],
+      "core_pixels": 42577,
+      "alpha_sum": 10680345,
+      "centroid": [
+        171.04894661436927,
+        182.50304154825375
+      ],
+      "crop": [
+        35,
+        65,
+        304,
+        256
+      ],
+      "region": [
+        983,
+        2026,
+        304,
+        256
+      ],
+      "margin": [
+        35,
+        65,
+        208,
+        128
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 46,
+      "rgba_sha256": "594d028bdb92124f3717b015e4fdedae1ce77df6984a2c4ff5b0304337fae74f",
+      "core_alpha": 32,
+      "bbox": [
+        53,
+        80,
+        340,
+        319
+      ],
+      "margins": [
+        53,
+        80,
+        172,
+        65
+      ],
+      "core_pixels": 41670,
+      "alpha_sum": 10462144,
+      "centroid": [
+        178.77744180465564,
+        196.9275977921766
+      ],
+      "crop": [
+        50,
+        79,
+        292,
+        242
+      ],
+      "region": [
+        1291,
+        2026,
+        292,
+        242
+      ],
+      "margin": [
+        50,
+        79,
+        220,
+        142
+      ],
+      "raster_max_error": 0
+    },
+    {
+      "index": 47,
+      "rgba_sha256": "594d028bdb92124f3717b015e4fdedae1ce77df6984a2c4ff5b0304337fae74f",
+      "core_alpha": 32,
+      "bbox": [
+        53,
+        80,
+        340,
+        319
+      ],
+      "margins": [
+        53,
+        80,
+        172,
+        65
+      ],
+      "core_pixels": 41670,
+      "alpha_sum": 10462144,
+      "centroid": [
+        178.77744180465564,
+        196.9275977921766
+      ],
+      "crop": [
+        50,
+        79,
+        292,
+        242
+      ],
+      "region": [
+        1587,
+        2026,
+        292,
+        242
+      ],
+      "margin": [
+        50,
+        79,
+        220,
+        142
       ],
       "raster_max_error": 0
     }
@@ -1136,48 +3940,76 @@
   "raster_max_error": 0,
   "actions": {
     "idle": [
-      0
-    ],
-    "walk": [
+      0,
       1,
       2,
       3,
       4,
       5,
-      6
+      6,
+      7
     ],
-    "attack": [
-      7,
+    "walk": [
       8,
       9,
-      10
-    ],
-    "cast": [
+      10,
       11,
       12,
       13,
-      14
-    ],
-    "hit": [
-      15
-    ],
-    "death": [
+      14,
+      15,
       16,
       17,
       18,
       19
+    ],
+    "attack": [
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ],
+    "cast": [
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ],
+    "hit": [
+      36,
+      37,
+      38,
+      39
+    ],
+    "death": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
     ]
   },
   "fps": {
-    "idle": 1.0,
-    "walk": 10.0,
-    "attack": 6.67,
-    "cast": 6.67,
-    "hit": 1.0,
-    "death": 5.0
+    "idle": 3.3333333333333335,
+    "walk": 16.666666666666668,
+    "attack": 10.0,
+    "cast": 9.090909090909092,
+    "hit": 20.0,
+    "death": 10.0
   },
   "release_frames": {
-    "attack": 2,
-    "cast": 2
+    "attack": 4,
+    "cast": 4
   }
 }

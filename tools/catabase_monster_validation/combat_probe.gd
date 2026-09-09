@@ -45,7 +45,8 @@ func _process(_delta: float) -> void:
 		if not samples.has(key): samples.append(key)
 		_observed[slug] = samples
 		var action := str(sprite.animation).get_slice("_", 0)
-		if action in ["walk", "attack", "cast", "death"] and sprite.frame >= 1:
+		var capture_frame := 5 if action == "death" else (4 if action in ["attack", "cast"] else 3)
+		if action in ["walk", "attack", "cast", "death"] and sprite.frame >= capture_frame:
 			var label := slug + "_" + action
 			if not _capture_pending.has(label) and not _captures.has(label):
 				_capture_pending[label] = true
@@ -148,6 +149,11 @@ func _probe_room(slug: String, route_node: Dictionary) -> void:
 	_check(not sprite.flip_h and not sprite.flip_v, slug + ": explicit direction, no reflection")
 	_check(sprite.sprite_frames != null and sprite.sprite_frames.get_animation_names().size() >= 24,
 		slug + ": imported action sheets bound")
+	for direction: String in ["N", "E", "S", "W"]:
+		for action: String in CatabaseMonsterSpriteProfile.CLIP_COUNTS:
+			var clip := StringName(action + "_" + direction)
+			_check(sprite.sprite_frames.has_animation(clip) and sprite.sprite_frames.get_frame_count(clip)
+				== CatabaseMonsterSpriteProfile.CLIP_COUNTS[action], slug + ": 48-frame contract " + str(clip))
 	var deployment = battle.get("_deployment")
 	_check(deployment != null and deployment.is_active(), slug + ": real deployment active")
 	if deployment != null and deployment.is_active():
@@ -157,6 +163,16 @@ func _probe_room(slug: String, route_node: Dictionary) -> void:
 		await get_tree().process_frame
 	_check(bool(battle.call("_can_accept_player_intent")), slug + ": controllable battle after deployment")
 	await _wait_for_intro(battle, slug)
+	# Observe a complete live breathing cycle after deployment, while player
+	# input remains ready. Sampling uses the production visual's clock.
+	var idle_frames := {}
+	deadline = Time.get_ticks_msec() + 4500
+	while idle_frames.size() < 8 and Time.get_ticks_msec() < deadline:
+		if str(sprite.animation).begins_with("idle_"):
+			idle_frames[sprite.frame] = true
+		await get_tree().process_frame
+	_check(idle_frames.size() == 8, slug + ": all eight idle poses advance in the real room")
+	await _capture(slug + "_idle")
 	await _capture(slug + "_authored_encounter")
 	var runner := battle.get("_enemy_turn") as EnemyTurnRunner
 	enemy.start_turn()
@@ -183,7 +199,7 @@ func _probe_room(slug: String, route_node: Dictionary) -> void:
 	_check(observed.any(func(key): return str(key).begins_with("death_")), slug + ": real lethal-hit death animation")
 	_rooms.append({"monster": slug, "route_node": route_node, "scene": room.battle_scene.resource_path,
 		"room_name": room.room_name, "spawns": spawns, "ai": ai_report, "casts": casts,
-		"animations": observed, "lethal_hit": lethal_report,
+		"animations": observed, "idle_frames": idle_frames.keys(), "lethal_hit": lethal_report,
 		"fixture": "Seeded authored encounter; hero deployment is real. Extra spell probes position the existing hero on a legal target cell and advance the existing enemy activation to exercise each ability through EnemyTurnRunner. The final death fixture lowers enemy HP to one before a legal real hero spear impact."})
 	_active_views.erase(slug)
 	await _close_battle(battle)
@@ -345,6 +361,7 @@ func _watchdog() -> void:
 
 func _write_report() -> void:
 	var report := {"passed": _errors.is_empty(), "checks": _checks, "errors": _errors,
+		"animation_contract": {"poses_per_direction": 48, "release_frame": 4, "idle_loop_frames": 8},
 		"resolution": _cell(_resolution), "engine": Engine.get_version_info(),
 		"renderer": RenderingServer.get_current_rendering_method(),
 		"capture_enabled": DisplayServer.get_name() != "headless", "captures": _captures,
@@ -364,7 +381,7 @@ func _finish() -> void:
 	_verify_teardown()
 	if DisplayServer.get_name() != "headless":
 		for slug: String in SLUGS:
-			for suffix: String in ["authored_encounter", "attack", "cast", "death", "resolved_combat"]:
+			for suffix: String in ["authored_encounter", "idle", "walk", "attack", "cast", "death", "resolved_combat"]:
 				_check(_captures.has(slug + "_" + suffix), slug + ": required capture " + suffix)
 	_finished = true
 	_write_report()
