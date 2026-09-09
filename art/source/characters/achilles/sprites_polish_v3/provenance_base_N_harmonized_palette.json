@@ -1,0 +1,27 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "N",
+  "edit_scope_requested": "Darken only teal tunic cloth by approximately 25 percent; preserve all other art, geometry, poses and equipment.",
+  "source": "art/source/characters/achilles/sprites_polish_v3/source_candidate_base_N_harmonized.png",
+  "source_sha256": "17ab5209733976a857c3f99c8cdab918d70948ec43176902cdc5af3736e3fe94",
+  "selected_generation": "exec-4b06dee9-4200-4d1b-ba86-23e85cc966b4",
+  "generated_source": "$CODEX_HOME/generated_images/01a08202-43f3-7443-a33b-aa375a46b1b8/exec-4b06dee9-4200-4d1b-ba86-23e85cc966b4.png",
+  "candidate_sha256": "50916a56be9e7277ef963469082c8dc41777f6a20b5526bb8875a89ee8872a6b",
+  "grid": [
+    4,
+    4
+  ],
+  "prompt": "Perform a surgical COLOR-ONLY edit to this existing 4-column by 4-row sprite sheet. Preserve the entire supplied image and all sixteen drawings exactly: same poses and order, character scale, feet, hands, head, helmet, crest, equipment, silhouette, contours, highlight/shadow shapes, camera, spacing and magenta background. Do not reinterpret, improve, repaint the character model, change proportions or redraw any detail.\nThe ONLY change is the DARK TEAL FABRIC of the hanging short tunic/skirt around the hips and thighs. Its teal has been measured too light compared with the original game character. Reduce the lightness of that teal fabric by approximately 25 percent while preserving its hue and the existing painted fold/shadow boundaries. The original intended mid-tone is about dark muted teal #213E42; it must read as subdued deep teal, not bright turquoise. Apply this one fabric-only correction consistently to every pose in all four rows. Preserve the tiny gold hem decoration exactly and leave the red hanging waist cloth unchanged.\nDo not darken the ivory backplate, skin, hair/crest red, bronze helmet, gold/bronze trims, belts, shield, sandals, bow, string, arrow or spear. Do not apply a global grade. Do not alter the character's drawing or the magenta #FF00FF background. Keep all sixteen complete sprites in their original 4x4 cell order with existing margins. Release bow frames remain entirely arrow-free. Output only the same sprite sheet with its teal TUNIC FABRIC subtly darker and nothing else changed.",
+  "status": "selected_for_runtime",
+  "review": "Selected after independent identity/palette review. Teal cloth correction was requested through image generation; this is not a claim of byte-identical pixels outside the cloth. Source pose order and arrow-free releases are retained; pipeline manifest records the exact retained pixels and normalization.",
+  "initial_review_at_generation": "The teal cloth appears darker and pose order, feet, bow release states remain visually consistent. Image generation is not guaranteed pixel-identical outside the requested cloth region; quantitative geometry/palette comparison is required before selection. No source or runtime replacement.",
+  "selected_clips": [
+    "walk_N",
+    "bow_N"
+  ],
+  "runtime_selection": {
+    "authority": "Root approved harmonized source selection after independent motion/identity review.",
+    "alignment": "tools/achilles_polish_v3_pipeline/alignment.json",
+    "manifest": "assets/characters/Achilles/sprites_polish_v3/manifest.json"
+  }
+}

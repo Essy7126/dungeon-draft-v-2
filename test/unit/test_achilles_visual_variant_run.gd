@@ -162,6 +162,13 @@ func test_new_classic_selection_after_painted_clears_the_appearance() -> void:
 
 func _manager() -> HarnessManager:
 	var manager := HarnessManager.new()
+	# A real player checkpoint now correctly requires replacement consent.
+	# This isolated fixture must never consult that checkpoint to start a run.
+	var fixture_path := OS.get_environment("TEMP").path_join(
+		"achilles_variant_manager_%d_%d.json" % [OS.get_process_id(), manager.get_instance_id()])
+	manager.expedition_save_path = fixture_path
+	save_paths.append(fixture_path)
+	assert_false(FileAccess.file_exists(fixture_path), "Every manager owns a fresh isolated checkpoint path")
 	manager._ready()
 	managers.append(manager)
 	return manager

@@ -1,0 +1,53 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "W",
+  "identity_authority": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+  "identity_frame": 0,
+  "identity_source_bbox": [
+    104,
+    7,
+    252,
+    299
+  ],
+  "identity_preview": "artifacts/achilles_identity_audit_v3/identity_idle_source_W_native.png",
+  "pose_guide": "assets/characters/Achilles/sprites_polish_v3/atlas_walk_W.png",
+  "pose_guide_source": "art/source/characters/achilles/sprites_polish_v3/source_walk_W.png",
+  "pose_guide_preview": "artifacts/achilles_identity_audit_v3/walk_W_runtime_pose_guide_mapped.png",
+  "pose_guide_source_mapping": [
+    0,
+    0,
+    2,
+    3,
+    1,
+    5,
+    6,
+    7
+  ],
+  "candidate_mapping": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "selected_generation": "exec-085e6078-739c-4788-a667-5cd9001ff26d",
+  "generated_source": "$CODEX_HOME/generated_images/01a08202-43f3-7443-a33b-aa375a46b1b8/exec-085e6078-739c-4788-a667-5cd9001ff26d.png",
+  "prompt": "Use case: identity-preserve. Paint EIGHT animation sprites for the SAME original game character, exact model continuity.\nIMAGE1, the single large Achilles sprite, is the absolute authority for his face/helmet, original red crest curve AND size, cheek guard, head/torso/leg proportions, arms, armor shape, clothing, equipment, palette and painted finish. Match it exactly, including warm ivory #f8e5c4, muted dark teal tunic, bronze, red waist knot and small hem details, strapped open-toe sandals, simple quiet hand-painted planes and fine deep-brown outlines. Do not inflate shoulders/biceps/helmet, enlarge or shrink crest, add armor, turn the cuirass pure white or round the materials into a shiny toy. However IMAGE1's leg stance is NOT an animation pose guide.\nIMAGE2, the smaller beige sheet, is the correct EIGHT WALK POSES ALREADY IN PLAYBACK ORDER. EXACTLY copy the corresponding leg positions and grounded/lifted feet from each of its cells. Change only the character model/rendering to precisely match IMAGE1. Do not redesign this gait, swap legs, reorder frames, insert another pose, or use IMAGE1's idle legs. The first two guide frames are intentionally near-identical; retain that short hold.\n\nGenerate exactly 4 columns by 2 rows, EIGHT full-body poses, all facing rear three-quarter UP-LEFT with the same orthographic camera:\nRow1 col1: left/near foot planted, other leg bends behind with sole visible.\nRow1 col2: retain that same support leg and lifted rear leg, intentional short hold.\nRow1 col3: lifted foot comes down, original guide stance and feet.\nRow1 col4: definite grounded walking CONTACT pose, BOTH sandal soles meet the invisible ground. NO toe/foot lifted forward, NO kicking foot. Copy guide's two firm planted feet exactly.\nRow2 col1: opposite leg is now in swing, near leg forward raised and other leg carries the weight, exactly guide.\nRow2 col2: preserve guide opposite-support foot and forward swing phase.\nRow2 col3: lifted foot returns to ground, exactly guide.\nRow2 col4: second definite grounded CONTACT with BOTH sandal soles meeting the invisible ground. NO lifted toes or feet. Exact guide's double support.\nThe two CONTACT poses, row1 col4 and row2 col4, are essential. Keep the original guide's ankle bends, knee directions, foot locations and grounded sole shapes. Do not copy the raised forward foot from row2 col1 into either contact.\n\nShield stays on LEFT arm and spear held upright in RIGHT hand as in original character; original shield thickness, teal face and ivory lambda. Hands maintain grips. Only tiny natural torso motion, feet do not float. Character body and equipment are same physical size in all frames, preserve stance height variations.\nPlain uniform MAGENTA #FF00FF everywhere, including between legs and all holes. No ground line, shadow, text, numbering, borders, glow, particles or motion trails. Every complete spear tip, crest, shield and sandal inside its own cell with wide clean gutters. This is a conservative model/style harmonization of an approved walk, not a new walk cycle.",
+  "status": "selected_for_runtime",
+  "review": "Selected after independent identity/contact review. The eight source poses already follow validated playback order; candidate mapping is identity [0..7], so the previous mapping must not be applied twice. Grounded contacts 3/7 and opposite support phases are retained. Bow artwork remains in source_base_W_harmonized.png.",
+  "source_sha256": "87159c54a5ba5c922d70bd4ec7b4d98c2b97e01493a8b0d3c83f7bb48ea5d4a0",
+  "pose_guide_sha256": "0c1dd6a597f1be2c15884d297948224d4608d1669320f431cde83a9a821d2fec",
+  "identity_authority_sha256": "448f58e4b2d44fec7ed308ca57101d224e092f54bf5d399c433b8372ed0c3c34",
+  "initial_review_at_generation": "Only WALK generated. Source poses already ordered as validated runtime playback; do not apply prior mapping twice. Inspected grounded broad double-support contacts 3 and 7; first two near-identical raised-back-leg phases retained; opposite swing at 4/5; bow candidate untouched. Independent canonical identity measurements pending.",
+  "selected_clips": [
+    "walk_W"
+  ],
+  "runtime_selection": {
+    "authority": "Root approved harmonized source selection after independent motion/identity review.",
+    "alignment": "tools/achilles_polish_v3_pipeline/alignment.json",
+    "manifest": "assets/characters/Achilles/sprites_polish_v3/manifest.json"
+  }
+}

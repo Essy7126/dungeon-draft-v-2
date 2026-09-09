@@ -44,16 +44,18 @@ async function verifyEncodedAnimation(sharp, outputPath, sourcePages, sourceDela
   const boundaries = [0];
   for (const delay of sourceDelays) boundaries.push(boundaries.at(-1) + delay);
   const boundarySet = new Set(boundaries);
-  const signatureWidth = Math.min(width, 96);
-  const signatureHeight = Math.max(1, Math.round(height * signatureWidth / width));
+  // Compare every captured RGB sample. Downsampling can erase the tiny
+  // moving details of two idle captures and make a later image rank first
+  // after GIF palette quantization, despite the encoded order being correct.
+  const signatureWidth = width;
+  const signatureHeight = height;
   const signatures = [];
   let distinctStates = 0, previousHash = '';
   for (const page of sourcePages) {
     const hash = crypto.createHash('sha256').update(page).digest('hex');
     if (hash !== previousHash) distinctStates++;
     previousHash = hash;
-    signatures.push(await sharp(page, { raw: { width, height, channels: 3 } })
-      .resize(signatureWidth, signatureHeight).raw().toBuffer());
+    signatures.push(page);
   }
   const timeline = [];
   let sourceIndex = 0, start = 0, maximumMatchError = 0;
@@ -61,7 +63,7 @@ async function verifyEncodedAnimation(sharp, outputPath, sourcePages, sourceDela
     const end = start + metadata.delay[encodedIndex];
     if (!boundarySet.has(end)) throw new Error('GIF changed a captured image transition at ' + end + ' ms.');
     const decoded = await sharp(outputPath, { page: encodedIndex, pages: 1 })
-      .removeAlpha().resize(signatureWidth, signatureHeight).raw().toBuffer();
+      .removeAlpha().raw().toBuffer();
     const errors = signatures.map(signature => meanAbsoluteError(signature, decoded));
     const nearestError = Math.min(...errors);
     const nearestIndex = errors.indexOf(nearestError);
@@ -130,15 +132,19 @@ async function main() {
     merged_capture_frames: pages.length - validation.encoded_frames,
     source_images_checked_in_order: validation.source_images_checked_in_order,
     image_order_signature_size: validation.signature_size,
+    image_order_comparison: "full_resolution_rgb_l1",
     maximum_palette_mean_error: validation.maximum_palette_mean_error,
     encoded_timeline: validation.timeline,
     size: [width, height], source_duration_ms: (manifest.ended_usec - firstTime) / 1000,
     encoded_duration_ms: metadata.delay.reduce((sum, value) => sum + value, 0),
     delays_ms: metadata.delay,
-    note: 'Real game capture, fixed crop enlarged 2x. Original timestamps rounded to GIF centiseconds; identical holds may merge without changing duration. Dimensions, total duration, transition timestamps and nearest captured image in chronological order are checked after decoding. GPU capture may perturb playback; use the separate timing report for measurements.',
+    note: 'Real game capture, fixed crop enlarged 2x. Original timestamps rounded to GIF centiseconds; identical holds may merge without changing duration. Dimensions, total duration, transition timestamps and the nearest full-resolution captured RGB image in chronological order are checked after decoding. GPU capture may perturb playback; use the separate timing report for measurements.',
   };
   fs.writeFileSync(path.join(directory, 'encode_report.json'), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));
 }
 
-main().catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { loadSharp, verifyEncodedAnimation };
+if (require.main === module) {
+  main().catch(error => { console.error(error); process.exitCode = 1; });
+}

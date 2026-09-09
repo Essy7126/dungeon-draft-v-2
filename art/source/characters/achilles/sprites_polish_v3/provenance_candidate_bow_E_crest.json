@@ -1,0 +1,9 @@
+{
+  "generator": "Built-in image_gen.imagegen",
+  "mode": "edit",
+  "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached eight-pose Greek Achilles archer sprite sheet, 4 columns by 2 rows, facing screen right, bright solid magenta background. This is a very small correction to an already approved identity and animation. Change ONLY these two things consistently in all 8 poses: (1) the red plume/crest on top of the helmet should be approximately 20 percent wider and 20 percent taller than in this input. Keep its attachment to the metal helmet and its swept curved shape; extend the RED CREST ONLY. Do not enlarge the gold helmet, skull, face, hair, neck, torso or any other body part. (2) Shift only the petrol-teal cloth on the skirt and the teal shield face slightly darker and slightly less blue, toward deep muted petrol #0f3f46 in midtones; preserve all gold edging and highlights/shadows. ABSOLUTE INVARIANTS: preserve all eight exact poses, their order, full-body scale, camera, foot positions and stance, silhouette below helmet, mature narrow square-jawed face, straight Greek cheek guards, ivory breastplate, warm bronze, thin clean outlines, bow geometry, string geometry, arrow visibility per pose, spear and quiver, small belt knot, garments and all armor details. No redesign, no new ornaments, no changes to anatomy, no chibi proportions. Keep the same 4x2 layout and perfectly uniform magenta background. No text. This is a correction to existing artwork, not a new interpretation.",
+  "input": "source_candidate_bow_E_harmonized.png",
+  "output": "source_candidate_bow_E_harmonized_crest.png",
+  "source_output": "$CODEX_HOME/generated_images/01a08202-1829-7922-b691-8843c0a9beb9/exec-9ac8bb89-1643-46d5-b1aa-75ddb41440ea.png",
+  "status": "CANDIDATE_PENDING_REVIEW"
+}

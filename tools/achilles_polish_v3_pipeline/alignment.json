@@ -1,0 +1,1709 @@
+{
+  "schema_version": 3,
+  "sheets": {
+    "walk_N": {
+      "source": "source_base_N_harmonized_palette.png",
+      "columns": 4,
+      "rows": 4,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "scale": 0.8527131782945736,
+      "speed": 14.285714285714285,
+      "roots": [
+        [
+          147,
+          286.1727272727273
+        ],
+        [
+          467,
+          287.1727272727273
+        ],
+        [
+          765,
+          290.1727272727273
+        ],
+        [
+          1093,
+          286.1727272727273
+        ],
+        [
+          147,
+          599.1727272727272
+        ],
+        [
+          469,
+          600.1727272727272
+        ],
+        [
+          774,
+          601.1727272727272
+        ],
+        [
+          1091,
+          598.1727272727272
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping_note": "Source0..7, playback identity, contacts3/7."
+    },
+    "walk_E": {
+      "source": "source_candidate_walk_E_harmonized.png",
+      "columns": 4,
+      "rows": 2,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "scale": 0.5432098765432098,
+      "speed": 14.285714285714285,
+      "roots": [
+        [
+          171,
+          490.84090909090907
+        ],
+        [
+          530,
+          489
+        ],
+        [
+          892,
+          490.84090909090907
+        ],
+        [
+          1255,
+          490.84090909090907
+        ],
+        [
+          179,
+          1012.8409090909091
+        ],
+        [
+          531,
+          1013.8409090909091
+        ],
+        [
+          891,
+          1004
+        ],
+        [
+          1254,
+          1014.8409090909091
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping_note": "Source0..7; playback[0,1,3,2,4,5,7,6], source2/6 become contacts3/7."
+    },
+    "walk_S": {
+      "source": "source_candidate_base_S_harmonized.png",
+      "columns": 4,
+      "rows": 4,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "speed": 14.285714285714285,
+      "scale": 1.0476190476190477,
+      "roots": [
+        [
+          178,
+          254.95454545454547
+        ],
+        [
+          540,
+          252.95454545454547
+        ],
+        [
+          902,
+          252.95454545454547
+        ],
+        [
+          1264,
+          254.95454545454547
+        ],
+        [
+          184,
+          518.9545454545455
+        ],
+        [
+          546,
+          518.9545454545455
+        ],
+        [
+          908,
+          518.9545454545455
+        ],
+        [
+          1270,
+          518.9545454545455
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling.",
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping_note": "Source0..7, playback identity, contacts3/7."
+    },
+    "walk_W": {
+      "source": "source_walk_W_harmonized.png",
+      "columns": 4,
+      "rows": 2,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "speed": 14.285714285714285,
+      "mapping_note": "Source sheet already ordered from approved historical mapping[0,0,2,3,1,5,6,7]; playback identity, contacts3/7.",
+      "scale": 0.5555555555555556,
+      "roots": [
+        [
+          187,
+          457
+        ],
+        [
+          571,
+          457
+        ],
+        [
+          955,
+          461
+        ],
+        [
+          1339,
+          457
+        ],
+        [
+          183,
+          943.8
+        ],
+        [
+          567,
+          942
+        ],
+        [
+          951,
+          944
+        ],
+        [
+          1335,
+          944.8
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. Walking roots preserve contact phases. Magenta key110 preserves fine dark bowstrings. Ground uses lower edge of visible sole (alpha>33), exactlyY320; fractional source-root offsets provide only integer canvas translation, never body scaling."
+    },
+    "bow_N": {
+      "source": "source_base_N_harmonized_palette.png",
+      "columns": 4,
+      "rows": 4,
+      "indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "scale": 0.8148148148148148,
+      "duration_seconds": 0.74,
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "roots": [
+        [
+          151,
+          918
+        ],
+        [
+          463,
+          919
+        ],
+        [
+          776,
+          919
+        ],
+        [
+          1089,
+          919
+        ],
+        [
+          151,
+          1234
+        ],
+        [
+          463,
+          1234
+        ],
+        [
+          776,
+          1234
+        ],
+        [
+          1089,
+          1234
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "release_grip_atlas": [
+        338,
+        162
+      ],
+      "cast_origin_local": [
+        28.7,
+        -55.3
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11,12,13,14,15] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_E": {
+      "source": "source_candidate_bow_E_harmonized_crest.png",
+      "columns": 4,
+      "rows": 2,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "scale": 0.5882352941176471,
+      "duration_seconds": 0.74,
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "roots": [
+        [
+          177,
+          444
+        ],
+        [
+          589,
+          444
+        ],
+        [
+          1011,
+          444
+        ],
+        [
+          1441,
+          444
+        ],
+        [
+          175,
+          913
+        ],
+        [
+          589,
+          913
+        ],
+        [
+          1011,
+          913
+        ],
+        [
+          1428,
+          913
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "release_grip_atlas": [
+        344,
+        170
+      ],
+      "cast_origin_local": [
+        30.8,
+        -52.5
+      ],
+      "mapping_note": "Four dedicated source drawings[0,1,2,3,4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_S": {
+      "source": "source_candidate_base_S_reference_only_v6.png",
+      "columns": 4,
+      "rows": 4,
+      "indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 200,
+        "min_blue": 200,
+        "dominance": 25,
+        "edge_despill": {
+          "radius": 2,
+          "minimum_excess": 12,
+          "background": [
+            255,
+            0,
+            255
+          ]
+        }
+      },
+      "duration_seconds": 0.74,
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "scale": 0.88,
+      "roots": [
+        [
+          159,
+          922
+        ],
+        [
+          462,
+          922
+        ],
+        [
+          763.25,
+          922
+        ],
+        [
+          1065.5,
+          922
+        ],
+        [
+          168.25,
+          1229
+        ],
+        [
+          468.75,
+          1229.1363636363637
+        ],
+        [
+          764.25,
+          1229
+        ],
+        [
+          1064.25,
+          1229
+        ]
+      ],
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        174,
+        175
+      ],
+      "cast_origin_local": [
+        -28.7,
+        -50.75
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11,12,13,14,15] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_W": {
+      "source": "source_base_W_harmonized.png",
+      "columns": 4,
+      "rows": 4,
+      "indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.74,
+      "weights": [
+        0.5,
+        1,
+        1,
+        2,
+        0.5,
+        0.75,
+        1,
+        0.5
+      ],
+      "scale": 1.0328638497652582,
+      "roots": [
+        [
+          185,
+          786
+        ],
+        [
+          542,
+          787
+        ],
+        [
+          908,
+          789
+        ],
+        [
+          1267,
+          789
+        ],
+        [
+          183,
+          1059
+        ],
+        [
+          543,
+          1061
+        ],
+        [
+          909,
+          1059
+        ],
+        [
+          1273,
+          1058
+        ]
+      ],
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.34,
+      "release_frame": 4,
+      "mapping": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "release_grip_atlas": [
+        163,
+        144
+      ],
+      "cast_origin_local": [
+        -32.55,
+        -61.6
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11,12,13,14,15] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_piercing_N": {
+      "source": "source_special_N_harmonized_palette.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.78,
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "roots": [
+        [
+          161,
+          369
+        ],
+        [
+          469,
+          369
+        ],
+        [
+          774,
+          369
+        ],
+        [
+          1091,
+          369
+        ]
+      ],
+      "scale": 0.6875,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        328,
+        185
+      ],
+      "cast_origin_local": [
+        25.2,
+        -47.25
+      ],
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_piercing_E": {
+      "source": "source_candidate_special_E_harmonized.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.78,
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "roots": [
+        [
+          158,
+          326
+        ],
+        [
+          532,
+          326
+        ],
+        [
+          900,
+          326
+        ],
+        [
+          1286,
+          326
+        ]
+      ],
+      "scale": 0.7508532423208191,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        337,
+        213
+      ],
+      "cast_origin_local": [
+        28.35,
+        -37.45
+      ],
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_piercing_S": {
+      "source": "source_candidate_special_S_reference_only_v6.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 200,
+        "min_blue": 200,
+        "dominance": 25,
+        "edge_despill": {
+          "radius": 2,
+          "minimum_excess": 12,
+          "background": [
+            255,
+            0,
+            255
+          ]
+        }
+      },
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "duration_seconds": 0.78,
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "roots": [
+        [
+          199.75,
+          335
+        ],
+        [
+          568.75,
+          335
+        ],
+        [
+          922.75,
+          336
+        ],
+        [
+          1267.75,
+          336
+        ]
+      ],
+      "scale": 0.7051282051282052,
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "release_grip_atlas": [
+        158,
+        192
+      ],
+      "cast_origin_local": [
+        -34.3,
+        -44.8
+      ],
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_piercing_W": {
+      "source": "source_special_W_harmonized.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "duration_seconds": 0.78,
+      "release_seconds": 0.38,
+      "release_frame": 4,
+      "roots": [
+        [
+          193,
+          340
+        ],
+        [
+          555,
+          340
+        ],
+        [
+          907,
+          340
+        ],
+        [
+          1258,
+          340
+        ]
+      ],
+      "scale": 0.8178438661710037,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_grip_atlas": [
+        182,
+        186
+      ],
+      "cast_origin_local": [
+        -25.9,
+        -46.9
+      ],
+      "mapping_note": "Four dedicated source drawings[0,1,2,3] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_death_N": {
+      "source": "source_special_N_harmonized_palette.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.86,
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "roots": [
+        [
+          153,
+          764
+        ],
+        [
+          463,
+          764
+        ],
+        [
+          773,
+          764
+        ],
+        [
+          1088,
+          764
+        ]
+      ],
+      "scale": 0.6875,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        328,
+        148
+      ],
+      "cast_origin_local": [
+        25.2,
+        -60.2
+      ],
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_death_E": {
+      "source": "source_candidate_special_E_harmonized.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.86,
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "roots": [
+        [
+          155,
+          661
+        ],
+        [
+          531,
+          661
+        ],
+        [
+          899,
+          661
+        ],
+        [
+          1286,
+          661
+        ]
+      ],
+      "scale": 0.7508532423208191,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        342,
+        186
+      ],
+      "cast_origin_local": [
+        30.1,
+        -46.9
+      ],
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_death_S": {
+      "source": "source_candidate_special_S_reference_only_v6.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 200,
+        "min_blue": 200,
+        "dominance": 25,
+        "edge_despill": {
+          "radius": 2,
+          "minimum_excess": 12,
+          "background": [
+            255,
+            0,
+            255
+          ]
+        }
+      },
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "duration_seconds": 0.86,
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "roots": [
+        [
+          202.25,
+          695
+        ],
+        [
+          567.75,
+          695
+        ],
+        [
+          925.75,
+          695
+        ],
+        [
+          1285,
+          695
+        ]
+      ],
+      "scale": 0.7051282051282052,
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "release_grip_atlas": [
+        159,
+        169
+      ],
+      "cast_origin_local": [
+        -33.95,
+        -52.85
+      ],
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "bow_death_W": {
+      "source": "source_special_W_harmonized.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "duration_seconds": 0.86,
+      "release_seconds": 0.44,
+      "release_frame": 4,
+      "roots": [
+        [
+          199,
+          660
+        ],
+        [
+          557,
+          660
+        ],
+        [
+          911,
+          660
+        ],
+        [
+          1271,
+          660
+        ]
+      ],
+      "scale": 0.8178438661710037,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_grip_atlas": [
+        179,
+        153
+      ],
+      "cast_origin_local": [
+        -26.95,
+        -58.45
+      ],
+      "mapping_note": "Four dedicated source drawings[4,5,6,7] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "volley_N": {
+      "source": "source_special_N_harmonized_palette.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.84,
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "roots": [
+        [
+          157,
+          1197
+        ],
+        [
+          467,
+          1197
+        ],
+        [
+          783,
+          1198
+        ],
+        [
+          1097,
+          1198
+        ]
+      ],
+      "scale": 0.6875,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        307,
+        99
+      ],
+      "cast_origin_local": [
+        17.85,
+        -77.35
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "volley_E": {
+      "source": "source_candidate_special_E_harmonized.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "duration_seconds": 0.84,
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "roots": [
+        [
+          147,
+          1039
+        ],
+        [
+          533,
+          1039
+        ],
+        [
+          897,
+          1039
+        ],
+        [
+          1287,
+          1039
+        ]
+      ],
+      "scale": 0.7508532423208191,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "release_grip_atlas": [
+        329,
+        123
+      ],
+      "cast_origin_local": [
+        25.55,
+        -68.95
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "volley_S": {
+      "source": "source_candidate_special_S_reference_only_v6.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 200,
+        "min_blue": 200,
+        "dominance": 25,
+        "edge_despill": {
+          "radius": 2,
+          "minimum_excess": 12,
+          "background": [
+            255,
+            0,
+            255
+          ]
+        }
+      },
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "duration_seconds": 0.84,
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "roots": [
+        [
+          204,
+          1066
+        ],
+        [
+          570.75,
+          1066
+        ],
+        [
+          933.5,
+          1066
+        ],
+        [
+          1289,
+          1066
+        ]
+      ],
+      "scale": 0.7051282051282052,
+      "alignment_note": "Reference-only S v6: original idle_S identity authority. Uniform action scale, explicit planted-foot midpoints, visible sole lower edge aligned to320. WALK from this source is rejected; selected historical v3 walk_S remains unchanged.",
+      "release_grip_atlas": [
+        162,
+        113
+      ],
+      "cast_origin_local": [
+        -32.9,
+        -72.45
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    },
+    "volley_W": {
+      "source": "source_special_W_harmonized.png",
+      "columns": 4,
+      "rows": 3,
+      "indices": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "mapping": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        3,
+        3
+      ],
+      "key": {
+        "mode": "magenta",
+        "min_red": 110,
+        "min_blue": 110,
+        "dominance": 25
+      },
+      "weights": [
+        0.5,
+        0.8,
+        1,
+        2.4,
+        0.5,
+        0.8,
+        0.7,
+        0.5
+      ],
+      "duration_seconds": 0.84,
+      "release_seconds": 0.42,
+      "release_frame": 4,
+      "roots": [
+        [
+          199,
+          1036
+        ],
+        [
+          561,
+          1035
+        ],
+        [
+          918,
+          1036
+        ],
+        [
+          1283,
+          1035
+        ]
+      ],
+      "scale": 0.8178438661710037,
+      "alignment_note": "Selected harmonized classic model. One fixed uniform scale per action/direction; explicit pelvis/contact roots; planted sole Y; no per-frame resizing, pose deformation or body repaint. All three special actions share scale calibrated on standing volley. Magenta key110 preserves fine dark bowstrings.",
+      "release_grip_atlas": [
+        177,
+        92
+      ],
+      "cast_origin_local": [
+        -27.65,
+        -79.8
+      ],
+      "mapping_note": "Four dedicated source drawings[8,9,10,11] plus base bow bookends at playback0,1,6,7; release playback4 uses dedicated drawing2."
+    }
+  },
+  "clip_overrides": {
+    "bow_piercing_E": {
+      "0": {
+        "sheet": "bow_E",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_E",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_E",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_E",
+        "index": 7
+      }
+    },
+    "bow_death_E": {
+      "0": {
+        "sheet": "bow_E",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_E",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_E",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_E",
+        "index": 7
+      }
+    },
+    "volley_E": {
+      "0": {
+        "sheet": "bow_E",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_E",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_E",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_E",
+        "index": 7
+      }
+    },
+    "bow_piercing_N": {
+      "0": {
+        "sheet": "bow_N",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_N",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_N",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_N",
+        "index": 7
+      }
+    },
+    "bow_death_N": {
+      "0": {
+        "sheet": "bow_N",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_N",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_N",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_N",
+        "index": 7
+      }
+    },
+    "volley_N": {
+      "0": {
+        "sheet": "bow_N",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_N",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_N",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_N",
+        "index": 7
+      }
+    },
+    "bow_piercing_S": {
+      "0": {
+        "sheet": "bow_S",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_S",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_S",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_S",
+        "index": 7
+      }
+    },
+    "bow_death_S": {
+      "0": {
+        "sheet": "bow_S",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_S",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_S",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_S",
+        "index": 7
+      }
+    },
+    "volley_S": {
+      "0": {
+        "sheet": "bow_S",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_S",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_S",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_S",
+        "index": 7
+      }
+    },
+    "bow_piercing_W": {
+      "0": {
+        "sheet": "bow_W",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_W",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_W",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_W",
+        "index": 7
+      }
+    },
+    "bow_death_W": {
+      "0": {
+        "sheet": "bow_W",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_W",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_W",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_W",
+        "index": 7
+      }
+    },
+    "volley_W": {
+      "0": {
+        "sheet": "bow_W",
+        "index": 0
+      },
+      "1": {
+        "sheet": "bow_W",
+        "index": 1
+      },
+      "6": {
+        "sheet": "bow_W",
+        "index": 6
+      },
+      "7": {
+        "sheet": "bow_W",
+        "index": 7
+      }
+    }
+  }
+}

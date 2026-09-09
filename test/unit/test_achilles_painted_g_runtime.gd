@@ -63,8 +63,8 @@ func test_painted_scene_uses_shared_backend_with_complete_directional_kit() -> v
 		assert_eq(direction_textures.size(), 4, "No missing orientation replaced by the same texture: " + stem)
 
 
-func test_spells_and_mastery_variants_release_once_with_classic_timing_in_every_direction() -> void:
-	var classic := await _create_view(CLASSIC_SCENE)
+func test_painted_spells_and_variants_keep_original_v2_timing_in_every_direction() -> void:
+	var classic := await _create_view(CLASSIC_SCENE, "res://data/visuals/achilles/achilles_kit_sprite_profile_v2.tres")
 	var painted := await _create_view(PAINTED_SCENE)
 	if classic == null or painted == null:
 		return
@@ -296,7 +296,7 @@ func test_battle_unit_view_waits_for_painted_release_and_clears_pending_action()
 	assert_eq(actor.grid_pos, Vector2i.ZERO, "Presentation must never relocate the gameplay unit")
 
 
-func _create_view(scene_path: String) -> AchillesIsoUnitView:
+func _create_view(scene_path: String, legacy_profile_path: String = "") -> AchillesIsoUnitView:
 	var scene := load(scene_path) as PackedScene
 	assert_not_null(scene, scene_path)
 	if scene == null:
@@ -309,6 +309,9 @@ func _create_view(scene_path: String) -> AchillesIsoUnitView:
 	assert_not_null(view)
 	if view == null:
 		return null
+	if not legacy_profile_path.is_empty():
+		# Painted G retains its shipped v2 timeline; classic promotion is covered separately.
+		view.sprite_profile = load(legacy_profile_path) as AchillesSpriteVisualProfile
 	parent.add_child(view)
 	await wait_process_frames(3)
 	view.set_process(false)

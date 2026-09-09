@@ -1,0 +1,29 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "W",
+  "identity_authority": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+  "identity_frame": 0,
+  "identity_source_bbox": [
+    104,
+    7,
+    252,
+    299
+  ],
+  "identity_preview": "artifacts/achilles_identity_audit_v3/identity_idle_source_W_native.png",
+  "pose_guide": "art/source/characters/achilles/sprites_polish_v3/source_special_W.png",
+  "selected_generation": "exec-42626bf8-6f54-436b-95ed-bd3f55dc0fbd",
+  "prompt": "Use case: identity-preserve. Rebuild animation poses for an EXISTING character without changing its model or painting style.\nIMAGE 1 (large single Achilles rear-left sprite) is the ONLY authority for identity, equipment construction, silhouette proportions, head shape, crest, face/cheek guards, skin, fabric colors and painting. Study its actual smaller open cheek guards, modest muscle masses, original dark bronze waist tie, red hanging cloth, warm ivory backplate, dark teal and short hem ornament, and brown strapped open-toe sandals. Its quiet hand-painted two-plane shading and thin deep-brown outlines must remain, including the original small edge irregularities. Do not make a polished plastic 3D figurine or redesign him.\nIMAGE 2 (small 4x3 magenta sheet) is ONLY a diagram of action postures and framing. Do NOT copy its more rounded/shiny helmet, larger biceps, broader barrel torso, heavy outlines, enhanced highlights, brighter teal or simplified costume. Every figure must instead look like a frame of IMAGE 1's exact in-game character.\nDraw twelve full-body poses in a 4 columns x 3 rows grid, fixed rear three-quarter UP-LEFT camera like IMAGE1. Preserve same head-to-body ratio, shoulders, arm thickness, torso taper, compact crest and leg length of IMAGE1. Original helmet stays OPEN with matching long cheek guards and same red crest shape; same matte warm bronze, not bright glossy yellow. Warm ivory #f8e5c4 cuirass, never pure white; darker muted teal cloth, same original tie and hem (do not invent another belt or gold ornaments). Shield and spear keep the exact original size/design and are merely stowed behind the archer: teal outside shield with ivory lambda must be visible on the back as in the pose guide. No new backpack, armor, trousers, quiver, cloak or VFX.\nActions/layout are the same as guide:\nRow1 four kneeling piercing-shot phases: anticipation, full draw with one arrow, release with the entire arrow gone and relaxed string, follow-through. Exactly one rear knee on ground, natural front bent knee; the kneeling body must not be enlarged to match a standing body's height.\nRow2 four standing low-wide power-shot phases: anticipation, taut full draw with one arrow, release without any arrow shaft/head and right hand snapping back beside cheek/shoulder, follow-through. Both feet remain firmly planted at the same stance width.\nRow3 four standing upward-volley phases: bow rises high ABOVE helmet and aims upper-left into the sky, full draw with arrow, release without arrow, controlled high-bow follow-through.\nLeft hand always holds the bow, right draws/releases. No extra limbs, no elbow discontinuities, no arrows in column3. Full character, bow tips and stowed spear tip inside each cell, generous clean gutters. Exactly twelve poses, consistent body scale and camera, all facing up-left away from viewer. Uniform vivid MAGENTA #FF00FF background everywhere including bow interiors; no ground/shadows/labels/borders/text. The final art should match IMAGE1 closely enough to alternate with it in a 2D animation without a costume, proportions or paint-style jump. Prioritize direct fidelity over additional detail.",
+  "status": "selected_for_runtime",
+  "review": "Selected after independent canonical-scale review against the original rear-left idle. Distinct kneeling/braced/high-bow poses, original equipment and arrow-free release cells are retained.",
+  "initial_review_at_generation": "Rear upper-left view retained, outer shield face/lambda and stowed spear coherent. Arrow-free release cells, distinct kneeling/braced/high-bow stances. Reduced source-guide size versus dominant tightly cropped original identity; compare final palette/proportions before selection.",
+  "selected_clips": [
+    "bow_piercing_W",
+    "bow_death_W",
+    "volley_W"
+  ],
+  "runtime_selection": {
+    "authority": "Root approved harmonized source selection after independent motion/identity review.",
+    "alignment": "tools/achilles_polish_v3_pipeline/alignment.json",
+    "manifest": "assets/characters/Achilles/sprites_polish_v3/manifest.json"
+  }
+}

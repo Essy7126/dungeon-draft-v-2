@@ -1,0 +1,28 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "N",
+  "edit_scope_requested": "Darken only teal tunic cloth by approximately 25 percent; preserve all other art, geometry, poses and equipment.",
+  "source": "art/source/characters/achilles/sprites_polish_v3/source_special_N_harmonized.png",
+  "source_sha256": "65bddf55dcdf5c443a4bd62f58f4a05cfbfa5e6b867413b743c691e83ea70fe2",
+  "selected_generation": "exec-aa055195-7ce4-49a3-b6f1-919885ec099b",
+  "generated_source": "$CODEX_HOME/generated_images/01a08202-43f3-7443-a33b-aa375a46b1b8/exec-aa055195-7ce4-49a3-b6f1-919885ec099b.png",
+  "candidate_sha256": "3e0b6e99188e653e9e485feb9ed4c61710d574c222881301eed65e154d37964c",
+  "grid": [
+    4,
+    3
+  ],
+  "prompt": "Make a single limited COLOR correction to this existing 4-column by 3-row animation sheet. Retain all TWELVE source drawings and their positions exactly. Do not redesign, simplify or restyle anything.\nONLY darken the teal CLOTH TUNIC/SKIRT hanging around the hips and upper thighs by approximately 25 percent in lightness. Its current teal midtone is too bright compared with the original in-game character; target a subdued deep teal near #213E42. Preserve the teal hue and exactly the same folds, shading boundaries, edges and small gold hem decorations. The fabric should look consistently darker in every kneeling, braced and high-bow pose. Leave the red waist tie and hanging red cloth unchanged.\nAbsolutely preserve every pixel outside that teal cloth as closely as possible: warm ivory armor unchanged, skin unchanged, bronze/gold helmet and crest unchanged, same dark shield, weapons, sandals, bow and string unchanged. Do not darken the whole sheet or apply a global color grade. Do not alter head size, helmet/crest shape, torso, shoulders, arms, legs, feet, fingers, bows or pose silhouettes. Keep existing fine painted outlines and exact details; no extra polish or highlights.\nKeep the same 4x3 sheet composition and source order. Row1 kneeling piercing draw phases, row2 low wide power draw phases, row3 high upward volley phases remain exactly as supplied. All column3 release poses must retain their relaxed string, arrow fully gone, same right hand recoil. Full drawing geometry and spacing preserved. Keep existing uniform bright MAGENTA background untouched, with no shadows, ground, text, borders, labels or VFX.\nOutput the same sheet with ONLY the teal fabric darker. This is a conservative masked palette correction, not a redraw of the character.",
+  "status": "selected_for_runtime",
+  "review": "Selected after independent identity/palette review. Teal cloth correction was requested through image generation; this is not a claim of byte-identical pixels outside the cloth. Kneeling, braced and high-bow poses and arrow-free releases are retained.",
+  "initial_review_at_generation": "The teal cloth appears darker and pose order, feet, bow release states remain visually consistent. Image generation is not guaranteed pixel-identical outside the requested cloth region; quantitative geometry/palette comparison is required before selection. No source or runtime replacement.",
+  "selected_clips": [
+    "bow_piercing_N",
+    "bow_death_N",
+    "volley_N"
+  ],
+  "runtime_selection": {
+    "authority": "Root approved harmonized source selection after independent motion/identity review.",
+    "alignment": "tools/achilles_polish_v3_pipeline/alignment.json",
+    "manifest": "assets/characters/Achilles/sprites_polish_v3/manifest.json"
+  }
+}

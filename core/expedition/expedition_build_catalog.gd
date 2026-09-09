@@ -34,6 +34,15 @@ const ACTION_IDS := {
 	CombatActionClassificationData.Classification.MOVEMENT: ["exp_feinte", "exp_marche", "exp_feinte_mutation", "exp_feinte_legend", "exp_marche_signature"],
 }
 
+## Authored presentation delay: Battle owns release, flight and impact ordering.
+## Includes ranged AREA forms; their gameplay classification stays unchanged.
+const PROJECTILE_FLIGHT_IDS := [
+	"exp_tir_de_guet", "exp_rupture", "exp_marque", "exp_marque_signature",
+	"exp_rupture_mutation", "exp_rupture_legend",
+	"exp_braise", "exp_braise_mutation", "exp_braise_legend",
+	"exp_givre", "exp_givre_signature", "exp_foudre",
+]
+
 var spells: Dictionary = {}
 var nodes: Array[Dictionary] = []
 var _families: Dictionary = {}
@@ -55,6 +64,10 @@ func _init() -> void:
 	_self_area(tempest)
 	tempest.ap_cost = 4
 	tempest.damage_scaling = _scaling(0.70)
+	for projectile_id: String in PROJECTILE_FLIGHT_IDS:
+		var projectile := get_spell(projectile_id)
+		if projectile != null:
+			projectile.impact_delay_seconds = 0.2
 	_apply_painted_icons()
 
 

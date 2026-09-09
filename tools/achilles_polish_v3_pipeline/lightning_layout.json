@@ -1,0 +1,138 @@
+{
+  "reviewed": true,
+  "source": "art/source/vfx/achilles_polish_v3/source_lightning.png",
+  "sha256": "68a0e89f7ab02e64a73bb13562e5b4c870c35222aa683b1e604050abcf1c1a74",
+  "size": [
+    1774,
+    887
+  ],
+  "background": {
+    "mode": "native"
+  },
+  "common_radii": [
+    232,
+    230
+  ],
+  "frames": [
+    {
+      "animation": "arrow_lightning",
+      "frame": 0,
+      "window": [
+        0,
+        0,
+        444,
+        444
+      ],
+      "anchor": [
+        220,
+        214
+      ],
+      "boundary_alpha_max": 2
+    },
+    {
+      "animation": "arrow_lightning",
+      "frame": 1,
+      "window": [
+        444,
+        0,
+        443,
+        444
+      ],
+      "anchor": [
+        664,
+        214
+      ],
+      "boundary_alpha_max": 1
+    },
+    {
+      "animation": "arrow_lightning",
+      "frame": 2,
+      "window": [
+        887,
+        0,
+        444,
+        444
+      ],
+      "anchor": [
+        1107,
+        214
+      ],
+      "boundary_alpha_max": 1
+    },
+    {
+      "animation": "arrow_lightning",
+      "frame": 3,
+      "window": [
+        1331,
+        0,
+        443,
+        444
+      ],
+      "anchor": [
+        1551,
+        214
+      ],
+      "boundary_alpha_max": 1
+    },
+    {
+      "animation": "impact_lightning",
+      "frame": 0,
+      "window": [
+        0,
+        444,
+        444,
+        443
+      ],
+      "anchor": [
+        220,
+        663
+      ],
+      "boundary_alpha_max": 4
+    },
+    {
+      "animation": "impact_lightning",
+      "frame": 1,
+      "window": [
+        444,
+        444,
+        443,
+        443
+      ],
+      "anchor": [
+        660,
+        664
+      ],
+      "boundary_alpha_max": 5
+    },
+    {
+      "animation": "impact_lightning",
+      "frame": 2,
+      "window": [
+        887,
+        444,
+        444,
+        443
+      ],
+      "anchor": [
+        1110,
+        665
+      ],
+      "boundary_alpha_max": 1
+    },
+    {
+      "animation": "impact_lightning",
+      "frame": 3,
+      "window": [
+        1331,
+        444,
+        443,
+        443
+      ],
+      "anchor": [
+        1554,
+        663
+      ],
+      "boundary_alpha_max": 1
+    }
+  ]
+}

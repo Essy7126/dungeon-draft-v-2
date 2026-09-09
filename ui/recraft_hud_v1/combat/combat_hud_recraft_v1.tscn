@@ -661,6 +661,34 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
 theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
 
+[node name="SkillsButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Compétences"
+focus_mode = 2
+icon_max_width = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
+
+[node name="AttributesButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+tooltip_text = "Caractéristiques — PV, dégâts, protection · P"
+focus_mode = 2
+disabled = true
+icon_max_width = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
+
 [node name="MapButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
@@ -670,19 +698,6 @@ focus_mode = 2
 disabled = true
 icon_max_width = 30
 theme_override_colors/icon_disabled_color = Color(0.54, 0.56, 0.52, 0.82)
-theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
-theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
-
-[node name="SkillsButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-tooltip_text = "Compétences"
-focus_mode = 2
-icon_max_width = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")

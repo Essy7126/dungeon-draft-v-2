@@ -1,0 +1,23 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "N",
+  "reference_identity": "art/source/characters/achilles/sprites_kit_v2/reference_N.png",
+  "reference_pose_generation": "exec-175f8bfa-35b2-48fc-af77-68c276f14535",
+  "initial_generation": "exec-d91ac8c0-9751-4898-bd36-11c1935cfbcb",
+  "final_generation": "exec-957d786e-f621-43b0-9b09-39b77358811b",
+  "rows": [
+    "bow_piercing",
+    "bow_death",
+    "volley"
+  ],
+  "columns": [
+    "anticipation",
+    "full_draw",
+    "release",
+    "follow_through"
+  ],
+  "prompt": "Use case: identity-preserve.\nAsset: production 2D tactical game sprite sheet, Achilles CLASSIC, rear three-quarter facing UP-RIGHT (direction N), twelve separate full-body drawings in exactly 4 columns by 3 rows.\nThe attached latest magenta sheet is the exact approved walking/bow model and rear camera for Achilles CLASSIC. Use it as the sole character identity reference. Preserve the reference identity rigorously, including proportions, strong clean outline, painterly flat-shaded material language, tan arms, GOLD Greek helmet with RED horsehair crest, IVORY backplate/cuirass, dark TEAL short Greek tunic and gold hem motif, RED CLOTH waist sash with hanging loose end (NOT a brown leather belt), bronze/brown strapped sandals/greaves. Same bow in left hand, drawing hand right. During all bow poses the round bronze shield AND spear are stowed on the back exactly as reference. No new ornaments, weapons, backpack, cape, armor redesign or body glow.\n\nCreate THREE visually distinct bow actions, one row per action. Do not repeat the same standing shot across rows:\nROW 1 = PIERCING ARROW. Achilles lowers onto ONE knee, front knee bent and rear knee touching the ground, strong deliberate kneeling sniper shot aimed up-right away from camera. Four phases left-to-right: anticipation lowering with bow forward; full draw with a taut arrow/string; RELEASE with arrow GONE and drawing hand snapping back; follow-through retaining the kneeling weight, bow relaxing.\nROW 2 = DEATH LINE POWER SHOT. Achilles remains STANDING in a LOW WIDE BRACED stance with BOTH feet firmly planted, knees bent, strong torso twist and pronounced shoulder pull; weapon aimed up-right away from camera. Four phases: low braced anticipation; powerful full draw with taut arrow/string; RELEASE arrow GONE and right hand pulled back; satisfying recoil/follow-through with same grounded feet.\nROW 3 = CENTAUR VOLLEY. Standing stance, bow held HIGH and clearly angled upward for a ballistic volley aimed up-right, arms and bow markedly above the head line; four phases: lift bow high; taut high draw with one arrow visible; RELEASE arrow GONE with high bow and recoil; lower bow in controlled follow-through. Do not draw airborne projectiles or VFX.\n\nGrid requirements: exact 4 columns x 3 rows, 12 bodies, no omitted cells. Fixed ORTHOGRAPHIC isometric rear-three-quarter camera, no front-facing shots, no horizontal mirroring or direction changes. Same character scale across all 12 cells; kneeling lowers the head naturally, do NOT enlarge kneeling figures to fill their cells. Keep helmets, limbs, bow tips, stowed spear and shield fully inside cells with generous clear gutters/margins. Entire background is perfectly flat vivid chroma MAGENTA #FF00FF, including spaces inside the bow; no shadows on floor, no checkerboard, no labels, no frame borders, no text, no watermark. Four clean readable key poses per row; maintain the shield/spear and clothing identity in every cell.",
+  "correction_prompt": "Use case: precise-object-edit. Edit the attached twelve-pose Achilles rear up-right sprite sheet. Keep absolutely everything the same: exact twelve body silhouettes, helmet and red crest, ivory backplate, teal gold-trim tunic, red cloth sash, shield and stowed spear, feet, bow shapes, scale, camera, lighting, grid and flat magenta background. Make ONLY this small animation correction: in the THIRD COLUMN of ALL THREE ROWS, these are RELEASE frames after the arrow has departed. Remove every arrow shaft and every arrowhead remaining in those three cells (especially the tiny pale arrowhead at the bow grip in middle row third column). Show the bowstring relaxed straight between the bow's tips after release; the right drawing hand is pulled back beside the cheek/shoulder, not holding an arrow. Preserve the second-column taut FULL DRAW arrow in each row. Do not remove the stowed SPEAR visible behind the shoulder: it is equipment and must stay identical. Do not change any other body or pose or redesign any equipment. No additional effects, projectiles, text or marks.",
+  "status": "historical_superseded_by_identity_harmonization",
+  "superseded_by": "source_special_N_harmonized_palette.png"
+}

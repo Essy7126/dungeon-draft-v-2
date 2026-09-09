@@ -1,0 +1,22 @@
+{
+  "mode": "builtin_image_gen",
+  "orientation": "W",
+  "reference_identity": "art/source/characters/achilles/sprites_kit_v2/reference_W.png",
+  "reference_pose_generation": "exec-553fdfeb-4647-42c4-b674-572b321c1391",
+  "final_generation": "exec-0d15e563-028a-401d-ad42-e364018a5e1c",
+  "rows": [
+    "bow_piercing",
+    "bow_death",
+    "volley"
+  ],
+  "columns": [
+    "anticipation",
+    "full_draw",
+    "release",
+    "follow_through"
+  ],
+  "prompt": "Use case: identity-preserve.\nAsset: production 2D tactical game sprite sheet, Achilles CLASSIC, rear three-quarter facing UP-LEFT (direction W), twelve separate full-body drawings in exactly 4 columns by 3 rows.\nInputs: the two latest attached images are the canonical single W character and the approved W walking/bow sheet of that EXACT character. Copy their silhouette, camera, anatomy and equipment identity. IMPORTANT: this is the UP-LEFT REAR view, not a mirror of an up-right sheet. Match the actual W reference: visible ivory BACK cuirass, face turned away toward the upper LEFT, gold helmet/red horsehair crest profile, tan arms, dark teal short tunic with gold hem, RED CLOTH sash and hanging red fabric (no invented leather belt). Stowed shield shows its TEAL OUTER FACE with its ivory chevron/lambda, gold/bronze rim, on the back as in the W bow reference; stowed spear remains behind the right shoulder/back. Left hand holds the wooden recurve bow; right hand draws the string. Keep their true anatomical roles in every pose.\nSame strong dark clean outline, warm illustrated cel shading, compact readable classic model. No new armor, boots, trousers, leather belt, cape, quiver, ornaments, glows, or particle effects.\n\nTHREE distinctly different bow actions, one row each, each with four meaningful key poses:\nTOP ROW = PIERCING ARROW: one knee is visibly touching the ground, front knee bent, deliberate KNEELING archer aimed upper-left away from camera. Col1 anticipation lowering/bow forward, col2 full draw with taut string and ONE arrow, col3 RELEASE with arrow entirely GONE and drawing hand snapping back, col4 follow-through still kneeling and bow relaxing.\nMIDDLE ROW = DEATH LINE: standing in a very LOW WIDE BRACED stance with BOTH soles planted, knees bent, powerful torso twist. Bow aimed upper-left. Col1 braced anticipation, col2 powerful taut full draw with ONE arrow, col3 RELEASE with NO arrow or arrowhead remaining and right hand pulled back behind cheek/shoulder, col4 recoil/follow-through with fixed grounded feet.\nBOTTOM ROW = VOLLEY: upright stance with bow held clearly HIGH ABOVE head and angled up-left toward the sky for a ballistic shot. Col1 lifting the high bow, col2 high taut draw ONE arrow, col3 RELEASE with arrow entirely GONE and relaxed straight bowstring, col4 controlled high-bow follow-through. Avoid drawing a horizontal chest-height shot in this row.\n\nFixed orthographic tactical isometric camera, up-left REAR view in all twelve cells. Entire body, stowed spear tips, crest, shield, toes and every bow tip remain fully visible with wide empty margins. Exactly 4 columns x 3 rows, equal cells, no missing or duplicated cells. Fixed character scale across rows: kneeling lowers the head instead of enlarging the body. No stretching. Keep the same weapon handedness, colors, materials, thin contour thickness and design details in every frame.\nBackground: perfectly UNIFORM chroma MAGENTA #FF00FF covering all space including bow interiors, no ground, floor shadow, checkerboard, gradients, labels, panels, borders, text or watermark. All release frames in column3 have no arrows whatsoever; the stowed SPEAR remains because it is equipment.",
+  "review": "Rear upper-left view inspected: outer teal shield face/lambda and stowed spear retained; left hand bow/right hand draw, red cloth sash; release column contains no residual arrow; kneeling, braced and high-bow poses distinct.",
+  "status": "historical_superseded_by_identity_harmonization",
+  "superseded_by": "source_special_W_harmonized.png"
+}

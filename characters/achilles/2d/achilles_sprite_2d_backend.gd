@@ -33,9 +33,14 @@ var _reaction_elapsed := 0.0
 var _death_pending := false
 var _death_elapsed := 0.0
 var _walk_elapsed := 0.0
+# Keep timing in GDScript float precision. AnimatedSprite2D.speed_scale stores
+# a native float32 and must not quantize the position-independent walk clock.
+var _walk_speed_scale := 1.0
 var _last_tick_usec := 0
 var _last_error: StringName = &""
 var _distance_driven_move := false
+var _walk_step_index := 0
+var _walk_step_progress := 0.0
 
 
 func _ready() -> void:
@@ -122,7 +127,7 @@ func advance_simulation(seconds: float) -> void:
 			_hold_idle_pose()
 		return
 	if _stem == "walk" and not _distance_driven_move:
-		_walk_elapsed += delta * animated_sprite.speed_scale
+		_walk_elapsed += delta * _walk_speed_scale
 		_sample_walk()
 
 
@@ -153,10 +158,11 @@ func set_facing_label(direction: String) -> void:
 	_facing = next
 	if _active:
 		if _stem == "walk":
-			var previous_frame := animated_sprite.frame
-			var previous_progress := animated_sprite.frame_progress
 			_select_clip("walk")
-			animated_sprite.set_frame_and_progress(previous_frame, previous_progress)
+			if _distance_driven_move:
+				update_movement_stride(_walk_step_index, _walk_step_progress)
+			else:
+				_sample_walk()
 		else:
 			_hold_idle_pose()
 
@@ -176,12 +182,15 @@ func play_move(direction := "S", running := false) -> bool:
 	_cancel_reaction()
 	set_facing_label(direction)
 	var speed := _profile.walk_segment_duration_seconds / _profile.run_segment_duration_seconds if running else 1.0
+	_walk_speed_scale = speed
 	if _stem == "walk":
 		animated_sprite.speed_scale = speed
 		return true
 	_stem = "walk"
 	_distance_driven_move = false
 	_walk_elapsed = 0.0
+	_walk_step_index = 0
+	_walk_step_progress = 0.0
 	animated_sprite.speed_scale = speed
 	_select_clip("walk")
 	_sample_walk()
@@ -194,11 +203,24 @@ func update_movement_stride(step_index: int, progress: float) -> void:
 		return
 	# Position and the authored half-cycle remain driven by the same cell tween.
 	_distance_driven_move = true
-	var half_cycle := floori(float(_frames.get_frame_count(animated_sprite.animation)) * 0.5)
-	var phase := float(posmod(step_index, 2) * half_cycle) \
-		+ clampf(progress, 0.0, 0.99999) * float(half_cycle)
-	animated_sprite.pause()
-	animated_sprite.set_frame_and_progress(floori(phase), fposmod(phase, 1.0))
+	_walk_step_index = step_index
+	_walk_step_progress = clampf(progress, 0.0, 1.0)
+	var clip := StringName("walk_" + _facing)
+	var half_cycle := floori(float(_frames.get_frame_count(clip)) * 0.5)
+	var first := posmod(step_index, 2) * half_cycle
+	var weight_before := 0.0
+	var step_weight := 0.0
+	for index in first:
+		weight_before += _frames.get_frame_duration(clip, index)
+	for index in range(first, first + half_cycle):
+		step_weight += _frames.get_frame_duration(clip, index)
+	# A planted contact may be held longer than a passing pose without moving
+	# the root or leaking into the opposite step at an exact cell boundary.
+	if _walk_step_progress >= 1.0:
+		animated_sprite.pause()
+		animated_sprite.set_frame_and_progress(first + half_cycle - 1, 1.0)
+	else:
+		_sample_weighted_clip(clip, weight_before + step_weight * _walk_step_progress)
 
 
 func play_action(direction := "S", action_id: StringName = &"cast", presentation: Dictionary = {}) -> bool:
@@ -307,7 +329,7 @@ func get_last_error() -> StringName:
 
 
 func get_vfx_origin() -> Vector2:
-	return _profile.cast_origins.get(_facing, Vector2(0.0, -48.0)) \
+	return _profile.get_cast_origin(_stem, _facing) \
 		if _profile != null else Vector2(0.0, -48.0)
 
 
@@ -331,6 +353,7 @@ func get_runtime_state() -> Dictionary:
 		"landing_duration_seconds": DASH_LANDING_SECONDS,
 		"dead": _dead, "death_pending": _death_pending, "death_elapsed": _death_elapsed,
 		"distance_driven_move": _distance_driven_move, "manual_clock": true,
+		"walk_step_index": _walk_step_index, "walk_step_progress": _walk_step_progress,
 	}
 
 
@@ -350,7 +373,10 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 			requested = "attack"
 	var stem := requested
 	if not _has_clip(stem):
-		stem = "idle" if requested == "guard" else "walk" if requested == "dash" else "attack"
+		if requested in ["bow", "bow_piercing", "bow_death", "volley"]:
+			stem = "bow" if _has_clip("bow") else "attack"
+		else:
+			stem = "idle" if requested == "guard" else "walk" if requested == "dash" else "attack"
 	var duration := 0.0
 	var release_seconds := 0.0
 	var release_frame := _profile.attack_release_frame
@@ -368,7 +394,7 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 		if legacy_loop:
 			speed = _profile.walk_segment_duration_seconds / _profile.run_segment_duration_seconds
 	elif _profile.expanded_kit_enabled:
-		if stem in ["bow", "volley"]:
+		if stem in ["bow", "bow_piercing", "bow_death", "volley"]:
 			duration = _profile.shot_duration_seconds
 			release_seconds = _profile.shot_release_seconds
 			release_frame = 3
@@ -385,6 +411,11 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 		duration = _clip_weight(clip) / fps
 		for index in release_frame:
 			release_seconds += _frames.get_frame_duration(clip, index) / fps
+	var settings := _profile.get_action_clip_settings(stem)
+	if not settings.is_empty():
+		duration = float(settings.duration_seconds)
+		release_seconds = float(settings.release_seconds)
+		release_frame = int(settings.release_frame)
 	return {"stem": stem, "duration": duration, "release_seconds": release_seconds,
 		"release_frame": release_frame, "legacy_loop": legacy_loop, "speed": speed}
 
@@ -436,7 +467,10 @@ func _sample_action_at(seconds: float) -> void:
 
 func _sample_walk() -> void:
 	var clip := StringName("walk_" + _facing)
-	var phase := fposmod(_walk_elapsed * _frames.get_animation_speed(clip), _clip_weight(clip))
+	# One full authored cycle contains two cell steps. This remains true when
+	# the new art uses more drawings or weighted contacts than its predecessor.
+	var cycle_seconds := 2.0 * _profile.walk_segment_duration_seconds
+	var phase := fposmod(_walk_elapsed / cycle_seconds, 1.0) * _clip_weight(clip)
 	_sample_weighted_clip(clip, phase)
 
 

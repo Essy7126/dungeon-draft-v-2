@@ -3,6 +3,7 @@ extends "res://ui/action_bar.gd"
 signal utility_skill_tree_requested(character_id: StringName, discipline_id: StringName)
 signal utility_inventory_requested(character_id: StringName)
 signal utility_map_requested
+signal utility_attributes_requested
 signal item_activation_requested(instance_id: StringName)
 
 const UNIT_PRESENTATION := preload("res://ui/combat/combat_unit_presentation.gd")
@@ -121,6 +122,7 @@ enum HudSkinVariant {
 @onready var _inventory_button: Button = %InventoryButton
 @onready var _map_button: Button = %MapButton
 @onready var _skills_button: Button = %SkillsButton
+@onready var _attributes_button: Button = %AttributesButton
 @onready var _identity_depth: TextureRect = %IdentityDepth
 @onready var _action_depth: TextureRect = %ActionDepth
 @onready var _turn_depth: TextureRect = %TurnDepth
@@ -212,14 +214,20 @@ func _ready() -> void:
 	_end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
 	_inventory_button.pressed.connect(_on_inventory_button_pressed)
 	_inventory_button.shortcut = _shortcut_for_key(KEY_I)
-	_inventory_button.shortcut_in_tooltip = true
+	_inventory_button.shortcut_in_tooltip = false
+	_inventory_button.tooltip_text = "Inventaire — équiper vos objets et utiliser vos consommables · I"
 	_map_button.pressed.connect(func(): utility_map_requested.emit())
 	_map_button.shortcut = _shortcut_for_key(KEY_C)
-	_map_button.shortcut_in_tooltip = true
-	_map_button.tooltip_text = "Consulter la carte de Catabase (C)"
+	_map_button.shortcut_in_tooltip = false
+	_map_button.tooltip_text = "Carte — consulter le chemin et les prochaines rencontres · C"
 	_skills_button.pressed.connect(_on_skills_button_pressed)
 	_skills_button.shortcut = _shortcut_for_key(KEY_K)
-	_skills_button.shortcut_in_tooltip = true
+	_skills_button.shortcut_in_tooltip = false
+	_skills_button.tooltip_text = "Compétences — consulter vos techniques et leurs améliorations · K"
+	_attributes_button.pressed.connect(func(): utility_attributes_requested.emit())
+	_attributes_button.shortcut = _shortcut_for_key(KEY_P)
+	_attributes_button.shortcut_in_tooltip = false
+	_attributes_button.tooltip_text = "Caractéristiques — PV, dégâts, protection · P"
 	_show_spells_button.pressed.connect(
 		func() -> void: _set_active_bar_mode(BAR_MODE_SPELL)
 	)
@@ -286,6 +294,7 @@ func _apply_visual_skin() -> void:
 		_inventory_button,
 		_map_button,
 		_skills_button,
+		_attributes_button,
 	]:
 		utility_button.theme_type_variation = &"HudUtilityButton"
 		for style_name in [&"normal", &"hover", &"pressed", &"disabled", &"focus"]:
@@ -1413,6 +1422,8 @@ func _apply_character_theme(unit) -> void:
 		_utility_dock.visible = false
 		_inventory_button.disabled = true
 		_skills_button.disabled = true
+		_attributes_button.disabled = true
+		_attributes_button.visible = false
 		_set_refined_depth_visible(refined_fallback)
 		_set_attack_grouped_with_spells(
 			_official_chassis_active() and not _premium_skin_active()
@@ -1480,8 +1491,9 @@ func _apply_character_theme(unit) -> void:
 		_inventory_button.icon = CatabaseUITheme.icon("nav", "equipment")
 		_map_button.icon = CatabaseUITheme.icon("nav", "map")
 		_skills_button.icon = CatabaseUITheme.icon("nav", "tree")
+		_attributes_button.icon = CatabasePaintedIconCatalog.emblem_icon("achilles", CatabaseUITheme.icon("nav", "journal"))
 	# Painted icons retain their own colors; other runs keep the skin's tint.
-	for utility_button in [_inventory_button, _map_button, _skills_button]:
+	for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
 		var painted := GameManager.expedition != null
 		CatabaseUITheme.bind_button_motion(utility_button, painted)
 		if not utility_button.has_meta("catabase_icon_layout"):
@@ -1513,6 +1525,8 @@ func _apply_character_theme(unit) -> void:
 	)
 	_map_button.disabled = GameManager.expedition == null
 	_skills_button.visible = refined
+	_attributes_button.visible = refined and GameManager.expedition != null
+	_attributes_button.disabled = not _attributes_button.visible
 	_set_refined_depth_visible(refined)
 	_skills_button.disabled = (
 		not refined
@@ -2375,19 +2389,21 @@ func _apply_layout_metrics() -> void:
 				end_turn_size.y
 			)
 		)
-		var utility_size := (34.0 if GameManager.expedition != null else 52.0) * premium_scale
-		var utility_gap := (5.0 if GameManager.expedition != null else 8.0) * premium_scale
-		for utility_button in [_inventory_button, _map_button, _skills_button]:
+		var utility_size := (30.0 if GameManager.expedition != null else 52.0) * premium_scale
+		var utility_gap := (4.0 if GameManager.expedition != null else 8.0) * premium_scale
+		for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
 			utility_button.custom_minimum_size = Vector2.ONE * utility_size
 		_utility_dock.add_theme_constant_override(
 			"separation", int(roundf(utility_gap))
 		)
+		var utilities_below_turn := GameManager.expedition != null and viewport_width < 1100.0
+		var utility_width := (132.0 if GameManager.expedition != null else 112.0) * premium_scale
 		_set_control_rect(
 			_utility_dock,
 			Rect2(
-				196.0 * premium_scale,
-				30.0 * premium_scale,
-				112.0 * premium_scale,
+				(end_turn_size.x - utility_width) * 0.5 if utilities_below_turn else 196.0 * premium_scale,
+				_end_btn.position.y + end_turn_size.y + 4.0 * premium_scale if utilities_below_turn else 30.0 * premium_scale,
+				utility_width,
 				utility_size
 			)
 		)
@@ -2399,9 +2415,9 @@ func _apply_layout_metrics() -> void:
 			Rect2(0.0, end_top, end_turn_size.x, end_turn_size.y)
 		)
 		var utility_size := clampf(28.0 * compact_scale, 22.0, 30.0)
-		var utility_width := utility_size * 3.0 + 8.0 if GameManager.expedition != null else utility_size
+		var utility_width := utility_size * 4.0 + 12.0 if GameManager.expedition != null else utility_size
 		_utility_dock.add_theme_constant_override("separation", 4)
-		for utility_button in [_inventory_button, _map_button, _skills_button]:
+		for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
 			utility_button.custom_minimum_size = Vector2.ONE * utility_size
 		_set_control_rect(
 			_utility_dock,
@@ -2421,13 +2437,13 @@ func _apply_layout_metrics() -> void:
 		)
 		var utility_size := clampf(40.0 * refined_scale, 32.0, 42.0)
 		var utility_gap := clampf(6.0 * refined_scale, 4.0, 7.0)
-		for utility_button in [_inventory_button, _map_button, _skills_button]:
+		for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
 			utility_button.custom_minimum_size = Vector2.ONE * utility_size
 		_utility_dock.add_theme_constant_override(
 			"separation", int(roundf(utility_gap))
 		)
 		var visible_utility_count := 0
-		for utility_button in [_inventory_button, _map_button, _skills_button]:
+		for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
 			if utility_button.visible:
 				visible_utility_count += 1
 		var utility_width := (

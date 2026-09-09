@@ -1,0 +1,1370 @@
+{
+  "schema": "dd.achilles.animation-polish-validation.v3",
+  "generated_at": "2026-09-08T20:13:31.498Z",
+  "combats": 23,
+  "passed": 23,
+  "source_matrix": "artifacts/achilles_animation_polish_v3_validation/matrix_final/summary.json",
+  "replacement_matrices": [
+    {
+      "summary": "artifacts/achilles_animation_polish_v3_validation/south_delivery_final/summary.json",
+      "superseded_case_names": [
+        "base_shot_S_classic_walk3",
+        "chiron_shot_S_classic_walk3",
+        "volley_shot_S_classic_walk3"
+      ]
+    }
+  ],
+  "case_results": [
+    {
+      "name": "base_combo_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_combo_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.908884,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 243.173,
+          "finished_ms": 486.26,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 105.117,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "attack",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 301.725,
+          "finished_ms": 604.254,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_shot_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_shot_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.917492,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 340.734,
+          "finished_ms": 740.58,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow",
+              "impact": "impact",
+              "projectile": "arrow"
+            },
+            "expected_origin_global": "(666.6145, 387.1624)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(6, 10)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "chiron_shot_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/chiron_shot_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "chiron",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.89766,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow_death",
+          "variant": "death_line",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 440.905,
+          "finished_ms": 865.261,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1024.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2560.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow_death",
+              "impact": "impact_death_line",
+              "projectile": "arrow_death_line"
+            },
+            "expected_origin_global": "(665.6523, 394.8602)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(6, 10)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "volley_shot_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/volley_shot_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "volley",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.919687,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "volley",
+          "variant": "volley",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 425.968,
+          "finished_ms": 845.375,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1280.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2816.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "volley",
+              "impact": "impact_volley",
+              "projectile": "arrow_volley"
+            },
+            "expected_origin_global": "(659.3978, 312.9503)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(5, 9)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrath_combo_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/wrath_combo_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "wrath",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.891196,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 241.046,
+          "finished_ms": 483.881,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 102.559,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "sweep",
+          "variant": "scourge",
+          "ap_cost": 3,
+          "targets": 2,
+          "release_ms": 361.159,
+          "finished_ms": 726.922,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_combo_N_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_combo_N_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "N",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.914014,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 245.51,
+          "finished_ms": 481.216,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 103.163,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "attack",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 301.419,
+          "finished_ms": 604.321,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_shot_N_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_shot_N_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "N",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.888107,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 342.33,
+          "finished_ms": 742.574,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow",
+              "impact": "impact",
+              "projectile": "arrow"
+            },
+            "expected_origin_global": "(870.1279, 538.1135)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(11, 11)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "chiron_shot_N_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/chiron_shot_N_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "N",
+        "kit": "chiron",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.889152,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow_death",
+          "variant": "death_line",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 444.351,
+          "finished_ms": 862.379,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1024.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2560.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow_death",
+              "impact": "impact_death_line",
+              "projectile": "arrow_death_line"
+            },
+            "expected_origin_global": "(865.3168, 531.378)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(11, 11)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "volley_shot_N_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/volley_shot_N_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "N",
+        "kit": "volley",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.891494,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "volley",
+          "variant": "volley",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 421.205,
+          "finished_ms": 844.739,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1280.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2816.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "volley",
+              "impact": "impact_volley",
+              "projectile": "arrow_volley"
+            },
+            "expected_origin_global": "(648.8135, 404.6036)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(7, 11)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrath_combo_N_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/wrath_combo_N_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "N",
+        "kit": "wrath",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.913942,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 240.469,
+          "finished_ms": 482.644,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 104.646,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "sweep",
+          "variant": "scourge",
+          "ap_cost": 3,
+          "targets": 2,
+          "release_ms": 361.643,
+          "finished_ms": 725.286,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_combo_S_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_combo_S_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "S",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.896147,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 243.473,
+          "finished_ms": 484.161,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 100.32,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "attack",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 301.029,
+          "finished_ms": 603.878,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_shot_S_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/south_delivery_final/base_shot_S_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "S",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.893058,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 342.653,
+          "finished_ms": 742.367,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow",
+              "impact": "impact",
+              "projectile": "arrow"
+            },
+            "expected_origin_global": "(1049.226, 415.368)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(11, 6)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "chiron_shot_S_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/south_delivery_final/chiron_shot_S_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "S",
+        "kit": "chiron",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.899442,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow_death",
+          "variant": "death_line",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 443.134,
+          "finished_ms": 860.709,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1024.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2560.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow_death",
+              "impact": "impact_death_line",
+              "projectile": "arrow_death_line"
+            },
+            "expected_origin_global": "(1042.009, 412.4813)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(11, 6)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "volley_shot_S_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/south_delivery_final/volley_shot_S_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "S",
+        "kit": "volley",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.890806,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "volley",
+          "variant": "volley",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 423.116,
+          "finished_ms": 843.743,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1280.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2816.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "volley",
+              "impact": "impact_volley",
+              "projectile": "arrow_volley"
+            },
+            "expected_origin_global": "(785.4525, 308.1392)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(7, 7)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrath_combo_S_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/wrath_combo_S_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "S",
+        "kit": "wrath",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.907311,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 245.147,
+          "finished_ms": 483.114,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 105.594,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "sweep",
+          "variant": "scourge",
+          "ap_cost": 3,
+          "targets": 2,
+          "release_ms": 360.609,
+          "finished_ms": 724.717,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_combo_W_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_combo_W_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "W",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.909612,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 243.407,
+          "finished_ms": 482.395,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 100.92,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "attack",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 304.058,
+          "finished_ms": 601.034,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "base_shot_W_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_shot_W_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "W",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.893816,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 342.734,
+          "finished_ms": 742.639,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow",
+              "impact": "impact",
+              "projectile": "arrow"
+            },
+            "expected_origin_global": "(940.7336, 658.4536)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(15, 12)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "chiron_shot_W_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/chiron_shot_W_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "W",
+        "kit": "chiron",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.900604,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow_death",
+          "variant": "death_line",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 443.662,
+          "finished_ms": 861.803,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1024.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1024.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2560.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2560.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow_death",
+              "impact": "impact_death_line",
+              "projectile": "arrow_death_line"
+            },
+            "expected_origin_global": "(948.4313, 662.7836)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(15, 12)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "volley_shot_W_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/volley_shot_W_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "W",
+        "kit": "volley",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.893871,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "volley",
+          "variant": "volley",
+          "ap_cost": 3,
+          "targets": 3,
+          "release_ms": 422.133,
+          "finished_ms": 840.624,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1280.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1280.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2816.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2816.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "volley",
+              "impact": "impact_volley",
+              "projectile": "arrow_volley"
+            },
+            "expected_origin_global": "(947.4691, 633.4359)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(15, 12)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrath_combo_W_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/wrath_combo_W_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "W",
+        "kit": "wrath",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "combo",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.893652,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_bronze_guard",
+          "stem": "guard",
+          "variant": "base",
+          "ap_cost": 2,
+          "targets": 0,
+          "release_ms": 245.077,
+          "finished_ms": 481.363,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_fulminant_dash",
+          "stem": "dash",
+          "variant": "base",
+          "ap_cost": 1,
+          "targets": 0,
+          "release_ms": 104.325,
+          "projectile": null
+        },
+        {
+          "spell": "achilles_peleid_strike",
+          "stem": "sweep",
+          "variant": "scourge",
+          "ap_cost": 3,
+          "targets": 2,
+          "release_ms": 363.85,
+          "finished_ms": 726.138,
+          "projectile": null
+        }
+      ]
+    },
+    {
+      "name": "stopping_shot_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/stopping_shot_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "stopping",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.895822,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 340.924,
+          "finished_ms": 740.886,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 256.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 256.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 256.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 256.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1792.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1792.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1792.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1792.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow",
+              "impact": "impact_reach",
+              "projectile": "arrow_reach"
+            },
+            "expected_origin_global": "(666.6145, 387.1624)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(6, 10)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "piercing_shot_E_classic_walk3",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/piercing_shot_E_classic_walk3/runtime_validation.json",
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "piercing",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 3,
+        "mp_cost": 3,
+        "distinct_drawings": 8,
+        "expected_seconds": 0.84,
+        "observed_seconds": 0.89004,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow_piercing",
+          "variant": "piercing",
+          "ap_cost": 3,
+          "targets": 2,
+          "release_ms": 384.156,
+          "finished_ms": 784.316,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 768.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 768.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 768.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 768.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2304.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2304.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2304.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2304.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow_piercing",
+              "impact": "impact_piercing",
+              "projectile": "arrow_piercing"
+            },
+            "expected_origin_global": "(663.2468, 407.8502)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(6, 10)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "base_shot_E_painted_g_walk1",
+      "report": "artifacts/achilles_animation_polish_v3_validation/matrix_final/base_shot_E_painted_g_walk1/runtime_validation.json",
+      "configuration": {
+        "appearance": "painted_g",
+        "direction": "E",
+        "kit": "base",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "1"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesPaintedGUnitView.tscn",
+      "sprite_frames": "res://assets/characters/Achilles/sprites_painted_g/achilles_sprite_frames.tres",
+      "walk": {
+        "cells": 1,
+        "mp_cost": 1,
+        "distinct_drawings": 4,
+        "expected_seconds": 0.28,
+        "observed_seconds": 0.326467,
+        "anchor_error_px": 0
+      },
+      "actions": [
+        {
+          "spell": "achilles_pelion_shot",
+          "stem": "bow",
+          "variant": "base",
+          "ap_cost": 3,
+          "targets": 1,
+          "release_ms": 365.445,
+          "finished_ms": 722.325,
+          "projectile": {
+            "drawn_flight_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+            ],
+            "drawn_impact_textures": [
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+              "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+            ],
+            "expected": {
+              "body": "bow",
+              "impact": "impact",
+              "projectile": "arrow"
+            },
+            "expected_origin_global": "(665.5148, 401.5957)",
+            "maximum_release_origin_error_px": 0,
+            "origin_cell": "(6, 10)",
+            "origin_rule": "Actual release body origin plus legal projectile_origin cell offset; preserves Trait du destin."
+          }
+        }
+      ]
+    }
+  ],
+  "observed_specialization_differences": [
+    {
+      "direction": "E",
+      "kit": "chiron",
+      "base_body": "bow",
+      "specialized_body": "bow_death",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "E",
+      "kit": "volley",
+      "base_body": "bow",
+      "specialized_body": "volley",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "N",
+      "kit": "chiron",
+      "base_body": "bow",
+      "specialized_body": "bow_death",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "N",
+      "kit": "volley",
+      "base_body": "bow",
+      "specialized_body": "volley",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "S",
+      "kit": "chiron",
+      "base_body": "bow",
+      "specialized_body": "bow_death",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "S",
+      "kit": "volley",
+      "base_body": "bow",
+      "specialized_body": "volley",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "W",
+      "kit": "chiron",
+      "base_body": "bow",
+      "specialized_body": "bow_death",
+      "projectile_art_is_distinct": true
+    },
+    {
+      "direction": "W",
+      "kit": "volley",
+      "base_body": "bow",
+      "specialized_body": "volley",
+      "projectile_art_is_distinct": true
+    }
+  ],
+  "scope": "Real combat scenes with declared precombat placement/XP fixtures, native deployment and movement/spell input. These are not a completed campaign playthrough.",
+  "limits": [
+    "Foot alpha bounds are a contact heuristic; anatomical and aesthetic coherence require visual inspection.",
+    "Clean timing reports exclude viewport captures. Captured clips are a separate visual pass with original timestamps.",
+    "Known shutdown resource/RID diagnostics remain visible in stdout/stderr and are not reported as fixed."
+  ]
+}

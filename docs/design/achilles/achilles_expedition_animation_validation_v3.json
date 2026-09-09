@@ -1,0 +1,1827 @@
+{
+  "schema": "dd.achilles.expedition-animation-validation.v3",
+  "date": "2026-09-08",
+  "scope": "Seven selected real registered-terrain battle cases, canonical Achilles classic E orientation, legal precombat purchase/equip fixture, three-cell walk then one shot. Not a full run or campaign completion, not all 42 spell IDs in combat, not a four-direction visual audit.",
+  "selection": {
+    "passed": 7,
+    "total": 7,
+    "policy": "First five passing cases of expedition_bows_final, plus passing Givre rerun and Foudre batch. The earlier Givre failure is retained below and not counted as a pass."
+  },
+  "timing_contract": {
+    "source": "core/expedition/expedition_build_catalog.gd",
+    "field": "PROJECTILE_FLIGHT_IDS / impact_delay_seconds",
+    "declared_projectile_ids": 12,
+    "configured_seconds": 0.2,
+    "measurement_note": "Configured scheduler delay and observed event intervals are reported separately. OS/frame scheduling and observer work may change measured wall-clock intervals; no exact 200 ms wall-clock claim.",
+    "projectile_ids": [
+      "exp_tir_de_guet",
+      "exp_rupture",
+      "exp_marque",
+      "exp_marque_signature",
+      "exp_rupture_mutation",
+      "exp_rupture_legend",
+      "exp_braise",
+      "exp_braise_mutation",
+      "exp_braise_legend",
+      "exp_givre",
+      "exp_givre_signature",
+      "exp_foudre"
+    ],
+    "catalog_sha256": "9b56d4dd2d45c8a2f8c2baef9b80849a622dffb3925a82c9e918e249fd7775ea"
+  },
+  "givre_probe_correction": {
+    "original_failed_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/summary.json",
+    "original_result": {
+      "name": "exp_givre_E_classic_walk3",
+      "exit_code": 1,
+      "timed_out": false,
+      "ok": false,
+      "elapsed_seconds": 14.525,
+      "errors": "exp_givre:actual_sourced_movement_penalty_missing",
+      "runtime_errors": [],
+      "report": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/exp_givre_E_classic_walk3/runtime_validation.json"
+    },
+    "reason": "The first probe incorrectly required Achilles as a scoped status source. The actual Spell has status_source_scoped=false and correctly stores no source instance. The corrected probe checks the same target, absence before, presence after, mp_reduction=1, remaining=1 and source_instance_id=0, before an enemy turn.",
+    "selected_rerun": "artifacts/achilles_animation_polish_v3_validation/expedition_givre_final/exp_givre_E_classic_walk3/runtime_validation.json",
+    "gameplay_change_required": false
+  },
+  "gut": {
+    "source_result": "artifacts/achilles_animation_polish_v3_validation/gut_expedition_final/gut/result.json",
+    "source_stdout": "artifacts/achilles_animation_polish_v3_validation/gut_expedition_final/gut/stdout.log",
+    "ok": true,
+    "exit_code": 0,
+    "scripts": 17,
+    "tests": 146,
+    "passing_tests": 146,
+    "assertions": 8794,
+    "runtime_errors": [],
+    "remaining_shutdown_diagnostics": [
+      "ERROR: 12 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.",
+      "WARNING: 1634 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "ERROR: 305 resources still in use at exit (run with --verbose for details)."
+    ]
+  },
+  "limitations": [
+    "The reported precombat depth rewards and purchases are fixtures using real build APIs, not rooms completed by the user.",
+    "Source artwork is shared by gesture/element families; this receipt does not claim unique drawings for every spell ID.",
+    "Known ObjectDB/resource/RID shutdown diagnostics remain; they are explicitly preserved and are not claimed fixed.",
+    "This receipt predates any subsequent all-direction visual review or optional art reselection; raw report hashes identify the exact evidence."
+  ],
+  "cases": [
+    {
+      "case_id": "exp_chiron",
+      "source_batch": "expedition_bows_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/exp_chiron_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "2aa050893f233cdfb30c1c2d15f9ca375256e738cbd98f7a9ad7a5dbc21dad13",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_chiron -Appearance classic -WalkCells 3 -Batch reproduce_exp_chiron_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_chiron",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 1,
+        "granted_depths": [
+          1
+        ],
+        "discovered_branches": [],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_tir_de_guet",
+              "success": true
+            },
+            "node_id": "chiron.root"
+          }
+        ],
+        "equipped_spell_id": "exp_tir_de_guet",
+        "spell_payload": {
+          "aoe_shape": 0,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 2,
+          "spell_id": "exp_tir_de_guet",
+          "spell_range": 6
+        }
+      },
+      "spell_id": "exp_tir_de_guet",
+      "body": {
+        "stem": "bow",
+        "observed_clips": [
+          "bow_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_E.png:[P: (0.0, 384.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.34,
+        "configured_duration_seconds": 0.74,
+        "observed_release_after_animation_ms": 344.761,
+        "observed_duration_after_animation_ms": 745.469,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "achilles",
+        "projectile_animation": "arrow",
+        "impact_animation": "impact",
+        "actual_frames_resources": [
+          "res://assets/vfx/achilles_polish_v3/effects.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          1
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 196.799,
+        "observed_first_flight_to_first_hp_damage_ms": 173.223,
+        "observed_release_to_report_ms": 205.24,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 3,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 1,
+        "hp_damage_total": 9,
+        "damage_events": [
+          {
+            "amount": 9,
+            "category": 0,
+            "element": 0,
+            "hp_after": 55,
+            "hero_clip": "bow_E",
+            "hero_frame": 6,
+            "after_release_ms": 196.799
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(10, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 10)",
+            "cell_after": "(11, 10)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(9, 10)",
+            "hp_before": 64,
+            "hp_after": 55,
+            "hp_removed": 9,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)"
+        ],
+        "pushed": false,
+        "collision": false,
+        "movement_count": 0,
+        "status_change_count": 0,
+        "terrain_changed": [],
+        "post_resolution_effects": null
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.654595,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.651161,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.654669,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 806 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 322 resources still in use at exit (run with --verbose for details)."
+      ]
+    },
+    {
+      "case_id": "exp_rupture",
+      "source_batch": "expedition_bows_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/exp_rupture_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "e7d4fe3006626423732d04ce20f0eb55920ac5df448368071af76d80ff8209fb",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_rupture -Appearance classic -WalkCells 3 -Batch reproduce_exp_rupture_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_rupture",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 1,
+        "granted_depths": [
+          1
+        ],
+        "discovered_branches": [],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_tir_de_guet",
+              "success": true
+            },
+            "node_id": "chiron.root"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_rupture",
+              "success": true
+            },
+            "node_id": "chasseur.learn_a"
+          }
+        ],
+        "equipped_spell_id": "exp_rupture",
+        "spell_payload": {
+          "aoe_shape": 0,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 2,
+          "spell_id": "exp_rupture",
+          "spell_range": 5
+        }
+      },
+      "spell_id": "exp_rupture",
+      "body": {
+        "stem": "bow",
+        "observed_clips": [
+          "bow_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_E.png:[P: (0.0, 384.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.34,
+        "configured_duration_seconds": 0.74,
+        "observed_release_after_animation_ms": 344.743,
+        "observed_duration_after_animation_ms": 744.435,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "achilles",
+        "projectile_animation": "arrow_heavy",
+        "impact_animation": "impact_heavy",
+        "actual_frames_resources": [
+          "res://assets/vfx/achilles_polish_v3/effects.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 512.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 512.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 512.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 512.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2048.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2048.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2048.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2048.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          1
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 208.293,
+        "observed_first_flight_to_first_hp_damage_ms": 193.163,
+        "observed_release_to_report_ms": 223.786,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 4,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 1,
+        "hp_damage_total": 5,
+        "damage_events": [
+          {
+            "amount": 5,
+            "category": 0,
+            "element": 0,
+            "hp_after": 59,
+            "hero_clip": "bow_E",
+            "hero_frame": 6,
+            "after_release_ms": 208.293
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 59,
+            "hp_removed": 5,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 9)",
+            "cell_after": "(11, 9)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 11)",
+            "cell_after": "(11, 11)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)"
+        ],
+        "pushed": true,
+        "collision": false,
+        "movement_count": 1,
+        "status_change_count": 0,
+        "terrain_changed": [],
+        "post_resolution_effects": null
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.650712,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.654496,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.654327,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 804 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 321 resources still in use at exit (run with --verbose for details)."
+      ]
+    },
+    {
+      "case_id": "exp_traverse",
+      "source_batch": "expedition_bows_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/exp_traverse_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "6718ce91d8b22ef60459f5fb36c3df14e59767d7104e255fbd773b52e650abbb",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_traverse -Appearance classic -WalkCells 3 -Batch reproduce_exp_traverse_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_traverse",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 3,
+        "granted_depths": [
+          1,
+          2,
+          3
+        ],
+        "discovered_branches": [],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_tir_de_guet",
+              "success": true
+            },
+            "node_id": "chiron.root"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_rupture",
+              "success": true
+            },
+            "node_id": "chasseur.learn_a"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_rupture_mutation",
+              "success": true
+            },
+            "node_id": "chasseur.mutation"
+          }
+        ],
+        "equipped_spell_id": "exp_rupture_mutation",
+        "spell_payload": {
+          "aoe_shape": 3,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 2,
+          "spell_id": "exp_rupture_mutation",
+          "spell_range": 5
+        }
+      },
+      "spell_id": "exp_rupture_mutation",
+      "body": {
+        "stem": "bow_piercing",
+        "observed_clips": [
+          "bow_piercing_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_piercing_E.png:[P: (1024.0, 0.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.38,
+        "configured_duration_seconds": 0.78,
+        "observed_release_after_animation_ms": 380.934,
+        "observed_duration_after_animation_ms": 780.72,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "achilles",
+        "projectile_animation": "arrow_piercing",
+        "impact_animation": "impact_piercing",
+        "actual_frames_resources": [
+          "res://assets/vfx/achilles_polish_v3/effects.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 768.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 768.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 768.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 768.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2304.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2304.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2304.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2304.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          3
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 208.736,
+        "observed_first_flight_to_first_hp_damage_ms": 183.858,
+        "observed_release_to_report_ms": 222.784,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 3,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 3,
+        "hp_damage_total": 18,
+        "damage_events": [
+          {
+            "amount": 6,
+            "category": 0,
+            "element": 0,
+            "hp_after": 58,
+            "hero_clip": "bow_piercing_E",
+            "hero_frame": 5,
+            "after_release_ms": 208.736
+          },
+          {
+            "amount": 6,
+            "category": 0,
+            "element": 0,
+            "hp_after": 58,
+            "hero_clip": "bow_piercing_E",
+            "hero_frame": 5,
+            "after_release_ms": 213.477
+          },
+          {
+            "amount": 6,
+            "category": 0,
+            "element": 0,
+            "hp_after": 58,
+            "hero_clip": "bow_piercing_E",
+            "hero_frame": 5,
+            "after_release_ms": 217.566
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(10, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 58,
+            "hp_removed": 6,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(9, 10)",
+            "hp_before": 64,
+            "hp_after": 58,
+            "hp_removed": 6,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 10)",
+            "cell_after": "(11, 10)",
+            "hp_before": 64,
+            "hp_after": 58,
+            "hp_removed": 6,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)",
+          "(10, 10)",
+          "(11, 10)"
+        ],
+        "pushed": false,
+        "collision": false,
+        "movement_count": 0,
+        "status_change_count": 0,
+        "terrain_changed": [],
+        "post_resolution_effects": null
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.654047,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.650532,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.654702,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 806 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 321 resources still in use at exit (run with --verbose for details)."
+      ]
+    },
+    {
+      "case_id": "exp_horizon",
+      "source_batch": "expedition_bows_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/exp_horizon_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "658c992fd647ad440ac66068608275fe965e9c505b4dfc2fe0ecf79857b0cca0",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_horizon -Appearance classic -WalkCells 3 -Batch reproduce_exp_horizon_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_horizon",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 12,
+        "granted_depths": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "discovered_branches": [],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_tir_de_guet",
+              "success": true
+            },
+            "node_id": "chiron.root"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_rupture",
+              "success": true
+            },
+            "node_id": "chasseur.learn_a"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_rupture_mutation",
+              "success": true
+            },
+            "node_id": "chasseur.mutation"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_marque",
+              "success": true
+            },
+            "node_id": "chasseur.learn_b"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_marque_signature",
+              "success": true
+            },
+            "node_id": "chasseur.signature"
+          },
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_rupture_legend",
+              "success": true
+            },
+            "node_id": "chasseur.legend"
+          }
+        ],
+        "equipped_spell_id": "exp_rupture_legend",
+        "spell_payload": {
+          "aoe_shape": 3,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 3,
+          "spell_id": "exp_rupture_legend",
+          "spell_range": 7
+        }
+      },
+      "spell_id": "exp_rupture_legend",
+      "body": {
+        "stem": "bow_death",
+        "observed_clips": [
+          "bow_death_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_death_E.png:[P: (1024.0, 0.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.44,
+        "configured_duration_seconds": 0.86,
+        "observed_release_after_animation_ms": 441.97,
+        "observed_duration_after_animation_ms": 865.91,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "achilles",
+        "projectile_animation": "arrow_death_line",
+        "impact_animation": "impact_death_line",
+        "actual_frames_resources": [
+          "res://assets/vfx/achilles_polish_v3/effects.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 1024.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 1024.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 1024.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 1024.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (0.0, 2560.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (256.0, 2560.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (512.0, 2560.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/effects.png:[P: (768.0, 2560.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          3
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 208.721,
+        "observed_first_flight_to_first_hp_damage_ms": 194.861,
+        "observed_release_to_report_ms": 222.659,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 2,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 3,
+        "hp_damage_total": 36,
+        "damage_events": [
+          {
+            "amount": 12,
+            "category": 0,
+            "element": 0,
+            "hp_after": 52,
+            "hero_clip": "bow_death_E",
+            "hero_frame": 5,
+            "after_release_ms": 208.721
+          },
+          {
+            "amount": 12,
+            "category": 0,
+            "element": 0,
+            "hp_after": 52,
+            "hero_clip": "bow_death_E",
+            "hero_frame": 5,
+            "after_release_ms": 213.709
+          },
+          {
+            "amount": 12,
+            "category": 0,
+            "element": 0,
+            "hp_after": 52,
+            "hero_clip": "bow_death_E",
+            "hero_frame": 5,
+            "after_release_ms": 217.644
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 10)",
+            "cell_after": "(11, 10)",
+            "hp_before": 64,
+            "hp_after": 52,
+            "hp_removed": 12,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(9, 10)",
+            "hp_before": 64,
+            "hp_after": 52,
+            "hp_removed": 12,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(10, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 52,
+            "hp_removed": 12,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)",
+          "(10, 10)",
+          "(11, 10)"
+        ],
+        "pushed": false,
+        "collision": false,
+        "movement_count": 0,
+        "status_change_count": 0,
+        "terrain_changed": [],
+        "post_resolution_effects": null
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.654486,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.654427,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.654132,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 806 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 321 resources still in use at exit (run with --verbose for details)."
+      ]
+    },
+    {
+      "case_id": "exp_braise",
+      "source_batch": "expedition_bows_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/exp_braise_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "9a00a44235caca9fa9922178b87f6bedfb0ca3f985adb28f7f35fbe5095d1ed2",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_bows_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_braise -Appearance classic -WalkCells 3 -Batch reproduce_exp_braise_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_braise",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 4,
+        "granted_depths": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "discovered_branches": [
+          "elements"
+        ],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_braise",
+              "success": true
+            },
+            "node_id": "elements.learn_a"
+          }
+        ],
+        "equipped_spell_id": "exp_braise",
+        "spell_payload": {
+          "aoe_shape": 0,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 1,
+          "spell_id": "exp_braise",
+          "spell_range": 5
+        }
+      },
+      "spell_id": "exp_braise",
+      "body": {
+        "stem": "bow",
+        "observed_clips": [
+          "bow_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_E.png:[P: (0.0, 384.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.34,
+        "configured_duration_seconds": 0.74,
+        "observed_release_after_animation_ms": 344.085,
+        "observed_duration_after_animation_ms": 744.463,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "paris",
+        "projectile_animation": "fire",
+        "impact_animation": "hellfire",
+        "actual_frames_resources": [
+          "res://assets/vfx/paris/sprites_v1/effects.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (0.0, 512.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (256.0, 512.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (512.0, 512.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (768.0, 512.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (0.0, 1536.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (256.0, 1536.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (512.0, 1536.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (768.0, 1536.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          1
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 208.486,
+        "observed_first_flight_to_first_hp_damage_ms": 192.739,
+        "observed_release_to_report_ms": 219.318,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 3,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 1,
+        "hp_damage_total": 6,
+        "damage_events": [
+          {
+            "amount": 6,
+            "category": 1,
+            "element": 1,
+            "hp_after": 58,
+            "hero_clip": "bow_E",
+            "hero_frame": 6,
+            "after_release_ms": 208.486
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(9, 10)",
+            "hp_before": 64,
+            "hp_after": 58,
+            "hp_removed": 6,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(10, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 10)",
+            "cell_after": "(11, 10)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)"
+        ],
+        "pushed": false,
+        "collision": false,
+        "movement_count": 0,
+        "status_change_count": 0,
+        "terrain_changed": [
+          "(9, 10)"
+        ],
+        "post_resolution_effects": {
+          "cell": "(9, 10)",
+          "damage": 3,
+          "element": 1,
+          "remaining_duration": 2,
+          "surface_id": "expedition_braise"
+        }
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.653419,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.654716,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.65376,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 806 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 322 resources still in use at exit (run with --verbose for details)."
+      ]
+    },
+    {
+      "case_id": "exp_givre",
+      "source_batch": "expedition_givre_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_givre_final/exp_givre_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "483f851d92df6c3c4a782bc0b74778789fabe90139dfffba60ea9ea5429be2b3",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_givre_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_givre -Appearance classic -WalkCells 3 -Batch reproduce_exp_givre_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_givre",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 4,
+        "granted_depths": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "discovered_branches": [
+          "elements"
+        ],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_givre",
+              "success": true
+            },
+            "node_id": "elements.learn_b"
+          }
+        ],
+        "equipped_spell_id": "exp_givre",
+        "spell_payload": {
+          "aoe_shape": 0,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 1,
+          "spell_id": "exp_givre",
+          "spell_range": 5
+        }
+      },
+      "spell_id": "exp_givre",
+      "body": {
+        "stem": "bow",
+        "observed_clips": [
+          "bow_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_E.png:[P: (0.0, 384.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.34,
+        "configured_duration_seconds": 0.74,
+        "observed_release_after_animation_ms": 341.271,
+        "observed_duration_after_animation_ms": 741.163,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "paris",
+        "projectile_animation": "frost",
+        "impact_animation": "frost",
+        "actual_frames_resources": [
+          "res://assets/vfx/paris/sprites_v1/effects.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (0.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (256.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (512.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (768.0, 256.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (0.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (256.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (512.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/paris/sprites_v1/effects.png:[P: (768.0, 256.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          1
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 195.074,
+        "observed_first_flight_to_first_hp_damage_ms": 169.237,
+        "observed_release_to_report_ms": 207.03,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 4,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 1,
+        "hp_damage_total": 4,
+        "damage_events": [
+          {
+            "amount": 4,
+            "category": 1,
+            "element": 2,
+            "hp_after": 60,
+            "hero_clip": "bow_E",
+            "hero_frame": 6,
+            "after_release_ms": 195.074
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(9, 10)",
+            "hp_before": 64,
+            "hp_after": 60,
+            "hp_removed": 4,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": [
+              {
+                "mp_reduction": 1,
+                "remaining": 1,
+                "source_instance_id": 0,
+                "status_id": "exp_givre"
+              }
+            ]
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(10, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 10)",
+            "cell_after": "(11, 10)",
+            "hp_before": 64,
+            "hp_after": 64,
+            "hp_removed": 0,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": 0,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)"
+        ],
+        "pushed": false,
+        "collision": false,
+        "movement_count": 0,
+        "status_change_count": 1,
+        "terrain_changed": [],
+        "post_resolution_effects": {
+          "actual_target_statuses": [
+            {
+              "mp_reduction": 1,
+              "remaining": 1,
+              "source_instance_id": 0,
+              "status_id": "exp_givre"
+            }
+          ],
+          "scope": "Newly resolved pending next-activation movement penalty on the actual target, before an enemy turn",
+          "status_source_scoped": false,
+          "target": "(9, 10)"
+        }
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.651156,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.654477,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.653935,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 806 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 322 resources still in use at exit (run with --verbose for details)."
+      ]
+    },
+    {
+      "case_id": "exp_foudre",
+      "source_batch": "expedition_foudre_final",
+      "source_report": "artifacts/achilles_animation_polish_v3_validation/expedition_foudre_final/exp_foudre_E_classic_walk3/runtime_validation.json",
+      "source_report_sha256": "84f2f7aa6159e350b63cb32be903ae95847ae524708a0eeb1d0d37e21c62316d",
+      "source_summary": "artifacts/achilles_animation_polish_v3_validation/expedition_foudre_final/summary.json",
+      "pass": true,
+      "exit_code": 0,
+      "runtime_errors": [],
+      "reproduction": {
+        "scope": "Equivalent one-case runner command reconstructed from recorded configuration; fresh output batch avoids replacing evidence.",
+        "working_directory": ".",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/achilles_animation_polish_v3_validation/run_matrix.ps1 -Directions E -CaseIds exp_foudre -Appearance classic -WalkCells 3 -Batch reproduce_exp_foudre_v3"
+      },
+      "configuration": {
+        "appearance": "classic",
+        "direction": "E",
+        "kit": "exp_foudre",
+        "room_path": "res://data/arenas/greek_drawn_courtyard_v1/arena.tres",
+        "scenario": "shot",
+        "walk_cells": "3"
+      },
+      "scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+      "visual_scene": "res://characters/achilles/AchillesIsoUnitView.tscn",
+      "visual_profile": "res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres",
+      "body_sprite_frames": "res://assets/characters/Achilles/sprites_polish_v3/achilles_sprite_frames.tres",
+      "godot_version": "4.7.1-stable (official)",
+      "renderer": "forward_plus",
+      "precombat_setup": {
+        "ok": true,
+        "scope": "Pre-combat fixture of the actual Catabase build catalog: sequential depth rewards, normal purchase prerequisites and loadout equip. This is not a campaign completion or a saved run mutation.",
+        "completed_depth": 4,
+        "granted_depths": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "discovered_branches": [
+          "elements"
+        ],
+        "purchases": [
+          {
+            "decision": {
+              "reason": "",
+              "spell_id": "exp_foudre",
+              "success": true
+            },
+            "node_id": "elements.learn_c"
+          }
+        ],
+        "equipped_spell_id": "exp_foudre",
+        "spell_payload": {
+          "aoe_shape": 3,
+          "impact_delay_seconds": 0.2,
+          "minimum_range": 2,
+          "spell_id": "exp_foudre",
+          "spell_range": 5
+        }
+      },
+      "spell_id": "exp_foudre",
+      "body": {
+        "stem": "bow_death",
+        "observed_clips": [
+          "bow_death_E",
+          "idle_E"
+        ],
+        "release_texture": "res://assets/characters/Achilles/sprites_polish_v3/atlas_bow_death_E.png:[P: (1024.0, 0.0), S: (512.0, 384.0)]",
+        "release_frame": 4,
+        "releases": 1,
+        "finishes": 1,
+        "configured_release_seconds": 0.44,
+        "configured_duration_seconds": 0.86,
+        "observed_release_after_animation_ms": 443.391,
+        "observed_duration_after_animation_ms": 862.031,
+        "sprite_returned_idle": true,
+        "controller_returned_idle": true
+      },
+      "effects": {
+        "source": "lightning",
+        "projectile_animation": "arrow_lightning",
+        "impact_animation": "impact_lightning",
+        "actual_frames_resources": [
+          "res://assets/vfx/achilles_polish_v3/lightning.tres"
+        ],
+        "actual_flight_textures": [
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (0.0, 0.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (256.0, 0.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (512.0, 0.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (768.0, 0.0), S: (256.0, 256.0)]"
+        ],
+        "actual_impact_textures": [
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (0.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (256.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (512.0, 256.0), S: (256.0, 256.0)]",
+          "res://assets/vfx/achilles_polish_v3/lightning.png:[P: (768.0, 256.0), S: (256.0, 256.0)]"
+        ],
+        "flight_head_counts": [
+          1
+        ],
+        "impact_head_counts": [
+          3
+        ],
+        "used_animation_fallback": [
+          false
+        ],
+        "used_source_fallback": [
+          false
+        ],
+        "maximum_release_origin_error_px": 0,
+        "first_flight_before_first_hp_damage": true,
+        "observed_release_to_first_hp_damage_ms": 216.759,
+        "observed_first_flight_to_first_hp_damage_ms": 192.911,
+        "observed_release_to_report_ms": 245.836,
+        "observed_first_impact_after_last_hp_damage": true
+      },
+      "combat": {
+        "ap_before": 6,
+        "ap_after": 3,
+        "uses_before": 0,
+        "uses_after": 1,
+        "damaged_enemy_count": 3,
+        "hp_damage_total": 15,
+        "damage_events": [
+          {
+            "amount": 5,
+            "category": 1,
+            "element": 3,
+            "hp_after": 59,
+            "hero_clip": "bow_death_E",
+            "hero_frame": 5,
+            "after_release_ms": 216.759
+          },
+          {
+            "amount": 5,
+            "category": 1,
+            "element": 3,
+            "hp_after": 59,
+            "hero_clip": "bow_death_E",
+            "hero_frame": 5,
+            "after_release_ms": 228.33
+          },
+          {
+            "amount": 5,
+            "category": 1,
+            "element": 3,
+            "hp_after": 59,
+            "hero_clip": "bow_death_E",
+            "hero_frame": 5,
+            "after_release_ms": 235.939
+          }
+        ],
+        "enemies": [
+          {
+            "name": "Spectre errant",
+            "cell_before": "(9, 10)",
+            "cell_after": "(9, 10)",
+            "hp_before": 64,
+            "hp_after": 59,
+            "hp_removed": 5,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": -1,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(11, 10)",
+            "cell_after": "(11, 10)",
+            "hp_before": 64,
+            "hp_after": 59,
+            "hp_removed": 5,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": -1,
+            "statuses_before": [],
+            "statuses_after": []
+          },
+          {
+            "name": "Spectre errant",
+            "cell_before": "(10, 10)",
+            "cell_after": "(10, 10)",
+            "hp_before": 64,
+            "hp_after": 59,
+            "hp_removed": 5,
+            "next_turn_ap_modifier_before": 0,
+            "next_turn_ap_modifier_after": -1,
+            "statuses_before": [],
+            "statuses_after": []
+          }
+        ],
+        "reported_visual_impact_cells": [
+          "(9, 10)",
+          "(10, 10)",
+          "(11, 10)"
+        ],
+        "pushed": false,
+        "collision": false,
+        "movement_count": 0,
+        "status_change_count": 0,
+        "terrain_changed": [],
+        "post_resolution_effects": {
+          "next_activation_ap_penalties": [
+            {
+              "delta": -1,
+              "instance_id": -9223371656934713000
+            },
+            {
+              "delta": -1,
+              "instance_id": -9223371654216804000
+            },
+            {
+              "delta": -1,
+              "instance_id": -9223371653679933000
+            }
+          ]
+        }
+      },
+      "real_walk": {
+        "ok": true,
+        "steps": 3,
+        "authored_frames_seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "distinct_drawn_textures": 8,
+        "maximum_anchor_error_px": 0,
+        "minimum_drawn_ground_offset_px": 0,
+        "maximum_drawn_ground_offset_px": 0
+      },
+      "stable_rest": [
+        {
+          "phase": "initial",
+          "observed_seconds": 0.654593,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_real_walk",
+          "observed_seconds": 0.654428,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        },
+        {
+          "phase": "after_actions",
+          "observed_seconds": 0.657181,
+          "unexpected_pose_samples": 0,
+          "maximum_screen_foot_drift_px": 0,
+          "maximum_screen_anchor_error_px": 0
+        }
+      ],
+      "remaining_shutdown_diagnostics": [
+        "WARNING: 806 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 321 resources still in use at exit (run with --verbose for details)."
+      ]
+    }
+  ]
+}

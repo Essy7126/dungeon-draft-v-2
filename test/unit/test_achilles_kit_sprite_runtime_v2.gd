@@ -12,7 +12,7 @@ const CASES := [
 ]
 
 
-func test_canonical_kit_has_authored_cardinal_clips_and_transparent_canvases() -> void:
+func test_legacy_v2_kit_has_authored_cardinal_clips_and_transparent_canvases() -> void:
 	var view := await _create_view()
 	var profile := view.sprite_profile
 	assert_eq(profile.resource_path, PROFILE_PATH)
@@ -231,6 +231,8 @@ func _create_view() -> AchillesIsoUnitView:
 	parent.position = Vector2(137, 211)
 	add_child_autofree(parent)
 	var view := CANONICAL.visual_scene.instantiate() as AchillesIsoUnitView
+	# Explicit historical fixture: promotion of the canonical scene is tested in v3.
+	view.sprite_profile = load(PROFILE_PATH) as AchillesSpriteVisualProfile
 	parent.add_child(view)
 	await wait_process_frames(2)
 	view.set_process(false)
