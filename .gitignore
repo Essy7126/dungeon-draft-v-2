@@ -29,3 +29,6 @@ addons/ziva_agent/
 meshy_output/review/
 **/__pycache__/
 *.pyc
+
+# Spine evaluation runtime; restored by tools/spine_trial/install.ps1.
+/addons/spine_godot_trial/

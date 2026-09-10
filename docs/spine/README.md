@@ -1,9 +1,29 @@
 # Spine — dossier de reprise local
 
+## Kit complet de la Sentinelle — essai courant
+
+Le kit `sentinelle_kit_v5` contient 24 clips dans quatre directions.
+[Guide, galerie et reprise](sentinelle_kit.md).
+Commande : `./tools/spine_trial/kit.ps1 start`.
+Les sections suivantes conservent l’historique de la préparation Spine.
+
 Point d'entrée pour poursuivre la production d'animations 2D depuis une autre
 tâche locale dans ce projet Godot. Mis à jour le **9 septembre 2026** ; base Git
-observée : `main`, `6d99bfff`, avec des modifications locales non commitées.
+initiale : `main`, `6d99bfff`. Pour l'état actuel, lire la reprise locale ci-dessous.
 Relire `git status --short` avant d'intervenir et conserver les travaux en cours.
+
+## État actuel : premier essai installé
+
+Le [guide de l'essai installé](../../tools/spine_trial/README.md) est maintenant
+le point d'entrée opérationnel : connecteur, runtime Godot, Sentinelle E/N
+converties et contrôles. L'utilisateur reste sur Spine Trial pour ce premier
+essai. Les sections suivantes conservent les décisions de la recherche initiale.
+
+## Reprise locale vérifiée
+
+La [fiche de reprise locale](reprise_locale_2026-09-09.md), basée sur `1b5cedb0`,
+complète la recherche initiale : chemins Godot et Spine Trial, restauration des
+outils, contrôles exécutés et anciens rapports absents de cette copie.
 
 ## Objectif et décisions
 

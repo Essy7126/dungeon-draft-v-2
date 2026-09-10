@@ -1,0 +1,27 @@
+{
+  "direction": "W",
+  "source": "art/source/characters/catabase_monsters/sentinelle_airain/base_frame_W.png",
+  "source_sha256": "e352223b6628df5d6c7e56d49ec0f80ce7353ee445ccedd40142c33dc3a8253e",
+  "bones": 16,
+  "regions": 24,
+  "atlas_rgba_exact": true,
+  "max_transform_error": 6.406761201560585e-07,
+  "output": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\artifacts\\spine_trial\\sentinelle_kit_v5\\W",
+  "artistic_status": "animation_kit_for_review",
+  "editor_roundtrip_verified": false,
+  "services": {
+    "tools\\catabase_monster_sprite_pipeline\\humanoid_parts.py": "de0a4bc2bf5f7f5a5294e9c9e8990e8c2e869a4371ecb4b02c80ad543918eb39",
+    "tools\\catabase_monster_sprite_pipeline\\articulated_animation.py": "d7912cb07dc73e96f6a058b8f2fb1786439b8bbe819ce954e80ff171cf869caa",
+    "tools\\spine_trial\\prepare_sentinelle.py": "43614df11a084f14de1dd92662936e79ac6a7cc03c249871d3f796b10153aa99"
+  },
+  "animations": {
+    "idle": 2.4,
+    "walk": 0.72,
+    "attack": 0.8,
+    "cast": 0.88,
+    "hit": 0.2,
+    "death": 0.8
+  },
+  "spine_json_sha256": "08e0be5a6c1fbd8c98ff97446676cc68b6f6d2e2cb8ae13d8923bfb7d81f86e6",
+  "recipe_sha256": "ded7737e3838de24c019436facfa1c288aceaf8bc1afc60e106227b8a8990929"
+}

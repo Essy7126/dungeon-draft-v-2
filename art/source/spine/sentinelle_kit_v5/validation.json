@@ -1,0 +1,52 @@
+{
+  "revision": "sentinelle_kit_v5",
+  "date": "2026-09-09",
+  "git_head": "1b5cedb0384d6eefd47d03ce736e7aa9237241e2",
+  "trial_editor_roundtrip_verified": false,
+  "web": {
+    "report": "artifacts/dev/spine-kit-web-1788977622299/report.json",
+    "passed": true,
+    "clips": 24
+  },
+  "godot": {
+    "report": "artifacts/dev/20260909-202021-sentinelle-kit-godot-c1a99d4c/preview.json",
+    "passed": true,
+    "clips": 24
+  },
+  "geometry": {
+    "report": "artifacts/dev/spine-kit-geometry-1788977613640755400/report.json",
+    "passed": true,
+    "checks": 22
+  },
+  "smoke": {
+    "report": "artifacts/dev/20260909-201812-test-smoke-e1b2e851/gut-strict-report.json",
+    "passed": true,
+    "tests": 16,
+    "assertions": 215
+  },
+  "lint": {
+    "report": "artifacts/dev/20260909-202016-sentinelle-kit-lint-55ee31f1/summary.json",
+    "notes": "Baked key-density warnings are expected; death loop-pop information is expected for a held, non-looping death.",
+    "errors": 0
+  },
+  "visual_review": {
+    "coverage": "Five poses for each of the 24 clips; selected native Godot captures.",
+    "boards": "review/",
+    "artistic_approval": "first_complete_trial_pending_user_review",
+    "reviewed": true
+  },
+  "files": {
+    "S/sentinelle.png": "b2d445fc26a599b1fd4b4535428206280acc1e04be8765195efbf03f17da7e2a",
+    "N/sentinelle.json": "73452e5337770b46791003deb5084e05f628c0164f998bfcf20e468bc873f4ff",
+    "E/sentinelle.png": "a16f55efba365a4c74e5ece22fd7cf4f789115bba9544b02d8d190ec40d9ee49",
+    "E/sentinelle.json": "9b30798933c8d1ef44089690bec99111b9bc24ca44fde898d4fa8e28a1c4013c",
+    "S/sentinelle.atlas": "64ba3a8081d2713303d3912e41998bdf36da3aa62b5341b6aeb0419f54118856",
+    "W/sentinelle.json": "08e0be5a6c1fbd8c98ff97446676cc68b6f6d2e2cb8ae13d8923bfb7d81f86e6",
+    "W/sentinelle.png": "4f050bb5f03c4163dbcca96df65dab8c9c95d190a47eeb384c1997787f030a70",
+    "N/sentinelle.atlas": "429cdcaefcec7c0707f3bae825de28c6fd2bcafa549292e59c522121914d23da",
+    "N/sentinelle.png": "12613fa9ed9bfdc2b7d47d3e52619208310e248947704b464d362e94344c4edd",
+    "S/sentinelle.json": "529997efa9400917fc5ed90dc592475589ba213cdedc2f5e9485c67404888af5",
+    "W/sentinelle.atlas": "f8532a4a83d220ca06569c6e596d1ae606fc0a05d4f9f889ee8064fca7b184e4",
+    "E/sentinelle.atlas": "d8ea04dc67beb5da24b2b87ce4b34c1cd13d0d98008e318613f36139361396e7"
+  }
+}

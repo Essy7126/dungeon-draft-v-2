@@ -1,0 +1,14 @@
+{
+  "data_version": "4.2",
+  "trial_editor_observed": "4.3.26",
+  "port": 8734,
+  "motion_commit": "a02127e4054709536941af5f9d1c7214a8a69ab9",
+  "motion_url": "https://api.github.com/repos/nihatcagri44/spine-motion-mcp/zipball/a02127e4054709536941af5f9d1c7214a8a69ab9",
+  "motion_sha256": "c7605bd3145f73849ede128cf3526f64a523a6aa218a76200d124f36980e215e",
+  "motion_source": "artifacts/dev-tools/spine/source/nihatcagri44-spine-motion-mcp-a02127e",
+  "runtime_commit": "e7dc1435fa4a0083ab431f1b28e083c14a1f5c68",
+  "runtime_url": "https://spine-godot.s3.eu-central-1.amazonaws.com/4.2/4.6.1-stable/spine-godot-extension-4.2-4.6.1-stable.zip",
+  "runtime_sha256": "0bdf3e41b27a30564b29a4f88f2406f4f2eb361fa88e73818df24e319c6638dc",
+  "runtime_directory": "addons/spine_godot_trial",
+  "enabled_tools": ["spine_status", "skeleton_inspect", "keys_set", "template_apply", "loop_smooth", "skeleton_lint", "preview_url", "preview_gif"]
+}
