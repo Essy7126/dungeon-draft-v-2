@@ -28,7 +28,10 @@ func set_environment_time(time_seconds: float, position_native: Vector2) -> void
 	_warm_light = clampf(warm, 0, 1)
 	_cool_light = 0.0
 	for center in water_positions:
-		_cool_light = maxf(_cool_light, maxf(0, 1.0 - ((position_native - center) / Vector2(450, 270)).length()))
+		_cool_light = maxf(
+			_cool_light,
+			maxf(0, 1.0 - ((position_native - center) / Vector2(450, 270)).length()),
+		)
 	_hall_material.set_shader_parameter("warm_light", _warm_light)
 	_hall_material.set_shader_parameter("warm_direction", side / maxf(warm, 0.001))
 	_hall_material.set_shader_parameter("cool_light", _cool_light)

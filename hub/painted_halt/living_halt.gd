@@ -5,10 +5,12 @@ const Navigation := preload("res://hub/sanctuary_prototype/sanctuary_navigation.
 const Player := preload("res://hub/painted_halt/halt_player.gd")
 const Atmosphere := preload("res://hub/painted_halt/halt_atmosphere.gd")
 const MATERIAL_SHADER := preload("res://hub/painted_halt/living_materials.gdshader")
-const BODY := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf")
+const BODY := preload(
+	"res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf"
+)
 const TITLE := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf")
 @export_file("*.json") var manifest_path := "res://data/halts/emerald_sanctuary_v1.json"
-var definition: Dictionary = {}
+var definition: Dictionary = { }
 var world_size := Vector2.ONE
 var world: Node2D
 var player: Player
@@ -20,7 +22,7 @@ var paused := false
 var original := false
 var reduced := false
 var zoom := 1.0
-var layers := {"water": true, "fire": true, "atmosphere": true, "foliage": true}
+var layers := { "water": true, "fire": true, "atmosphere": true, "foliage": true }
 var _ready_for_play := false
 var _path := PackedVector2Array()
 var _path_index := 0
@@ -40,6 +42,8 @@ var _error := ""
 
 class Destination extends Node2D:
 	var clock := 0.0
+
+
 	func _draw() -> void:
 		var ring := PackedVector2Array()
 		for i in 41:
@@ -57,7 +61,10 @@ func _ready() -> void:
 		_build_error()
 		return
 	var size_data: Array = definition.source.size
-	world_size = Vector2(float(definition.world.width), float(definition.world.width) * size_data[1] / size_data[0])
+	world_size = Vector2(
+		float(definition.world.width),
+		float(definition.world.width) * size_data[1] / size_data[0],
+	)
 	world = Node2D.new()
 	world.name = "PaintedWorld"
 	add_child(world)
@@ -134,7 +141,10 @@ func _ready() -> void:
 	_ready_for_play = configured and nav.is_walkable(player.position) and player.is_visual_ready()
 	if not _ready_for_play:
 		push_error("LIVING_HALT: invalid navigation or spawn")
-	print("LIVING_HALT_READY: %s; %s; world %s; source %s" % [_ready_for_play, definition.id, world_size, size_data])
+	print(
+		"LIVING_HALT_READY: %s; %s; world %s; source %s"
+		% [_ready_for_play, definition.id, world_size, size_data]
+	)
 
 
 func _load_definition() -> bool:
@@ -146,9 +156,14 @@ func _load_definition() -> bool:
 	var build_path := str(definition.build_dir).path_join("build.json")
 	var build: Variant = JSON.parse_string(FileAccess.get_file_as_string(build_path))
 	var mask_path := str(definition.build_dir).path_join("materials.png")
-	if not build is Dictionary or str(build.get("manifest_sha256", "")) != FileAccess.get_sha256(manifest_path) \
-		or str(build.get("source_sha256", "")) != FileAccess.get_sha256(str(definition.source.image)) \
-		or str(build.get("mask_sha256", "")) != FileAccess.get_sha256(mask_path):
+	if (
+		not build is Dictionary
+		or str(build.get("manifest_sha256", "")) != FileAccess.get_sha256(manifest_path)
+	) \
+			or str(build.get("source_sha256", "")) != FileAccess.get_sha256(
+		str(definition.source.image)
+	) \
+			or str(build.get("mask_sha256", "")) != FileAccess.get_sha256(mask_path):
 		_error = "Cette version doit être préparée à nouveau dans l’atelier des haltes."
 		return false
 	var mask_texture := load(mask_path) as Texture2D
@@ -193,7 +208,10 @@ func _apply_effects() -> void:
 	effect_material.set_shader_parameter("water_enabled", layers.water)
 	effect_material.set_shader_parameter("fire_enabled", layers.fire)
 	effect_material.set_shader_parameter("foliage_enabled", layers.foliage)
-	effect_material.set_shader_parameter("ripple_age", clock - _ripple_time if clock - _ripple_time < 3.0 else -1.0)
+	effect_material.set_shader_parameter(
+		"ripple_age",
+		clock - _ripple_time if clock - _ripple_time < 3.0 else -1.0,
+	)
 	atmosphere.set_state(clock, power, layers.water, layers.fire, layers.atmosphere)
 
 
@@ -248,7 +266,11 @@ func _advance_move(delta: float) -> void:
 	for i in range(_path_index, _path.size()):
 		remaining += _ground_distance(_path[i] - previous)
 		previous = _path[i]
-	_speed = move_toward(_speed, minf(float(definition.world.speed), sqrt(1200.0 * remaining)), 800.0 * delta)
+	_speed = move_toward(
+		_speed,
+		minf(float(definition.world.speed), sqrt(1200.0 * remaining)),
+		800.0 * delta,
+	)
 	var travel := _speed * delta
 	while is_player_moving() and travel > 0.0:
 		var offset := _path[_path_index] - player.position
@@ -328,17 +350,25 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
-			KEY_SPACE: set_paused(not paused)
-			KEY_TAB: set_original(not original)
-			KEY_H: set_chrome_visible(not _interface.visible)
-			KEY_F: get_window().mode = Window.MODE_WINDOWED if get_window().mode == Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN
-			KEY_F1: nav.debug_enabled = not nav.debug_enabled
-			KEY_ESCAPE: stop_movement(); set_chrome_visible(true)
+			KEY_SPACE:
+				set_paused(not paused)
+			KEY_TAB:
+				set_original(not original)
+			KEY_H:
+				set_chrome_visible(not _interface.visible)
+			KEY_F:
+				get_window().mode = Window.MODE_WINDOWED if get_window().mode == Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN
+			KEY_F1:
+				nav.debug_enabled = not nav.debug_enabled
+			KEY_ESCAPE:
+				stop_movement()
+				set_chrome_visible(true)
 			KEY_1, KEY_2, KEY_3:
 				var index := int(event.keycode) - int(KEY_1)
 				if index < definition.landmarks.size():
 					request_move(point(definition.landmarks[index].point))
-			_: return
+			_:
+				return
 		get_viewport().set_input_as_handled()
 
 
@@ -352,8 +382,16 @@ func _fit_world() -> void:
 	if zoom > 1.0 and player != null:
 		center = center.lerp(player.position + Vector2(0, -70), clampf((zoom - 1.0) / 0.5, 0, 1))
 		var half := size / factor * 0.5
-		center.x = clampf(center.x, minf(half.x, world_size.x * 0.5), maxf(world_size.x - half.x, world_size.x * 0.5))
-		center.y = clampf(center.y, minf(half.y, world_size.y * 0.5), maxf(world_size.y - half.y, world_size.y * 0.5))
+		center.x = clampf(
+			center.x,
+			minf(half.x, world_size.x * 0.5),
+			maxf(world_size.x - half.x, world_size.x * 0.5),
+		)
+		center.y = clampf(
+			center.y,
+			minf(half.y, world_size.y * 0.5),
+			maxf(world_size.y - half.y, world_size.y * 0.5),
+		)
 	world.position = size * 0.5 - center * factor
 
 
@@ -395,7 +433,10 @@ func _build_interface() -> void:
 	var top := PanelContainer.new()
 	_interface.add_child(top)
 	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	top.offset_left = 18; top.offset_right = -18; top.offset_top = 10; top.offset_bottom = 74
+	top.offset_left = 18
+	top.offset_right = -18
+	top.offset_top = 10
+	top.offset_bottom = 74
 	var top_row := HBoxContainer.new()
 	top_row.add_theme_constant_override("separation", 14)
 	top.add_child(top_row)
@@ -413,33 +454,83 @@ func _build_interface() -> void:
 	subtitle.modulate = Color("c4b985")
 	names.add_child(subtitle)
 	for i in definition.landmarks.size():
-		_button(top_row, str(definition.landmarks[i].title), func(): request_move(point(definition.landmarks[i].point)))
+		_button(
+			top_row,
+			str(definition.landmarks[i].title),
+			func():
+				request_move(point(definition.landmarks[i].point)),
+		)
 	var bottom := PanelContainer.new()
 	_interface.add_child(bottom)
 	bottom.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	bottom.offset_left = 18; bottom.offset_right = -18; bottom.offset_top = -89; bottom.offset_bottom = -10
+	bottom.offset_left = 18
+	bottom.offset_right = -18
+	bottom.offset_top = -89
+	bottom.offset_bottom = -10
 	var stack := VBoxContainer.new()
 	bottom.add_child(stack)
 	var controls := HBoxContainer.new()
 	controls.add_theme_constant_override("separation", 8)
 	stack.add_child(controls)
-	_pause = _button(controls, "Pause", func(): set_paused(not paused))
-	_original = _button(controls, "Voir l’original", func(): set_original(not original))
-	for entry in [["water", "Eau"], ["fire", "Torches"], ["atmosphere", "Atmosphère"], ["foliage", "Feuillage"]]:
-		var toggle := _button(controls, entry[1], func(): pass)
+	_pause = _button(
+		controls,
+		"Pause",
+		func():
+			set_paused(not paused),
+	)
+	_original = _button(
+		controls,
+		"Voir l’original",
+		func():
+			set_original(not original),
+	)
+	for entry in [
+		["water", "Eau"],
+		["fire", "Torches"],
+		["atmosphere", "Atmosphère"],
+		["foliage", "Feuillage"],
+	]:
+		var toggle := _button(
+			controls,
+			entry[1],
+			func():
+				pass,
+		)
 		toggle.toggle_mode = true
 		toggle.set_pressed_no_signal(true)
-		toggle.toggled.connect(func(value: bool): set_layer(entry[0], value))
-	var soft := _button(controls, "Mouvement doux", func(): pass)
+		toggle.toggled.connect(
+			func(value: bool):
+				set_layer(entry[0], value),
+		)
+	var soft := _button(
+		controls,
+		"Mouvement doux",
+		func():
+			pass,
+	)
 	soft.toggle_mode = true
-	soft.toggled.connect(func(value: bool): reduced = value; _apply_effects())
+	soft.toggled.connect(
+		func(value: bool):
+			reduced = value
+			_apply_effects(),
+	)
 	var space := Control.new()
 	space.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls.add_child(space)
-	_button(controls, "−", func(): set_zoom(zoom - 0.1))
+	_button(
+		controls,
+		"−",
+		func():
+			set_zoom(zoom - 0.1),
+	)
 	_zoom_label = Label.new()
 	controls.add_child(_zoom_label)
-	_button(controls, "+", func(): set_zoom(zoom + 0.1))
+	_button(
+		controls,
+		"+",
+		func():
+			set_zoom(zoom + 0.1),
+	)
 	_status = Label.new()
 	_status.add_theme_font_size_override("font_size", 13)
 	stack.add_child(_status)
@@ -449,8 +540,10 @@ func _build_interface() -> void:
 		style.border_color = Color("63735a")
 		style.set_border_width_all(1)
 		style.set_corner_radius_all(7)
-		style.content_margin_left = 15; style.content_margin_right = 15
-		style.content_margin_top = 9; style.content_margin_bottom = 9
+		style.content_margin_left = 15
+		style.content_margin_right = 15
+		style.content_margin_top = 9
+		style.content_margin_bottom = 9
 		panel.add_theme_stylebox_override("panel", style)
 	_update_status()
 

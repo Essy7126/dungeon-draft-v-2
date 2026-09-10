@@ -4,7 +4,7 @@ Le **Sanctuaire des Sources Émeraude** est le premier lieu de cette chaîne : n
 
 ## Essayer et contrôler
 
-PowerShell 7.2+, Godot défini par `tools/dev/toolchain.json`, Python 3.10+ avec Pillow. Renseigner `GODOT4_BIN` ou `-GodotPath`. Pour les commandes Python, utiliser `-PythonPath` si Python n'est pas dans le PATH.
+PowerShell 7.2+, Godot défini par `tools/dev/toolchain.json`, Python 3.10+ avec Pillow (`python -m pip install -r tools/halt_workshop/requirements.txt`). Renseigner `GODOT4_BIN` ou `-GodotPath`. Pour les commandes Python, utiliser `-PythonPath` si Python n'est pas dans le PATH. Pour simplement jouer après un `git pull`, **Godot suffit** : l'image, les masques et la calibration sont versionnés.
 
 ```powershell
 ./tools/halt_workshop/halt.ps1 open
