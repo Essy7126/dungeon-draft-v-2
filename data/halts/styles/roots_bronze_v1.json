@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "roots_bronze_v1",
+  "title": "Catabase · pierre, racines et bronze",
+  "reference_images": [
+    "res://asset/map/painted/merchant/hall_v1/hall.png"
+  ],
+  "locked": [
+    "Illustration 2D peinte, contours sombres lisibles, volumes stylisés ; aucun photoréalisme ni rendu 3D.",
+    "Vue élevée de trois quarts constante ; grandes dalles et lecture claire du sol.",
+    "Pierre bleu-gris ancienne, mousse, racines, bronze patiné, accents ambre.",
+    "Sol continu et large autour des points d'intérêt ; avant-plan bas ; aucune foule.",
+    "Sans texte, interface, grille, personnages ni PNJ dans l'image source."
+  ],
+  "variable": [
+    "Fonction du lieu et silhouette architecturale",
+    "Teinte de l'eau dans une famille jade, émeraude ou turquoise",
+    "Répartition des torches, bassins, accès et objets de service"
+  ],
+  "prompt_prefix": "Hand-painted 2D fantasy RPG environment in the EXACT art direction of the supplied reference. Chunky blue-gray stone, ancient roots and moss, aged bronze, readable dark contours, soft painted volumes, warm amber flames against cool deep shadows. Elevated three-quarter game camera, wide connected floor routes, no characters, no UI or text. Not photorealistic, not a 3D render.",
+  "gates": [
+    "Source réellement générée et enregistrée, dimensions et empreinte mesurées",
+    "Revue du thème, perspective et surface parcourable",
+    "Masques de matières et exclusions dessinés sur cette version exacte",
+    "Navigation testée : arrivée, boucle, points d'intérêt, obstacles",
+    "Pause, image originale, zoom et rendu contrôlés à 720p et 1080p",
+    "Affectation à la route explicite après validation, sans modifier les identifiants sauvegardés"
+  ]
+}

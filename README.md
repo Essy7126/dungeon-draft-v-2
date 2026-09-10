@@ -60,6 +60,11 @@ Le [dossier Spine et sa fiche de reprise locale](docs/spine/README.md) rassemble
 les recherches, connecteurs MCP, références de mouvement et prochains essais.
 Lire cette fiche pour reprendre le travail d'animation dans une autre tâche.
 
+L'[atelier des haltes peintes](tools/halt_workshop/README.md) prépare des maps dans
+une même direction artistique avec navigation, eau, feu et atmosphère paramétrés.
+Son premier sanctuaire émeraude est jouable dans `hub/painted_halt/LivingHalt.tscn`
+(**F6**) ou avec `./tools/halt_workshop/halt.ps1 open`.
+
 Le [lanceur de développement](tools/dev/README.md) regroupe diagnostic, tests,
 inspection des ressources, formatage et captures avec des rapports compacts :
 `./dev.ps1 help` (PowerShell 7.2+). La version moteur de référence est Godot 4.7.1.
