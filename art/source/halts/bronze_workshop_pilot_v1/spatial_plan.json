@@ -1,0 +1,425 @@
+{
+  "schema_version": 1,
+  "id": "bronze_workshop_pilot_v1",
+  "title": "L’Atelier du Bronze",
+  "subtitle": "PIERRE · BRONZE · ATELIER À TAILLE HUMAINE",
+  "kind": "forge",
+  "stage": "playable_study",
+  "style": "res://data/halts/styles/roots_bronze_v1.json",
+  "source": {
+    "image": "res://asset/map/painted/halts/bronze_workshop_pilot_v1/workshop.png",
+    "size": [
+      1672,
+      941
+    ],
+    "sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+    "provider": "image_gen",
+    "generated_on": "2026-09-10",
+    "prompt": "res://art/source/halts/bronze_workshop_pilot_v1/generation_prompt.txt",
+    "reference": "res://asset/map/painted/merchant/hall_v1/hall.png",
+    "references": [
+      "res://art/source/halts/bronze_workshop_pilot_v1/blockout.png",
+      "res://art/source/halts/bronze_workshop_pilot_v1/scale_guide.png",
+      "res://asset/map/painted/merchant/hall_v1/hall.png"
+    ]
+  },
+  "build_dir": "res://asset/map/painted/halts/bronze_workshop_pilot_v1",
+  "world": {
+    "width": 2200,
+    "speed": 195,
+    "foot_clearance": 20,
+    "spawn": [
+      0.322804,
+      0.625784
+    ],
+    "player_height_ratio": 0.212
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.193408,
+        0.622742
+      ],
+      [
+        0.605501,
+        0.924589
+      ],
+      [
+        0.786223,
+        0.604395
+      ],
+      [
+        0.374131,
+        0.302548
+      ]
+    ],
+    "obstacles": [
+      [
+        [
+          0.33333,
+          0.381874
+        ],
+        [
+          0.412039,
+          0.439525
+        ],
+        [
+          0.455649,
+          0.362258
+        ],
+        [
+          0.376941,
+          0.304607
+        ]
+      ],
+      [
+        [
+          0.44038,
+          0.442811
+        ],
+        [
+          0.549447,
+          0.522699
+        ],
+        [
+          0.583289,
+          0.46274
+        ],
+        [
+          0.474222,
+          0.382851
+        ]
+      ],
+      [
+        [
+          0.393415,
+          0.499273
+        ],
+        [
+          0.417027,
+          0.516568
+        ],
+        [
+          0.43168,
+          0.490606
+        ],
+        [
+          0.408067,
+          0.473312
+        ]
+      ],
+      [
+        [
+          0.496036,
+          0.704619
+        ],
+        [
+          0.54551,
+          0.740857
+        ],
+        [
+          0.576211,
+          0.686461
+        ],
+        [
+          0.526738,
+          0.650223
+        ]
+      ]
+    ]
+  },
+  "landmarks": [
+    {
+      "id": "workbench",
+      "title": "L’établi du bronzier",
+      "action": "merchant",
+      "point": [
+        0.469056,
+        0.514488
+      ],
+      "focus": [
+        0.507775,
+        0.396387
+      ],
+      "radius": 0.045,
+      "description": "Préparer son équipement à un établi à hauteur de taille."
+    },
+    {
+      "id": "craft_memory",
+      "title": "Le petit seau",
+      "action": "dialogue",
+      "point": [
+        0.389869,
+        0.535118
+      ],
+      "focus": [
+        0.41567,
+        0.481403
+      ],
+      "radius": 0.035,
+      "description": "Le seau de trempe, les outils et l’établi ont été dimensionnés ensemble, à partir du corps d’Achille. Le bronze conserve les marques des réparations précédentes."
+    },
+    {
+      "id": "exit",
+      "title": "La porte de l’atelier",
+      "action": "exit",
+      "point": [
+        0.698891,
+        0.571879
+      ],
+      "focus": [
+        0.717703,
+        0.412327
+      ],
+      "radius": 0.05,
+      "description": "Quitter la visite de l’atelier."
+    }
+  ],
+  "water": {
+    "tint": "#48d896",
+    "polygons": [],
+    "exclusions": []
+  },
+  "cascades": [],
+  "foliage": [],
+  "bounce": [],
+  "mist": [],
+  "torches": [
+    {
+      "id": "hearth",
+      "point": [
+        0.386962,
+        0.286929
+      ],
+      "radius": [
+        0.025,
+        0.048
+      ],
+      "phase": 0.4,
+      "smoke_strength": 0.15,
+      "flame_strength": 1.0,
+      "light_strength": 0.75
+    }
+  ],
+  "foreground": [
+    {
+      "id": "pillar",
+      "anchor": [
+        0.54366,
+        0.723698
+      ],
+      "polygon": [
+        [
+          0.534091,
+          0.430393
+        ],
+        [
+          0.537081,
+          0.430393
+        ],
+        [
+          0.574163,
+          0.450584
+        ],
+        [
+          0.577153,
+          0.454835
+        ],
+        [
+          0.577153,
+          0.471838
+        ],
+        [
+          0.575359,
+          0.479277
+        ],
+        [
+          0.569976,
+          0.49203
+        ],
+        [
+          0.569378,
+          0.506908
+        ],
+        [
+          0.57177,
+          0.511158
+        ],
+        [
+          0.57177,
+          0.526036
+        ],
+        [
+          0.569378,
+          0.532412
+        ],
+        [
+          0.569378,
+          0.660999
+        ],
+        [
+          0.580144,
+          0.669501
+        ],
+        [
+          0.583134,
+          0.674814
+        ],
+        [
+          0.583134,
+          0.690755
+        ],
+        [
+          0.580144,
+          0.700319
+        ],
+        [
+          0.569976,
+          0.721573
+        ],
+        [
+          0.556818,
+          0.741764
+        ],
+        [
+          0.552632,
+          0.743889
+        ],
+        [
+          0.505981,
+          0.714134
+        ],
+        [
+          0.503589,
+          0.70882
+        ],
+        [
+          0.504187,
+          0.690755
+        ],
+        [
+          0.507177,
+          0.683316
+        ],
+        [
+          0.517344,
+          0.666312
+        ],
+        [
+          0.517344,
+          0.539851
+        ],
+        [
+          0.514952,
+          0.536663
+        ],
+        [
+          0.51555,
+          0.513284
+        ],
+        [
+          0.517943,
+          0.509033
+        ],
+        [
+          0.517943,
+          0.503719
+        ],
+        [
+          0.510766,
+          0.499469
+        ],
+        [
+          0.508373,
+          0.494155
+        ],
+        [
+          0.508373,
+          0.476089
+        ],
+        [
+          0.510167,
+          0.46865
+        ],
+        [
+          0.518541,
+          0.459086
+        ]
+      ]
+    }
+  ],
+  "ambience": {
+    "footsteps": "stone",
+    "sources": [
+      {
+        "id": "hearth",
+        "kind": "fire",
+        "point": [
+          0.386962,
+          0.286929
+        ],
+        "radius": 0.35,
+        "gain_db": -18
+      }
+    ]
+  },
+  "review": {
+    "dry": true,
+    "stable_pixel": [
+      0.355861,
+      0.726886
+    ],
+    "fire_pixel": [
+      0.386962,
+      0.286929
+    ],
+    "forbidden_points": [
+      [
+        0.39449,
+        0.372066
+      ],
+      [
+        0.511834,
+        0.452775
+      ],
+      [
+        0.412547,
+        0.49494
+      ],
+      [
+        0.536124,
+        0.69554
+      ],
+      [
+        0.120215,
+        0.340064
+      ]
+    ],
+    "loop_waypoints": [
+      [
+        0.389869,
+        0.535118
+      ],
+      [
+        0.469056,
+        0.514488
+      ],
+      [
+        0.567174,
+        0.640526
+      ],
+      [
+        0.587846,
+        0.733425
+      ],
+      [
+        0.50612,
+        0.7487
+      ],
+      [
+        0.484963,
+        0.658066
+      ]
+    ]
+  }
+}

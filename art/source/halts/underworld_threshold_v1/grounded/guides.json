@@ -1,0 +1,527 @@
+{
+  "schema_version": 1,
+  "collection": "Threshold grounded generated",
+  "resolution": [
+    1600,
+    900
+  ],
+  "source_blend": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\art\\source\\blender\\halt_scale_lab_v1\\halt_scale_lab_v1.blend",
+  "source_blend_sha256": "b76055ade6b7ce4a0d494381fb797d1cfda681595ab4095b47c9f292d4de4364",
+  "evaluated_scene_may_be_unsaved": false,
+  "frame": 1,
+  "camera": "Threshold orthographic locked.001",
+  "camera_matrix_world": [
+    [
+      0.8682430982589722,
+      -0.3113996088504791,
+      0.3862437307834625,
+      8.0
+    ],
+    [
+      0.4961390197277069,
+      0.5449491739273071,
+      -0.6759263873100281,
+      -13.699999809265137
+    ],
+    [
+      2.0214955043229565e-08,
+      0.7784990072250366,
+      0.6276458501815796,
+      14.100000381469727
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "camera_frame_bounds": [
+    -9.899999618530273,
+    9.899999618530273,
+    -5.568749904632568,
+    5.568749904632568
+  ],
+  "clip_scene_units": [
+    0.10000000149011612,
+    1000.0
+  ],
+  "unit_scale_metres": 1.0,
+  "pixel_aspect": [
+    1.0,
+    1.0
+  ],
+  "projection_error_normalized": 1.0022069284187918e-07,
+  "projection": "ORTHO_pixel_centers_no_AA",
+  "depth_min_m": 14.749649047851562,
+  "depth_max_m": 29.452037811279297,
+  "depth_span_m": 14.702388763427734,
+  "depth_png_bits": 16,
+  "depth_background": 0,
+  "depth_near": 65535,
+  "normal_space": "camera +X right +Y up +Z toward camera; geometric winding normals",
+  "projected_triangles_sha256": "cb6d0f8d033c877837367f131028ae0fcd241e4ad365fa3f3256c71950b54814",
+  "objects": 233,
+  "triangles": 24660,
+  "visible_pixels": 1440000,
+  "groups": [
+    {
+      "layer": "brazier_0",
+      "object_ids": [
+        7,
+        9,
+        37
+      ],
+      "isolated_pixels": 4897,
+      "visible_pixels": 4052
+    },
+    {
+      "layer": "brazier_1",
+      "object_ids": [
+        8,
+        10,
+        38
+      ],
+      "isolated_pixels": 4900,
+      "visible_pixels": 4305
+    },
+    {
+      "layer": "fire_0",
+      "object_ids": [
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "isolated_pixels": 838,
+      "visible_pixels": 725
+    },
+    {
+      "layer": "fire_1",
+      "object_ids": [
+        29,
+        30,
+        31,
+        32,
+        33
+      ],
+      "isolated_pixels": 837,
+      "visible_pixels": 728
+    },
+    {
+      "layer": "floor",
+      "object_ids": [
+        12,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170
+      ],
+      "isolated_pixels": 1440000,
+      "visible_pixels": 837522
+    },
+    {
+      "layer": "gate",
+      "object_ids": [
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        34,
+        35,
+        36,
+        171,
+        172,
+        192,
+        193,
+        194
+      ],
+      "isolated_pixels": 147276,
+      "visible_pixels": 140712
+    },
+    {
+      "layer": "rock",
+      "object_ids": [
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182
+      ],
+      "isolated_pixels": 436574,
+      "visible_pixels": 331054
+    },
+    {
+      "layer": "roots",
+      "object_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191
+      ],
+      "isolated_pixels": 88487,
+      "visible_pixels": 64863
+    },
+    {
+      "layer": "statue_left",
+      "object_ids": [
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207
+      ],
+      "isolated_pixels": 20280,
+      "visible_pixels": 20276
+    },
+    {
+      "layer": "statue_rear",
+      "object_ids": [
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220
+      ],
+      "isolated_pixels": 17716,
+      "visible_pixels": 17700
+    },
+    {
+      "layer": "statue_right",
+      "object_ids": [
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233
+      ],
+      "isolated_pixels": 18066,
+      "visible_pixels": 18063
+    }
+  ],
+  "files": [
+    {
+      "path": "depth.png",
+      "sha256": "ce8f8c5ed54dc05ff54df97ea398f3e479c2fc287b8f9a90629be907085a438c",
+      "bytes": 1090794
+    },
+    {
+      "path": "depth_metres.npy",
+      "sha256": "590f04cf575c85612791203c98a2b9e3b507758310c000d59d41cf2b67277130",
+      "bytes": 5760128
+    },
+    {
+      "path": "normals.png",
+      "sha256": "694eba521de4f516857f1dbeed4437ee283290e3f47bebac6bcd6aa6654ed6e9",
+      "bytes": 107429
+    },
+    {
+      "path": "object_ids.png",
+      "sha256": "8078461aba48f98cf3bbaa06eca493bf967b23ede31a5157bf3aa4c68519e205",
+      "bytes": 50036
+    },
+    {
+      "path": "coverage.png",
+      "sha256": "c8f4fd1424dd35d1b8c9e15869411227a5c8fffae289f4e94a9d59d495c74333",
+      "bytes": 3235
+    },
+    {
+      "path": "object_palette.json",
+      "sha256": "57f2d97e99bc56040339209ceb23257327b8d48be97928dd3b8da3bdda0203ea",
+      "bytes": 59302
+    },
+    {
+      "path": "layers/brazier_0.png",
+      "sha256": "6909d6882404202e5c11f827a701a9af8fb60aab7d119c3722240e8430097c6f",
+      "bytes": 6216
+    },
+    {
+      "path": "masks/brazier_0_visible.png",
+      "sha256": "9738ef24ce5b77baa0790321fb09d7ef44ea7dc948ccfd67bc17913d84ac55bb",
+      "bytes": 1795
+    },
+    {
+      "path": "layers/brazier_1.png",
+      "sha256": "1136b9f4b064b7c78255ad42c723d0a902c996127bb928bdc2ebc7700f310d8e",
+      "bytes": 6217
+    },
+    {
+      "path": "masks/brazier_1_visible.png",
+      "sha256": "e807c5f9b244008ff7a80e04fd89e2a75985301e3b9b91c5cc7fc0f74adbb61f",
+      "bytes": 1797
+    },
+    {
+      "path": "layers/fire_0.png",
+      "sha256": "bc1ec651df42a6e1735d2104c32f05507c87bd60525d493ae5eaa3a8f158d676",
+      "bytes": 5895
+    },
+    {
+      "path": "masks/fire_0_visible.png",
+      "sha256": "915a33c15202595fa6041104b0b3f87a8d5ac6214603b23287e3d726c1812042",
+      "bytes": 1623
+    },
+    {
+      "path": "layers/fire_1.png",
+      "sha256": "a11cfb111e58ad51b7b9c86ca1aed89dac2422ccb99f92bb7b228bde45e63b64",
+      "bytes": 5887
+    },
+    {
+      "path": "masks/fire_1_visible.png",
+      "sha256": "9c81ec158b341e4d749c5726865a3d2c6dd9243005866863b1439b88ead9465e",
+      "bytes": 1625
+    },
+    {
+      "path": "layers/floor.png",
+      "sha256": "2a9f7ab6b4bcdf5f5c30688e53b5da61b9359ff81905d4344169531b06674793",
+      "bytes": 30339
+    },
+    {
+      "path": "masks/floor_visible.png",
+      "sha256": "9e88b87345d073fb1d4ab6f178bb2fe5519b946997ef4107111f6874858472a6",
+      "bytes": 15058
+    },
+    {
+      "path": "layers/gate.png",
+      "sha256": "f966847249b2197333bd11bdd7c4cc4a4ee144a34a6aa55f53822456e08d4b67",
+      "bytes": 11524
+    },
+    {
+      "path": "masks/gate_visible.png",
+      "sha256": "ae4eeb1bf614bbb836ccf779ba19342421de0910ff48c3d35d0287e3b8d3bfb1",
+      "bytes": 5348
+    },
+    {
+      "path": "layers/rock.png",
+      "sha256": "f5786620a0aa92537e3b2a15eb17dd5543df0dee68f5eef08c2fa5c674d4cbe0",
+      "bytes": 18054
+    },
+    {
+      "path": "masks/rock_visible.png",
+      "sha256": "8057a3d613a1fcc417fe892814b3bdfe9a82854a801f2185a596b91c7963eb86",
+      "bytes": 12555
+    },
+    {
+      "path": "layers/roots.png",
+      "sha256": "d48a574fdbf8df3291dfc8297fc8452a23d76c429b5920ec127912bf23ceed4c",
+      "bytes": 13882
+    },
+    {
+      "path": "masks/roots_visible.png",
+      "sha256": "e69f3a63041d435c7a47e08f69880bcbff542fd64d12ab053f454d9411c35466",
+      "bytes": 4267
+    },
+    {
+      "path": "layers/statue_left.png",
+      "sha256": "608abc4a62834b1ace30879dd7f86952abc283f9881154eb1797728b6c881dca",
+      "bytes": 7514
+    },
+    {
+      "path": "masks/statue_left_visible.png",
+      "sha256": "35929704a155c516437442296321b02ce86a23a828811b9f7527e2882bf681ce",
+      "bytes": 2523
+    },
+    {
+      "path": "layers/statue_rear.png",
+      "sha256": "639f4cc3d30b05ace26264370b1e2fa61e321793880f067c977024347607d914",
+      "bytes": 7353
+    },
+    {
+      "path": "masks/statue_rear_visible.png",
+      "sha256": "cbe3351cfbef59d638d86bf02642cdc4998f5341389c5bb724fe58997d6c177e",
+      "bytes": 2191
+    },
+    {
+      "path": "layers/statue_right.png",
+      "sha256": "be8cd060652ca1a111b7430040046d09be84e2f7a8c4c3ba24c273f69aaeeb92",
+      "bytes": 7388
+    },
+    {
+      "path": "masks/statue_right_visible.png",
+      "sha256": "952c3ab9fc5e6dcfd3e3a991cc8a9b19df5fcf0d4362aba5741fb11341469fc2",
+      "bytes": 2193
+    },
+    {
+      "path": "GUIDES.md",
+      "sha256": "e1dd5690bf9e3218a135fb1ab3f6dd263a350c86d216eca84d66d7908c5b5979",
+      "bytes": 1940
+    }
+  ],
+  "elapsed_seconds": 4.334
+}

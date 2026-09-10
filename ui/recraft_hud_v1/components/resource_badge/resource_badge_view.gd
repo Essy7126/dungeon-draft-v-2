@@ -13,6 +13,10 @@ const VISUAL_THEME_FACTORY := preload(
 @onready var value_label: Label = %ValueLabel
 @onready var empty_overlay: ColorRect = %EmptyOverlay
 
+var _tactical := false
+var _value := 0
+var _maximum := 0
+var _resource_name := ""
 var _refined_style := false
 var _visual_skin: HudVisualSkinData = null
 var _badge_style: StyleBoxFlat = null
@@ -63,6 +67,10 @@ func set_badge(
 	icon_texture: Texture2D = null,
 	icon_text: String = ""
 ) -> void:
+	_value = value
+	_maximum = maximum
+	_resource_name = icon_text
+	accessibility_name = "Points d’action" if icon_text == "PA" else "Points de mouvement" if icon_text == "PM" else icon_text
 	var style := _badge_style
 	if _visual_skin != null and not _visual_skin.neutral_grayscale:
 		style = VISUAL_THEME_FACTORY.make_panel_style(
@@ -70,7 +78,7 @@ func set_badge(
 			Color(color.r, color.g, color.b, 0.24),
 			color.lightened(0.28),
 			_visual_skin.border_regular,
-			_visual_skin.radius_round,
+			_visual_skin.radius_control if _tactical else _visual_skin.radius_round,
 			true
 		)
 	if style == null:
@@ -92,8 +100,8 @@ func set_badge(
 	icon.visible = icon_texture != null
 	icon_fallback.visible = icon_texture == null
 	icon_fallback.text = icon_text
-	value_label.text = str(value)
-	empty_overlay.visible = value <= 0
+	value_label.text = "%s %d/%d" % [icon_text, value, maximum] if _tactical else str(value)
+	empty_overlay.visible = value <= 0 and not _tactical
 	tooltip_text = "%s : %d / %d" % [icon_text, value, maximum]
 
 
@@ -129,3 +137,28 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 		skin.surface_scrim.b,
 		0.62
 	)
+
+
+func apply_tactical_layout(enabled: bool, scale_factor: float) -> void:
+	_tactical = enabled
+	if not enabled:
+		value_label.text = str(_value)
+		return
+	custom_minimum_size = Vector2(maxf(98.0 * scale_factor, 90.0), maxf(32.0 * scale_factor, 28.0))
+	base.hide()
+	var panel_style := color_overlay.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	if panel_style != null:
+		panel_style.set_corner_radius_all(5)
+		color_overlay.add_theme_stylebox_override("panel", panel_style)
+	color_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_LEFT)
+	icon.offset_left = 6
+	icon.offset_right = 24
+	icon.offset_top = -9
+	icon.offset_bottom = 9
+	value_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	value_label.offset_left = 26
+	value_label.offset_right = -4
+	value_label.add_theme_font_size_override("font_size", maxi(roundi(14 * scale_factor), 13))
+	value_label.text = "%s %d/%d" % [_resource_name, _value, _maximum]
+	empty_overlay.hide()

@@ -2,21 +2,25 @@
 class_name ArenaBackdropTransactionService
 extends RefCounted
 
-enum CopyMode { BACKGROUND_ONLY, DECOR_CALIBRATION_CAMERA, FULL_VISUAL_PACK }
+enum CopyMode {
+	BACKGROUND_ONLY,
+	DECOR_CALIBRATION_CAMERA,
+	FULL_VISUAL_PACK,
+}
 
-var recovery_snapshot := {}
+var recovery_snapshot := { }
 
 
 func inspect(
-		arena: ArenaDefinition,
-		source: ArenaBackdropSourceDefinition,
-		mode: CopyMode
-	) -> Dictionary:
+	arena: ArenaDefinition,
+	source: ArenaBackdropSourceDefinition,
+	mode: CopyMode,
+) -> Dictionary:
 	if arena == null or source == null or not source.is_loadable():
-		return {"ok": false, "error": "source_not_loadable"}
+		return { "ok": false, "error": "source_not_loadable" }
 	var actual_size := _image_size(source.background_path)
 	if actual_size == Vector2i.ZERO:
-		return {"ok": false, "error": "background_texture_failed"}
+		return { "ok": false, "error": "background_texture_failed" }
 	return {
 		"ok": true,
 		"mode": mode,
@@ -34,10 +38,10 @@ func inspect(
 
 
 func apply(
-		arena: ArenaDefinition,
-		source: ArenaBackdropSourceDefinition,
-		mode: CopyMode
-	) -> Dictionary:
+	arena: ArenaDefinition,
+	source: ArenaBackdropSourceDefinition,
+	mode: CopyMode,
+) -> Dictionary:
 	var inspection := inspect(arena, source, mode)
 	if not bool(inspection.get("ok", false)):
 		return inspection
@@ -68,7 +72,7 @@ func apply(
 	if gameplay_after != gameplay_before:
 		arena.restore_snapshot(recovery_snapshot)
 		ArenaRuntimeBridge.sync_runtime_resources(arena)
-		return {"ok": false, "error": "gameplay_fingerprint_changed"}
+		return { "ok": false, "error": "gameplay_fingerprint_changed" }
 	return {
 		"ok": true,
 		"before": recovery_snapshot.duplicate(true),
@@ -76,7 +80,7 @@ func apply(
 		"gameplay_before": gameplay_before,
 		"gameplay_after": gameplay_after,
 		"visual_changed": ArenaEditSession.fingerprint(recovery_snapshot) \
-			!= ArenaEditSession.fingerprint(arena.to_snapshot()),
+				!= ArenaEditSession.fingerprint(arena.to_snapshot()),
 	}
 
 
@@ -91,7 +95,7 @@ func restore(arena: ArenaDefinition) -> bool:
 
 static func stage_external_image(path: String) -> Dictionary:
 	if path.is_empty() or not FileAccess.file_exists(path):
-		return {"ok": false, "error": "external_file_missing"}
+		return { "ok": false, "error": "external_file_missing" }
 	var bytes := FileAccess.get_file_as_bytes(path)
 	var hashing := HashingContext.new()
 	hashing.start(HashingContext.HASH_SHA256)
@@ -99,18 +103,26 @@ static func stage_external_image(path: String) -> Dictionary:
 	var digest := hashing.finish().hex_encode()
 	var extension := path.get_extension().to_lower()
 	if not extension in ["png", "jpg", "jpeg", "webp"]:
-		return {"ok": false, "error": "unsupported_extension"}
+		return { "ok": false, "error": "unsupported_extension" }
 	var target := "user://dungeon_draft_studio/backdrop_staging/%s.%s" % [digest, extension]
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(target.get_base_dir()))
 	var output := FileAccess.open(target, FileAccess.WRITE)
 	if output == null:
-		return {"ok": false, "error": "staging_write_failed"}
+		return { "ok": false, "error": "staging_write_failed" }
 	output.store_buffer(bytes)
 	output.close()
-	return {"ok": true, "staged_path": target, "sha256": digest}
+	return { "ok": true, "staged_path": target, "sha256": digest }
 
 
 static func _image_size(path: String) -> Vector2i:
+	# Original image dimensions must not depend on an imported texture cache.
+	# This also permits native Studio image attachment followed by immediate preview.
+	if (
+		FileAccess.file_exists(path)
+		and path.get_extension().to_lower() in ["png", "jpg", "jpeg", "webp"]
+	):
+		var original := Image.load_from_file(ProjectSettings.globalize_path(path))
+		return original.get_size() if original != null and not original.is_empty() else Vector2i.ZERO
 	if ResourceLoader.exists(path):
 		var texture := load(path) as Texture2D
 		return Vector2i(texture.get_size()) if texture != null else Vector2i.ZERO

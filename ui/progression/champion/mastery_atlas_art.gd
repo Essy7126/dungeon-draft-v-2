@@ -3,6 +3,7 @@ extends RefCounted
 ## Original paintings indexed by authored gameplay IDs, without editing game rules.
 ## Generated from tools/mastery_atlas_art/manifest.json. Frames are cached and shared.
 
+const GLYPHS := preload("res://ui/theme/catabase_icon_library.gd")
 const VERSION := 2
 const SHEETS := {
   &"wrath": {
@@ -245,11 +246,13 @@ static var _icons: Dictionary = {}
 
 
 static func node_icon(node_id: StringName) -> Texture2D:
-	return _icon(node_id, NODE_REGIONS)
+	var glyph := GLYPHS.icon("masteries", String(node_id)) if NODE_REGIONS.has(node_id) else null
+	return glyph if glyph != null else _icon(node_id, NODE_REGIONS)
 
 
 static func attribute_icon(attribute_id: StringName) -> Texture2D:
-	return _icon(attribute_id, ATTRIBUTE_REGIONS)
+	var glyph := GLYPHS.icon("attributes", String(attribute_id)) if ATTRIBUTE_REGIONS.has(attribute_id) else null
+	return glyph if glyph != null else _icon(attribute_id, ATTRIBUTE_REGIONS)
 
 
 static func node_ids() -> Array[StringName]:

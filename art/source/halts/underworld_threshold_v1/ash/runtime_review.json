@@ -1,0 +1,30 @@
+{
+  "status": "validated",
+  "source_sha256": "24eba80e2d65561b776a3e504e353e7a60d0e6837548e81283e5073a877c7c93",
+  "manifest_sha256": "42494954c33152fb0165a92e8dec70e23a6a3dfa482e271f771cd7a0c8fd6026",
+  "units": {
+    "tests": 84,
+    "assertions": 1018,
+    "report": "artifacts/dev/20260910-190542-threshold-unit-skip-painted_g-5942df06/gut-strict-report.json"
+  },
+  "visual": {
+    "checks": 65,
+    "captures": 27,
+    "report": "artifacts/dev/20260910-180322-threshold-capture-skip-painted_g-6c3d3695/summary.json"
+  },
+  "flows": [
+    {
+      "ending": "skip",
+      "appearance": "painted_g",
+      "checks": 37,
+      "report": "artifacts/dev/20260910-185651-threshold-flow-skip-painted_g-7cea2bb1/summary.json"
+    },
+    {
+      "ending": "natural",
+      "appearance": "classic",
+      "checks": 37,
+      "report": "artifacts/dev/20260910-185832-threshold-flow-natural-classic-5610a136/summary.json"
+    }
+  ],
+  "scope": "Seuil des Ombres, source ash finale, plaques cliquables, navigation aidée, fumées et braseros ; inspection visuelle et sortie de combat sans fuite."
+}

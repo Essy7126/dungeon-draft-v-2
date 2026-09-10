@@ -1,0 +1,1112 @@
+[
+  {
+    "key": "spells/peleid_strike",
+    "subject": "Frappe du Péléide: a massive bronze spearhead thrusting forward in an amber impact crescent, wood shaft, laurel engravings, bronze sparks.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/fulminant_dash",
+    "subject": "Percée fulgurante: close-up of a Greek armored sandalled foot launching into a dash, jade cloth and dust sweeping backward in one dynamic arc.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/pelion_shot",
+    "subject": "Tir du Pélion: a drawn dark wood recurve bow with a bronze-tipped arrow ready to fly, tension, jade fletching, amber highlights.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/bronze_guard",
+    "subject": "Garde d’airain: a substantial round Greek hoplite bronze shield seen in three-quarter view, engraved laurel, jade patina, luminous protective rim.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/crochet",
+    "subject": "Crochet: the curved head of a bronze hooked spear wrenching inward, leather shaft and a hooked sweep of amber movement; pulling action.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/fauchage",
+    "subject": "Fauchage: sweeping Greek spear blade cutting a wide crescent around the wielder, bronze edge and broad brushstroke arc, dynamic action.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/entaille",
+    "subject": "Entaille sacrificielle: a Greek xiphos blade with a few rich crimson droplets and a red slash of light; sacrifice, danger, crafted steel.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/moisson",
+    "subject": "Moisson vitale: curved bronze sickle blade reaping a luminous crimson essence that transforms into a small jade life flame.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/rupture",
+    "subject": "Trait de rupture: a long bronze arrow breaking through a cracked stone fragment, strong forward motion and amber fragments.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/marque",
+    "subject": "Marque du chasseur: a realistic painted amber hawk eye within a feathered brow, focused on its prey, a subtle emerald targeting glint, no abstract crosshair.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/feinte",
+    "subject": "Feinte latérale: a Greek leather sandal stepping sideways on a small stone ledge, jade cloth and a curving trail showing deceptive movement.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/contretemps",
+    "subject": "Contretemps: crossed bronze dagger and spear blade seen close-up, one deflecting the other, a curved jade afterimage suggesting a counterstep.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/heurt",
+    "subject": "Heurt d’airain: a round bronze shield striking a jagged stone fragment, substantial metal, warm impact sparks, offensive shield bash.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/posture",
+    "subject": "Posture d’airain: grounded bronze shield braced against a planted spear, sturdy dark leather straps, protective jade light at the base.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/souffle",
+    "subject": "Second souffle: a cupped armored hand cradling a living emerald green flame, delicate warm highlights, restorative breath made tangible.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/marche",
+    "subject": "Marche du survivant: a sturdy leather sandal beside a growing jade laurel sprig, soft healing light curling around the ankle.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/braise",
+    "subject": "Trait de braise: a sculpted orange firebolt with a glowing ember core, curling flame and charcoal sparks; paint the flame in bold readable shapes.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/givre",
+    "subject": "Givre: an angular cluster of pale blue ice crystals with frosted surfaces and a curling cold vapor stroke.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/foudre",
+    "subject": "Foudre: a branching golden lightning strike shattering a small bronze fragment, cool blue rim light and bright restrained sparks.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/serment_rempart",
+    "subject": "Serment du rempart: heavy bronze shield bound with a crimson oath ribbon, a tiny red droplet suspended against jade protective light.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/serment_brasier",
+    "subject": "Serment du brasier: an ornate bronze brazier bowl with powerful orange flames and a crimson oath ribbon wrapped around its stem.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_tempest",
+    "subject": "Tempête: a dramatic circular whirlwind of bronze spear glints, stone fragments and jade wind, clearly circular rather than a thrust.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_crochet_mutation",
+    "subject": "Crochet: the curved head of a bronze hooked spear wrenching inward, leather shaft and a hooked sweep of amber movement; pulling action. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_crochet_legend",
+    "subject": "Crochet: the curved head of a bronze hooked spear wrenching inward, leather shaft and a hooked sweep of amber movement; pulling action. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_fauchage_signature",
+    "subject": "Fauchage: sweeping Greek spear blade cutting a wide crescent around the wielder, bronze edge and broad brushstroke arc, dynamic action. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_entaille_mutation",
+    "subject": "Entaille sacrificielle: a Greek xiphos blade with a few rich crimson droplets and a red slash of light; sacrifice, danger, crafted steel. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_entaille_legend",
+    "subject": "Entaille sacrificielle: a Greek xiphos blade with a few rich crimson droplets and a red slash of light; sacrifice, danger, crafted steel. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_moisson_signature",
+    "subject": "Moisson vitale: curved bronze sickle blade reaping a luminous crimson essence that transforms into a small jade life flame. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_rupture_mutation",
+    "subject": "Trait de rupture: a long bronze arrow breaking through a cracked stone fragment, strong forward motion and amber fragments. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_rupture_legend",
+    "subject": "Trait de rupture: a long bronze arrow breaking through a cracked stone fragment, strong forward motion and amber fragments. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_marque_signature",
+    "subject": "Marque du chasseur: a realistic painted amber hawk eye within a feathered brow, focused on its prey, a subtle emerald targeting glint, no abstract crosshair. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_feinte_mutation",
+    "subject": "Feinte latérale: a Greek leather sandal stepping sideways on a small stone ledge, jade cloth and a curving trail showing deceptive movement. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_feinte_legend",
+    "subject": "Feinte latérale: a Greek leather sandal stepping sideways on a small stone ledge, jade cloth and a curving trail showing deceptive movement. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_contretemps_signature",
+    "subject": "Contretemps: crossed bronze dagger and spear blade seen close-up, one deflecting the other, a curved jade afterimage suggesting a counterstep. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_heurt_mutation",
+    "subject": "Heurt d’airain: a round bronze shield striking a jagged stone fragment, substantial metal, warm impact sparks, offensive shield bash. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_heurt_legend",
+    "subject": "Heurt d’airain: a round bronze shield striking a jagged stone fragment, substantial metal, warm impact sparks, offensive shield bash. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_posture_signature",
+    "subject": "Posture d’airain: grounded bronze shield braced against a planted spear, sturdy dark leather straps, protective jade light at the base. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_souffle_mutation",
+    "subject": "Second souffle: a cupped armored hand cradling a living emerald green flame, delicate warm highlights, restorative breath made tangible. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_souffle_legend",
+    "subject": "Second souffle: a cupped armored hand cradling a living emerald green flame, delicate warm highlights, restorative breath made tangible. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_marche_signature",
+    "subject": "Marche du survivant: a sturdy leather sandal beside a growing jade laurel sprig, soft healing light curling around the ankle. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_braise_mutation",
+    "subject": "Trait de braise: a sculpted orange firebolt with a glowing ember core, curling flame and charcoal sparks; paint the flame in bold readable shapes. This is the mutation form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "mutation",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_braise_legend",
+    "subject": "Trait de braise: a sculpted orange firebolt with a glowing ember core, curling flame and charcoal sparks; paint the flame in bold readable shapes. This is the legend form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "legend",
+    "status": "generated"
+  },
+  {
+    "key": "spells/exp_givre_signature",
+    "subject": "Givre: an angular cluster of pale blue ice crystals with frosted surfaces and a curling cold vapor stroke. This is the signature form: retain the family subject but illustrate a stronger distinct composition, additional jade magical material for mutation, luminous golden power for legend, or a crimson ceremonial binding for signature. No badge, no text, no drawn geometric rank symbols.",
+    "rank": "signature",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_levier",
+    "subject": "Levier des Myrmidons: bronze hooked war-pick with dark leather wrapped grip and engraved laurel, full weapon diagonal.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_lame_sang",
+    "subject": "Lame du talon: short Greek xiphos sword, deep aged bronze and steel, crimson leather grip and a dark red gemstone in the pommel.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_javeline",
+    "subject": "Javeline des longues vues: slender full Greek javelin diagonal, leaf-shaped bronze spearhead, jade tied ribbon and long wooden shaft.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_xiphos_danse",
+    "subject": "Xiphos des deux appuis: elegant leaf-shaped Greek short sword, flowing jade tassel, silver-blue edge and warm bronze guard.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_masse_airain",
+    "subject": "Masse du rempart: heavy flanged bronze mace, chunky faceted head with jade patina, dark leather grip.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_fer_braise",
+    "subject": "Fer de la fournaise: a Greek blade forged from dark iron, glowing amber fissures in the metal and bronze pommel, restrained ember smoke.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_cuirasse",
+    "subject": "Cuirasse d’Éaque: empty muscular Greek bronze breastplate, jade patina, layered shoulder guards and dark leather straps, three-quarter view.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_lin_survivant",
+    "subject": "Lin du survivant: folded ivory linen cuirass with quilted layers, jade cloth sash and stitched brown leather trim.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_sandales",
+    "subject": "Sandales du détour: pair of Greek brown leather sandals, thick stitched straps, bronze buckles and jade ankle ties.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_sceau_chasse",
+    "subject": "Sceau de la dernière chasse: substantial bronze signet ring bearing an engraved hawk and a dark red gemstone, three-quarter angle.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_prisme",
+    "subject": "Prisme de Chiron: faceted jade and blue crystal prism mounted in a warm bronze cradle with leather suspension cord.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/catabase_agrafe",
+    "subject": "Agrafe du serment: antique circular bronze cloak brooch with jade inlay and a crimson cloth fold held by its pin.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/force",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a strong armored fist. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/attack_power",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express crossed sharpened Greek swords. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/max_hp",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a crimson gemstone heart. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/initiative",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a leaping amber spark beside a swift feather. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/max_mp",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express Greek sandals in motion. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/esquive",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a drifting jade feather evading a small arrow. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/armure",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a heavy bronze shield. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/resist_magique",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a faceted jade crystal stopping an amber spark. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "stats/heal_budget",
+    "subject": "Create a tangible painted fantasy attribute emblem, using a physical object, body detail or gemstone to express a bronze healing bowl with luminous green water. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/equipment",
+    "subject": "Inventory: substantial honey-brown leather adventurer satchel, jade cloth strap, brass laurel buckle, rolled cloth, three-quarter view.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/map",
+    "subject": "Map menu: a partly unfolded aged parchment map with hand-painted paths, miniature mountains, rolled corner and small bronze compass; no lettering.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/tree",
+    "subject": "Skills: a thick leather-bound spellbook with jade cover, bronze corner clasps and a raised laurel medallion, pages slightly open.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/journal",
+    "subject": "Journal: open cream parchment notebook with feather quill and jade ribbon bookmark, worn leather spine, no readable writing.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/halt",
+    "subject": "Rest: a small bronze brazier with an amber flame over glowing coals, warm welcoming light.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/home",
+    "subject": "Home: a small ancient stone doorway entwined with roots, warm amber light within and a bronze threshold.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/close",
+    "subject": "Close command: two short stout crossed bronze rods forming a clear X, carved wood and brass volume, painted dark edges, simple physical emblem.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/settings",
+    "subject": "Settings: a substantial ancient bronze cog with jade center stone, worn beveled teeth, painted volume and highlights.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/save",
+    "subject": "Save: a wax-sealed ivory scroll tucked into a bronze protective case, jade ribbon and circular laurel seal.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/continue",
+    "subject": "Continue: a thick carved bronze arrowhead pointing RIGHT, leather wrapped short shaft, amber edge, a physical painted object.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/lock",
+    "subject": "Locked: a heavy old bronze padlock, curved shackle, dark keyhole, a few jade patina areas, three-quarter angle.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/check",
+    "subject": "Confirmed: a chunky bronze checkmark sculpted like two joined laurel stems, unmistakable check silhouette, painted metal facets and jade leaf.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/attributes",
+    "subject": "Attributes: a carved bronze warrior bust on a small stone plinth, jade laurel wreath, sturdy sculpted proportions.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/search",
+    "subject": "Search: an antique bronze magnifying glass with pale jade glass, wrapped brown leather handle, perspective volume.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/sort",
+    "subject": "Sort inventory: three small parchment tabs of descending height held by one bronze ring, orderly and readable, no letters.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/back",
+    "subject": "Back: a thick carved bronze arrowhead pointing LEFT, leather wrapped short shaft, amber edge, a physical painted object.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/oboles",
+    "subject": "Oboles: a small stack of three thick ancient Greek gold-bronze coins, one face-on with a laurel relief, worn edges and realistic painted thickness.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/destiny",
+    "subject": "Destiny: a luminous five-point amber crystal star suspended in a circular bronze astrolabe ring, emerald reflection.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/health",
+    "subject": "Health: a polished deep crimson heart-shaped garnet set in a bronze amulet mount, warm reflected glow, tangible gemstone not a line symbol.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/level",
+    "subject": "Level: a raised bronze laurel wreath enclosing a luminous upward-pointing jade crystal, no numbers.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/victory",
+    "subject": "Victory: a golden bronze laurel crown with jade silk ribbon, warm celebratory light, beautiful hand-painted leaves.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/defeat",
+    "subject": "Defeat: cracked Greek bronze helmet resting on a dark torn red cloth, small dim ember, a dignified defeat emblem.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/action_points",
+    "subject": "Action points: a faceted amber energy shard with a strong lightning-like silhouette, bronze mounting and small sparks.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "resources/movement_points",
+    "subject": "Movement points: a single Greek leather sandal with bronze fastening and jade wing-shaped cloth detail.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "emblems/colere",
+    "subject": "Create a rich painted Greek heroic doctrine emblem with bronze relief, jade cloth and sculpted volume expressing wrath of Achilles, a bronze sword surrounded by controlled amber flame. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "emblems/chiron",
+    "subject": "Create a rich painted Greek heroic doctrine emblem with bronze relief, jade cloth and sculpted volume expressing Chiron, a yew bow and jade feather. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "emblems/eaque",
+    "subject": "Create a rich painted Greek heroic doctrine emblem with bronze relief, jade cloth and sculpted volume expressing Aeacus, a bronze shield and laurel. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "emblems/elements",
+    "subject": "Create a rich painted Greek heroic doctrine emblem with bronze relief, jade cloth and sculpted volume expressing three elemental shards of fire, ice and lightning. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "emblems/serment",
+    "subject": "Create a rich painted Greek heroic doctrine emblem with bronze relief, jade cloth and sculpted volume expressing a crimson oath ribbon binding two armored hands. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "emblems/achilles",
+    "subject": "Create a rich painted Greek heroic doctrine emblem with bronze relief, jade cloth and sculpted volume expressing an ornate Greek bronze helmet with a red plume. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "states/cooldown",
+    "subject": "Create a clearly readable hand-painted bronze interface emblem with tactile volume expressing the combat state an hourglass with amber sand and bronze frame. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "states/locked",
+    "subject": "Create a clearly readable hand-painted bronze interface emblem with tactile volume expressing the combat state a heavy bronze padlock. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "states/unavailable",
+    "subject": "Create a clearly readable hand-painted bronze interface emblem with tactile volume expressing the combat state a broken bronze ring with a clear diagonal bar. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "states/resolving",
+    "subject": "Create a clearly readable hand-painted bronze interface emblem with tactile volume expressing the combat state two curved bronze arrows circling an amber energy pearl. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "states/target_valid",
+    "subject": "Create a clearly readable hand-painted bronze interface emblem with tactile volume expressing the combat state a green gemstone within an archery target and a bronze confirmation mark. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "states/target_invalid",
+    "subject": "Create a clearly readable hand-painted bronze interface emblem with tactile volume expressing the combat state a red cracked gemstone behind two crossed bronze slats. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/upgrade",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a growing cluster of three jade crystals. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/hidden",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a veiled bronze face in deep shadow. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/damage",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a sharp Greek blade striking sparks. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/range",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a taut yew bow and arrow. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/push",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a bronze gauntlet shoving a cracked stone. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/movement",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a leather sandal with streaming jade cloth. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/bleed",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing crimson droplets on a silver blade. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/vulnerability",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a cracked Greek shield with a broken rim. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/collision",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing two bronze shield edges clashing. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/duration",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing an old bronze hourglass. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/pierce",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a spearhead puncturing cracked stone. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/terrain",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a small chunk of mossy sanctuary stone with emerald roots. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/heal",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a cupped hand holding jade healing light. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/defense",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a bronze hoplite shield. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/state_check",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a physical bronze checkmark with jade laurel leaf. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/state_excluded",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing crossed bronze sword fragments forming an X. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/state_pending",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing an amber pearl in a bronze hourglass. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "effects/poison",
+    "subject": "Create an evocative hand-painted close-up spell-effect illustration expressing a green glass vial with purple-black liquid and a curled leaf. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "nav/move",
+    "subject": "Move action: a Greek sandalled foot stepping forward with a short flowing jade cloth trail, close-up tactile leather and bronze.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_focused_fury",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath focused fury. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_opening_slash",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath opening slash. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_murderous_momentum",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath murderous momentum. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_execution",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath execution. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_blood_for_blood",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath blood for blood. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_victorious_step",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath victorious step. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_break_formation",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath break formation. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_scourge_of_troy",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath scourge of troy. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_wrath_irrepressible_wrath",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing wrath irrepressible wrath. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_centaur_eye",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron centaur eye. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_pelion_reach",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron pelion reach. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_close_shot",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron close shot. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_impossible_angle",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron impossible angle. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_stopping_arrow",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron stopping arrow. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_piercing_arrow",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron piercing arrow. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_mobile_hunt",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron mobile hunt. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_death_line",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron death line. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_chiron_centaur_volley",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing chiron centaur volley. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_active_guard",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus active guard. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_directional_guard",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus directional guard. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_bronze_anchor",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus bronze anchor. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_riposte",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus riposte. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_arrow_wall",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus arrow wall. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_broken_shield",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus broken shield. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_mobile_bastion",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus mobile bastion. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_counter",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus counter. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_aeacus_myrmidon_rampart",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing aeacus myrmidon rampart. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_summit_wrath",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing summit wrath. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_summit_chiron",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing summit chiron. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_summit_aeacus",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing summit aeacus. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_junction_battlefield_predator",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing junction battlefield predator. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_junction_bronze_avenger",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing junction bronze avenger. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_junction_pelion_sentinel",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing junction pelion sentinel. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_apotheosis_scourge_trojans",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing apotheosis scourge trojans. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_apotheosis_fate_shot",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing apotheosis fate shot. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "masteries/achilles_apotheosis_invincible_hero",
+    "subject": "Create a dramatic small hand-painted mastery illustration, close-up Greek weapons, armored hands or elemental energy expressing apotheosis invincible hero. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "attributes/vitality",
+    "subject": "Create an illustrated Greek hero attribute medallion with bronze, jade and tactile volume expressing a crimson heart-shaped gemstone held in bronze laurel. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "attributes/power",
+    "subject": "Create an illustrated Greek hero attribute medallion with bronze, jade and tactile volume expressing a muscular armored fist with amber power. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "attributes/resolve",
+    "subject": "Create an illustrated Greek hero attribute medallion with bronze, jade and tactile volume expressing a steadfast bronze helmet and shield. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "attributes/wisdom",
+    "subject": "Create an illustrated Greek hero attribute medallion with bronze, jade and tactile volume expressing an open ivory book and a bronze owl feather. The icon must be a fully painted illustration matching the reference room, never a flat monochrome sign.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_xiphos_of_peleus",
+    "subject": "Greek short sword with ivory wrapped grip, gold-bronze guard and a jade pommel gemstone. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_line_breaker_kopis",
+    "subject": "heavy curved Greek kopis sword, hooked broad steel blade and bronze lion-head pommel. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_pelion_bow",
+    "subject": "tall elegant yew recurve bow with jade bindings and bronze tips, a single arrow alongside. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_scyros_short_bow",
+    "subject": "compact curved hunting bow with ivory cord, reddish wood, bronze end caps and a feather charm. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_aeacus_shield_blade",
+    "subject": "round heavy bronze hoplite shield with a short integrated blade along its rim. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_phthia_cuirass",
+    "subject": "muscular Greek bronze cuirass with laurel embossing, deep brown leather straps. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_myrmidon_linothorax",
+    "subject": "ivory layered linen Greek armor with jade trim and bronze clasps. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_duelist_breastplate",
+    "subject": "slender burnished steel duelist breastplate, bronze diagonal strap and jade sash. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_hunter_mantle",
+    "subject": "hooded forest-jade wool mantle with bronze hawk clasp and brown leather shoulder reinforcement. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_wave_cuirass",
+    "subject": "bronze breastplate with flowing sculpted wave patterns and blue-green enamel. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_peleus_seal",
+    "subject": "large bronze signet ring with a raised Greek lion crest and deep amber gem. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_phthia_knot",
+    "subject": "intricate thick jade silk cord tied in a ceremonial knot with bronze end caps. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_chiron_ferret",
+    "subject": "slender etched bronze arrow-shaft ferrule, conical and hollow, leather tie and jade inset. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_patroclus_brooch",
+    "subject": "bronze circular cloak brooch featuring two clasped hands and a warm amber gem. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_myrmidon_crest",
+    "subject": "Greek bronze helmet crest with a thick dark-red horsehair plume and jade binding. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_patroclus_ashes",
+    "subject": "small lidded bronze funerary urn containing glowing amber ashes, jade cloth at base. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_hephaestus_nail",
+    "subject": "oversized hand-forged iron nail with a square bronze head, faint warm forge glow. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_centaur_step",
+    "subject": "Greek leather sandal with sculpted bronze wing ornaments and jade ties. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_athena_mirror",
+    "subject": "round bronze hand mirror with an owl relief on its handle and pale jade reflective glass. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_pelion_shard",
+    "subject": "jagged blue-green crystal shard encased in a bronze socket with a leather cord. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_thetis_anchor",
+    "subject": "small ancient bronze anchor amulet with blue-green patina and a jade cord loop. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_thetis_bracelet",
+    "subject": "thick flowing bronze bracelet with sculpted wave spirals and emerald stones. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_thetis_heel",
+    "subject": "bronze heel guard with leather straps, jade enamel and a blue-green water reflection. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/odyssey_fates_thread",
+    "subject": "wood and bronze spool wound with glowing golden thread, trailing into a graceful knot. One entire object in three-quarter view, isolated.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/minor_healing_potion",
+    "subject": "Potion de soin mineure: round hand-blown glass flask of luminous emerald restorative liquid, cork stopper, brown leather harness and small bronze laurel charm.",
+    "rank": "",
+    "status": "generated"
+  },
+  {
+    "key": "equipment/minor_action_scroll",
+    "subject": "Parchemin d’élan mineur: partly unrolled ivory parchment with warm gold magical energy curling above it, jade ribbon, bronze end caps. No readable writing.",
+    "rank": "",
+    "status": "generated"
+  }
+]

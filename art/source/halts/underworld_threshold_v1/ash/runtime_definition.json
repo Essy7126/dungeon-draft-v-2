@@ -1,0 +1,600 @@
+{
+  "schema_version": 1,
+  "id": "underworld_threshold_v1",
+  "title": "Le Seuil des Ombres",
+  "subtitle": "BRUME · PIERRE ANCIENNE · MÉMOIRE",
+  "kind": "lore",
+  "stage": "playable_study",
+  "style": "res://data/halts/styles/roots_bronze_v1.json",
+  "source": {
+    "image": "res://asset/map/painted/halts/underworld_threshold_v1/threshold_ash.png",
+    "size": [
+      1672,
+      941
+    ],
+    "sha256": "24eba80e2d65561b776a3e504e353e7a60d0e6837548e81283e5073a877c7c93",
+    "provider": "image_gen",
+    "generated_on": "2026-09-10",
+    "prompt": "res://art/source/halts/underworld_threshold_v1/ash/generation_prompt.txt",
+    "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+    "references": [
+      "res://art/source/halts/underworld_threshold_v1/ash/blockout.png",
+      "res://art/source/halts/underworld_threshold_v1/ash/scale_guide.png",
+      "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png"
+    ]
+  },
+  "build_dir": "res://asset/map/painted/halts/underworld_threshold_v1",
+  "world": {
+    "width": 2600,
+    "speed": 195,
+    "foot_clearance": 22,
+    "spawn": [
+      0.2272727,
+      0.7013815
+    ],
+    "player_height_ratio": 0.164
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.1082536,
+        0.6238045
+      ],
+      [
+        0.1345694,
+        0.5037194
+      ],
+      [
+        0.2171053,
+        0.335813
+      ],
+      [
+        0.2529904,
+        0.282678
+      ],
+      [
+        0.2763158,
+        0.24017
+      ],
+      [
+        0.4802632,
+        0.1880978
+      ],
+      [
+        0.5633971,
+        0.2263549
+      ],
+      [
+        0.617823,
+        0.3028693
+      ],
+      [
+        0.6698565,
+        0.3209352
+      ],
+      [
+        0.7147129,
+        0.3878852
+      ],
+      [
+        0.8624402,
+        0.4537726
+      ],
+      [
+        0.888756,
+        0.5302869
+      ],
+      [
+        0.861244,
+        0.7141339
+      ],
+      [
+        0.77811,
+        0.8703507
+      ],
+      [
+        0.638756,
+        0.9234857
+      ],
+      [
+        0.4563397,
+        0.911796
+      ],
+      [
+        0.375,
+        0.8958555
+      ],
+      [
+        0.2649522,
+        0.8714134
+      ],
+      [
+        0.1710526,
+        0.7853348
+      ],
+      [
+        0.1303828,
+        0.7077577
+      ]
+    ],
+    "obstacles": [
+      [
+        [
+          0.3379187,
+          0.360255
+        ],
+        [
+          0.3935407,
+          0.3931987
+        ],
+        [
+          0.4216507,
+          0.3517535
+        ],
+        [
+          0.3660287,
+          0.3188098
+        ]
+      ],
+      [
+        [
+          0.6501196,
+          0.5515409
+        ],
+        [
+          0.7027512,
+          0.58661
+        ],
+        [
+          0.7320574,
+          0.5398512
+        ],
+        [
+          0.6794258,
+          0.5069075
+        ]
+      ],
+      [
+        [
+          0.3397129,
+          0.7417641
+        ],
+        [
+          0.3971292,
+          0.7778959
+        ],
+        [
+          0.4270335,
+          0.7311371
+        ],
+        [
+          0.3696172,
+          0.696068
+        ]
+      ],
+      [
+        [
+          0.6501196,
+          0.2901169
+        ],
+        [
+          0.6740431,
+          0.3283741
+        ],
+        [
+          0.6973684,
+          0.3071201
+        ],
+        [
+          0.673445,
+          0.2731137
+        ]
+      ],
+      [
+        [
+          0.8175837,
+          0.4144527
+        ],
+        [
+          0.8450957,
+          0.4527099
+        ],
+        [
+          0.8708134,
+          0.41339
+        ],
+        [
+          0.8433014,
+          0.3836344
+        ]
+      ],
+      [
+        [
+          0.6895933,
+          0.3177471
+        ],
+        [
+          0.8361244,
+          0.4197662
+        ],
+        [
+          0.8738038,
+          0.3517535
+        ],
+        [
+          0.7314593,
+          0.2582359
+        ]
+      ]
+    ]
+  },
+  "landmarks": [
+    {
+      "id": "statue_memory",
+      "title": "Hadès — le gardien des morts",
+      "action": "dialogue",
+      "point": [
+        0.4521531,
+        0.4070138
+      ],
+      "focus": [
+        0.367823,
+        0.3283741
+      ],
+      "radius": 0.048,
+      "description": "Le bident veille sur le seuil. Sous la couronne de pierre, Hadès garde un silence que ni les rois ni les héros ne peuvent rompre. Achille poursuit sa route parmi les cendres.",
+      "hit_polygon": [
+        [
+          0.3462919,
+          0.293305
+        ],
+        [
+          0.3899522,
+          0.3124336
+        ],
+        [
+          0.3899522,
+          0.3634431
+        ],
+        [
+          0.3462919,
+          0.3443146
+        ]
+      ]
+    },
+    {
+      "id": "zeus_memory",
+      "title": "Zeus — l’écho du ciel",
+      "action": "dialogue",
+      "point": [
+        0.7482057,
+        0.6099894
+      ],
+      "focus": [
+        0.680622,
+        0.5217853
+      ],
+      "radius": 0.048,
+      "description": "L’éclair est figé dans le bronze. Même ici, loin du ciel, la statue de Zeus rappelle la puissance des dieux. Entre leurs regards de pierre, Achille demeure libre d’avancer.",
+      "hit_polygon": [
+        [
+          0.6584928,
+          0.4867163
+        ],
+        [
+          0.7021531,
+          0.5058448
+        ],
+        [
+          0.7021531,
+          0.5579171
+        ],
+        [
+          0.6584928,
+          0.5409139
+        ]
+      ]
+    },
+    {
+      "id": "fallen_oath",
+      "title": "Héra — la mémoire des serments",
+      "action": "dialogue",
+      "point": [
+        0.326555,
+        0.7693943
+      ],
+      "focus": [
+        0.3726077,
+        0.7098831
+      ],
+      "radius": 0.048,
+      "description": "Le paon et la couronne ont traversé l’incendie. Devant Héra, les promesses semblent peser plus lourd que les armes. Achille n’a pas oublié ce qui l’a conduit jusqu’ici.",
+      "hit_polygon": [
+        [
+          0.3504785,
+          0.6726886
+        ],
+        [
+          0.3947368,
+          0.6939426
+        ],
+        [
+          0.3947368,
+          0.7460149
+        ],
+        [
+          0.3504785,
+          0.7290117
+        ]
+      ]
+    },
+    {
+      "id": "threshold_gate",
+      "title": "La porte des Ombres",
+      "action": "exit",
+      "point": [
+        0.777512,
+        0.4601488
+      ],
+      "focus": [
+        0.7882775,
+        0.2646121
+      ],
+      "radius": 0.05,
+      "description": "La brume s’écarte entre les battants. Franchir ce seuil, c’est commencer la descente d’Achille vers les Enfers.",
+      "hit_polygon": [
+        [
+          0.7003589,
+          0.0605739
+        ],
+        [
+          0.8564593,
+          0.130712
+        ],
+        [
+          0.8672249,
+          0.4208289
+        ],
+        [
+          0.7655502,
+          0.4495218
+        ],
+        [
+          0.6949761,
+          0.3538789
+        ]
+      ]
+    }
+  ],
+  "water": {
+    "tint": "#48d896",
+    "polygons": [],
+    "exclusions": []
+  },
+  "cascades": [],
+  "foliage": [],
+  "bounce": [],
+  "mist": [],
+  "torches": [
+    {
+      "id": "gate_left",
+      "point": [
+        0.6692584,
+        0.2391073
+      ],
+      "radius": [
+        0.013,
+        0.035
+      ],
+      "phase": 0.4,
+      "smoke_strength": 0.06,
+      "flame_strength": 0.72,
+      "light_strength": 0.45,
+      "ember_count": 4,
+      "ember_rise": 58,
+      "ember_strength": 0.46
+    },
+    {
+      "id": "gate_right",
+      "point": [
+        0.8397129,
+        0.3496281
+      ],
+      "radius": [
+        0.013,
+        0.035
+      ],
+      "phase": 2.1,
+      "smoke_strength": 0.06,
+      "flame_strength": 0.72,
+      "light_strength": 0.45,
+      "ember_count": 4,
+      "ember_rise": 58,
+      "ember_strength": 0.46
+    }
+  ],
+  "foreground": [],
+  "threshold_fog": {
+    "density_mask": "res://asset/map/painted/halts/underworld_threshold_v1/fog_density.png",
+    "opacity": 0.4,
+    "color": "#969c99",
+    "drift": [
+      -0.0024,
+      -6e-05
+    ],
+    "scale": 1.2,
+    "seed": 44,
+    "curl": 1.15,
+    "detail": 0.8
+  },
+  "ambience": {
+    "footsteps": "stone",
+    "sources": [
+      {
+        "id": "gate_left",
+        "kind": "fire",
+        "point": [
+          0.6692584,
+          0.2391073
+        ],
+        "radius": 0.26,
+        "gain_db": -22
+      },
+      {
+        "id": "gate_right",
+        "kind": "fire",
+        "point": [
+          0.8397129,
+          0.3496281
+        ],
+        "radius": 0.26,
+        "gain_db": -22
+      }
+    ]
+  },
+  "review": {
+    "dry": true,
+    "stable_pixel": [
+      0.5113636,
+      0.565356
+    ],
+    "fire_pixel": [
+      0.6692584,
+      0.2391073
+    ],
+    "forbidden_points": [
+      [
+        0.3797847,
+        0.3549416
+      ],
+      [
+        0.6907895,
+        0.5451647
+      ],
+      [
+        0.3827751,
+        0.738576
+      ],
+      [
+        0.7805024,
+        0.3687566
+      ],
+      [
+        0.9665072,
+        0.5494155
+      ],
+      [
+        0.1130383,
+        0.3262487
+      ]
+    ],
+    "loop_waypoints": [
+      [
+        0.4521531,
+        0.4070138
+      ],
+      [
+        0.7834928,
+        0.4367694
+      ],
+      [
+        0.7482057,
+        0.6099894
+      ],
+      [
+        0.777512,
+        0.6971307
+      ],
+      [
+        0.4049043,
+        0.8140276
+      ],
+      [
+        0.326555,
+        0.7693943
+      ],
+      [
+        0.3779904,
+        0.6588735
+      ],
+      [
+        0.5113636,
+        0.565356
+      ],
+      [
+        0.2272727,
+        0.7013815
+      ]
+    ],
+    "occlusion_points": {
+      "statue_right_behind": [
+        0.3779904,
+        0.6588735
+      ],
+      "statue_right_front": [
+        0.4049043,
+        0.8140276
+      ],
+      "statue_left_behind": [
+        0.3767943,
+        0.2911796
+      ]
+    }
+  },
+  "spatial_calibration": {
+    "units": "metres",
+    "metric_to_native_pixels": [
+      [
+        65.125,
+        22.31249999999997
+      ],
+      [
+        36.661742093541235,
+        -38.790721211177996
+      ],
+      [
+        839.5073868596882,
+        481.9360818167669
+      ]
+    ],
+    "statue_centres_metres": {
+      "hades": [
+        -4.0,
+        1.5,
+        0.0
+      ],
+      "zeus": [
+        4.0,
+        1.5,
+        0.0
+      ],
+      "hera": [
+        0.0,
+        -5.428203230275509,
+        0.0
+      ]
+    },
+    "statue_centres_native_pixels": {
+      "hades": [
+        634.0,
+        334.5
+      ],
+      "zeus": [
+        1155.0,
+        513.0
+      ],
+      "hera": [
+        640.5,
+        692.5
+      ]
+    },
+    "pairwise_distance_metres": 8.0,
+    "painted_anchor_uncertainty_pixels": 2,
+    "method": "Affine ground registration through three pedestal footprint centres; orthographic source plan fixes the equilateral arrangement."
+  },
+  "ambient_motes": {
+    "count": 10,
+    "color": "#a4a09a",
+    "alpha": 0.2
+  }
+}

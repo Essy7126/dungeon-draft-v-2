@@ -50,15 +50,15 @@ func test_catabase_loads_its_real_rooms_and_has_its_own_achilles_selection() -> 
 		assert_not_null(room.battle_scene)
 		assert_not_null(room.get_encounter_for_wave(0))
 	var entries := _screen.get_entries()
-	assert_eq(entries.size(), 6, "Both Catabase appearances, the trio, and the separate trial remain browsable")
-	assert_eq(_entry_ids(entries), [&"achilles", &"achilles_painted_g", &"elf", &"mage", &"warrior", &"achilles"])
+	assert_eq(entries.size(), 2, "Only Catabase and its two Achilles appearances are public")
+	assert_eq(_entry_ids(entries), [&"achilles", &"achilles_painted_g"])
 	assert_eq(_screen.get_selected_entry().get("id"), &"achilles")
 	assert_same(_screen.get_selected_entry().get("run"), run)
 	var trial_entries := entries.filter(func(entry): return entry["run"].resource_path == TRIAL)
-	assert_eq(trial_entries.size(), 1)
-	if trial_entries.is_empty():
-		return
-	assert_ne(run.resource_path, str(trial_entries[0]["run"].resource_path))
+	assert_eq(trial_entries.size(), 0, "The standalone trial is archived with the trio")
+	for entry in entries:
+		assert_true((entry["run"] as RunData).catabase_route_enabled)
+		assert_eq((entry["unit"] as UnitData).get_effective_unit_id(), &"achilles")
 
 
 func test_catabase_selection_starts_real_champion_manager_at_first_room_without_saving() -> void:

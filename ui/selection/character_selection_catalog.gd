@@ -8,12 +8,14 @@ const TRIO_RUN_PATH := "res://data/runs/first_run.tres"
 const PHILOSOPHER_TRIAL_RUN_PATH := "res://data/runs/philosopher_trial.tres"
 
 
-static func get_entries() -> Array[Dictionary]:
+static func get_entries(include_archived_adventures: bool = false) -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
 	_append_run_entries(entries, CATABASE_RUN_PATH)
 	_append_run_entries(entries, CATABASE_RUN_PATH, {"achilles": "painted_g"})
-	_append_run_entries(entries, TRIO_RUN_PATH)
-	_append_run_entries(entries, PHILOSOPHER_TRIAL_RUN_PATH)
+	# Historical content remains available to explicit lab/test callers only.
+	if include_archived_adventures:
+		_append_run_entries(entries, TRIO_RUN_PATH)
+		_append_run_entries(entries, PHILOSOPHER_TRIAL_RUN_PATH)
 	return entries
 
 

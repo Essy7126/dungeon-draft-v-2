@@ -7,6 +7,20 @@ const PREMIUM_SKIN: HudVisualSkinData = preload(
 )
 
 
+var _previous_window_size := Vector2i.ZERO
+
+
+func before_each() -> void:
+	_previous_window_size = get_tree().root.size
+	get_tree().root.size = Vector2i(1280, 720)
+	await get_tree().process_frame
+
+
+func after_each() -> void:
+	get_tree().root.size = _previous_window_size
+	await get_tree().process_frame
+
+
 func test_timeline_uses_visual_skin_and_honors_reduced_motion() -> void:
 	var first: Unit = FACTORY.make_unit("Premier", 0)
 	var second: Unit = FACTORY.make_unit("Second", 1)
@@ -14,6 +28,7 @@ func test_timeline_uses_visual_skin_and_honors_reduced_motion() -> void:
 	var queue := TurnQueue.new()
 	queue.setup([first, second, third])
 	var timeline := TIMELINE_SCENE.instantiate() as TurnOrderTimeline
+	timeline.visual_skin = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
 	add_child_autofree(timeline)
 	await get_tree().process_frame
 	timeline.set_reduced_motion(true)
@@ -110,3 +125,20 @@ func test_premium_turn_title_keeps_readable_minimum_for_very_long_names() -> voi
 	assert_eq(title.tooltip_text, title.text)
 	assert_eq(title.mouse_filter, Control.MOUSE_FILTER_PASS)
 	assert_eq(timeline.turn_header.get_rect(), compact_rect)
+
+
+func test_premium_order_is_horizontal_centered_and_every_card_stays_reachable() -> void:
+	var timeline := TIMELINE_SCENE.instantiate() as TurnOrderTimeline
+	add_child_autofree(timeline)
+	timeline.apply_visual_skin(PREMIUM_SKIN)
+	await get_tree().process_frame
+	for count in [1, 6, 16]:
+		var targets := timeline._build_layout_targets(count)
+		assert_eq(targets.size(), count)
+		var right := 0.0
+		for target: Dictionary in targets:
+			assert_eq(target.position.y, 0.0)
+			assert_gte(target.position.x, right)
+			right = target.position.x + target.size.x
+			assert_lte(right, timeline.cards_layer.size.x + 0.1)
+		assert_almost_eq(targets[0].position.x, timeline.cards_layer.size.x - right, 0.1)

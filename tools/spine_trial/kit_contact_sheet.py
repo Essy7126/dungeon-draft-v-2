@@ -1,5 +1,6 @@
 """Make labelled review sheets from official-runtime screenshots."""
 import argparse
+import json
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -7,6 +8,8 @@ from PIL import Image, ImageDraw, ImageFont
 parser = argparse.ArgumentParser()
 parser.add_argument('report_directory', type=Path)
 args = parser.parse_args()
+report = json.loads((args.report_directory/'report.json').read_text(encoding='utf-8'))
+times = {check['action']: [sample.get('time') for sample in check['samples']] for check in report['checks']}
 font = ImageFont.truetype('C:/Windows/Fonts/segoeui.ttf', 18)
 small = ImageFont.truetype('C:/Windows/Fonts/segoeui.ttf', 13)
 for action in ('idle', 'walk', 'attack', 'cast', 'hit', 'death'):
@@ -23,7 +26,8 @@ for action in ('idle', 'walk', 'attack', 'cast', 'hit', 'death'):
             mask = np.max(np.abs(raw - background), axis=2) > 30
             mask[:45] = False
             yy, xx = np.where(mask)
-            bounds.append([xx.min(), yy.min(), xx.max()+1, yy.max()+1])
+            if len(xx):
+                bounds.append([xx.min(), yy.min(), xx.max()+1, yy.max()+1])
     boxes = np.asarray(bounds)
     box = (max(0, boxes[:, 0].min()-12), max(0, boxes[:, 1].min()-12),
            min(im.width, boxes[:, 2].max()+12), min(im.height, boxes[:, 3].max()+12))
@@ -37,6 +41,7 @@ for action in ('idle', 'walk', 'attack', 'cast', 'hit', 'death'):
             tile = tile.resize((round(tile.width * scale), round(tile.height * scale)), Image.Resampling.LANCZOS)
             x, y = 18 + i*281, 60 + row*262
             sheet.paste(tile, (x+(274-tile.width)//2, y))
-            draw.text((x+8, y+238), f'{d}  ·  {i*25} %', font=small, fill='#c2cbc8')
+            label = f'{times[action][i]:.2f} s' if times[action][i] is not None else f'{i*25} %'
+            draw.text((x+8, y+238), f'{d}  ·  {label}', font=small, fill='#c2cbc8')
     sheet.save(args.report_directory / f'sheet_{action}.jpg', quality=93)
 print(args.report_directory)

@@ -13,10 +13,10 @@ func get_modifiers_for_spell() -> Array[SpellModifier]:
 	for modifier in modifiers:
 		if modifier == null:
 			continue
-		# Les sous-resources d'une doctrine ne sont pas partagees entre sorts.
-		# Poser le filtre ici garde le wrapper comme autorite de ciblage.
-		modifier.target_spell_id = spell_id
-		result.append(modifier)
+		# The wrapper owns targeting; never stamp runtime filters on authored data.
+		var targeted := modifier.duplicate() as MasterySpellModifierData
+		targeted.target_spell_id = spell_id
+		result.append(targeted)
 	return result
 
 

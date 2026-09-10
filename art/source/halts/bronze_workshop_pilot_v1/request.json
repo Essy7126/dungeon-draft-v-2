@@ -1,0 +1,17 @@
+{
+  "id": "bronze_workshop_pilot_v1",
+  "kind": "forge",
+  "provider": "image_gen built-in",
+  "prompt": "Use case: stylized-concept / tightly registered style transfer.\nAsset: one finished painted 2D game environment for the existing Dungeon Draft game, landscape 16:9.\nInput 1 blockout.png is the EXACT geometry, camera, composition and relative size reference. Input 2 scale_guide.png shows the same geometry with THREE temporary Achilles sprites purely as scale rulers. Input 3 hall.png is ONLY the illustration style, palette, brushwork and materials reference, not a layout reference.\nRender the small Greek bronze smith's workshop from Input 1 as a beautiful hand-painted game background in the style of Input 3. Keep the exact orthographic elevated three-quarter camera, floor diamond perimeter and its position in the canvas, straight verticals, left and rear wall silhouette, true dark doorway on the right, small working hearth rear left, small wooden workbench rear middle, TINY ordinary wooden bucket in front-left of the workbench, single freestanding stone pillar toward the foreground right of center. Preserve each object's projected bounds and contact footprint closely; do not move, resize, add or duplicate furniture. Keep all architecture inside the canvas with the original margins. Surround the cutaway floor with a quiet dark charcoal teal shadow background; no additional rooms or objects outside it.\nScale is critical: the reference character BODY from feet to helmet calotte is 1.80 m, excluding the plume and spear. The bucket BODY is 0.35 m tall, tabletop is 0.90 m above its local floor, doorway usable clearance is 2.55 m, pillar total 2.56 m. These are ordinary usable objects. The three sprites MUST BE COMPLETELY ABSENT from the final illustration; they establish scale only. No painted people or mannequins.\nArt direction: sculpted blue-grey stone tiles, clear dark hand-drawn outlines, irregular yet structured masonry, controlled painterly highlights, aged bronze trims, warm textured wood, modest moss and a few fine roots limited to wall seams. Warm amber-orange live coals and a small flame in the existing hearth at its existing height; restrained warm bounce light near it. Cool teal ambient fill, gentle ambient occlusion, legible cast shadow from the pillar and bench. Make the rear wall softly detailed with masonry and faint carved Greek motifs within its existing silhouette; no shelves, new props, lanterns or structures. The doorway opens into deep dark teal. Table has only the existing small hammer, not a giant anvil. Bucket is small, open, wooden and bronze-hooped, distinctly shorter than the character's knee.\nKeep the walkable floor uncluttered and tile outlines readable. No water, no oversized items, no new obstacles, no labels, no captions, no UI, no perspective distortion, no photorealism, no 3D plastic render, no depth of field. Preserve the compositional registration while giving the surfaces the rich illustrated finish of Input 3.\nDeliver only the final environment, no comparison sheet or border.\n",
+  "references": [
+    "blockout.png",
+    "scale_guide.png",
+    "res://asset/map/painted/merchant/hall_v1/hall.png"
+  ],
+  "source_original": "painting_original.png",
+  "clean_plate": "clean_plate_original.png",
+  "stage": "runtime_review",
+  "body_reference_m": 1.8,
+  "body_reference_sprite_px": 202,
+  "full_silhouette_px": 257
+}

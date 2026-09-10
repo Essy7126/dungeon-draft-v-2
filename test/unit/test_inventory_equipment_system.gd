@@ -332,3 +332,69 @@ func test_hud_and_pause_menu_open_the_same_inventory_screen() -> void:
 	assert_true(run_ui.is_inventory_open())
 	assert_eq(run_ui.get_inventory_screen().get_selected_character_id(), &"elf")
 	run_ui.close_inventory_screen()
+
+
+func test_inventory_search_and_categories_preserve_items_and_selected_detail() -> void:
+	_prepare_global_run()
+	var run_ui := GameManager.get_persistent_run_ui()
+	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.NON_COMBAT)
+	assert_true(run_ui.open_inventory_screen(&"warrior"))
+	var screen := run_ui.get_inventory_screen()
+	var inventory := GameManager.get_run_inventory()
+	var before := inventory.to_snapshot().duplicate(true)
+	var item := _find_instance(inventory, &"minor_healing_potion")
+	assert_not_null(item)
+	screen.call("_select_inventory_item", item.instance_id)
+	var detail := (screen.get_node("%DetailName") as Label).text
+	var search := screen.find_child("InventorySearch", true, false) as LineEdit
+	var category := screen.find_child("InventoryCategory", true, false) as OptionButton
+	search.text = "aucun-objet-ne-porte-ce-nom"
+	search.text_changed.emit(search.text)
+	var grid := screen.get_node("%InventoryGrid") as GridContainer
+	for tile in grid.get_children():
+		assert_false(tile.visible)
+	assert_eq((screen.get_node("%DetailName") as Label).text, detail, "Filtering keeps the inspected item")
+	assert_eq((screen.find_child("SearchCount", true, false) as Label).text, "Aucun objet trouvé")
+	search.text = ""
+	category.select(4)
+	category.item_selected.emit(4)
+	var visible_count := 0
+	for tile in grid.get_children():
+		if tile.visible:
+			visible_count += 1
+			var definition: ItemDefinition = tile.item_definition
+			assert_eq(definition.category, ItemDefinition.Category.CONSUMABLE)
+	assert_gt(visible_count, 0)
+	assert_eq(inventory.to_snapshot(), before, "Filtering never sorts, removes or consumes actual inventory slots")
+	run_ui.close_inventory_screen()
+	assert_true(run_ui.open_inventory_screen(&"warrior"))
+	assert_eq(category.selected, 0)
+	assert_eq(search.text, "")
+	for tile in grid.get_children():
+		assert_true(tile.visible, "Opening resets filters and restores empty slots")
+	run_ui.close_inventory_screen()
+
+
+func test_inventory_filtered_equipment_action_uses_the_selected_instance() -> void:
+	_prepare_global_run()
+	var run_ui := GameManager.get_persistent_run_ui()
+	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.NON_COMBAT)
+	assert_true(run_ui.open_inventory_screen(&"warrior"))
+	var screen := run_ui.get_inventory_screen()
+	var inventory := GameManager.get_run_inventory()
+	var result := inventory.try_add(&"warrior_training_sword", 1)
+	assert_true(result.get("success", false))
+	screen.call("_refresh")
+	var item := _find_instance(inventory, &"warrior_training_sword")
+	assert_not_null(item)
+	screen.call("_select_inventory_item", item.instance_id)
+	var search := screen.find_child("InventorySearch", true, false) as LineEdit
+	search.text = "aucun-resultat"
+	search.text_changed.emit(search.text)
+	(screen.get_node("%EquipButton") as Button).pressed.emit()
+	var equipped := GameManager.get_character_state(&"warrior").equipment_loadout.get_item(ItemDefinition.EquipmentSlot.WEAPON)
+	assert_not_null(equipped)
+	assert_eq(equipped.instance_id, item.instance_id)
+	assert_null(inventory.get_instance(item.instance_id))
+	assert_true((screen.get_node("%UnequipButton") as Button).visible)
+	run_ui.close_inventory_screen()

@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://assets/catabase/combat/cavern_v1/CavernMist.tscn" id="1"]
+[node name="Atmosphere" instance=ExtResource("1")]
+torch_base_a = Vector2(179, 181)
+torch_base_b = Vector2(404, 142)

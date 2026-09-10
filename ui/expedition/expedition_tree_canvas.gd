@@ -3,10 +3,10 @@ extends Control
 ## Edges are the same prerequisites checked by the build state.
 signal technique_selected(node_id: String)
 
-const INK := Color("17221f")
-const GOLD := Color("d0b585")
-const TEAL := Color("84c7ad")
-const TEXT := Color("f0eadc")
+const INK := Color("100f0e")
+const GOLD := Color("d6c29a")
+const TEAL := Color("8fb9bf")
+const TEXT := Color("eee5d2")
 const ART_THEME := preload("res://ui/expedition/catabase_ui_theme.gd")
 const CARD_HEIGHT := 112.0
 const COLUMN_GAP := 20.0
@@ -117,15 +117,15 @@ func _layout() -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color("101a20"))
+	draw_rect(Rect2(Vector2.ZERO, size), INK)
 	var fresco: Texture2D = ART_THEME.texture("tree_fresco")
 	if fresco != null:
 		# Crop uniformly; the painting never positions or joins gameplay nodes.
 		var scale_factor := maxf(size.x / fresco.get_width(), size.y / fresco.get_height())
 		var source_size := size / scale_factor
 		var source_rect := Rect2((fresco.get_size() - source_size) * 0.5, source_size)
-		draw_texture_rect_region(fresco, Rect2(Vector2.ZERO, size), source_rect, Color(1, 1, 1, 0.36))
-		draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.07, 0.09, 0.30))
+		draw_texture_rect_region(fresco, Rect2(Vector2.ZERO, size), source_rect, Color(1, 1, 1, 0.16))
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.06, 0.05, 0.04, 0.48))
 	for offer in _offers:
 		var target_id := str(offer.id)
 		if not _rects.has(target_id): continue

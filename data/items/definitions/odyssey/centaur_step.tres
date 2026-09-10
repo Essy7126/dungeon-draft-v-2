@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
 [ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
 [ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_centaur_step.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Dash"]
 script = ExtResource("3_condition")
@@ -39,6 +41,9 @@ parameters = Array[ItemReactiveParameterData]([SubResource("NextAbility"), SubRe
 
 [resource]
 script = ExtResource("1_item")
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_centaur_step"
 display_name = "Pas du Centaure"
 description = "Après Percée, le prochain Tir ignore sa portée minimale et gagne 15 % dégâts, une fois par activation."

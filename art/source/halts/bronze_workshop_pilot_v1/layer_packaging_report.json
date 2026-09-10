@@ -1,0 +1,137 @@
+{
+  "passed": true,
+  "painting_sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+  "clean_plate_sha256": "c32e46b0c2b431b8bdab1f0ffe7643275985f62907245b6fc5f7e9b1703f31c7",
+  "selections_sha256": "457a5128a7b2e2fc014c47875481ca4ba971a9768067c5d6268a3a2c2abd3b96",
+  "ora_sha256": "0570ee89d5860a000a3d353b94a0ba7d511d865b9360d9dbcfd9713e7a9b62d9",
+  "ora": "bronze_workshop_layers.ora",
+  "image_size": [
+    1672,
+    941
+  ],
+  "rgba_composite": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "ora_mergedimage": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "top_to_bottom_groups": [
+    "GUIDES — masqués, hors peinture",
+    "Pilier",
+    "Établi + marteau",
+    "Seau",
+    "Fond — original conservé, clean plate sous objets et raccords"
+  ],
+  "layers": [
+    {
+      "id": "pillar",
+      "name": "Pilier",
+      "prop_pixels": 27011,
+      "floor_patch_pixels": 56295,
+      "prop_bbox_xyxy": [
+        842,
+        405,
+        976,
+        701
+      ],
+      "anchor_image_px": [
+        909,
+        681
+      ],
+      "anchor_normalized": [
+        0.5436602870813397,
+        0.7236981934112646
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    },
+    {
+      "id": "workbench",
+      "name": "Établi + marteau",
+      "prop_pixels": 19433,
+      "floor_patch_pixels": 14677,
+      "prop_bbox_xyxy": [
+        745,
+        302,
+        968,
+        441
+      ],
+      "anchor_image_px": [
+        856,
+        431
+      ],
+      "anchor_normalized": [
+        0.5119617224880383,
+        0.4580233793836344
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    },
+    {
+      "id": "bucket",
+      "name": "Seau",
+      "prop_pixels": 2075,
+      "floor_patch_pixels": 8720,
+      "prop_bbox_xyxy": [
+        673,
+        421,
+        719,
+        478
+      ],
+      "anchor_image_px": [
+        695,
+        474
+      ],
+      "anchor_normalized": [
+        0.41566985645933013,
+        0.5037194473963869
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    }
+  ],
+  "reconstructed_pixels": 128211,
+  "reconstruction_core_pixels": 96496,
+  "reconstruction_transition_pixels": 31715,
+  "hidden_props_changed_pixels": 117944,
+  "hidden_props_equal_clean_plate_inside_reconstruction": true,
+  "original_unchanged_outside_reconstruction": true,
+  "props_masks_non_overlapping": true,
+  "guides": "Hidden and rescaled only as visual references; geometric sources remain unchanged at 1600x900.",
+  "limitations": [
+    "Floor-shadow layers are explicitly named opaque original RGB floor patches with binary alpha. A physical translucent shadow cannot be recovered uniquely from one painted image and a separately generated clean plate.",
+    "Prop silhouettes contain only visible original pixels; hidden workbench geometry behind the pillar is not reconstructed.",
+    "Hard binary selections preserve exact pixels. Original antialiased edge pixels already mix prop and background colours; their movement can require edge cleanup.",
+    "Clean plate replaces selected reconstruction cores. A short soft transition surrounds each core; the original stays untouched outside these supports. The original floor pixels are retained in the named floor patches so all visible layers remain pixel-exact.",
+    "Hidden maquette/depth/scale guides are rescaled references, not measured alignment or runtime calibration of the final painting."
+  ],
+  "krita_export": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "passed": true,
+    "batch_report": "artifacts/dev/20260910-161809-krita-layer-export/batch.json",
+    "krita_version": "krita 5.3.3 (git 858d352)",
+    "ora_sha256": "0570ee89d5860a000a3d353b94a0ba7d511d865b9360d9dbcfd9713e7a9b62d9",
+    "export_sha256": "58762bde2aacb73f21fdbe2f506df42a4402ddf8339933ac13d40971f6c5efb2",
+    "source_sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+    "profile_isolated": true,
+    "visible_ui": false
+  }
+}

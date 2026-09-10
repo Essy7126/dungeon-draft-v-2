@@ -89,7 +89,10 @@ func test_item_bar_reserves_its_space_and_survives_a_turn_change() -> void:
 	var spell_anchor := hud.get_node("%SpellAnchor") as Control
 	var toggle_anchor := hud.get_node("%BarToggleAnchor") as Control
 	var turn_anchor := hud.get_node("%TurnAnchor") as Control
-	assert_gte(toggle_anchor.offset_left, spell_anchor.offset_right)
+	if hud._premium_skin_active():
+		assert_gte(toggle_anchor.offset_left, spell_anchor.offset_left, "Tabs share the action header")
+	else:
+		assert_gte(toggle_anchor.offset_left, spell_anchor.offset_right)
 	assert_lte(toggle_anchor.offset_right, turn_anchor.offset_left)
 	var turn_left_with_spells := turn_anchor.offset_left
 

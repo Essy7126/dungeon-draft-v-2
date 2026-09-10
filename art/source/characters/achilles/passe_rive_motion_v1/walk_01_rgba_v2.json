@@ -1,0 +1,25 @@
+{
+  "input": "art\\source\\characters\\achilles\\passe_rive_motion_v1\\walk_01_rgb.png",
+  "output": "art\\source\\characters\\achilles\\passe_rive_motion_v1\\walk_01_rgba_v2.png",
+  "method": "rembg 2.0.84 / birefnet-general-lite / CPU",
+  "size": [
+    1024,
+    1536
+  ],
+  "source_sha256": "247a3e76aaf7493a890f900250d3aa3d3d384a2e692ac99ceb3ee7fa4dc69f77",
+  "output_sha256": "8b7f816bf8b22f60ef33a9a484f12622f0490388ee82b1717b1644db0ea4c874",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "transparent_fraction": 0.7773316701253256,
+  "bbox": [
+    268,
+    9,
+    812,
+    1458
+  ],
+  "white_background_cleanup_pixels": 6577,
+  "edge_decontamination": true,
+  "visual_approval": false
+}

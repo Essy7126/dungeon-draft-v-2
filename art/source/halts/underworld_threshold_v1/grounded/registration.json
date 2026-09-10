@@ -1,0 +1,51 @@
+{
+  "source_sha256": "b1ba1cadf8ca77cf607d57f3ff8df51ae2c77cbd1c90b99a7e92418d8c80f2fc",
+  "style": "roots_bronze_v1",
+  "style_reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+  "theme": "voie funéraire au sol, statues et porte dans la roche, brume turquoise",
+  "geometry_registration": "Manual measured native pixels; no automatic alignment claimed",
+  "points_px": {
+    "spawn": [
+      423,
+      779
+    ],
+    "statue_memory": [
+      745,
+      440
+    ],
+    "fallen_oath": [
+      913,
+      716
+    ],
+    "threshold_gate": [
+      1257,
+      450
+    ],
+    "central": [
+      738,
+      550
+    ],
+    "statue_right_behind": [
+      1030,
+      583
+    ],
+    "statue_right_front": [
+      968,
+      751
+    ],
+    "statue_left_behind": [
+      752,
+      358
+    ],
+    "side": [
+      964,
+      583
+    ]
+  },
+  "body_reference_pixels": 202,
+  "full_silhouette_pixels": 257,
+  "body_height_px": 137.5690739299611,
+  "player_height_ratio": 0.186,
+  "blockout_body_height_ratio": 0.1258181,
+  "review": "Before in-engine review; guardian monuments intentionally larger than hero. No floating platform."
+}

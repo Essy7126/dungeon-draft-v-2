@@ -374,11 +374,8 @@
   },
   "land": {
     "color": "#a39e90",
-    "texture_path": "res://asset/map/painted/underworld/silent_judgment_courtyard_v1/land_composed.png",
-    "texture_scale": [
-      1,
-      1
-    ],
+    "texture_path": "res://assets/catabase/combat_da_v1/judgment_courtyard_emerald_v2.png",
+    "texture_scale": [1.210592686002522, 1.2096774193548387],
     "texture_repeat": false,
     "tint": "#ffffff"
   },
@@ -860,9 +857,9 @@
   },
   "geometry_manifest_path": "res://data/arenas/silent_judgment_courtyard_v1/geometry_manifest.json",
   "floor_palette": {
-    "shade": "#666a6a",
-    "body": "#96958a",
-    "light": "#bdb9ac",
+    "shade": "#677578",
+    "body": "#9fa59b",
+    "light": "#d1cdb6",
     "warmth": [
       -0.035,
       -0.01,
@@ -876,11 +873,11 @@
     }
   },
   "props_palette": {
-    "ink": "#555d5e",
-    "top": "#b5b0a0",
-    "left": "#898b84",
-    "right": "#707b7c",
-    "highlight": "#d8d1bd",
+    "ink": "#677578",
+    "top": "#d1cdb6",
+    "left": "#9fa59b",
+    "right": "#677578",
+    "highlight": "#d1cdb6",
     "moss": [
       0.39,
       0.44,
@@ -929,7 +926,7 @@
       0.41,
       0.38
     ],
-    "bench": "#c4c0ad"
+    "bench": "#d1cdb6"
   },
   "pit_palette": {
     "floor": "#243239",

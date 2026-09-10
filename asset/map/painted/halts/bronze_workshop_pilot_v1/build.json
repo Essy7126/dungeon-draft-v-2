@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "bronze_workshop_pilot_v1",
+  "manifest_sha256": "49d20b47bfacc4b83ad936fce0657f905fc7178c8fb4ee7d56b95a1e35a7aea9",
+  "manifest_hash_mode": "lf_utf8_v1",
+  "generator": "python_pillow_v2",
+  "source_sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+  "mask_sha256": "2f9e6079787f6029a8f3a6a83bf9795479a18c1c8ea9ab737831101164bc8ca4",
+  "flow_sha256": "09b80f9851bebf6ed45b4759a6ac8aba2ab95d06e0d99d53fae0c620c0525e82",
+  "size": [
+    1672,
+    941
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "flow_channels": [
+    "direction_x",
+    "direction_y",
+    "speed_div_4",
+    "water_coverage"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}

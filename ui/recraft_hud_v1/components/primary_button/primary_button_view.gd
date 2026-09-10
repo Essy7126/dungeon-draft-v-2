@@ -119,6 +119,10 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 			skin.border_regular if _refined_primary else skin.border_thin,
 			skin.radius_control
 		)
+	if _refined_primary and not skin.neutral_grayscale:
+		for state_id in [&"normal", &"hover", &"pressed"]:
+			var primary_style := _control_styles[state_id] as StyleBoxFlat
+			primary_style.bg_color = Color("102d34") if state_id == &"normal" else Color("193e46")
 	var focus_style := VISUAL_THEME_FACTORY.make_control_style(
 		skin, &"focus", skin.focus_ring_width, skin.radius_control + skin.focus_ring_offset
 	)

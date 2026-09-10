@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
 [ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_xiphos_of_peleus.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Prowess"]
 script = ExtResource("2_stat")
@@ -24,6 +26,9 @@ healing_and_shield_percent = -0.15
 
 [resource]
 script = ExtResource("1_item")
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_xiphos_of_peleus"
 display_name = "Xiphos de Pélée"
 description = "+15 % Prouesse, +20 % Frappe, -15 % Garde."

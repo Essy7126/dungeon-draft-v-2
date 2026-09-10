@@ -1,5 +1,18 @@
 extends GutTest
 
+var _fixture_histories: Array[StudioHistoryController] = []
+
+
+func after_each() -> void:
+	for history in _fixture_histories:
+		if is_instance_valid(history.undo_redo):
+			history.undo_redo.clear_history()
+			history.undo_redo.free()
+			history.undo_redo = null
+		history._snapshot_applier = Callable()
+		history._fingerprint_provider = Callable()
+	_fixture_histories.clear()
+
 
 func test_preview_session_is_independent_from_arena_definition() -> void:
 	var arena := _fixture()
@@ -27,9 +40,9 @@ func test_500_mouse_events_are_coalesced_without_canonical_mutation() -> void:
 	assert_null(arena.grid_layout)
 	assert_null(arena.painted_map_visual_data)
 	var start := canvas._image_native_to_screen(arena.grid_origin)
-	assert_true(canvas._begin_transform_handle(
-		ArenaStudioCanvas.TransformHandle.BODY, start, false, true
-	))
+	assert_true(
+		canvas._begin_transform_handle(ArenaStudioCanvas.TransformHandle.BODY, start, false, true)
+	)
 	ArenaRuntimeBridge.begin_instrumentation()
 	var last_position := start
 	for index in range(1, 501):
@@ -68,9 +81,9 @@ func test_cancel_anchor_and_keyboard_share_the_preview_contract() -> void:
 	canvas.set_tool(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
 	var opening := ArenaEditSession.fingerprint(arena.to_snapshot())
 	var start := canvas._image_native_to_screen(arena.grid_origin)
-	assert_true(canvas._begin_transform_handle(
-		ArenaStudioCanvas.TransformHandle.BODY, start, false, true
-	))
+	assert_true(
+		canvas._begin_transform_handle(ArenaStudioCanvas.TransformHandle.BODY, start, false, true)
+	)
 	var motion := InputEventMouseMotion.new()
 	motion.position = start + Vector2(30, -12)
 	canvas._update_transform_drag(motion)
@@ -125,9 +138,14 @@ func test_preview_session_does_not_grow_nodes_or_signal_connections() -> void:
 	var connections_before := canvas.transform_commit_requested.get_connections().size()
 	for index in range(100):
 		var start := canvas._image_native_to_screen(canvas.arena.grid_origin)
-		assert_true(canvas._begin_transform_handle(
-			ArenaStudioCanvas.TransformHandle.BODY, start, false, true
-		))
+		assert_true(
+			canvas._begin_transform_handle(
+				ArenaStudioCanvas.TransformHandle.BODY,
+				start,
+				false,
+				true,
+			)
+		)
 		var motion := InputEventMouseMotion.new()
 		motion.position = start + Vector2(3, -1)
 		canvas._handle_mouse_motion(motion)
@@ -139,42 +157,46 @@ func test_preview_session_does_not_grow_nodes_or_signal_connections() -> void:
 
 func _harness(key: String) -> Dictionary:
 	var session := ArenaEditSession.new()
+	_fixture_histories.append(session.history)
 	assert_true(session.open(_fixture(), "", true, key))
+	if not _fixture_histories.has(session.history):
+		_fixture_histories.append(session.history)
 	var arena := session.working_arena
 	var canvas := ArenaStudioCanvas.new()
 	canvas.size = Vector2(1280, 720)
 	add_child_autofree(canvas)
 	canvas.set_arena(arena)
-	var state := {"before": {}, "action": "", "changed": false}
-	canvas.stroke_started.connect(func(action_name: String):
-		state.before = arena.to_snapshot()
-		state.action = action_name
-		state.changed = false
+	var state := { "before": { }, "action": "", "changed": false }
+	canvas.stroke_started.connect(
+		func(action_name: String):
+			state.before = arena.to_snapshot()
+			state.action = action_name
+			state.changed = false,
 	)
-	canvas.transform_commit_requested.connect(func(
-			snapshot: GridTransformSnapshot,
-			cells: Array[Vector2i],
-			pixels: Array[Vector2]
-		):
-		snapshot.apply_to(arena)
-		arena.calibration_cells = cells.duplicate()
-		arena.calibration_pixels = pixels.duplicate()
-		ArenaRuntimeBridge.sync_runtime_resources(
-			arena, ArenaRuntimeBridge.SyncScope.GRID_TRANSFORM
-		)
-		state.changed = true
+	canvas.transform_commit_requested.connect(
+		func(snapshot: GridTransformSnapshot, cells: Array[Vector2i], pixels: Array[Vector2]):
+			snapshot.apply_to(arena)
+			arena.calibration_cells = cells.duplicate()
+			arena.calibration_pixels = pixels.duplicate()
+			ArenaRuntimeBridge.sync_runtime_resources(
+				arena,
+				ArenaRuntimeBridge.SyncScope.GRID_TRANSFORM,
+			)
+			state.changed = true,
 	)
-	canvas.stroke_finished.connect(func(action_name: String):
-		if state.changed:
-			session.commit(action_name, state.before, arena.to_snapshot())
-		state.before = {}
-		state.changed = false
+	canvas.stroke_finished.connect(
+		func(action_name: String):
+			if state.changed:
+				session.commit(action_name, state.before, arena.to_snapshot())
+			state.before = { }
+			state.changed = false,
 	)
-	canvas.stroke_cancelled.connect(func():
-		state.before = {}
-		state.changed = false
+	canvas.stroke_cancelled.connect(
+		func():
+			state.before = { }
+			state.changed = false,
 	)
-	return {"session": session, "arena": arena, "canvas": canvas, "state": state}
+	return { "session": session, "arena": arena, "canvas": canvas, "state": state }
 
 
 func _release(canvas: ArenaStudioCanvas, position: Vector2) -> void:

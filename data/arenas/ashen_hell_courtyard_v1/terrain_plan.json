@@ -374,11 +374,8 @@
   },
   "land": {
     "color": "#49312b",
-    "texture_path": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/land_composed.png",
-    "texture_scale": [
-      1,
-      1
-    ],
+    "texture_path": "res://assets/catabase/combat_da_v1/ashen_courtyard_emerald_v2.png",
+    "texture_scale": [1.210592686002522, 1.2096774193548387],
     "texture_repeat": false
   },
   "soil_patches": [],
@@ -1067,9 +1064,9 @@
   },
   "geometry_manifest_path": "res://data/arenas/ashen_hell_courtyard_v1/geometry_manifest.json",
   "floor_palette": {
-    "shade": "#393137",
-    "body": "#625451",
-    "light": "#a6947c",
+    "shade": "#303b42",
+    "body": "#596466",
+    "light": "#9b9380",
     "warmth": [
       -0.08,
       -0.025,
@@ -1080,11 +1077,11 @@
     "bevel_flatten_strength": 0.9
   },
   "props_palette": {
-    "ink": "#3a2b2a",
-    "top": "#9f8972",
-    "left": "#76635c",
-    "right": "#514449",
-    "highlight": "#c3a07c",
+    "ink": "#303b42",
+    "top": "#9b9380",
+    "left": "#596466",
+    "right": "#303b42",
+    "highlight": "#9b9380",
     "moss": [
       0.25,
       0.14,
@@ -1133,7 +1130,7 @@
       0.15,
       0.5
     ],
-    "bench": "#bd956b"
+    "bench": "#9b9380"
   },
   "pit_palette": {
     "floor": "#1a1116",

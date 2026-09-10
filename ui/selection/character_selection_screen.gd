@@ -15,14 +15,17 @@ const BODY := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible
 const BOLD := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Bold.otf")
 const REFERENCE := Vector2(1600, 900)
 const ORNAMENT := preload("res://ui/selection/selection_ornament.gd")
-const INK := Color("181513")
-const PANEL := Color("211c19")
-const LINE := Color("615247")
-const GOLD := Color("c5aa86")
-const TEXT := Color("ebe0d2")
-const MUTED := Color("b7aa9c")
+const PALETTE := preload("res://ui/expedition/catabase_ui_theme.gd")
+const INK := PALETTE.INK
+const PANEL := PALETTE.PANEL
+const LINE := PALETTE.BRONZE
+const GOLD := PALETTE.GOLD
+const TEXT := PALETTE.TEXT
+const MUTED := PALETTE.MUTED
 const DIRECTIONS := ["N", "E", "S", "W"]
 
+# Explicit opt-in for historical lab fixtures; never enabled by the title.
+var include_archived_adventures := false
 var selected_index := 0
 var selected_spell_index := 0
 var orientation_index := 1
@@ -68,7 +71,7 @@ func _ready() -> void:
 	theme = Theme.new()
 	theme.default_font = BODY
 	theme.default_font_size = 18
-	_entries = CATALOG.get_entries()
+	_entries = CATALOG.get_entries(include_archived_adventures)
 	_build_screen()
 	resized.connect(_layout)
 	_layout()
@@ -97,7 +100,7 @@ func _build_screen() -> void:
 	_ornament(_canvas, Rect2(31, 21, 51, 51), &"seal")
 	_label(_canvas, "CATABASE", Rect2(96, 24, 306, 35), 28, TEXT, HEADING)
 	_label(_canvas, "LE SEUIL DES LÉGENDES", Rect2(98, 61, 300, 19), 13, GOLD, BOLD)
-	_label(_canvas, "CHOISISSEZ VOTRE LÉGENDE", Rect2(511, 37, 480, 29), 17, GOLD, BOLD, HORIZONTAL_ALIGNMENT_CENTER)
+	_label(_canvas, "CHOISISSEZ VOTRE LÉGENDE" if include_archived_adventures else "PRÉPAREZ VOTRE DESCENTE", Rect2(511, 37, 480, 29), 17, GOLD, BOLD, HORIZONTAL_ALIGNMENT_CENTER)
 	var refuge := _button(_canvas, "Sanctuaire", Rect2(1178, 20, 151, 56))
 	refuge.tooltip_text = "Visiter le Sanctuaire et retrouver les services de votre halte"
 	refuge.pressed.connect(open_refuge)
@@ -112,9 +115,9 @@ func _build_screen() -> void:
 
 
 func _build_roster() -> void:
-	_label(_canvas, "Les héros", Rect2(32, 117, 260, 37), 27, TEXT, HEADING)
+	_label(_canvas, "Les héros" if include_archived_adventures else "Achille", Rect2(32, 117, 260, 37), 27, TEXT, HEADING)
 	_hero_counter = _label(_canvas, "", Rect2(241, 125, 91, 25), 15, GOLD, BOLD, HORIZONTAL_ALIGNMENT_RIGHT)
-	_label(_canvas, "Un destin à incarner", Rect2(33, 154, 297, 24), 17, MUTED)
+	_label(_canvas, "Un destin à incarner" if include_archived_adventures else "Choisissez votre apparence", Rect2(33, 154, 297, 24), 17, MUTED)
 	var scroll := ScrollContainer.new()
 	scroll.name = "HeroRosterScroll"
 	scroll.position = Vector2(32, 192)
@@ -156,8 +159,8 @@ func _build_roster() -> void:
 		_label(button, _short_role(unit), Rect2(101, 67, 182, 19), 14, MUTED)
 	var note := _panel(_canvas, Rect2(32, 734, 300, 52), Color("1b1714"), Color(LINE, 0.7), 4)
 	note.name = "RosterNote"
-	_label(note, "UN HÉROS, SON AVENTURE", Rect2(14, 6, 272, 18), 13, GOLD, BOLD)
-	_label(note, "Le groupe est lié au récit choisi.", Rect2(14, 27, 272, 18), 15, MUTED)
+	_label(note, "UN HÉROS, SON AVENTURE" if include_archived_adventures else "UNE DESCENTE EN SOLO", Rect2(14, 6, 272, 18), 13, GOLD, BOLD)
+	_label(note, "Le groupe est lié au récit choisi." if include_archived_adventures else "Deux apparences, la même aventure.", Rect2(14, 27, 272, 18), 15, MUTED)
 
 
 func _build_stage() -> void:
@@ -677,7 +680,7 @@ func _mark_selected(button: Button, selected: bool) -> void:
 	button.set_pressed_no_signal(selected)
 	var accent: Color = button.get_meta("accent", GOLD)
 	var roster := StringName(button.get_meta("style_role", &"")) == &"roster"
-	var border := Color("b89a74") if selected else LINE
+	var border := PALETTE.TEAL if selected else LINE
 	button.add_theme_stylebox_override("normal", _frame(border, 5, 2 if selected else 1))
 	button.add_theme_stylebox_override("pressed", _frame(Color("b89a74"), 5, 2))
 	button.add_theme_stylebox_override("hover_pressed", _frame(Color("dcc5a3"), 5, 2))
@@ -754,13 +757,13 @@ func _button(parent: Node, caption: String, rect: Rect2, primary: bool = false) 
 	button.add_theme_stylebox_override("pressed", _frame(Color("a68b68"), 5, 2))
 	button.add_theme_stylebox_override("hover_pressed", _frame(Color("dcc5a3"), 5, 2))
 	button.add_theme_stylebox_override("disabled", _frame(Color("49413a"), 5))
-	var focus := _frame(Color("f0dec1"), 6, 2)
+	var focus := _frame(PALETTE.TEAL, 6, 2)
 	focus.expand_margin_left = 3
 	focus.expand_margin_top = 3
 	focus.expand_margin_right = 3
 	focus.expand_margin_bottom = 3
 	button.add_theme_stylebox_override("focus", focus)
-	_surface(button, Color("493729") if primary else Color("231d19"), Color("ab8b64") if primary else LINE, &"primary" if primary else &"button")
+	_surface(button, Color("102d34") if primary else PANEL, Color("ab8b64") if primary else LINE, &"primary" if primary else &"button")
 	return button
 
 

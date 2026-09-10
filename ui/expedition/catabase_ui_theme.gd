@@ -3,14 +3,17 @@ extends RefCounted
 ## Painted presentation only. Missing art keeps every control usable.
 
 const ART_ROOT := "res://assets/catabase/painted/ui/"
-const INK := Color("0d1b23")
-const PANEL := Color("142a30")
-const BRONZE := Color("957344")
-const GOLD := Color("e0ba76")
-const TEXT := Color("f3ead7")
-const MUTED := Color("a9bab7")
-const TEAL := Color("74d5cb")
-const DANGER := Color("e29b85")
+const GLYPHS := preload("res://ui/theme/catabase_icon_library.gd")
+const CHROME := preload("res://ui/theme/game_ui_chrome.gd")
+const CHROME_ROOT := CHROME.CHROME_ROOT
+const INK := CHROME.INK
+const PANEL := CHROME.PANEL
+const BRONZE := CHROME.BRONZE
+const GOLD := CHROME.GOLD
+const TEXT := CHROME.TEXT
+const MUTED := CHROME.MUTED
+const TEAL := CHROME.TEAL
+const DANGER := CHROME.DANGER
 static var _theme: Theme = null
 static var _textures: Dictionary = {}
 static var _presentation_textures: Dictionary = {}
@@ -41,7 +44,8 @@ static func texture(name: String) -> Texture2D:
 
 
 static func icon(group: String, name: String) -> Texture2D:
-	return texture(group + "/" + name) if not name.is_empty() else null
+	var glyph := GLYPHS.icon(group, name)
+	return glyph if glyph != null else texture(group + "/" + name) if not name.is_empty() else null
 
 
 static func _presentation_texture(name: String, source: Texture2D) -> Texture2D:
@@ -65,62 +69,7 @@ static func _presentation_texture(name: String, source: Texture2D) -> Texture2D:
 
 
 static func style(kind: String, state: String = "normal") -> StyleBox:
-	var control := kind in ["button", "tab", "slot"]
-	var horizontal := 14.0 if control else 48.0 if kind == "banner" else 40.0 if kind == "panel" else 18.0
-	var vertical := 9.0 if control else 12.0 if kind == "banner" else 40.0 if kind == "panel" else 16.0
-	if state == "focus":
-		var focus := StyleBoxFlat.new()
-		focus.bg_color = Color.TRANSPARENT
-		focus.border_color = TEAL
-		focus.set_border_width_all(2)
-		focus.set_corner_radius_all(5)
-		focus.expand_margin_left = 2
-		focus.expand_margin_top = 2
-		focus.expand_margin_right = 2
-		focus.expand_margin_bottom = 2
-		return focus
-	var art_name := kind
-	if control:
-		var suffix := state if state in ["primary", "selected", "disabled", "locked"] else "normal"
-		if kind == "tab" and suffix not in ["normal", "selected"]:
-			suffix = "normal"
-		elif kind == "slot" and suffix in ["primary", "disabled"]:
-			suffix = "locked" if suffix == "disabled" else "selected"
-		elif kind == "button" and suffix == "locked":
-			suffix = "disabled"
-		art_name = kind + "_" + suffix
-	var art := texture(art_name)
-	var result: StyleBox
-	if art != null:
-		var painted := StyleBoxTexture.new()
-		painted.texture = _presentation_texture(art_name, art)
-		var ratio := float(painted.texture.get_width()) / float(art.get_width())
-		var source_slices: Vector4 = SOURCE_SLICES.get(kind, Vector4(32, 32, 32, 32))
-		painted.set_texture_margin(SIDE_LEFT, roundf(source_slices.x * ratio))
-		painted.set_texture_margin(SIDE_TOP, roundf(source_slices.y * ratio))
-		painted.set_texture_margin(SIDE_RIGHT, roundf(source_slices.z * ratio))
-		painted.set_texture_margin(SIDE_BOTTOM, roundf(source_slices.w * ratio))
-		painted.modulate_color = Color(1.10, 1.08, 1.03) if state == "hover" else (Color(0.78, 0.86, 0.85) if state == "pressed" else Color.WHITE)
-		result = painted
-	else:
-		var fallback := StyleBoxFlat.new()
-		fallback.bg_color = PANEL
-		if state in ["primary", "selected"]:
-			fallback.bg_color = Color("274342")
-		elif state == "hover":
-			fallback.bg_color = Color("294147")
-		elif state in ["disabled", "locked"]:
-			fallback.bg_color = Color("122127")
-		fallback.border_color = TEAL if state == "selected" else GOLD if state in ["hover", "primary"] else BRONZE.darkened(0.25)
-		fallback.set_border_width_all(1)
-		fallback.set_corner_radius_all(5)
-		result = fallback
-	result.content_margin_left = horizontal
-	result.content_margin_right = horizontal
-	result.content_margin_top = vertical
-	result.content_margin_bottom = vertical
-	return result
-
+	return CHROME.style(kind, state)
 
 static func get_theme() -> Theme:
 	if _theme != null:
@@ -376,6 +325,7 @@ static func _restoreable_icon(button: Button, enabled: bool, icon_name: String, 
 
 
 static func _reserve_button_icon(button: Button, extent: int) -> void:
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	if button.icon == null:
 		return
 	var font := button.get_theme_font("font")

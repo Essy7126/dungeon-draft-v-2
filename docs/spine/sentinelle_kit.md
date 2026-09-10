@@ -1,96 +1,101 @@
-# Kit d’animations de la Sentinelle
+# Sentinelle — révision des mouvements
 
-Livraison d’essai du 9 septembre 2026 : **24 clips, quatre directions E/S/W/N**.
-Révision retenue : `sentinelle_kit_v5`. Les versions précédentes sont des essais
-locaux conservés dans `artifacts/` ; elles ne sont pas la livraison courante.
+**Retour utilisateur après V7 : cohérence toujours insuffisante.** Le
+[diagnostic de méthode](diagnostic_methode_2026-09-10.md) précise les défauts
+observés et le pilote recommandé avant de décliner à nouveau les animations.
+Les corrections décrites ci-dessous sont les intentions de cette version ;
+elles ne constituent pas une validation artistique.
 
-## Examiner
+
+Version courante du **10 septembre 2026 : `sentinelle_kit_v7`**.
+24 clips, quatre directions E/S/W/N. La V5 reste conservée pour comparaison.
+Son chargement technique était valide, mais ses mouvements ont été jugés
+insuffisants par l’utilisateur : estoc, marche, chute et sort trop discret.
+
+## Ouvrir et comparer
 
 ```powershell
 ./tools/spine_trial/kit.ps1 start
-```
-
-[Galerie de la version courante](http://127.0.0.1:8734/files/sentinelle_kit_v5/review.html) :
-six animations, comparaison des quatre vues, vue agrandie, pause, curseur,
-vitesses ×1 / ×0,5 / ×0,25 et répétition facultative des actions.
-
-Dans Godot : ouvrir `tools/spine_trial/SentinelleKit.tscn`, puis **F6**, ou :
-
-```powershell
 ./tools/spine_trial/kit.ps1 godot
 ```
 
-| Clip Spine | Durée | Comportement |
+[Galerie courante](http://127.0.0.1:8734/files/sentinelle_kit_v7/review.html) ·
+[Ancienne V5](http://127.0.0.1:8734/files/sentinelle_kit_v5/review.html).
+Le lecteur propose les quatre vues, une vue agrandie, le ralenti, un curseur
+et la répétition facultative des actions. Dans Godot, ouvrir
+`tools/spine_trial/SentinelleKit.tscn`, puis F6.
+
+## Corrections proposées
+
+- **Disparition** : la chute est remplacée par une petite explosion noire.
+  Le corps disparaît à 0,16 s ; les 17 bouffées et éclats se dissipent avant
+  0,65 s. Aucune partie de la Sentinelle ni particule ne reste à la fin.
+  L’effet est contenu dans les données Spine, donc présent dans les deux lecteurs.
+- **Estoc** : mise en garde avant la poussée, pied avant posé, bassin et buste
+  engagés, coude fléchi du côté anatomique prévu. La lance reste alignée pendant
+  la poussée ; sa trajectoire est contrôlée séparément de la rotation du buste.
+  Le bouclier se retire pour dégager l’arme.
+- **Marche** : les deux genoux fléchissent vers l’avant pour chaque direction.
+  Les pieds suivent des trajectoires parallèles ; appui pendant 60 % du cycle,
+  semelles à plat, puis levée du pied. Le bassin oscille moins.
+- **Sort** : charge plus profonde, mouvement du bouclier et engagement du buste
+  amplifiés, puis retour en garde.
+- **Raccords peints** : les plaques d’épaule et les biceps sont séparés ; les
+  parties cachées des membres sont reconstruites avec le service de peinture
+  existant. Le bras qui croise le buste est placé devant sa peinture.
+
+| Clip Spine | Durée | Lecture / événement |
 |---|---:|---|
-| `idle` | 2,40 s | Respiration, garde ; boucle |
-| `walk` | 0,72 s | Deux pas, pieds levés à tour de rôle ; boucle sur place |
-| `attack` | 0,80 s | Préparation, estoc, reprise ; `attack_release` à 0,40 s |
-| `cast` | 0,88 s | Charge au bouclier, émission ; `cast_release` à 0,44 s |
-| `hit` | 0,20 s | Recul et reprise des appuis |
-| `death` | 0,80 s | Affaissement, chute et pose finale conservée |
+| `idle` | 2,40 s | Repos en boucle |
+| `walk` | 0,72 s | Marche en boucle ; pas à 0 et 0,36 s |
+| `attack` | 0,80 s | `attack_release` à 0,40 s |
+| `cast` | 0,88 s | `cast_release` à 0,44 s |
+| `hit` | 0,20 s | Recul et reprise |
+| `death` | 0,80 s | `death_burst` à 0,08 s ; `vanish` à 0,16 s |
 
-Les événements `footstep_left` / `footstep_right` sont à 0 / 0,36 s ;
-`body_landed` est à 0,72 s. Les actions ne bouclent pas par défaut dans les
-galeries. La translation du personnage, les effets, les dégâts et le changement
-d’état restent à la charge du jeu. Aucun VFX ni son n’est inclus dans ce kit.
+Les actions restent non bouclées par défaut. La marche est calculée sur place :
+la vitesse de référence du déplacement simulé est 40 pixels source par cycle.
+Un branchement au déplacement du combat devra adapter cette distance à l’échelle
+du personnage ; les ressources de combat n’ont pas été remplacées.
 
-## Sources et reprise
+## Sources et contraintes de l’essai
 
-Le paquet conservé dans **`art/source/spine/sentinelle_kit_v5/`** contient, pour
-chaque direction, `sentinelle.json`, l’atlas, sa texture, les PNG découpés dans
-`images/` et la provenance. `kit.json` décrit les clips et leurs événements.
-Le lanceur restaure ce paquet dans `artifacts/spine_trial/` si sa copie locale
-a été supprimée. Il préserve un dossier de travail déjà présent.
+Paquet conservé : **`art/source/spine/sentinelle_kit_v7/`**. Chaque direction
+contient le JSON, son atlas, la texture, les images séparées et la provenance.
+`kit.json` décrit les clips ; `validation.json` référence les preuves et hachages.
+`review/` conserve les planches fixes. Le lanceur restaure une copie absente
+dans `artifacts/spine_trial/`, sans écraser un dossier de travail déjà présent.
 
-Dans **Spine Trial → Import Data**, choisir par exemple
-`art/source/spine/sentinelle_kit_v5/E/sentinelle.json`, échelle **1**, images
-`./images/`. Le kit est du JSON Spine **4.2.22**. L’éditeur trial installé est
-**4.3.26** ; son import et son aller-retour restent à constater manuellement.
-La trial ne sauvegarde ni n’exporte : aucun fichier `.spine` n’est livré.
+Le générateur est `tools/spine_trial/sentinelle_kit.py`, les mouvements sont dans
+`sentinelle_motion.py`, la disparition dans `spine_burst.py`. Le pont commun
+`prepare_sentinelle.py` garde son comportement par défaut ; le choix de flexion
+est adapté localement par `DirectionalSkeleton`, sans changer le rig partagé
+des monstres. Les dessins des quatre directions sont conservés sans miroir.
 
-L’adaptateur réutilise `humanoid_parts.build_parts` et `PaintedSkeleton`.
-Les quatre dessins sont indépendants, sans miroir. Le rig possède **16 os** :
-les épaulières peintes sont séparées du bras, les pieds disposent de leurs
-propres articulations. Le bassin est ajusté pour garder les cibles des pieds
-à portée des jambes ; la chute se termine au niveau du sol. La conversion
-conserve les pixels des régions de l’atlas et contrôle les transformations.
+Dans Spine Trial → Import Data, choisir par exemple
+`art/source/spine/sentinelle_kit_v7/E/sentinelle.json`, échelle 1 et images
+`./images/`. Données **Spine 4.2.22**, éditeur trial installé **4.3.26**.
+L’import dans l’éditeur et l’aller-retour ne sont toujours pas constatés.
+La trial ne sauvegarde ni n’exporte ; aucun `.spine` éditable n’est livré.
 
-Les recettes sont dans `tools/spine_trial/sentinelle_kit.py`, le pont Spine
-dans `prepare_sentinelle.py`. Pour produire une nouvelle révision :
-
-```powershell
-./tools/spine_trial/kit.ps1 build
-# ou un nom explicite inédit :
-./tools/spine_trial/kit.ps1 build -Revision sentinelle_kit_v6
-./tools/spine_trial/kit.ps1 verify -Revision sentinelle_kit_v6
-```
-
-Ne pas régénérer sur un dossier édité : le générateur refuse l’écrasement.
-Conserver la révision et les hachages du manifeste lors de retouches manuelles.
-
-## Validation et limites
-
-Il s’agit d’une **première proposition artistique complète**, à examiner en
-mouvement. Les volumes proviennent de peintures rigides articulées ; les grands
-croisements de bras et les chutes restent les poses à regarder en priorité.
-Le kit n’a pas remplacé les ressources du combat et n’est pas déclaré approuvé
-pour la production finale. L’installation du runtime reste celle de l’essai.
-
-La vérification comprend le chargement de tous les clips dans les runtimes
-officiels web et Godot, leurs durées, mouvement, raccords et pose finale,
-les événements natifs, ainsi que des captures. Les mesures géométriques
-contrôlent les appuis aux clés, la direction de la lance et le contact au sol.
-Les rapports détaillés et les planches sont dans `artifacts/dev/` ; leurs
-chemins sont conservés dans `validation.json` à la racine du paquet.
+## Vérifier et poursuivre
 
 ```powershell
 ./tools/spine_trial/kit.ps1 verify
 ./dev.ps1 test smoke
+./tools/spine_trial/kit.ps1 build -Revision sentinelle_kit_v8
 ```
 
-Le lint Spine ne signale aucune erreur. Ses avertissements `key-density`
-proviennent des articulations calculées puis échantillonnées à environ 30 Hz ;
-ce kit d’essai ne remplace pas ces courbes par des contraintes IK natives de
-l’éditeur. Les informations `loop-pop` concernent la mort, volontairement non
-bouclée. Les planches fixes sont aussi conservées dans le sous-dossier `review/`
-du paquet, afin de pouvoir les examiner sans démarrer le serveur.
+Le générateur refuse les révisions déjà présentes. Les mouvements sont
+échantillonnés à environ 60 Hz ; il ne s’agit pas de contraintes IK natives
+éditées dans Spine. Les courbes restent dans le JSON.
+
+Le nouveau contrôle `verify_sentinelle_motion.py` lit les transformations du
+JSON produit, y compris entre les clés : sens des genoux, stabilité de l’appui
+dans le déplacement simulé, alignement et progression de la pointe, engagement
+du corps, amplitude du bouclier et opacité finale. Les lecteurs web et Godot
+contrôlent également les 24 clips, les événements natifs et la disparition.
+
+Ces contrôles portent sur la cohérence mesurable et la lecture des fichiers.
+La V7 est une nouvelle proposition artistique à revoir avec l’utilisateur ;
+un rapport technique réussi ne vaut pas approbation du mouvement.

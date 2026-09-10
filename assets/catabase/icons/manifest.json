@@ -1,0 +1,1582 @@
+{
+  "style": "Catabase · glyphes ivoire / bronze / sarcelle",
+  "provenance": "Original vector artwork authored in tools/ui_icons/build_icons.py; no third-party assets.",
+  "icons": [
+    {
+      "group": "spells",
+      "id": "peleid_strike",
+      "path": "assets/catabase/icons/spells/peleid_strike.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "fulminant_dash",
+      "path": "assets/catabase/icons/spells/fulminant_dash.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "pelion_shot",
+      "path": "assets/catabase/icons/spells/pelion_shot.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "bronze_guard",
+      "path": "assets/catabase/icons/spells/bronze_guard.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "crochet",
+      "path": "assets/catabase/icons/spells/crochet.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "fauchage",
+      "path": "assets/catabase/icons/spells/fauchage.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "entaille",
+      "path": "assets/catabase/icons/spells/entaille.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "moisson",
+      "path": "assets/catabase/icons/spells/moisson.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "rupture",
+      "path": "assets/catabase/icons/spells/rupture.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "marque",
+      "path": "assets/catabase/icons/spells/marque.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "feinte",
+      "path": "assets/catabase/icons/spells/feinte.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "contretemps",
+      "path": "assets/catabase/icons/spells/contretemps.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "heurt",
+      "path": "assets/catabase/icons/spells/heurt.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "posture",
+      "path": "assets/catabase/icons/spells/posture.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "souffle",
+      "path": "assets/catabase/icons/spells/souffle.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "marche",
+      "path": "assets/catabase/icons/spells/marche.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "braise",
+      "path": "assets/catabase/icons/spells/braise.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "givre",
+      "path": "assets/catabase/icons/spells/givre.svg",
+      "size": 256,
+      "accent": "#a2c7e0",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "foudre",
+      "path": "assets/catabase/icons/spells/foudre.svg",
+      "size": 256,
+      "accent": "#a2c7e0",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "serment_rempart",
+      "path": "assets/catabase/icons/spells/serment_rempart.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "serment_brasier",
+      "path": "assets/catabase/icons/spells/serment_brasier.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "exp_tempest",
+      "path": "assets/catabase/icons/spells/exp_tempest.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "spells",
+      "id": "exp_crochet_mutation",
+      "path": "assets/catabase/icons/spells/exp_crochet_mutation.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_crochet_legend",
+      "path": "assets/catabase/icons/spells/exp_crochet_legend.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_fauchage_signature",
+      "path": "assets/catabase/icons/spells/exp_fauchage_signature.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "signature"
+    },
+    {
+      "group": "spells",
+      "id": "exp_entaille_mutation",
+      "path": "assets/catabase/icons/spells/exp_entaille_mutation.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_entaille_legend",
+      "path": "assets/catabase/icons/spells/exp_entaille_legend.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_moisson_signature",
+      "path": "assets/catabase/icons/spells/exp_moisson_signature.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "signature"
+    },
+    {
+      "group": "spells",
+      "id": "exp_rupture_mutation",
+      "path": "assets/catabase/icons/spells/exp_rupture_mutation.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_rupture_legend",
+      "path": "assets/catabase/icons/spells/exp_rupture_legend.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_marque_signature",
+      "path": "assets/catabase/icons/spells/exp_marque_signature.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "signature"
+    },
+    {
+      "group": "spells",
+      "id": "exp_feinte_mutation",
+      "path": "assets/catabase/icons/spells/exp_feinte_mutation.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_feinte_legend",
+      "path": "assets/catabase/icons/spells/exp_feinte_legend.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_contretemps_signature",
+      "path": "assets/catabase/icons/spells/exp_contretemps_signature.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "signature"
+    },
+    {
+      "group": "spells",
+      "id": "exp_heurt_mutation",
+      "path": "assets/catabase/icons/spells/exp_heurt_mutation.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_heurt_legend",
+      "path": "assets/catabase/icons/spells/exp_heurt_legend.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_posture_signature",
+      "path": "assets/catabase/icons/spells/exp_posture_signature.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "signature"
+    },
+    {
+      "group": "spells",
+      "id": "exp_souffle_mutation",
+      "path": "assets/catabase/icons/spells/exp_souffle_mutation.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_souffle_legend",
+      "path": "assets/catabase/icons/spells/exp_souffle_legend.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_marche_signature",
+      "path": "assets/catabase/icons/spells/exp_marche_signature.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "signature"
+    },
+    {
+      "group": "spells",
+      "id": "exp_braise_mutation",
+      "path": "assets/catabase/icons/spells/exp_braise_mutation.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "mutation"
+    },
+    {
+      "group": "spells",
+      "id": "exp_braise_legend",
+      "path": "assets/catabase/icons/spells/exp_braise_legend.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "legend"
+    },
+    {
+      "group": "spells",
+      "id": "exp_givre_signature",
+      "path": "assets/catabase/icons/spells/exp_givre_signature.svg",
+      "size": 256,
+      "accent": "#a2c7e0",
+      "rank": "signature"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_levier",
+      "path": "assets/catabase/icons/equipment/catabase_levier.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_lame_sang",
+      "path": "assets/catabase/icons/equipment/catabase_lame_sang.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_javeline",
+      "path": "assets/catabase/icons/equipment/catabase_javeline.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_xiphos_danse",
+      "path": "assets/catabase/icons/equipment/catabase_xiphos_danse.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_masse_airain",
+      "path": "assets/catabase/icons/equipment/catabase_masse_airain.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_fer_braise",
+      "path": "assets/catabase/icons/equipment/catabase_fer_braise.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_cuirasse",
+      "path": "assets/catabase/icons/equipment/catabase_cuirasse.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_lin_survivant",
+      "path": "assets/catabase/icons/equipment/catabase_lin_survivant.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_sandales",
+      "path": "assets/catabase/icons/equipment/catabase_sandales.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_sceau_chasse",
+      "path": "assets/catabase/icons/equipment/catabase_sceau_chasse.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_prisme",
+      "path": "assets/catabase/icons/equipment/catabase_prisme.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_agrafe",
+      "path": "assets/catabase/icons/equipment/catabase_agrafe.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "force",
+      "path": "assets/catabase/icons/stats/force.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "attack_power",
+      "path": "assets/catabase/icons/stats/attack_power.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "max_hp",
+      "path": "assets/catabase/icons/stats/max_hp.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "initiative",
+      "path": "assets/catabase/icons/stats/initiative.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "max_mp",
+      "path": "assets/catabase/icons/stats/max_mp.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "esquive",
+      "path": "assets/catabase/icons/stats/esquive.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "armure",
+      "path": "assets/catabase/icons/stats/armure.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "resist_magique",
+      "path": "assets/catabase/icons/stats/resist_magique.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "stats",
+      "id": "heal_budget",
+      "path": "assets/catabase/icons/stats/heal_budget.svg",
+      "size": 64,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "equipment",
+      "path": "assets/catabase/icons/nav/equipment.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "map",
+      "path": "assets/catabase/icons/nav/map.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "tree",
+      "path": "assets/catabase/icons/nav/tree.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "journal",
+      "path": "assets/catabase/icons/nav/journal.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "halt",
+      "path": "assets/catabase/icons/nav/halt.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "home",
+      "path": "assets/catabase/icons/nav/home.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "close",
+      "path": "assets/catabase/icons/nav/close.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "settings",
+      "path": "assets/catabase/icons/nav/settings.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "save",
+      "path": "assets/catabase/icons/nav/save.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "continue",
+      "path": "assets/catabase/icons/nav/continue.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "lock",
+      "path": "assets/catabase/icons/nav/lock.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "check",
+      "path": "assets/catabase/icons/nav/check.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "attributes",
+      "path": "assets/catabase/icons/nav/attributes.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "search",
+      "path": "assets/catabase/icons/nav/search.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "sort",
+      "path": "assets/catabase/icons/nav/sort.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "back",
+      "path": "assets/catabase/icons/nav/back.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "oboles",
+      "path": "assets/catabase/icons/resources/oboles.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "destiny",
+      "path": "assets/catabase/icons/resources/destiny.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "health",
+      "path": "assets/catabase/icons/resources/health.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "level",
+      "path": "assets/catabase/icons/resources/level.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "victory",
+      "path": "assets/catabase/icons/resources/victory.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "defeat",
+      "path": "assets/catabase/icons/resources/defeat.svg",
+      "size": 64,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "action_points",
+      "path": "assets/catabase/icons/resources/action_points.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "resources",
+      "id": "movement_points",
+      "path": "assets/catabase/icons/resources/movement_points.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "emblems",
+      "id": "colere",
+      "path": "assets/catabase/icons/emblems/colere.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "emblems",
+      "id": "chiron",
+      "path": "assets/catabase/icons/emblems/chiron.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "emblems",
+      "id": "eaque",
+      "path": "assets/catabase/icons/emblems/eaque.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "emblems",
+      "id": "elements",
+      "path": "assets/catabase/icons/emblems/elements.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "emblems",
+      "id": "serment",
+      "path": "assets/catabase/icons/emblems/serment.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "emblems",
+      "id": "achilles",
+      "path": "assets/catabase/icons/emblems/achilles.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "normal",
+      "path": "assets/catabase/icons/route/normal.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "elite",
+      "path": "assets/catabase/icons/route/elite.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "boss",
+      "path": "assets/catabase/icons/route/boss.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "hub",
+      "path": "assets/catabase/icons/route/hub.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "merchant",
+      "path": "assets/catabase/icons/route/merchant.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "sanctuary",
+      "path": "assets/catabase/icons/route/sanctuary.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "lore",
+      "path": "assets/catabase/icons/route/lore.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "event",
+      "path": "assets/catabase/icons/route/event.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "cache",
+      "path": "assets/catabase/icons/route/cache.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "unknown",
+      "path": "assets/catabase/icons/route/unknown.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "hidden",
+      "path": "assets/catabase/icons/route/hidden.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "current",
+      "path": "assets/catabase/icons/route/current.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "cooldown",
+      "path": "assets/catabase/icons/states/cooldown.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "locked",
+      "path": "assets/catabase/icons/states/locked.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "unavailable",
+      "path": "assets/catabase/icons/states/unavailable.svg",
+      "size": 64,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "resolving",
+      "path": "assets/catabase/icons/states/resolving.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "target_valid",
+      "path": "assets/catabase/icons/states/target_valid.svg",
+      "size": 64,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "target_invalid",
+      "path": "assets/catabase/icons/states/target_invalid.svg",
+      "size": 64,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "upgrade",
+      "path": "assets/catabase/icons/effects/upgrade.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "hidden",
+      "path": "assets/catabase/icons/effects/hidden.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "damage",
+      "path": "assets/catabase/icons/effects/damage.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "range",
+      "path": "assets/catabase/icons/effects/range.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "push",
+      "path": "assets/catabase/icons/effects/push.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "movement",
+      "path": "assets/catabase/icons/effects/movement.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "bleed",
+      "path": "assets/catabase/icons/effects/bleed.svg",
+      "size": 64,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "vulnerability",
+      "path": "assets/catabase/icons/effects/vulnerability.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "collision",
+      "path": "assets/catabase/icons/effects/collision.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "duration",
+      "path": "assets/catabase/icons/effects/duration.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "pierce",
+      "path": "assets/catabase/icons/effects/pierce.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "terrain",
+      "path": "assets/catabase/icons/effects/terrain.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "heal",
+      "path": "assets/catabase/icons/effects/heal.svg",
+      "size": 64,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "defense",
+      "path": "assets/catabase/icons/effects/defense.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "state_check",
+      "path": "assets/catabase/icons/effects/state_check.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "state_excluded",
+      "path": "assets/catabase/icons/effects/state_excluded.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "state_pending",
+      "path": "assets/catabase/icons/effects/state_pending.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "effects",
+      "id": "poison",
+      "path": "assets/catabase/icons/effects/poison.svg",
+      "size": 64,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "nav",
+      "id": "move",
+      "path": "assets/catabase/icons/nav/move.svg",
+      "size": 64,
+      "accent": "#eee5d2",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_focused_fury",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_focused_fury.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_opening_slash",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_opening_slash.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_murderous_momentum",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_murderous_momentum.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_execution",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_execution.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_blood_for_blood",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_blood_for_blood.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_victorious_step",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_victorious_step.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_break_formation",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_break_formation.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_scourge_of_troy",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_scourge_of_troy.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_irrepressible_wrath",
+      "path": "assets/catabase/icons/masteries/achilles_wrath_irrepressible_wrath.svg",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_centaur_eye",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_centaur_eye.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_pelion_reach",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_pelion_reach.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_close_shot",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_close_shot.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_impossible_angle",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_impossible_angle.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_stopping_arrow",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_stopping_arrow.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_piercing_arrow",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_piercing_arrow.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_mobile_hunt",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_mobile_hunt.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_death_line",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_death_line.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_centaur_volley",
+      "path": "assets/catabase/icons/masteries/achilles_chiron_centaur_volley.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_active_guard",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_active_guard.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_directional_guard",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_directional_guard.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_bronze_anchor",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_bronze_anchor.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_riposte",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_riposte.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_arrow_wall",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_arrow_wall.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_broken_shield",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_broken_shield.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_mobile_bastion",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_mobile_bastion.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_counter",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_counter.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_myrmidon_rampart",
+      "path": "assets/catabase/icons/masteries/achilles_aeacus_myrmidon_rampart.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_summit_wrath",
+      "path": "assets/catabase/icons/masteries/achilles_summit_wrath.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_summit_chiron",
+      "path": "assets/catabase/icons/masteries/achilles_summit_chiron.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_summit_aeacus",
+      "path": "assets/catabase/icons/masteries/achilles_summit_aeacus.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_junction_battlefield_predator",
+      "path": "assets/catabase/icons/masteries/achilles_junction_battlefield_predator.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_junction_bronze_avenger",
+      "path": "assets/catabase/icons/masteries/achilles_junction_bronze_avenger.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_junction_pelion_sentinel",
+      "path": "assets/catabase/icons/masteries/achilles_junction_pelion_sentinel.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_apotheosis_scourge_trojans",
+      "path": "assets/catabase/icons/masteries/achilles_apotheosis_scourge_trojans.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_apotheosis_fate_shot",
+      "path": "assets/catabase/icons/masteries/achilles_apotheosis_fate_shot.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_apotheosis_invincible_hero",
+      "path": "assets/catabase/icons/masteries/achilles_apotheosis_invincible_hero.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "attributes",
+      "id": "vitality",
+      "path": "assets/catabase/icons/attributes/vitality.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "attributes",
+      "id": "power",
+      "path": "assets/catabase/icons/attributes/power.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "attributes",
+      "id": "resolve",
+      "path": "assets/catabase/icons/attributes/resolve.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "attributes",
+      "id": "wisdom",
+      "path": "assets/catabase/icons/attributes/wisdom.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_xiphos_of_peleus",
+      "path": "assets/catabase/icons/equipment/odyssey_xiphos_of_peleus.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_line_breaker_kopis",
+      "path": "assets/catabase/icons/equipment/odyssey_line_breaker_kopis.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_pelion_bow",
+      "path": "assets/catabase/icons/equipment/odyssey_pelion_bow.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_scyros_short_bow",
+      "path": "assets/catabase/icons/equipment/odyssey_scyros_short_bow.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_aeacus_shield_blade",
+      "path": "assets/catabase/icons/equipment/odyssey_aeacus_shield_blade.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_phthia_cuirass",
+      "path": "assets/catabase/icons/equipment/odyssey_phthia_cuirass.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_myrmidon_linothorax",
+      "path": "assets/catabase/icons/equipment/odyssey_myrmidon_linothorax.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_duelist_breastplate",
+      "path": "assets/catabase/icons/equipment/odyssey_duelist_breastplate.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_hunter_mantle",
+      "path": "assets/catabase/icons/equipment/odyssey_hunter_mantle.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_wave_cuirass",
+      "path": "assets/catabase/icons/equipment/odyssey_wave_cuirass.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_peleus_seal",
+      "path": "assets/catabase/icons/equipment/odyssey_peleus_seal.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_phthia_knot",
+      "path": "assets/catabase/icons/equipment/odyssey_phthia_knot.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_chiron_ferret",
+      "path": "assets/catabase/icons/equipment/odyssey_chiron_ferret.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_patroclus_brooch",
+      "path": "assets/catabase/icons/equipment/odyssey_patroclus_brooch.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_myrmidon_crest",
+      "path": "assets/catabase/icons/equipment/odyssey_myrmidon_crest.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_patroclus_ashes",
+      "path": "assets/catabase/icons/equipment/odyssey_patroclus_ashes.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_hephaestus_nail",
+      "path": "assets/catabase/icons/equipment/odyssey_hephaestus_nail.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_centaur_step",
+      "path": "assets/catabase/icons/equipment/odyssey_centaur_step.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_athena_mirror",
+      "path": "assets/catabase/icons/equipment/odyssey_athena_mirror.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_pelion_shard",
+      "path": "assets/catabase/icons/equipment/odyssey_pelion_shard.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_thetis_anchor",
+      "path": "assets/catabase/icons/equipment/odyssey_thetis_anchor.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_thetis_bracelet",
+      "path": "assets/catabase/icons/equipment/odyssey_thetis_bracelet.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_thetis_heel",
+      "path": "assets/catabase/icons/equipment/odyssey_thetis_heel.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_fates_thread",
+      "path": "assets/catabase/icons/equipment/odyssey_fates_thread.svg",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "minor_healing_potion",
+      "path": "assets/catabase/icons/equipment/minor_healing_potion.svg",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": ""
+    },
+    {
+      "group": "equipment",
+      "id": "minor_action_scroll",
+      "path": "assets/catabase/icons/equipment/minor_action_scroll.svg",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": ""
+    }
+  ]
+}

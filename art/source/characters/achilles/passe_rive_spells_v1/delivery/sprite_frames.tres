@@ -1,0 +1,127 @@
+[gd_resource type="SpriteFrames" load_steps=44 format=3]
+
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/strike_atlas.png" id="strike"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/dash_atlas.png" id="dash"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/shot_atlas.png" id="shot"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/guard_atlas.png" id="guard"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/sweep_atlas.png" id="sweep"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/bash_atlas.png" id="bash"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/idle.png" id="idle"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_00.png" id="walk_0"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_01.png" id="walk_1"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_02.png" id="walk_2"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_03.png" id="walk_3"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_04.png" id="walk_4"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_05.png" id="walk_5"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_06.png" id="walk_6"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_07.png" id="walk_7"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_08.png" id="walk_8"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_09.png" id="walk_9"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_10.png" id="walk_10"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_11.png" id="walk_11"]
+
+[sub_resource type="AtlasTexture" id="strike_0"]
+atlas = ExtResource("strike")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="strike_1"]
+atlas = ExtResource("strike")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="strike_2"]
+atlas = ExtResource("strike")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="strike_3"]
+atlas = ExtResource("strike")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="dash_0"]
+atlas = ExtResource("dash")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="dash_1"]
+atlas = ExtResource("dash")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="dash_2"]
+atlas = ExtResource("dash")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="dash_3"]
+atlas = ExtResource("dash")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="shot_0"]
+atlas = ExtResource("shot")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="shot_1"]
+atlas = ExtResource("shot")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="shot_2"]
+atlas = ExtResource("shot")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="shot_3"]
+atlas = ExtResource("shot")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="guard_0"]
+atlas = ExtResource("guard")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="guard_1"]
+atlas = ExtResource("guard")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="guard_2"]
+atlas = ExtResource("guard")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="guard_3"]
+atlas = ExtResource("guard")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sweep_0"]
+atlas = ExtResource("sweep")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sweep_1"]
+atlas = ExtResource("sweep")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sweep_2"]
+atlas = ExtResource("sweep")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sweep_3"]
+atlas = ExtResource("sweep")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="bash_0"]
+atlas = ExtResource("bash")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="bash_1"]
+atlas = ExtResource("bash")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="bash_2"]
+atlas = ExtResource("bash")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="bash_3"]
+atlas = ExtResource("bash")
+region = Rect2(768, 768, 768, 768)
+
+[resource]
+animations = [{"name": &"strike", "loop": false, "speed": 1000.0, "frames": [{"duration": 100.0, "texture": SubResource("strike_0")}, {"duration": 80.0, "texture": SubResource("strike_1")}, {"duration": 90.0, "texture": SubResource("strike_2")}, {"duration": 130.0, "texture": SubResource("strike_3")}]},
+{"name": &"dash", "loop": false, "speed": 1000.0, "frames": [{"duration": 100.0, "texture": SubResource("dash_0")}, {"duration": 110.0, "texture": SubResource("dash_1")}, {"duration": 90.0, "texture": SubResource("dash_2")}, {"duration": 130.0, "texture": SubResource("dash_3")}]},
+{"name": &"shot", "loop": false, "speed": 1000.0, "frames": [{"duration": 100.0, "texture": SubResource("shot_0")}, {"duration": 150.0, "texture": SubResource("shot_1")}, {"duration": 75.0, "texture": SubResource("shot_2")}, {"duration": 185.0, "texture": SubResource("shot_3")}]},
+{"name": &"guard", "loop": false, "speed": 1000.0, "frames": [{"duration": 90.0, "texture": SubResource("guard_0")}, {"duration": 110.0, "texture": SubResource("guard_1")}, {"duration": 230.0, "texture": SubResource("guard_2")}, {"duration": 170.0, "texture": SubResource("guard_3")}]},
+{"name": &"sweep", "loop": false, "speed": 1000.0, "frames": [{"duration": 150.0, "texture": SubResource("sweep_0")}, {"duration": 65.0, "texture": SubResource("sweep_1")}, {"duration": 130.0, "texture": SubResource("sweep_2")}, {"duration": 170.0, "texture": SubResource("sweep_3")}]},
+{"name": &"bash", "loop": false, "speed": 1000.0, "frames": [{"duration": 130.0, "texture": SubResource("bash_0")}, {"duration": 65.0, "texture": SubResource("bash_1")}, {"duration": 110.0, "texture": SubResource("bash_2")}, {"duration": 150.0, "texture": SubResource("bash_3")}]},
+{"name": &"idle", "loop": true, "speed": 1.0, "frames": [{"duration": 1.0, "texture": ExtResource("idle")}]},
+{"name": &"walk", "loop": true, "speed": 10.0, "frames": [{"duration": 1.0, "texture": ExtResource("walk_0")}, {"duration": 1.0, "texture": ExtResource("walk_1")}, {"duration": 1.0, "texture": ExtResource("walk_2")}, {"duration": 1.0, "texture": ExtResource("walk_3")}, {"duration": 1.0, "texture": ExtResource("walk_4")}, {"duration": 1.0, "texture": ExtResource("walk_5")}, {"duration": 1.0, "texture": ExtResource("walk_6")}, {"duration": 1.0, "texture": ExtResource("walk_7")}, {"duration": 1.0, "texture": ExtResource("walk_8")}, {"duration": 1.0, "texture": ExtResource("walk_9")}, {"duration": 1.0, "texture": ExtResource("walk_10")}, {"duration": 1.0, "texture": ExtResource("walk_11")}]}]

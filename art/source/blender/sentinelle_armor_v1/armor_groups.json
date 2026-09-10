@@ -1,0 +1,193 @@
+{
+  "groups": {
+    "Pelvis": [
+      "Pelvis_plate",
+      "Abdomen",
+      "Abdominal_overlap",
+      "Abdominal_bronze_lip",
+      "Abdominal_overlap.001",
+      "Abdominal_bronze_lip.001",
+      "Abdominal_overlap.002",
+      "Abdominal_bronze_lip.002",
+      "Waist_central_buckle"
+    ],
+    "Thorax": [
+      "Chest_plate",
+      "Chest_collar",
+      "Chest_plate_recess",
+      "Chest_plate_lip",
+      "Central_clasp",
+      "Clasp_edge",
+      "Chest_plate_recess.001",
+      "Chest_plate_lip.001",
+      "Central_clasp.001",
+      "Clasp_edge.001"
+    ],
+    "Neck": [
+      "Neck_joint"
+    ],
+    "Head": [
+      "Helmet",
+      "Eye_slit",
+      "Face_opening",
+      "Inlaid_eye",
+      "Cheek_guard",
+      "Cheek_edge",
+      "Inlaid_eye.001",
+      "Cheek_guard.001",
+      "Cheek_edge.001",
+      "Nasal_ridge",
+      "Helmet_crown"
+    ],
+    "Clavicle.R": [
+      "Shoulder_joint.R",
+      "Pauldron.R",
+      "Pauldron_recess.R",
+      "Pauldron_rim.R",
+      "Pauldron_rivet.R",
+      "Pauldron_rivet.R.001",
+      "Pauldron_rivet.R.002",
+      "Pauldron_recess.R.001",
+      "Pauldron_rim.R.001",
+      "Pauldron_rivet.R.003",
+      "Pauldron_rivet.R.004",
+      "Pauldron_rivet.R.005"
+    ],
+    "UpperArm.R": [
+      "UpperArm_plate.R"
+    ],
+    "Forearm.R": [
+      "Forearm_plate.R",
+      "elbow.R",
+      "Guard_seam.Forearm.R",
+      "Guard_lip.Forearm.R",
+      "Guard_seam.Forearm.R.001",
+      "Guard_lip.Forearm.R.001",
+      "Joint_hinge.elbow.R",
+      "Hinge_rim.elbow.R"
+    ],
+    "Thigh.R": [
+      "Thigh_plate.R",
+      "Guard_seam.Thigh.R",
+      "Guard_lip.Thigh.R",
+      "Guard_seam.Thigh.R.001",
+      "Guard_lip.Thigh.R.001"
+    ],
+    "Shin.R": [
+      "Shin_plate.R",
+      "knee.R",
+      "Guard_seam.Shin.R",
+      "Guard_lip.Shin.R",
+      "Guard_seam.Shin.R.001",
+      "Guard_lip.Shin.R.001",
+      "Joint_hinge.knee.R",
+      "Hinge_rim.knee.R",
+      "Kneecap.R"
+    ],
+    "Hand.R": [
+      "wrist.R",
+      "Spear_shaft",
+      "Spear_blade",
+      "Gauntlet_knuckle.R",
+      "Gauntlet_knuckle.R.001",
+      "Gauntlet_knuckle.R.002",
+      "Spear_binding",
+      "Spear_binding.001",
+      "Spear_binding.002",
+      "Spear_binding.003",
+      "Spear_binding.004",
+      "Spear_binding.005",
+      "Spear_binding.006",
+      "Spear_binding.007"
+    ],
+    "Foot.R": [
+      "Boot.R",
+      "Toe_plate.R",
+      "Toe_plate.R.001",
+      "Toe_plate.R.002",
+      "Toe_plate.R.003",
+      "Instep_plate.R",
+      "Boot_upper_trim.R"
+    ],
+    "Clavicle.L": [
+      "Shoulder_joint.L",
+      "Pauldron.L",
+      "Pauldron_recess.L",
+      "Pauldron_rim.L",
+      "Pauldron_rivet.L",
+      "Pauldron_rivet.L.001",
+      "Pauldron_rivet.L.002",
+      "Pauldron_recess.L.001",
+      "Pauldron_rim.L.001",
+      "Pauldron_rivet.L.003",
+      "Pauldron_rivet.L.004",
+      "Pauldron_rivet.L.005"
+    ],
+    "UpperArm.L": [
+      "UpperArm_plate.L"
+    ],
+    "Forearm.L": [
+      "Forearm_plate.L",
+      "elbow.L",
+      "Guard_seam.Forearm.L",
+      "Guard_lip.Forearm.L",
+      "Guard_seam.Forearm.L.001",
+      "Guard_lip.Forearm.L.001",
+      "Joint_hinge.elbow.L",
+      "Hinge_rim.elbow.L"
+    ],
+    "Thigh.L": [
+      "Thigh_plate.L",
+      "Guard_seam.Thigh.L",
+      "Guard_lip.Thigh.L",
+      "Guard_seam.Thigh.L.001",
+      "Guard_lip.Thigh.L.001"
+    ],
+    "Shin.L": [
+      "Shin_plate.L",
+      "knee.L",
+      "Guard_seam.Shin.L",
+      "Guard_lip.Shin.L",
+      "Guard_seam.Shin.L.001",
+      "Guard_lip.Shin.L.001",
+      "Joint_hinge.knee.L",
+      "Hinge_rim.knee.L",
+      "Kneecap.L"
+    ],
+    "Hand.L": [
+      "wrist.L",
+      "Shield_rim",
+      "Shield_face",
+      "Gauntlet_knuckle.L",
+      "Gauntlet_knuckle.L.001",
+      "Gauntlet_knuckle.L.002",
+      "Shield_inner_rim",
+      "Shield_inner_rim.001",
+      "Shield_lambda_channel",
+      "Shield_lambda_inlay",
+      "Shield_hairline",
+      "Shield_hairline.001",
+      "Shield_hairline.002",
+      "Shield_rivet",
+      "Shield_rivet.001",
+      "Shield_rivet.002",
+      "Shield_rivet.003",
+      "Shield_rivet.004",
+      "Shield_rivet.005",
+      "Shield_back_rim",
+      "Shield_rear_brace",
+      "Shield_rear_brace.001",
+      "Shield_grip_loop"
+    ],
+    "Foot.L": [
+      "Boot.L",
+      "Toe_plate.L",
+      "Toe_plate.L.001",
+      "Toe_plate.L.002",
+      "Toe_plate.L.003",
+      "Instep_plate.L",
+      "Boot_upper_trim.L"
+    ]
+  },
+  "source": "Native objects attached to bones; not exported Spine layers"
+}

@@ -1,0 +1,36 @@
+{
+  "direction": "S",
+  "source": "art/source/characters/catabase_monsters/sentinelle_airain/base_frame_S.png",
+  "source_sha256": "10450cb7583a37989c6a0ab73e4a1996d77b3de042f7c11fcde7d2a830399e06",
+  "bones": 34,
+  "regions": 29,
+  "atlas_rgba_exact": true,
+  "max_transform_error": 4.976234516673728e-07,
+  "output": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\artifacts\\spine_trial\\sentinelle_kit_v7\\S",
+  "artistic_status": "animation_kit_for_review",
+  "editor_roundtrip_verified": false,
+  "services": {
+    "tools\\catabase_monster_sprite_pipeline\\humanoid_parts.py": "de0a4bc2bf5f7f5a5294e9c9e8990e8c2e869a4371ecb4b02c80ad543918eb39",
+    "tools\\catabase_monster_sprite_pipeline\\articulated_animation.py": "d7912cb07dc73e96f6a058b8f2fb1786439b8bbe819ce954e80ff171cf869caa",
+    "tools\\spine_trial\\prepare_sentinelle.py": "91531ccceee8572947c10f76243773e3ecd0729f3b5bb7f954a2e4b6455df438"
+  },
+  "animations": {
+    "idle": 2.4,
+    "walk": 0.72,
+    "attack": 0.8,
+    "cast": 0.88,
+    "hit": 0.2,
+    "death": 0.8
+  },
+  "effect": {
+    "type": "black_particle_disappearance",
+    "particles": 17,
+    "body_hidden_at": 0.16,
+    "fully_clear_at": 0.61,
+    "embedded_in_spine": true
+  },
+  "motion_sha256": "93875afc0965cc3c797970842634cf533da20c08ef76be52d0e1c547cf253345",
+  "burst_sha256": "795803f971c021cd9e4f6a0381eb58ba432a7f2b9168267ab6799dfb0bd72ac5",
+  "spine_json_sha256": "5b6d58bbbc4123e3c1da826d25877448f144a0be35786ee94ad367dae709b601",
+  "recipe_sha256": "472db4d5948270664e878b04df6b3fa7b5d3d87ec05657b91c1131110c6f4c5f"
+}

@@ -1,0 +1,1767 @@
+{
+  "style": "Catabase · illustrations peintes sobres / Émeraude",
+  "provenance": "185 individual built-in imagegen paintings; prompts and receipts in art/source/catabase/emerald_icons_v2. The 12 existing route SVGs are unchanged.",
+  "icons": [
+    {
+      "group": "spells",
+      "id": "peleid_strike",
+      "path": "assets/catabase/emerald_icons_v2/spells/peleid_strike.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "fulminant_dash",
+      "path": "assets/catabase/emerald_icons_v2/spells/fulminant_dash.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "pelion_shot",
+      "path": "assets/catabase/emerald_icons_v2/spells/pelion_shot.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "bronze_guard",
+      "path": "assets/catabase/emerald_icons_v2/spells/bronze_guard.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "crochet",
+      "path": "assets/catabase/emerald_icons_v2/spells/crochet.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "fauchage",
+      "path": "assets/catabase/emerald_icons_v2/spells/fauchage.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "entaille",
+      "path": "assets/catabase/emerald_icons_v2/spells/entaille.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "moisson",
+      "path": "assets/catabase/emerald_icons_v2/spells/moisson.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "rupture",
+      "path": "assets/catabase/emerald_icons_v2/spells/rupture.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "marque",
+      "path": "assets/catabase/emerald_icons_v2/spells/marque.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "feinte",
+      "path": "assets/catabase/emerald_icons_v2/spells/feinte.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "contretemps",
+      "path": "assets/catabase/emerald_icons_v2/spells/contretemps.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "heurt",
+      "path": "assets/catabase/emerald_icons_v2/spells/heurt.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "posture",
+      "path": "assets/catabase/emerald_icons_v2/spells/posture.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "souffle",
+      "path": "assets/catabase/emerald_icons_v2/spells/souffle.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "marche",
+      "path": "assets/catabase/emerald_icons_v2/spells/marche.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "braise",
+      "path": "assets/catabase/emerald_icons_v2/spells/braise.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "givre",
+      "path": "assets/catabase/emerald_icons_v2/spells/givre.png",
+      "size": 256,
+      "accent": "#a2c7e0",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "foudre",
+      "path": "assets/catabase/emerald_icons_v2/spells/foudre.png",
+      "size": 256,
+      "accent": "#a2c7e0",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "serment_rempart",
+      "path": "assets/catabase/emerald_icons_v2/spells/serment_rempart.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "serment_brasier",
+      "path": "assets/catabase/emerald_icons_v2/spells/serment_brasier.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_tempest",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_tempest.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_crochet_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_crochet_mutation.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_crochet_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_crochet_legend.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_fauchage_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_fauchage_signature.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_entaille_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_entaille_mutation.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_entaille_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_entaille_legend.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_moisson_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_moisson_signature.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_rupture_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_rupture_mutation.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_rupture_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_rupture_legend.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_marque_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_marque_signature.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_feinte_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_feinte_mutation.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_feinte_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_feinte_legend.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_contretemps_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_contretemps_signature.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_heurt_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_heurt_mutation.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_heurt_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_heurt_legend.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_posture_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_posture_signature.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_souffle_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_souffle_mutation.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_souffle_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_souffle_legend.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_marche_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_marche_signature.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_braise_mutation",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_braise_mutation.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "mutation",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_braise_legend",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_braise_legend.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "legend",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "spells",
+      "id": "exp_givre_signature",
+      "path": "assets/catabase/emerald_icons_v2/spells/exp_givre_signature.png",
+      "size": 256,
+      "accent": "#a2c7e0",
+      "rank": "signature",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_levier",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_levier.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_lame_sang",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_lame_sang.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_javeline",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_javeline.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_xiphos_danse",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_xiphos_danse.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_masse_airain",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_masse_airain.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_fer_braise",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_fer_braise.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_cuirasse",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_cuirasse.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_lin_survivant",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_lin_survivant.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_sandales",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_sandales.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_sceau_chasse",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_sceau_chasse.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_prisme",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_prisme.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "catabase_agrafe",
+      "path": "assets/catabase/emerald_icons_v2/equipment/catabase_agrafe.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "force",
+      "path": "assets/catabase/emerald_icons_v2/stats/force.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "attack_power",
+      "path": "assets/catabase/emerald_icons_v2/stats/attack_power.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "max_hp",
+      "path": "assets/catabase/emerald_icons_v2/stats/max_hp.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "initiative",
+      "path": "assets/catabase/emerald_icons_v2/stats/initiative.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "max_mp",
+      "path": "assets/catabase/emerald_icons_v2/stats/max_mp.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "esquive",
+      "path": "assets/catabase/emerald_icons_v2/stats/esquive.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "armure",
+      "path": "assets/catabase/emerald_icons_v2/stats/armure.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "resist_magique",
+      "path": "assets/catabase/emerald_icons_v2/stats/resist_magique.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "stats",
+      "id": "heal_budget",
+      "path": "assets/catabase/emerald_icons_v2/stats/heal_budget.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "equipment",
+      "path": "assets/catabase/emerald_icons_v2/nav/equipment.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "map",
+      "path": "assets/catabase/emerald_icons_v2/nav/map.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "tree",
+      "path": "assets/catabase/emerald_icons_v2/nav/tree.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "journal",
+      "path": "assets/catabase/emerald_icons_v2/nav/journal.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "halt",
+      "path": "assets/catabase/emerald_icons_v2/nav/halt.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "home",
+      "path": "assets/catabase/emerald_icons_v2/nav/home.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "close",
+      "path": "assets/catabase/emerald_icons_v2/nav/close.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "settings",
+      "path": "assets/catabase/emerald_icons_v2/nav/settings.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "save",
+      "path": "assets/catabase/emerald_icons_v2/nav/save.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "continue",
+      "path": "assets/catabase/emerald_icons_v2/nav/continue.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "lock",
+      "path": "assets/catabase/emerald_icons_v2/nav/lock.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "check",
+      "path": "assets/catabase/emerald_icons_v2/nav/check.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "attributes",
+      "path": "assets/catabase/emerald_icons_v2/nav/attributes.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "search",
+      "path": "assets/catabase/emerald_icons_v2/nav/search.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "sort",
+      "path": "assets/catabase/emerald_icons_v2/nav/sort.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "back",
+      "path": "assets/catabase/emerald_icons_v2/nav/back.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "oboles",
+      "path": "assets/catabase/emerald_icons_v2/resources/oboles.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "destiny",
+      "path": "assets/catabase/emerald_icons_v2/resources/destiny.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "health",
+      "path": "assets/catabase/emerald_icons_v2/resources/health.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "level",
+      "path": "assets/catabase/emerald_icons_v2/resources/level.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "victory",
+      "path": "assets/catabase/emerald_icons_v2/resources/victory.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "defeat",
+      "path": "assets/catabase/emerald_icons_v2/resources/defeat.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "action_points",
+      "path": "assets/catabase/emerald_icons_v2/resources/action_points.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "resources",
+      "id": "movement_points",
+      "path": "assets/catabase/emerald_icons_v2/resources/movement_points.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "emblems",
+      "id": "colere",
+      "path": "assets/catabase/emerald_icons_v2/emblems/colere.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "emblems",
+      "id": "chiron",
+      "path": "assets/catabase/emerald_icons_v2/emblems/chiron.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "emblems",
+      "id": "eaque",
+      "path": "assets/catabase/emerald_icons_v2/emblems/eaque.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "emblems",
+      "id": "elements",
+      "path": "assets/catabase/emerald_icons_v2/emblems/elements.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "emblems",
+      "id": "serment",
+      "path": "assets/catabase/emerald_icons_v2/emblems/serment.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "emblems",
+      "id": "achilles",
+      "path": "assets/catabase/emerald_icons_v2/emblems/achilles.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "route",
+      "id": "normal",
+      "path": "assets/catabase/icons/route/normal.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "elite",
+      "path": "assets/catabase/icons/route/elite.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "boss",
+      "path": "assets/catabase/icons/route/boss.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "hub",
+      "path": "assets/catabase/icons/route/hub.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "merchant",
+      "path": "assets/catabase/icons/route/merchant.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "sanctuary",
+      "path": "assets/catabase/icons/route/sanctuary.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "lore",
+      "path": "assets/catabase/icons/route/lore.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "event",
+      "path": "assets/catabase/icons/route/event.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "cache",
+      "path": "assets/catabase/icons/route/cache.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "unknown",
+      "path": "assets/catabase/icons/route/unknown.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "hidden",
+      "path": "assets/catabase/icons/route/hidden.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "route",
+      "id": "current",
+      "path": "assets/catabase/icons/route/current.svg",
+      "size": 64,
+      "accent": "#d6c29a",
+      "rank": ""
+    },
+    {
+      "group": "states",
+      "id": "cooldown",
+      "path": "assets/catabase/emerald_icons_v2/states/cooldown.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "states",
+      "id": "locked",
+      "path": "assets/catabase/emerald_icons_v2/states/locked.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "states",
+      "id": "unavailable",
+      "path": "assets/catabase/emerald_icons_v2/states/unavailable.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "states",
+      "id": "resolving",
+      "path": "assets/catabase/emerald_icons_v2/states/resolving.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "states",
+      "id": "target_valid",
+      "path": "assets/catabase/emerald_icons_v2/states/target_valid.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "states",
+      "id": "target_invalid",
+      "path": "assets/catabase/emerald_icons_v2/states/target_invalid.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "upgrade",
+      "path": "assets/catabase/emerald_icons_v2/effects/upgrade.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "hidden",
+      "path": "assets/catabase/emerald_icons_v2/effects/hidden.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "damage",
+      "path": "assets/catabase/emerald_icons_v2/effects/damage.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "range",
+      "path": "assets/catabase/emerald_icons_v2/effects/range.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "push",
+      "path": "assets/catabase/emerald_icons_v2/effects/push.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "movement",
+      "path": "assets/catabase/emerald_icons_v2/effects/movement.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "bleed",
+      "path": "assets/catabase/emerald_icons_v2/effects/bleed.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "vulnerability",
+      "path": "assets/catabase/emerald_icons_v2/effects/vulnerability.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "collision",
+      "path": "assets/catabase/emerald_icons_v2/effects/collision.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "duration",
+      "path": "assets/catabase/emerald_icons_v2/effects/duration.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "pierce",
+      "path": "assets/catabase/emerald_icons_v2/effects/pierce.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "terrain",
+      "path": "assets/catabase/emerald_icons_v2/effects/terrain.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "heal",
+      "path": "assets/catabase/emerald_icons_v2/effects/heal.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "defense",
+      "path": "assets/catabase/emerald_icons_v2/effects/defense.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "state_check",
+      "path": "assets/catabase/emerald_icons_v2/effects/state_check.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "state_excluded",
+      "path": "assets/catabase/emerald_icons_v2/effects/state_excluded.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "state_pending",
+      "path": "assets/catabase/emerald_icons_v2/effects/state_pending.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "effects",
+      "id": "poison",
+      "path": "assets/catabase/emerald_icons_v2/effects/poison.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "nav",
+      "id": "move",
+      "path": "assets/catabase/emerald_icons_v2/nav/move.png",
+      "size": 256,
+      "accent": "#eee5d2",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_focused_fury",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_focused_fury.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_opening_slash",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_opening_slash.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_murderous_momentum",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_murderous_momentum.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_execution",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_execution.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_blood_for_blood",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_blood_for_blood.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_victorious_step",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_victorious_step.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_break_formation",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_break_formation.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_scourge_of_troy",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_scourge_of_troy.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_wrath_irrepressible_wrath",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_wrath_irrepressible_wrath.png",
+      "size": 256,
+      "accent": "#e29b85",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_centaur_eye",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_centaur_eye.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_pelion_reach",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_pelion_reach.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_close_shot",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_close_shot.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_impossible_angle",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_impossible_angle.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_stopping_arrow",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_stopping_arrow.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_piercing_arrow",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_piercing_arrow.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_mobile_hunt",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_mobile_hunt.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_death_line",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_death_line.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_chiron_centaur_volley",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_chiron_centaur_volley.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_active_guard",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_active_guard.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_directional_guard",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_directional_guard.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_bronze_anchor",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_bronze_anchor.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_riposte",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_riposte.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_arrow_wall",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_arrow_wall.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_broken_shield",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_broken_shield.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_mobile_bastion",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_mobile_bastion.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_counter",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_counter.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_aeacus_myrmidon_rampart",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_aeacus_myrmidon_rampart.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_summit_wrath",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_summit_wrath.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_summit_chiron",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_summit_chiron.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_summit_aeacus",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_summit_aeacus.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_junction_battlefield_predator",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_junction_battlefield_predator.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_junction_bronze_avenger",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_junction_bronze_avenger.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_junction_pelion_sentinel",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_junction_pelion_sentinel.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_apotheosis_scourge_trojans",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_apotheosis_scourge_trojans.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_apotheosis_fate_shot",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_apotheosis_fate_shot.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "masteries",
+      "id": "achilles_apotheosis_invincible_hero",
+      "path": "assets/catabase/emerald_icons_v2/masteries/achilles_apotheosis_invincible_hero.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "attributes",
+      "id": "vitality",
+      "path": "assets/catabase/emerald_icons_v2/attributes/vitality.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "attributes",
+      "id": "power",
+      "path": "assets/catabase/emerald_icons_v2/attributes/power.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "attributes",
+      "id": "resolve",
+      "path": "assets/catabase/emerald_icons_v2/attributes/resolve.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "attributes",
+      "id": "wisdom",
+      "path": "assets/catabase/emerald_icons_v2/attributes/wisdom.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_xiphos_of_peleus",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_xiphos_of_peleus.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_line_breaker_kopis",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_line_breaker_kopis.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_pelion_bow",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_pelion_bow.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_scyros_short_bow",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_scyros_short_bow.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_aeacus_shield_blade",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_aeacus_shield_blade.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_phthia_cuirass",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_phthia_cuirass.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_myrmidon_linothorax",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_myrmidon_linothorax.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_duelist_breastplate",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_duelist_breastplate.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_hunter_mantle",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_hunter_mantle.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_wave_cuirass",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_wave_cuirass.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_peleus_seal",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_peleus_seal.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_phthia_knot",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_phthia_knot.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_chiron_ferret",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_chiron_ferret.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_patroclus_brooch",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_patroclus_brooch.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_myrmidon_crest",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_myrmidon_crest.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_patroclus_ashes",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_patroclus_ashes.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_hephaestus_nail",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_hephaestus_nail.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_centaur_step",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_centaur_step.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_athena_mirror",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_athena_mirror.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_pelion_shard",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_pelion_shard.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_thetis_anchor",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_anchor.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_thetis_bracelet",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_bracelet.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_thetis_heel",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_heel.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "odyssey_fates_thread",
+      "path": "assets/catabase/emerald_icons_v2/equipment/odyssey_fates_thread.png",
+      "size": 256,
+      "accent": "#d6c29a",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "minor_healing_potion",
+      "path": "assets/catabase/emerald_icons_v2/equipment/minor_healing_potion.png",
+      "size": 256,
+      "accent": "#9ec9b1",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    },
+    {
+      "group": "equipment",
+      "id": "minor_action_scroll",
+      "path": "assets/catabase/emerald_icons_v2/equipment/minor_action_scroll.png",
+      "size": 256,
+      "accent": "#8fb9bf",
+      "rank": "",
+      "medium": "hand-painted raster; low detail"
+    }
+  ]
+}

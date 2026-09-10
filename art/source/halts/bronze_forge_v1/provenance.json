@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "provider": "image_gen",
+  "mode": "native_builtin",
+  "generated_on": "2026-09-10",
+  "source_image": "res://asset/map/painted/halts/bronze_forge_v1/forge.png",
+  "source_size": [
+    1672,
+    941
+  ],
+  "source_sha256": "3c7ff21be9eabcc38bb24ab3f0fc4be1ce82e8c3b3a6c3eb8c795966f325bcbf",
+  "provider_output": "C:/Users/paolo/.codex/generated_images/01a08afe-68e6-7c81-8280-a79c52afae79/exec-5cae8edc-792d-40b6-a930-152a7135fff8.png",
+  "master_reference": "res://asset/map/painted/merchant/hall_v1/hall.png",
+  "master_sha256": "3bea069ac3dbc8d1b7cb18c6a3693d1a84c82f0d3fb08a8bb436c8c57daa25eb",
+  "spatial_plan": "res://art/source/halts/bronze_forge_v1/spatial_plan.json",
+  "plan_created_before_generation": true,
+  "reference_delivery": "Native tool used the two inspected in-memory JPEG reference previews after direct filesystem reference loading failed with a sandbox ACL helper error.",
+  "prompt": "res://art/source/halts/bronze_forge_v1/generation_prompt.txt",
+  "original_preserved_byte_for_byte": true,
+  "calibration": "Manually measured on this exact original, recorded in calibrate.py. No sanctuary geometry reused.",
+  "generation_count": 1
+}

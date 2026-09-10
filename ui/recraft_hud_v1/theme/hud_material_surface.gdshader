@@ -40,7 +40,7 @@ vec4 shade_module(vec2 pixel, vec4 region) {
 	float rim = 1.0 - smoothstep(rim_width - 0.6, rim_width + 0.6, -d);
 	vec3 metal = mix(metal_light.rgb, metal_color.rgb * 0.50, depth);
 	float inner_line = 1.0 - smoothstep(0.25, 1.0, abs(d + rim_width + 3.0));
-	base = mix(base, metal_color.rgb * 0.70, inner_line * 0.52);
+	base = mix(base, metal_color.rgb * 0.70, inner_line * 0.18);
 	base = mix(base, metal, rim);
 	float inset_shadow = 1.0 - smoothstep(rim_width + 1.0, rim_width + 5.0, -d);
 	base *= 1.0 - inset_shadow * (1.0 - rim) * 0.34;

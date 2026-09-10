@@ -1,13 +1,14 @@
 class_name SelectionAshenSurface
 extends Control
-## A decorative layer below native controls: text, focus and hit testing stay native.
+## Shared smoked-bronze material. Legacy class name preserves scene/probe compatibility.
+## Text, focus and hit testing stay on the native controls.
 
 const GRAIN := preload("res://asset/ui/character_selection/materials/ash_leather_v1.png")
 const SURFACE_SHADER := preload("res://ui/selection/selection_ashen_surface.gdshader")
 
 var _role: StringName = &"panel"
-var _base := Color("211c19")
-var _edge := Color("655447")
+var _base := Color("211c18")
+var _edge := Color("8b714c")
 var _selected := false
 var _pointer_down := false
 var _button: Button
@@ -55,8 +56,8 @@ func _process(_delta: float) -> void:
 
 func set_selected(selected: bool, accent: Color) -> void:
 	_selected = selected
-	# Preserve the hero accent in its native marker; the metal stays ash bronze.
-	_edge = Color("b89a74") if selected else Color("655447")
+	# The selection fill is petrol; hero accents stay in their native markers.
+	_edge = Color("d6c29a") if selected else Color("8b714c")
 	if _role == &"primary":
 		_edge = accent
 	if is_node_ready():
@@ -99,7 +100,7 @@ func _update_material() -> void:
 	_surface_material.set_shader_parameter("base_color", _base)
 	_surface_material.set_shader_parameter("edge_color", _edge)
 	_surface_material.set_shader_parameter("corner_radius", 7.0 if _role == &"window" else 4.0)
-	_surface_material.set_shader_parameter("bevel_width", 4.0 if _role in [&"window", &"primary"] else 2.4)
-	_surface_material.set_shader_parameter("texture_strength", 0.18 if _role == &"window" else 0.28)
+	_surface_material.set_shader_parameter("bevel_width", 1.0)
+	_surface_material.set_shader_parameter("texture_strength", 0.035 if _role == &"window" else 0.045)
 	_surface_material.set_shader_parameter("is_window", _role == &"window")
 	_surface_material.set_shader_parameter("is_primary", _role == &"primary")

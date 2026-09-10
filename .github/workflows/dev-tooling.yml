@@ -22,6 +22,11 @@ jobs:
           if ($workflow -notmatch ('GODOT_VERSION: "' + [regex]::Escape($toolchain.godot_version) + '"')) {
             throw 'CI and local engine versions differ.'
           }
+      - name: Validate painted halt preparation contracts
+        run: |
+          python -m pip install -r tools/halt_workshop/requirements.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Painted halt Python dependencies failed.' }
+          ./tools/halt_workshop/halt.ps1 test
       - name: Install pinned formatter
         run: ./dev.ps1 install formatter
       - name: Check harness GDScript formatting

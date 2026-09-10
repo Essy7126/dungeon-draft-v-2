@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "canvas_size": [
+    1920,
+    1200
+  ],
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      480
+    ],
+    [
+      1800,
+      510
+    ],
+    [
+      1680,
+      630
+    ],
+    [
+      1540,
+      700
+    ],
+    [
+      1460,
+      850
+    ],
+    [
+      1330,
+      975
+    ],
+    [
+      1090,
+      1030
+    ],
+    [
+      960,
+      1050
+    ],
+    [
+      820,
+      1025
+    ],
+    [
+      620,
+      980
+    ],
+    [
+      490,
+      900
+    ],
+    [
+      420,
+      750
+    ],
+    [
+      290,
+      630
+    ],
+    [
+      160,
+      570
+    ],
+    [
+      0,
+      540
+    ]
+  ],
+  "water": {
+    "color": "#0a4845",
+    "texture_path": "res://assets/catabase/combat/cavern_ford_v1/land.png",
+    "shader_path": "res://assets/catabase/combat/cavern_v1/cavern_water.gdshader",
+    "texture_scale": [
+      1,
+      1
+    ],
+    "texture_repeat": false,
+    "tint": "#ffffffff"
+  },
+  "land": {
+    "color": "#38332b",
+    "texture_path": "res://assets/catabase/combat/cavern_ford_v1/land.png",
+    "texture_scale": [
+      1,
+      1
+    ],
+    "texture_repeat": false,
+    "shader_path": "res://assets/catabase/combat/cavern_v1/cavern_torches.gdshader"
+  },
+  "soil_patches": [],
+  "shorelines": [
+    {
+      "id": "river_bank",
+      "points": [
+        [
+          1920,
+          480
+        ],
+        [
+          1800,
+          510
+        ],
+        [
+          1680,
+          630
+        ],
+        [
+          1540,
+          700
+        ],
+        [
+          1460,
+          850
+        ],
+        [
+          1330,
+          975
+        ],
+        [
+          1090,
+          1030
+        ],
+        [
+          960,
+          1050
+        ],
+        [
+          820,
+          1025
+        ],
+        [
+          620,
+          980
+        ],
+        [
+          490,
+          900
+        ],
+        [
+          420,
+          750
+        ],
+        [
+          290,
+          630
+        ],
+        [
+          160,
+          570
+        ],
+        [
+          0,
+          540
+        ]
+      ],
+      "color": "#ffffff00",
+      "width": 8
+    }
+  ],
+  "world_decor": [
+    {
+      "id": "cavern_peripheral_mist",
+      "scene_path": "res://assets/catabase/combat/cavern_ford_v1/Atmosphere.tscn",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground",
+      "scale": 1
+    }
+  ],
+  "excluded_floor_polygons": [],
+  "minimum_floor_margin_px": 32,
+  "metadata": {
+    "current_art_direction": {
+      "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+      "continuity": "res://assets/catabase/combat/cavern_v1/land_v4.png",
+      "scene": "Gue souterrain"
+    },
+    "source_geometry": "res://data/arenas/lethe_crossing_v1/geometry_manifest.json",
+    "peripheral_bench_count": 0
+  },
+  "combat_ground_band": {
+    "enabled": true,
+    "width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20.0,
+    "shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+    "description": "Visible stone floor with a narrow compacted-earth transition, generated around the canonical cell boundary.",
+    "shader_parameters": {
+      "band_earth": "#423e32",
+      "band_light": "#555143",
+      "band_shadow": "#302f29"
+    },
+    "tint": "#ffffffff"
+  },
+  "geometry_manifest_path": "res://data/arenas/cavern_ford_v1/geometry_manifest.json",
+  "floor_palette": {
+    "shade": "#30362f",
+    "body": "#555746",
+    "light": "#777661",
+    "warmth": [
+      -0.06,
+      -0.02,
+      0.02,
+      0.055
+    ],
+    "painted_steps": 0.4,
+    "bevel_flatten_strength": 0.72
+  },
+  "props_palette": {
+    "ink": "#24251f",
+    "top": "#7c705b",
+    "left": "#544c40",
+    "right": "#36372e",
+    "highlight": "#968566",
+    "bench": "#70634e"
+  },
+  "ground_details": {
+    "enabled": false
+  },
+  "pit_palette": {
+    "floor": "#10191b",
+    "back_wall": "#46504a",
+    "left_wall": "#293933"
+  }
+}

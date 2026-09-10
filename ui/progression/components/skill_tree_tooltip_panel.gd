@@ -18,6 +18,7 @@ var _summary_text := ""
 
 
 func _ready() -> void:
+	PremiumUI.apply(self)
 	_reminder_label.text = XP_REMINDER
 
 

@@ -1,6 +1,7 @@
 class_name CatabasePaintedIconCatalog
 extends RefCounted
-## Optional presentation assets. Missing paintings preserve the existing artwork.
+## Compatibility facade: original glyphs first, archived paintings as fallback.
+const GLYPHS := preload("res://ui/theme/catabase_icon_library.gd")
 
 const ASSET_ROOT := "res://assets/catabase/painted"
 const ICON_ROOT := ASSET_ROOT + "/icons"
@@ -102,6 +103,17 @@ static func route_icon(kind: String, fallback: Texture2D = null, asset_root: Str
 	return _named_icon(kind, ROUTE_IDS, "route", fallback, asset_root)
 
 
+## Drawn map markers share the knowledge filter; inventory paintings stay separate.
+static func map_icon(kind: String, fallback: Texture2D = null) -> Texture2D:
+	if kind not in ROUTE_IDS:
+		return fallback
+	return GLYPHS.icon("route", kind, _first_texture(["res://assets/catabase/route_drawn/" + kind + ".svg"], fallback))
+
+
+static func map_node_icon(node: Dictionary, fallback: Texture2D = null) -> Texture2D:
+	return map_icon(route_presentation_kind(node), fallback)
+
+
 static func route_presentation_kind(node: Dictionary) -> String:
 	# Callers pass get_visible_nodes() entries. Never infer a concealed encounter
 	# from its title, reward, room, or the underlying catalogue.
@@ -123,6 +135,16 @@ static func _named_icon(id: String, allowed: Array, folder: String, fallback: Te
 
 static func _first_texture(paths: Array[String], fallback: Texture2D) -> Texture2D:
 	for path in paths:
+		# Translate only the default art root. Custom/missing directories retain
+		# their explicit fallback contract for tools and alternative presentations.
+		if path.begins_with(ASSET_ROOT + "/"):
+			var local := path.trim_prefix(ASSET_ROOT + "/")
+			var folder := local.get_base_dir()
+			var groups := {"icons": "spells", "equipment": "equipment", "tree/stats": "stats", "tree/emblems": "emblems", "route": "route"}
+			if groups.has(folder):
+				var glyph := GLYPHS.icon(String(groups[folder]), local.get_file().get_basename())
+				if glyph != null:
+					return glyph
 		if not ResourceLoader.exists(path, "Texture2D"):
 			continue
 		var texture := load(path) as Texture2D

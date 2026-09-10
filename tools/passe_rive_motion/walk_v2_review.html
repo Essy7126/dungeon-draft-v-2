@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Passe-rive · test des appuis</title>
+<style>
+:root{color-scheme:dark;font:16px/1.5 system-ui,sans-serif;background:#10191b;color:#edf1e9}*{box-sizing:border-box}body{max-width:1220px;margin:auto;padding:28px}h1{font-size:30px;margin:4px 0}h2{font-size:17px;margin:0 0 8px}p{color:#bfcac7;margin:8px 0 20px}.tag{color:#cfb789;font-size:12px;letter-spacing:.13em;text-transform:uppercase}.controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#1c2a2d;padding:14px;border-radius:8px;margin:18px 0}button,select{font:inherit;background:#314648;color:#edf1e9;border:1px solid #71817a;border-radius:5px;padding:7px 12px;cursor:pointer}input{accent-color:#91baa7}#phase{flex:1;min-width:130px}.panels{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{min-width:0;background:#182326;border:1px solid #38474a;border-radius:8px;padding:16px}canvas{display:block;width:100%;background:#243236;border-radius:5px}.caption{font-size:13px;margin:10px 0 0}.status{display:flex;gap:20px;flex-wrap:wrap;margin:16px 0}.left{color:#94cfb6}.right{color:#dfb575}a{color:#a9daca}details{margin-top:24px;padding:16px;background:#19262a;border-radius:7px}summary{cursor:pointer}video{display:block;max-width:320px;width:100%;max-height:440px;margin:14px 0}#error{color:#ffaaaa}footer{font-size:13px;color:#aebdb8;margin-top:24px}@media(max-width:730px){body{padding:15px}.panels{grid-template-columns:1fr}h1{font-size:25px}}
+</style>
+<div class="tag">Passe-rive · marche E · essai 02</div>
+<h1>Le pied doit tenir le sol.</h1>
+<p>Un cycle Blender modifiable pour tester les contacts, le passage des jambes et le transfert du poids. L’habillage Passe-rive reste à appliquer.</p>
+<div class="controls">
+ <button id="play">Pause</button>
+ <label>Vitesse <select id="speed"><option value="1">Normale</option><option value="0.25">Ralenti × 0,25</option></select></label>
+ <label><input type="checkbox" id="markers" checked> Repères des pieds</label>
+ <input type="range" id="phase" min="0" max="35" step="1" value="0" aria-label="Image du cycle">
+ <span id="counter">Chargement…</span>
+</div>
+<div class="panels">
+ <section class="panel"><h2>Caméra qui suit · appuis agrandis</h2><canvas id="follow" width="560" height="560"></canvas><p class="caption">La grille recule avec la vitesse de marche. Au contact, le pied et le sol doivent reculer ensemble.</p></section>
+ <section class="panel"><h2>Caméra fixe · déplacement réel</h2><canvas id="world" width="560" height="560"></canvas><p class="caption">Le corps avance ; le pied porteur reste sur sa case. Retour au départ après quatre cycles, signalé par le compteur.</p></section>
+</div>
+<div class="status"><span class="left" id="left">Jambe gauche : —</span><span class="right" id="right">Jambe droite : —</span><span id="distance"></span></div>
+<p id="error" role="alert"></p>
+<p>Le cercle plein indique le pivot au sol : talon à la réception, pointe à la poussée. En appui à plat, les deux repères sont pleins. Pendant le passage, ils sont creux.</p>
+<details><summary>Vidéo de référence et contrôle technique</summary>
+ <video controls loop muted playsinline preload="metadata" src="motion_reference.mp4"></video>
+ <p>36 images à 30 i/s · cycle de 1,2 s · foulée de 0,90 m · vitesse de 0,75 m/s. Les 145 mesures dans Blender incluent les instants entre les clés : dérive maximale entre deux mesures de contact ≈ 0,287 mm à 120 Hz. Pénétration numérique minimale de la semelle ≈ 0,222 mm.</p>
+ <p>Ces mesures contrôlent le mannequin. Elles ne prouvent ni la qualité artistique finale, ni la conservation des appuis après une génération vidéo. Le recul du sol est synchronisé aux 36 images pour rendre visibles les contacts, sans interpolation artificielle des dessins.</p>
+ <p><a href="native_review.json">Mesures Blender</a> · <a href="../passe_rive_walk_audit/review.html">Diagnostic de la V1</a> · <a href="../passe_rive_motion_v1/review.html">Sprites peints précédents</a></p>
+</details>
+<footer>À examiner : alternance des appuis, direction des pieds, genou au passage, tenue de la lance et du bouclier. Le mannequin ne constitue pas une proposition de design.</footer>
+<script>
+const $=id=>document.getElementById(id),mod=(a,b)=>(a%b+b)%b;
+let data,images=[],ready=false,playing=true,time=0,previous=0,speed=1;
+const colors={L:'#96e3c2',R:'#f6c681'},names={heel:'réception sur le talon',flat:'appui à plat',toe:'poussée sur la pointe',swing:'pied en l’air'};
+function projection(x,y,z,s){const a=data.forward_pixels_per_meter;return [s*(-a[0]*x+a[0]*y),s*(a[1]*x+a[1]*y-z*Math.hypot(a[0],a[1])/Math.cos(Math.PI/6))]}
+function line(ctx,a,b){ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke()}
+function draw(canvas,s,anchor,t,follow){
+ const ctx=canvas.getContext('2d'),frame=Math.floor(mod(t,1.2)*30+1e-6)%36,localT=frame/30,quantT=Math.floor(t*30+1e-6)/30;
+ const row=data.rows[frame*4],distance=quantT*.75;
+ ctx.clearRect(0,0,560,560);ctx.save();ctx.strokeStyle='#405054';ctx.lineWidth=1;
+ const project=(x,y,z=0)=>{const p=projection(x,y-(follow?distance:0),z,s);return [anchor[0]+p[0],anchor[1]+p[1]]};
+ for(let i=-32;i<=40;i++){const k=i*.25;line(ctx,project(-8,k),project(8,k));line(ctx,project(k,-8),project(k,10))}
+ ctx.strokeStyle='#739a89';ctx.lineWidth=2;line(ctx,project(0,-3),project(0,8));
+ const root=follow?anchor:project(0,distance),ox=root[0]-data.root_pixel[0]*s,oy=root[1]-data.root_pixel[1]*s;
+ ctx.globalAlpha=.22;ctx.fillStyle='#050e0e';ctx.beginPath();ctx.ellipse(root[0],root[1],78*s,35*s,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+ ctx.drawImage(images[frame],ox,oy,640*s,960*s);
+ if($('markers').checked)for(const side of ['L','R']){const foot=row.feet[side];for(const part of ['heel','toe']){const p=foot[part],active=foot.contact===part||foot.contact==='flat';ctx.beginPath();ctx.arc(ox+p[0]*s,oy+p[1]*s,follow?5:3.5,0,Math.PI*2);ctx.strokeStyle=colors[side];ctx.lineWidth=1.8;ctx.fillStyle=colors[side];if(active)ctx.fill();else ctx.stroke()}}
+ ctx.fillStyle='#d7e4dc';ctx.font='13px system-ui';ctx.fillText(follow?'Quadrillage : 25 cm':'Distance : '+distance.toFixed(2)+' m',16,27);ctx.restore();
+ return {frame,row,distance,localT};
+}
+function render(){if(!ready)return;const t=mod(time,4.8),r=draw($('follow'),.56,[280,478],t,true);draw($('world'),.25,[104,265],t,false);$('phase').value=r.frame;$('counter').textContent=`${r.frame+1} / 36`;$('left').textContent='Jambe gauche : '+names[r.row.feet.L.contact];$('right').textContent='Jambe droite : '+names[r.row.feet.R.contact];$('distance').textContent=`Cycle ${Math.floor(t/1.2)+1} / 4`}
+function tick(now){if(previous&&playing)time+=(now-previous)/1000*speed;previous=now;render();requestAnimationFrame(tick)}
+$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'Pause':'Lecture'};
+$('speed').onchange=()=>speed=Number($('speed').value);
+$('phase').oninput=()=>{playing=false;$('play').textContent='Lecture';time=Number($('phase').value)/30;render()};
+$('markers').onchange=render;
+window.walkV2={get ready(){return ready},getState:()=>({time,playing,frame:Math.floor(mod(time,1.2)*30+1e-6)%36}),setFrame(frame){time=frame/30;playing=false;$('play').textContent='Lecture';render()}};
+(async()=>{const response=await fetch('native_review.json');if(!response.ok)throw Error('Mesures absentes');data=await response.json();images=await Promise.all(Array.from({length:36},(_,i)=>new Promise((resolve,reject)=>{const im=new Image;im.onload=()=>resolve(im);im.onerror=()=>reject(Error('Image absente : '+i));im.src=`frames/walk_${String(i).padStart(2,'0')}.png`})));ready=true;requestAnimationFrame(tick)})().catch(e=>$('error').textContent=e.message);
+</script></html>

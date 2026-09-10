@@ -1,0 +1,318 @@
+{
+  "schema_version": 1,
+  "collection": "Workshop pilot generated",
+  "resolution": [
+    1600,
+    900
+  ],
+  "source_blend": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\art\\source\\blender\\halt_scale_lab_v1\\halt_scale_lab_v1.blend",
+  "source_blend_sha256": "ee06b5db19c3cc2cf58d78fcb112ef0109e190f92792b75ccd37079de18531e5",
+  "evaluated_scene_may_be_unsaved": false,
+  "frame": 1,
+  "camera": "Workshop orthographic locked",
+  "camera_matrix_world": [
+    [
+      0.8574929237365723,
+      -0.31794682145118713,
+      0.40449440479278564,
+      7.199999809265137
+    ],
+    [
+      0.5144957900047302,
+      0.5299113392829895,
+      -0.6741573214530945,
+      -11.949999809265137
+    ],
+    [
+      4.151337051894188e-09,
+      0.7861958146095276,
+      0.617977499961853,
+      12.100000381469727
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "camera_frame_bounds": [
+    -8.0,
+    8.0,
+    -4.5,
+    4.5
+  ],
+  "clip_scene_units": [
+    0.10000000149011612,
+    1000.0
+  ],
+  "unit_scale_metres": 1.0,
+  "pixel_aspect": [
+    1.0,
+    1.0
+  ],
+  "projection_error_normalized": 6.331001436987727e-08,
+  "projection": "ORTHO_pixel_centers_no_AA",
+  "depth_min_m": 14.823683738708496,
+  "depth_max_m": 21.300382614135742,
+  "depth_span_m": 6.476698875427246,
+  "depth_png_bits": 16,
+  "depth_background": 0,
+  "depth_near": 65535,
+  "normal_space": "camera +X right +Y up +Z toward camera; geometric winding normals",
+  "projected_triangles_sha256": "9862b5cfd9e0d38daa038c12516e0239c633e1ef8de5d3fe6e8e8c256ebeb352",
+  "objects": 92,
+  "triangles": 9624,
+  "visible_pixels": 497330,
+  "groups": [
+    {
+      "layer": "architecture",
+      "object_ids": [
+        12,
+        13,
+        14,
+        73,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86
+      ],
+      "isolated_pixels": 195476,
+      "visible_pixels": 166305
+    },
+    {
+      "layer": "bucket",
+      "object_ids": [
+        1,
+        2,
+        3
+      ],
+      "isolated_pixels": 1303,
+      "visible_pixels": 1281
+    },
+    {
+      "layer": "fire",
+      "object_ids": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "isolated_pixels": 2798,
+      "visible_pixels": 2319
+    },
+    {
+      "layer": "floor",
+      "object_ids": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64
+      ],
+      "isolated_pixels": 317033,
+      "visible_pixels": 261547
+    },
+    {
+      "layer": "hearth",
+      "object_ids": [
+        4,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+      ],
+      "isolated_pixels": 35231,
+      "visible_pixels": 32912
+    },
+    {
+      "layer": "pillar",
+      "object_ids": [
+        74,
+        75,
+        76,
+        77
+      ],
+      "isolated_pixels": 18853,
+      "visible_pixels": 18853
+    },
+    {
+      "layer": "workbench",
+      "object_ids": [
+        65,
+        66,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92
+      ],
+      "isolated_pixels": 17494,
+      "visible_pixels": 14113
+    }
+  ],
+  "files": [
+    {
+      "path": "depth.png",
+      "sha256": "01ff1913afa8d4f407a5b88f2be412907f8096244f9bf6962a33592fefa564f4",
+      "bytes": 458776
+    },
+    {
+      "path": "depth_metres.npy",
+      "sha256": "42b9b92931d13343972e950b88b5f041835cc7b23a6c6bbb84174f1017b263bf",
+      "bytes": 5760128
+    },
+    {
+      "path": "normals.png",
+      "sha256": "16f2a3580400675f4820d5ac369d077c285f052df57dd7f64e63e5350c21db1b",
+      "bytes": 41475
+    },
+    {
+      "path": "object_ids.png",
+      "sha256": "ca1f0266d3c0e4e389ece490b24ee84d683a4f298b43fd68220f772f99be887a",
+      "bytes": 26837
+    },
+    {
+      "path": "coverage.png",
+      "sha256": "95bab6980e54ad6ec1f4f9b7080fbce19d09f6d55dc82a1d96264175584e92fd",
+      "bytes": 7299
+    },
+    {
+      "path": "object_palette.json",
+      "sha256": "b5a978ec1917a58f4bb65ce1951e4cad4ad77d7449268b5e851fb195d310e7b6",
+      "bytes": 22281
+    },
+    {
+      "path": "layers/architecture.png",
+      "sha256": "937238f89fa897ac95b6516074897d0c5df314d2e3618716779e521e09c5b5b6",
+      "bytes": 16908
+    },
+    {
+      "path": "masks/architecture_visible.png",
+      "sha256": "cd89fb7ef9b5be7696a3a40634b39355c138afb57c1e66d39e28e983f7b00653",
+      "bytes": 6656
+    },
+    {
+      "path": "layers/bucket.png",
+      "sha256": "b54f7e35ae4ea2e79fe36c22efebc9c7d448d7a3613cf69f3d3eee62728ec641",
+      "bytes": 5996
+    },
+    {
+      "path": "masks/bucket_visible.png",
+      "sha256": "a90c0f949b05db7ec9ce937592655323574fc5fcff574ce0fa9132ba69aae2e8",
+      "bytes": 1610
+    },
+    {
+      "path": "layers/fire.png",
+      "sha256": "a5aeb958b31512e712d2804af45062ef81e45d6d81f021fa6bc4f65d8a8da34e",
+      "bytes": 6010
+    },
+    {
+      "path": "masks/fire_visible.png",
+      "sha256": "362ffc0e14957dbd884913cf64b39cc080c70c4dcb9e14754573e4e34b159c5c",
+      "bytes": 1675
+    },
+    {
+      "path": "layers/floor.png",
+      "sha256": "00ba46d140af63650333758794394d3530da9500bea7741cbb9c8b6890422c30",
+      "bytes": 20954
+    },
+    {
+      "path": "masks/floor_visible.png",
+      "sha256": "bb8b38bca58398ce9bae6f67f752e4b194598cbdfeb629fe86cbe38049e3483d",
+      "bytes": 6123
+    },
+    {
+      "path": "layers/hearth.png",
+      "sha256": "8fa541ad557f977dd47680168902fb7c21284510c8faaee3e0a48b12137af2b4",
+      "bytes": 8251
+    },
+    {
+      "path": "masks/hearth_visible.png",
+      "sha256": "2357d56250c71a16b937e8361b61f7c6b29e56b74acc04fe7d6de20a236ab3c5",
+      "bytes": 2993
+    },
+    {
+      "path": "layers/pillar.png",
+      "sha256": "78cc3cc59530b3868e4c776c1f3844a43918a1901d95469236ea6c2c1ed7ff83",
+      "bytes": 7748
+    },
+    {
+      "path": "masks/pillar_visible.png",
+      "sha256": "27b145aa23ad93040d5f2db02d2a9c48323cf1274cbd964a61b5bfe0570a091e",
+      "bytes": 2177
+    },
+    {
+      "path": "layers/workbench.png",
+      "sha256": "2a0c953dae15ede9f8c7cc53eb4621fcfb05bc15c632933efc8177ee99364f1c",
+      "bytes": 6915
+    },
+    {
+      "path": "masks/workbench_visible.png",
+      "sha256": "c74dc8bfb610dff1a37a9ed60c1a7fe94278177424cba9f19f036477a907472c",
+      "bytes": 2264
+    },
+    {
+      "path": "GUIDES.md",
+      "sha256": "2b135ee020848ee773b3d8fbe92a4ad53ec0419a963b3481776483bc1859d826",
+      "bytes": 1939
+    }
+  ],
+  "elapsed_seconds": 9.697
+}

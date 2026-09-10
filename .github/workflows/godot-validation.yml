@@ -72,6 +72,12 @@ jobs:
           # test_skill_tree_studio) rejoue aussi ses suites de hardening.
           test_scripts=(
             res://test/unit/test_dungeon_draft_studio_2_0.gd
+            res://test/unit/test_painted_halt_manifest_service.gd
+            res://test/unit/test_painted_halt_studio_interactions.gd
+            res://test/unit/test_painted_halt_studio_preview.gd
+            res://test/unit/test_painted_halt_runtime.gd
+            res://test/unit/test_painted_halt_audio_lifecycle.gd
+            res://test/unit/test_painted_halt_catabase.gd
             res://test/unit/test_terrain_studio_refonte.gd
             res://test/unit/test_terrain_studio_novice_scenario.gd
             res://test/unit/test_terrain_test_integration_path.gd

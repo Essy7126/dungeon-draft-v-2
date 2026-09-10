@@ -16,18 +16,15 @@
   },
   "land": {
     "color": "#ccb17d",
-    "texture_path": "res://asset/map/painted/underworld/lethe_crossing_v1/land_composed.png",
-    "texture_scale": [
-      1,
-      1
-    ],
+    "texture_path": "res://assets/catabase/combat_da_v1/lethe_crossing_emerald_v2.png",
+    "texture_scale": [1.210592686002522, 1.2096774193548387],
     "texture_repeat": false,
     "tint": "#ffffff"
   },
   "floor_palette": {
-    "shade": "#747b64",
-    "body": "#b9ae87",
-    "light": "#d4c79e",
+    "shade": "#495f60",
+    "body": "#83968c",
+    "light": "#b8c0a4",
     "warmth": [
       -0.025,
       -0.008,
@@ -41,11 +38,11 @@
     }
   },
   "props_palette": {
-    "ink": "#626b58",
-    "top": "#c3b68d",
-    "left": "#9b9573",
-    "right": "#7e886c",
-    "highlight": "#e1d2a4",
+    "ink": "#495f60",
+    "top": "#b8c0a4",
+    "left": "#83968c",
+    "right": "#495f60",
+    "highlight": "#b8c0a4",
     "moss": [
       0.39,
       0.44,
@@ -94,7 +91,7 @@
       0.29,
       0.32
     ],
-    "bench": "#d2c294"
+    "bench": "#b8c0a4"
   },
   "pit_palette": {
     "floor": "#294c43",

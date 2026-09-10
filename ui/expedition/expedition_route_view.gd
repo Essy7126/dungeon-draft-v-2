@@ -6,6 +6,7 @@ signal destination_committed(node_id: String)
 signal preparation_requested
 
 const ART_THEME := preload("res://ui/expedition/catabase_ui_theme.gd")
+const OVERVIEW := preload("res://ui/expedition/expedition_route_overview.gd")
 const MAP_CANVAS := preload("res://ui/expedition/expedition_map_canvas.gd")
 const TITLE_FONT := preload("res://asset/ui/character_selection/selection_title_font.tres")
 const ENCOUNTER_PREVIEW := preload("res://ui/expedition/expedition_encounter_preview.gd")
@@ -45,6 +46,7 @@ var _guidance: Label
 var _commit: Button
 var _preparation: Button
 var _scroll_restore_revision := 0
+var _overview_layer: CanvasLayer
 
 
 func configure(session: ExpeditionSession, selected_node_id: String, inspection_only: bool, scroll_position: int = -1) -> void:
@@ -93,13 +95,19 @@ func _build() -> void:
 	_heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_progress = _label(heading_row, "", 14, ART_THEME.MUTED)
 	_progress.autowrap_mode = TextServer.AUTOWRAP_OFF
+	var expand := _button(heading_row, "Déplier toute la carte")
+	expand.name = "ExpandFullRoute"
+	expand.add_theme_font_size_override("font_size", 14)
+	expand.custom_minimum_size.y = 36
+	expand.tooltip_text = "Voir les vingt seuils et la légende en plein écran."
+	expand.pressed.connect(_open_overview)
 	var recenter := _button(heading_row, "Position actuelle")
 	recenter.name = "RecenterRoute"
 	recenter.add_theme_font_size_override("font_size", 14)
 	recenter.custom_minimum_size.y = 36
 	recenter.tooltip_text = "Revenir à votre position et aux prochains chemins accessibles."
 	recenter.pressed.connect(func(): _restore_scroll(-1))
-	var legend := _label(self, "Traits pleins : parcours accompli  ·  Pointillés : chemins possibles  ·  ? : inconnu", 13, ART_THEME.MUTED)
+	var legend := _label(self, "Rouge : parcours accompli  ·  Vert : voies sélectionnées  ·  Pointillés : chemins possibles", 13, ART_THEME.MUTED)
 	legend.name = "RouteLegend"
 	_map_scroll = ScrollContainer.new()
 	_map_scroll.name = "RouteMapScroll"
@@ -132,6 +140,26 @@ func _build() -> void:
 	_commit.name = "CommitDestination"
 	_commit.custom_minimum_size.x = 280
 	_commit.pressed.connect(_commit_destination)
+
+
+func _open_overview() -> void:
+	if is_instance_valid(_overview_layer):
+		return
+	var layer := CanvasLayer.new()
+	layer.name = "FullRouteLayer"
+	layer.layer = 110
+	_overview_layer = layer
+	var overview := OVERVIEW.new()
+	overview.route = _session.route if _session != null else null
+	overview.selected_id = _selected_node_id
+	overview.destination_selected.connect(_on_destination_selected)
+	overview.closed.connect(func():
+		remove_child(layer)
+		layer.queue_free()
+		_overview_layer = null
+	)
+	add_child(layer)
+	layer.add_child(overview)
 
 
 func _build_destination_card() -> void:
@@ -228,14 +256,19 @@ func _update_destination() -> void:
 		_guidance.text = "Consultez une destination pour préparer votre départ."
 		return
 	var kind := CatabasePaintedIconCatalog.route_presentation_kind(selected)
-	_destination_icon.texture = CatabasePaintedIconCatalog.route_node_icon(selected)
+	_destination_icon.texture = CatabasePaintedIconCatalog.map_node_icon(selected)
+	_destination_icon.modulate = ART_THEME.GOLD
 	_destination_icon.visible = _destination_icon.texture != null
 	_destination_title.text = str(selected.get("title", "Destination inconnue"))
 	_destination_meta.text = "SEUIL %02d  ·  %s" % [int(selected.get("depth", 0)), str(TYPE_NAMES.get(kind, "Destination inconnue")).to_upper()]
 	_destination_hint.text = str(selected.get("hint", "Une part du chemin reste à découvrir."))
 	var reward := str(selected.get("reward", ""))
 	_destination_promise.text = "Promesse : " + str(REWARD_NAMES.get(reward, "À découvrir")) if not reward.is_empty() else ""
-	_destination_promise.visible = not reward.is_empty()
+	if _session != null:
+		var consequence := str(_session.route.get_choice_preview(_selected_node_id).get("summary", ""))
+		if not consequence.is_empty():
+			_destination_promise.text += "\n" + consequence
+	_destination_promise.visible = not _destination_promise.text.is_empty()
 	var available := _session != null and _session.route.phase == "map" and bool(selected.get("available", false))
 	_commit.disabled = _inspection_only or not available
 	_guidance.add_theme_color_override("font_color", ART_THEME.MUTED)

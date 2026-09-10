@@ -1,6 +1,8 @@
 extends GutTest
 
 const Factory = preload("res://test/support/factory.gd")
+const Cleanup := preload("res://test/support/isolated_battlefield_cleanup.gd")
+var _grids: Array[GridData] = []
 const MAGE: UnitData = preload("res://data/units/enemies/philosopher_mage.tres")
 const AXIOM: Spell = preload("res://data/spells/enemies/philosopher_axiom.tres")
 const REFUTATION: Spell = preload("res://data/spells/enemies/philosopher_refutation.tres")
@@ -8,6 +10,14 @@ const MENDING: Spell = preload("res://data/spells/enemies/philosopher_mending.tr
 const APORIA: Spell = preload("res://data/spells/enemies/philosopher_aporia.tres")
 const AEGIS: Spell = preload("res://data/spells/enemies/philosopher_aegis.tres")
 const TRIAL: RunData = preload("res://data/runs/philosopher_trial.tres")
+
+
+func after_each() -> void:
+	for grid: GridData in _grids:
+		for unit: Unit in grid.get_units():
+			unit.clear_combat_effect_history()
+		Cleanup.dispose_grid(grid)
+	_grids.clear()
 
 
 class MinimumRangeWard:
@@ -19,6 +29,7 @@ class MinimumRangeWard:
 
 func _field(mage_cell := Vector2i(1, 2), hero_cell := Vector2i(5, 2)) -> Dictionary:
 	var field := Factory.make_battlefield(10, 6)
+	_grids.append(field.grid)
 	assert_true(field.caster.set_action_classification_catalog(TRIAL.action_classification_catalog))
 	var mage := Unit.from_data(MAGE)
 	var hero := Factory.make_unit("Achille", 0)
@@ -214,6 +225,7 @@ func test_insufficient_ap_never_produces_an_unaffordable_spell() -> void:
 
 func test_walls_block_casts_and_movement_in_a_closed_corridor() -> void:
 	var field := Factory.make_battlefield(8, 1)
+	_grids.append(field.grid)
 	var mage := Unit.from_data(MAGE)
 	var hero := Factory.make_unit("Achille", 0)
 	field.grid.place_unit(mage, Vector2i(0, 0))
@@ -241,7 +253,7 @@ func test_dedicated_trial_is_valid_selectable_and_has_a_support_partner() -> voi
 	var roster := room.encounter_definition.expanded_roster()
 	assert_eq(roster.map(func(unit: UnitData): return unit.unit_id), [&"philosopher_mage", &"spectre_greatsword"])
 	assert_eq(room.enemies, roster)
-	var entries := CharacterSelectionCatalog.get_entries()
+	var entries := CharacterSelectionCatalog.get_entries(true)
 	var matches := entries.filter(func(entry: Dictionary): return entry.run == TRIAL)
 	assert_eq(matches.size(), 1)
 	assert_eq(matches[0].chapter, TRIAL.run_name)
@@ -268,6 +280,7 @@ func test_trial_catalog_makes_axiom_respect_projectile_only_barriers() -> void:
 
 func test_projected_firing_position_cannot_queue_axiom_through_transparent_barrier() -> void:
 	var field := Factory.make_battlefield(8, 1)
+	_grids.append(field.grid)
 	assert_true(field.caster.set_action_classification_catalog(TRIAL.action_classification_catalog))
 	var mage := Unit.from_data(MAGE)
 	mage.spells.assign([AXIOM])
@@ -292,6 +305,7 @@ func test_projected_firing_position_cannot_queue_axiom_through_transparent_barri
 
 func test_projected_firing_position_respects_modified_minimum_range() -> void:
 	var field := Factory.make_battlefield(8, 1)
+	_grids.append(field.grid)
 	assert_true(field.caster.set_action_classification_catalog(TRIAL.action_classification_catalog))
 	var mage := Unit.from_data(MAGE)
 	mage.spells.assign([AXIOM])

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "underworld_threshold_v1",
+  "manifest_sha256": "f41b31e632c2ff266207e53c7c02dc137cf9d451b3b4caefecf38aab8379f32c",
+  "manifest_hash_mode": "lf_utf8_v1",
+  "generator": "python_pillow_v2",
+  "source_sha256": "24eba80e2d65561b776a3e504e353e7a60d0e6837548e81283e5073a877c7c93",
+  "mask_sha256": "2f9e6079787f6029a8f3a6a83bf9795479a18c1c8ea9ab737831101164bc8ca4",
+  "flow_sha256": "09b80f9851bebf6ed45b4759a6ac8aba2ab95d06e0d99d53fae0c620c0525e82",
+  "size": [
+    1672,
+    941
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "flow_channels": [
+    "direction_x",
+    "direction_y",
+    "speed_div_4",
+    "water_coverage"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}

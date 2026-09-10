@@ -1,0 +1,7 @@
+{
+  "key": "spells/pelion_shot",
+  "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a08afb-b278-7b33-85aa-4cb30a2b8c2d\\exec-8babb8ae-2c6b-4fc6-b7e8-4e61cedf40b8.png",
+  "prompt": "Edit this painted game icon for clearer recognition at 32–48 pixels. Keep exactly the same bow-and-arrow identity, palette, simple painted style and dark background. Make the wooden bow limbs about twice as thick and a little lighter warm brown, so their silhouette is strong against the background. Make the arrowhead larger and the arrow shaft thicker. Keep the whole icon inside the square with 8% margin; do not crop its ends. Keep only a few broad flat painted shadow planes. No grain, no engravings, no additional objects or particles. Everything else stays simple.",
+  "status": "generated",
+  "revision": "thicker-small-size-silhouette"
+}

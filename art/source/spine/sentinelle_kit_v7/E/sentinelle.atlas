@@ -1,0 +1,62 @@
+sentinelle.png
+size: 2048, 311
+filter: Linear, Linear
+pma: false
+leg_right_underpaint
+  bounds: 2, 2, 38, 58
+shin_right_underpaint
+  bounds: 44, 2, 33, 72
+foot_right_underpaint
+  bounds: 81, 2, 27, 25
+leg_left_underpaint
+  bounds: 112, 2, 46, 66
+shin_left_underpaint
+  bounds: 162, 2, 45, 91
+foot_left_underpaint
+  bounds: 211, 2, 27, 25
+torso_underpaint
+  bounds: 242, 2, 106, 132
+upper_arm_right_underpaint
+  bounds: 352, 2, 61, 90
+upper_arm_left_underpaint
+  bounds: 417, 2, 56, 94
+head_underpaint
+  bounds: 477, 2, 17, 17
+arm_right_underpaint
+  bounds: 498, 2, 54, 64
+arm_left_underpaint
+  bounds: 556, 2, 47, 58
+hand_right_underpaint
+  bounds: 607, 2, 17, 17
+leg_right_source_image
+  bounds: 628, 2, 66, 71
+shin_right_source_image
+  bounds: 698, 2, 77, 51
+foot_right_source_image
+  bounds: 779, 2, 77, 25
+leg_left_source_image
+  bounds: 860, 2, 58, 73
+shin_left_source_image
+  bounds: 922, 2, 63, 70
+foot_left_source_image
+  bounds: 989, 2, 55, 22
+torso_source_image
+  bounds: 1048, 2, 94, 129
+pauldron_right_source_image
+  bounds: 1146, 2, 74, 78
+upper_arm_right_source_image
+  bounds: 1224, 2, 54, 37
+pauldron_left_source_image
+  bounds: 1282, 2, 86, 74
+upper_arm_left_source_image
+  bounds: 1372, 2, 22, 23
+head_source_image
+  bounds: 1398, 2, 61, 67
+arm_right_source_image
+  bounds: 1463, 2, 55, 54
+arm_left_source_image
+  bounds: 1522, 2, 120, 175
+hand_right_source_image
+  bounds: 1646, 2, 84, 148
+vanish_smoke
+  bounds: 2, 181, 128, 128

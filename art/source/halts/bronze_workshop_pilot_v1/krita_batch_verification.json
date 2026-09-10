@@ -1,0 +1,13 @@
+{
+  "identical": true,
+  "changed_pixels": 0,
+  "max_channel_delta": 0,
+  "passed": true,
+  "batch_report": "artifacts/dev/20260910-161809-krita-layer-export/batch.json",
+  "krita_version": "krita 5.3.3 (git 858d352)",
+  "ora_sha256": "0570ee89d5860a000a3d353b94a0ba7d511d865b9360d9dbcfd9713e7a9b62d9",
+  "export_sha256": "58762bde2aacb73f21fdbe2f506df42a4402ddf8339933ac13d40971f6c5efb2",
+  "source_sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+  "profile_isolated": true,
+  "visible_ui": false
+}

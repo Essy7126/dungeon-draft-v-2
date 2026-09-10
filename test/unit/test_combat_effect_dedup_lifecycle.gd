@@ -1,6 +1,20 @@
 extends GutTest
 
 const Factory = preload("res://test/support/factory.gd")
+const FixtureCleanup = preload("res://test/support/isolated_battlefield_cleanup.gd")
+
+var _fields: Array[Factory.Battlefield] = []
+var _heroes: Array[Unit] = []
+
+
+func after_each() -> void:
+	for hero in _heroes:
+		hero.clear_combat_effect_history()
+	_heroes.clear()
+	for field in _fields:
+		field.terrain.dispose()
+		FixtureCleanup.dispose_grid(field.grid)
+	_fields.clear()
 
 
 func _guard(amount: int) -> Spell:
@@ -17,11 +31,13 @@ func _guard(amount: int) -> Spell:
 
 func test_new_combat_applies_first_guard_from_new_spell_caster_to_persistent_unit() -> void:
 	var hero: Unit = Factory.make_unit("Persistent hero", 0)
+	_heroes.append(hero)
 	var first_guard: Spell = _guard(10)
 	hero.spells.append(first_guard)
 	hero.reset_combat_resources()
 	hero.start_turn()
 	var first_field: Factory.Battlefield = Factory.make_battlefield(3, 3)
+	_fields.append(first_field)
 	assert_true(first_field.grid.place_unit(hero, Vector2i(1, 1)))
 	var first_cast: CastContext = first_field.caster.begin_cast(hero, first_guard, hero.grid_pos)
 	assert_false(first_cast.failed)
@@ -47,6 +63,7 @@ func test_new_combat_applies_first_guard_from_new_spell_caster_to_persistent_uni
 	assert_eq(hero.get_shield_value(&"qa_sourced_guard"), 10)
 	hero.start_turn()
 	var second_field: Factory.Battlefield = Factory.make_battlefield(3, 3)
+	_fields.append(second_field)
 	assert_true(second_field.grid.place_unit(hero, Vector2i(1, 1)))
 	var second_cast: CastContext = second_field.caster.begin_cast(hero, second_guard, hero.grid_pos)
 	assert_false(second_cast.failed)
@@ -64,6 +81,7 @@ func test_new_combat_applies_first_guard_from_new_spell_caster_to_persistent_uni
 
 func test_duplicate_unit_impact_stays_idempotent_across_activations_until_new_combat() -> void:
 	var hero: Unit = Factory.make_unit()
+	_heroes.append(hero)
 	hero.reset_combat_resources()
 	var metadata: Dictionary = {"impact_id": &"cast_000001:000"}
 	var original: CombatEventFact = hero.add_sourced_shield(&"qa_guard", 10, hero, metadata)

@@ -1,0 +1,14 @@
+{
+  "technical_passed": true,
+  "animation_sha256_before": "094a3467f7cd96663374df0d87cd73e4bc5be94e88ea52b8707fd55e3ed600c0",
+  "animation_sha256_after": "094a3467f7cd96663374df0d87cd73e4bc5be94e88ea52b8707fd55e3ed600c0",
+  "added_objects": 122,
+  "bones": 27,
+  "artistic_approved": false,
+  "source": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\art\\source\\blender\\sentinelle_armor_v1\\source_pose.blend",
+  "output": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\art\\source\\blender\\sentinelle_armor_v1\\sentinelle_armor_v1.blend",
+  "limits": [
+    "Procedural 3D material study, not final painted 2D pieces",
+    "Spine rig transfer and combat integration not yet performed"
+  ]
+}

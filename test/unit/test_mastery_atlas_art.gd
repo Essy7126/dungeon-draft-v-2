@@ -34,7 +34,7 @@ func after_each() -> void:
 	assert_eq(GameManager.get_inventory_equipment_snapshot(), _manager_before)
 
 
-func test_every_authored_mastery_and_attribute_has_a_unique_atlas_region() -> void:
+func test_every_authored_mastery_and_attribute_has_a_unique_glyph() -> void:
 	var nodes := PROFILE.mastery_catalog.node_catalog()
 	assert_eq(nodes.size(), 36)
 	assert_eq(ART.node_ids().size(), 36)
@@ -70,7 +70,7 @@ func test_manifest_names_and_grid_cells_match_the_runtime_catalog() -> void:
 			assert_false(str(entry.motif).strip_edges().is_empty())
 			if nodes.has(id):
 				assert_eq(str(entry.name), (nodes[id] as SkillTreeNodeData).display_name)
-			var texture: Texture2D = ART.node_icon(id) if nodes.has(id) else ART.attribute_icon(id)
+			var texture: Texture2D = ART._icon(id, ART.NODE_REGIONS if nodes.has(id) else ART.ATTRIBUTE_REGIONS) # Archived painting fallback still matches its manifest.
 			assert_true(texture is AtlasTexture)
 			if not texture is AtlasTexture:
 				continue
@@ -180,16 +180,11 @@ func _open() -> void:
 
 func _assert_unique_region(texture: Texture2D, id: String, regions: Dictionary) -> void:
 	assert_not_null(texture, "Dedicated illustration exists for " + id)
-	assert_true(texture is AtlasTexture, "Illustration comes from the new artwork atlases: " + id)
-	if not texture is AtlasTexture:
+	if texture == null:
 		return
-	var atlas := texture as AtlasTexture
-	assert_not_null(atlas.atlas)
-	if atlas.atlas == null:
-		return
-	assert_gte(atlas.region.size.x, 96.0)
-	assert_gte(atlas.region.size.y, 96.0)
-	assert_true(Rect2(Vector2.ZERO, atlas.atlas.get_size()).encloses(atlas.region))
-	var key := "%s:%s" % [atlas.atlas.resource_path, atlas.region]
-	assert_false(regions.has(key), "A unique cropped motif is assigned to " + id)
-	regions[key] = id
+	assert_true(texture.resource_path.begins_with("res://assets/catabase/emerald_icons_v2/"), "Current presentation uses painted icons")
+	assert_true(texture.resource_path.ends_with("/" + id + ".png"), id)
+	assert_gte(texture.get_width(), 64)
+	assert_gte(texture.get_height(), 64)
+	assert_false(regions.has(texture.resource_path), "A unique motif is assigned to " + id)
+	regions[texture.resource_path] = id

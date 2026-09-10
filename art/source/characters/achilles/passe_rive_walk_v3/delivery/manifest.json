@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "name": "Passe-rive",
+  "animation": "walk_E",
+  "direction": "three-quarter facing right, anatomical sides preserved",
+  "frame_count": 12,
+  "frame_size": [
+    320,
+    480
+  ],
+  "atlas_size": [
+    1280,
+    1440
+  ],
+  "columns": 4,
+  "rows": 3,
+  "fps": 10,
+  "cycle_seconds": 1.2,
+  "pivot": [
+    176,
+    428
+  ],
+  "preview_stride_pixels": [
+    122,
+    61
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/walk_00.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_00.png",
+      "alignment_y": 0,
+      "sha256": "17bfeb2b7f561cc852d5c80ccabfe3114b1f077826f04ea74b2017f31cf8bc88"
+    },
+    {
+      "index": 1,
+      "file": "frames/walk_01.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_01.png",
+      "alignment_y": 0,
+      "sha256": "635e06767ef6eeddbbd751645c7e8faeb661036325bc90e5dcfe626562853f08"
+    },
+    {
+      "index": 2,
+      "file": "frames/walk_02.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_02.png",
+      "alignment_y": 0,
+      "sha256": "a1c09b3d1425dd9be1619a06301e084f76ba8cd0e61801ee24f81fda087753a8"
+    },
+    {
+      "index": 3,
+      "file": "frames/walk_03.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_03.png",
+      "alignment_y": 0,
+      "sha256": "877188dff5819426d0b5bb740f58140cb8d929b1b6bc62ffb1da726f11d3a90c"
+    },
+    {
+      "index": 4,
+      "file": "frames/walk_04.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_04.png",
+      "alignment_y": 6,
+      "sha256": "243371488318f7ef498fa1d3ab873bf6463c426853fa410b4bc398d4167287dc"
+    },
+    {
+      "index": 5,
+      "file": "frames/walk_05.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_05.png",
+      "alignment_y": 6,
+      "sha256": "c6e98ad49d11921d6ffef4bf41edd86a9769e64bce9492d3e6e89faeb2c9abaf"
+    },
+    {
+      "index": 6,
+      "file": "frames/walk_06.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_06.png",
+      "alignment_y": 6,
+      "sha256": "9d68f5075b157a1f9821bf52c1196b45ca191faa7f36ed3cc732d0ca80d244f1"
+    },
+    {
+      "index": 7,
+      "file": "frames/walk_07.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_07.png",
+      "alignment_y": 6,
+      "sha256": "bb8e1b683128c2af253b7fd8303dc9bec1577413f41c4eb8ea5e52c8c848bf56"
+    },
+    {
+      "index": 8,
+      "file": "frames/walk_08.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_08.png",
+      "alignment_y": 22,
+      "sha256": "527d87754a5580163348393f628e321c2713a1dbf4ce84af080ab6c8abf8f634"
+    },
+    {
+      "index": 9,
+      "file": "frames/walk_09.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_09.png",
+      "alignment_y": 22,
+      "sha256": "c091c31792f24b583c978b55bf85a2b2700ab15128f18a5e54e67a3a1e92fd47"
+    },
+    {
+      "index": 10,
+      "file": "frames/walk_10.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_10.png",
+      "alignment_y": 22,
+      "sha256": "c32010bcf51f80dad8f61600b58a0489ea0de5d7788debbdafe38cbdbfcccecb"
+    },
+    {
+      "index": 11,
+      "file": "frames/walk_11.png",
+      "duration_ms": 100,
+      "source": "rgba_frames/walk_11.png",
+      "alignment_y": 22,
+      "sha256": "1c6353e581c4bcbc18ddd55ad133108a746ef06ffbd82f27086a8ae9079c3c40"
+    }
+  ],
+  "source_sheet_size": [
+    1182,
+    1330
+  ],
+  "generation": "built-in ImageGen, guide-first paint-over, candidate B",
+  "transparency": "software cutout authorized by user; rembg birefnet-general-lite",
+  "status": "painted_walk_for_art_review",
+  "checks": {
+    "atlas_pixels_exact": true,
+    "uniform_native_scale": true
+  },
+  "limitations": [
+    "Generated poses approximate the Blender guide; native Blender submillimetre contact measurements do not apply to these drawings.",
+    "Spear tip, cloth shapes and mask vary slightly between drawings.",
+    "Native frame is 320x480, including padding; no AI upscaling or invented high-resolution claim.",
+    "Only this direction and walking clip are delivered; no idle transition or main-game character replacement."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": "5.3.3",
+  "executable": "artifacts/dev-tools/krita/krita-x64-5.3.3/bin/krita.exe",
+  "console_executable": "artifacts/dev-tools/krita/krita-x64-5.3.3/bin/krita.com",
+  "source_url": "https://download.kde.org/stable/krita/5.3.3/krita-x64-5.3.3.zip",
+  "sha256": "87278594fac0267680303280e410578388d606aec5a290f2b0d009909f4254f0",
+  "sha256_scope": "downloaded_archive",
+  "hash_source_url": "https://download.kde.org/stable/krita/5.3.3/krita-x64-5.3.3.zip.mirrorlist",
+  "qt_platform": "windows",
+  "verified_version_output": "krita 5.3.3 (git 858d352)",
+  "verification_report": "artifacts/dev/20260910-154945-krita-portable-check/windows-verification.json",
+  "notes": "Use the Windows Qt platform. The offscreen and minimal plugins crash in libkritaui.dll on this host. Keep APPDATA and LOCALAPPDATA isolated in a project artifact directory for automated runs."
+}

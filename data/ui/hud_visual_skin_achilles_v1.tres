@@ -3,60 +3,60 @@
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/theme/hud_visual_skin_data.gd" id="1_skin"]
 [ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf" id="2_font_regular"]
 [ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf" id="3_font_display"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/action_move_ornate.svg" id="4_move"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/resource_action_points.svg" id="5_ap"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/resource_movement_points.svg" id="6_mp"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_cooldown.svg" id="7_cooldown"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_locked.svg" id="8_locked"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_unavailable.svg" id="9_unavailable"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_resolving.svg" id="10_resolving"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_valid.svg" id="11_target_valid"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_invalid.svg" id="12_target_invalid"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/nav/move.png" id="4_move"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/resources/action_points.png" id="5_ap"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/resources/movement_points.png" id="6_mp"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/states/cooldown.png" id="7_cooldown"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/states/locked.png" id="8_locked"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/states/unavailable.png" id="9_unavailable"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/states/resolving.png" id="10_resolving"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/states/target_valid.png" id="11_target_valid"]
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/states/target_invalid.png" id="12_target_invalid"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/materials/obsidian_bronze_v2/obsidian_bronze_tile.png" id="13_material"]
 
 [resource]
 script = ExtResource("1_skin")
 skin_id = &"hud_achilles_premium_v1"
-revision = 2
+revision = 3
 neutral_grayscale = false
 material_enabled = true
 material_texture = ExtResource("13_material")
-material_texture_strength = 0.38
+material_texture_strength = 0.08
 material_tile_size = 256.0
-material_edge_highlight = Color(0.94, 0.79, 0.5, 1)
-material_rim_width = 3.0
-material_corner_cut = 13.0
-surface_backdrop = Color(0.025, 0.022, 0.03, 0.97)
-surface_dock = Color(0.055, 0.048, 0.06, 0.98)
-surface_panel = Color(0.09, 0.075, 0.085, 0.99)
-surface_raised = Color(0.13, 0.105, 0.105, 1)
-surface_recessed = Color(0.018, 0.017, 0.023, 1)
-surface_scrim = Color(0.012, 0.009, 0.012, 0.9)
-text_primary = Color(0.96, 0.87, 0.68, 1)
-text_secondary = Color(0.78, 0.64, 0.43, 1)
-text_muted = Color(0.65, 0.58, 0.48, 1)
-text_inverse = Color(0.08, 0.055, 0.035, 1)
+material_edge_highlight = Color(0.7176, 0.6471, 0.5529, 1)
+material_rim_width = 1.0
+material_corner_cut = 6.0
+surface_backdrop = Color(0.0627, 0.0588, 0.0549, 1)
+surface_dock = Color(0.0824, 0.0706, 0.0627, 1)
+surface_panel = Color(0.1294, 0.1098, 0.0941, 1)
+surface_raised = Color(0.1882, 0.1529, 0.1216, 1)
+surface_recessed = Color(0.0510, 0.0471, 0.0431, 1)
+surface_scrim = Color(0.0314, 0.0275, 0.0235, 1)
+text_primary = Color(0.9333, 0.8980, 0.8235, 1)
+text_secondary = Color(0.8392, 0.7608, 0.6039, 1)
+text_muted = Color(0.7176, 0.6471, 0.5529, 1)
+text_inverse = Color(0.0824, 0.0706, 0.0627, 1)
 minimum_body_contrast = 4.5
 minimum_large_text_contrast = 3.0
 minimum_focus_contrast = 3.0
-border_subtle_color = Color(0.24, 0.18, 0.15, 1)
-border_default_color = Color(0.48, 0.33, 0.2, 1)
-border_strong_color = Color(0.76, 0.56, 0.31, 1)
-border_focus_color = Color(1, 0.78, 0.28, 1)
-border_selected_color = Color(0.95, 0.65, 0.14, 1)
-border_locked_color = Color(0.56, 0.43, 0.32, 1)
+border_subtle_color = Color(0.2510, 0.2196, 0.1765, 1)
+border_default_color = Color(0.5451, 0.4431, 0.2980, 1)
+border_strong_color = Color(0.7098, 0.6039, 0.4392, 1)
+border_focus_color = Color(0.6471, 0.8196, 0.8431, 1)
+border_selected_color = Color(0.8784, 0.8039, 0.6471, 1)
+border_locked_color = Color(0.4039, 0.3569, 0.2902, 1)
 border_unavailable_color = Color(0.72, 0.22, 0.17, 1)
 border_thin = 1
-border_regular = 2
-border_emphasis = 3
-focus_ring_width = 3
+border_regular = 1
+border_emphasis = 2
+focus_ring_width = 2
 focus_ring_offset = 2
 radius_tight = 2
 radius_control = 3
 radius_panel = 4
 radius_modal = 6
 radius_round = 999
-shadow_size = 8
+shadow_size = 5
 shadow_offset = Vector2(0, 4)
 space_xxs = 2
 space_xs = 4
@@ -95,16 +95,16 @@ reduced_motion_duration = 0.0
 hover_scale = 1.025
 hover_lift = 3.0
 pressed_offset = 1.0
-state_normal_background = Color(0.055, 0.044, 0.05, 0.98)
-state_hover_background = Color(0.12, 0.085, 0.065, 1)
-state_focus_background = Color(0.14, 0.1, 0.06, 1)
-state_pressed_background = Color(0.035, 0.028, 0.034, 1)
-state_selected_background = Color(0.17, 0.115, 0.055, 1)
-state_selected_locked_background = Color(0.1, 0.075, 0.065, 1)
-state_cooldown_background = Color(0.025, 0.022, 0.03, 1)
-state_disabled_background = Color(0.022, 0.021, 0.026, 1)
+state_normal_background = Color(0.1294, 0.1098, 0.0941, 1)
+state_hover_background = Color(0.1882, 0.1529, 0.1216, 1)
+state_focus_background = Color(0.0863, 0.2275, 0.2627, 1)
+state_pressed_background = Color(0.0353, 0.1294, 0.1647, 1)
+state_selected_background = Color(0.0627, 0.1765, 0.2039, 1)
+state_selected_locked_background = Color(0.0980, 0.1647, 0.1725, 1)
+state_cooldown_background = Color(0.0784, 0.0706, 0.0627, 1)
+state_disabled_background = Color(0.0863, 0.0784, 0.0667, 1)
 state_unavailable_background = Color(0.09, 0.035, 0.035, 1)
-state_resolving_background = Color(0.16, 0.1, 0.045, 1)
+state_resolving_background = Color(0.1882, 0.1529, 0.1216, 1)
 disabled_content_opacity = 0.64
 cooldown_content_opacity = 0.76
 locked_content_opacity = 0.84

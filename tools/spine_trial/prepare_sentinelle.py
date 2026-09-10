@@ -97,7 +97,7 @@ def encode_animation(rig, ordered, parents, binds, by_bone, poses):
     return {'bones': timelines}, max_transform_error
 
 
-def prepare(direction, output_root=None, pose_library=None, part_modifier=None):
+def prepare(direction, output_root=None, pose_library=None, part_modifier=None, rig_factory=PaintedSkeleton):
     source = ROOT / f'art/source/characters/catabase_monsters/sentinelle_airain/base_frame_{direction}.png'
     output = (output_root or OUTPUT) / direction
     if (output / 'sentinelle.json').exists():
@@ -106,7 +106,7 @@ def prepare(direction, output_root=None, pose_library=None, part_modifier=None):
     source_parts = build_parts('sentinelle_airain', direction, base)
     if part_modifier:
         source_parts = part_modifier(source_parts)
-    rig = PaintedSkeleton(base, source_parts, 'sentinelle_airain', direction)
+    rig = rig_factory(base, source_parts, 'sentinelle_airain', direction)
     parts = rig.by_name
     pivots = {'root': ANCHOR}
     pivots.update({name: np.array(part['pivot'], dtype=float) for name, part in parts.items()})

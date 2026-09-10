@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Passe-rive · Audit de la marche</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;color:#ebe7dc;background:#142125}*{box-sizing:border-box}body{margin:0}main{max-width:1150px;margin:auto;padding:32px 24px 60px}h1{font:40px/1.15 Georgia,serif;margin:12px 0 18px}h2{font:25px/1.25 Georgia,serif;margin:0 0 16px}p{line-height:1.65;max-width:850px;color:#b8c9c5}a{color:#a2d3bd}section{padding:28px 0;border-top:1px solid #3c5154}.pair{display:grid;grid-template-columns:1.15fr 1fr;gap:30px;align-items:start}.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:15px 0}button{font:inherit;background:#263b3f;border:1px solid #647c79;color:#ede8da;padding:8px 15px;border-radius:5px;cursor:pointer}button[aria-pressed=true]{border-color:#b3dabf;background:#365248}label{font-size:14px;color:#c1d0c9}canvas{width:100%;display:block;background:#203136}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px 8px;border-bottom:1px solid #3c5154}th{color:#a9c9bb}small,.small{font-size:13px;color:#a9bbb5}.finding{color:#f1d39e}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin:14px 0}.jade{color:#a2e3b6}.bronze{color:#edb678}.references{display:grid;grid-template-columns:1fr 1fr;gap:20px}.references p{margin-top:5px}.images img{width:100%;height:auto}.images summary{cursor:pointer;color:#b4d7c4;padding:10px 0}ol{padding-left:23px;line-height:1.7}li{padding:6px 0}#error{color:#ffbbac}strong{color:#f1eada}@media(max-width:760px){.pair,.references{grid-template-columns:1fr}h1{font-size:32px}main{padding:24px 16px}th,td{padding:10px 5px}}
+</style></head><body><main>
+<a href="../passe_rive_motion_v1/review.html">← Revoir l’idle et la marche V1</a>
+<h1>Pourquoi les pieds ne marchent pas encore</h1>
+<p>Le pied avant change à peine de place entre les deux premiers dessins. Avec le déplacement réglé dans la revue, il devrait reculer nettement. Ce comparatif montre les images existantes et la mesure ; <strong>il ne présente pas une animation corrigée</strong>.</p>
+<section class="pair"><div><h2>Suivre le pied dans les vrais dessins</h2>
+<div class="controls" id="frames"><button data-frame="0" aria-pressed="false">Dessin 1</button><button data-frame="1" aria-pressed="true">Dessin 2</button><button data-frame="2" aria-pressed="false">Dessin 3</button></div>
+<canvas id="foot" width="640" height="490" aria-label="Avant-pied agrandi, zone retrouvée dans l’image et position attendue pour l’appui"></canvas>
+<div class="legend"><span class="bronze">Orange : zone retrouvée dans le dessin</span><span class="jade">Vert : emplacement attendu pour l’appui</span></div>
+<div class="controls"><button id="alternate" aria-pressed="false">Alterner les dessins 1 et 2</button><label><input id="ghost" type="checkbox"> Superposer le dessin 1</label></div>
+</div><div><h2 id="comparison">Dessin 1 → 2</h2><p class="finding" id="verdict"></p>
+<table><thead><tr><th>Déplacement du pied</th><th>Horizontal</th><th>Vertical</th></tr></thead><tbody><tr><td>Retrouvé dans le dessin</td><td id="observedX"></td><td id="observedY"></td></tr><tr><td>Attendu avec le sol</td><td id="expectedX"></td><td id="expectedY"></td></tr></tbody></table>
+<p>Quand le personnage avance, le pied porteur doit reculer dans son image pour rester sur le même point du sol. Les deux mouvements se compensent.</p>
+<p class="small">Mesure par rapprochement d’une zone de texture de 92 × 65 pixels sur les trois premiers PNG. C’est une estimation de translation, pas un suivi anatomique complet. L’écart à la taille du jeu utilise la calibration illustrative de la revue.</p>
+<p class="small"><a href="audit.json">Coordonnées, empreintes et limites du calcul</a></p></div></section>
+<section><h2>Le guide avait aussi besoin d’être corrigé</h2><p>Les poses 3 et 7 sont nommées « passage », mais le pied libre est encore <strong>19,3 cm derrière le pied porteur</strong> sur l’axe avant du guide. Le véritable croisement tombe entre les poses retenues. Le bassin se décale également du mauvais côté pour l’intention de transfert latéral.</p>
+<p>Les tests de longueur des os et de retour de boucle ne vérifiaient pas ces points. Ils ne suffisaient donc pas à valider la marche.</p>
+<details class="images"><summary>Examiner les huit dessins des pieds à la même échelle</summary><img src="feet_0_3.png" alt="Agrandissements des pieds des dessins 1 à 4 avec coordonnées natives"><img src="feet_4_7.png" alt="Agrandissements des pieds des dessins 5 à 8 avec coordonnées natives"></details></section>
+<section><h2>Des références de fabrication, avec leurs exemples</h2><div class="references">
+<div><a href="https://www.animationmentor.com/blog/tutorial-animating-human-walk-cycle/" target="_blank" rel="noreferrer">Jason Martinsen · construire une marche</a><p>Contacts, absorption, passage, remontée ; régler ensuite les courbes et tester l’avancée dans l’espace. Le cours explique le rôle du bassin et des pieds.</p></div>
+<div><a href="https://www.gamedeveloper.com/production/art-design-deep-dive-using-a-3d-pipeline-for-2d-animation-in-i-dead-cells-i-" target="_blank" rel="noreferrer">Dead Cells · Thomas Vasseur</a><p>Une source 3D simple et éditable, des poses clés travaillées, puis des sprites exportés. Ce qui nous intéresse : pouvoir corriger le mouvement avant de réexporter.</p></div>
+<div><a href="https://media.gdcvault.com/GDC2014/Presentations/Cartwright_Muriel_Animation_Bootcamp_Fluid.pdf" target="_blank" rel="noreferrer">Skullgirls · Mariel Cartwright</a><p>Brouillon, essai en jeu, finition. Les exemples de Filia montrent pourquoi des poses et des durées mieux choisies peuvent améliorer une animation avec moins d’images.</p></div>
+<div><a href="https://www.behance.net/gallery/55592215/DOFUS-CHARACTER-ANIMATION" target="_blank" rel="noreferrer">DOFUS · Julien Druant</a><p>Portfolio de personnages, monstres et effets animés. Une référence visuelle directe, publiée en 2017 ; elle ne décrit pas toute la production actuelle de DOFUS Unity.</p></div>
+</div></section>
+<section><h2>La méthode à éprouver sur Passe-rive</h2><ol>
+<li><strong>Un brouillon animé complet.</strong> Corriger pieds et bassin dans Blender, caméra fixe, deux jambes distinctes, avant les tissus et la finition.</li>
+<li><strong>Une marche qui fonctionne en déplacement.</strong> Choisir les vrais contacts et passages ; les vérifier à la taille du jeu avec des repères au sol.</li>
+<li><strong>Un seul test d’habillage.</strong> Appliquer le style de Passe-rive à ce mouvement par une séquence guidée, puis corriger les occultations dans Krita.</li>
+<li><strong>Une correction reproductible.</strong> Changer un appui sans redessiner librement tout le personnage. C’est cette capacité qu’il faut prouver avant de produire le kit.</li>
+</ol><p>Blender et Krita sont déjà installés. Le transfert par vidéo proposé par <a href="https://help.scenario.com/articles/2242372122-kling-v3-motion-control-the-essentials">Scenario / Kling Motion Control</a> est une piste à tester sur le même brouillon. <a href="https://ebsynth.com/">EbSynth</a> peut propager une peinture sur un mouvement existant, mais les formes doivent correspondre. Aucun de ces outils n’a encore démontré ce résultat sur Passe-rive.</p>
+<p><a href="report.md">Lire le diagnostic complet, les sources et les critères du prochain essai</a></p></section><p id="error" role="alert"></p>
+</main><script>
+let data,images=[],frame=1,timer=null;const $=s=>document.querySelector(s),ctx=$('#foot').getContext('2d');
+const load=src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error('Image indisponible : '+src));im.src=src;});
+function draw(){
+ if(!data)return;const roi=data.template_region,m=frame?data.matches[frame-1]:{dx:0,dy:0,expected_translation_px:[0,0],at_220px_body_height:0};
+ const scale=1.5,ox=25-500*scale,oy=18-1210*scale;
+ ctx.fillStyle='#203136';ctx.fillRect(0,0,640,490);ctx.save();ctx.beginPath();ctx.rect(15,10,610,465);ctx.clip();
+ ctx.drawImage(images[frame],ox,oy,1024*scale,1536*scale);
+ if($('#ghost').checked&&frame){ctx.globalAlpha=.27;ctx.drawImage(images[0],ox,oy,1024*scale,1536*scale);ctx.globalAlpha=1;}
+ function box(dx,dy,color,dash){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);ctx.strokeRect(ox+(roi.x+dx)*scale,oy+(roi.y+dy)*scale,roi.width*scale,roi.height*scale);}
+ box(...m.expected_translation_px,'#a2e3b6',[6,5]);box(m.dx,m.dy,'#edb678',[]);
+ if(frame){const a=[ox+(roi.x+roi.width/2+m.dx)*scale,oy+(roi.y+roi.height/2+m.dy)*scale],b=[ox+(roi.x+roi.width/2+m.expected_translation_px[0])*scale,oy+(roi.y+roi.height/2+m.expected_translation_px[1])*scale];ctx.strokeStyle='#a2e3b6';ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();const ang=Math.atan2(b[1]-a[1],b[0]-a[0]);ctx.beginPath();ctx.moveTo(...b);ctx.lineTo(b[0]-10*Math.cos(ang-.5),b[1]-10*Math.sin(ang-.5));ctx.moveTo(...b);ctx.lineTo(b[0]-10*Math.cos(ang+.5),b[1]-10*Math.sin(ang+.5));ctx.stroke();}
+ ctx.restore();$('#comparison').textContent=frame?'Dessin 1 → '+(frame+1):'Dessin 1 · point de départ';
+ $('#verdict').textContent=frame?'Écart d’appui estimé : '+m.at_220px_body_height.toFixed(1).replace('.',',')+' px pour un corps affiché à 220 px.':'Le premier dessin sert de référence à la comparaison.';
+ for(const [sel,v] of [['observedX',m.dx],['observedY',m.dy],['expectedX',m.expected_translation_px[0]],['expectedY',m.expected_translation_px[1]]])$('#'+sel).textContent=(v>0?'+':'')+Math.round(v)+' px';
+ document.querySelectorAll('[data-frame]').forEach(b=>b.setAttribute('aria-pressed',Number(b.dataset.frame)===frame));
+}
+function stop(){clearInterval(timer);timer=null;$('#alternate').textContent='Alterner les dessins 1 et 2';$('#alternate').setAttribute('aria-pressed','false');}
+document.querySelectorAll('[data-frame]').forEach(b=>b.onclick=()=>{stop();frame=Number(b.dataset.frame);draw();});$('#ghost').onchange=draw;
+$('#alternate').onclick=()=>{if(timer){stop();return;}frame=0;draw();$('#alternate').textContent='Arrêter la comparaison';$('#alternate').setAttribute('aria-pressed','true');timer=setInterval(()=>{frame=frame===0?1:0;draw();},700);};
+(async()=>{data=await(await fetch('audit.json')).json();images=await Promise.all([0,1,2].map(i=>load('../passe_rive_motion_v1/images/walk_'+String(i).padStart(2,'0')+'.png')));draw();window.auditAPI={ready:true,getFrame:()=>frame,stop};})().catch(e=>{$('#error').textContent=e.message;console.error(e);});
+</script></body></html>

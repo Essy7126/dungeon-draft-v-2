@@ -212,6 +212,14 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 		else:
 			result.append({"id": "wager", "kind": "sanctuary", "title": "Le tribut du sang", "cost": 0,
 				"description": "Payer 15 % des PV maximum pour 80 oboles. Une fois par halte ; impossible si le prix vous tuerait."})
+	# Older catalogues retain their original universal halt services.
+	var profile := str(node.get("service_profile", ""))
+	if not profile.is_empty():
+		result = result.filter(func(service: Dictionary) -> bool: return str(service.kind) == profile)
+		if profile == "hub":
+			for service in result:
+				service.cost = 0
+				service.description = "Repos offert · retrouver 30 % des PV maximum, une fois."
 	var used: Array = hub_used_ids.get(str(node.id), [])
 	for service in result:
 		service["used"] = str(service.id) in used

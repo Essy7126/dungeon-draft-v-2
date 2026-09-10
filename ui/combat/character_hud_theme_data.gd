@@ -47,9 +47,10 @@ func get_spell_icon(capability_id: StringName) -> Texture2D:
 
 
 func get_spell_icon_for(spell) -> Texture2D:
-	# Only an explicitly painted runtime copy overrides the historical theme.
+	# Explicit Catabase runtime artwork overrides the canonical hero theme.
 	if spell != null and spell.icon != null \
-			and spell.icon.resource_path.begins_with("res://assets/catabase/painted/icons/"):
+			and (spell.icon.resource_path.begins_with("res://assets/catabase/painted/icons/") \
+			or spell.icon.resource_path.begins_with("res://assets/catabase/emerald_icons_v2/spells/")):
 		return spell.icon as Texture2D
 	var theme_override := get_spell_icon(_get_spell_id(spell))
 	if theme_override != null:

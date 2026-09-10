@@ -4,6 +4,11 @@ L'atelier prépare et compare des **dessins existants**. Il permet de sélection
 les poses, corriger leur placement et leur rythme, puis livrer un clip traçable.
 Il ne produit pas automatiquement de nouvelles poses crédibles.
 
+Pour la production courante, lire la [mémoire courte d'animation](../../docs/ai/animation_memory.md)
+et le [comparatif des méthodes et générateurs](../../docs/design/achilles/sprite_generation_research_2026-09-10.md).
+Ils distinguent les progrès d'appui de Passe-rive V2, les résultats peints encore
+à obtenir et le prochain essai destiné à mesurer le temps de correction.
+
 Le [pilote de Sentinelle](../../docs/tools/sentinelle_attack_pilot_2026-09-09.md)
 a produit des variantes et un comparatif animé, puis a été rejeté en revue
 artistique : coordination du corps et directions insuffisantes. Le

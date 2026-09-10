@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "bindings": [
+    {"depth": 8, "kind": "sanctuary", "manifest": "res://data/halts/emerald_sanctuary_v1.json"},
+    {"depth": 8, "kind": "merchant", "manifest": "res://data/halts/bronze_forge_v1.json"}
+  ]
+}

@@ -20,6 +20,19 @@ Lamie et le Rejeton, aucune référence complète de sort n’est encore sélect
 la gestuelle dépend du sort et de la morphologie. Ne pas utiliser une référence
 humaine debout pour un quadrupède ou une créature serpentine sans adaptation.
 
+## Complément du 10 septembre 2026 — mouvements humanoïdes réutilisables
+
+| Source | Contenu documenté | Statut et limite |
+| --- | --- | --- |
+| [Quaternius — Universal Animation Library](https://quaternius.com/packs/universalanimationlibrary.html) | Plus de 120 animations annoncées pour le pack complet ; humanoïdes, retarget et formats usuels ; CC0 affichée. | Source repérée, pas importée ni examinée sur Passe-rive. Seule une partie est gratuite ; vérifier le contenu de chaque offre. |
+| [Adobe Mixamo](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html) | Bibliothèque d'animations de bipèdes et outils de rig. | Source repérée, pas d'adaptation Passe-rive validée. Adapter garde, proportions, mains et caméra. L'usage de clips dans le jeu ne vaut pas autorisation d'entraînement d'un modèle. |
+
+Le [dossier de recherche](../design/achilles/sprite_generation_research_2026-09-10.md)
+propose de tester une bibliothèque existante avant de reconstruire chaque action.
+La [mémoire courte](../ai/animation_memory.md) contient les retours utilisateur et
+les cas internes à comparer. Les statuts ci-dessus ne constituent pas des preuves
+d'examen visuel des animations.
+
 ## Ce qu’une fiche de mouvement doit contenir
 
 - Personnage / famille, masse apparente, proportions, arme et main porteuse.

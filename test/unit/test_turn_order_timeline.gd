@@ -43,7 +43,8 @@ func test_timeline_rotates_scales_animates_and_selects_units() -> void:
 	assert_eq(timeline.get_display_order(), [third, second, first])
 	timeline.finish_animation_for_test()
 	await get_tree().process_frame
-	assert_gt(first_card.position.y, third_card.position.y)
+	assert_gt(first_card.position.x, third_card.position.x)
+	assert_almost_eq(first_card.position.y, third_card.position.y, 0.1)
 	second.is_alive = false
 	queue.on_unit_died(second)
 	assert_eq(timeline.get_card_count(), 2)

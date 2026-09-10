@@ -7,18 +7,15 @@
   },
   "land": {
     "color": "#444853",
-    "texture_path": "res://asset/map/painted/underworld/black_oath_temple_v1/temple_composed.png",
-    "texture_scale": [
-      1,
-      1
-    ],
+    "texture_path": "res://assets/catabase/combat_da_v1/oath_temple_emerald_v2.png",
+    "texture_scale": [1.210592686002522, 1.2096774193548387],
     "texture_repeat": false,
     "tint": "#ffffff"
   },
   "floor_palette": {
-    "shade": "#303744",
-    "body": "#555d68",
-    "light": "#747c86",
+    "shade": "#253b46",
+    "body": "#506a72",
+    "light": "#899a98",
     "warmth": [
       -0.02,
       -0.006,
@@ -32,11 +29,11 @@
     }
   },
   "props_palette": {
-    "ink": "#202531",
-    "top": "#666f7b",
-    "left": "#495563",
-    "right": "#354351",
-    "highlight": "#8c95a2",
+    "ink": "#253b46",
+    "top": "#899a98",
+    "left": "#506a72",
+    "right": "#253b46",
+    "highlight": "#899a98",
     "moss": [
       0.22,
       0.2,
@@ -85,7 +82,7 @@
       0.31,
       0.32
     ],
-    "bench": "#707886"
+    "bench": "#899a98"
   },
   "pit_palette": {
     "floor": "#0a0d17",

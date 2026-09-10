@@ -22,7 +22,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.008, 0.007, 0.01, 0.94)
+color = Color(0.025, 0.02, 0.015, 0.76)
 
 [node name="SafeMargin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -58,10 +58,10 @@ variant = "screen"
 
 [node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
 
 [node name="Layout" type="VBoxContainer" parent="SafeMargin/Center/Panel/Margin"]
 layout_mode = 2
@@ -136,6 +136,31 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 14
 
+[node name="EquipmentPanel" type="PanelContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body"]
+layout_mode = 2
+theme_type_variation = &"PremiumPanel"
+
+[node name="EquipmentMargin" type="MarginContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/EquipmentPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="EquipmentContent" type="VBoxContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/EquipmentPanel/EquipmentMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EquipmentTitle" type="Label" parent="SafeMargin/Center/Panel/Margin/Layout/Body/EquipmentPanel/EquipmentMargin/EquipmentContent"]
+layout_mode = 2
+theme_type_variation = &"PremiumSubtitle"
+text = "Équipement"
+
+[node name="EquipmentList" type="VBoxContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/EquipmentPanel/EquipmentMargin/EquipmentContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
 [node name="BagPanel" type="PanelContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body"]
 custom_minimum_size = Vector2(680, 0)
 layout_mode = 2
@@ -160,7 +185,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"PremiumSubtitle"
-text = "SAC PARTAGÉ"
+text = "Sac"
 
 [node name="BagHint" type="Label" parent="SafeMargin/Center/Panel/Margin/Layout/Body/BagPanel/BagMargin/BagLayout/BagHeader"]
 layout_mode = 2
@@ -189,31 +214,6 @@ columns = 3
 custom_minimum_size = Vector2(390, 0)
 layout_mode = 2
 theme_override_constants/separation = 12
-
-[node name="EquipmentPanel" type="PanelContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/RightPanel"]
-layout_mode = 2
-theme_type_variation = &"PremiumPanel"
-
-[node name="EquipmentMargin" type="MarginContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/RightPanel/EquipmentPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
-
-[node name="EquipmentContent" type="VBoxContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/RightPanel/EquipmentPanel/EquipmentMargin"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="EquipmentTitle" type="Label" parent="SafeMargin/Center/Panel/Margin/Layout/Body/RightPanel/EquipmentPanel/EquipmentMargin/EquipmentContent"]
-layout_mode = 2
-theme_type_variation = &"PremiumSubtitle"
-text = "ÉQUIPEMENT"
-
-[node name="EquipmentList" type="VBoxContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/RightPanel/EquipmentPanel/EquipmentMargin/EquipmentContent"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 6
 
 [node name="DetailPanel" type="PanelContainer" parent="SafeMargin/Center/Panel/Margin/Layout/Body/RightPanel"]
 layout_mode = 2

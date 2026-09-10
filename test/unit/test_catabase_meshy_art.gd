@@ -70,6 +70,7 @@ func test_nine_stat_glyphs_and_five_doctrines_plus_achilles_are_available() -> v
 func test_route_markers_never_reveal_an_unknown_destination_type() -> void:
 	for kind in ART.ROUTE_IDS:
 		assert_not_null(ART.route_icon(kind), String(kind))
+		assert_not_null(ART.map_icon(kind), "Drawn map marker: " + String(kind))
 	assert_null(ART.route_icon("../../unknown"))
 	for hidden_field in ["knowledge", "kind", "presentation_kind"]:
 		var node := {"kind": "boss", "presentation_kind": "boss", "knowledge": "known"}
@@ -77,6 +78,7 @@ func test_route_markers_never_reveal_an_unknown_destination_type() -> void:
 		var before := node.duplicate(true)
 		assert_eq(ART.route_presentation_kind(node), "unknown")
 		assert_same(ART.route_node_icon(node), ART.route_icon("unknown"))
+		assert_same(ART.map_node_icon(node), ART.map_icon("unknown"), "Drawn markers also conceal uncertain content")
 		assert_eq(node, before, "Icon lookup cannot mutate the safe preview")
 	assert_same(ART.route_node_icon({"kind": "merchant"}), ART.route_icon("merchant"))
 
@@ -100,7 +102,7 @@ func test_map_uses_only_safe_previews_and_selection_does_not_commit_the_route() 
 			var icon := button.get_node_or_null("Content/Kind/DestinationIcon") as TextureRect
 			assert_not_null(icon, "Every visible destination uses its real marker texture")
 			if icon != null:
-				assert_same(icon.texture, ART.route_node_icon(node))
+				assert_same(icon.texture, ART.map_node_icon(node), "The map uses the simplified drawing of its safe preview")
 				assert_eq(String(icon.get_meta("presentation_kind", "")), ART.route_presentation_kind(node))
 		if String(node.kind) == "unknown":
 			assert_eq(ART.route_presentation_kind(node), "unknown")

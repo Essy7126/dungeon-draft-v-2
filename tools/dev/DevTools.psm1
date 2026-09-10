@@ -93,12 +93,13 @@ function Get-DevTestPaths([string]$Target) {
         'monsters' { @('test_catabase_monster*.gd') }
         'terrain' { @('*terrain*.gd') }
         'studio' { @('test_dungeon_draft_studio_2_0.gd') }
+        'halts' { @('test_painted_halt*.gd') }
         'all' { @('test_*.gd') }
         default { @() }
     })
     if ($patterns.Count -eq 0) {
         $relative=$Target -replace '^res://',''
-        if ($relative -notmatch '^test/unit/[^:]+\.gd$' -or $relative -match '(^|/)\.\.(/|$)') { throw 'Use smoke, monsters, terrain, studio, all or an exact test/unit/*.gd path.' }
+        if ($relative -notmatch '^test/unit/[^:]+\.gd$' -or $relative -match '(^|/)\.\.(/|$)') { throw 'Use smoke, monsters, terrain, studio, halts, all or an exact test/unit/*.gd path.' }
         if (-not (Test-Path -LiteralPath (Join-Path $root $relative))) { throw "Test missing: $relative" }
         return @('res://' + $relative)
     }

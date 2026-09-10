@@ -145,7 +145,9 @@ func _dispose() -> void:
 		adapter = null
 	if field != null:
 		for unit in field.grid.get_units():
+			unit.clear_combat_effect_history()
 			field.grid.clear_unit(unit.grid_pos)
+		field.terrain.dispose()
 	field = null
 	hero = null
 	enemies.clear()

@@ -1,7 +1,7 @@
 class_name ExpeditionRouteCatalog
 extends RefCounted
 ## Ordinary paths: 15 fights / 5 halts; optional exchanges: 14–16 / 6–4.
-const REVISION := 2
+const REVISION := 4
 const DEPTH_COUNT := 20
 const COMBAT_KINDS: Array[String] = ["normal", "elite", "boss"]
 const HALT_KINDS: Array[String] = ["hub", "merchant", "sanctuary", "lore", "cache", "event"]
@@ -9,7 +9,9 @@ const HALT_DEPTHS := [4, 8, 12, 16, 19]
 const MAP_BY_DEPTH := {1: 0, 2: 5, 3: 1, 5: 6, 6: 7, 7: 2, 9: 8, 10: 9, 11: 3, 13: 10, 14: 11, 15: 12, 16: 13, 17: 13, 18: 14, 20: 4}
 
 
-static func create_nodes(seed_value: int) -> Array[Dictionary]:
+static func create_nodes(seed_value: int, revision: int = REVISION) -> Array[Dictionary]:
+	if revision >= 4:
+		return preload("res://core/expedition/expedition_route_itineraries.gd").create_nodes(seed_value, MAP_BY_DEPTH)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var layers: Array = [
@@ -66,6 +68,12 @@ static func create_nodes(seed_value: int) -> Array[Dictionary]:
 			var edges: Array[String] = []
 			for destination in _destinations(lane, current_ids.size(), next_ids.size()):
 				edges.append(String(next_ids[destination]))
+			# Join paired lanes with one diagonal; never draw an ambiguous X.
+			# Revision 2 stays reproducible for existing saves.
+			if revision >= 3 and current_ids.size() == 2 and next_ids.size() == 2:
+				if lane == (depth_index + seed_value) % 2:
+					edges.append(String(next_ids[1 - lane]))
+					edges.sort()
 			_find(nodes, String(current_ids[lane])).edges = edges
 	_add_secret(nodes, layer_ids, 8, "L'atelier sous la racine", "elemental", "sanctuary")
 	_add_secret(nodes, layer_ids, 16, "Le tombeau du serment intact", "discovery", "lore")

@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_heel.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Effect"]
 script = ExtResource("2_effect")
@@ -14,6 +16,9 @@ frequency_id = &"per_combat"
 
 [resource]
 script = ExtResource("1_item")
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_thetis_heel"
 display_name = "Talon de Thétis"
 description = "La première descente sous 25 % PV par combat accorde une Garde égale à 18 % des PV max."

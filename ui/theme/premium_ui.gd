@@ -9,12 +9,15 @@ const THEME_FACTORY := preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
 
+const CHROME := preload("res://ui/theme/game_ui_chrome.gd")
+
 static var _shared_theme: Theme = null
 
 
 static func get_theme() -> Theme:
 	if _shared_theme == null:
 		_shared_theme = THEME_FACTORY.build(SKIN)
+		CHROME.apply_to_theme(_shared_theme)
 	return _shared_theme
 
 

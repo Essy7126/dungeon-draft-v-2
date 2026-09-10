@@ -12,9 +12,9 @@ const BOLD_FONT := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperle
 const TITLE_FONT := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf")
 const INK := Color("efe5d2")
 const MUTED := Color("bdb09b")
-const BRONZE := Color("c39458")
-const DARK := Color("211f1bea")
-const CARD := Color("302b23")
+const BRONZE := Color("8b714c")
+const DARK := Color("211c18fa")
+const CARD := Color("211c18")
 const SUCCESS := Color("b5d4a7")
 
 var _session: SESSION
@@ -435,18 +435,14 @@ func _button(caption: String) -> Button:
 	button.add_theme_color_override("font_hover_color", Color("fff5df"))
 	button.add_theme_color_override("font_pressed_color", Color("fff5df"))
 	button.add_theme_color_override("font_disabled_color", Color("aaa08e"))
-	button.add_theme_stylebox_override("normal", _style(Color("40362a"), Color("796246")))
-	button.add_theme_stylebox_override("hover", _style(Color("594731"), BRONZE))
-	button.add_theme_stylebox_override("pressed", _style(Color("614a2e"), BRONZE, 2))
-	button.add_theme_stylebox_override("disabled", _style(Color("2b2924"), Color("514a3f")))
-	button.add_theme_stylebox_override("focus", _style(Color(0, 0, 0, 0), Color("eed1a1"), 2))
+	button.theme = PREMIUM_UI.get_theme()
 	return button
 
 
 func _card(selected := false) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", _style(CARD, BRONZE if selected else Color("574937"), 2 if selected else 1))
+	panel.add_theme_stylebox_override("panel", _style(Color("102d34") if selected else CARD, Color("8fb9bf") if selected else BRONZE, 1))
 	var margin := MarginContainer.new()
 	for side: String in ["left", "right", "top", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, 15)

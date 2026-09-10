@@ -1,0 +1,140 @@
+{
+  "provider": "imagegen built-in",
+  "revision": 1,
+  "title": "II — Galerie des piliers brisés",
+  "room": "res://data/rooms/odyssey/room_02.tres",
+  "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+  "reference_sha256": "e97a9650c05defbb0dd0094199d3991c0aa2bd4399f4d6bfbe23c6273450b31f",
+  "continuity_reference": "res://assets/catabase/combat/cavern_v1/land_v4.png",
+  "continuity_sha256": "10e4340b25bb47a67d26b242bb069d85045801a1b76fcdbd211af7c2decb556d",
+  "texture": "res://assets/catabase/combat/cavern_pillars_v1/land.png",
+  "sha256": "914612a7a6da844563172120a4dbdc4024ff68ec8a6721791c3b2938165fecbf",
+  "generated_source": "res://assets/catabase/combat/cavern_pillars_v1/land.generated.png",
+  "provider_source_basename": "exec-81194c91-4e35-4676-ac0d-389adf116285.png",
+  "prompt": "res://assets/catabase/combat/cavern_pillars_v1/land.prompt.txt",
+  "generated_size": [
+    1586,
+    992
+  ],
+  "native_size": [
+    1920,
+    1200
+  ],
+  "normalization": "Entire generated canvas resampled Lanczos; no crop; guide and grid not rescaled.",
+  "generation_kit": "res://art/source/maps/cavern_pillars_v1/art-kit/arena_art_manifest.json",
+  "generation_guide": "res://art/source/maps/cavern_pillars_v1/composition-guide.png",
+  "current_geometry_kit": "res://art/source/maps/cavern_pillars_v1/art-kit/arena_art_manifest.json",
+  "plan": "res://data/arenas/cavern_pillars_v1/terrain_plan.json",
+  "geometry_manifest": "res://data/arenas/cavern_pillars_v1/geometry_manifest.json",
+  "grid_origin": [
+    865.180225,
+    268.735017
+  ],
+  "axis_x": [
+    37.83312,
+    18.91656
+  ],
+  "axis_y": [
+    -37.83312,
+    18.91656
+  ],
+  "calibration_rms": 0.0,
+  "hybrid_floor_policy": "ALL_DEFINED",
+  "logical_gameplay_unchanged": true,
+  "room_non_visual_fields_unchanged": true,
+  "atmosphere": "res://assets/catabase/combat/cavern_pillars_v1/Atmosphere.tscn",
+  "torch_bases": [
+    [
+      1550,
+      179
+    ],
+    [
+      1769,
+      224
+    ]
+  ],
+  "animation": "Shared approved cave water, peripheral mist, pinned flame curl and painted warm-light modulation. Four materials, reduced-motion freeze. No additive torch halos.",
+  "qa": [
+    {
+      "resolution": "1920x1080",
+      "ok": true,
+      "screen_picking": {
+        "cells": 217,
+        "errors": [],
+        "ok": true
+      },
+      "motion": {
+        "clock_advances": true,
+        "floor_stable": true,
+        "frames": 36,
+        "materials": 4,
+        "ok": true,
+        "reduced_motion_freezes": true,
+        "regions": {
+          "floor": {
+            "changed": 0,
+            "mean_rgb_delta": 0.0,
+            "samples": 63
+          },
+          "mist": {
+            "changed": 810,
+            "mean_rgb_delta": 0.0397616874687465,
+            "samples": 814
+          },
+          "torch": {
+            "changed": 956,
+            "mean_rgb_delta": 0.00780333506647879,
+            "samples": 1248
+          },
+          "water": {
+            "changed": 314,
+            "mean_rgb_delta": 0.0134292870918487,
+            "samples": 940
+          }
+        },
+        "sample_times_seconds": [
+          0,
+          6
+        ],
+        "scope": "Real GPU images with explicit effect-clock sampling; live clock and reduced-motion freeze also checked. Not a framerate benchmark.",
+        "visible_motion": true
+      },
+      "minimum_declared_land_margin_px": 62.5269966125488,
+      "production_qa": {
+        "after_capture": true,
+        "band": true,
+        "framing_after": true,
+        "framing_before": true,
+        "geometry": true,
+        "interactions": true,
+        "materials": true,
+        "resolution": true,
+        "support": true
+      },
+      "report": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\artifacts\\dev\\cavern-sequence-v1\\room-02-1920x1080\\room_02.json"
+    },
+    {
+      "resolution": "1200x896",
+      "ok": true,
+      "screen_picking": {
+        "cells": 217,
+        "errors": [],
+        "ok": true
+      },
+      "motion": null,
+      "minimum_declared_land_margin_px": 62.5269966125488,
+      "production_qa": {
+        "after_capture": true,
+        "band": true,
+        "framing_after": true,
+        "framing_before": true,
+        "geometry": true,
+        "interactions": true,
+        "materials": true,
+        "resolution": true,
+        "support": true
+      },
+      "report": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\artifacts\\dev\\cavern-sequence-v1\\room-02-1200x896\\room_02.json"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "provider": "imagegen built-in",
+  "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+  "texture": "res://assets/catabase/combat/cavern_v1/land_v4.png",
+  "prompt": "res://assets/catabase/combat/cavern_v1/land_v4.prompt.txt",
+  "size": [
+    1920,
+    1200
+  ],
+  "sha256": "10e4340b25bb47a67d26b242bb069d85045801a1b76fcdbd211af7c2decb556d",
+  "plan": "res://data/arenas/catabase_cavern_v1/terrain_plan.json",
+  "water_shader": "res://assets/catabase/combat/cavern_v1/cavern_water.gdshader",
+  "mist_scene": "res://assets/catabase/combat/cavern_v1/CavernMist.tscn",
+  "geometry": "Identical logical cells, blockers, pits and spawns. Previous projection inset6% about native(960,307); effective historical scale0.7332. Calibration synchronized through ArenaRuntimeBridge.",
+  "revision": 4,
+  "composition": "Grid-first Studio art kit; opaque ALL_DEFINED tactical stone floor; cave and entrance painted around its footprint. Shared stone shader restored.",
+  "projection": {
+    "scale": 0.7332,
+    "latest_inset": {
+      "scale": 0.94,
+      "pivot": [
+        960,
+        307
+      ]
+    },
+    "axis_x": [
+      37.83312,
+      18.91656
+    ],
+    "axis_y": [
+      -37.83312,
+      18.91656
+    ],
+    "translation_after_scaling": [
+      0,
+      101.22
+    ],
+    "grid_origin": [
+      865.180225,
+      268.735017
+    ]
+  },
+  "generated_source": "res://assets/catabase/combat/cavern_v1/land_v4.generated.png",
+  "generated_size": [
+    1586,
+    992
+  ],
+  "normalization": "Entire generated artwork resampled with Godot Lanczos to native1920x1200 before strict Studio import; no crop or grid resampling.",
+  "art_kit": "res://art/source/maps/catabase_cavern_v4/art-kit/arena_art_manifest.json",
+  "guide": "res://art/source/maps/catabase_cavern_v4/composition-guide.png",
+  "reference_sha256": "e97a9650c05defbb0dd0094199d3991c0aa2bd4399f4d6bfbe23c6273450b31f",
+  "animation_revision": 2,
+  "animation": {
+    "clock": "cavern_atmosphere.gd; shared effect_time across4 materials",
+    "light_shader": "res://assets/catabase/combat/cavern_v1/cavern_lights.gdshader",
+    "mist_shader": "res://assets/catabase/combat/cavern_v1/cavern_mist.gdshader",
+    "surface_shader": "res://assets/catabase/combat/cavern_v1/cavern_water.gdshader",
+    "reduced_motion": "Freezes current shader clock; resume continuous, no jump",
+    "tactical_clearance": "Mist excluded from x0.205..0.79,y0.22..0.81 normalized native canvas; floor material unchanged.",
+    "land_shader": "res://assets/catabase/combat/cavern_v1/cavern_torches.gdshader",
+    "water_scope": "Water surface only. Land has no water displacement or caustic shader; turquoise walls no longer treated as liquid.",
+    "torches": "Pinned base;1.15px upper-flame lateral curl, low-intensity modulation of painted warm illumination, two faint embers per torch. No additive orange halo."
+  },
+  "placement_revision": 5,
+  "current_geometry_kit": "res://art/source/maps/catabase_cavern_inset_v1/art-kit/arena_art_manifest.json"
+}

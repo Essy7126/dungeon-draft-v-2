@@ -1,0 +1,26 @@
+{
+  "source": "art/source/blender/passe_rive_walk_v2/passe_rive_walk_v2_contacts.blend",
+  "frame_indices": [
+    0,
+    3,
+    6,
+    9,
+    12,
+    15,
+    18,
+    21,
+    24,
+    27,
+    30,
+    33
+  ],
+  "columns": 4,
+  "rows": 3,
+  "cell_size": [
+    640,
+    960
+  ],
+  "cycle_seconds": 1.2,
+  "reference": "art/source/characters/achilles/passe_rive_v1/reference_choisie.png",
+  "status": "pose_guide_only"
+}

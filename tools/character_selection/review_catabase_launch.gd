@@ -46,14 +46,14 @@ func _run() -> void:
 	await _settle()
 	var entries: Array = selection.get_entries()
 	var ids: Array = entries.map(func(entry): return str(entry.id))
-	_check(ids == ["achilles", "achilles_painted_g", "elf", "mage", "warrior", "achilles"], "Both Achille appearances and all adventures remain in order")
+	_check(ids == ["achilles", "achilles_painted_g"], "Only Catabase appearances are public")
 	var selected: Dictionary = selection.get_selected_entry()
 	_check(selected.get("run") == _run_data and str(selected.get("id")) == "achilles", "Initial selection is Achille in Catabase")
 	var achilles_runs: Array[String] = []
 	for entry in entries:
 		if str(entry.id) == "achilles":
 			achilles_runs.append(entry.run.resource_path)
-	_check(achilles_runs == [CATABASE, "res://data/runs/philosopher_trial.tres"], "Catabase and the trial retain separate Achille choices")
+	_check(achilles_runs == [CATABASE], "Standalone trial stays outside public selection")
 	await _capture("selection_1280x720")
 	root.size = Vector2i(1920, 1080)
 	DisplayServer.window_set_size(root.size)

@@ -5,12 +5,14 @@ const BODY := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible
 const BOLD := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Bold.otf")
 const DISPLAY := preload("res://asset/ui/character_selection/selection_title_font.tres")
 const MATERIAL := preload("res://ui/selection/selection_ashen_surface.gd")
-const INK := Color("191614")
-const SURFACE := Color("25201c")
-const BORDER := Color("665344")
-const GOLD := Color("d1ae7b")
-const TEXT := Color("f2e6d3")
-const MUTED := Color("b9ad9c")
+const PALETTE := preload("res://ui/expedition/catabase_ui_theme.gd")
+const INK := PALETTE.INK
+const SURFACE := PALETTE.PANEL
+const BORDER := PALETTE.BRONZE
+const GOLD := PALETTE.GOLD
+const TEXT := PALETTE.TEXT
+const MUTED := PALETTE.MUTED
+const TEAL := PALETTE.TEAL
 
 
 static func box(fill: Color, border: Color = BORDER, radius: int = 7, margin: int = 0) -> StyleBoxFlat:
@@ -40,7 +42,7 @@ static func button(control: Button) -> void:
 	control.add_theme_stylebox_override("pressed", box(Color.TRANSPARENT, GOLD, 5, 9))
 	control.add_theme_stylebox_override("hover_pressed", box(Color.TRANSPARENT, Color("e6c594"), 5, 9))
 	control.add_theme_stylebox_override("disabled", box(Color.TRANSPARENT, Color("433a32"), 5, 9))
-	var focus := box(Color.TRANSPARENT, Color("f0dbac"), 5)
+	var focus := box(Color.TRANSPARENT, TEAL, 5)
 	focus.set_border_width_all(2)
 	control.add_theme_stylebox_override("focus", focus)
 	if not control.has_node("AshenButtonMaterial"):
@@ -52,7 +54,7 @@ static func button(control: Button) -> void:
 
 static func selected(control: Button, active: bool) -> void:
 	control.set_pressed_no_signal(active)
-	control.add_theme_stylebox_override("normal", box(Color.TRANSPARENT, GOLD if active else BORDER, 5, 9))
+	control.add_theme_stylebox_override("normal", box(Color.TRANSPARENT, TEAL if active else BORDER, 5, 9))
 	var surface := control.get_node_or_null("AshenButtonMaterial")
 	if surface != null:
 		surface.set_selected(active, GOLD)

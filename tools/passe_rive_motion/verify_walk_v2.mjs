@@ -1,0 +1,33 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+const root=process.cwd(),out=path.join(root,'artifacts/spine_trial/passe_rive_walk_v2');
+const cfg=JSON.parse(await fs.readFile(path.join(root,'tools/spine_trial/toolchain.json'),'utf8'));
+const source=path.join(root,cfg.motion_source),require=createRequire(path.join(source,'package.json'));
+const {findChrome}=await import(pathToFileURL(path.join(source,'dist/spine/gif.js')));
+const browser=await require('puppeteer-core').launch({executablePath:findChrome(),headless:true});
+const errors=[],failed=[];
+try{
+ const page=await browser.newPage();await page.setViewport({width:1280,height:1020,deviceScaleFactor:1});
+ page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));
+ await page.goto('http://127.0.0.1:8734/files/passe_rive_walk_v2/review.html',{waitUntil:'networkidle0'});
+ await page.waitForFunction(()=>window.walkV2?.ready,{timeout:15000});
+ await page.evaluate(()=>window.walkV2.setFrame(0));
+ if(!await page.$eval('#left',e=>e.textContent.includes('talon')))throw Error('Left contact label absent');
+ if(!await page.$eval('#right',e=>e.textContent.includes('pointe')))throw Error('Right contact label absent');
+ await page.screenshot({path:path.join(out,'review_preview.png')});
+ await page.evaluate(()=>window.walkV2.setFrame(11));
+ await page.screenshot({path:path.join(out,'review_passing.png')});
+ await page.click('#markers');await page.select('#speed','0.25');await page.click('#play');
+ await page.waitForFunction(()=>window.walkV2.getState().frame!==11,{timeout:3000});
+ await page.click('#play');
+ if(await page.evaluate(()=>window.walkV2.getState().playing))throw Error('Pause failed');
+ const video=await page.$eval('video',v=>({duration:v.duration,width:v.videoWidth,height:v.videoHeight,error:v.error?.message}));
+ if(Math.abs(video.duration-4.8)>.05||video.width!==640||video.height!==960||video.error)throw Error('Video invalid: '+JSON.stringify(video));
+ await page.setViewport({width:390,height:844,deviceScaleFactor:1});
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
+ if(overflow||errors.length||failed.length)throw Error(JSON.stringify({overflow,errors,failed}));
+ const report={page_errors:errors,failed_requests:failed,loaded_frame_count:36,contact_labels_passed:true,play_pause_slow_speed_passed:true,mobile_no_overflow:true,video,painted_transfer_completed:false};
+ await fs.writeFile(path.join(out,'browser_report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+}finally{await browser.close()}

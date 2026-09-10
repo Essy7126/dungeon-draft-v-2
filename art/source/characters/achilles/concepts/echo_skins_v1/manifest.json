@@ -1,0 +1,68 @@
+{
+  "stage": "propositions_skins_non_validees",
+  "base_direction": "Echo de bronze, preference explicite utilisateur",
+  "tool": "ImageGen integre",
+  "method": "4 generations textuelles individuelles; reference directe echouee (apply deny-read ACLs)",
+  "images": {
+    "serment_pourpre": {
+      "file": "serment_pourpre.png",
+      "prompt": "serment_pourpre_prompt.txt",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "alpha_zero_pixels": 1140487,
+      "sha256": "c5c1d8938336671d5df9d6dfe4eb683098b97119bb466318ce8469b2af4c3e5e"
+    },
+    "passe_rive": {
+      "file": "passe_rive.png",
+      "prompt": "passe_rive_prompt.txt",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "alpha_zero_pixels": 1208020,
+      "sha256": "178409524db1e7bf7dbef01e6ab5f7aee449c26fa1d90853682d509207d61330"
+    },
+    "cendre_vive": {
+      "file": "cendre_vive.png",
+      "prompt": "cendre_vive_prompt.txt",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "alpha_zero_pixels": 1192587,
+      "sha256": "306fa33a8c5f67dd52fcffeba3eba16b8760aa92e3ee1780844b76d00322a82c"
+    },
+    "marbre_oublie": {
+      "file": "marbre_oublie.png",
+      "prompt": "marbre_oublie_prompt.txt",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "alpha_zero_pixels": 1138865,
+      "sha256": "e0e51245ef75c3b5a195ac222fe53e9052885b783ded3fec126f1201e4063928"
+    }
+  }
+}

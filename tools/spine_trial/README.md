@@ -2,7 +2,7 @@
 
 ## Kit courant
 
-**Sentinelle : 24 animations E/S/W/N, révision `sentinelle_kit_v5`.**
+**Sentinelle : 24 animations E/S/W/N, révision `sentinelle_kit_v7`.**
 Voir [le guide du kit](../../docs/spine/sentinelle_kit.md).
 Lancer `./tools/spine_trial/kit.ps1 start`, ou ouvrir `SentinelleKit.tscn` dans Godot.
 La documentation ci-dessous décrit le premier contrôle de rig E/N, conservé.

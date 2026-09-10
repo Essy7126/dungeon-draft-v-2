@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "status": "art_rebuild_required",
+  "direction": "E",
+  "walk_seconds": 1.12,
+  "walk_fps": 7.142857142857142,
+  "idle_seconds": 3.2,
+  "idle_method": "original texture with local shader deformation; face, feet and spear pinned",
+  "walk_anchor": [
+    550,
+    1390
+  ],
+  "idle_anchor": [
+    515,
+    1390
+  ],
+  "native_frame_size": [
+    1024,
+    1536
+  ],
+  "guide_speed_m_s": 0.7142857142857143,
+  "projected_forward_pixels_per_meter": 561.0797017657194,
+  "reference_sha256": "178409524db1e7bf7dbef01e6ab5f7aee449c26fa1d90853682d509207d61330",
+  "frames": [
+    {
+      "index": 0,
+      "file": "images/walk_00.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_00_rgba_v2.png",
+      "sha256": "6d116b414776a5c1682fa859eed999836e88776e3927716fbc361c0d3381ddf9",
+      "transparent_fraction": 0.7801780700683594,
+      "opaque_pixels": 64604,
+      "alpha_at_least_240_pixels": 337732
+    },
+    {
+      "index": 1,
+      "file": "images/walk_01.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_01_rgba_v2.png",
+      "sha256": "8b7f816bf8b22f60ef33a9a484f12622f0490388ee82b1717b1644db0ea4c874",
+      "transparent_fraction": 0.7773316701253256,
+      "opaque_pixels": 62871,
+      "alpha_at_least_240_pixels": 341840
+    },
+    {
+      "index": 2,
+      "file": "images/walk_02.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_02_rgba_v2.png",
+      "sha256": "e18ba3f9bdf3e235f014b417c6ffac25cdb7d799803b9ca32f45cfbe02fd356d",
+      "transparent_fraction": 0.7834854125976562,
+      "opaque_pixels": 51021,
+      "alpha_at_least_240_pixels": 332392
+    },
+    {
+      "index": 3,
+      "file": "images/walk_03.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_03_rgba_v2.png",
+      "sha256": "f7cad0d9c5b30968096e46f096d275c567e254438683e4fbe67a33ed45a4c423",
+      "transparent_fraction": 0.779089609781901,
+      "opaque_pixels": 64502,
+      "alpha_at_least_240_pixels": 339157
+    },
+    {
+      "index": 4,
+      "file": "images/walk_04.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_04_rgba_v2.png",
+      "sha256": "54ee702147709af91d52b0ce7ab1316b47b1564c419fab173b37bdf54f034032",
+      "transparent_fraction": 0.7786019643147787,
+      "opaque_pixels": 70290,
+      "alpha_at_least_240_pixels": 340090
+    },
+    {
+      "index": 5,
+      "file": "images/walk_05.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_05_rgba_v2.png",
+      "sha256": "35683ac30421feabbc3670951f292cf5620c514deb6bfdc6f7607536c9392b27",
+      "transparent_fraction": 0.7789669036865234,
+      "opaque_pixels": 69087,
+      "alpha_at_least_240_pixels": 339581
+    },
+    {
+      "index": 6,
+      "file": "images/walk_06.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_06_rgba_v2.png",
+      "sha256": "9e3e83b2a13ab55cfb2ce9579bd0e57987e413048f8a280d736dcda52b6d1de6",
+      "transparent_fraction": 0.7795378367106119,
+      "opaque_pixels": 61478,
+      "alpha_at_least_240_pixels": 338577
+    },
+    {
+      "index": 7,
+      "file": "images/walk_07.png",
+      "source": "art/source/characters/achilles/passe_rive_motion_v1/walk_07_rgba_v2.png",
+      "sha256": "afbbbdb80e0d8da4a9c99c83a0e2adfa47438ab2a90df162672059b64ad5d79e",
+      "transparent_fraction": 0.7784512837727865,
+      "opaque_pixels": 67055,
+      "alpha_at_least_240_pixels": 340086
+    }
+  ],
+  "checks": {
+    "atlas_native_pixels_exact": true,
+    "guide": {
+      "samples": 113,
+      "max_segment_length_error_m": 2.220446049250313e-16,
+      "loop_joint_error_m": 6.938893903907228e-18,
+      "no_flight": true,
+      "no_floor_penetration": true,
+      "stance_world_speed_error_m_s": 1.4154788452458433e-11
+    }
+  },
+  "limitations": [
+    "Artwork has not passed planted-foot tracking during translation",
+    "Some heel marks differ between poses; compare at native size",
+    "Eight generated drawings do not prove a physically consistent walk",
+    "Map preview scale and grounding are illustrative; no main game integration",
+    "Idle shader does not include an idle-to-walk transition"
+  ],
+  "audit": {
+    "report": "docs/design/achilles/passe_rive_walk_audit_2026-09-10.md",
+    "review": "../passe_rive_walk_audit/review.html",
+    "findings": [
+      "First planted-foot patch barely moves between drawings 1 and 2",
+      "Guide passing labels precede actual leg crossing",
+      "Guide lateral pelvis oscillation opposes the intended support side"
+    ]
+  }
+}

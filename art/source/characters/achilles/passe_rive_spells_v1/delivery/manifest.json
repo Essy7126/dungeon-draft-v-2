@@ -1,0 +1,309 @@
+{
+  "schema": 1,
+  "name": "Passe-rive — palette de sorts",
+  "direction": "E / trois-quarts droite, sans miroir",
+  "frame_size": [
+    768,
+    768
+  ],
+  "pivot": [
+    320,
+    662
+  ],
+  "actions": [
+    {
+      "id": "strike",
+      "name": "Frappe du Péléide",
+      "subtitle": "Un estoc bref, une vraie extension.",
+      "color": "#f5d28d",
+      "event_ms": 100,
+      "cooldown_ms": 430,
+      "damage": 30,
+      "range": 230,
+      "mode": "melee",
+      "hitstop_ms": 48,
+      "canonical": "achilles_peleid_strike",
+      "frames": [
+        {
+          "file": "frames/strike_00.png",
+          "duration_ms": 100,
+          "phase": "Armer"
+        },
+        {
+          "file": "frames/strike_01.png",
+          "duration_ms": 80,
+          "phase": "Percuter"
+        },
+        {
+          "file": "frames/strike_02.png",
+          "duration_ms": 90,
+          "phase": "Retirer"
+        },
+        {
+          "file": "frames/strike_03.png",
+          "duration_ms": 130,
+          "phase": "Revenir"
+        }
+      ],
+      "atlas": "strike_atlas.png",
+      "total_ms": 400
+    },
+    {
+      "id": "dash",
+      "name": "Percée fulgurante",
+      "subtitle": "Compression, impulsion, réception.",
+      "color": "#9ae7d3",
+      "event_ms": 100,
+      "cooldown_ms": 750,
+      "damage": 0,
+      "range": 220,
+      "mode": "dash",
+      "hitstop_ms": 0,
+      "canonical": "achilles_fulminant_dash",
+      "frames": [
+        {
+          "file": "frames/dash_00.png",
+          "duration_ms": 100,
+          "phase": "Comprimer"
+        },
+        {
+          "file": "frames/dash_01.png",
+          "duration_ms": 110,
+          "phase": "Propulser"
+        },
+        {
+          "file": "frames/dash_02.png",
+          "duration_ms": 90,
+          "phase": "Amortir"
+        },
+        {
+          "file": "frames/dash_03.png",
+          "duration_ms": 130,
+          "phase": "Revenir"
+        }
+      ],
+      "atlas": "dash_atlas.png",
+      "total_ms": 430
+    },
+    {
+      "id": "shot",
+      "name": "Tir du Pélion",
+      "subtitle": "Une lance d’écho projetée au loin.",
+      "color": "#a7eee6",
+      "event_ms": 250,
+      "cooldown_ms": 850,
+      "damage": 25,
+      "range": 670,
+      "mode": "shot",
+      "hitstop_ms": 30,
+      "canonical": "achilles_pelion_shot",
+      "frames": [
+        {
+          "file": "frames/shot_00.png",
+          "duration_ms": 100,
+          "phase": "Lever"
+        },
+        {
+          "file": "frames/shot_01.png",
+          "duration_ms": 150,
+          "phase": "Tendre"
+        },
+        {
+          "file": "frames/shot_02.png",
+          "duration_ms": 75,
+          "phase": "Projeter"
+        },
+        {
+          "file": "frames/shot_03.png",
+          "duration_ms": 185,
+          "phase": "Accompagner"
+        }
+      ],
+      "atlas": "shot_atlas.png",
+      "total_ms": 510
+    },
+    {
+      "id": "guard",
+      "name": "Garde d’airain",
+      "subtitle": "S’ancrer, couvrir, repousser l’impact.",
+      "color": "#e8ca91",
+      "event_ms": 200,
+      "cooldown_ms": 1500,
+      "damage": 0,
+      "range": 0,
+      "mode": "guard",
+      "hitstop_ms": 35,
+      "canonical": "achilles_bronze_guard",
+      "frames": [
+        {
+          "file": "frames/guard_00.png",
+          "duration_ms": 90,
+          "phase": "Ouvrir"
+        },
+        {
+          "file": "frames/guard_01.png",
+          "duration_ms": 110,
+          "phase": "Couvrir"
+        },
+        {
+          "file": "frames/guard_02.png",
+          "duration_ms": 230,
+          "phase": "Ancrer"
+        },
+        {
+          "file": "frames/guard_03.png",
+          "duration_ms": 170,
+          "phase": "Maintenir"
+        }
+      ],
+      "atlas": "guard_atlas.png",
+      "total_ms": 600
+    },
+    {
+      "id": "sweep",
+      "name": "Moisson des rives",
+      "subtitle": "Un arc ample qui balaie la zone.",
+      "color": "#b7e5b0",
+      "event_ms": 150,
+      "cooldown_ms": 1000,
+      "damage": 22,
+      "range": 240,
+      "mode": "sweep",
+      "hitstop_ms": 55,
+      "canonical": "achilles_sweep",
+      "proposal": true,
+      "frames": [
+        {
+          "file": "frames/sweep_00.png",
+          "duration_ms": 150,
+          "phase": "Charger"
+        },
+        {
+          "file": "frames/sweep_01.png",
+          "duration_ms": 65,
+          "phase": "Faucher"
+        },
+        {
+          "file": "frames/sweep_02.png",
+          "duration_ms": 130,
+          "phase": "Traverser"
+        },
+        {
+          "file": "frames/sweep_03.png",
+          "duration_ms": 170,
+          "phase": "Revenir"
+        }
+      ],
+      "atlas": "sweep_atlas.png",
+      "total_ms": 515
+    },
+    {
+      "id": "bash",
+      "name": "Heurt du passeur",
+      "subtitle": "L’épaule porte le choc du bouclier.",
+      "color": "#d2aa72",
+      "event_ms": 195,
+      "cooldown_ms": 820,
+      "damage": 18,
+      "range": 220,
+      "mode": "bash",
+      "hitstop_ms": 65,
+      "proposal": true,
+      "frames": [
+        {
+          "file": "frames/bash_00.png",
+          "duration_ms": 130,
+          "phase": "Charger"
+        },
+        {
+          "file": "frames/bash_01.png",
+          "duration_ms": 65,
+          "phase": "Engager"
+        },
+        {
+          "file": "frames/bash_02.png",
+          "duration_ms": 110,
+          "phase": "Heurter"
+        },
+        {
+          "file": "frames/bash_03.png",
+          "duration_ms": 150,
+          "phase": "Rebondir"
+        }
+      ],
+      "atlas": "bash_atlas.png",
+      "total_ms": 455
+    }
+  ],
+  "idle": "frames/idle.png",
+  "walk": [
+    {
+      "file": "frames/walk_00.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_01.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_02.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_03.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_04.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_05.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_06.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_07.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_08.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_09.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_10.png",
+      "duration_ms": 100
+    },
+    {
+      "file": "frames/walk_11.png",
+      "duration_ms": 100
+    }
+  ],
+  "walk_cycle_stride": [
+    136.64,
+    68.32
+  ],
+  "status": "playable_art_trial",
+  "generation": "Built-in ImageGen: six sheets plus targeted guard correction",
+  "cutout": "Authorized rembg birefnet-general-lite, decontaminate=True; detached neighboring fragments removed. Neutral-white color key was rejected after visual inspection.",
+  "native_sheet_size": [
+    1254,
+    1254
+  ],
+  "input_buffer_ms": 160,
+  "limitations": [
+    "Une direction seulement ; le laboratoire ne remplace pas le combat de la campagne.",
+    "Quatre poses clés par action, timing tenu ; aucun faux intermédiaire ajouté.",
+    "Tir : proposition visuelle de projection de lance, à valider pour le Tir du Pélion.",
+    "Moisson et Heurt : propositions de palette, chiffres de laboratoire uniquement.",
+    "Idle : pose de garde issue de la récupération ; marche V3 réutilisée.",
+    "Dessin génératif : volumes, prise de lance et raccords restent à juger au ralenti."
+  ]
+}

@@ -100,6 +100,14 @@ func test_confirm_grants_a_single_launch_for_the_selected_painted_appearance() -
 
 
 func test_trial_and_all_trio_choices_launch_without_replacement_confirmation() -> void:
+	# Historical adventures are opt-in fixtures; public selection keeps both appearances.
+	_screen.queue_free()
+	await wait_process_frames(2)
+	_screen = SelectionProbe.new()
+	_screen.include_archived_adventures = true
+	_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_screen)
+	await wait_process_frames(3)
 	for index in [2, 3, 4, 5]:
 		assert_true(_screen.select_character(index))
 		var run := _screen.get_selected_entry().run as RunData

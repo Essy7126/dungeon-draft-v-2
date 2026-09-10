@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/combat/turn_order_timeline.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/turn_header_plate.svg" id="2_header"]
+[ext_resource type="Texture2D" path="res://assets/catabase/hud/turn_label.svg" id="2_header"]
 
 [node name="TurnOrderTimeline" type="CanvasLayer"]
 layer = 24

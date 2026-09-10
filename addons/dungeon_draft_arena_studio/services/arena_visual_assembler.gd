@@ -290,6 +290,10 @@ static func expected_visual_signature(
 	if visual_data == null:
 		var runtime_state := ArenaRuntimeProjectionService.build(arena)
 		visual_data = runtime_state.visual_data if runtime_state != null else null
+		if runtime_state != null and runtime_state.terrain_effects != null:
+			# Only the projection created here is owned by this signature call.
+			# Keep its visual resource, but release the temporary terrain graph.
+			runtime_state.terrain_effects.dispose()
 	var terrains := {}
 	for entry in plan.render_entries:
 		var polygon: PackedVector2Array = visual_data.cell_polygon_display(entry.cell) \

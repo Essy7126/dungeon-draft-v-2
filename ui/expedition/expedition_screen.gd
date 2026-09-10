@@ -279,7 +279,7 @@ func _render_landing() -> void:
 				_status.text = "Cette sauvegarde est incompatible ou endommagée. Elle a été conservée."
 				_status.show()
 		)
-	_status.text = "Quinze combats et cinq haltes · un départ commun, une légende à construire."
+	_status.text = "Vingt seuils · des voies à choisir, des haltes à préparer."
 
 
 func _render_map() -> void:
@@ -741,6 +741,16 @@ func _render_hub() -> void:
 		var map_button := _button(card, "Consulter le parchemin")
 		map_button.pressed.connect(func(): _page = "map"; _render())
 		return
+	if GameManager.is_painted_halt_active():
+		var column := _scroll_column(_body)
+		var card := _card(column, GOLD)
+		_label(card, str(GameManager.expedition.route.get_current_node().title), 26, TEXT, true)
+		_label(card, "Explorez le lieu avec Achille. Les achats, faveurs et découvertes suivent votre expédition.", 18)
+		var visit := _button(card, "Rejoindre la halte", true)
+		visit.name = "EnterPaintedHalt"
+		visit.disabled = inspection_only
+		visit.pressed.connect(func(): GameManager.open_painted_halt())
+		return
 	if GameManager.is_merchant_hall_active():
 		var column := _scroll_column(_body)
 		var painting := TextureRect.new()
@@ -819,7 +829,10 @@ func _render_merchant_hall_return(parent: Control, actions: Control) -> void:
 	_label(card, "LA HALTE EST OUVERTE", 13, GOLD)
 	_label(card, "La Halle sous les racines", 25, TEXT, true)
 	_label(card, "L'étal du passeur · étape IV", 16, TEAL)
-	_label(card, "Achille vous attend dans la Halle. Retrouvez les trois étals, le repos et les mémoires avant de reprendre la route.", 17)
+	var hall_description := "Achille vous attend dans la Halle. Retrouvez les trois étals avant de reprendre la route."
+	if str(GameManager.expedition.route.get_current_node().get("service_profile", "")).is_empty():
+		hall_description = "Achille vous attend dans la Halle. Retrouvez les trois étals, le repos et les mémoires avant de reprendre la route."
+	_label(card, hall_description, 17)
 	var visit := _button(actions, "Revenir dans la Halle  →", true)
 	visit.name = "EnterMerchantHall"
 	visit.disabled = inspection_only

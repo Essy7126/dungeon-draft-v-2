@@ -572,24 +572,15 @@ func _button(text: String) -> Button:
 	button.add_theme_font_override("font", BODY_FONT)
 	button.add_theme_font_size_override("font_size", 15)
 	button.add_theme_color_override("font_color", INK)
-	button.add_theme_stylebox_override("normal", _panel_style())
-	var hover := _panel_style()
-	hover.bg_color = Color("3b3b2ef2")
-	button.add_theme_stylebox_override("hover", hover)
-	button.add_theme_stylebox_override("pressed", hover)
-	var focus := _panel_style()
-	focus.bg_color = Color.TRANSPARENT
-	focus.border_color = Color("eed1a1")
-	focus.set_border_width_all(2)
-	button.add_theme_stylebox_override("focus", focus)
+	button.theme = PremiumUI.get_theme()
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return button
 
 
 func _panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("1b241ee8")
-	style.border_color = Color(0.65, 0.55, 0.35, 0.35)
+	style.bg_color = Color("211c18f5")
+	style.border_color = Color("8b714c")
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(5)
 	style.content_margin_left = 14

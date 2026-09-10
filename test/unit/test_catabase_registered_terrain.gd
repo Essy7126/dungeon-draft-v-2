@@ -2,8 +2,60 @@ extends GutTest
 
 const RUN: RunData = preload("res://data/runs/odyssey.tres")
 const REGISTERED_SCENE := "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn"
-const PACKAGES := ["greek_drawn_courtyard_v1", "ashen_hell_courtyard_v1", "silent_judgment_courtyard_v1", "lethe_crossing_v1", "black_oath_temple_v1"]
+const PACKAGES := [
+	"catabase_cavern_v1",
+	"cavern_pillars_v1",
+	"cavern_crypt_v1",
+	"cavern_ford_v1",
+	"black_oath_temple_v1",
+]
+const ARENA_IDS := [
+	"greek_drawn_courtyard_v1",
+	"ashen_hell_courtyard_v1",
+	"silent_judgment_courtyard_v1",
+	"lethe_crossing_v1",
+	"black_oath_temple_v1",
+]
 const DIRECTIONS := [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
+
+
+func test_cavern_reframes_the_same_tactical_topology_inside_the_clearing() -> void:
+	for index in range(4):
+		var original: Dictionary = JSON.parse_string(
+			FileAccess.get_file_as_string(
+				"res://data/arenas/%s/geometry_manifest.json" % ARENA_IDS[index]
+			)
+		)
+		var current: Dictionary = JSON.parse_string(
+			FileAccess.get_file_as_string(
+				"res://data/arenas/%s/geometry_manifest.json" % PACKAGES[index]
+			)
+		)
+		for key in ["floor_cells", "pits", "obstacles", "hero_spawns", "enemy_spawns", "ascii_rows"]:
+			assert_eq(current[key], original[key], "%s preserves %s" % [PACKAGES[index], key])
+	var old: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string(
+			"res://data/arenas/greek_drawn_courtyard_v1/geometry_manifest.json"
+		)
+	)
+	var cave: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string("res://data/arenas/catabase_cavern_v1/geometry_manifest.json")
+	)
+	for key in ["floor_cells", "pits", "obstacles", "hero_spawns", "enemy_spawns", "ascii_rows"]:
+		assert_eq(cave[key], old[key], "Reframing preserves logical combat data: %s" % key)
+	var bounds: Dictionary = cave.floor_bounds_px
+	assert_gte(float(bounds.min[0]), 440.0)
+	assert_gte(
+		float(bounds.min[1]),
+		290.0,
+		"Arena stays below the entrance and rear rock formations",
+	)
+	assert_lte(float(bounds.max[0]), 1410.0)
+	assert_lte(float(bounds.max[1]), 920.0)
+	assert_ne(cave.grid_origin, old.grid_origin)
+	assert_eq(int(cave.expected_floor_count), 217)
+	assert_eq(int(cave.expected_blocked_count), 12)
+	assert_eq(int(cave.expected_pit_cells), 16)
 
 
 func test_five_historical_catabase_rooms_keep_their_registered_production_maps() -> void:
@@ -16,24 +68,29 @@ func test_five_historical_catabase_rooms_keep_their_registered_production_maps()
 			continue
 		var package := "res://data/arenas/%s/" % PACKAGES[index]
 		assert_eq(room.resource_path, "res://data/rooms/odyssey/room_%02d.tres" % (index + 1))
-		assert_eq(room.arena_id, StringName(PACKAGES[index]))
+		assert_eq(room.arena_id, StringName(ARENA_IDS[index]))
 		assert_eq(room.registered_terrain_plan_path, package + "terrain_plan.json")
 		assert_true(FileAccess.file_exists(room.registered_terrain_plan_path))
 		assert_not_null(room.battle_scene)
 		if room.battle_scene != null:
 			assert_eq(room.battle_scene.resource_path, REGISTERED_SCENE)
-			assert_false(FileAccess.get_file_as_string(REGISTERED_SCENE).contains("res://tools/labs/"))
+			assert_false(FileAccess.get_file_as_string(REGISTERED_SCENE).contains(
+					"res://tools/labs/"
+				))
 		assert_eq(room.visual_mode, ArenaDefinition.VisualMode.HYBRID)
 		assert_eq(room.source_image_size, Vector2i(1920, 1200))
-		var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(package + "geometry_manifest.json"))
+		var manifest: Dictionary = JSON.parse_string(
+			FileAccess.get_file_as_string(package + "geometry_manifest.json")
+		)
 		var grid_size: Array = manifest.grid_size
 		assert_eq(room.grid_size, Vector2i(int(grid_size[0]), int(grid_size[1])))
 		assert_eq(room.axis_x, Vector2(float(manifest.axis_x[0]), float(manifest.axis_x[1])))
 		assert_eq(room.axis_y, Vector2(float(manifest.axis_y[0]), float(manifest.axis_y[1])))
 		if index < 3:
 			assert_eq(room.grid_size, Vector2i(19, 18))
-			assert_eq(room.axis_x, Vector2(51.6, 25.8))
-			assert_eq(room.axis_y, Vector2(-51.6, 25.8))
+		if index < 4:
+			assert_eq(room.axis_x, Vector2(37.83312, 18.91656))
+			assert_eq(room.axis_y, Vector2(-37.83312, 18.91656))
 		assert_true(room.foreground_occluder_polygon.is_empty())
 		assert_false(room.foreground_full_hide_rect.has_area())
 		for decoration in room.decorations:
@@ -52,17 +109,19 @@ func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles()
 		assert_not_null(room.painted_map_visual_data, room.resource_path)
 		if room.grid_layout == null or room.painted_map_visual_data == null:
 			continue
-		var manifest_path := room.registered_terrain_plan_path.get_base_dir().path_join("geometry_manifest.json")
+		var manifest_path := room.registered_terrain_plan_path.get_base_dir().path_join(
+			"geometry_manifest.json"
+		)
 		var value: Variant = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
 		assert_true(value is Dictionary, manifest_path)
 		if not value is Dictionary:
 			continue
 		var manifest: Dictionary = value
 		var floor := _cells(manifest.get("floor_cells", []))
-		var blocked := {}
+		var blocked := { }
 		for group: Dictionary in manifest.get("obstacles", []):
 			blocked.merge(_cells(group.get("cells", [])))
-		var pits := {}
+		var pits := { }
 		for group: Dictionary in manifest.get("pits", []):
 			pits.merge(_cells(group.get("cells", [])))
 		if index < 3:
@@ -94,9 +153,12 @@ func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles()
 		assert_lt(visual.calibration_rms(), 0.001)
 		var grid := GridData.new(room.grid_size.x, room.grid_size.y)
 		room.grid_layout.apply_to_grid(grid)
-		var actual_floor := {}
+		var actual_floor := { }
 		for definition in room.cells:
-			if definition != null and definition.defined and definition.cell_type != GridData.CellType.HOLE:
+			if (
+				definition != null and definition.defined
+				and definition.cell_type != GridData.CellType.HOLE
+			):
 				actual_floor[definition.coordinate] = true
 		assert_eq(actual_floor.size(), floor.size())
 		for y in range(grid.rows):
@@ -110,9 +172,21 @@ func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles()
 					assert_eq(grid.get_type(cell), GridData.CellType.HOLE, str(cell))
 				elif not blocked.has(cell):
 					assert_ne(grid.get_type(cell), GridData.CellType.HOLE, str(cell))
-				assert_eq(grid.is_walkable(cell), floor.has(cell) and not blocked.has(cell), str(cell))
-				assert_eq(grid.is_terrain_interactable(cell), floor.has(cell) and not blocked.has(cell), str(cell))
-				assert_ne(grid.get_type(cell), GridData.CellType.LAVA, "lava is visual only: %s" % cell)
+				assert_eq(
+					grid.is_walkable(cell),
+					floor.has(cell) and not blocked.has(cell),
+					str(cell),
+				)
+				assert_eq(
+					grid.is_terrain_interactable(cell),
+					floor.has(cell) and not blocked.has(cell),
+					str(cell),
+				)
+				assert_ne(
+					grid.get_type(cell),
+					GridData.CellType.LAVA,
+					"lava is visual only: %s" % cell,
+				)
 		for cell: Vector2i in pits:
 			assert_false(floor.has(cell), "a recess remains VOID: %s" % cell)
 		assert_false(room.hero_spawn_zone.is_empty())
@@ -120,7 +194,11 @@ func test_persisted_projection_matches_the_registered_floor_pits_and_obstacles()
 		if room.hero_spawn_zone.is_empty():
 			continue
 		var reachable := _reachable(grid, room.hero_spawn_zone[0])
-		assert_eq(reachable.size(), floor.size() - blocked.size(), "all walkable cells stay connected")
+		assert_eq(
+			reachable.size(),
+			floor.size() - blocked.size(),
+			"all walkable cells stay connected",
+		)
 		for cell: Vector2i in room.hero_spawn_zone + room.enemy_spawn_zone:
 			assert_true(grid.is_walkable(cell), "spawn on free FLOOR: %s" % cell)
 			assert_true(reachable.has(cell), "spawn reachable: %s" % cell)
@@ -138,7 +216,10 @@ func test_registered_plan_survives_studio_snapshot_and_terrain_update() -> void:
 		RoomIntegrationFieldPolicy.ARENA_OWNED,
 	)
 	assert_eq(
-		ArenaRuntimeFieldCoverageService.classification_for("ArenaDefinition", &"registered_terrain_plan_path"),
+		ArenaRuntimeFieldCoverageService.classification_for(
+			"ArenaDefinition",
+			&"registered_terrain_plan_path",
+		),
 		ArenaRuntimeFieldCoverageService.Classification.RUNTIME_CONSUMED,
 	)
 	var restored := ArenaDefinition.new()
@@ -164,24 +245,41 @@ func test_judgment_courtyard_keeps_tactical_obstacles_without_peripheral_props()
 	assert_not_null(room)
 	if room == null:
 		return
-	assert_eq(room.encounter_definition.resource_path, "res://data/encounters/odyssey_room_03_encounter.tres")
+	assert_eq(
+		room.encounter_definition.resource_path,
+		"res://data/encounters/odyssey_room_03_encounter.tres",
+	)
 	assert_eq(room.enemies.size(), room.encounter_definition.get_initial_enemy_count())
 	assert_eq(room.get_wave_count(), 1)
 	assert_true(room.waves.is_empty())
 	assert_eq(room.get_ultimate_reward_base_chance(), 0)
 	assert_eq(room.get_ultimate_reward_gain_range(), Vector2i.ZERO)
 	var root_path := room.registered_terrain_plan_path.get_base_dir()
-	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(root_path.path_join("geometry_manifest.json")))
-	var plan: Variant = JSON.parse_string(FileAccess.get_file_as_string(room.registered_terrain_plan_path))
+	var manifest: Variant = JSON.parse_string(
+		FileAccess.get_file_as_string(root_path.path_join("geometry_manifest.json"))
+	)
+	var plan: Variant = JSON.parse_string(
+		FileAccess.get_file_as_string(room.registered_terrain_plan_path)
+	)
 	assert_true(manifest is Dictionary)
 	assert_true(plan is Dictionary)
 	if not manifest is Dictionary or not plan is Dictionary:
 		return
 	assert_true(manifest.get("perimeter_props", []).is_empty())
 	assert_eq(int(manifest.get("expected_perimeter_prop_count", -1)), 0)
-	assert_true(plan.get("world_decor", []).is_empty())
+	var atmosphere: Array = plan.get("world_decor", [])
+	assert_eq(atmosphere.size(), 1, "Only the peripheral atmosphere is added")
+	if atmosphere.size() == 1:
+		assert_eq(
+			atmosphere[0].scene_path,
+			"res://assets/catabase/combat/cavern_crypt_v1/Atmosphere.tscn",
+		)
 	assert_eq(room.obstacles.size(), 12)
-	assert_eq(room.decorations.size(), 12, "the twelve tactical props remain on their authored floor cells")
+	assert_eq(
+		room.decorations.size(),
+		12,
+		"the twelve tactical props remain on their authored floor cells",
+	)
 
 
 func test_later_maps_use_distinct_tactical_footprints_and_preserve_studio_bindings() -> void:
@@ -191,8 +289,22 @@ func test_later_maps_use_distinct_tactical_footprints_and_preserve_studio_bindin
 		return
 	var seen_floors: Array[Dictionary] = [_authored_floor(first)]
 	var cases := [
-		[3, Vector2i(18, 19), Vector2(1000, 125), 114, &"lethe_crossing_v1", "Catabase IV — Le Gué du Léthé"],
-		[4, Vector2i(18, 18), Vector2(960, 125), 152, &"black_oath_temple_v1", "Catabase V — Le Temple du Serment Noir"],
+		[
+			3,
+			Vector2i(18, 19),
+			Vector2(1002.91656, 246.9602),
+			114,
+			&"lethe_crossing_v1",
+			"Catabase IV — Le Gué du Léthé",
+		],
+		[
+			4,
+			Vector2i(18, 18),
+			Vector2(960, 125),
+			152,
+			&"black_oath_temple_v1",
+			"Catabase V — Le Temple du Serment Noir",
+		],
 	]
 	for expected: Array in cases:
 		var room := RUN.rooms[int(expected[0])] as ArenaDefinition
@@ -224,7 +336,7 @@ func test_later_maps_use_distinct_tactical_footprints_and_preserve_studio_bindin
 
 
 func _authored_floor(room: ArenaDefinition) -> Dictionary:
-	var result := {}
+	var result := { }
 	for cell in room.cells:
 		if cell != null and cell.defined and cell.cell_type != GridData.CellType.HOLE:
 			result[cell.coordinate] = true
@@ -232,14 +344,14 @@ func _authored_floor(room: ArenaDefinition) -> Dictionary:
 
 
 func _cells(values: Array) -> Dictionary:
-	var result := {}
+	var result := { }
 	for value: Array in values:
 		result[Vector2i(int(value[0]), int(value[1]))] = true
 	return result
 
 
 func _reachable(grid: GridData, first: Vector2i) -> Dictionary:
-	var seen := {first: true}
+	var seen := { first: true }
 	var queue: Array[Vector2i] = [first]
 	var cursor := 0
 	while cursor < queue.size():

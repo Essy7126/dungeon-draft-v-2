@@ -5,8 +5,8 @@ extends Control
 @export_enum("screen", "panel", "header", "card") var variant := "panel"
 @export var accent_alpha := 0.9
 
-const GOLD := Color(0.76, 0.56, 0.31, 1.0)
-const GOLD_HOT := Color(1.0, 0.72, 0.22, 1.0)
+const GOLD := Color("8b714c")
+const GOLD_HOT := Color("c7b38d")
 const BRONZE_DARK := Color(0.24, 0.16, 0.12, 1.0)
 
 
@@ -31,7 +31,7 @@ func _draw() -> void:
 
 
 func _draw_corners(rect: Rect2) -> void:
-	var length := 20.0 if variant == "screen" else 12.0
+	var length := 14.0 if variant == "screen" else 10.0
 	var color := Color(GOLD_HOT, accent_alpha)
 	var points := [
 		[rect.position + Vector2(length, 0), rect.position,
@@ -46,7 +46,7 @@ func _draw_corners(rect: Rect2) -> void:
 			Vector2(rect.end.x, rect.end.y - length)],
 	]
 	for corner in points:
-		draw_polyline(PackedVector2Array(corner), color, 2.0, true)
+		draw_polyline(PackedVector2Array(corner), color, 1.0, true)
 
 
 func _draw_center_diamond(rect: Rect2) -> void:

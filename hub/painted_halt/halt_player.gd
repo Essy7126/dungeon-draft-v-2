@@ -16,7 +16,7 @@ func _ready() -> void:
 func set_environment_time(time_seconds: float, position_native: Vector2) -> void:
 	if _hall_material == null:
 		return
-	var torso := position_native + Vector2(0, -65)
+	var torso := position_native + Vector2(0, -65 * display_scale / 0.52)
 	var warm := 0.0
 	var side := 0.0
 	for index in light_positions.size():
@@ -35,3 +35,12 @@ func set_environment_time(time_seconds: float, position_native: Vector2) -> void
 	_hall_material.set_shader_parameter("warm_light", _warm_light)
 	_hall_material.set_shader_parameter("warm_direction", side / maxf(warm, 0.001))
 	_hall_material.set_shader_parameter("cool_light", _cool_light)
+
+
+func advance_ground_stride(distance: float) -> void:
+	# Keep planted footsteps proportional to the calibrated body, independent of world width.
+	super.advance_ground_stride(normalized_stride_distance(distance))
+
+
+func normalized_stride_distance(distance: float) -> float:
+	return distance * 0.52 / display_scale

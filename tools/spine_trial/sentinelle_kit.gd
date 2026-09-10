@@ -3,11 +3,11 @@ extends Node2D
 
 const DIRECTIONS := ["E", "S", "W", "N"]
 const ACTIONS := ["idle", "walk", "attack", "cast", "hit", "death"]
-const LABELS := ["Repos", "Marche", "Estoc", "Sort", "Impact reçu", "Mort"]
+const LABELS := ["Repos", "Marche", "Estoc", "Sort", "Impact reçu", "Disparition"]
 const DURATIONS := [2.4, 0.72, 0.8, 0.88, 0.2, 0.8]
 const BONES := ["root", "torso", "head", "hand_right", "foot_left", "foot_right"]
 
-var _revision := "sentinelle_kit_v5"
+var _revision := "sentinelle_kit_v7"
 var _sprite: Node2D
 var _entry: Object
 var _title: Label
@@ -24,6 +24,7 @@ var _playing := true
 var _repeat := false
 var _report_path := ""
 var _events: Array = []
+var _vanishing := false
 
 
 func _ready() -> void:
@@ -102,7 +103,7 @@ func _ready() -> void:
 	_clock = Label.new()
 	panel.add_child(_clock)
 	var note := Label.new()
-	note.text = "Kit d’essai · 24 clips · Estoc : 0,40 s · Sort : 0,44 s · Mort : pose finale maintenue"
+	note.text = "Kit d’essai · 24 clips · Estoc : 0,40 s · Sort : 0,44 s · Disparition : explosion noire"
 	panel.add_child(note)
 	if not ClassDB.class_exists("SpineSprite"):
 		_fail("SpineSprite absent : exécuter tools/spine_trial/install.ps1.")
@@ -115,6 +116,9 @@ func _ready() -> void:
 
 
 func _load_direction() -> bool:
+	var metadata_path := "res://artifacts/spine_trial/%s/kit.json" % _revision
+	var metadata: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(metadata_path))
+	_vanishing = metadata.get("death", "") == "black_burst_disappearance"
 	_direction_selector.select(_direction)
 	_entry = null
 	if is_instance_valid(_sprite):
@@ -223,6 +227,16 @@ func _difference(first: Array, second: Array) -> float:
 	return result
 
 
+func _visibility() -> Dictionary:
+	var result := { "body": 0.0, "fx": 0.0 }
+	for slot in _sprite.call("get_skeleton").call("get_slots"):
+		var name: String = slot.call("get_data").call("get_name")
+		var color: Color = slot.call("get_color")
+		var key := "fx" if name.begins_with("vanish_") else "body"
+		result[key] = maxf(result[key], color.a)
+	return result
+
+
 func _verify() -> void:
 	var checks: Array = []
 	for direction in range(DIRECTIONS.size()):
@@ -232,22 +246,32 @@ func _verify() -> void:
 		for action in range(ACTIONS.size()):
 			_select_action(action)
 			var poses: Array = []
+			var visibility: Array = []
 			for step in range(5):
 				_seek(DURATIONS[action] * step / 4.0)
 				await RenderingServer.frame_post_draw
 				poses.append(_pose())
+				visibility.append(_visibility())
+				if action == 5 and step == 1 and _vanishing:
+					var burst_capture := _report_path.get_base_dir().path_join(
+						"%s_burst.png" % DIRECTIONS[direction]
+					)
+					get_viewport().get_texture().get_image().save_png(burst_capture)
 			var observed_events := _events.duplicate(true)
 			var duration: float = _entry.call("get_animation").call("get_duration")
 			var moving := maxf(_difference(poses[0], poses[1]), _difference(poses[0], poses[2])) > 0.1
 			var endpoint := _difference(poses[0], poses[4])
 			var endpoint_ok := endpoint > 10.0 if action == 5 else endpoint < 0.01
+			if action == 5 and _vanishing:
+				moving = visibility[1].fx > 0.1
+				endpoint_ok = visibility[4].body == 0.0 and visibility[4].fx == 0.0
 			var expected_events: Array = [
 				[],
 				["footstep_left", "footstep_right"],
 				["attack_release"],
 				["cast_release"],
 				[],
-				["body_landed"],
+				["death_burst", "vanish"] if _vanishing else ["body_landed"],
 			][action]
 			var names: Array = observed_events.map(
 				func(value: Dictionary):
@@ -268,6 +292,7 @@ func _verify() -> void:
 					"duration": duration,
 					"endpoint_difference": endpoint,
 					"events": observed_events,
+					"visibility": visibility,
 					"events_ok": events_ok,
 					"capture": capture,
 					"passed": moving and endpoint_ok and events_ok and capture_ok

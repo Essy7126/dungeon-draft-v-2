@@ -116,3 +116,21 @@ reste nécessaire pour vérifier les cibles et transactions des haltes Higgsfiel
 Le mode `outcomes_only=true` capture la vraie scène de résultat avec deux fixtures
 victoire/défaite et vérifie la restauration du thème d'une autre aventure ; il ne
 prétend pas jouer le boss final. Son rapport est `outcomes_report.json`.
+
+## Carte en vue d'ensemble
+
+Le bouton **Déplier toute la carte** ouvre les vingt seuils avec une légende
+illustrée. Cliquer inspecte ; **Replier la carte** ou **Échap** retrouve la fiche
+et le défilement précédent. Le départ reste une confirmation séparée.
+Les nouvelles runs utilisent des jonctions entre voies (catalogue v3) ;
+une sauvegarde v2 conserve sa topologie d'origine.
+
+La régression GUT est `res://test/unit/test_expedition_route_overview.gd`.
+Le probe `res://tests/expedition/RouteMapProbe.tscn` utilise de vrais événements
+souris et clavier, sans sauvegarde joueur, et produit des images et un
+`report.json` dans `artifacts/route_map/<résolution>/` :
+
+```text
+godot --path . --rendering-method gl_compatibility --resolution 1280x720 res://tests/expedition/RouteMapProbe.tscn -- resolution=1280x720
+godot --path . --rendering-method gl_compatibility --resolution 1920x1080 res://tests/expedition/RouteMapProbe.tscn -- resolution=1920x1080
+```

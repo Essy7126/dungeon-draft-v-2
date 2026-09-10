@@ -1,0 +1,434 @@
+{
+  "frame_size": [
+    768,
+    768
+  ],
+  "pivot": [
+    320,
+    662
+  ],
+  "notes": "Whole-pose registration by feet and fixed scale per action. No individual limb warping. Crop rectangles overlap only empty space to preserve spear tips.",
+  "actions": [
+    {
+      "id": "strike",
+      "name": "Frappe du Péléide",
+      "subtitle": "Un estoc bref, une vraie extension.",
+      "color": "#f5d28d",
+      "durations": [
+        100,
+        80,
+        90,
+        130
+      ],
+      "event_ms": 100,
+      "cooldown_ms": 430,
+      "damage": 30,
+      "range": 230,
+      "mode": "melee",
+      "hitstop_ms": 48,
+      "scale": 0.86,
+      "boxes": [
+        [
+          40,
+          40,
+          580,
+          574
+        ],
+        [
+          575,
+          70,
+          1248,
+          570
+        ],
+        [
+          65,
+          690,
+          667,
+          1200
+        ],
+        [
+          752,
+          635,
+          1240,
+          1210
+        ]
+      ],
+      "anchors": [
+        [
+          278,
+          556
+        ],
+        [
+          806,
+          550
+        ],
+        [
+          309,
+          1185
+        ],
+        [
+          969,
+          1195
+        ]
+      ],
+      "phase": [
+        "Armer",
+        "Percuter",
+        "Retirer",
+        "Revenir"
+      ],
+      "canonical": "achilles_peleid_strike"
+    },
+    {
+      "id": "dash",
+      "name": "Percée fulgurante",
+      "subtitle": "Compression, impulsion, réception.",
+      "color": "#9ae7d3",
+      "durations": [
+        100,
+        110,
+        90,
+        130
+      ],
+      "event_ms": 100,
+      "cooldown_ms": 750,
+      "damage": 0,
+      "range": 220,
+      "mode": "dash",
+      "hitstop_ms": 0,
+      "scale": 0.96,
+      "boxes": [
+        [
+          10,
+          150,
+          610,
+          556
+        ],
+        [
+          626,
+          130,
+          1245,
+          556
+        ],
+        [
+          15,
+          685,
+          635,
+          1170
+        ],
+        [
+          730,
+          630,
+          1235,
+          1170
+        ]
+      ],
+      "anchors": [
+        [
+          323,
+          542
+        ],
+        [
+          949,
+          542
+        ],
+        [
+          339,
+          1150
+        ],
+        [
+          967,
+          1155
+        ]
+      ],
+      "phase": [
+        "Comprimer",
+        "Propulser",
+        "Amortir",
+        "Revenir"
+      ],
+      "canonical": "achilles_fulminant_dash"
+    },
+    {
+      "id": "shot",
+      "name": "Tir du Pélion",
+      "subtitle": "Une lance d’écho projetée au loin.",
+      "color": "#a7eee6",
+      "durations": [
+        100,
+        150,
+        75,
+        185
+      ],
+      "event_ms": 250,
+      "cooldown_ms": 850,
+      "damage": 25,
+      "range": 670,
+      "mode": "shot",
+      "hitstop_ms": 30,
+      "scale": 0.91,
+      "boxes": [
+        [
+          25,
+          54,
+          543,
+          622
+        ],
+        [
+          630,
+          10,
+          1075,
+          624
+        ],
+        [
+          46,
+          622,
+          665,
+          1196
+        ],
+        [
+          625,
+          753,
+          1235,
+          1196
+        ]
+      ],
+      "anchors": [
+        [
+          335,
+          615
+        ],
+        [
+          935,
+          617
+        ],
+        [
+          283,
+          1180
+        ],
+        [
+          859,
+          1180
+        ]
+      ],
+      "phase": [
+        "Lever",
+        "Tendre",
+        "Projeter",
+        "Accompagner"
+      ],
+      "canonical": "achilles_pelion_shot"
+    },
+    {
+      "id": "guard",
+      "name": "Garde d’airain",
+      "subtitle": "S’ancrer, couvrir, repousser l’impact.",
+      "color": "#e8ca91",
+      "durations": [
+        90,
+        110,
+        230,
+        170
+      ],
+      "event_ms": 200,
+      "cooldown_ms": 1500,
+      "damage": 0,
+      "range": 0,
+      "mode": "guard",
+      "hitstop_ms": 35,
+      "scale": 0.86,
+      "boxes": [
+        [
+          196,
+          0,
+          476,
+          613
+        ],
+        [
+          683,
+          15,
+          1160,
+          607
+        ],
+        [
+          108,
+          631,
+          612,
+          1215
+        ],
+        [
+          681,
+          621,
+          1180,
+          1220
+        ]
+      ],
+      "anchors": [
+        [
+          320,
+          599
+        ],
+        [
+          941,
+          594
+        ],
+        [
+          356,
+          1203
+        ],
+        [
+          948,
+          1208
+        ]
+      ],
+      "phase": [
+        "Ouvrir",
+        "Couvrir",
+        "Ancrer",
+        "Maintenir"
+      ],
+      "canonical": "achilles_bronze_guard"
+    },
+    {
+      "id": "sweep",
+      "name": "Moisson des rives",
+      "subtitle": "Un arc ample qui balaie la zone.",
+      "color": "#b7e5b0",
+      "durations": [
+        150,
+        65,
+        130,
+        170
+      ],
+      "event_ms": 150,
+      "cooldown_ms": 1000,
+      "damage": 22,
+      "range": 240,
+      "mode": "sweep",
+      "hitstop_ms": 55,
+      "scale": 0.96,
+      "boxes": [
+        [
+          58,
+          0,
+          557,
+          600
+        ],
+        [
+          650,
+          128,
+          1250,
+          597
+        ],
+        [
+          61,
+          742,
+          644,
+          1190
+        ],
+        [
+          710,
+          668,
+          1238,
+          1198
+        ]
+      ],
+      "anchors": [
+        [
+          299,
+          587
+        ],
+        [
+          872,
+          582
+        ],
+        [
+          276,
+          1176
+        ],
+        [
+          920,
+          1184
+        ]
+      ],
+      "phase": [
+        "Charger",
+        "Faucher",
+        "Traverser",
+        "Revenir"
+      ],
+      "canonical": "achilles_sweep",
+      "proposal": true
+    },
+    {
+      "id": "bash",
+      "name": "Heurt du passeur",
+      "subtitle": "L’épaule porte le choc du bouclier.",
+      "color": "#d2aa72",
+      "durations": [
+        130,
+        65,
+        110,
+        150
+      ],
+      "event_ms": 195,
+      "cooldown_ms": 820,
+      "damage": 18,
+      "range": 220,
+      "mode": "bash",
+      "hitstop_ms": 65,
+      "scale": 0.95,
+      "boxes": [
+        [
+          25,
+          66,
+          505,
+          567
+        ],
+        [
+          590,
+          112,
+          1245,
+          555
+        ],
+        [
+          13,
+          722,
+          707,
+          1187
+        ],
+        [
+          722,
+          594,
+          1138,
+          1193
+        ]
+      ],
+      "anchors": [
+        [
+          316,
+          552
+        ],
+        [
+          837,
+          540
+        ],
+        [
+          290,
+          1173
+        ],
+        [
+          956,
+          1175
+        ]
+      ],
+      "phase": [
+        "Charger",
+        "Engager",
+        "Heurter",
+        "Rebondir"
+      ],
+      "proposal": true
+    }
+  ]
+}

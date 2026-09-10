@@ -1,0 +1,178 @@
+{
+  "passed": true,
+  "painting_sha256": "24eba80e2d65561b776a3e504e353e7a60d0e6837548e81283e5073a877c7c93",
+  "clean_plate_sha256": "d251bc7a00fd291b97022c904044b59b9ee2b75b197fefda74330410af8ba928",
+  "selections_sha256": "68d61313beb317e6f97b82b8a650349e882528276e4ccf38c9233081428d95cd",
+  "ora_sha256": "fbcf41561f4b38860faa63513f4bea918429e5f6417737d6ee425d111f9672a8",
+  "ora": "threshold_ash_layers.ora",
+  "image_size": [
+    1672,
+    941
+  ],
+  "rgba_composite": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "ora_mergedimage": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "top_to_bottom_groups": [
+    "GUIDES — masqués, hors peinture",
+    "Héra — paon et sceptre",
+    "Zeus — aigle et éclair",
+    "Hadès — Cerbère et bident",
+    "Fond — original conservé, clean plate sous objets et raccords"
+  ],
+  "layers": [
+    {
+      "id": "statue_right",
+      "name": "Héra — paon et sceptre",
+      "prop_pixels": 22514,
+      "floor_patch_pixels": 24172,
+      "prop_bbox_xyxy": [
+        573,
+        436,
+        709,
+        726
+      ],
+      "anchor_image_px": [
+        663,
+        724
+      ],
+      "anchor_normalized": [
+        0.3965311004784689,
+        0.769394261424017
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    },
+    {
+      "id": "statue_rear",
+      "name": "Zeus — aigle et éclair",
+      "prop_pixels": 21898,
+      "floor_patch_pixels": 24833,
+      "prop_bbox_xyxy": [
+        1092,
+        245,
+        1238,
+        545
+      ],
+      "anchor_image_px": [
+        1174,
+        543
+      ],
+      "anchor_normalized": [
+        0.7021531100478469,
+        0.5770456960680127
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    },
+    {
+      "id": "statue_left",
+      "name": "Hadès — Cerbère et bident",
+      "prop_pixels": 23438,
+      "floor_patch_pixels": 26997,
+      "prop_bbox_xyxy": [
+        552,
+        49,
+        701,
+        363
+      ],
+      "anchor_image_px": [
+        657,
+        361
+      ],
+      "anchor_normalized": [
+        0.3929425837320574,
+        0.383634431455898
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    }
+  ],
+  "reconstructed_pixels": 143852,
+  "reconstruction_core_pixels": 84671,
+  "reconstruction_transition_pixels": 59181,
+  "hidden_props_changed_pixels": 127675,
+  "hidden_props_equal_clean_plate_inside_reconstruction": true,
+  "original_unchanged_outside_reconstruction": true,
+  "props_masks_non_overlapping": true,
+  "title": "Le Seuil des Ombres",
+  "guides": "Hidden and rescaled only as visual references; geometric sources retain their native dimensions.",
+  "guide_sources": [
+    {
+      "file": "blockout.png",
+      "native_size": [
+        1600,
+        900
+      ],
+      "reference_size": [
+        1672,
+        941
+      ],
+      "name": "Guide géométrique avant peinture — à recaler — Maquette"
+    },
+    {
+      "file": "scale_guide.png",
+      "native_size": [
+        1600,
+        900
+      ],
+      "reference_size": [
+        1672,
+        941
+      ],
+      "name": "Guide géométrique avant peinture — à recaler — Échelle Achille"
+    },
+    {
+      "file": "depth.png",
+      "native_size": [
+        1600,
+        900
+      ],
+      "reference_size": [
+        1672,
+        941
+      ],
+      "name": "Guide géométrique avant peinture — à recaler — Profondeur aperçu 8 bits"
+    }
+  ],
+  "limitations": [
+    "Centres are projected physical pedestal footprints estimated from opposite visible ground corners, not the apparent centres of the human figures. The fourth rear ground corner is inferred by a parallelogram, approximately two-pixel visual uncertainty.",
+    "anchor_image_px is the distinct foremost bottom pedestal corner for Y-sorting. All simple component polygons of one statue share that anchor.",
+    "Attributes and the hanging cloak are separate simple component polygons so gaps remain transparent; contours come solely from the ash painting.",
+    "Shadows remain explicitly named opaque RGB floor-connection patches, not physical translucent shadow masks. Moving a statue requires retouching its ground connection.",
+    "Binary masks preserve the original pixels exactly. Antialiased edge pixels already contain mixed background colour, so reuse away from this scene may need edge cleanup.",
+    "Clean-plate reconstruction is limited to selected cores and small soft transitions. All source pixels outside these supports and all authored geometric guides remain unchanged.",
+    "Hidden geometric guides are before-painting references. Their native dimensions are documented by the packager; they are not exact final-painting registration."
+  ],
+  "krita_export": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "passed": true,
+    "batch_report": "artifacts/dev/20260910-174146-krita-ash-export/batch.json",
+    "krita_version": "krita 5.3.3 (git 858d352)",
+    "ora_sha256": "fbcf41561f4b38860faa63513f4bea918429e5f6417737d6ee425d111f9672a8",
+    "export_sha256": "7b56cbc7ba7fe132335aa565aca9fbebbaab1997651eec79c4e98451eea4bba6",
+    "source_sha256": "24eba80e2d65561b776a3e504e353e7a60d0e6837548e81283e5073a877c7c93",
+    "profile_isolated": true,
+    "visible_ui": false
+  }
+}

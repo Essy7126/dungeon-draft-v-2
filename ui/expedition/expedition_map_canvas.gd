@@ -11,11 +11,11 @@ const GOLD := Color("906321")
 const TEAL := Color("366150")
 const RED := Color("973e2e")
 const ART_THEME := preload("res://ui/expedition/catabase_ui_theme.gd")
-const ROW_HEIGHT := 156.0
-const CARD_HEIGHT := 128.0
+const ROW_HEIGHT := 132.0
+const CARD_HEIGHT := 78.0
 const TOP := 100.0
 const LEFT := 54.0
-const RIGHT := 14.0
+const RIGHT := 54.0
 const GAP := 12.0
 const ROMANS: Array[String] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"]
 const KIND_LABELS := {"normal": "COMBAT", "elite": "ÉPREUVE", "boss": "BOSS",
@@ -33,9 +33,11 @@ var _by_id: Dictionary = {}
 var _buttons: Dictionary = {}
 var _rects: Dictionary = {}
 var _reachable: Dictionary = {}
+var _selected_path: Dictionary = {}
 var _depth_y: Dictionary = {}
 var _selected_id: String = ""
 var _layout_queued: bool = false
+var _overview_height := 0.0
 
 
 func _init() -> void:
@@ -62,6 +64,7 @@ func set_route(state: ExpeditionRouteState) -> void:
 	for node in _preview_nodes:
 		_by_id[String(node["id"])] = node
 	_compute_reachable()
+	_selected_path.clear()
 	for node in _preview_nodes:
 		_make_button(node)
 	if not _by_id.has(_selected_id):
@@ -73,8 +76,17 @@ func select_node(node_id: String) -> void:
 	if not _buttons.has(node_id):
 		return
 	_selected_id = node_id
+	_selected_path.clear()
+	if _route != null:
+		for id in _route.get_choice_preview(node_id).get("path_ids", []):
+			_selected_path[str(id)] = true
 	_restyle_buttons()
 	queue_redraw()
+
+
+func set_overview_height(height: float) -> void:
+	_overview_height = maxf(440.0, height)
+	_layout_map()
 
 
 func get_depth_scroll_position(depth: int) -> int:
@@ -107,7 +119,7 @@ func _make_button(node: Dictionary) -> void:
 	content.offset_bottom = -7
 	content.add_theme_constant_override("separation", 2)
 	button.add_child(content)
-	var marker: Texture2D = CatabasePaintedIconCatalog.route_node_icon(node)
+	var marker: Texture2D = CatabasePaintedIconCatalog.map_node_icon(node)
 	var kind := _label("Kind", "?" if presentation_kind == "unknown" and marker == null else "", 28)
 	kind.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	kind.custom_minimum_size.y = 49
@@ -125,15 +137,16 @@ func _make_button(node: Dictionary) -> void:
 		icon.offset_top = -24
 		icon.offset_right = 24
 		icon.offset_bottom = 24
-		icon.modulate = Color.WHITE if _is_emphasized(node) else Color(0.65, 0.67, 0.64, 0.72)
+		icon.modulate = _accent(node)
 		icon.set_meta("presentation_kind", presentation_kind)
 		kind.add_child(icon)
 	if bool(node.get("visited", false)) and not bool(node.get("completed", false)):
-		var current: Texture2D = CatabasePaintedIconCatalog.route_icon("current")
+		var current: Texture2D = CatabasePaintedIconCatalog.map_icon("current")
 		if current != null:
 			var badge := TextureRect.new()
 			badge.name = "CurrentPositionIcon"
 			badge.texture = current
+			badge.modulate = TEAL
 			badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -202,38 +215,39 @@ func _layout_map() -> void:
 	_rects.clear()
 	_depth_y.clear()
 	var canvas_width := maxf(size.x, 580.0)
-	var usable_width := canvas_width - LEFT - RIGHT
-	var card_width := (usable_width - 2.0 * GAP) / 3.0
-	var cursor_y := TOP
+	var usable_width := minf(canvas_width - LEFT - RIGHT, 720.0)
+	var map_left := (canvas_width - usable_width) * 0.5
+	var overview := _overview_height > 0.0
+	var pitch := (_overview_height - 90.0) / 20.0 if overview else ROW_HEIGHT
+	var extent := minf(30.0, pitch - 3.0) if overview else CARD_HEIGHT
+	var card_width := extent if overview else 78.0
+	var cursor_y := 58.0 if overview else TOP
 	var ordered_ids: Array[String] = []
 	for depth in range(1, 21):
 		_depth_y[depth] = cursor_y
-		var ordinary: Array[Dictionary] = []
-		var secrets: Array[Dictionary] = []
+		var layer: Array[Dictionary] = []
 		for node in _preview_nodes:
-			if int(node["depth"]) != depth:
-				continue
-			if bool(node["hidden"]):
-				secrets.append(node)
-			else:
-				ordinary.append(node)
-		ordinary.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["lane"]) < int(b["lane"]))
-		for index in ordinary.size():
-			var node: Dictionary = ordinary[index]
-			# Two choices occupy the outer lanes; convergences occupy the centre.
-			var lane := 1.0 if ordinary.size() == 1 else (float(index) * 2.0 if ordinary.size() == 2 else float(index))
-			var rect := Rect2(Vector2(LEFT + lane * (card_width + GAP), cursor_y), Vector2(card_width, CARD_HEIGHT))
+			if int(node["depth"]) == depth:
+				layer.append(node)
+		layer.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["lane"]) < int(b["lane"]))
+		var previous_right := map_left - GAP
+		for index in layer.size():
+			var node: Dictionary = layer[index]
+			# The same winding positions in both views preserve spatial orientation.
+			# Revealed passages occupy their own lane, never an inserted extra depth.
+			var fraction := 0.5
+			if layer.size() > 1:
+				fraction = 0.08 + 0.84 * float(index) / float(layer.size() - 1)
+			var drift := sin(float(depth) * 1.71 + float(index) * 0.9) * 0.065
+			fraction = float(node.get("map_x", clampf(fraction + drift, 0.0, 1.0)))
+			var right_limit := map_left + usable_width - card_width - (layer.size() - index - 1) * (card_width + GAP)
+			var x := clampf(map_left + fraction * (usable_width - card_width), previous_right + GAP, right_limit)
+			previous_right = x + card_width
+			var rect := Rect2(Vector2(x, cursor_y), Vector2(card_width, extent))
 			_place_button(String(node["id"]), rect)
 			ordered_ids.append(String(node["id"]))
-		cursor_y += ROW_HEIGHT
-		for secret in secrets:
-			# Revealed passages share a depth, but get a distinct inset row; they never overlap a lane.
-			var rect := Rect2(Vector2(LEFT + card_width * 0.5, cursor_y - 8.0),
-				Vector2(usable_width - card_width, CARD_HEIGHT))
-			_place_button(String(secret["id"]), rect)
-			ordered_ids.append(String(secret["id"]))
-			cursor_y += CARD_HEIGHT
-	custom_minimum_size.y = cursor_y + 38.0
+		cursor_y += pitch
+	custom_minimum_size.y = _overview_height if overview else cursor_y + 38.0
 	_restyle_buttons()
 	_set_keyboard_neighbors(ordered_ids)
 	queue_redraw()
@@ -241,11 +255,32 @@ func _layout_map() -> void:
 
 func _place_button(node_id: String, rect: Rect2) -> void:
 	_rects[node_id] = rect
-	if _buttons.has(node_id):
-		var button: Button = _buttons[node_id]
-		button.position = rect.position
-		button.size = rect.size
-
+	if not _buttons.has(node_id):
+		return
+	var button: Button = _buttons[node_id]
+	button.position = rect.position
+	var content := button.get_node("Content") as VBoxContainer
+	var overview := _overview_height > 0.0
+	content.offset_left = 0 if overview else 6
+	content.offset_right = 0 if overview else -6
+	content.offset_top = 0 if overview else 7
+	content.offset_bottom = 0 if overview else -7
+	for label_name in ["Title", "Reward", "Status"]:
+		content.get_node(label_name).visible = not overview and label_name == "Status"
+	var kind := content.get_node("Kind") as Label
+	kind.custom_minimum_size.y = rect.size.y if overview else 49.0
+	kind.add_theme_font_size_override("font_size", 16 if overview else 28)
+	var icon := kind.get_node_or_null("DestinationIcon") as TextureRect
+	if icon != null:
+		var half := rect.size.y * 0.44 if overview else 24.0
+		icon.offset_left = -half
+		icon.offset_right = half
+		icon.offset_top = -half
+		icon.offset_bottom = half
+	var badge := kind.get_node_or_null("CurrentPositionIcon") as TextureRect
+	if badge != null:
+		badge.visible = not overview
+	button.size = rect.size
 
 func _set_keyboard_neighbors(ordered_ids: Array[String]) -> void:
 	for index in ordered_ids.size():
@@ -285,8 +320,8 @@ func _restyle_buttons() -> void:
 		var button: Button = _buttons[node_id]
 		var selected: bool = String(node_id) == _selected_id
 		var border := GOLD if selected else _accent(node)
-		var fill := Color(0.97, 0.91, 0.73, 0.56) if selected else Color(0.96, 0.90, 0.75, 0.18)
-		button.add_theme_stylebox_override("normal", _style(fill, border if selected else Color(0.38, 0.29, 0.17, 0.10), 2 if selected else 1))
+		var fill := Color.TRANSPARENT
+		button.add_theme_stylebox_override("normal", _style(fill, Color.TRANSPARENT, 0))
 		button.add_theme_stylebox_override("hover", _style(Color(1, 0.96, 0.78, 0.30), border, 1))
 		button.add_theme_stylebox_override("pressed", _style(Color(0.54, 0.36, 0.13, 0.16), GOLD, 1))
 		var focus := _style(Color.TRANSPARENT, INK, 2)
@@ -302,17 +337,19 @@ func _style(fill: Color, border: Color, border_width: int) -> StyleBoxFlat:
 	style.bg_color = fill
 	style.border_color = border
 	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(7)
+	style.set_corner_radius_all(24 if _overview_height > 0.0 else 7)
 	return style
 
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), BG)
 	_draw_parchment()
+	_draw_motifs()
 	var font: Font = ThemeDB.fallback_font
 	draw_string(font, Vector2(LEFT, 29), "LE CHEMIN DES OMBRES", HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 20, INK)
 	draw_string(font, Vector2(LEFT, 50), "Les routes se dessinent. Leurs secrets restent à découvrir.", HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 12, MUTED)
-	_draw_legend(font)
+	if _overview_height <= 0.0:
+		_draw_legend(font)
 	for node in _preview_nodes:
 		var from_id := String(node["id"])
 		if not _rects.has(from_id):
@@ -327,27 +364,37 @@ func _draw() -> void:
 			var reachable: bool = _reachable.has(from_id) and _reachable.has(target_id)
 			if bool(node["completed"]) and bool(target_node["available"]):
 				reachable = true
-			var line_color := GOLD if travelled else (Color("667055") if reachable else Color("b3a07d"))
+			var planned := _selected_path.has(from_id) and _selected_path.has(str(target_id))
+			var line_color := RED if travelled else (Color("667055") if reachable else Color("b3a07d"))
+			if planned and not travelled:
+				line_color = TEAL
 			var start := Vector2(source.get_center().x, source.end.y - 4.0)
 			var finish := Vector2(target.get_center().x, target.position.y)
+			if _overview_height > 0.0:
+				var direction := (target.get_center() - source.get_center()).normalized()
+				start = source.get_center() + direction * source.size.y * 0.55
+				finish = target.get_center() - direction * target.size.y * 0.55
 			var points := PackedVector2Array()
-			for step in 13:
-				var t := float(step) / 12.0
-				points.append(start.lerp(finish, t) + Vector2(sin(t * PI * 2.0) * 6.0, 0))
-			if travelled:
-				draw_polyline(points, line_color, 2.7, true)
+			var segments := maxi(2, ceili(start.distance_to(finish) / 4.0))
+			for step in segments + 1:
+				var t := float(step) / float(segments)
+				points.append(start.lerp(finish, t) + Vector2(sin(t * PI * 2.0) * 3.0, 0))
+			if travelled or planned:
+				draw_polyline(points, line_color, 2.3, true)
 			else:
-				for step in range(0, 12, 2):
-					draw_line(points[step], points[step + 1], line_color, 1.6, true)
-		var center := Vector2(source.get_center().x, source.position.y + 31.5)
+				# Fixed-length marks stay readable at both zoom levels.
+				for step in range(0, segments, 2):
+					draw_line(points[step], points[step + 1], line_color, 1.3, true)
+		var center := source.get_center() if _overview_height > 0.0 else Vector2(source.get_center().x, source.position.y + 31.5)
 		var accent := _accent(node)
-		draw_circle(center, 25, BG.lightened(0.055))
-		draw_arc(center, 26, -0.12, TAU - 0.20, 48, accent, 1.6, true)
-		if bool(node.get("visited", false)):
-			draw_arc(center, 29, 0.4, TAU + 0.2, 48, accent, 1.0, true)
-		_draw_symbol(CatabasePaintedIconCatalog.route_presentation_kind(node), center, accent)
+		var radius := source.size.y * 0.48 if _overview_height > 0.0 else 26.0
+		if from_id == _selected_id or bool(node.get("available", false)) or (bool(node.get("visited", false)) and not bool(node.get("completed", false))):
+			# A loose ink circle marks interaction, leaving ordinary glyphs unframed.
+			draw_arc(center, radius, -0.12, TAU - 0.28, 40, RED if from_id == _selected_id else accent, 1.5, true)
+		if _overview_height <= 0.0:
+			_draw_symbol(CatabasePaintedIconCatalog.route_presentation_kind(node), center, accent)
 	for depth in _depth_y:
-		var y: float = _depth_y[depth] + 44.0
+		var y: float = _depth_y[depth] + (15.0 if _overview_height > 0.0 else 44.0)
 		draw_string(font, Vector2(9, y), ROMANS[int(depth) - 1], HORIZONTAL_ALIGNMENT_LEFT, 35, 12, GOLD.darkened(0.25))
 		draw_line(Vector2(39, y - 4), Vector2(46, y - 4), MUTED, 1.0)
 	draw_string(font, Vector2(LEFT, custom_minimum_size.y - 14),
@@ -355,7 +402,7 @@ func _draw() -> void:
 
 
 func _draw_legend(font: Font) -> void:
-	var captions := ["À choisir", "Résolue", "?  Inconnue", "Grisé : autre chemin"]
+	var captions := ["À choisir", "Résolue", "Spirale : inconnue", "Grisé : autre chemin"]
 	var colors := [TEAL, GOLD, INK, MUTED]
 	var widths: Array[float] = []
 	var total_width := 0.0
@@ -383,7 +430,7 @@ func _status_label(node: Dictionary) -> String:
 		return "EN COURS"
 	if bool(node["available"]):
 		return "À CHOISIR"
-	return "À VENIR" if _reachable.has(String(node["id"])) else "AUTRE CHEMIN"
+	return "À VENIR" if _reachable.has(String(node["id"])) else "AUTRE VOIE"
 
 
 func _accent(node: Dictionary) -> Color:
@@ -401,9 +448,32 @@ func _accent(node: Dictionary) -> Color:
 	return Color("79664a")
 
 
+func _draw_motifs() -> void:
+	# Thin Greek meanders frame the paper; laurel leaves mark the major thresholds.
+	var ink := Color(0.32, 0.23, 0.12, 0.16)
+	for side in [0, 1]:
+		var x := 3.0 if side == 0 else size.x - 14.0
+		for y in range(88, int(size.y) - 28, 36):
+			draw_polyline(PackedVector2Array([
+				Vector2(x, y + 32), Vector2(x, y), Vector2(x + 10, y),
+				Vector2(x + 10, y + 23), Vector2(x + 5, y + 23), Vector2(x + 5, y + 8),
+			]), ink, 1.0, true)
+	for depth in [7, 15, 20]:
+		var y := float(_depth_y.get(depth, TOP))
+		var c := Vector2(size.x - 30, y + 12)
+		draw_arc(c, 12, -1.2, 1.2, 16, ink, 1.0, true)
+		for leaf in 4:
+			var angle := -0.9 + leaf * 0.6
+			var point := c + Vector2(cos(angle), sin(angle)) * 12.0
+			draw_line(point, point + Vector2(5, -4), ink, 2.0, true)
+
+
 func _draw_parchment() -> void:
 	var paper: Texture2D = ART_THEME.texture("route_parchment")
 	if paper != null:
+		if _overview_height > 0.0:
+			draw_texture_rect(paper, Rect2(Vector2.ZERO, size), false)
+			return
 		# Keep the painted corners only at the ends. Repeat the quiet centre at
 		# uniform scale so ornaments never reappear behind destinations midway.
 		var scale_factor := size.x / float(paper.get_width())
@@ -437,8 +507,8 @@ func _draw_parchment() -> void:
 
 
 func _draw_symbol(kind: String, c: Vector2, ink: Color) -> void:
-	if CatabasePaintedIconCatalog.route_icon(kind) != null:
-		return # The TextureRect on the destination button owns the painted symbol.
+	if CatabasePaintedIconCatalog.map_icon(kind) != null:
+		return # The TextureRect on the destination button owns the drawn symbol.
 	if kind == "unknown":
 		return
 	if kind in ["normal", "elite", "boss"]:

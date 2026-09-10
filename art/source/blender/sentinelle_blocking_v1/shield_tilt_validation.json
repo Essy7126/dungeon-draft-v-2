@@ -1,0 +1,17 @@
+{
+  "revision": "shield-diagonal-1",
+  "samples": 194,
+  "hand_control_xyz_degrees_guard": [
+    0,
+    -32,
+    -10
+  ],
+  "hand_control_xyz_degrees_thrust": [
+    0,
+    -32,
+    -2
+  ],
+  "max_unaffected_bone_matrix_and_grip_delta": 0.0,
+  "technical_passed": true,
+  "artistic_approved": false
+}

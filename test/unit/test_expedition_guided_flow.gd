@@ -82,7 +82,10 @@ func test_halt_is_a_service_step_and_never_a_single_reward_choice() -> void:
 	var session := GameManager.expedition
 	assert_true(ExpeditionRouteCatalog.is_halt(str(session.route.get_current_node().kind)))
 	assert_eq(FLOW.required_step(session), "hub")
-	assert_true(bool(session.use_hub_service("lore", GameManager.run_inventory, GameManager.item_catalog).success))
+	var services := session.hub_services(GameManager.item_catalog)
+	assert_false(services.is_empty())
+	session.character.unit.current_hp -= 20
+	assert_true(bool(session.use_hub_service(str(services[0].id), GameManager.run_inventory, GameManager.item_catalog).success))
 	assert_eq(FLOW.required_step(session), "hub", "Using one service keeps the halt open")
 	assert_true(bool(session.claim("leave_hub", GameManager.run_inventory, GameManager.item_catalog).success))
 	assert_eq(FLOW.required_step(session), "map")

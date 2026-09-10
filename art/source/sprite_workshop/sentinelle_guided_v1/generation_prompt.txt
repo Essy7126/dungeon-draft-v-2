@@ -1,0 +1,13 @@
+Use case: identity-preserve.
+Asset type: four key-pose painted game sprites for a spear thrust, a small production experiment.
+
+Input image 1 is the sole authority for character identity, original painted art style, armor design, proportions, colors and equipment.
+Input image 2 is a four-panel technical pose reference ONLY: use its body mechanics, foot placement, camera, spear trajectory and shield orientation. It is not an art-style reference.
+
+Create one large square 2 by 2 sprite sheet, with exactly four full-body drawings of the SAME Sentinelle character from image 1. Read the poses of image 2 in row-major order: top-left guard, top-right loading, bottom-left thrust contact, bottom-right braking after contact. Use the same fixed orthographic three-quarter game camera in all four cells. Keep the character's original compact armored proportions and equal scale; interpret the skeleton's motion without lengthening limbs to copy mannequin proportions.
+
+Preserve the original enclosed bronze helmet with two turquoise eyes, broad rounded domed pauldrons, layered ivory and bronze torso plates, original gauntlets and boots, weathered bronze oval shield with the same angular turquoise crack/lambda motif and dark teal lower rim, and original spear. Match the original hand-painted sprite with crisp dark contours, controlled color patches, ivory highlights and restrained weathering; do not redesign it into a realistic 3D render or a new armor set.
+
+Mechanics: the spear stays in the anatomical RIGHT hand, the shield in the anatomical LEFT hand, no hand swapping. In this fixed view the thrust travels toward screen lower-right as in the guide. The front left foot steps and plants toward the target; the rear right leg pushes and the rear heel rises at contact. Coordinate right shoulder, elbow, wrist, chest and pelvis with the forward weight shift. The front foot remains planted from contact to braking. The left shield stays held diagonally, attached plausibly to the forearm and clear of the spear. Keep limb anatomy and weapon lengths consistent between poses; clearly separate the boots and legs.
+
+Composition: equal four cells, generous empty margins, full spear and shield and both feet visible in each cell without crossing cell boundaries. Preserve the guide's same framing across cells, including the actual forward movement of the body, instead of independently centering every body. Request genuine transparent RGBA background and clean sprite silhouettes. No floor, cast shadow, grid, colored bones, construction lines, labels, letters, panel borders, effects, watermark or checkerboard pattern. Draw the character only, not the guide.

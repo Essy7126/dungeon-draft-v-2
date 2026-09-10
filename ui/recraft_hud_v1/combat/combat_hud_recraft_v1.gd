@@ -15,11 +15,12 @@ const ITEM_SLOT_SCENE := preload(
 )
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
 const MATERIAL_SURFACE := preload("res://ui/recraft_hud_v1/theme/hud_material_surface.gd")
+const PAINTED_SHORTCUT := preload("res://ui/theme/painted_shortcut.gd")
 const VISUAL_THEME_FACTORY := preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
 const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
-	"res://data/ui/hud_visual_skin_neutral_v1.tres"
+	"res://data/ui/hud_visual_skin_achilles_v1.tres"
 )
 const DEFAULT_CHARACTER_THEME: CharacterHUDThemeData = preload(
 	"res://data/ui/elf_hud_theme.tres"
@@ -347,7 +348,7 @@ func _configure_bar_tabs() -> void:
 				tab_button.add_theme_stylebox_override(style_name, tab_style)
 	_show_spells_button.text = "SORTS" if premium else "▲"
 	_show_items_button.text = "OBJETS" if premium else "▼"
-	_show_spells_button.tooltip_text = "Afficher les sorts — raccourcis 1 à 4."
+	_show_spells_button.tooltip_text = "Afficher les sorts — raccourcis indiqués sur chaque icône."
 	_show_items_button.tooltip_text = "Afficher les objets — raccourcis 1 à 4."
 	_apply_bar_mode()
 
@@ -1492,17 +1493,38 @@ func _apply_character_theme(unit) -> void:
 		_map_button.icon = CatabaseUITheme.icon("nav", "map")
 		_skills_button.icon = CatabaseUITheme.icon("nav", "tree")
 		_attributes_button.icon = CatabasePaintedIconCatalog.emblem_icon("achilles", CatabaseUITheme.icon("nav", "journal"))
+	if _premium_skin_active():
+		_inventory_button.accessibility_name = "Inventaire · I"
+		_map_button.accessibility_name = "Carte · C"
+		_skills_button.accessibility_name = "Compétences · K"
+		_attributes_button.accessibility_name = "Caractéristiques · P"
+		_inventory_button.icon = preload("res://assets/catabase/emerald_icons_v2/nav/equipment.png")
+		_map_button.icon = preload("res://assets/catabase/emerald_icons_v2/nav/map.png")
+		_skills_button.icon = preload("res://assets/catabase/emerald_icons_v2/nav/tree.png")
+		_attributes_button.icon = preload("res://assets/catabase/emerald_icons_v2/nav/attributes.png")
+		_move_btn.set_icon(visual_skin.icon_move)
+		_hp_bar.set_frame_texture(null)
+		_hp_bar.set_refined_style(true)
+		_move_btn.set_background_texture(null)
+		_move_btn.set_refined_style(true)
+		_end_btn.set_background_texture(null)
+		_end_btn.set_refined_style(true, true)
 	# Painted icons retain their own colors; other runs keep the skin's tint.
 	for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
-		var painted := GameManager.expedition != null
+		var painted := GameManager.expedition != null or _premium_skin_active()
 		CatabaseUITheme.bind_button_motion(utility_button, painted)
 		if not utility_button.has_meta("catabase_icon_layout"):
 			utility_button.set_meta("catabase_icon_layout", {
 				"expand_icon": utility_button.expand_icon,
+				"texture_filter": utility_button.texture_filter,
 				"width_override": utility_button.has_theme_constant_override("icon_max_width"),
 				"width": utility_button.get_theme_constant("icon_max_width"),
 			})
 		var original: Dictionary = utility_button.get_meta("catabase_icon_layout")
+		utility_button.texture_filter = (
+			CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS if painted
+			else int(original.get("texture_filter", CanvasItem.TEXTURE_FILTER_PARENT_NODE))
+		)
 		utility_button.expand_icon = true if painted else bool(original.expand_icon)
 		if painted or bool(original.width_override):
 			utility_button.add_theme_constant_override("icon_max_width", 24 if painted else int(original.width))
@@ -1512,9 +1534,10 @@ func _apply_character_theme(unit) -> void:
 		var pressed := visual_skin.text_secondary if visual_skin != null else Color.WHITE
 		var disabled := visual_skin.text_muted if visual_skin != null else Color("788c88")
 		utility_button.add_theme_color_override("icon_normal_color", Color.WHITE if painted else normal)
-		utility_button.add_theme_color_override("icon_hover_color", Color.WHITE if painted else normal)
+		utility_button.add_theme_color_override("icon_hover_color", Color(1.25, 1.18, 1.08) if painted else normal)
 		utility_button.add_theme_color_override("icon_pressed_color", Color("c5dfd9") if painted else pressed)
 		utility_button.add_theme_color_override("icon_disabled_color", Color("788c88") if painted else disabled)
+		PAINTED_SHORTCUT.apply(utility_button, painted)
 	_utility_dock.visible = refined
 	_inventory_button.visible = refined and (
 		GameManager.expedition != null or _premium_skin_active() or not _compact_layout_active()
@@ -1676,6 +1699,8 @@ func _base_chassis_visual_scale(viewport_width: float) -> float:
 
 func _chassis_visual_scale(viewport_width: float) -> float:
 	var base_scale := _base_chassis_visual_scale(viewport_width)
+	if _premium_skin_active():
+		return clampf((viewport_width - 24.0) / layout_data.overall_width, 0.62, base_scale)
 	if not _clean_skin_active() or _spell_buttons.size() <= 4:
 		return base_scale
 	var slot_count := _spell_buttons.size() + 1
@@ -1812,6 +1837,8 @@ func _reparent_attack_button(new_parent: Node) -> void:
 
 func _set_clean_composition(enabled: bool) -> void:
 	var premium := enabled and _premium_skin_active()
+	_ap_badge.apply_tactical_layout(premium, 1.0)
+	_mp_badge.apply_tactical_layout(premium, 1.0)
 	_action_resources_anchor.visible = enabled and not premium
 	_move_action_host.visible = enabled
 	_turn_label.visible = not enabled
@@ -1820,7 +1847,7 @@ func _set_clean_composition(enabled: bool) -> void:
 		if premium:
 			_restore_control_home(_ap_badge, _ap_badge_home, _ap_badge_home_index)
 			_restore_control_home(_mp_badge, _mp_badge_home, _mp_badge_home_index)
-			_reparent_control(_resource_badges, _character_row)
+			_reparent_control(_resource_badges, _action_resources_anchor)
 		else:
 			_restore_control_home(
 				_resource_badges,
@@ -1844,9 +1871,15 @@ func _reparent_control(control: Control, new_parent: Node) -> void:
 	if control.get_parent() == new_parent:
 		return
 	var scene_owner := control.owner
+	var owned_children: Array[Node] = []
+	for child in control.find_children("*", "", true, false):
+		if child.owner == scene_owner:
+			owned_children.append(child)
 	control.owner = null
 	control.reparent(new_parent)
 	control.owner = scene_owner
+	for child in owned_children:
+		child.owner = scene_owner
 
 
 func _restore_control_home(control: Control, home: Node, home_index: int) -> void:
@@ -2075,18 +2108,18 @@ func _apply_premium_chassis_layout(
 		_move_action_host,
 		Rect2(
 			action_left + 12.0 * visual_scale,
-			content_top + 14.0 * visual_scale,
-			90.0 * visual_scale,
-			112.0 * visual_scale
+			content_top + 48.0 * visual_scale,
+			84.0 * visual_scale,
+			86.0 * visual_scale
 		)
 	)
 	_set_control_rect(
 		_spell_anchor,
 		Rect2(
 			action_left + layout_data.premium_ability_offset * visual_scale,
-			content_top + 4.0 * visual_scale,
+			content_top,
 			ability_width,
-			132.0 * visual_scale
+			142.0 * visual_scale
 		)
 	)
 	_set_control_rect(
@@ -2098,32 +2131,37 @@ func _apply_premium_chassis_layout(
 			chassis_height
 		)
 	)
-	_action_resources_anchor.visible = false
+	_action_resources_anchor.visible = true
+	_action_resources_plate.visible = false
+	_set_control_rect(_action_resources_anchor, Rect2(
+		action_left + layout_data.premium_ability_offset * visual_scale,
+		content_top + 4.0 * visual_scale, 220.0 * visual_scale, maxf(32.0 * visual_scale, 28.0)))
+	_resource_badges.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_bar_toggle_anchor.visible = true
 	_set_control_rect(
 		_bar_toggle_anchor,
 		Rect2(
 			action_left + (
 				layout_data.premium_ability_offset
-				+ (layout_data.premium_ability_width - 188.0) * 0.5
+				+ layout_data.premium_ability_width - 228.0
 			) * visual_scale,
 			content_top + 3.0 * visual_scale,
-			188.0 * visual_scale,
-			22.0 * visual_scale
+			228.0 * visual_scale,
+			maxf(32.0 * visual_scale, 28.0)
 		)
 	)
 	_set_control_rect(
 		_basic_attack_host,
-		Rect2(0.0, 14.0 * visual_scale, visual_size, 112.0 * visual_scale)
+		Rect2(0.0, 48.0 * visual_scale, visual_size, 90.0 * visual_scale)
 	)
 	for slots_center in [_spell_slots_center, _item_slots_center]:
 		_set_control_rect(
 			slots_center,
 			Rect2(
 				0.0,
-				14.0 * visual_scale,
+				48.0 * visual_scale,
 				ability_width,
-				112.0 * visual_scale
+				90.0 * visual_scale
 			)
 		)
 	_selected_spell_plate.add_theme_font_size_override(
@@ -2155,7 +2193,7 @@ func _apply_context_feedback_layout(
 	var feedback_height := clampf(40.0 * visual_scale, 34.0, 44.0)
 	var feedback_gap := clampf(12.0 * visual_scale, 10.0, 16.0)
 	var feedback_width := clampf(720.0 * visual_scale, 560.0, 760.0)
-	var interaction_reserve := 40.0 * visual_scale if _premium_skin_active() else 0.0
+	var interaction_reserve := (maxf(28.0 * visual_scale, _selected_spell_plate.get_combined_minimum_size().y) + 12.0 * visual_scale) if _premium_skin_active() else 0.0
 	_context_feedback.offset_left = -feedback_width * 0.5
 	_context_feedback.offset_right = feedback_width * 0.5
 	_context_feedback.offset_bottom = (
@@ -2366,47 +2404,38 @@ func _apply_layout_metrics() -> void:
 	)
 	var compact_turn_height := maxf(_character_panel_size.y - 16.0 * _base_chassis_visual_scale(viewport_width), 64.0)
 	var turn_content_height := (
-		112.0 * _chassis_visual_scale(viewport_width)
+		136.0 * _chassis_visual_scale(viewport_width)
 		if _premium_skin_active()
 		else compact_turn_height
 		if _compact_layout_active()
 		else (118.0 if _refined_skin_active() else 68.0)
 	)
 	_turn_content.custom_minimum_size = Vector2(
-		337.0 * _chassis_visual_scale(viewport_width)
+		230.0 * _chassis_visual_scale(viewport_width)
 		if _premium_skin_active()
 		else end_turn_size.x,
 		turn_content_height if _compact_layout_active() else METRICS.scaled(turn_content_height, _layout_scale)
 	)
 	if _premium_skin_active():
 		var premium_scale := _chassis_visual_scale(viewport_width)
-		_set_control_rect(
-			_end_btn,
-			Rect2(
-				0.0,
-				25.0 * premium_scale,
-				end_turn_size.x,
-				end_turn_size.y
-			)
-		)
-		var utility_size := (30.0 if GameManager.expedition != null else 52.0) * premium_scale
-		var utility_gap := (4.0 if GameManager.expedition != null else 8.0) * premium_scale
+		_set_control_rect(_end_btn, Rect2(
+			(230.0 * premium_scale - end_turn_size.x) * 0.5, 6.0 * premium_scale,
+			end_turn_size.x, end_turn_size.y))
+		var utility_size := maxf(42.0 * premium_scale, 36.0)
+		var utility_count := 0
 		for utility_button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
 			utility_button.custom_minimum_size = Vector2.ONE * utility_size
-		_utility_dock.add_theme_constant_override(
-			"separation", int(roundf(utility_gap))
-		)
-		var utilities_below_turn := GameManager.expedition != null and viewport_width < 1100.0
-		var utility_width := (132.0 if GameManager.expedition != null else 112.0) * premium_scale
-		_set_control_rect(
-			_utility_dock,
-			Rect2(
-				(end_turn_size.x - utility_width) * 0.5 if utilities_below_turn else 196.0 * premium_scale,
-				_end_btn.position.y + end_turn_size.y + 4.0 * premium_scale if utilities_below_turn else 30.0 * premium_scale,
-				utility_width,
-				utility_size
-			)
-		)
+			utility_button.add_theme_constant_override("icon_max_width", int(utility_size - 4.0))
+			utility_count += int(utility_button.visible)
+		var utility_width := utility_count * utility_size + maxi(utility_count - 1, 0) * 4.0
+		_utility_dock.add_theme_constant_override("separation", 4)
+		_set_control_rect(_utility_dock, Rect2(
+			(230.0 * premium_scale - utility_width) * 0.5,
+			_end_btn.position.y + end_turn_size.y + 12.0 * premium_scale,
+			utility_width, utility_size))
+		_ap_badge.apply_tactical_layout(true, premium_scale)
+		_mp_badge.apply_tactical_layout(true, premium_scale)
+
 	elif _compact_layout_active():
 		var compact_scale := _chassis_visual_scale(viewport_width)
 		var end_top := 11.0 * compact_scale
@@ -2504,9 +2533,9 @@ func _apply_bar_toggle_layout(viewport_width: float) -> void:
 		_premium_bar_tabs.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		_premium_bar_tabs.add_theme_constant_override("separation", maxi(roundi(4.0 * tab_scale), 3))
 		for tab_button in [_show_spells_button, _show_items_button]:
-			tab_button.custom_minimum_size = Vector2(90.0, 22.0) * tab_scale
+			tab_button.custom_minimum_size = Vector2(110.0 * tab_scale, maxf(32.0 * tab_scale, 28.0))
 			tab_button.add_theme_font_override("font", visual_skin.font_regular)
-			tab_button.add_theme_font_size_override("font_size", maxi(roundi(11.0 * tab_scale), 10))
+			tab_button.add_theme_font_size_override("font_size", maxi(roundi(14.0 * tab_scale), 12))
 		return
 	var toggle_scale := (
 		_chassis_visual_scale(viewport_width)

@@ -1,0 +1,11 @@
+Use case: stylized-concept.
+Create a NEW original ACHILLES playable character in the simple, clean 2D character-design language of DOFUS and WAKFU in-game sprites and Flash animation. Strongly stylized, graphic and economical. HIGH RESOLUTION, VERY LOW DETAIL. One single full-body character, portrait canvas, three-quarter standing game view.
+
+A proud, agile adult Greek hero: slightly enlarged expressive head, slim short torso, narrow waist, slender long legs, tapered simple arms, readable hands and simple feet. Adult cartoon proportions around 5.5 to 6 heads tall. Confident face drawn with just eyebrows, simple eyes, a small angular nose and one mouth line. Golden hair in THREE solid pointed locks. Small open bronze helmet with ONE solid swept-back rust-red crest shape. No strands or separate feathers.
+
+Costume consists of only a handful of shapes: a plain ivory sleeveless tunic with a small bronze shoulder clasp; a dark teal belt and two short teal cloth tails; simple plain brown fitted boots with one bronze cuff; one plain bronze wrist band. No breastplate segmentation, no straps crossing the chest, no decorative seams, no armor engraving. Slim arms with absolutely NO muscle lines. Legs use smooth skin-color shapes without knee anatomy.
+One simple slim upright spear in his anatomical RIGHT hand. One small round teal shield on his anatomical LEFT forearm, bronze rim and a SINGLE ivory chevron. Shield held beside his hip leaving both legs visible.
+
+Crisp confident dark colored outlines, perfectly smooth FLAT COLOR FILLS. One small HARD-EDGED shadow shape per major area, maximum TWO tones per material. No gradients, texture, brushwork, hatching, highlights, reflections, realistic lighting, ambient occlusion, muscular anatomy or tiny details. Think a finished clean cel-animation drawing that reads beautifully as a 100-pixel-tall game sprite. The large image should show clean generous graphic shapes, not added detail.
+
+Entire body and all equipment visible, elegant lively balanced stance, face and silhouette very readable. Simple adult cartoon hero, not chibi, not realistic fantasy illustration. Genuine transparent background, only solid character with clean antialiased edges. NO haze, glow, floor, cast shadow, background gradient, text, label or checkerboard.

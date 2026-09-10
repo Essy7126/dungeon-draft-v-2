@@ -2698,6 +2698,13 @@ func _is_evolution_locked() -> bool:
 
 func _exit_tree() -> void:
 	_begin_battle_shutdown()
+	# The old grid owns its occupants, and each Unit holds a grid_context.
+	# Break that cycle when the scene actually leaves, after outcome capture.
+	# A persistent hero may already belong to the next battle's grid.
+	if grid != null:
+		for unit: Unit in grid.get_units():
+			if unit.grid_context == grid:
+				unit.grid_context = null
 	if GameManager.discipline_xp_gained.is_connected(
 		_on_discipline_xp_gained
 	):

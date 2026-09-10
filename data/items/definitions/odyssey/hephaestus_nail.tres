@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
 [ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="3_parameter"]
+
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_hephaestus_nail.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="ArmorLoss"]
 script = ExtResource("3_parameter")
@@ -37,6 +39,9 @@ parameters = Array[ItemReactiveParameterData]([SubResource("ArmorLoss"), SubReso
 
 [resource]
 script = ExtResource("1_item")
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_hephaestus_nail"
 display_name = "Clou d’Héphaïstos"
 description = "Une collision provoquée retire 40 Armure ; la prochaine Frappe touche la case derrière pour 50 %."

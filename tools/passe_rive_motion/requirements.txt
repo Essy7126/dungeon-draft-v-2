@@ -1,0 +1,2 @@
+# Local CPU cutout, authorized by the user. Python 3.12 used for this pilot.
+rembg[cpu]==2.0.84

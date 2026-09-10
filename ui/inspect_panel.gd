@@ -3,10 +3,7 @@
 const KeywordText = preload("res://ui/keyword_rich_text_label.gd")
 const Glossary = preload("res://ui/combat_glossary.gd")
 const ParisInspection = preload("res://ui/paris_enemy_inspection.gd")
-const VisualThemeFactory = preload(
-	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
-)
-const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
+const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_achilles_v1.tres")
 
 var _panel: PanelContainer
 var _title: Label
@@ -37,7 +34,7 @@ func _exit_tree() -> void:
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
-	_panel.theme = VisualThemeFactory.build(VISUAL_SKIN)
+	_panel.theme = PremiumUI.get_theme()
 	_panel.theme_type_variation = &"HudInspect"
 	_panel.anchor_left = 1.0
 	_panel.anchor_right = 1.0
@@ -87,6 +84,7 @@ func _build_ui() -> void:
 	root.add_child(sep)
 
 	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(scroll)
 
@@ -353,7 +351,7 @@ func _add_details_toggle(unit) -> void:
 	var btn := Button.new()
 	btn.theme_type_variation = &"HudUtilityButton"
 	btn.text = "Details v" if _details_expanded else "Details >"
-	btn.custom_minimum_size = Vector2(286, 28)
+	btn.custom_minimum_size = Vector2(0, 28)
 	btn.pressed.connect(func():
 		_details_expanded = not _details_expanded
 		show_unit(unit, _locked)
@@ -454,7 +452,7 @@ func _add_spell_row(unit, spell: Spell) -> void:
 	label.bbcode_enabled = true
 	label.fit_content = true
 	label.scroll_active = false
-	label.custom_minimum_size = Vector2(286, 0)
+	label.custom_minimum_size = Vector2.ZERO
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.mouse_filter = Control.MOUSE_FILTER_STOP
 	label.text = "%s - %s" % [spell.spell_name, _spell_summary(spell, unit)]
@@ -494,14 +492,14 @@ func _add_section(text: String) -> void:
 func _add_line(name: String, value: String) -> void:
 	var label := KeywordText.new()
 	label.theme_type_variation = &"HudRichText"
-	label.custom_minimum_size = Vector2(286, 0)
+	label.custom_minimum_size = Vector2.ZERO
 	label.set_keyword_text(Glossary.annotate_text("%s : %s" % [name, value]))
 	_content.add_child(label)
 
 func _add_paragraph(text: String) -> void:
 	var label := KeywordText.new()
 	label.theme_type_variation = &"HudRichText"
-	label.custom_minimum_size = Vector2(286, 0)
+	label.custom_minimum_size = Vector2.ZERO
 	label.add_theme_color_override("default_color", VISUAL_SKIN.text_secondary)
 	label.set_keyword_text(Glossary.annotate_text(text))
 	_content.add_child(label)

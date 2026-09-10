@@ -268,6 +268,9 @@ func _advance_to_halt(manager: ReliabilityManager, failing_entry_path := "") -> 
 func test_sanctuary_bridge_uses_real_currency_receipts_inventory_and_return_boundary() -> void:
 	var manager := _manager()
 	assert_true(manager.start_expedition(2401))
+	# Preserve the universal services of an existing v3 checkpoint.
+	manager.expedition.route.initialize(2401, 3)
+	manager.expedition.route.choose_node("d01_0")
 	_advance_to_halt(manager)
 	var context := manager.get_sanctuary_context()
 	assert_eq(context.mode, "halt")

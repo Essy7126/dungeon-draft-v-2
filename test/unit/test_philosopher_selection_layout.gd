@@ -17,6 +17,8 @@ class AdventureManager:
 
 func test_roster_clips_cards_away_from_note_and_focus_reveals_sixth_hero() -> void:
 	var screen := SCREEN_SCENE.instantiate() as CharacterSelectionScreen
+	# Exercise archived content explicitly without exposing it in the public menu.
+	screen.include_archived_adventures = true
 	add_child_autofree(screen)
 	await wait_process_frames(3)
 	assert_eq(screen._roster_buttons.size(), 6)
@@ -56,6 +58,8 @@ func test_roster_clips_cards_away_from_note_and_focus_reveals_sixth_hero() -> vo
 
 func test_visible_trial_card_activates_its_own_run_and_displays_its_chapter() -> void:
 	var screen := SCREEN_SCENE.instantiate() as CharacterSelectionScreen
+	# Exercise archived content explicitly without exposing it in the public menu.
+	screen.include_archived_adventures = true
 	add_child_autofree(screen)
 	await wait_process_frames(3)
 	var entries := screen.get_entries()

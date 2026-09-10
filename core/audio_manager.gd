@@ -19,6 +19,14 @@ func _ready() -> void:
 	add_child(_sfx)
 
 
+func _exit_tree() -> void:
+	# Release active playback before the audio server shuts down.
+	for player: AudioStreamPlayer in [_musique, _sfx]:
+		if is_instance_valid(player):
+			player.stop()
+			player.stream = null
+
+
 func play_music(stream: AudioStream, volume_db: float = 0.0) -> void:
 	if _musique.stream == stream and _musique.playing:
 		return

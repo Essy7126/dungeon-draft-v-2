@@ -26,6 +26,8 @@ var screen: CharacterSelectionScreen
 
 func before_each() -> void:
 	screen = SCREEN_SCENE.instantiate() as CharacterSelectionScreen
+	# Exercise archived content explicitly without exposing it in the public menu.
+	screen.include_archived_adventures = true
 	add_child_autofree(screen)
 	await wait_process_frames(3)
 

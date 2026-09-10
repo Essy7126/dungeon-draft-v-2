@@ -1,0 +1,43 @@
+{
+  "revision": "sentinelle_kit_v7",
+  "date": "2026-09-10",
+  "git_head": "2473c335fc11ccb8dfe1cb8257b0a4ee406d1788",
+  "artistic_status": "new_proposal_after_user_feedback",
+  "web": {
+    "passed": true,
+    "report": "artifacts/dev/spine-kit-web-1789039495389/report.json",
+    "clips": 24
+  },
+  "godot": {
+    "passed": true,
+    "report": "artifacts/dev/20260910-132453-sentinelle-kit-godot-bafd963e/preview.json",
+    "clips": 24
+  },
+  "motion": {
+    "checks": 24,
+    "passed": true,
+    "report": "artifacts/dev/sentinelle-motion-1789039465822680600/report.json"
+  },
+  "smoke": {
+    "status": "not_run_engine_lock_held_by_other_task",
+    "reports": [
+      "artifacts/dev/20260910-132130-test-smoke-c6dcce3b",
+      "artifacts/dev/20260910-132723-test-smoke-1ef917fd"
+    ]
+  },
+  "editor_roundtrip_verified": false,
+  "files": {
+    "W/sentinelle.json": "954b6465b5409145dc667723665cc1185a3195b7961b3ecd65e2bf8a68903f40",
+    "E/sentinelle.atlas": "55e9c7bf0bf4fca357169ba91d780084bbaf922d6ddb1bc1cf145db242eb5a28",
+    "S/sentinelle.json": "5b6d58bbbc4123e3c1da826d25877448f144a0be35786ee94ad367dae709b601",
+    "E/sentinelle.json": "28452101328991a2824094001c8d5ca06a6101b2666fb261974560b9c319acce",
+    "N/sentinelle.atlas": "c1e0e0f5b1e0782be4795c8f5b263ecc280cf7c19ba65b1e800e9269764478ef",
+    "S/sentinelle.png": "b45381c095e03c3dde71adf5ce5e8f6dd61bb2f1da9381e95bfa260ef3dd5282",
+    "W/sentinelle.png": "073f9acdb02b6d93111904f2869e8b70bd691401e81d7b03c6657b67612c8ecc",
+    "S/sentinelle.atlas": "7ba6efa7d93729ef7617f494de57f68cb9fb936bd7571c0d44f170815348e1c6",
+    "N/sentinelle.png": "c252a3652fe9d6161cd2cd36b9d0a5cd31546ebc63668d59d989500602b4583a",
+    "N/sentinelle.json": "42ce00110540869ded02c261d25dbca7430142b89f8fb2950d1af460f54ea730",
+    "E/sentinelle.png": "6f73780163b03ab59ed98d4b34bbfcabb5a3efe41b5f7771c94b09ef33507185",
+    "W/sentinelle.atlas": "72a63e2e008845bcc9c8b32f705f2c893e24c4aa79d3074b72f537d334e32d0f"
+  }
+}

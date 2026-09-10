@@ -1,5 +1,5 @@
 #requires -Version 7.2
-param([ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$Revision='sentinelle_kit_v5')
+param([ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$Revision='sentinelle_kit_v7')
 $ErrorActionPreference='Stop'
 $projectRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 Import-Module (Join-Path $projectRoot 'tools/dev/DevTools.psm1') -Force -DisableNameChecking

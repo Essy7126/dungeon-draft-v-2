@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Shader" path="res://assets/catabase/combat/cavern_v1/cavern_mist.gdshader" id="1_mist"]
+[ext_resource type="Shader" path="res://assets/catabase/combat/cavern_v1/cavern_lights.gdshader" id="2_light"]
+[ext_resource type="Script" path="res://assets/catabase/combat/cavern_v1/cavern_atmosphere.gd" id="3_script"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mist"]
+shader = ExtResource("1_mist")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_light"]
+shader = ExtResource("2_light")
+
+[node name="CavernMist" type="Node2D"]
+script = ExtResource("3_script")
+
+[node name="Vapor" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_mist")
+offset_right = 1920.0
+offset_bottom = 1200.0
+mouse_filter = 2
+
+[node name="Torchlight" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_light")
+offset_right = 1920.0
+offset_bottom = 1200.0
+mouse_filter = 2

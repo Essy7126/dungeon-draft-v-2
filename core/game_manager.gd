@@ -97,6 +97,7 @@ var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
 var _relic_runtime_service := RelicRuntimeService.new()
 var _next_run_data: RunData = null
+var _threshold_entry_pending := false
 var _next_run_start_room_index := 0
 var _active_room_flow_mode: int = RunData.RoomFlowMode.SINGLE_ENCOUNTER
 var _maximum_waves_per_room := 1
@@ -107,9 +108,13 @@ var _reduced_motion_enabled := false
 var expedition: ExpeditionSession = null
 var expedition_save_path: String = ExpeditionSaveService.SAVE_PATH
 const EXPEDITION_SCREEN_PATH := "res://ui/expedition/ExpeditionScreen.tscn"
+const PAINTED_HALT_SCREEN_PATH := "res://hub/painted_halt/ExpeditionHalt.tscn"
+const PAINTED_HALT_CATALOG := preload("res://core/expedition/painted_halt_catalog.gd")
+const HALT_FLOW := preload("res://core/expedition/expedition_flow.gd")
 const MERCHANT_HALL_SCREEN_PATH := "res://hub/merchant_hall/MerchantHall.tscn"
 const SANCTUARY_SCREEN_PATH := "res://hub/sanctuary_prototype/SanctuaryPrototype.tscn"
 const CHARACTER_SELECTION_SCREEN_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
+const CATABASE_THRESHOLD_SCREEN_PATH := "res://hub/catabase_threshold/CatabaseThreshold.tscn"
 var _expedition_boundary_snapshot: Dictionary = {}
 var _expedition_save_status: Dictionary = {"success": true, "pending": false, "operation": "", "message": ""}
 var _pending_expedition_action := ""
@@ -192,6 +197,7 @@ func configure_next_run(run_data: RunData, room_index: int) -> bool:
 	var effective_room_index := run_data.get_hub_start_room_index(room_index)
 	if effective_room_index < 0 or effective_room_index >= run_data.rooms.size():
 		return false
+	_threshold_entry_pending = false
 	_next_run_data = run_data
 	_next_run_start_room_index = effective_room_index
 	return true
@@ -213,6 +219,62 @@ func has_next_run_configuration() -> bool:
 	return _next_run_data != null
 
 
+## A new Catabase visits its threshold before its first checkpoint or combat.
+## Keep the selected RunData (including appearance) until the player crosses.
+func continue_after_intro() -> bool:
+	if _next_run_data == null:
+		return false
+	if not _next_run_data.catabase_route_enabled:
+		return start_configured_run()
+	if _threshold_entry_pending:
+		return true
+	if not ResourceLoader.exists(CATABASE_THRESHOLD_SCREEN_PATH):
+		return false
+	_threshold_entry_pending = true
+	_request_scene_change(CATABASE_THRESHOLD_SCREEN_PATH)
+	return true
+
+
+func has_catabase_threshold_configuration() -> bool:
+	return (
+		_threshold_entry_pending and _next_run_data != null
+		and _next_run_data.catabase_route_enabled
+	)
+
+
+func finish_catabase_threshold() -> Dictionary:
+	if not has_catabase_threshold_configuration():
+		return {
+			"success": false,
+			"pending": false,
+			"message": "Choisissez une aventure avant de franchir le seuil.",
+		}
+	if _has_expedition_to_replace() and _replacement_consent != _current_replacement_fingerprint():
+		return {
+			"success": false,
+			"pending": false,
+			"message": "Votre sauvegarde a changé. Revenez à la sélection pour confirmer le départ ; elle a été conservée.",
+		}
+	var selected_run: RunData = _next_run_data
+	var started := start_configured_run()
+	var pending := bool(get_expedition_save_status().get("pending", false))
+	if not started and not pending:
+		_next_run_data = selected_run
+		_threshold_entry_pending = true
+	return {
+		"success": started,
+		"pending": pending,
+		"message": "" if started else (
+			str(get_expedition_save_status().get("message", "")) if pending else "L’aventure ne peut pas être préparée. Revenez à la sélection."
+		),
+	}
+
+
+func cancel_catabase_threshold() -> void:
+	clear_next_run_configuration()
+	cancel_expedition_replacement()
+
+
 ## Consomme la RunData configuree par le hub exactement une fois, puis emprunte
 ## le pipeline normal de demarrage et de resolution des heros.
 func start_configured_run() -> bool:
@@ -220,6 +282,7 @@ func start_configured_run() -> bool:
 	if selected_run == null:
 		return false
 	_next_run_data = null
+	_threshold_entry_pending = false
 	if selected_run.catabase_route_enabled:
 		_next_run_start_room_index = 0
 		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants)
@@ -228,6 +291,7 @@ func start_configured_run() -> bool:
 
 
 func clear_next_run_configuration() -> void:
+	_threshold_entry_pending = false
 	_next_run_data = null
 	_next_run_start_room_index = 0
 
@@ -2215,8 +2279,8 @@ func choose_expedition_node(node_id: String) -> bool:
 	_pending_expedition_action = ""
 	if expedition.route.phase == "combat":
 		start_next_battle()
-	elif is_merchant_hall_active():
-		_request_scene_change(MERCHANT_HALL_SCREEN_PATH)
+	elif is_merchant_hall_active() or is_painted_halt_active():
+		_request_scene_change(get_expedition_destination_scene())
 	return true
 
 
@@ -2358,7 +2422,26 @@ func is_merchant_hall_active() -> bool:
 		and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
 
 
+func get_painted_halt_manifest() -> String:
+	if expedition == null or not run_active or expedition.route.phase != "reward":
+		return ""
+	# Mandatory progression/capacity choices remain on the expedition screen.
+	if HALT_FLOW.required_step(expedition) != "hub":
+		return ""
+	return PAINTED_HALT_CATALOG.manifest_for(expedition.route.get_current_node())
+
+
+func is_painted_halt_active() -> bool:
+	return not get_painted_halt_manifest().is_empty()
+
+
+func open_painted_halt() -> bool:
+	return is_painted_halt_active() and _request_saved_exit("open_destination")
+
+
 func get_expedition_destination_scene() -> String:
+	if is_painted_halt_active():
+		return PAINTED_HALT_SCREEN_PATH
 	return MERCHANT_HALL_SCREEN_PATH if is_merchant_hall_active() else EXPEDITION_SCREEN_PATH
 
 
@@ -2371,7 +2454,7 @@ func open_expedition_workshop() -> bool:
 		return false
 	# A halt whose departure was applied may still be on screen after a failed
 	# checkpoint. A later successful inventory save must allow returning to the map.
-	return (is_merchant_hall_active() or expedition.route.phase == "map") \
+	return (is_merchant_hall_active() or is_painted_halt_active() or expedition.route.phase == "map") \
 		and _request_saved_exit("open_expedition_workshop")
 
 

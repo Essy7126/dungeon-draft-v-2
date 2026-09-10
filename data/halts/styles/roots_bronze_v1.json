@@ -8,6 +8,7 @@
   "locked": [
     "Illustration 2D peinte, contours sombres lisibles, volumes stylisés ; aucun photoréalisme ni rendu 3D.",
     "Vue élevée de trois quarts constante ; grandes dalles et lecture claire du sol.",
+    "Échelle humaine verrouillée sur le corps B d’Achille (pieds à calotte du casque, hors lance et plumet) ; la silhouette totale H reste la référence runtime. Mêmes proportions sur le même sol, gabarits seulement dans le plan.",
     "Pierre bleu-gris ancienne, mousse, racines, bronze patiné, accents ambre.",
     "Sol continu et large autour des points d'intérêt ; avant-plan bas ; aucune foule.",
     "Sans texte, interface, grille, personnages ni PNJ dans l'image source."
@@ -17,13 +18,68 @@
     "Teinte de l'eau dans une famille jade, émeraude ou turquoise",
     "Répartition des torches, bassins, accès et objets de service"
   ],
-  "prompt_prefix": "Hand-painted 2D fantasy RPG environment in the EXACT art direction of the supplied reference. Chunky blue-gray stone, ancient roots and moss, aged bronze, readable dark contours, soft painted volumes, warm amber flames against cool deep shadows. Elevated three-quarter game camera, wide connected floor routes, no characters, no UI or text. Not photorealistic, not a 3D render.",
+  "prompt_prefix": "Hand-painted 2D fantasy RPG environment in the EXACT art direction of the supplied reference. Chunky blue-gray stone, ancient roots and moss, aged bronze, readable dark contours, soft painted volumes, warm amber flames against cool deep shadows. Elevated three-quarter game camera, wide connected floor routes, no characters, no UI or text. Not photorealistic, not a 3D render. Human-scale prop grid relative to B, the Achilles BODY height from feet to helmet calotte, excluding spear and plume (current idle_S B=202 px, full silhouette H=257 px; B=202/257 H): bucket body without handle 0.15-0.25B high; anvil including its support and workbench working surface 0.45-0.55B above the adjacent floor; usable door opening 1.3-1.6B high; clear walking paths at least three hero body widths excluding weapons. Compare each prop from its own base to its top with the hero on the same adjacent floor elevation. Monumental furnaces may exceed B only as an intentional architectural feature; keep ordinary tools human-sized. Hero silhouettes and scale marks belong only to the reference plan, never the finished painting.",
   "gates": [
     "Source réellement générée et enregistrée, dimensions et empreinte mesurées",
+    "Avant génération : ratio de hauteur d’Achille, trois silhouettes de référence et grille seau/enclume/porte fixés dans le plan et le brief",
     "Revue du thème, perspective et surface parcourable",
+    "Avant calibration puis affectation : comparer Achille aux objets sur le même sol, examiner les superpositions à trois positions et les captures 720p/1080p ; proportions explicitement revues",
     "Masques de matières et exclusions dessinés sur cette version exacte",
     "Navigation testée : arrivée, boucle, points d'intérêt, obstacles",
     "Pause, image originale, zoom et rendu contrôlés à 720p et 1080p",
     "Affectation à la route explicite après validation, sans modifier les identifiants sauvegardés"
-  ]
+  ],
+  "proportions": {
+    "reference_pose": "idle_S",
+    "height_measure": "H = pieds au sommet visible, lance et plumet compris = world.player_height_ratio × hauteur image. Le mobilier utilise B, hauteur corporelle de référence, distincte de H.",
+    "default_player_height_ratio": 0.22,
+    "comparison": "Comparer les bases et sommets avec Achille sur le sol adjacent, à même élévation. Distinguer socle, corps, anse, flamme et ombre ; ne pas mesurer la boîte englobante du meuble en perspective.",
+    "relative_grid": [
+      {
+        "object": "seau",
+        "measure": "hauteur du corps sans anse",
+        "height_ratio": [
+          0.15,
+          0.25
+        ],
+        "ratio_basis": "body_reference_B"
+      },
+      {
+        "object": "enclume sur souche ou établi",
+        "measure": "sol au plan de travail",
+        "height_ratio": [
+          0.45,
+          0.55
+        ],
+        "ratio_basis": "body_reference_B"
+      },
+      {
+        "object": "porte praticable",
+        "measure": "sol au linteau libre",
+        "height_ratio": [
+          1.3,
+          1.6
+        ],
+        "ratio_basis": "body_reference_B"
+      },
+      {
+        "object": "allée",
+        "measure": "largeur libre au sol, en largeurs du corps hors arme",
+        "minimum_body_widths": 3
+      }
+    ],
+    "exceptions": "Les fours et architectures monumentales peuvent dépasser B ; déclarer cette intention sans agrandir les outils usuels.",
+    "body_reference": {
+      "profile": "res://data/visuals/achilles/achilles_kit_sprite_profile_v2.tres",
+      "pose": "idle_S first frame",
+      "feet_anchor_y": 320,
+      "helmet_calotte_top_y": 118,
+      "body_height_pixels": 202,
+      "full_silhouette_height_pixels": 257,
+      "top_uncertainty_pixels": 2,
+      "convention": "pieds à calotte du casque, hors plumet et lance ; crâne masqué",
+      "reviewed_on": "2026-09-10",
+      "remeasure_when": "sprite de référence, ancre ou profil modifié"
+    }
+  }
 }

@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
 [ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
 [ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_anchor.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Dash"]
 script = ExtResource("3_condition")
@@ -46,6 +48,9 @@ parameters = Array[ItemReactiveParameterData]([SubResource("Consume"), SubResour
 
 [resource]
 script = ExtResource("1_item")
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_thetis_anchor"
 display_name = "Ancre de Thétis"
 description = "Percée avec Garde active consomme 30 % de la Garde, inflige cette valeur autour de l’arrivée et pousse d’une case, une fois par activation."

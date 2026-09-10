@@ -1,7 +1,7 @@
 #requires -Version 7.2
 param(
     [Parameter(Position=0)][ValidateSet('start','build','verify','godot')][string]$Command='start',
-    [string]$Revision='sentinelle_kit_v5'
+    [string]$Revision='sentinelle_kit_v7'
 )
 $ErrorActionPreference='Stop'
 $projectRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -23,7 +23,7 @@ if(-not(Test-Path -LiteralPath (Join-Path $target 'kit.json'))){throw 'Manifeste
 & (Join-Path $PSScriptRoot 'spine.ps1') start
 if($LASTEXITCODE -ne 0){throw 'Le lecteur Spine ne démarre pas.'}
 if($Command -eq 'verify'){
-    & $python (Join-Path $PSScriptRoot 'verify_kit_geometry.py') $Revision
+    & $python (Join-Path $PSScriptRoot 'verify_sentinelle_motion.py') $Revision
     if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
     & node (Join-Path $PSScriptRoot 'verify_kit_web.mjs') $Revision
     if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}

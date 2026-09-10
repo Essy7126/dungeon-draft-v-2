@@ -1,0 +1,33 @@
+{
+  "id": "bronze_workshop_pilot_v1",
+  "status": "pilot_verified",
+  "date": "2026-09-10",
+  "manifest_sha256": "6ed785d9c7088930a7ee820fc7dc774fc7337d569f73b1717356bd3578f60374",
+  "source_sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+  "runtime_report": "artifacts/dev/20260910-161847-halt-verify-a8ed3992/verification.json",
+  "runtime_checks": 251,
+  "captures": 40,
+  "movement_samples": 3166,
+  "unsafe_samples": 0,
+  "visual_review": [
+    "scale comparison at entrance, workbench and door",
+    "real movement behind and in front of pillar",
+    "720p and1080p workbench/circulation",
+    "Studio loaded painting, geometry and21.2percent reference",
+    "Blender depth, camera normals and object IDs",
+    "Krita ORA real export equals original pixels"
+  ],
+  "body_reference_note": "202px from feet to helmet calotte, ±2px, excluding plume and spear; design body1.80m",
+  "blockout_dimensions_m": {
+    "bucket_body": 0.35,
+    "workbench_surface": 0.9,
+    "door_clearance": 2.55
+  },
+  "painted_player_height_ratio": 0.212,
+  "limitations": [
+    "Painterly output changed framing, requiring registration and visual calibration. Metric dimensions describe the blockout, not independently certified painted dimensions.",
+    "Painted shadows are opaque floor patches, to retouch or regenerate when relocating objects.",
+    "Runtime uses flattened painting and foreground cutouts; changing art layers requires exporting a new source version and recalibration.",
+    "Depth and normal guides are geometric authoring exports; the native imagegen used blockout, sprite comparison and style images, not ControlNet."
+  ]
+}

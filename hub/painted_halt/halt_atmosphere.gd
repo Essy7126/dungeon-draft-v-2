@@ -21,7 +21,12 @@ func _ready() -> void:
 		)
 	for torch: Dictionary in definition.get("torches", []):
 		var p := Vector2(torch.point[0], torch.point[1]) * extent
-		_add_mist(p - Vector2(48, 163), Vector2(95, 175), Color(0.48, 0.48, 0.39, 0.16), true)
+		_add_mist(
+			p - Vector2(48, 163),
+			Vector2(95, 175),
+			Color(0.48, 0.48, 0.39, 0.16 * float(torch.get("smoke_strength", 1.0))),
+			true,
+		)
 
 
 func _add_mist(at: Vector2, dimensions: Vector2, color: Color, smoke: bool) -> void:
@@ -59,15 +64,19 @@ func _draw() -> void:
 		for i: int in definition.torches.size():
 			var torch: Dictionary = definition.torches[i]
 			var source := Vector2(torch.point[0], torch.point[1]) * extent
-			for j: int in 7:
+			for j: int in clampi(int(torch.get("ember_count", 7)), 0, 12):
 				var phase := i * 1.71 + j * 0.137
 				var age := fposmod(clock * (0.24 + j * 0.017) + phase, 1.0)
-				var at := source + Vector2(sin(age * 5.1 + phase) * 10.0 * age, -age * 100)
+				var at := source + Vector2(
+					sin(age * 5.1 + phase) * 10.0 * age,
+					-age * float(torch.get("ember_rise", 100.0)),
+				)
 				var color := Color(
 					1.0,
 					0.55 + j * 0.035,
 					0.14,
-					sin(age * PI) * (1.0 - age) * 0.9 * amount,
+					sin(age * PI) * (1.0 - age) * 0.9 * amount
+					* float(torch.get("ember_strength", 1.0)),
 				)
 				draw_circle(at, 1.4, color, true, -1, true)
 	if water_on:
@@ -104,7 +113,9 @@ func _draw() -> void:
 				true,
 			)
 	# Sparse motes confined to the side margins leave the main paths clear.
-	for i: int in 28:
+	var motes: Dictionary = definition.get("ambient_motes", { })
+	var mote_color := Color(str(motes.get("color", "#bdf58f")))
+	for i: int in clampi(int(motes.get("count", 28)), 0, 40):
 		var phase := float(i) * 2.39996
 		var age := fposmod(clock * 0.035 + i * 0.173, 1.0)
 		var x := (0.065 + fposmod(phase, 0.18)) if i % 2 == 0 else (0.78 + fposmod(phase, 0.15))
@@ -115,7 +126,7 @@ func _draw() -> void:
 		draw_circle(
 			at,
 			1.1,
-			Color(0.74, 0.96, 0.56, pow(sin(age * PI), 2) * 0.48 * amount),
+			Color(mote_color, pow(sin(age * PI), 2) * float(motes.get("alpha", 0.48)) * amount),
 			true,
 			-1,
 			true,

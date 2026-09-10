@@ -16,8 +16,8 @@ var _vignette: GradientTexture2D
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if ResourceLoader.exists("res://asset/ui/character_selection/sanctuary_v2.png"):
-		_painted = load("res://asset/ui/character_selection/sanctuary_v2.png")
+	if ResourceLoader.exists("res://assets/catabase/selection/sanctuary_emerald_v1.png"):
+		_painted = load("res://assets/catabase/selection/sanctuary_emerald_v1.png")
 	_ambient = _radial_texture(Color(0.17, 0.33, 0.32, 0.72), Color(0.05, 0.10, 0.11, 0.0))
 	_floor_light = _radial_texture(Color(0.31, 0.43, 0.37, 0.25), Color(0.10, 0.18, 0.18, 0.0))
 	_vignette = _radial_texture(Color(0.025, 0.05, 0.06, 0.0), Color(0.025, 0.05, 0.06, 0.44))

@@ -1,6 +1,7 @@
 extends Node
 
 const SCENE := preload("res://hub/painted_halt/LivingHalt.tscn")
+const InteractionVerifier := preload("res://tools/halt_workshop/halt_interaction_verifier.gd")
 const BackdropService := preload(
 	"res://addons/dungeon_draft_arena_studio/services/arena_backdrop_transaction_service.gd"
 )
@@ -20,6 +21,11 @@ var _source_evidence := { }
 
 
 func _ready() -> void:
+	# Load through the scene so project autoloads participate in compilation.
+	if "--compile-probe" in OS.get_cmdline_user_args():
+		print("HALT_VERIFIER_COMPILED")
+		get_tree().quit(0)
+		return
 	_run.call_deferred()
 
 
@@ -33,6 +39,7 @@ func _run() -> void:
 		get_window().size = size
 		_resolution = "%dx%d" % [size.x, size.y]
 		hall = SCENE.instantiate()
+		hall.preview_mode = true
 		add_child(hall)
 		for attempt in 180:
 			if hall.is_ready_for_play():
@@ -40,8 +47,7 @@ func _run() -> void:
 			await get_tree().process_frame
 		_check("ready", hall.is_ready_for_play())
 		if not hall.is_ready_for_play():
-			hall.queue_free()
-			await get_tree().process_frame
+			await _dispose_halt()
 			continue
 		hall.set_process(false)
 		_source_evidence = {
@@ -76,9 +82,20 @@ func _run() -> void:
 			"achilles_visual_ready",
 			bool(frame.visible) if frame.has("visible") else hall.player.is_visual_ready(),
 		)
+		if hall.definition.world.has("player_height_ratio"):
+			var reference := preload("res://hub/painted_halt/halt_scale_reference.gd")
+			var sprite: AnimatedSprite2D = hall.player._backend.animated_sprite
+			var actual: float = sprite.scale.y * reference.reference_height() / hall.world_size.y
+			_check(
+				"actor_height_matches_authored_ratio",
+				absf(actual - float(hall.definition.world.player_height_ratio)) < 0.0001,
+				actual,
+			)
 		var start: Vector2 = hall.player.position
 		for landmark: Dictionary in hall.definition.landmarks:
 			await _walk(hall.point(landmark.point), str(landmark.id))
+		for index in hall.definition.review.get("loop_waypoints", []).size():
+			await _walk(hall.point(hall.definition.review.loop_waypoints[index]), "loop_%d" % index)
 		await _walk(start, "return_bridge")
 		for at: Array in hall.definition.review.forbidden_points:
 			_check("blocked_destination", not hall.request_move(hall.point(at)))
@@ -110,10 +127,11 @@ func _run() -> void:
 			) < 0.01)
 		await _capture("zoom")
 		hall.set_zoom(1.0)
+		var interaction_verifier := InteractionVerifier.new()
+		await interaction_verifier.run(self)
 		if _rendered:
 			await _test_rendering()
-		hall.queue_free()
-		await get_tree().process_frame
+		await _dispose_halt()
 	_check("all_movement_samples_safe", samples > 0 and unsafe == 0)
 	if "--record" in OS.get_cmdline_user_args() and _rendered:
 		await _record()
@@ -141,6 +159,37 @@ func _run() -> void:
 		% [failures.is_empty(), checks.size(), captures.size(), samples, unsafe]
 	)
 	get_tree().quit(0 if failures.is_empty() else 1)
+
+
+func _dispose_halt() -> void:
+	if not is_instance_valid(hall):
+		return
+	var streams: Array[WeakRef] = []
+	if hall.ambience != null:
+		for player: AudioStreamPlayer2D in hall.ambience.sources:
+			if is_instance_valid(player) and player.stream != null:
+				streams.append(weakref(player.stream))
+		hall.ambience.dispose()
+	hall.queue_free()
+	hall = null
+	# AudioServer drops stopped playback references on its next mix. Observe
+	# actual resource release before ending this rendered verification process.
+	for attempt in 30:
+		await get_tree().physics_frame
+		await get_tree().process_frame
+		if streams.all(
+			func(reference: WeakRef) -> bool:
+				return reference.get_ref() == null,
+		):
+			break
+	_check(
+		"audio_private_streams_released",
+		streams.all(
+			func(reference: WeakRef) -> bool:
+				return reference.get_ref() == null,
+		),
+		streams.size(),
+	)
 
 
 func _walk(target: Vector2, label: String) -> void:
@@ -197,36 +246,72 @@ func _difference(a: Image, b: Image, normalized: Array, radius := 12) -> float:
 	return total / maxf(count, 1)
 
 
+func _review_sample(key: String, required: bool) -> bool:
+	if not required:
+		return false
+	var value: Variant = hall.definition.review.get(key)
+	var valid: bool = value is Array and value.size() == 2
+	if valid:
+		for coordinate: Variant in value:
+			valid = (
+				valid and (coordinate is float or coordinate is int)
+				and is_finite(float(coordinate))
+				and float(coordinate) >= 0.0 and float(coordinate) <= 1.0
+			)
+	_check("required_review_" + key, valid)
+	if valid:
+		var screen: Vector2 = hall.world.to_global(hall.point(value))
+		_check("review_sample_visible_" + key, get_viewport().get_visible_rect().has_point(screen))
+	return valid
+
+
 func _test_rendering() -> void:
 	hall.set_chrome_visible(false)
 	hall.player.hide()
+	hall.landmarks_fx.hide()
+	var has_water: bool = not hall.definition.get("water", { }).get("polygons", []).is_empty()
+	var has_cascades: bool = not hall.definition.get("cascades", []).is_empty()
+	var has_fire: bool = not hall.definition.get("torches", []).is_empty()
+	var has_foliage: bool = not hall.definition.get("foliage", []).is_empty()
+	var stable := _review_sample("stable_pixel", true)
+	var water := _review_sample("water_pixel", has_water)
+	var cascade := _review_sample("waterfall_pixel", has_cascades)
+	var fire := _review_sample("fire_pixel", has_fire)
+	var foliage := _review_sample("foliage_pixel", has_foliage)
 	for id: String in hall.layers:
 		hall.set_layer(id, false)
 	hall.set_layer("water", true)
 	var first := await _image_at(1.0)
 	var second := await _image_at(2.1)
-	var change := _difference(first, second, hall.definition.review.water_pixel)
-	_check("water_moves", change > 0.001, change)
-	change = _difference(first, second, hall.definition.review.waterfall_pixel)
-	_check("cascade_moves", change > 0.001, change)
-	change = _difference(first, second, hall.definition.review.stable_pixel, 5)
-	_check("dry_stone_stable_water_only", change < 0.001, change)
-	_check(
-		"water_click_ripple",
-		hall.trigger_ripple(hall.point(hall.definition.review.water_pixel)),
-	)
-	_check(
-		"stone_rejects_ripple",
-		not hall.trigger_ripple(hall.point(hall.definition.review.stable_pixel)),
-	)
+	var change := 0.0
+	if water:
+		change = _difference(first, second, hall.definition.review.water_pixel)
+		_check("water_moves", change > 0.001, change)
+		_check(
+			"water_click_ripple",
+			hall.trigger_ripple(hall.point(hall.definition.review.water_pixel)),
+		)
+	if cascade:
+		change = _difference(first, second, hall.definition.review.waterfall_pixel)
+		_check("cascade_moves", change > 0.001, change)
+	if stable:
+		change = _difference(first, second, hall.definition.review.stable_pixel, 5)
+		_check("dry_stone_stable_water_only", change < 0.001, change)
+		_check(
+			"stone_rejects_ripple",
+			not hall.trigger_ripple(hall.point(hall.definition.review.stable_pixel)),
+		)
+	if not has_water and not has_cascades and hall.definition.get("bounce", []).is_empty():
+		_check("dry_water_layer_inert_across_image", first.get_data() == second.get_data())
 	hall.set_layer("water", false)
 	hall.set_layer("fire", true)
-	first = await _image_at(3.0)
-	second = await _image_at(3.7)
-	change = _difference(first, second, hall.definition.review.fire_pixel)
-	_check("torch_moves", change > 0.001, change)
-	if hall.definition.review.has("foliage_pixel"):
-		hall.set_layer("fire", false)
+	if fire:
+		first = await _image_at(3.0)
+		second = await _image_at(3.7)
+		change = _difference(first, second, hall.definition.review.fire_pixel)
+		_check("torch_moves", change > 0.001, change)
+	hall.set_layer("fire", false)
+	if foliage:
 		hall.set_layer("foliage", true)
 		first = await _image_at(1.0)
 		second = await _image_at(3.0)
@@ -235,19 +320,23 @@ func _test_rendering() -> void:
 		hall.set_layer("foliage", false)
 	hall.set_layer("atmosphere", true)
 	hall.set_layer("water", true)
-	# Same material clock isolates atmosphere from the painting beneath it.
+	# Freeze the material clock to isolate particles and mist from painted pixels.
 	hall.clock = 7.0
 	hall.advance_world(0.0)
 	hall.atmosphere.set_state(1.0, 1.0, true, true, true)
+	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	first = get_viewport().get_texture().get_image()
 	hall.atmosphere.set_state(5.0, 1.0, true, true, true)
+	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	second = get_viewport().get_texture().get_image()
-	change = 0.0
-	if not hall.definition.cascades.is_empty():
+	if has_cascades:
 		change = _difference(first, second, hall.definition.cascades[0].splash, 35)
-	_check("atmosphere_spray_moves", change > 0.0001, change)
+		_check("atmosphere_spray_moves", change > 0.0001, change)
+	if has_fire:
+		change = _difference(first, second, hall.definition.torches[0].point, 55)
+		_check("atmosphere_fire_moves", change > 0.00001, change)
 	for id: String in hall.layers:
 		hall.set_layer(id, true)
 	hall.set_paused(true)
@@ -267,17 +356,11 @@ func _test_rendering() -> void:
 	hall.set_original(true)
 	first = await _image_at(4.0)
 	second = await _image_at(6.0)
-	_check(
-		"original_water_stable",
-		_difference(first, second, hall.definition.review.water_pixel) == 0.0,
-	)
-	_check(
-		"original_fire_stable",
-		_difference(first, second, hall.definition.review.fire_pixel) == 0.0,
-	)
+	_check("original_render_stable", first.get_data() == second.get_data())
 	await _capture("original")
 	hall.set_original(false)
 	hall.player.show()
+	hall.landmarks_fx.show()
 	await _capture("living_clean")
 	hall.nav.debug_enabled = true
 	await _capture("navigation")
@@ -314,5 +397,5 @@ func _record() -> void:
 			_check("recording_frame", false)
 			break
 	print("LIVING_HALT_RECORD: 336 real Godot frames, 1920x1080, 24 FPS")
-	hall.queue_free()
+	await _dispose_halt()
 	await get_tree().process_frame

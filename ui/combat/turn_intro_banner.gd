@@ -9,7 +9,7 @@ const VISUAL_THEME_FACTORY := preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
 const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
-	"res://data/ui/hud_visual_skin_neutral_v1.tres"
+	"res://data/ui/hud_visual_skin_achilles_v1.tres"
 )
 
 @export var visual_skin: HudVisualSkinData = DEFAULT_VISUAL_SKIN

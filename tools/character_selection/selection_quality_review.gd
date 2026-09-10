@@ -34,6 +34,7 @@ func _run() -> void:
 		_finish()
 		return
 	screen = packed.instantiate()
+	screen.include_archived_adventures = true
 	root.add_child(screen)
 	current_scene = screen
 	await _settle()

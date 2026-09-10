@@ -2,10 +2,7 @@
 extends CanvasLayer
 
 const Glossary = preload("res://ui/combat_glossary.gd")
-const VisualThemeFactory = preload(
-	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
-)
-const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
+const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_achilles_v1.tres")
 
 var _panel: PanelContainer
 var _label: RichTextLabel
@@ -21,7 +18,7 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
-	_panel.theme = VisualThemeFactory.build(VISUAL_SKIN)
+	_panel.theme = PremiumUI.get_theme()
 	_panel.theme_type_variation = &"HudTooltip"
 	_panel.visible = false
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP

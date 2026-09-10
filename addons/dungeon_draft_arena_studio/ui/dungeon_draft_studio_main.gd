@@ -13,6 +13,7 @@ var arena_studio: ArenaStudioMain
 var encounter_studio: EncounterStudioMain
 var item_studio: ItemStudioMain
 var vfx_composer: VFXComposer
+var halt_studio: PaintedHaltStudio
 var undo_button: Button
 var redo_button: Button
 var history_button: MenuButton
@@ -119,6 +120,13 @@ func _ready() -> void:
 		func(_dirty: bool): _refresh_history_controls()
 	)
 
+	halt_studio = PaintedHaltStudio.new()
+	halt_studio.name = "HaltesPeintes"
+	halt_studio.auto_load = false
+	tabs.add_child(halt_studio)
+	tabs.set_tab_title(tabs.get_tab_count() - 1, "HALTES PEINTES")
+	halt_studio.history_state_changed.connect(_refresh_history_controls)
+
 	if not _pending_state.is_empty():
 		apply_state_snapshot(_pending_state)
 		_pending_state.clear()
@@ -143,11 +151,11 @@ func _build_domain_bar() -> Control:
 	studio_title_label.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	studio_title_label.add_theme_font_size_override("font_size", 16)
 	bar.add_child(studio_title_label)
-	for index in range(4):
+	for index in range(5):
 		var button := Button.new()
 		button.flat = true
 		button.toggle_mode = true
-		button.text = [TerrainVocabulary.TAB_TITLE, "Rencontres", "Objets", "LAB VFX"][index]
+		button.text = [TerrainVocabulary.TAB_TITLE, "Rencontres", "Objets", "LAB VFX", "Haltes peintes"][index]
 		button.pressed.connect(_select_domain.bind(index))
 		bar.add_child(button)
 		domain_buttons.append(button)
@@ -305,6 +313,7 @@ func get_state_snapshot() -> Dictionary:
 			if item_studio != null else {},
 		"vfx": vfx_composer.get_state_snapshot() \
 			if vfx_composer != null else {},
+		"halts": halt_studio.get_state_snapshot() if halt_studio != null else {},
 		"project_context": project_context.snapshot() if project_context != null else {},
 	}
 
@@ -338,6 +347,8 @@ func apply_state_snapshot(state: Dictionary) -> void:
 	var vfx_state = state.get("vfx", {})
 	if vfx_state is Dictionary and vfx_composer != null:
 		vfx_composer.apply_state_snapshot(vfx_state)
+	if halt_studio != null and state.get("halts", {}) is Dictionary:
+		halt_studio.apply_state_snapshot(state.get("halts", {}))
 	_refresh_history_controls()
 
 
@@ -370,6 +381,8 @@ func prepare_for_close() -> Dictionary:
 		if vfx_result is Dictionary \
 				and not bool((vfx_result as Dictionary).get("ok", false)):
 			failures.append("La récupération VFX a échoué.")
+	if halt_studio != null and not bool(halt_studio.prepare_for_close().get("ok", false)):
+		failures.append("La récupération Haltes peintes a échoué.")
 	if not failures.is_empty() and arena_studio != null \
 			and arena_studio.has_method("_set_status"):
 		arena_studio._set_status(
@@ -382,6 +395,8 @@ func prepare_for_close() -> Dictionary:
 
 
 func cancel_active_gesture() -> bool:
+	if tabs != null and tabs.current_tab == 4 and halt_studio != null:
+		return halt_studio.canvas.cancel_gesture()
 	return arena_studio != null and arena_studio.cancel_active_gesture()
 
 
@@ -397,6 +412,8 @@ func _active_history_provider():
 			return item_studio
 		3:
 			return vfx_composer
+		4:
+			return halt_studio
 	return null
 
 
@@ -462,7 +479,7 @@ func _refresh_history_controls() -> void:
 		lab_transfer_button.text = "Importer depuis le laboratoire (%d)" % transfer_count \
 			if transfer_count > 0 else "Importer depuis le laboratoire"
 	if guided_toggle != null:
-		var vfx_active := tabs != null and tabs.current_tab == 3
+		var vfx_active := tabs != null and tabs.current_tab in [3, 4]
 		guided_toggle.visible = not vfx_active
 		guided_toggle.disabled = vfx_active
 	_sync_shell_from_arena()
@@ -521,6 +538,10 @@ func _on_file_entry_pressed(index: int) -> void:
 
 
 func _on_tab_changed(_index: int) -> void:
+	if halt_studio != null:
+		halt_studio.canvas.cancel_gesture()
+		if _index == 4 and halt_studio.document.manifest.is_empty():
+			halt_studio.open_manifest(PaintedHaltStudio.DEFAULT_MAP)
 	if arena_studio != null and arena_studio.has_method("cancel_active_gesture"):
 		arena_studio.cancel_active_gesture()
 	# Terrain et Rencontres partagent le même brouillon de salle. Revenir dans
@@ -805,6 +826,8 @@ func _global_save() -> void:
 		item_studio.save_as_draft()
 	elif tabs.current_tab == 3:
 		vfx_composer.save_as_draft()
+	elif tabs.current_tab == 4:
+		halt_studio.save_document()
 
 
 func _active_room_draft() -> bool:
@@ -862,6 +885,12 @@ func _refresh_action_labels() -> void:
 				else "Profil source chargé"
 			dirty_label = "Brouillon modifié" if has_vfx_draft \
 				else "Profil source modifié"
+		4:
+			dirty = halt_studio != null and halt_studio.document.is_dirty()
+			save_button.text = "Enregistrer / préparer"
+			save_button.tooltip_text = "Enregistrer cette version et préparer ses masques après validation."
+			test_button.text = "Explorer"
+			dirty_label = "Copie de travail modifiée"
 	if document_state_label != null:
 		document_state_label.text = dirty_label if dirty else clean_label
 		document_state_label.add_theme_color_override(
@@ -883,6 +912,8 @@ func _global_validate() -> void:
 		item_studio.validate_document()
 	elif tabs.current_tab == 3:
 		vfx_composer.validate_document()
+	elif tabs.current_tab == 4:
+		halt_studio.validate_document()
 	_sync_shell_from_arena()
 
 
@@ -922,6 +953,8 @@ func _global_test() -> void:
 		item_studio.test_document()
 	elif tabs.current_tab == 3:
 		vfx_composer.test_document()
+	elif tabs.current_tab == 4:
+		halt_studio.play_preview()
 
 
 func _global_create_encounters() -> void:

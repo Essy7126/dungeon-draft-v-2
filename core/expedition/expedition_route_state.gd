@@ -17,12 +17,14 @@ var last_restore_error: String = ""
 var _canonical_nodes: Array[Dictionary] = []
 var _nodes_by_id: Dictionary = {}
 var _graph_fingerprint: String = ""
+var _catalog_revision: int = Catalog.REVISION
 
 
-func initialize(seed_value: int) -> void:
+func initialize(seed_value: int, catalog_revision: int = Catalog.REVISION) -> void:
 	# A 31-bit seed survives JSON number round trips without precision loss.
 	seed = seed_value & 0x7fffffff
-	_canonical_nodes = Catalog.create_nodes(seed)
+	_catalog_revision = catalog_revision
+	_canonical_nodes = Catalog.create_nodes(seed, _catalog_revision)
 	nodes = _canonical_nodes.duplicate(true)
 	_nodes_by_id.clear()
 	for node in _canonical_nodes:
@@ -51,6 +53,70 @@ func get_visible_nodes() -> Array[Dictionary]:
 		if _is_discovered(node):
 			result.append(_preview(node))
 	return result
+
+
+## Opportunity costs use only discovered previews, never resolved unknown content.
+func get_choice_preview(node_id: String) -> Dictionary:
+	var options := get_available_nodes()
+	if options.size() < 2 or node_id not in _available_ids():
+		return {}
+	var visible := {}
+	for node in get_visible_nodes():
+		visible[str(node.id)] = node
+	var branches := {}
+	for option in options:
+		branches[str(option.id)] = _visible_descendants(str(option.id), visible)
+	var selected: Dictionary = branches[node_id]
+	var join_depth := Catalog.DEPTH_COUNT + 1
+	for id in selected:
+		var shared := true
+		for branch in branches.values():
+			if not branch.has(id):
+				shared = false
+		if shared:
+			join_depth = mini(join_depth, int(visible[id].depth))
+	var accessible: Array[String] = []
+	var foregone: Array[String] = []
+	var path_ids: Array[String] = []
+	var names := {"hub": "refuge", "merchant": "marchand", "sanctuary": "sanctuaire", "lore": "mémoire", "cache": "cache", "event": "rencontre"}
+	for id in selected:
+		if int(visible[id].depth) <= join_depth:
+			path_ids.append(str(id))
+		if int(visible[id].depth) < join_depth and names.has(str(visible[id].kind)):
+			var label := str(names[str(visible[id].kind)])
+			if label not in accessible:
+				accessible.append(label)
+	for branch in branches.values():
+		for id in branch:
+			if selected.has(id) or int(visible[id].depth) >= join_depth:
+				continue
+			var kind := str(visible[id].kind)
+			if names.has(kind) and str(names[kind]) not in accessible and str(names[kind]) not in foregone:
+				foregone.append(str(names[kind]))
+	accessible.sort()
+	foregone.sort()
+	var lines: Array[String] = []
+	if not accessible.is_empty():
+		lines.append("Haltes accessibles : " + ", ".join(accessible) + ".")
+	if not foregone.is_empty():
+		lines.append("Haltes écartées : " + ", ".join(foregone) + ".")
+	if join_depth <= Catalog.DEPTH_COUNT:
+		lines.append("Jonction au seuil %02d." % join_depth)
+	return {"join_depth": join_depth, "accessible_halts": accessible, "foregone_halts": foregone,
+		"path_ids": path_ids, "summary": "\n".join(lines)}
+
+
+func _visible_descendants(start_id: String, visible: Dictionary) -> Dictionary:
+	var reached := {}
+	var pending: Array[String] = [start_id]
+	while not pending.is_empty():
+		var id: String = pending.pop_back()
+		if reached.has(id) or not visible.has(id):
+			continue
+		reached[id] = true
+		for edge in visible[id].edges:
+			pending.append(str(edge))
+	return reached
 
 
 func get_current_node() -> Dictionary:
@@ -103,7 +169,7 @@ func reveal_next_hidden_node() -> String:
 
 
 func to_snapshot() -> Dictionary:
-	return {"version": SNAPSHOT_VERSION, "catalog_revision": Catalog.REVISION,
+	return {"version": SNAPSHOT_VERSION, "catalog_revision": _catalog_revision,
 		"seed": seed, "graph_fingerprint": _graph_fingerprint, "phase": phase,
 		"current_node_id": current_node_id, "completed_node_ids": completed_node_ids.duplicate(),
 		"revealed_node_ids": revealed_node_ids.duplicate()}
@@ -114,7 +180,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	last_restore_error = ""
 	if not _is_integer(snapshot.get("version")) or int(snapshot["version"]) != SNAPSHOT_VERSION:
 		return _reject("Version de sauvegarde d'expédition inconnue.")
-	if not _is_integer(snapshot.get("catalog_revision")) or int(snapshot["catalog_revision"]) != Catalog.REVISION:
+	if not _is_integer(snapshot.get("catalog_revision")) or int(snapshot["catalog_revision"]) not in [2, 3, Catalog.REVISION]:
 		return _reject("Le catalogue de cette expédition n'est plus compatible.")
 	if not _is_integer(snapshot.get("seed")) or int(snapshot["seed"]) < 0 or int(snapshot["seed"]) > 0x7fffffff:
 		return _reject("Graine d'expédition invalide.")
@@ -125,7 +191,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	if not _is_string_array(snapshot.get("completed_node_ids")) or not _is_string_array(snapshot.get("revealed_node_ids")):
 		return _reject("Historique ou révélations invalides.")
 	var candidate := ExpeditionRouteState.new()
-	candidate.initialize(int(snapshot["seed"]))
+	candidate.initialize(int(snapshot["seed"]), int(snapshot["catalog_revision"]))
 	if snapshot.get("graph_fingerprint", "") != candidate._graph_fingerprint:
 		return _reject("Le graphe ne correspond pas à sa graine.")
 	for revealed_id in snapshot["revealed_node_ids"]:
@@ -148,6 +214,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	if candidate.phase != restored_phase or candidate.current_node_id != restored_current:
 		return _reject("La phase et la destination ne correspondent pas au parcours.")
 	seed = candidate.seed
+	_catalog_revision = candidate._catalog_revision
 	_canonical_nodes = candidate._canonical_nodes
 	_nodes_by_id = candidate._nodes_by_id
 	_graph_fingerprint = candidate._graph_fingerprint
@@ -175,6 +242,7 @@ func _available_ids() -> Array[String]:
 
 func _preview(node: Dictionary) -> Dictionary:
 	var result := node.duplicate(true)
+	result.erase("service_profile")
 	var node_id := String(node["id"])
 	var visited := node_id == current_node_id or node_id in completed_node_ids
 	var in_horizon := int(node["depth"]) <= completed_node_ids.size() + 2

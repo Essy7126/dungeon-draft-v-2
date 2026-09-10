@@ -1,0 +1,34 @@
+{
+  "status": "propositions_non_validees",
+  "image_tool": "ImageGen integre",
+  "reference_input_attempt": "failed: apply deny-read ACLs",
+  "successful_inputs": "texte uniquement, apres inspection des deux decors",
+  "images": {
+    "achille_revenant_v1.png": {
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "alpha_zero_pixels": 1180417,
+      "sha256": "b0b7af3d8733763fad5310af199d863dd4fef388dd0d9d9e461ee3055bc3fcc7"
+    },
+    "achille_echo_v1.png": {
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "alpha_zero_pixels": 1200889,
+      "sha256": "620bc1533ac5295d68b3399863c581d1166c35b54cf4d38fb77d34c2a5f2e409"
+    }
+  }
+}

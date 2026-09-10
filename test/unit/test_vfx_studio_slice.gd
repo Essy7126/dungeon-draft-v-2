@@ -597,7 +597,9 @@ func test_dungeon_draft_studio_registers_vfx_as_fourth_shared_domain() -> void:
 	add_child_autofree(studio)
 	studio.set_deferred("size", Vector2(1500, 850))
 	await get_tree().process_frame
-	assert_eq(studio.tabs.get_tab_count(), 4)
+	assert_eq(studio.tabs.get_tab_count(), 5)
+	assert_eq(studio.tabs.get_child(4).name, StringName("HaltesPeintes"))
+	assert_eq(studio.tabs.get_tab_title(4), "HALTES PEINTES")
 	assert_eq(studio.tabs.get_child(3).name, StringName("VFX"))
 	assert_eq(studio.tabs.get_tab_title(3), "LAB VFX")
 	assert_eq(studio.domain_buttons[3].text, "LAB VFX")

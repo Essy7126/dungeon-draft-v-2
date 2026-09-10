@@ -15,6 +15,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_determinism_and_graph()
+	_test_lane_junctions()
+	_test_legacy_snapshot()
 	_test_transitions_and_isolation()
 	_test_knowledge()
 	_test_snapshot_round_trips()
@@ -34,8 +36,8 @@ func _test_determinism_and_graph() -> void:
 		var same := RouteState.new()
 		same.initialize(seed_value)
 		_check(state.nodes == same.nodes, "Same seed changed catalogue %d" % seed_value)
-		_check(state.nodes.size() == 42, "Expected 40 main nodes and 2 secrets")
-		_check(state.get_visible_nodes().size() == 40, "Secrets leaked in initial graph")
+		_check(state.nodes.size() == 55, "Expected 53 main nodes and 2 secrets")
+		_check(state.get_visible_nodes().size() == 53, "Secrets leaked in initial graph")
 		fingerprints[state.to_snapshot()["graph_fingerprint"]] = true
 		var by_id: Dictionary = {}
 		for node in state.nodes:
@@ -55,6 +57,67 @@ func _test_determinism_and_graph() -> void:
 				_walk_paths(node, by_id, 0, 0, reached)
 		_check(reached.size() == state.nodes.size(), "Unreachable catalogue destination")
 	_check(fingerprints.size() > 1, "Seeds do not vary the expedition")
+
+
+func _test_lane_junctions() -> void:
+	for seed_value in 32:
+		var state := RouteState.new()
+		state.initialize(seed_value)
+		var widths := {}
+		for node in state.nodes:
+			if not bool(node.hidden):
+				widths[int(node.depth)] = int(widths.get(int(node.depth), 0)) + 1
+		_check(widths.values().has(3) and widths.values().has(4), "Missing wider forks")
+		_check(widths[7] == 1 and widths[15] == 1, "Missing common trials")
+		_resolve_first(state)
+		var before := state.to_snapshot()
+		var halts := {}
+		for option in state.get_available_nodes():
+			var preview := state.get_choice_preview(str(option.id))
+			_check(preview.accessible_halts.size() == 1, "First choice must gate one different halt")
+			_check(preview.foregone_halts.size() == 2, "First choice must forgo two other halt types")
+			_check(preview.join_depth == 7, "First section rejoins at bronze trial")
+			halts[str(preview.accessible_halts[0])] = true
+			_check(not preview.path_ids.has("d08_secret"), "Preview leaked undiscovered passage")
+		_check(halts.size() == 3, "First choices have identical services")
+		_check(state.to_snapshot() == before, "Inspection mutated route")
+		_check(state.get_choice_preview("d20_0").is_empty(), "Unavailable node has commitment preview")
+		var choices := state.get_available_nodes()
+		state.choose_node(str(choices[0].id))
+		state.mark_combat_won()
+		state.complete_current_node()
+		_check(not state.choose_node(str(choices[1].id)), "Can switch to a discarded path")
+		# Every pair of neighboring edges preserves lane order: no crossing ladders.
+		var by_id := {}
+		for node in state.nodes:
+			by_id[str(node.id)] = node
+		for node in state.nodes:
+			if node.hidden:
+				continue
+			for other in state.nodes:
+				if other.hidden or node.depth != other.depth or node.lane >= other.lane:
+					continue
+				for edge in node.edges:
+					for other_edge in other.edges:
+						if not by_id[edge].hidden and not by_id[other_edge].hidden:
+							_check(by_id[edge].lane <= by_id[other_edge].lane, "Crossed neighboring paths")
+
+
+func _test_legacy_snapshot() -> void:
+	for revision in [2, 3]:
+		var legacy := RouteState.new()
+		legacy.initialize(2401, revision)
+		_check(legacy.to_snapshot().catalog_revision == revision, "Legacy revision lost")
+		for depth in 20:
+			_round_trip(legacy)
+			_resolve_first(legacy)
+		_round_trip(legacy)
+		var current := RouteState.new()
+		current.initialize(2401)
+		_check(current.to_snapshot().catalog_revision == 4, "New run does not use itineraries")
+		var bad := legacy.to_snapshot()
+		bad.catalog_revision = 4
+		_check(not current.restore_snapshot(bad), "Legacy graph silently changed topology")
 
 
 func _walk_paths(node: Dictionary, by_id: Dictionary, length: int, combats: int,
@@ -117,11 +180,12 @@ func _test_knowledge() -> void:
 			_check(not String(edge).contains("secret"), "Secret connection displayed before discovery")
 		if int(node["depth"]) > 2:
 			_check(node["reward"] == "unknown", "Future reward family leaked")
+		_check(not node.has("service_profile"), "Hidden service profile leaked")
 		_check(node["room_index"] == -1, "Unvisited room content leaked")
 	_check(state.reveal_next_hidden_node() == "d08_secret", "Wrong next secret discovered")
 	_check(not state.reveal_hidden_node("d08_secret"), "Secret discovered twice")
 	_check(not state.reveal_hidden_node("d01_0"), "Ordinary node accepted as secret")
-	_check(state.get_visible_nodes().size() == 41, "Discovered secret absent from map")
+	_check(state.get_visible_nodes().size() == 54, "Discovered secret absent from map")
 	for depth in range(1, 8):
 		_resolve_first(state)
 	var found_secret := false

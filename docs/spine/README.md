@@ -1,8 +1,99 @@
 # Spine — dossier de reprise local
 
+## Dernière livraison — six sorts Passe-rive V1
+
+La [palette de six gestes](../../art/source/characters/achilles/passe_rive_spells_v1/README.md)
+contient 24 poses peintes, leurs PNG/atlas, les chronologies et un laboratoire
+jouable dans le navigateur et Godot. [Ouvrir l’essai](http://127.0.0.1:8734/files/passe_rive_spells_v1/review.html).
+Quatre familles du jeu et deux propositions, une seule direction ; aucun
+remplacement de la campagne. Les entrées, déclenchements et imports sont vérifiés,
+la qualité artistique reste à juger. Les poses sont produites en 2D avec ImageGen,
+sans nouveau rig, puis détourées avec Birefnet.
+
+## Livraison précédente — marche peinte Passe-rive V3
+
+La [marche peinte V3](../../art/source/characters/achilles/passe_rive_walk_v3/README.md)
+contient douze PNG transparents, un atlas, un aperçu animé et une ressource
+SpriteFrames vérifiée dans Godot. [Ouvrir la revue](http://127.0.0.1:8734/files/passe_rive_walk_v3/review.html).
+Le résultat provient d'ImageGen guidé par les poses Blender ; il attend la revue
+artistique, notamment les contacts peints. Aucun job Higgsfield ou Ludo n'est
+revendiqué comme exécuté pour cette livraison.
+
+## Dernière décision — recherche de production, 10 septembre 2026
+
+La [marche Blender V2](../../art/source/blender/passe_rive_walk_v2/README.md)
+a reçu un retour positif sur le raccordement des pieds. Elle reste un mannequin,
+sans validation d'un kit peint final. Le [dossier de recherche](../design/achilles/sprite_generation_research_2026-09-10.md)
+compare les méthodes de studios, les générateurs spécialisés et les références
+réutilisables. Il recommande un essai limité de Ludo avant de nouveaux travaux
+d'infrastructure ; aucun essai Passe-rive avec ce service n'est encore validé.
+
+Pour reprendre avec peu de contexte, lire la [mémoire courte d'animation](../ai/animation_memory.md),
+puis seulement les preuves nécessaires. Les sections suivantes conservent
+l'historique des essais.
+
+## Étape précédente — Passe-rive, marche et idle V1, 10 septembre 2026
+
+L'utilisateur a choisi le nouvel Achille Passe-rive et demande d'abord une seule
+direction soignée. Le [socle de mouvement](../../art/source/characters/achilles/passe_rive_motion_v1/README.md)
+contient huit dessins de marche RGBA, un idle sur la référence originale, une
+revue interactive et un projet Godot autonome vérifié. Le détourage logiciel
+local est explicitement autorisé. **La marche reste un essai non validé** :
+appuis, transfert de poids et constance des motifs sont à corriger avant les
+autres actions. La réparation du sandbox a rétabli ImageGen avec référence.
+
+Le [dernier audit de marche](../design/achilles/passe_rive_walk_audit_2026-09-10.md)
+mesure désormais le défaut sur les dessins et relève aussi deux erreurs dans
+le guide. Il documente les références professionnelles et le prochain test :
+brouillon animé validé en déplacement, puis preuve de transfert de l'habillage.
+
+## Méthode retenue avant ce socle — dessin guidé par Blender
+
+L'utilisateur valide le gain de cohérence du mannequin, mais rejette l'habillage
+`sentinelle_armor_v1`, trop éloigné du sprite original. Il propose désormais
+Blender comme référence des poses et des appuis, avec génération des dessins
+complets depuis le sprite original. Le kit initial apprécié est celui d'Achille.
+
+La [fiche de l'essai guidé](../../art/source/sprite_workshop/sentinelle_guided_v1/README.md)
+contient quatre poses techniques de l'estoc E et le prompt. La génération a été
+bloquée par une erreur d'accès aux images du bac à sable Codex, résolue depuis.
+Cet ancien essai n'a pas reçu de validation artistique. Les sections suivantes
+conservent l'historique ; l'armure 3D n'est pas la référence artistique à poursuivre.
+
+
+## Retour utilisateur — cohérence du pilote
+
+Le 10 septembre 2026, après consultation de la revue Blender :
+> C'est vraiment beaucoup plus cohérent
+
+Conserver `sentinelle_blocking_v1` et son estoc comme référence de mouvement pour
+la suite. Ce retour confirme le gain de cohérence perçu. L'habillage peint,
+les autres actions et leur intégration au combat restent à produire et à revoir.
+Ne pas repartir des recettes V7 pour remplacer cette base de mouvement.
+
+
+## Pilote Blender commencé — 10 septembre 2026
+
+Blender et sa connexion MCP sont maintenant configurés. Le
+[guide du pilote Blender](../../tools/blender_sentinelle/README.md) donne le fichier
+éditable, le panneau de revue, les versions et les preuves. Un mannequin commun
+aux quatre vues et un premier estoc sont construits. **Les poses attendent la
+revue artistique** avant toute préparation des pièces peintes ou déclinaison du kit.
+
+
+## Priorité après revue de la V7 — 10 septembre 2026
+
+L'utilisateur juge encore les mouvements incohérents. Lire le
+[diagnostic de méthode et le prochain pilote proposé](diagnostic_methode_2026-09-10.md)
+avant une nouvelle production. L'audit distingue directions et dessins sources,
+rig, mécanique corporelle et validations techniques. La V7 reste une expérience
+à comparer, sans approbation artistique. Le prochain essai recommandé commence
+par une référence spatiale et quelques poses complètes validées.
+
+
 ## Kit complet de la Sentinelle — essai courant
 
-Le kit `sentinelle_kit_v5` contient 24 clips dans quatre directions.
+Le kit `sentinelle_kit_v7` contient 24 clips dans quatre directions.
 [Guide, galerie et reprise](sentinelle_kit.md).
 Commande : `./tools/spine_trial/kit.ps1 start`.
 Les sections suivantes conservent l’historique de la préparation Spine.

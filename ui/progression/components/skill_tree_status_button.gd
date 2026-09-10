@@ -26,6 +26,7 @@ var _animation: Tween = null
 
 
 func _ready() -> void:
+	PremiumUI.apply(self)
 	if progression_controller == null:
 		progression_controller = GameManager
 	_frame_texture.texture = skin.character_tab_texture if skin != null else null

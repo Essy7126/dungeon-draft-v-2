@@ -1,0 +1,96 @@
+[
+  {
+    "room": "res://data/rooms/odyssey/room_02.tres",
+    "number": 2,
+    "id": "cavern_pillars_v1",
+    "title": "Galerie des piliers brises",
+    "plan": "res://data/arenas/cavern_pillars_v1/terrain_plan.json",
+    "manifest": "res://data/arenas/cavern_pillars_v1/geometry_manifest.json",
+    "asset": "res://assets/catabase/combat/cavern_pillars_v1",
+    "kit": "res://art/source/maps/cavern_pillars_v1/art-kit",
+    "work": "res://artifacts/dev/cavern-sequence-v1/cavern_pillars_v1",
+    "torch_bases": [
+      [
+        1550,
+        179
+      ],
+      [
+        1769,
+        224
+      ]
+    ],
+    "requested_torch_bases": [
+      [
+        1510,
+        240
+      ],
+      [
+        1740,
+        245
+      ]
+    ]
+  },
+  {
+    "room": "res://data/rooms/odyssey/room_03.tres",
+    "number": 3,
+    "id": "cavern_crypt_v1",
+    "title": "Crypte du courant",
+    "plan": "res://data/arenas/cavern_crypt_v1/terrain_plan.json",
+    "manifest": "res://data/arenas/cavern_crypt_v1/geometry_manifest.json",
+    "asset": "res://assets/catabase/combat/cavern_crypt_v1",
+    "kit": "res://art/source/maps/cavern_crypt_v1/art-kit",
+    "work": "res://artifacts/dev/cavern-sequence-v1/cavern_crypt_v1",
+    "torch_bases": [
+      [
+        179,
+        181
+      ],
+      [
+        404,
+        142
+      ]
+    ],
+    "requested_torch_bases": [
+      [
+        185,
+        195
+      ],
+      [
+        410,
+        160
+      ]
+    ]
+  },
+  {
+    "room": "res://data/rooms/odyssey/room_04.tres",
+    "number": 4,
+    "id": "cavern_ford_v1",
+    "title": "Gue souterrain",
+    "plan": "res://data/arenas/cavern_ford_v1/terrain_plan.json",
+    "manifest": "res://data/arenas/cavern_ford_v1/geometry_manifest.json",
+    "asset": "res://assets/catabase/combat/cavern_ford_v1",
+    "kit": "res://art/source/maps/cavern_ford_v1/placement-v2/art-kit",
+    "work": "res://artifacts/dev/cavern-sequence-v1/cavern_ford_v1",
+    "torch_bases": [
+      [
+        1544,
+        175
+      ],
+      [
+        1743,
+        212
+      ]
+    ],
+    "requested_torch_bases": [
+      [
+        1470,
+        230
+      ],
+      [
+        1705,
+        230
+      ]
+    ],
+    "generation_kit": "res://art/source/maps/cavern_ford_v1/art-kit"
+  }
+]

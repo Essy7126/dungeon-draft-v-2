@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "bronze_forge_v1",
+  "manifest_sha256": "2c127fb58a26458035dfd9515dd00a7d8b9b274e04ddd34d66445358866ee752",
+  "manifest_hash_mode": "lf_utf8_v1",
+  "generator": "python_pillow_v2",
+  "source_sha256": "3c7ff21be9eabcc38bb24ab3f0fc4be1ce82e8c3b3a6c3eb8c795966f325bcbf",
+  "mask_sha256": "2f9e6079787f6029a8f3a6a83bf9795479a18c1c8ea9ab737831101164bc8ca4",
+  "flow_sha256": "09b80f9851bebf6ed45b4759a6ac8aba2ab95d06e0d99d53fae0c620c0525e82",
+  "size": [
+    1672,
+    941
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "flow_channels": [
+    "direction_x",
+    "direction_y",
+    "speed_div_4",
+    "water_coverage"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}

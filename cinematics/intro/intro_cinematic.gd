@@ -4,6 +4,7 @@ extends Control
 signal exit_started(skipped: bool)
 signal sequence_completed(sequence_id: StringName, skipped: bool)
 signal run_start_requested(run_data: RunData, hero_sources: Array)
+signal threshold_entry_requested(run_data: RunData)
 signal cinematic_failed(reason: String)
 
 const SILENCE_DB := -40.0
@@ -501,13 +502,22 @@ func _execute_continuation() -> void:
 	var configured_run: RunData = null
 	if manager.has_method("peek_next_run_data"):
 		configured_run = manager.call("peek_next_run_data") as RunData
-	if not bool(manager.call("start_configured_run")):
+	var continuation: StringName = (
+		&"continue_after_intro" if manager.has_method("continue_after_intro") else &"start_configured_run"
+	)
+	if not bool(manager.call(continuation)):
 		if manager.has_method("get_expedition_save_status"):
 			var save_status: Dictionary = manager.call("get_expedition_save_status")
 			if bool(save_status.get("pending", false)):
 				# The prepared expedition stays in memory while the save dialog retries.
 				return
 		_fail_and_return("La configuration de run a deja ete consommee ou est invalide.")
+		return
+	if (
+		manager.has_method("has_catabase_threshold_configuration")
+		and bool(manager.call("has_catabase_threshold_configuration"))
+	):
+		threshold_entry_requested.emit(configured_run)
 		return
 	run_start_committed = true
 	run_start_requested.emit(configured_run, [])

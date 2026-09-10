@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "bronze_forge_v1",
+  "created_before_generation": true,
+  "coordinate_space": "normalized_image",
+  "aspect_ratio": "16:9",
+  "title": "La Forge des Racines",
+  "intent": "Une halte sèche avec un circuit de dalles dégagé autour d'une enclume basse, trois services accessibles et aucune eau.",
+  "entry": [0.16, 0.84],
+  "route": [[0.16, 0.84], [0.29, 0.64], [0.28, 0.46], [0.43, 0.40], [0.67, 0.38], [0.73, 0.54], [0.70, 0.72], [0.51, 0.79], [0.29, 0.64]],
+  "walkable_outline": [[0.03, 0.94], [0.19, 0.72], [0.18, 0.47], [0.25, 0.36], [0.61, 0.31], [0.76, 0.34], [0.82, 0.21], [0.94, 0.22], [0.86, 0.41], [0.80, 0.52], [0.85, 0.72], [0.69, 0.88], [0.43, 0.91], [0.30, 0.83], [0.18, 1.0], [0.03, 1.0]],
+  "central_obstacle": [[0.43, 0.49], [0.55, 0.47], [0.63, 0.55], [0.61, 0.65], [0.51, 0.69], [0.40, 0.60]],
+  "landmarks": [
+    {"id": "forge", "action": "merchant", "point": [0.28, 0.46], "object": [0.25, 0.30], "description": "Forge et établi contre le mur arrière gauche"},
+    {"id": "lore", "action": "dialogue", "point": [0.67, 0.38], "object": [0.65, 0.25], "description": "Stèle des forgerons contre le mur arrière droit"},
+    {"id": "exit", "action": "exit", "point": [0.86, 0.28], "object": [0.88, 0.18], "description": "Arche de sortie dans le coin supérieur droit"}
+  ],
+  "constraints": ["no_water", "no_characters", "no_text", "same_master_style", "wide_loop", "low_foreground"],
+  "calibration_note": "Ce plan guide la composition ; les coordonnées finales doivent être mesurées sur l'image réellement livrée."
+}

@@ -50,18 +50,18 @@ func test_material_layers_do_not_obscure_focus_or_intercept_their_controls() -> 
 
 
 func test_clicking_the_material_selects_the_real_hero_and_preserves_selected_state() -> void:
-	var mage: Button = screen._roster_buttons[3]
+	var painted: Button = screen._roster_buttons[1]
 	var achilles: Button = screen._roster_buttons[0]
-	await _click(mage)
-	assert_eq(screen.selected_index, 3, "A click through the decorative surface reaches Mage")
-	assert_eq(screen.get_selected_entry().get("id"), &"mage")
-	assert_true(mage.button_pressed)
-	assert_true(_state(mage).get("selected", false))
+	await _click(painted)
+	assert_eq(screen.selected_index, 1, "A click through the decorative surface reaches painted Achille")
+	assert_eq(screen.get_selected_entry().get("id"), &"achilles_painted_g")
+	assert_true(painted.button_pressed)
+	assert_true(_state(painted).get("selected", false))
 	assert_false(_state(achilles).get("selected", true))
 	await _move_pointer(Vector2(2, 2))
-	assert_true(_state(mage).get("selected", false), "Moving the cursor away does not clear selection")
-	assert_false(_state(mage).get("hovered", true))
-	assert_eq(screen.get_selected_entry().get("run").resource_path, "res://data/runs/first_run.tres")
+	assert_true(_state(painted).get("selected", false), "Moving the cursor away does not clear selection")
+	assert_false(_state(painted).get("hovered", true))
+	assert_true(screen.get_selected_entry().get("run").catabase_route_enabled)
 
 
 func test_button_surface_follows_hover_press_and_disabled_without_a_false_selection() -> void:

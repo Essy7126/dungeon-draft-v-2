@@ -1,0 +1,56 @@
+{
+  "painting": "painting_stylized_original.png",
+  "sha256": "b6e0e2b630d09586a51ad13a2facf6b8e8aab689a9a6f0dbf5ac6b3fe53b9201",
+  "image_size": [
+    1672,
+    941
+  ],
+  "style": "roots_bronze_v1",
+  "style_reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+  "theme_reference_only": "res://assets/catabase/title/underworld_gate_v1.png",
+  "discarded_style_candidate": "painting_original.png (réalisme écarté à la demande utilisateur)",
+  "geometry_registration": "Manual native-pixel landmarks, obstacle footprints and silhouettes. No affine registration assumed.",
+  "metric_blockout_body_height_ratio": 0.1258181,
+  "runtime_player_height_ratio": 0.186,
+  "painted_body_height_pixels": 137.57,
+  "scale_review": "Statues plus socles ~280–305px, corps Achille ~138px ; architecture monumentale intentionnelle. Revue runtime à compléter.",
+  "authored_points_px": {
+    "spawn": [
+      445,
+      554
+    ],
+    "statue_memory": [
+      617,
+      429
+    ],
+    "fallen_oath": [
+      905,
+      701
+    ],
+    "threshold_gate": [
+      1157,
+      508
+    ],
+    "central": [
+      724,
+      558
+    ],
+    "statue_right_behind": [
+      1024,
+      595
+    ],
+    "statue_right_front": [
+      1045,
+      761
+    ],
+    "statue_left_behind": [
+      564,
+      283
+    ],
+    "right_side": [
+      1175,
+      633
+    ]
+  },
+  "fog_density_sha256": "a30cbc2299d9cdc9fc9f4279d3d3b4b4f71cc77f47444f52bcf03d5aed653ccd"
+}

@@ -11,6 +11,7 @@ signal equipment_slot_requested(slot: int)
 @onready var quantity_label: Label = %Quantity
 @onready var state_glyph: Label = %StateGlyph
 
+var item_definition: ItemDefinition = null
 var instance_id: StringName = &""
 var equipment_slot := ItemDefinition.EquipmentSlot.NONE
 var _hover_tween: Tween = null
@@ -19,6 +20,7 @@ static var _presentation_icon_cache: Dictionary = {}
 
 
 func _ready() -> void:
+	icon_view.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	focus_mode = Control.FOCUS_ALL
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	toggle_mode = true
@@ -232,3 +234,45 @@ static func _category_fallback_icon(category: ItemDefinition.Category) -> Textur
 			return CatabasePaintedIconCatalog.route_icon("cache", generic)
 		_:
 			return generic
+
+
+func configure_compact() -> void:
+	# The bag exposes identity through the icon; the persistent detail owns prose.
+	custom_minimum_size = Vector2(64, 64)
+	size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	text = ""
+	get_node("Margin/Content/Copy").hide()
+	var margin := get_node("Margin") as MarginContainer
+	margin.offset_left = 0
+	for side in ["left", "top", "right", "bottom"]:
+		margin.add_theme_constant_override("margin_" + side, 6)
+	var frame := %IconFrame as PanelContainer
+	frame.custom_minimum_size = Vector2.ZERO
+	frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	frame.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	var icon_margin := frame.get_child(0) as MarginContainer
+	for side in ["left", "top", "right", "bottom"]:
+		icon_margin.add_theme_constant_override("margin_" + side, 0)
+	icon_view.custom_minimum_size = Vector2(44, 44)
+	accent_rail.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	accent_rail.offset_left = 8
+	accent_rail.offset_right = -8
+	accent_rail.offset_top = -4
+	accent_rail.offset_bottom = -2
+	accent_rail.visible = instance_id != &""
+	quantity_label.theme_type_variation = &""
+	quantity_label.add_theme_font_size_override("font_size", 14)
+	quantity_label.add_theme_color_override("font_color", Color("eee5d2"))
+	quantity_label.add_theme_color_override("font_outline_color", Color("100f0e"))
+	quantity_label.add_theme_constant_override("outline_size", 4)
+	quantity_label.offset_right = -5
+	quantity_label.offset_bottom = -4
+	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled", "focus"]:
+		var visual: String = "selected" if state in ["pressed", "hover_pressed"] else state
+		var box := CatabaseUITheme.style("slot", visual)
+		for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+			box.set_content_margin(side, 4)
+		add_theme_stylebox_override(state, box)
+	if instance_id != &"":
+		tooltip_text = title_label.text + " · " + meta_label.text + "\nSélectionner pour voir les effets et comparer."

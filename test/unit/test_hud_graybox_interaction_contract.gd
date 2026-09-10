@@ -122,7 +122,7 @@ func test_premium_achilles_layout_keeps_exactly_four_actions_and_clean_identity(
 	assert_false(hud.get_node("%SelectedSpellPlate").visible)
 	assert_eq(
 		hud.get_node("%ResourceBadges").get_parent(),
-		hud.get_node("%CharacterRow"),
+		hud.get_node("%ActionResourcesAnchor"),
 	)
 	assert_true(hud.get_node("%InventoryButton").visible)
 	assert_false(hud.get_node("%MapButton").visible)

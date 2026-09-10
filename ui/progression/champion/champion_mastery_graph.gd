@@ -23,9 +23,9 @@ const CARD := Vector2(226, 80)
 const MIN_ZOOM := 0.5
 const READABLE_ZOOM := 0.78
 const MAX_ZOOM := 1.75
-const GOLD := Color("c4a171")
-const TEXT := Color("f0e6d5")
-const MUTED := Color("b5a99b")
+const GOLD := STYLE.GOLD
+const TEXT := STYLE.TEXT
+const MUTED := STYLE.MUTED
 const ACQUIRED := Color("8cbaa2")
 
 var _state: CharacterRunState
@@ -421,7 +421,7 @@ func _refresh_styles() -> void:
 		var state_id := "acquired" if chosen else ("excluded" if excluded else ("available" if available else "locked"))
 		var color := ACQUIRED if chosen else (Color("b57e71") if excluded else (GOLD if available else Color("786957")))
 		var selected := id == _selected_id
-		var normal := STYLE.box(Color(0, 0, 0, 0.06), TEXT if selected else color, 5)
+		var normal := STYLE.box(Color(0, 0, 0, 0.06), STYLE.TEAL if selected else color, 5)
 		normal.set_border_width_all(2 if selected else 1)
 		normal.shadow_color = Color(0, 0, 0, 0.5)
 		normal.shadow_size = 5
@@ -436,7 +436,7 @@ func _refresh_styles() -> void:
 		(button.get_node("PrestigeFrame") as MasteryNodeCrest).configure(str(button.get_meta("prestige")), state_id, selected)
 		button.set_meta("decision", decision.duplicate())
 		var surface := button.get_node("AshenMaterial") as SelectionAshenSurface
-		surface.set_selected(selected or chosen, color)
+		surface.set_selected(selected, color)
 		var status := button.get_node("MasteryStatus") as Label
 		status.text = "✓ ACQUIS" if chosen else ("× CHOIX EXCLU" if excluded else "%d PMa · %s" % [node.mastery_cost, "DISPONIBLE" if available else _reason_text(node, decision)])
 		status.add_theme_color_override("font_color", color if chosen or available or excluded else MUTED)
@@ -689,7 +689,7 @@ func _draw() -> void:
 	var texture_size := BACKDROP.get_size()
 	var scale_factor := maxf(size.x / texture_size.x, size.y / texture_size.y)
 	var rendered := texture_size * scale_factor
-	draw_texture_rect(BACKDROP, Rect2((size - rendered) * 0.5, rendered), false, Color(0.68, 0.59, 0.48, 0.30))
+	draw_texture_rect(BACKDROP, Rect2((size - rendered) * 0.5, rendered), false, Color(0.68, 0.59, 0.48, 0.12))
 	draw_texture_rect(GRAIN, Rect2(Vector2.ZERO, size), false, Color(0.6, 0.49, 0.39, 0.05))
 	var center := size * Vector2(0.5, 0.5)
 	for radius in [120.0, 210.0, 305.0]:

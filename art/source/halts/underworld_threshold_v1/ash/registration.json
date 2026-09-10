@@ -1,0 +1,210 @@
+{
+  "source_sha256": "24eba80e2d65561b776a3e504e353e7a60d0e6837548e81283e5073a877c7c93",
+  "style": "roots_bronze_v1",
+  "style_reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+  "theme": "terre noire brûlée, fumées discrètes, Hadès/Zeus/Héra, grande clairière au sol",
+  "spatial_calibration": {
+    "units": "metres",
+    "metric_to_native_pixels": [
+      [
+        65.125,
+        22.31249999999997
+      ],
+      [
+        36.661742093541235,
+        -38.790721211177996
+      ],
+      [
+        839.5073868596882,
+        481.9360818167669
+      ]
+    ],
+    "statue_centres_metres": {
+      "hades": [
+        -4.0,
+        1.5,
+        0.0
+      ],
+      "zeus": [
+        4.0,
+        1.5,
+        0.0
+      ],
+      "hera": [
+        0.0,
+        -5.428203230275509,
+        0.0
+      ]
+    },
+    "statue_centres_native_pixels": {
+      "hades": [
+        634.0,
+        334.5
+      ],
+      "zeus": [
+        1155.0,
+        513.0
+      ],
+      "hera": [
+        640.5,
+        692.5
+      ]
+    },
+    "pairwise_distance_metres": 8.0,
+    "painted_anchor_uncertainty_pixels": 2,
+    "method": "Affine ground registration through three pedestal footprint centres; orthographic source plan fixes the equilateral arrangement."
+  },
+  "points_px": {
+    "spawn": [
+      380,
+      660
+    ],
+    "statue_memory": [
+      756,
+      383
+    ],
+    "fallen_oath": [
+      546,
+      724
+    ],
+    "zeus_memory": [
+      1251,
+      574
+    ],
+    "threshold_gate": [
+      1300,
+      433
+    ],
+    "central": [
+      855,
+      532
+    ],
+    "statue_right_behind": [
+      632,
+      620
+    ],
+    "statue_right_front": [
+      677,
+      766
+    ],
+    "statue_left_behind": [
+      630,
+      274
+    ],
+    "right_side": [
+      1300,
+      656
+    ]
+  },
+  "player_height_ratio": 0.164,
+  "body_reference_height_px": 121.29746303501948,
+  "full_silhouette_height_px": 154.324,
+  "review": "Statue/pedestal heights ~245–280 pixels; body Achilles ~121 pixels; brazier rim ~60 pixels. Visual review in game pending.",
+  "discarded_candidates": [
+    "parent realistic source",
+    "parent stylized suspended platform",
+    "grounded vegetated forest"
+  ],
+  "interaction_targets": {
+    "statue_memory": {
+      "focus_native_pixels": [
+        615,
+        309
+      ],
+      "hit_polygon_native_pixels": [
+        [
+          579,
+          276
+        ],
+        [
+          652,
+          294
+        ],
+        [
+          652,
+          342
+        ],
+        [
+          579,
+          324
+        ]
+      ]
+    },
+    "zeus_memory": {
+      "focus_native_pixels": [
+        1138,
+        491
+      ],
+      "hit_polygon_native_pixels": [
+        [
+          1101,
+          458
+        ],
+        [
+          1174,
+          476
+        ],
+        [
+          1174,
+          525
+        ],
+        [
+          1101,
+          509
+        ]
+      ]
+    },
+    "fallen_oath": {
+      "focus_native_pixels": [
+        623,
+        668
+      ],
+      "hit_polygon_native_pixels": [
+        [
+          586,
+          633
+        ],
+        [
+          660,
+          653
+        ],
+        [
+          660,
+          702
+        ],
+        [
+          586,
+          686
+        ]
+      ]
+    },
+    "threshold_gate": {
+      "focus_native_pixels": [
+        1318,
+        249
+      ],
+      "hit_polygon_native_pixels": [
+        [
+          1171,
+          57
+        ],
+        [
+          1432,
+          123
+        ],
+        [
+          1450,
+          396
+        ],
+        [
+          1280,
+          423
+        ],
+        [
+          1162,
+          333
+        ]
+      ]
+    }
+  }
+}

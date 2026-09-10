@@ -1,0 +1,43 @@
+{
+  "painting_size": [
+    1672,
+    941
+  ],
+  "painting_sha256": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+  "floor_controls_pixels": {
+    "floor_fl": [
+      273,
+      589
+    ],
+    "floor_fr": [
+      1025,
+      899
+    ],
+    "floor_br": [
+      1375,
+      550
+    ]
+  },
+  "floor_affine_from_blockout_normalized": [
+    [
+      1.0585319418656394,
+      0.056133417922732416
+    ],
+    [
+      -0.01444001232311044,
+      1.0804982132557868
+    ],
+    [
+      -0.026103684387967476,
+      -0.06908125083725722
+    ]
+  ],
+  "body_reference_px": 202,
+  "body_reference_uncertainty_px": 2,
+  "full_reference_px": 257,
+  "blockout_ratio": 0.2000516,
+  "painted_ratio": 0.212,
+  "painted_body_height_pixels": 156.79915953307392,
+  "status": "navigation and visual proportions require runtime review",
+  "note": "The generated composition changed. Coordinates were registered against the delivered image; metric geometry remains an authoring reference, not certified final dimensions."
+}

@@ -9,12 +9,14 @@ const source=path.join(root,config.motion_source);
 const require=createRequire(path.join(source,'package.json'));
 const puppeteer=require('puppeteer-core');
 const {findChrome}=await import(pathToFileURL(path.join(source,'dist/spine/gif.js')));
-const revision=process.argv[2]||'sentinelle_kit_v5';
+const revision=process.argv[2]||'sentinelle_kit_v7';
 if(!/^[\w-]+$/.test(revision))throw Error('Invalid revision');
 const out=path.join(root,'artifacts/dev',`spine-kit-web-${Date.now()}`);
 await fs.mkdir(out,{recursive:true});
 const browser=await puppeteer.launch({executablePath:findChrome(),headless:true});
 const errors=[],checks=[];
+const kit=JSON.parse(await fs.readFile(path.join(root,'artifacts/spine_trial',revision,'kit.json'),'utf8'));
+const disappearance=kit.death==='black_burst_disappearance';
 try{
  const page=await browser.newPage();
  await page.setViewport({width:1440,height:1120,deviceScaleFactor:1});
@@ -29,9 +31,9 @@ try{
  for(const [action,duration]of Object.entries(durations)){
   await page.click(`[data-action="${action}"]`);
   const samples=[];
-  for(const [i,fraction]of [0,.25,.5,.75,1].entries()){
+  for(const [i,fraction]of (action==='death'&&disappearance?[0,.15,.3,.5625,1]:[0,.25,.5,.75,1]).entries()){
    await page.evaluate(t=>window.__kit.seek(t),duration*fraction);await draw();
-   const state=await page.evaluate(()=>Object.fromEntries(Object.entries(window.__kit.players).map(([d,p])=>[d,{duration:p.animationState.getCurrent(0).animation.duration,bones:Object.fromEntries(['root','torso','head','hand_right','foot_left','foot_right'].map(n=>{const b=p.skeleton.findBone(n);return[n,[b.worldX,b.worldY,b.a,b.b,b.c,b.d]]}))}])));
+   const state=await page.evaluate(()=>Object.fromEntries(Object.entries(window.__kit.players).map(([d,p])=>[d,{time:window.__kit.time,bodyAlpha:Math.max(...p.skeleton.slots.filter(s=>!s.data.name.startsWith('vanish_')).map(s=>s.color.a)),fxAlpha:Math.max(0,...p.skeleton.slots.filter(s=>s.data.name.startsWith('vanish_')).map(s=>s.color.a)),duration:p.animationState.getCurrent(0).animation.duration,bones:Object.fromEntries(['root','torso','head','hand_right','foot_left','foot_right'].map(n=>{const b=p.skeleton.findBone(n);return[n,[b.worldX,b.worldY,b.a,b.b,b.c,b.d]]}))}])));
    samples.push(state);
    for(const d of ['E','S','W','N']){
     const canvas=await page.$(`#player-${d} canvas`);
@@ -46,8 +48,8 @@ try{
    const durationOK=Math.abs(start.duration-duration)<.00001;
    const looping=action==='idle'||action==='walk';
    // Idle is sinusoidal: its quarter pose carries the motion.
-   const moving=Math.max(motion,diff(start.bones,samples[1][d].bones))>.1;
-   const endpointOK=action==='death'?endpoint>10:endpoint<.001||action==='walk'&&endpoint<.001;
+   const moving=action==='death'&&disappearance?samples.some(s=>s[d].fxAlpha>.1):Math.max(motion,diff(start.bones,samples[1][d].bones))>.1;
+   const endpointOK=action==='death'?(disappearance?end.bodyAlpha===0&&end.fxAlpha===0:endpoint>10):endpoint<.001;
    checks.push({direction:d,action,duration:start.duration,moving,endpoint_difference:endpoint,
                 loop:looping,passed:durationOK&&moving&&endpointOK,samples:samples.map(s=>s[d])});
   }

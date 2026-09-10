@@ -70,6 +70,8 @@ func _ready() -> void:
 		]
 		_hud.visual_skin = PREMIUM_VISUAL_SKIN
 		_hud.character_themes = premium_character_themes
+	else:
+		_hud.visual_skin = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
 	add_child(_hud)
 	if premium_skin:
 		_build_premium_timeline()
@@ -318,13 +320,14 @@ func _collect_setup_errors() -> PackedStringArray:
 		or health.get("maximum_value") != float(_fixture.max_hp.get_int()):
 		errors.append("Health values do not match the Unit fixture.")
 	for badge_case: Dictionary in [
-		{"node": "ActionPointsBadge", "value": _fixture.current_ap},
-		{"node": "MovementPointsBadge", "value": _fixture.current_mp},
+		{"node": "ActionPointsBadge", "value": _fixture.current_ap, "maximum": _fixture.max_ap.get_int(), "name": "PA"},
+		{"node": "MovementPointsBadge", "value": _fixture.current_mp, "maximum": _fixture.max_mp.get_int(), "name": "PM"},
 	]:
 		var badge := _hud.find_child(badge_case.node, true, false)
 		var value_label := badge.find_child("ValueLabel", true, false) as Label \
 			if badge != null else null
-		if value_label == null or value_label.text != str(badge_case.value):
+		var expected_value := "%s %d/%d" % [badge_case.name, badge_case.value, badge_case.maximum] if premium_skin else str(badge_case.value)
+		if value_label == null or value_label.text != expected_value:
 			errors.append("Resource badge is incomplete: %s." % badge_case.node)
 	var slot_container := _hud.find_child("SpellSlotsContainer", true, false)
 	if slot_container == null or slot_container.get_child_count() != _fixture_spells.size():

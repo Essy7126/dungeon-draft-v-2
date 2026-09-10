@@ -1,0 +1,559 @@
+{
+  "schema_version": 1,
+  "id": "underworld_threshold_v1",
+  "title": "Le Seuil des Ombres",
+  "subtitle": "BRUME · PIERRE ANCIENNE · MÉMOIRE",
+  "kind": "lore",
+  "stage": "playable_study",
+  "style": "res://data/halts/styles/roots_bronze_v1.json",
+  "source": {
+    "image": "res://asset/map/painted/halts/underworld_threshold_v1/threshold_grounded.png",
+    "size": [
+      1672,
+      941
+    ],
+    "sha256": "b1ba1cadf8ca77cf607d57f3ff8df51ae2c77cbd1c90b99a7e92418d8c80f2fc",
+    "provider": "image_gen",
+    "generated_on": "2026-09-10",
+    "prompt": "res://art/source/halts/underworld_threshold_v1/grounded/generation_prompt.txt",
+    "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+    "references": [
+      "res://art/source/halts/underworld_threshold_v1/grounded/blockout.png",
+      "res://art/source/halts/underworld_threshold_v1/grounded/scale_guide.png",
+      "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png"
+    ]
+  },
+  "build_dir": "res://asset/map/painted/halts/underworld_threshold_v1",
+  "world": {
+    "width": 2200,
+    "speed": 195,
+    "foot_clearance": 20,
+    "spawn": [
+      0.2529904,
+      0.8278427
+    ],
+    "player_height_ratio": 0.186
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.1315789,
+        0.9734325
+      ],
+      [
+        0.2679426,
+        0.9734325
+      ],
+      [
+        0.3259569,
+        0.8969182
+      ],
+      [
+        0.3881579,
+        0.8416578
+      ],
+      [
+        0.4479665,
+        0.7927736
+      ],
+      [
+        0.4700957,
+        0.7577046
+      ],
+      [
+        0.55622009569378,
+        0.7948990435706695
+      ],
+      [
+        0.5789473684210527,
+        0.8193411264612115
+      ],
+      [
+        0.6166268,
+        0.8427205
+      ],
+      [
+        0.6578947,
+        0.8065887
+      ],
+      [
+        0.6674641,
+        0.7481403
+      ],
+      [
+        0.6818182,
+        0.717322
+      ],
+      [
+        0.6800239,
+        0.6695005
+      ],
+      [
+        0.6698565,
+        0.6163656
+      ],
+      [
+        0.6967703,
+        0.5504782
+      ],
+      [
+        0.7978469,
+        0.4973433
+      ],
+      [
+        0.8253589,
+        0.477152
+      ],
+      [
+        0.8080144,
+        0.4463337
+      ],
+      [
+        0.7470096,
+        0.4229543
+      ],
+      [
+        0.6919856,
+        0.3974495
+      ],
+      [
+        0.6190191,
+        0.4197662
+      ],
+      [
+        0.5962919,
+        0.4314559
+      ],
+      [
+        0.5795455,
+        0.4643996
+      ],
+      [
+        0.5651914,
+        0.4718385
+      ],
+      [
+        0.5065789,
+        0.445271
+      ],
+      [
+        0.4820574,
+        0.3963868
+      ],
+      [
+        0.4671053,
+        0.3719447
+      ],
+      [
+        0.4419856,
+        0.381509
+      ],
+      [
+        0.4228469,
+        0.4261424
+      ],
+      [
+        0.3534689,
+        0.434644
+      ],
+      [
+        0.3313397,
+        0.477152
+      ],
+      [
+        0.3151914,
+        0.5217853
+      ],
+      [
+        0.3235646,
+        0.5589798
+      ],
+      [
+        0.2924641,
+        0.5897981
+      ],
+      [
+        0.2757177,
+        0.6376196
+      ],
+      [
+        0.2511962,
+        0.6865037
+      ],
+      [
+        0.2266746,
+        0.7396387
+      ],
+      [
+        0.2075359,
+        0.7959617
+      ],
+      [
+        0.159689,
+        0.8629118
+      ],
+      [
+        0.1590909,
+        0.9001063
+      ]
+    ],
+    "obstacles": [
+      [
+        [
+          0.3618421,
+          0.392136
+        ],
+        [
+          0.402512,
+          0.434644
+        ],
+        [
+          0.4366029,
+          0.392136
+        ],
+        [
+          0.4049043,
+          0.3485654
+        ]
+      ],
+      [
+        [
+          0.5167464,
+          0.4176408
+        ],
+        [
+          0.5532297,
+          0.4612115
+        ],
+        [
+          0.5909091,
+          0.4187035
+        ],
+        [
+          0.5592105,
+          0.3719447
+        ]
+      ],
+      [
+        [
+          0.5741627,
+          0.7226355
+        ],
+        [
+          0.6208134,
+          0.7874601
+        ],
+        [
+          0.6650718,
+          0.7290117
+        ],
+        [
+          0.6632775,
+          0.6907545
+        ],
+        [
+          0.6202153,
+          0.6578108
+        ],
+        [
+          0.5771531,
+          0.6833156
+        ]
+      ],
+      [
+        [
+          0.4838517,
+          0.7003188
+        ],
+        [
+          0.5047847,
+          0.7407014
+        ],
+        [
+          0.5424641,
+          0.7268863
+        ],
+        [
+          0.5604067,
+          0.6939426
+        ],
+        [
+          0.5358852,
+          0.6620616
+        ],
+        [
+          0.5065789,
+          0.6684378
+        ]
+      ],
+      [
+        [
+          0.6477273,
+          0.3783209
+        ],
+        [
+          0.6722488,
+          0.402763
+        ],
+        [
+          0.6937799,
+          0.370882
+        ],
+        [
+          0.6722488,
+          0.34644
+        ]
+      ],
+      [
+        [
+          0.8235646,
+          0.4675877
+        ],
+        [
+          0.8504785,
+          0.4930925
+        ],
+        [
+          0.8797847,
+          0.4612115
+        ],
+        [
+          0.8498804,
+          0.4325186
+        ]
+      ],
+      [
+        [
+          0.6895933,
+          0.3900106
+        ],
+        [
+          0.819378,
+          0.4590861
+        ],
+        [
+          0.8564593,
+          0.4038257
+        ],
+        [
+          0.7236842,
+          0.3400638
+        ]
+      ]
+    ]
+  },
+  "landmarks": [
+    {
+      "id": "statue_memory",
+      "title": "Le gardien des noms",
+      "action": "dialogue",
+      "point": [
+        0.4455742,
+        0.4675877
+      ],
+      "focus": [
+        0.395933,
+        0.2603613
+      ],
+      "radius": 0.046,
+      "description": "Les vivants gravaient leurs noms pour résister à l’oubli. Ici, la pierre les retient encore. Achille pose la main sur le bronze froid. Le sien n’a pas disparu."
+    },
+    {
+      "id": "fallen_oath",
+      "title": "La gardienne du serment",
+      "action": "dialogue",
+      "point": [
+        0.5460526,
+        0.7608927
+      ],
+      "focus": [
+        0.6166268,
+        0.5844846
+      ],
+      "radius": 0.046,
+      "description": "Sur la tablette, quelques mots ont survécu : « Ce que la mort a pris, la volonté peut encore le chercher. » Au-delà de la porte, les ombres attendent."
+    },
+    {
+      "id": "threshold_gate",
+      "title": "La porte des Ombres",
+      "action": "exit",
+      "point": [
+        0.7517943,
+        0.4782147
+      ],
+      "focus": [
+        0.7894737,
+        0.2667375
+      ],
+      "radius": 0.05,
+      "description": "La brume s’écarte entre les battants. Franchir ce seuil, c’est commencer la descente d’Achille vers les Enfers."
+    }
+  ],
+  "water": {
+    "tint": "#48d896",
+    "polygons": [],
+    "exclusions": []
+  },
+  "cascades": [],
+  "foliage": [],
+  "bounce": [],
+  "mist": [],
+  "torches": [
+    {
+      "id": "gate_left",
+      "point": [
+        0.6716507,
+        0.2805526
+      ],
+      "radius": [
+        0.015,
+        0.043
+      ],
+      "phase": 0.4,
+      "smoke_strength": 0.1,
+      "flame_strength": 0.75,
+      "light_strength": 0.48
+    },
+    {
+      "id": "gate_right",
+      "point": [
+        0.8504785,
+        0.3719447
+      ],
+      "radius": [
+        0.015,
+        0.043
+      ],
+      "phase": 2.1,
+      "smoke_strength": 0.08,
+      "flame_strength": 0.75,
+      "light_strength": 0.48
+    }
+  ],
+  "foreground": [],
+  "threshold_fog": {
+    "density_mask": "res://asset/map/painted/halts/underworld_threshold_v1/fog_density.png",
+    "opacity": 0.26,
+    "color": "#559b9e",
+    "drift": [
+      -0.0011,
+      4e-05
+    ],
+    "scale": 1.1,
+    "seed": 31
+  },
+  "ambience": {
+    "footsteps": "stone",
+    "sources": [
+      {
+        "id": "gate_left",
+        "kind": "fire",
+        "point": [
+          0.6716507,
+          0.2805526
+        ],
+        "radius": 0.26,
+        "gain_db": -22
+      },
+      {
+        "id": "gate_right",
+        "kind": "fire",
+        "point": [
+          0.8504785,
+          0.3719447
+        ],
+        "radius": 0.26,
+        "gain_db": -22
+      }
+    ]
+  },
+  "review": {
+    "dry": true,
+    "stable_pixel": [
+      0.4407895,
+      0.5632306
+    ],
+    "fire_pixel": [
+      0.6716507,
+      0.2805526
+    ],
+    "forbidden_points": [
+      [
+        0.4007177,
+        0.4006376
+      ],
+      [
+        0.5520335,
+        0.4250797
+      ],
+      [
+        0.6172249,
+        0.7311371
+      ],
+      [
+        0.5179426,
+        0.6981934
+      ],
+      [
+        0.8020335,
+        0.3804463
+      ],
+      [
+        0.2990431,
+        0.4930925
+      ],
+      [
+        0.7559809,
+        0.674814
+      ]
+    ],
+    "loop_waypoints": [
+      [
+        0.4455742,
+        0.4675877
+      ],
+      [
+        0.7517943,
+        0.4782147
+      ],
+      [
+        0.6160287,
+        0.6195537
+      ],
+      [
+        0.4413876,
+        0.5844846
+      ],
+      [
+        0.5460526,
+        0.7608927
+      ],
+      [
+        0.5789474,
+        0.7980871
+      ],
+      [
+        0.5460526,
+        0.7608927
+      ],
+      [
+        0.2529904,
+        0.8278427
+      ]
+    ],
+    "occlusion_points": {
+      "statue_right_behind": [
+        0.6160287,
+        0.6195537
+      ],
+      "statue_right_front": [
+        0.5789474,
+        0.7980871
+      ],
+      "statue_left_behind": [
+        0.4497608,
+        0.3804463
+      ]
+    }
+  }
+}

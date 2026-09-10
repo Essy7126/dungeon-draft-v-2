@@ -16,6 +16,20 @@ const SPELLS: Array[Spell] = [
 ]
 
 
+var _previous_window_size := Vector2i.ZERO
+
+
+func before_each() -> void:
+	_previous_window_size = get_tree().root.size
+	get_tree().root.size = Vector2i(1280, 720)
+	await get_tree().process_frame
+
+
+func after_each() -> void:
+	get_tree().root.size = _previous_window_size
+	await get_tree().process_frame
+
+
 func test_achilles_material_preset_is_complete_and_valid() -> void:
 	assert_true(PREMIUM_SKIN.material_enabled)
 	assert_not_null(PREMIUM_SKIN.material_texture)
@@ -137,10 +151,10 @@ func test_selected_spell_feedback_stays_above_tabs_and_context_feedback() -> voi
 
 
 func test_premium_layout_exposes_its_calibrated_offsets() -> void:
-	assert_eq(PREMIUM_LAYOUT.premium_action_offset, 504.0)
-	assert_eq(PREMIUM_LAYOUT.premium_turn_offset, 1072.0)
-	assert_eq(PREMIUM_LAYOUT.premium_ability_offset, 110.0)
-	assert_eq(PREMIUM_LAYOUT.premium_ability_width, 430.0)
+	assert_eq(PREMIUM_LAYOUT.premium_action_offset, 368.0)
+	assert_eq(PREMIUM_LAYOUT.premium_turn_offset, 1198.0)
+	assert_eq(PREMIUM_LAYOUT.premium_ability_offset, 100.0)
+	assert_eq(PREMIUM_LAYOUT.premium_ability_width, 704.0)
 
 
 func test_material_surface_tracks_configured_overall_size() -> void:
@@ -191,7 +205,7 @@ func test_premium_offsets_reposition_only_their_configured_modules() -> void:
 	assert_almost_eq(spell_anchor.position.x, spell_x + 32.0 * visual_scale, 0.01)
 	assert_almost_eq(turn_anchor.position.x, turn_x + 20.0 * visual_scale, 0.01)
 	assert_almost_eq(spell_anchor.size.x, spell_width + 18.0 * visual_scale, 0.01)
-	assert_eq(PREMIUM_LAYOUT.premium_action_offset, 504.0, "Only the duplicated fixture layout changes")
+	assert_eq(PREMIUM_LAYOUT.premium_action_offset, 368.0, "Only the duplicated fixture layout changes")
 
 
 func _assert_surface_size(
@@ -223,3 +237,52 @@ func _spawn_hud_context() -> Dictionary:
 	hud.build_spell_buttons(fixture)
 	hud.set_reduced_motion(true)
 	return {"hud": hud, "fixture": fixture, "layout": layout}
+
+
+func test_resources_are_named_and_remain_legible_when_exhausted() -> void:
+	var context := _spawn_hud_context()
+	var hud = context.hud
+	context.fixture.current_ap = 0
+	hud.update_info(context.fixture)
+	await get_tree().process_frame
+	var badge := hud.get_node("%ActionPointsBadge") as RecraftResourceBadgeView
+	assert_true(badge.value_label.text.begins_with("PA 0/"))
+	assert_false(badge.empty_overlay.visible, "Exhaustion must not obscure the remaining value")
+	assert_gte(badge.value_label.get_theme_font_size("font_size"), 13)
+	assert_eq(badge.accessibility_name, "Points d’action")
+
+
+func test_resources_and_tabs_do_not_cover_the_actions() -> void:
+	var context := _spawn_hud_context()
+	var hud = context.hud
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var resources := hud.get_node("%ResourceBadges") as Control
+	var tabs := hud.get_node("%BarToggleAnchor") as Control
+	assert_false(resources.get_global_rect().intersects(tabs.get_global_rect()))
+	for button: Control in hud.get("_spell_buttons"):
+		assert_false(button.get_global_rect().intersects(resources.get_global_rect()))
+		assert_false(button.get_global_rect().intersects(tabs.get_global_rect()))
+	for path in ["%InventoryButton", "%SkillsButton", "%AttributesButton", "%MapButton"]:
+		var utility := hud.get_node(path) as Control
+		assert_gte(utility.custom_minimum_size.x, 36.0, path)
+		if utility.visible:
+			assert_false(utility.get_global_rect().intersects(hud.get_node("%EndTurnButton").get_global_rect()))
+
+
+func test_six_spells_preserve_the_identity_size_and_fit_the_action_region() -> void:
+	var context := _spawn_hud_context()
+	var hud = context.hud
+	await get_tree().process_frame
+	var identity := hud.get_node("%CharacterAnchor") as Control
+	var initial_width := identity.size.x
+	context.fixture.spells.append(SPELLS[0].duplicate())
+	context.fixture.spells.append(SPELLS[1].duplicate())
+	hud.build_spell_buttons(context.fixture)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	assert_almost_eq(identity.size.x, initial_width, 0.1, "A larger kit must not shrink the portrait and resources")
+	var area := hud.get_node("%SpellAnchor") as Control
+	for button: Control in hud.get("_spell_buttons"):
+		assert_gte(button.size.x, 48.0)
+		assert_true(area.get_global_rect().grow(1).encloses(button.get_global_rect()))

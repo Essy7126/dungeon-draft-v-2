@@ -1,0 +1,140 @@
+{
+  "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+  "reference_sha256": "e97a9650c05defbb0dd0094199d3991c0aa2bd4399f4d6bfbe23c6273450b31f",
+  "provider": "imagegen built-in",
+  "maps": [
+    {
+      "arena": "greek_drawn_courtyard_v1",
+      "plan": "data\\arenas\\greek_drawn_courtyard_v1\\terrain_plan.json",
+      "old_texture": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/land_composed_v4.png",
+      "old_scale": [
+        1,
+        1
+      ],
+      "new_texture": "res://assets/catabase/combat_da_v1/greek_courtyard_emerald_v2.png",
+      "new_size": [
+        1586,
+        992
+      ],
+      "new_scale": [
+        1.210592686002522,
+        1.2096774193548387
+      ],
+      "sha256": "4993ecb4c0476f7a3ed3b317ea09ec6c889f57dc5a7526ba822e6df71350e06d",
+      "prompt": "assets\\catabase\\combat_da_v1\\greek_courtyard_emerald_v2.prompt.txt",
+      "geometry_and_other_layers_unchanged": true,
+      "stone_palette": [
+        "#3c5056",
+        "#7c8e85",
+        "#b4b897"
+      ],
+      "status": "superseded for the first combat room",
+      "superseded_by": "res://assets/catabase/combat/cavern_v1/manifest.json"
+    },
+    {
+      "arena": "ashen_hell_courtyard_v1",
+      "plan": "data\\arenas\\ashen_hell_courtyard_v1\\terrain_plan.json",
+      "old_texture": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/land_composed.png",
+      "old_scale": [
+        1,
+        1
+      ],
+      "new_texture": "res://assets/catabase/combat_da_v1/ashen_courtyard_emerald_v2.png",
+      "new_size": [
+        1586,
+        992
+      ],
+      "new_scale": [
+        1.210592686002522,
+        1.2096774193548387
+      ],
+      "sha256": "5ba9cc34960809e4d6acac7ef436938fceac0c7ecd4ca004b0f0f30b7b629953",
+      "prompt": "assets\\catabase\\combat_da_v1\\ashen_courtyard_emerald_v2.prompt.txt",
+      "geometry_and_other_layers_unchanged": true,
+      "stone_palette": [
+        "#303b42",
+        "#596466",
+        "#9b9380"
+      ]
+    },
+    {
+      "arena": "silent_judgment_courtyard_v1",
+      "plan": "data\\arenas\\silent_judgment_courtyard_v1\\terrain_plan.json",
+      "old_texture": "res://asset/map/painted/underworld/silent_judgment_courtyard_v1/land_composed.png",
+      "old_scale": [
+        1,
+        1
+      ],
+      "new_texture": "res://assets/catabase/combat_da_v1/judgment_courtyard_emerald_v2.png",
+      "new_size": [
+        1586,
+        992
+      ],
+      "new_scale": [
+        1.210592686002522,
+        1.2096774193548387
+      ],
+      "sha256": "00e9081f6ee1fe53e4c18963390ad84c883a15aee6acc7ed7d6bc0ddc4b74805",
+      "prompt": "assets\\catabase\\combat_da_v1\\judgment_courtyard_emerald_v2.prompt.txt",
+      "geometry_and_other_layers_unchanged": true,
+      "stone_palette": [
+        "#677578",
+        "#9fa59b",
+        "#d1cdb6"
+      ]
+    },
+    {
+      "arena": "lethe_crossing_v1",
+      "plan": "data\\arenas\\lethe_crossing_v1\\terrain_plan.json",
+      "old_texture": "res://asset/map/painted/underworld/lethe_crossing_v1/land_composed.png",
+      "old_scale": [
+        1,
+        1
+      ],
+      "new_texture": "res://assets/catabase/combat_da_v1/lethe_crossing_emerald_v2.png",
+      "new_size": [
+        1586,
+        992
+      ],
+      "new_scale": [
+        1.210592686002522,
+        1.2096774193548387
+      ],
+      "sha256": "3db3e29603dee72268a6d8499e14d9978725f7eb467ed9e2a0f6c3e3c4718ef6",
+      "prompt": "assets\\catabase\\combat_da_v1\\lethe_crossing_emerald_v2.prompt.txt",
+      "geometry_and_other_layers_unchanged": true,
+      "stone_palette": [
+        "#495f60",
+        "#83968c",
+        "#b8c0a4"
+      ]
+    },
+    {
+      "arena": "black_oath_temple_v1",
+      "plan": "data\\arenas\\black_oath_temple_v1\\terrain_plan.json",
+      "old_texture": "res://asset/map/painted/underworld/black_oath_temple_v1/temple_composed.png",
+      "old_scale": [
+        1,
+        1
+      ],
+      "new_texture": "res://assets/catabase/combat_da_v1/oath_temple_emerald_v2.png",
+      "new_size": [
+        1586,
+        992
+      ],
+      "new_scale": [
+        1.210592686002522,
+        1.2096774193548387
+      ],
+      "sha256": "cf317f78fead41da75014befe33279a48fece156b4815f3d08fccb540e778386",
+      "prompt": "assets\\catabase\\combat_da_v1\\oath_temple_emerald_v2.prompt.txt",
+      "geometry_and_other_layers_unchanged": true,
+      "stone_palette": [
+        "#253b46",
+        "#506a72",
+        "#899a98"
+      ]
+    }
+  ],
+  "policy": "Original art preserved. Land texture, UV sampling and local stone/prop palettes only. Native geometry, water, foreground sprites and interface unchanged."
+}

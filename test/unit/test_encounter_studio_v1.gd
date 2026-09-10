@@ -412,7 +412,9 @@ func test_plugin_coquille_activation_etat_affichage_fermeture_sans_signaux_doubl
 	add_child_autofree(studio)
 	await get_tree().process_frame
 	assert_not_null(studio.tabs)
-	assert_eq(studio.tabs.get_tab_count(), 4)
+	assert_eq(studio.tabs.get_tab_count(), 5)
+	assert_eq(studio.tabs.get_child(4).name, StringName("HaltesPeintes"))
+	assert_eq(studio.tabs.get_tab_title(4), "HALTES PEINTES")
 	assert_eq(studio.tabs.get_child(0).name, StringName("Arenes"))
 	assert_eq(studio.tabs.get_child(1).name, StringName("Rencontres"))
 	assert_eq(studio.tabs.get_child(2).name, StringName("Objets"))

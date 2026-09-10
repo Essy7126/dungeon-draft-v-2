@@ -1,5 +1,43 @@
 # Reprise locale — pipeline de personnages
 
+## Orientation actuelle — dessin guidé par Blender, 10 septembre 2026
+
+L'utilisateur valide le gain de cohérence du mannequin, mais rejette l'habillage
+`sentinelle_armor_v1`, trop éloigné du sprite original. Il propose désormais
+Blender comme référence des poses et des appuis, avec génération des dessins
+complets depuis le sprite original. Le kit initial apprécié est celui d'Achille.
+
+La [fiche de l'essai guidé](../../art/source/sprite_workshop/sentinelle_guided_v1/README.md)
+contient quatre poses techniques de l'estoc E et le prompt. La génération reste
+bloquée par une erreur d'accès aux images du bac à sable Codex : aucun nouveau
+sprite ni résultat artistique validé à ce stade. Les sections suivantes
+conservent l'historique ; l'armure 3D n'est pas la référence artistique à poursuivre.
+
+
+## Pilote Blender commencé — 10 septembre 2026
+
+Blender et sa connexion MCP sont maintenant configurés. Le
+[guide du pilote Blender](../../tools/blender_sentinelle/README.md) donne le fichier
+éditable, le panneau de revue, les versions et les preuves. Un mannequin commun
+aux quatre vues et un premier estoc sont construits. **Les poses attendent la
+revue artistique** avant toute préparation des pièces peintes ou déclinaison du kit.
+
+
+## Dernier retour — 10 septembre 2026, après V7
+
+La cohérence artistique reste insuffisante selon l'utilisateur. Le
+[diagnostic de méthode](diagnostic_methode_2026-09-10.md) est la lecture prioritaire :
+directions E/S ambiguës, pièces issues de PNG aplatis, bassin/thorax non séparés,
+poses du corps entier non validées avant la déclinaison du kit. Audit sur Git
+`2473c335` et JSON V7 hachés ; rapport dans
+`artifacts/dev/sentinelle-method-audit-20260910/report.json`.
+Blender 5.1.2 présent, connexion MCP non joignable lors du contrôle. Prochain
+pilote recommandé : référence spatiale simple, un estoc dans une vue vérifiée,
+validation des poses puis habillage articulable et revue en contexte Godot.
+Aucun nouveau kit produit pendant cette recherche. Les sections suivantes
+conservent les constats historiques et les validations de l'installation.
+
+
 Constats du 9 septembre 2026, base Git `1b5cedb0` (`direction spine`).
 À l'ouverture, seul `tools/sprite_workshop/experiments/sentinelle_probe.gd.uid`
 était non suivi ; il est conservé. Relire Git avant de réutiliser cette fiche.
@@ -79,3 +117,21 @@ récupérés ni recréés. Aucun essai de combat ni suite CI globale relancé ic
   informations de raccord uniquement sur la mort, qui ne boucle pas.
 - Les ressources du combat n’ont pas été remplacées. Pas de commit créé.
 - Préserver `tools/sprite_workshop/experiments/sentinelle_probe.gd.uid`, préexistant.
+
+## Retour utilisateur du 10 septembre — proposition V7
+
+- La V5 a été jugée insuffisante : marche et estoc incohérents, chute rejetée,
+  sort trop discret. Ne pas confondre les anciens tests réussis avec une approbation artistique.
+- Courant : `art/source/spine/sentinelle_kit_v7/` ; guide `docs/spine/sentinelle_kit.md`.
+- Mort remplacée par une explosion noire embarquée dans Spine : corps invisible
+  à 0,16 s, particules dissipées avant 0,65 s, événements death_burst / vanish.
+- Flexion directionnelle locale (deux genoux dans le même sens), pas parallèles,
+  estoc préparé avec appui avant puis poussée dans l’axe ; sort au bouclier amplifié.
+- Sources : `sentinelle_motion.py`, `spine_burst.py`, `sentinelle_kit.py`.
+  Le rig partagé des monstres n’est pas modifié. Le pont accepte une fabrique optionnelle.
+- 24 contrôles des mouvements directement sur JSON + 24 clips web + 24 Godot passent.
+- Test smoke tenté deux fois : verrou du moteur détenu par une autre tâche,
+  donc ne pas annoncer un nouveau smoke réussi. Les rapports sont dans validation.json.
+- Les raccords des pièces peintes restent à examiner, surtout en gros plan.
+  La V7 est une proposition à revoir en mouvement avec l’utilisateur.
+- Préserver les modifications concurrentes de `asset/map/painted/halts/emerald_sanctuary_v1/`.

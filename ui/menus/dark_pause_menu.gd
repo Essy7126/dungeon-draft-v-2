@@ -39,6 +39,9 @@ var _reduced_motion := false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	PremiumUI.apply(_pause_root)
+	_confirmation.theme = PremiumUI.get_theme()
+	_resume_button.theme_type_variation = &"PremiumPrimaryButton"
+	_resume_button.add_theme_stylebox_override("hover", CatabaseUITheme.style("button", "selected"))
 	_actions = {
 		&"resume": _resume_button,
 		&"characters": _characters_button,
@@ -80,6 +83,7 @@ func _ready() -> void:
 
 
 func open_menu() -> void:
+	CatabaseUITheme.apply_pause(self, true)
 	if is_open():
 		return
 	_pending_exit_reason = &""

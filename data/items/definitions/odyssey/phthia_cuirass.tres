@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+
+[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_phthia_cuirass.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Hp"]
 script = ExtResource("2_stat")
@@ -22,6 +24,9 @@ modifier_type = 1
 
 [resource]
 script = ExtResource("1_item")
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_phthia_cuirass"
 display_name = "Cuirasse de Phthie"
 description = "+20 % PV max, +30 Armure, -10 % Prouesse."

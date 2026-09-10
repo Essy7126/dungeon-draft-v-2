@@ -6,7 +6,7 @@ const VISUAL_THEME_FACTORY := preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
 const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
-	"res://data/ui/hud_visual_skin_neutral_v1.tres"
+	"res://data/ui/hud_visual_skin_achilles_v1.tres"
 )
 const CARD_GAP_RATIO := 0.0054
 const WIDTH_RATIOS := [0.08, 0.065, 0.06, 0.057]
@@ -229,6 +229,18 @@ func _build_layout_targets(count: int) -> Array[Dictionary]:
 	var targets: Array[Dictionary] = []
 	if count <= 0:
 		return targets
+	if _premium_skin_active():
+		var gap := 6.0 * _premium_scale()
+		var total_width := gap * maxi(count - 1, 0)
+		for rank in range(count):
+			total_width += _base_size_for_rank(rank).x
+		var fit := minf(1.0, cards_layer.size.x / total_width)
+		var left := (cards_layer.size.x - total_width * fit) * 0.5
+		for rank in range(count):
+			var card_size := _base_size_for_rank(rank) * fit
+			targets.append({"position": Vector2(left, 0), "size": card_size})
+			left += card_size.x + gap * fit
+		return targets
 	var unscaled_total := 0.0
 	var card_gap := (
 		6.0 * _premium_scale()
@@ -288,17 +300,20 @@ func _update_timeline_geometry() -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	if _premium_skin_active():
 		var scale := _premium_scale()
-		cards_layer.offset_left = 20.0 * scale
-		cards_layer.offset_top = 20.0 * scale
-		cards_layer.offset_right = cards_layer.offset_left + 84.0 * scale
-		cards_layer.offset_bottom = -120.0 * scale
+		cards_layer.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+		var row_width := minf(960.0 * scale, viewport_size.x - 48.0)
+		cards_layer.offset_left = -row_width * 0.5
+		cards_layer.offset_right = row_width * 0.5
+		cards_layer.offset_top = 12.0 * scale
+		cards_layer.offset_bottom = 78.0 * scale
 		var header_width := 360.0 * scale
-		var header_top := 10.0 * scale
+		var header_top := 82.0 * scale
 		turn_header.offset_left = -header_width * 0.5
 		turn_header.offset_top = header_top
 		turn_header.offset_right = header_width * 0.5
-		turn_header.offset_bottom = header_top + 64.0 * scale
+		turn_header.offset_bottom = header_top + 46.0 * scale
 		return
+	cards_layer.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
 	cards_layer.offset_left = viewport_size.x * 0.004
 	cards_layer.offset_top = viewport_size.y * 0.055
 	cards_layer.offset_right = viewport_size.x * 0.084

@@ -1,0 +1,165 @@
+{
+  "passed": true,
+  "painting_sha256": "b1ba1cadf8ca77cf607d57f3ff8df51ae2c77cbd1c90b99a7e92418d8c80f2fc",
+  "clean_plate_sha256": "0969a0b6ded5e3df86c5f479e900a8227f1acf23d3c8a8bbc32605fac39f7fbb",
+  "selections_sha256": "2e687d6e2f8f2d49715aa71997c9204a2919dd20910c7337d22c46f6f2f5b41d",
+  "ora_sha256": "dae84fe7d064d8e26c4a68937f724901f0d104c59efb6a5f836af24be71f815c",
+  "ora": "underworld_threshold_layers.ora",
+  "image_size": [
+    1672,
+    941
+  ],
+  "rgba_composite": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "ora_mergedimage": {
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "top_to_bottom_groups": [
+    "GUIDES — masqués, hors peinture",
+    "Gardien du premier plan — socle et lierre",
+    "Gardien à la lance — socle et plantes",
+    "Gardien du seuil — socle et plantes",
+    "Fond — original conservé, clean plate sous objets et raccords"
+  ],
+  "layers": [
+    {
+      "id": "statue_right",
+      "name": "Gardien du premier plan — socle et lierre",
+      "prop_pixels": 29091,
+      "floor_patch_pixels": 30175,
+      "prop_bbox_xyxy": [
+        959,
+        421,
+        1105,
+        747
+      ],
+      "anchor_image_px": [
+        1034,
+        726
+      ],
+      "anchor_normalized": [
+        0.618421052631579,
+        0.7715196599362381
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    },
+    {
+      "id": "statue_left",
+      "name": "Gardien à la lance — socle et plantes",
+      "prop_pixels": 21453,
+      "floor_patch_pixels": 28399,
+      "prop_bbox_xyxy": [
+        607,
+        107,
+        730,
+        406
+      ],
+      "anchor_image_px": [
+        667,
+        394
+      ],
+      "anchor_normalized": [
+        0.39892344497607657,
+        0.41870350690754515
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    },
+    {
+      "id": "statue_rear",
+      "name": "Gardien du seuil — socle et plantes",
+      "prop_pixels": 17754,
+      "floor_patch_pixels": 21392,
+      "prop_bbox_xyxy": [
+        865,
+        166,
+        988,
+        423
+      ],
+      "anchor_image_px": [
+        924,
+        408
+      ],
+      "anchor_normalized": [
+        0.5526315789473685,
+        0.43358129649309246
+      ],
+      "source_pixels_unchanged": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "occluded_geometry_reconstructed": false
+    }
+  ],
+  "reconstructed_pixels": 148264,
+  "reconstruction_core_pixels": 96003,
+  "reconstruction_transition_pixels": 52261,
+  "hidden_props_changed_pixels": 135956,
+  "hidden_props_equal_clean_plate_inside_reconstruction": true,
+  "original_unchanged_outside_reconstruction": true,
+  "props_masks_non_overlapping": true,
+  "title": "Le Seuil des Ombres",
+  "guides": "Hidden and rescaled only as visual references; geometric sources retain their native dimensions.",
+  "guide_sources": [
+    {
+      "file": "blockout.png",
+      "native_size": [
+        1600,
+        900
+      ],
+      "reference_size": [
+        1672,
+        941
+      ],
+      "name": "Guide géométrique avant peinture — à recaler — Maquette"
+    },
+    {
+      "file": "scale_guide.png",
+      "native_size": [
+        1600,
+        900
+      ],
+      "reference_size": [
+        1672,
+        941
+      ],
+      "name": "Guide géométrique avant peinture — à recaler — Échelle Achille"
+    },
+    {
+      "file": "depth.png",
+      "native_size": [
+        1600,
+        900
+      ],
+      "reference_size": [
+        1672,
+        941
+      ],
+      "name": "Guide géométrique avant peinture — à recaler — Profondeur aperçu 8 bits"
+    }
+  ],
+  "limitations": [
+    "The opaque floor patches preserve original shadow and ground RGB. They are not physical translucent shadows; moving a statue requires repainting its floor connection.",
+    "Only visible painted pixels are extracted; no hidden geometry is invented. Plinth ivy belongs to the cutout where it crosses the visible outer silhouette.",
+    "The left staff is a separate authored component polygon within the same statue group so its narrow contour and the open gap beside the robe remain transparent.",
+    "Binary masks preserve exact original pixels. Already-antialiased source edges include mixed background colours; edge cleanup may be needed when reusing a cutout elsewhere.",
+    "The clean plate replaces only reconstruction cores plus short soft transitions. Pixels outside these supports stay original; all groups shown must reproduce every original pixel.",
+    "Hidden Blender guides are the grounded geometry before painting and need visual alignment; their native 1600x900 data is not registered exactly to the 1672x941 painting."
+  ],
+  "krita_export": "Not yet checked; see separate batch report when available."
+}

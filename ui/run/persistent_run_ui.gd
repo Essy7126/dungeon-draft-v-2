@@ -56,6 +56,7 @@ var _save_retry_button: Button = null
 
 
 func _ready() -> void:
+	PremiumUI.apply(%EvolutionFeedback)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_hud_port = COMBAT_HUD_PORT.new(combat_hud)
 	_modal_coordinator.active_modal_changed.connect(
@@ -365,7 +366,7 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 		wanted_id = states[0].character_id
 	if _hud_port != null:
 		_hud_port.set_controls_enabled(false)
-	CATABASE_UI_THEME.apply_inventory(inventory_screen, GameManager.expedition != null)
+	CATABASE_UI_THEME.apply_inventory(inventory_screen, true)
 	if not inventory_screen.open_for_character(wanted_id, GameManager):
 		if _hud_port != null:
 			_hud_port.set_controls_enabled(_combat_controls_before_inventory)
@@ -412,7 +413,7 @@ func open_pause_menu() -> bool:
 	_owns_tree_pause = true
 	if _hud_port != null:
 		_hud_port.set_controls_enabled(false)
-	CATABASE_UI_THEME.apply_pause(pause_menu, GameManager.expedition != null)
+	CATABASE_UI_THEME.apply_pause(pause_menu, true)
 	pause_menu.open_menu()
 	get_tree().paused = true
 	return true

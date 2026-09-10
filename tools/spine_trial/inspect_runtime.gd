@@ -12,6 +12,8 @@ func _initialize() -> void:
 		"SpineAnimation",
 		"SpineEvent",
 		"SpineEventData",
+		"SpineSlot",
+		"SpineSlotData",
 		"SpineSkeletonFileResource",
 		"SpineAtlasResource",
 		"SpineSkeletonDataResource",

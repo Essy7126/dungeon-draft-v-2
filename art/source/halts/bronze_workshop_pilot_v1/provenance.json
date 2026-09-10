@@ -1,0 +1,23 @@
+{
+  "id": "bronze_workshop_pilot_v1",
+  "date": "2026-09-10",
+  "provider": "image_gen built-in",
+  "source_editing": "Original painting and clean background plate generated natively. Selection masks and layers only package existing pixels.",
+  "references": [
+    "blockout.png",
+    "scale_guide.png",
+    "res://asset/map/painted/merchant/hall_v1/hall.png"
+  ],
+  "authorization": "User explicitly authorized reference transmission in this task on 2026-09-10.",
+  "files": {
+    "painting_original.png": "b9909a9734ca4a93644eea2e7ee9597679adecf2098d06016740e57f69df108c",
+    "clean_plate_original.png": "c32e46b0c2b431b8bdab1f0ffe7643275985f62907245b6fc5f7e9b1703f31c7",
+    "blockout.png": "1d3a89704677a12114b22cacfd0a4196a74b5ca92bb30d263c4727d3ab7e8c8d",
+    "scale_guide.png": "5ef43a01ce9b13f6b4ea57625b97ae6923353c1a640328e2adce6fffd6d72163",
+    "workshop_blockout_v1.blend": "ee06b5db19c3cc2cf58d78fcb112ef0109e190f92792b75ccd37079de18531e5",
+    "generation_prompt.txt": "52361c84ccad864a6e33b77afd1039a54989fb5b135a89251079b7814bcfa1fd",
+    "clean_plate_prompt.txt": "a7545c09d2a740ac1f72492065bf6ff71884e6370dcaf5588517709d83e7330c"
+  },
+  "geometry": "workshop_blockout_v1.blend",
+  "note": "The painting was visually recalibrated after generation; Blender geometry is not guaranteed to align pixel-for-pixel."
+}

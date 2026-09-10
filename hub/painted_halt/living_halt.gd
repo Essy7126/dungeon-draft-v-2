@@ -3,13 +3,26 @@ extends Node2D
 ## manifest; changing the camera never changes the ground or navigation map.
 const Navigation := preload("res://hub/sanctuary_prototype/sanctuary_navigation.gd")
 const Player := preload("res://hub/painted_halt/halt_player.gd")
+const ScaleReference := preload("res://hub/painted_halt/halt_scale_reference.gd")
 const Atmosphere := preload("res://hub/painted_halt/halt_atmosphere.gd")
+const Manifest := preload(
+	"res://addons/dungeon_draft_arena_studio/halts/services/painted_halt_manifest_service.gd"
+)
+const Interactions := preload("res://hub/painted_halt/halt_interactions.gd")
+const AmbientAudio := preload("res://hub/painted_halt/halt_audio.gd")
+const LandmarkEffects := preload("res://hub/painted_halt/halt_landmark_effects.gd")
+signal visit_finished
 const MATERIAL_SHADER := preload("res://hub/painted_halt/living_materials.gdshader")
 const BODY := preload(
 	"res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf"
 )
 const TITLE := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf")
 @export_file("*.json") var manifest_path := "res://data/halts/emerald_sanctuary_v1.json"
+@export var preview_mode := true
+@export var audio_enabled := true
+var definition_override: Dictionary = { }
+var preview_materials: Image
+var preview_flow: Image
 var definition: Dictionary = { }
 var world_size := Vector2.ONE
 var world: Node2D
@@ -17,6 +30,9 @@ var player: Player
 var nav := Navigation.new()
 var effect_material: ShaderMaterial
 var atmosphere: Atmosphere
+var interactions: Interactions
+var ambience: AmbientAudio
+var landmarks_fx: LandmarkEffects
 var clock := 0.0
 var paused := false
 var original := false
@@ -37,6 +53,7 @@ var _zoom_label: Label
 var _ripples := 0
 var _ripple_time := -100.0
 var _mask: Image
+var _flow: Image
 var _error := ""
 
 
@@ -55,11 +72,12 @@ class Destination extends Node2D:
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color("101c1b"))
 	for argument in OS.get_cmdline_user_args():
-		if argument.begins_with("--halt-manifest="):
+		if argument.begins_with("--halt-manifest=") and definition_override.is_empty():
 			manifest_path = argument.trim_prefix("--halt-manifest=")
 	if not _load_definition():
 		_build_error()
 		return
+	_normalize_optional_definition()
 	var size_data: Array = definition.source.size
 	world_size = Vector2(
 		float(definition.world.width),
@@ -68,18 +86,39 @@ func _ready() -> void:
 	world = Node2D.new()
 	world.name = "PaintedWorld"
 	add_child(world)
-	var source: Texture2D = load(str(definition.source.image))
+	var source: Texture2D
+	if not definition_override.is_empty():
+		var raw := Image.load_from_file(
+			ProjectSettings.globalize_path(str(definition.source.image))
+		)
+		source = ImageTexture.create_from_image(raw)
+	else:
+		source = load(str(definition.source.image))
 	effect_material = ShaderMaterial.new()
-	effect_material.shader = MATERIAL_SHADER
+	effect_material.shader = _material_shader()
 	effect_material.set_shader_parameter("materials", ImageTexture.create_from_image(_mask))
 	effect_material.set_shader_parameter("source_size", Vector2(size_data[0], size_data[1]))
 	effect_material.set_shader_parameter("water_color", Color(str(definition.water.tint)))
+	if _flow != null:
+		effect_material.set_shader_parameter("flow_map", ImageTexture.create_from_image(_flow))
+		effect_material.set_shader_parameter("has_flow_map", true)
 	var torch_data := PackedVector4Array()
+	var torch_strength := PackedVector4Array()
 	for torch: Dictionary in definition.torches:
 		torch_data.append(Vector4(torch.point[0], torch.point[1], torch.radius[0], torch.radius[1]))
+		torch_strength.append(
+			Vector4(
+				float(torch.get("flame_strength", 1.0)),
+				float(torch.get("light_strength", 1.0)),
+				0,
+				0,
+			)
+		)
 	while torch_data.size() < 12:
 		torch_data.append(Vector4.ZERO)
+		torch_strength.append(Vector4.ZERO)
 	effect_material.set_shader_parameter("torches", torch_data)
+	effect_material.set_shader_parameter("torch_strength", torch_strength)
 	effect_material.set_shader_parameter("torch_count", definition.torches.size())
 	var painting := TextureRect.new()
 	painting.texture = source
@@ -98,7 +137,7 @@ func _ready() -> void:
 	world.add_child(actors)
 	player = Player.new()
 	player.name = "Achilles"
-	player.display_scale = float(definition.world.player_scale)
+	_configure_player(player)
 	player.position = point(definition.world.spawn)
 	player.water_tint = Color(str(definition.water.tint))
 	for torch: Dictionary in definition.torches:
@@ -126,6 +165,15 @@ func _ready() -> void:
 	atmosphere.definition = definition
 	atmosphere.extent = world_size
 	world.add_child(atmosphere)
+	ambience = AmbientAudio.new()
+	add_child(ambience)
+	ambience.configure(world, player, definition, world_size)
+	interactions = _create_interactions()
+	add_child(interactions)
+	interactions.configure(self, preview_mode)
+	landmarks_fx = LandmarkEffects.new()
+	landmarks_fx.hall = self
+	world.add_child(landmarks_fx)
 	nav.foot_radius = float(definition.world.foot_clearance)
 	nav.create_debug_overlay(world)
 	_build_interface()
@@ -147,7 +195,28 @@ func _ready() -> void:
 	)
 
 
+func _material_shader() -> Shader:
+	return MATERIAL_SHADER
+
+
+func _configure_player(actor: Player) -> void:
+	actor.display_scale = ScaleReference.display_scale(definition)
+
+
+func _create_interactions() -> Interactions:
+	return Interactions.new()
+
+
 func _load_definition() -> bool:
+	if not definition_override.is_empty():
+		var validation: Dictionary = Manifest.validate(definition_override)
+		if not bool(validation.get("ok", false)) or preview_materials == null:
+			_error = "La copie de travail doit être calibrée avant cet essai."
+			return false
+		definition = definition_override.duplicate(true)
+		_mask = preview_materials
+		_flow = preview_flow
+		return true
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
 	if not parsed is Dictionary or parsed.get("schema_version", 0) != 1:
 		_error = "Manifeste de halte invalide."
@@ -158,7 +227,12 @@ func _load_definition() -> bool:
 	var mask_path := str(definition.build_dir).path_join("materials.png")
 	if (
 		not build is Dictionary
-		or str(build.get("manifest_sha256", "")) != FileAccess.get_sha256(manifest_path)
+		or str(build.get("manifest_sha256", ""))
+		!= (
+			Manifest.manifest_hash(manifest_path)
+			if str(build.get("manifest_hash_mode", "")) == "lf_utf8_v1"
+			else FileAccess.get_sha256(manifest_path)
+		)
 	) \
 			or str(build.get("source_sha256", "")) != FileAccess.get_sha256(
 		str(definition.source.image)
@@ -166,13 +240,44 @@ func _load_definition() -> bool:
 			or str(build.get("mask_sha256", "")) != FileAccess.get_sha256(mask_path):
 		_error = "Cette version doit être préparée à nouveau dans l’atelier des haltes."
 		return false
-	var mask_texture := load(mask_path) as Texture2D
-	_mask = mask_texture.get_image() if mask_texture != null else null
+	_mask = Image.load_from_file(ProjectSettings.globalize_path(mask_path))
+	var flow_path := str(definition.build_dir).path_join("flow.png")
+	if build.has("flow_sha256"):
+		if FileAccess.get_sha256(flow_path) != str(build.flow_sha256):
+			_error = "Les courants doivent être préparés à nouveau."
+			return false
+		_flow = Image.load_from_file(ProjectSettings.globalize_path(flow_path))
+		if _flow == null or _flow.is_empty():
+			_error = "La carte des courants est illisible."
+			return false
 	return _mask != null and not _mask.is_empty()
+
+
+func _normalize_optional_definition() -> void:
+	for key in ["cascades", "torches", "foliage", "bounce", "mist", "foreground"]:
+		if not definition.has(key):
+			definition[key] = []
+	if not definition.has("water"):
+		definition["water"] = { }
+	for key in ["polygons", "regions", "exclusions"]:
+		if not definition.water.has(key):
+			definition.water[key] = []
+	if not definition.water.has("tint"):
+		definition.water["tint"] = "#48d896"
+	if not definition.navigation.has("obstacles"):
+		definition.navigation["obstacles"] = []
+	if not definition.world.has("speed"):
+		definition.world["speed"] = 195
+	if not definition.world.has("foot_clearance"):
+		definition.world["foot_clearance"] = 12
+	if not definition.has("review"):
+		definition["review"] = { }
 
 
 func _exit_tree() -> void:
 	nav.close()
+	if ambience != null:
+		ambience.dispose()
 
 
 func is_ready_for_play() -> bool:
@@ -188,12 +293,15 @@ func advance_world(delta: float) -> void:
 		return
 	if not paused:
 		clock += delta
-		if _ready_for_play:
+		if _ready_for_play and not interactions.blocked():
 			_advance_move(delta)
+			interactions.after_movement()
 	_apply_effects()
 	player.set_environment_time(clock, player.position)
 	_marker.clock = clock
 	_marker.queue_redraw()
+	landmarks_fx.queue_redraw()
+	ambience.advance(0.0, paused, audio_enabled and not original)
 	if zoom > 1.0:
 		_fit_world()
 	_update_status()
@@ -227,11 +335,13 @@ func polygon(values: Array) -> PackedVector2Array:
 
 
 func request_move(destination: Vector2) -> bool:
-	if not _ready_for_play or paused:
+	if not _ready_for_play or paused or (interactions != null and interactions.blocked()):
 		return false
 	var candidate := nav.get_path(player.position, destination)
 	if candidate.is_empty():
 		return false
+	if interactions != null:
+		interactions.cancel()
 	_path = candidate
 	_path_index = 0
 	_target = destination
@@ -244,7 +354,9 @@ func is_player_moving() -> bool:
 	return _path_index < _path.size()
 
 
-func stop_movement() -> void:
+func stop_movement(cancel_interaction := true) -> void:
+	if cancel_interaction and interactions != null:
+		interactions.cancel()
 	_path.clear()
 	_path_index = 0
 	_speed = 0.0
@@ -286,11 +398,16 @@ func _advance_move(delta: float) -> void:
 		player.play_walk(offset)
 		player.position = next
 		player.advance_ground_stride(used)
+		ambience.advance(
+			player.normalized_stride_distance(used),
+			paused,
+			audio_enabled and not original,
+		)
 		travel -= used
 		if used >= distance:
 			_path_index += 1
 	if not is_player_moving():
-		stop_movement()
+		stop_movement(false)
 
 
 func set_paused(value: bool) -> void:
@@ -336,16 +453,28 @@ func trigger_ripple(at: Vector2) -> bool:
 func _unhandled_input(event: InputEvent) -> void:
 	if not _ready_for_play:
 		return
+	if interactions != null and interactions.blocked():
+		if (
+			event is InputEventKey and event.pressed
+			and event.keycode == KEY_ESCAPE and interactions.active
+		):
+			interactions.close()
+			get_viewport().set_input_as_handled()
+		return
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			set_zoom(zoom + 0.1)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			set_zoom(zoom - 0.1)
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			interactions.cancel()
 			stop_movement()
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			var at := world.to_local(event.position)
-			if not trigger_ripple(at):
+			var landmark := interactions.hit_test(at)
+			if landmark >= 0:
+				interactions.request(landmark)
+			elif not trigger_ripple(at):
 				request_move(at)
 		get_viewport().set_input_as_handled()
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -361,12 +490,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_F1:
 				nav.debug_enabled = not nav.debug_enabled
 			KEY_ESCAPE:
+				interactions.cancel()
 				stop_movement()
 				set_chrome_visible(true)
 			KEY_1, KEY_2, KEY_3:
 				var index := int(event.keycode) - int(KEY_1)
 				if index < definition.landmarks.size():
-					request_move(point(definition.landmarks[index].point))
+					interactions.request(index)
 			_:
 				return
 		get_viewport().set_input_as_handled()
@@ -380,7 +510,10 @@ func _fit_world() -> void:
 	world.scale = Vector2.ONE * factor
 	var center := world_size * 0.5
 	if zoom > 1.0 and player != null:
-		center = center.lerp(player.position + Vector2(0, -70), clampf((zoom - 1.0) / 0.5, 0, 1))
+		center = center.lerp(
+			player.position + Vector2(0, -70 * player.display_scale / 0.52),
+			clampf((zoom - 1.0) / 0.5, 0, 1),
+		)
 		var half := size / factor * 0.5
 		center.x = clampf(
 			center.x,
@@ -396,21 +529,7 @@ func _fit_world() -> void:
 
 
 func _theme() -> Theme:
-	var theme := Theme.new()
-	theme.default_font = BODY
-	theme.default_font_size = 16
-	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		var style := StyleBoxFlat.new()
-		style.bg_color = Color("1a302a") if state != "hover" else Color("345545")
-		style.border_color = Color("a69762") if state in ["focus", "pressed"] else Color("536657")
-		style.set_border_width_all(1)
-		style.set_corner_radius_all(5)
-		style.content_margin_left = 12
-		style.content_margin_right = 12
-		style.content_margin_top = 7
-		style.content_margin_bottom = 7
-		theme.set_stylebox(state, "Button", style)
-	return theme
+	return PremiumUI.get_theme()
 
 
 func _button(parent: Node, label: String, callback: Callable) -> Button:
@@ -458,7 +577,7 @@ func _build_interface() -> void:
 			top_row,
 			str(definition.landmarks[i].title),
 			func():
-				request_move(point(definition.landmarks[i].point)),
+				interactions.request(i),
 		)
 	var bottom := PanelContainer.new()
 	_interface.add_child(bottom)
@@ -470,7 +589,8 @@ func _build_interface() -> void:
 	var stack := VBoxContainer.new()
 	bottom.add_child(stack)
 	var controls := HBoxContainer.new()
-	controls.add_theme_constant_override("separation", 8)
+	controls.add_theme_constant_override("separation", 6)
+	controls.add_theme_font_size_override("font_size", 14)
 	stack.add_child(controls)
 	_pause = _button(
 		controls,
@@ -490,6 +610,14 @@ func _build_interface() -> void:
 		["atmosphere", "Atmosphère"],
 		["foliage", "Feuillage"],
 	]:
+		if (
+			(
+				entry[0] == "water" and definition.water.polygons.is_empty()
+				and definition.cascades.is_empty()
+			)
+			or (entry[0] == "foliage" and definition.foliage.is_empty())
+		):
+			continue
 		var toggle := _button(
 			controls,
 			entry[1],
@@ -514,6 +642,18 @@ func _build_interface() -> void:
 			reduced = value
 			_apply_effects(),
 	)
+	var sound := _button(
+		controls,
+		"Son",
+		func():
+			pass,
+	)
+	sound.toggle_mode = true
+	sound.set_pressed_no_signal(audio_enabled)
+	sound.toggled.connect(
+		func(value: bool):
+			audio_enabled = value,
+	)
 	var space := Control.new()
 	space.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls.add_child(space)
@@ -536,8 +676,8 @@ func _build_interface() -> void:
 	stack.add_child(_status)
 	for panel in [top, bottom]:
 		var style := StyleBoxFlat.new()
-		style.bg_color = Color(0.04, 0.09, 0.075, 0.95)
-		style.border_color = Color("63735a")
+		style.bg_color = Color("211c18f2")
+		style.border_color = Color("8b714c")
 		style.set_border_width_all(1)
 		style.set_corner_radius_all(7)
 		style.content_margin_left = 15

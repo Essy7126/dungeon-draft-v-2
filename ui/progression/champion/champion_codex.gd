@@ -5,13 +5,13 @@ signal close_requested
 signal build_changed
 
 const STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
-const GOLD := Color("c5aa86")
-const TEXT := Color("ebe0d2")
-const MUTED := Color("b7aa9c")
+const GOLD := STYLE.GOLD
+const TEXT := STYLE.TEXT
+const MUTED := STYLE.MUTED
 const GREEN := Color("b8d5ac")
 const ART := preload("res://ui/progression/champion/mastery_atlas_art.gd")
 const GRAPH := preload("res://ui/progression/champion/champion_mastery_graph.gd")
-const DOCTRINE_ART := [preload("res://asset/ui/progression/mastery_atlas/wrath_v1.tres"), preload("res://asset/ui/progression/mastery_atlas/chiron_v1.tres"), preload("res://asset/ui/progression/mastery_atlas/aeacus_v1.tres")]
+const DOCTRINE_ART := [preload("res://assets/catabase/emerald_icons_v2/emblems/colere.png"), preload("res://assets/catabase/emerald_icons_v2/emblems/chiron.png"), preload("res://assets/catabase/emerald_icons_v2/emblems/eaque.png")]
 
 var character_state: CharacterRunState = null
 var read_only := false
@@ -161,7 +161,7 @@ func _build() -> void:
 	var background := Panel.new()
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
-	STYLE.panel(background, Color("171310"), Color("8d7557"), 9)
+	STYLE.panel(background, STYLE.INK, STYLE.BORDER, 9)
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side in ["left", "right", "top", "bottom"]:
@@ -242,7 +242,7 @@ func _build() -> void:
 	_search.add_theme_font_override("font", STYLE.BODY)
 	_search.add_theme_font_size_override("font_size", 15)
 	_search.add_theme_stylebox_override("normal", STYLE.box(Color("100e0c"), Color("615247"), 5, 9))
-	_search.add_theme_stylebox_override("focus", STYLE.box(Color("1b1612"), GOLD, 5, 9))
+	_search.add_theme_stylebox_override("focus", STYLE.box(Color("102d34"), STYLE.TEAL, 5, 9))
 	_search.add_theme_color_override("font_color", TEXT)
 	_search.add_theme_color_override("font_placeholder_color", MUTED)
 	_search.text_changed.connect(_on_search_changed)
@@ -308,6 +308,7 @@ func _build() -> void:
 	_detail_scroll.add_child(_detail)
 	_action = _button("Sélectionnez une maîtrise", 16)
 	_action.name = "AcquireMastery"
+	(_action.get_node("AshenButtonMaterial") as SelectionAshenSurface).configure(&"primary", STYLE.SURFACE, STYLE.GOLD)
 	_action.custom_minimum_size.y = 48
 	_action.pressed.connect(_purchase_selected)
 	detail_box.add_child(_action)
@@ -748,7 +749,7 @@ func _range_text(minimum: int, maximum: int) -> String:
 
 func _panel(fill: Color, padding: int) -> PanelContainer:
 	var panel := PanelContainer.new()
-	STYLE.panel(panel, Color("211a15"), Color("64513e"), 7, padding)
+	STYLE.panel(panel, fill, STYLE.BORDER, 7, padding)
 	return panel
 
 

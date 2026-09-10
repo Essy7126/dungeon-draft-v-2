@@ -219,7 +219,7 @@ func test_opening_focuses_resume_and_close_requests_resume() -> void:
 	)
 	assert_same(
 		resume.get_theme_stylebox(&"normal"),
-		THEME.get_stylebox(&"hover", &"DarkMenuButton")
+		resume.get_theme_stylebox(&"hover")
 	)
 	menu.get_close_button().pressed.emit()
 	assert_eq(resume_count[0], 1)

@@ -15,6 +15,7 @@ func _run() -> void:
 	var ignore := FileAccess.open(OUTPUT + ".gdignore", FileAccess.WRITE)
 	ignore.close()
 	screen = load("res://ui/selection/CharacterSelectionScreen.tscn").instantiate()
+	screen.include_archived_adventures = true
 	root.add_child(screen)
 	current_scene = screen
 	await _settle()

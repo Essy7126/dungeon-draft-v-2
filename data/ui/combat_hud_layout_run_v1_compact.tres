@@ -5,18 +5,18 @@
 [resource]
 script = ExtResource("1_layout")
 overall_width = 1444.0
-overall_height = 140.0
+overall_height = 150.0
 hud_scale = 1.0
-character_identity_width = 486.0
+character_identity_width = 350.0
 block_separation = 16.0
 plate_opacity = 0.92
 character_accent_intensity = 0.72
-portrait_size = 136.0
-health_bar_size = Vector2(200, 28)
+portrait_size = 110.0
+health_bar_size = Vector2(190, 28)
 special_resource_bar_size = Vector2(200, 28)
 action_resource_badge_size = 52.0
 identity_badge_size = 22.0
-move_action_size = Vector2(90, 112)
+move_action_size = Vector2(84, 86)
 contextual_text_size = 15
 action_slot_size = 86.0
 action_icon_size = 76.0
@@ -30,3 +30,8 @@ banner_enter_duration = 0.28
 banner_hold_duration = 1.32
 banner_exit_duration = 0.3
 banner_animation_intensity = 0.65
+
+premium_action_offset = 368.0
+premium_turn_offset = 1198.0
+premium_ability_offset = 100.0
+premium_ability_width = 704.0

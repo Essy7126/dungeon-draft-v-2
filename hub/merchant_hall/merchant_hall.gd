@@ -324,7 +324,7 @@ func _make_panel(parent: Control, preset: int) -> PanelContainer:
 	panel.offset_left = 20
 	panel.offset_right = -20
 	var style := _panel_style()
-	style.bg_color = Color(0.07, 0.105, 0.11, 0.94)
+	style.bg_color = Color("211c18f0")
 	panel.add_theme_stylebox_override("panel", style)
 	return panel
 
@@ -538,3 +538,7 @@ func _build_unavailable() -> void:
 	back.name = "MerchantHallUnavailableReturn"
 	back.pressed.connect(func() -> void: GameManager.request_return_to_title())
 	content.add_child(back)
+
+
+func _theme() -> Theme:
+	return PremiumUI.get_theme()

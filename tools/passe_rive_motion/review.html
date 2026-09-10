@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Passe-rive · Marche et idle</title>
+<style>
+:root{color-scheme:dark;--ink:#111b1e;--panel:#1b292c;--line:#344547;--text:#ece6d6;--muted:#a2b3b0;--jade:#8fbeaf;--gold:#c6a875}*{box-sizing:border-box}body{margin:0;background:var(--ink);font:15px/1.5 system-ui;color:var(--text)}main{max-width:1440px;margin:auto;padding:32px}header{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px}h1{font:44px/1.1 Georgia,serif;margin:6px 0 10px}h2{font:25px Georgia,serif;margin:0}p{color:var(--muted);margin:6px 0}.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}.badge{border:1px solid #6b6551;padding:7px 12px;border-radius:99px;white-space:nowrap;color:var(--gold)}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--panel);padding:15px;border:1px solid var(--line);border-radius:12px;margin-bottom:18px}button,select{font:inherit;background:#263b3e;color:var(--text);border:1px solid #526461;border-radius:7px;padding:7px 12px;cursor:pointer}button:hover{border-color:var(--jade)}label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}input[type=range]{accent-color:var(--jade)}.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.cardhead{padding:18px 22px;display:flex;justify-content:space-between;align-items:center}.cardhead span{font-size:12px;color:var(--jade)}canvas.stage{width:100%;display:block;background:#172428}.caption{padding:14px 22px;border-top:1px solid var(--line);min-height:80px;font-size:13px;color:var(--muted)}.timeline{padding:18px 0;display:flex;align-items:center;gap:15px}.timeline input{flex:1}.timeline output{min-width:220px;color:var(--jade);font-variant-numeric:tabular-nums}.strip{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin-bottom:20px}.thumb{display:block;position:relative;padding:0;overflow:hidden;border-radius:8px;background:#203136}.thumb img{width:100%;display:block}.thumb.active{outline:2px solid var(--gold)}.thumb span{position:absolute;bottom:3px;left:6px;font-size:11px;color:#fff;background:#142124c9;padding:0 4px}.bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px}.reference{padding:20px}.reference img{display:block;max-height:380px;max-width:100%;margin:15px auto}.notes{padding:22px}.notes li{margin:9px 0;color:var(--muted)}a{color:var(--jade)}details{margin-top:20px;border-top:1px solid var(--line);padding-top:15px}summary{cursor:pointer;color:var(--gold)}.error{background:#753c36;color:white;padding:20px}.hidden{display:none}@media(max-width:850px){main{padding:16px}.pair,.bottom{grid-template-columns:1fr}.strip{grid-template-columns:repeat(4,1fr)}header{align-items:start}h1{font-size:34px}}
+</style></head><body><main>
+<header><div><div class="eyebrow">Catabase · atelier du personnage</div><h1>Passe-rive, en mouvement</h1><p>Une seule direction. Examiner la présence au repos et la construction du pas.</p></div><div class="badge">E · trois-quarts · essai 1</div></header>
+<div class="toolbar"><button id="play">Pause</button><button id="step">Image suivante</button><label>Lecture <select id="speed"><option value="1">Normale</option><option value="0.5">Ralenti × 0,5</option><option value="0.25">Ralenti × 0,25</option><option value="1.25">× 1,25</option></select></label><label>Taille <input id="scale" type="range" min="180" max="440" value="400"><output id="size">400 px</output></label><label>Fond <select id="background"><option value="dark">Pierre sombre</option><option value="light">Ivoire</option><option value="map">Émeraude</option></select></label><label><input id="grid" type="checkbox" checked>Repères au sol</label><label><input id="travel" type="checkbox">Sol défilant</label></div>
+<p style="margin:12px 0 20px">Audit : les appuis et certaines poses du guide doivent être reconstruits. <a href="../passe_rive_walk_audit/review.html">Voir les mesures et la méthode proposée</a>.</p>
+<div id="error" class="error hidden"></div>
+<div class="pair"><section class="card"><div class="cardhead"><h2>Idle</h2><span>Cycle 3,2 s · pieds fixes</span></div><canvas class="stage" id="idle" width="640" height="620"></canvas><div class="caption">Le dessin choisi reste la base. Le haut du corps et le tissu bougent doucement ; les pieds et la lance gardent leur place.</div></section><section class="card"><div class="cardhead"><h2>Marche</h2><span>8 dessins · cycle 1,12 s</span></div><canvas class="stage" id="walk" width="640" height="620"></canvas><div class="caption">Lecture des deux pas en alternance. Le sol défilant expose les défauts d’appui ; il ne les corrige pas. Marche encore à valider.</div></section></div>
+<div class="timeline"><output id="phase">Chargement…</output><input id="scrub" type="range" min="0" max="7" step="1" value="0"><button id="reset">Revenir au début</button></div><div id="strip" class="strip"></div>
+<div class="bottom"><section class="card reference"><h2>La référence choisie</h2><img src="images/idle.png" alt="Passe-rive, dessin choisi"></section><section class="card reference"><h2>Le mouvement de référence</h2><img id="guide" src="guides/guide_00.png" alt="Guide des appuis de la pose courante"><p>Jade : côté gauche. Cuivre : côté droit. Les cercles indiquent les appuis du guide.</p></section></div>
+<section class="notes"><h2>Ce que l’on juge ici</h2><ul><li>Le visage, les volumes et les équipements restent-ils stables ?</li><li>Le pied libre passe-t-il naturellement devant le pied d’appui ?</li><li>Le personnage semble-t-il porter son poids, surtout avec le sol défilant ?</li><li>Le retour à la première image est-il agréable, sans saut ?</li></ul><p id="assessment">Cette revue n’est pas une validation artistique ni une intégration au combat.</p><details><summary>Sources et méthode</summary><p>Marche : dessins individuels ImageGen en 1024 × 1536, guidés par des poses 3D calculées, puis détourage local rembg. Idle : mouvement local du dessin original par shader, sans nouvelles poses générées. Aucun miroir des équipements.</p><p><a href="manifest.json">Manifeste et limites</a> · <a href="walk_guide.json">Référence mécanique</a> · <a href="godot/project.godot">Essai Godot autonome</a></p></details></section>
+</main><script type="module">
+const $=s=>document.querySelector(s), names=['Contact gauche','Appui gauche','Passage droit','Avance droite','Contact droit','Appui droit','Passage gauche','Avance gauche'];
+let playing=true,time=0,last=performance.now(),frame=0,manifest,walkImages=[],idleImage,mapImage,gl,shaderCanvas,program,uniforms;
+const imageLoad=url=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error('Image indisponible : '+url));im.src=url});
+function makeIdleShader(){
+ shaderCanvas=document.createElement('canvas');shaderCanvas.width=1024;shaderCanvas.height=1536;
+ gl=shaderCanvas.getContext('webgl',{alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true});if(!gl)throw Error('WebGL est nécessaire pour afficher cet idle.');
+ const vertex=`attribute vec2 a;varying vec2 uv;void main(){uv=vec2((a.x+1.)*.5,(1.-a.y)*.5);gl_Position=vec4(a,0.,1.);}`;
+ const fragment=`precision highp float;varying vec2 uv;uniform sampler2D tex;uniform float phase;float g(vec2 p,vec2 c,vec2 s){vec2 q=(p-c)/s;return exp(-dot(q,q));}void main(){vec2 p=uv*vec2(1024.,1536.);float a=phase*6.28318530718;float pinWeight=smoothstep(290.,360.,p.y)*(1.-smoothstep(1110.,1190.,p.y))*smoothstep(345.,405.,p.x)*(1.-smoothstep(635.,690.,p.x));vec2 d=vec2(0.);d.y=-5.*sin(a)*g(p,vec2(515.,520.),vec2(150.,240.));d.x=5.*(sin(a+.8)-sin(.8))*g(p,vec2(590.,960.),vec2(105.,220.));d.y+=1.3*(sin(a+.8)-sin(.8))*g(p,vec2(505.,790.),vec2(75.,180.));gl_FragColor=texture2D(tex,(p-d*pinWeight)/vec2(1024.,1536.));}`;
+ const compile=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s};
+ program=gl.createProgram();gl.attachShader(program,compile(gl.VERTEX_SHADER,vertex));gl.attachShader(program,compile(gl.FRAGMENT_SHADER,fragment));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));gl.useProgram(program);
+ const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const a=gl.getAttribLocation(program,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);
+ const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,idleImage);uniforms={phase:gl.getUniformLocation(program,'phase')};
+}
+function drawFloor(ctx,moving,scale){
+ const bg=$('#background').value;ctx.fillStyle=bg==='light'?'#eae4d4':'#172428';ctx.fillRect(0,0,640,620);
+ if(bg==='map'){
+  // Keep the bridge anchor under the character and cover every edge without stretching.
+  const ax=mapImage.width*.1974,ay=mapImage.height*.8204;
+  const r=Math.max(320/ax,320/(mapImage.width-ax),548/ay,72/(mapImage.height-ay));
+  ctx.drawImage(mapImage,320-ax*r,548-ay*r,mapImage.width*r,mapImage.height*r);
+  ctx.fillStyle='#15232644';ctx.fillRect(0,0,640,620);
+ }
+ if(!$('#grid').checked)return;
+ const drift=moving&&$('#travel').checked?time*manifest.guide_speed_m_s*manifest.projected_forward_pixels_per_meter*scale:0;
+ ctx.save();ctx.beginPath();ctx.rect(0,420,640,200);ctx.clip();ctx.strokeStyle=bg==='light'?'#7d8c8255':'#8ca89b40';ctx.lineWidth=1;
+ // A following camera: the floor translates opposite +Y, consistently with the guide.
+ for(let i=-15;i<=15;i++){
+ const shift=drift%96;ctx.beginPath();ctx.moveTo(i*96-shift,420-shift*.5);ctx.lineTo(i*96+500-shift,670-shift*.5);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(i*96-shift,670-shift*.5);ctx.lineTo(i*96+500-shift,420-shift*.5);ctx.stroke();
+ }ctx.restore();ctx.strokeStyle='#c5a775aa';ctx.beginPath();ctx.moveTo(313,548);ctx.lineTo(327,548);ctx.moveTo(320,541);ctx.lineTo(320,555);ctx.stroke();
+}
+function render(){
+ if(!manifest)return;const size=Number($('#scale').value),scale=size/1340;$('#size').textContent=size+' px';
+ frame=Math.floor(((time%manifest.walk_seconds)+manifest.walk_seconds)%manifest.walk_seconds/manifest.walk_seconds*8)%8;
+ gl.useProgram(program);gl.uniform1f(uniforms.phase,(time%3.2)/3.2);gl.viewport(0,0,1024,1536);gl.drawArrays(gl.TRIANGLES,0,6);
+ const idle=$('#idle').getContext('2d'),walk=$('#walk').getContext('2d');drawFloor(idle,false,scale);drawFloor(walk,true,scale);
+ idle.drawImage(shaderCanvas,320-manifest.idle_anchor[0]*scale,548-manifest.idle_anchor[1]*scale,1024*scale,1536*scale);
+ const anchor=manifest.walk_anchor;walk.drawImage(walkImages[frame],320-anchor[0]*scale,548-anchor[1]*scale,1024*scale,1536*scale);
+ $('#phase').textContent=(frame+1)+' / 8 · '+names[frame];$('#scrub').value=String(frame);$('#guide').src='guides/guide_'+String(frame).padStart(2,'0')+'.png';
+ document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('active',i===frame));
+}
+function setTime(t){time=t;render()}
+function pause(){playing=false;$('#play').textContent='Lire'}
+$('#play').onclick=()=>{playing=!playing;$('#play').textContent=playing?'Pause':'Lire';last=performance.now()};
+$('#step').onclick=()=>{pause();setTime(((frame+1)%8)*manifest.walk_seconds/8+.00001)};
+$('#scrub').oninput=()=>{pause();setTime(Number($('#scrub').value)*manifest.walk_seconds/8+.00001)};
+$('#reset').onclick=()=>setTime(0);for(const id of ['scale','background','grid','travel'])$('#'+id).oninput=render;
+async function init(){
+ manifest=await (await fetch('manifest.json')).json();[idleImage,mapImage,...walkImages]=await Promise.all([imageLoad('images/idle.png'),imageLoad('map.png'),...Array.from({length:8},(_,i)=>imageLoad('images/walk_'+String(i).padStart(2,'0')+'.png'))]);
+ makeIdleShader();$('#strip').innerHTML=walkImages.map((im,i)=>`<button class="thumb" aria-label="Afficher ${names[i]}" data-frame="${i}"><img src="${im.src}" alt="${names[i]}"><span>${i+1} · ${names[i]}</span></button>`).join('');document.querySelectorAll('.thumb').forEach((el,i)=>el.onclick=()=>{pause();setTime(i*manifest.walk_seconds/8+.00001)});
+ window.reviewAPI={setTime,pause,render,getState:()=>({time,frame,playing,loaded:walkImages.length,manifest}),idlePixels:(t)=>{pause();setTime(t);const p=new Uint8Array(1024*1536*4);gl.readPixels(0,0,1024,1536,gl.RGBA,gl.UNSIGNED_BYTE,p);return p;}};
+ function tick(now){if(playing)time+=Math.min(.08,(now-last)/1000)*Number($('#speed').value);last=now;render();requestAnimationFrame(tick)}requestAnimationFrame(tick);
+}init().catch(e=>{$('#error').textContent=e.message;$('#error').classList.remove('hidden');console.error(e)});
+</script></body></html>

@@ -1,0 +1,1481 @@
+{
+  "background": [
+    0,
+    0,
+    0
+  ],
+  "objects": [
+    {
+      "id": 1,
+      "object": "Bucket body 0.35 m",
+      "layer": "bucket",
+      "rgb": [
+        121,
+        55,
+        158
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 120
+    },
+    {
+      "id": 2,
+      "object": "Bucket bronze hoop",
+      "layer": "bucket",
+      "rgb": [
+        242,
+        110,
+        60
+      ],
+      "display_rgb": [
+        177,
+        144,
+        89
+      ],
+      "triangles": 240
+    },
+    {
+      "id": 3,
+      "object": "Bucket bronze hoop.001",
+      "layer": "bucket",
+      "rgb": [
+        107,
+        166,
+        218
+      ],
+      "display_rgb": [
+        177,
+        144,
+        89
+      ],
+      "triangles": 240
+    },
+    {
+      "id": 4,
+      "object": "Chimney",
+      "layer": "hearth",
+      "rgb": [
+        228,
+        221,
+        120
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 5,
+      "object": "Coals",
+      "layer": "fire",
+      "rgb": [
+        93,
+        21,
+        23
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 6,
+      "object": "Coals.001",
+      "layer": "fire",
+      "rgb": [
+        214,
+        76,
+        181
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 7,
+      "object": "Coals.002",
+      "layer": "fire",
+      "rgb": [
+        79,
+        132,
+        83
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 8,
+      "object": "Coals.003",
+      "layer": "fire",
+      "rgb": [
+        200,
+        187,
+        241
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 9,
+      "object": "Coals.004",
+      "layer": "fire",
+      "rgb": [
+        65,
+        243,
+        143
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 10,
+      "object": "Coals.005",
+      "layer": "fire",
+      "rgb": [
+        186,
+        42,
+        46
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 11,
+      "object": "Coals.006",
+      "layer": "fire",
+      "rgb": [
+        51,
+        98,
+        204
+      ],
+      "display_rgb": [
+        255,
+        134,
+        33
+      ],
+      "triangles": 24
+    },
+    {
+      "id": 12,
+      "object": "Door jamb L",
+      "layer": "architecture",
+      "rgb": [
+        172,
+        153,
+        106
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 13,
+      "object": "Door jamb R",
+      "layer": "architecture",
+      "rgb": [
+        37,
+        209,
+        8
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 14,
+      "object": "Door lintel 2.55 m clearance",
+      "layer": "architecture",
+      "rgb": [
+        158,
+        8,
+        167
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 15,
+      "object": "Door threshold",
+      "layer": "floor",
+      "rgb": [
+        23,
+        64,
+        69
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 16,
+      "object": "Floor tile 0-0",
+      "layer": "floor",
+      "rgb": [
+        144,
+        119,
+        227
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 17,
+      "object": "Floor tile 0-1",
+      "layer": "floor",
+      "rgb": [
+        9,
+        175,
+        129
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 18,
+      "object": "Floor tile 0-2",
+      "layer": "floor",
+      "rgb": [
+        130,
+        230,
+        31
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 19,
+      "object": "Floor tile 0-3",
+      "layer": "floor",
+      "rgb": [
+        251,
+        29,
+        190
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 20,
+      "object": "Floor tile 0-4",
+      "layer": "floor",
+      "rgb": [
+        116,
+        85,
+        92
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 21,
+      "object": "Floor tile 0-5",
+      "layer": "floor",
+      "rgb": [
+        237,
+        140,
+        250
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 22,
+      "object": "Floor tile 1-0",
+      "layer": "floor",
+      "rgb": [
+        102,
+        196,
+        152
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 23,
+      "object": "Floor tile 1-1",
+      "layer": "floor",
+      "rgb": [
+        223,
+        251,
+        54
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 24,
+      "object": "Floor tile 1-2",
+      "layer": "floor",
+      "rgb": [
+        88,
+        51,
+        213
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 25,
+      "object": "Floor tile 1-3",
+      "layer": "floor",
+      "rgb": [
+        209,
+        106,
+        115
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 26,
+      "object": "Floor tile 1-4",
+      "layer": "floor",
+      "rgb": [
+        74,
+        162,
+        17
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 27,
+      "object": "Floor tile 1-5",
+      "layer": "floor",
+      "rgb": [
+        195,
+        217,
+        175
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 28,
+      "object": "Floor tile 2-0",
+      "layer": "floor",
+      "rgb": [
+        60,
+        17,
+        78
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 29,
+      "object": "Floor tile 2-1",
+      "layer": "floor",
+      "rgb": [
+        181,
+        72,
+        236
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 30,
+      "object": "Floor tile 2-2",
+      "layer": "floor",
+      "rgb": [
+        46,
+        128,
+        138
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 31,
+      "object": "Floor tile 2-3",
+      "layer": "floor",
+      "rgb": [
+        167,
+        183,
+        40
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 32,
+      "object": "Floor tile 2-4",
+      "layer": "floor",
+      "rgb": [
+        32,
+        239,
+        198
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 33,
+      "object": "Floor tile 2-5",
+      "layer": "floor",
+      "rgb": [
+        153,
+        38,
+        101
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 34,
+      "object": "Floor tile 3-0",
+      "layer": "floor",
+      "rgb": [
+        18,
+        94,
+        3
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 35,
+      "object": "Floor tile 3-1",
+      "layer": "floor",
+      "rgb": [
+        139,
+        149,
+        161
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 36,
+      "object": "Floor tile 3-2",
+      "layer": "floor",
+      "rgb": [
+        4,
+        205,
+        63
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 37,
+      "object": "Floor tile 3-3",
+      "layer": "floor",
+      "rgb": [
+        125,
+        4,
+        222
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 38,
+      "object": "Floor tile 3-4",
+      "layer": "floor",
+      "rgb": [
+        246,
+        59,
+        124
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 39,
+      "object": "Floor tile 3-5",
+      "layer": "floor",
+      "rgb": [
+        111,
+        115,
+        26
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 40,
+      "object": "Floor tile 4-0",
+      "layer": "floor",
+      "rgb": [
+        232,
+        170,
+        184
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 41,
+      "object": "Floor tile 4-1",
+      "layer": "floor",
+      "rgb": [
+        97,
+        226,
+        86
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 42,
+      "object": "Floor tile 4-2",
+      "layer": "floor",
+      "rgb": [
+        218,
+        25,
+        245
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 43,
+      "object": "Floor tile 4-3",
+      "layer": "floor",
+      "rgb": [
+        83,
+        81,
+        147
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 44,
+      "object": "Floor tile 4-4",
+      "layer": "floor",
+      "rgb": [
+        204,
+        136,
+        49
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 45,
+      "object": "Floor tile 4-5",
+      "layer": "floor",
+      "rgb": [
+        69,
+        192,
+        207
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 46,
+      "object": "Floor tile 5-0",
+      "layer": "floor",
+      "rgb": [
+        190,
+        247,
+        109
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 47,
+      "object": "Floor tile 5-1",
+      "layer": "floor",
+      "rgb": [
+        55,
+        47,
+        12
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 48,
+      "object": "Floor tile 5-2",
+      "layer": "floor",
+      "rgb": [
+        176,
+        102,
+        170
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 49,
+      "object": "Floor tile 5-3",
+      "layer": "floor",
+      "rgb": [
+        41,
+        158,
+        72
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 50,
+      "object": "Floor tile 5-4",
+      "layer": "floor",
+      "rgb": [
+        162,
+        213,
+        230
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 51,
+      "object": "Floor tile 5-5",
+      "layer": "floor",
+      "rgb": [
+        27,
+        13,
+        133
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 52,
+      "object": "Floor tile 6-0",
+      "layer": "floor",
+      "rgb": [
+        148,
+        68,
+        35
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 53,
+      "object": "Floor tile 6-1",
+      "layer": "floor",
+      "rgb": [
+        13,
+        124,
+        193
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 54,
+      "object": "Floor tile 6-2",
+      "layer": "floor",
+      "rgb": [
+        134,
+        179,
+        95
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 55,
+      "object": "Floor tile 6-3",
+      "layer": "floor",
+      "rgb": [
+        255,
+        234,
+        253
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 56,
+      "object": "Floor tile 6-4",
+      "layer": "floor",
+      "rgb": [
+        120,
+        34,
+        156
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 57,
+      "object": "Floor tile 6-5",
+      "layer": "floor",
+      "rgb": [
+        241,
+        89,
+        58
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 58,
+      "object": "Floor tile 7-0",
+      "layer": "floor",
+      "rgb": [
+        106,
+        145,
+        216
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 59,
+      "object": "Floor tile 7-1",
+      "layer": "floor",
+      "rgb": [
+        227,
+        200,
+        118
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 60,
+      "object": "Floor tile 7-2",
+      "layer": "floor",
+      "rgb": [
+        92,
+        0,
+        21
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 61,
+      "object": "Floor tile 7-3",
+      "layer": "floor",
+      "rgb": [
+        213,
+        55,
+        179
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 62,
+      "object": "Floor tile 7-4",
+      "layer": "floor",
+      "rgb": [
+        78,
+        111,
+        81
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 63,
+      "object": "Floor tile 7-5",
+      "layer": "floor",
+      "rgb": [
+        199,
+        166,
+        239
+      ],
+      "display_rgb": [
+        155,
+        173,
+        177
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 64,
+      "object": "Foundation 8 x 6 m",
+      "layer": "floor",
+      "rgb": [
+        64,
+        222,
+        141
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 65,
+      "object": "Hammer handle",
+      "layer": "workbench",
+      "rgb": [
+        185,
+        21,
+        44
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 66,
+      "object": "Hammer head",
+      "layer": "workbench",
+      "rgb": [
+        50,
+        77,
+        202
+      ],
+      "display_rgb": [
+        97,
+        111,
+        115
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 67,
+      "object": "Hearth bed",
+      "layer": "hearth",
+      "rgb": [
+        171,
+        132,
+        104
+      ],
+      "display_rgb": [
+        97,
+        111,
+        115
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 68,
+      "object": "Hearth cheek",
+      "layer": "hearth",
+      "rgb": [
+        36,
+        188,
+        6
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 69,
+      "object": "Hearth cheek.001",
+      "layer": "hearth",
+      "rgb": [
+        157,
+        243,
+        164
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 70,
+      "object": "Hearth plinth",
+      "layer": "hearth",
+      "rgb": [
+        22,
+        43,
+        67
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 71,
+      "object": "Hearth rear",
+      "layer": "hearth",
+      "rgb": [
+        143,
+        98,
+        225
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 72,
+      "object": "Hood",
+      "layer": "hearth",
+      "rgb": [
+        8,
+        154,
+        127
+      ],
+      "display_rgb": [
+        177,
+        144,
+        89
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 73,
+      "object": "Left wall",
+      "layer": "architecture",
+      "rgb": [
+        129,
+        209,
+        29
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 74,
+      "object": "Pillar bronze band",
+      "layer": "pillar",
+      "rgb": [
+        250,
+        8,
+        188
+      ],
+      "display_rgb": [
+        177,
+        144,
+        89
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 75,
+      "object": "Pillar capital",
+      "layer": "pillar",
+      "rgb": [
+        115,
+        64,
+        90
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 76,
+      "object": "Pillar foot",
+      "layer": "pillar",
+      "rgb": [
+        236,
+        119,
+        248
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 77,
+      "object": "Pillar shaft 2.30 m",
+      "layer": "pillar",
+      "rgb": [
+        101,
+        175,
+        150
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 78,
+      "object": "Rear wall left",
+      "layer": "architecture",
+      "rgb": [
+        222,
+        230,
+        52
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 79,
+      "object": "Rear wall right",
+      "layer": "architecture",
+      "rgb": [
+        87,
+        30,
+        211
+      ],
+      "display_rgb": [
+        137,
+        162,
+        170
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 80,
+      "object": "Wall band",
+      "layer": "architecture",
+      "rgb": [
+        208,
+        85,
+        113
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 81,
+      "object": "Wall band.001",
+      "layer": "architecture",
+      "rgb": [
+        73,
+        141,
+        15
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 82,
+      "object": "Wall band.002",
+      "layer": "architecture",
+      "rgb": [
+        194,
+        196,
+        173
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 83,
+      "object": "Wall buttress",
+      "layer": "architecture",
+      "rgb": [
+        59,
+        252,
+        75
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 84,
+      "object": "Wall buttress.001",
+      "layer": "architecture",
+      "rgb": [
+        180,
+        51,
+        234
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 85,
+      "object": "Wall buttress.002",
+      "layer": "architecture",
+      "rgb": [
+        45,
+        107,
+        136
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 86,
+      "object": "Wall buttress.003",
+      "layer": "architecture",
+      "rgb": [
+        166,
+        162,
+        38
+      ],
+      "display_rgb": [
+        164,
+        184,
+        184
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 87,
+      "object": "Workbench leg",
+      "layer": "workbench",
+      "rgb": [
+        31,
+        218,
+        196
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 88,
+      "object": "Workbench leg.001",
+      "layer": "workbench",
+      "rgb": [
+        152,
+        17,
+        99
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 89,
+      "object": "Workbench leg.002",
+      "layer": "workbench",
+      "rgb": [
+        17,
+        73,
+        1
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 90,
+      "object": "Workbench leg.003",
+      "layer": "workbench",
+      "rgb": [
+        138,
+        128,
+        159
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 91,
+      "object": "Workbench shelf",
+      "layer": "workbench",
+      "rgb": [
+        3,
+        184,
+        61
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    },
+    {
+      "id": 92,
+      "object": "Workbench top 0.90 m",
+      "layer": "workbench",
+      "rgb": [
+        124,
+        239,
+        219
+      ],
+      "display_rgb": [
+        149,
+        118,
+        87
+      ],
+      "triangles": 108
+    }
+  ]
+}

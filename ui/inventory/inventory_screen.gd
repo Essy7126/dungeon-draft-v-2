@@ -24,6 +24,13 @@ const ITEM_TILE_SCENE := preload("res://ui/inventory/InventoryItemTile.tscn")
 @onready var _panel: PanelContainer = %Panel
 @onready var _detail_scroll: ScrollContainer = %DetailScroll
 
+var _search: LineEdit
+var _category: OptionButton
+var _result_count: Label
+var _hero_summary: Label
+var _hero_name: Label
+var _hero_stat_values: Array[Label] = []
+
 var _manager = null
 var _hero_ids: Array[StringName] = []
 var _selected_character_id: StringName = &""
@@ -42,6 +49,7 @@ func _ready() -> void:
 	_use_button.pressed.connect(_on_use_pressed)
 	_unequip_button.pressed.connect(_on_unequip_pressed)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_build_library_controls()
 	_apply_responsive_layout()
 	_detail_scroll.follow_focus = true
 	(_inventory_grid.get_parent() as ScrollContainer).follow_focus = true
@@ -63,6 +71,8 @@ func open_for_character(character_id: StringName, manager = GameManager) -> bool
 		return false
 	_selected_instance_id = &""
 	_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
+	_search.text = ""
+	_category.select(0)
 	_feedback.text = ""
 	_detail_scroll.scroll_vertical = 0
 	_apply_responsive_layout()
@@ -110,17 +120,18 @@ func _apply_responsive_layout() -> void:
 		minf(maxf(viewport_size.x - 40.0, 0.0), 1240.0),
 		minf(maxf(viewport_size.y - 40.0, 0.0), 820.0),
 	)
-	_inventory_grid.columns = 2 if compact else 3
+	_update_grid_columns()
 	var bag := find_child("BagPanel", true, false) as Control
 	var details := find_child("RightPanel", true, false) as Control
 	bag.custom_minimum_size.x = 0.0
-	details.custom_minimum_size.x = 330.0 if compact else 390.0
+	details.custom_minimum_size.x = 300.0 if compact else 340.0
+	(find_child("EquipmentPanel", true, false) as Control).custom_minimum_size.x = 210.0 if compact else 230.0
 	_hero_selector.custom_minimum_size.x = 146.0 if compact else 220.0
 	_hero_selector.visible = _hero_ids.size() > 1
 	(find_child("HeroLabel", true, false) as Control).visible = _hero_selector.visible and not compact
-	(find_child("BagHint", true, false) as Control).visible = not compact
+	(find_child("BagHint", true, false) as Control).hide()
 	for child in _equipment_list.get_children():
-		(child as Control).custom_minimum_size.y = 76.0 if viewport_size.y <= 800.0 else 90.0
+		(child as Control).custom_minimum_size.y = 68.0 if viewport_size.y <= 800.0 else 78.0
 
 
 func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
@@ -216,12 +227,15 @@ func _refresh() -> void:
 	if inventory == null or catalog == null or state == null:
 		close_screen()
 		return
-	_title.text = "INVENTAIRE"
+	_title.text = "Inventaire"
+	_hero_name.text = state.unit.unit_name
+	_update_hero_stats(state.unit)
 	_capacity_label.text = "%d / %d" % [
 		inventory.capacity - inventory.get_empty_slot_count(),
 		inventory.capacity,
 	]
 	_rebuild_inventory(inventory, catalog)
+	_apply_bag_filters()
 	_rebuild_equipment(state, catalog)
 	_apply_responsive_layout()
 	_refresh_details(state, inventory, catalog)
@@ -272,6 +286,8 @@ func _rebuild_inventory(inventory: RunInventory, catalog: ItemCatalog) -> void:
 			instance != null and instance.instance_id == _selected_instance_id,
 			compatible,
 		)
+		tile.item_definition = definition
+		tile.configure_compact()
 
 
 func _rebuild_equipment(
@@ -327,7 +343,7 @@ func _refresh_details(
 		"Choisissez un objet du sac ou un emplacement équipé."
 	)
 	_modifier_summary.text = _modifier_text(definition)
-	_stats_summary.text = _equipment_comparison_text(state, definition, catalog) if GameManager.expedition != null else _stats_text(state.unit)
+	_stats_summary.text = _equipment_comparison_text(state, definition, catalog)
 	_stats_summary.visible = not _stats_summary.text.is_empty()
 	var from_inventory := instance != null and _selected_instance_id != &""
 	_equip_button.visible = definition != null and definition.is_equippable() and from_inventory
@@ -463,7 +479,7 @@ func _modifier_text(definition: ItemDefinition) -> String:
 
 func _equipment_comparison_text(state: CharacterRunState, definition: ItemDefinition, catalog: ItemCatalog) -> String:
 	if definition == null:
-		return "Le sac contient vos objets disponibles. Les emplacements à droite montrent ce que vous portez.\n\nSélectionnez un objet pour lire son effet, puis choisissez Équiper ou Utiliser."
+		return "Le sac contient vos objets disponibles. Les emplacements à gauche montrent ce que vous portez.\n\nSélectionnez un objet pour lire son effet, puis choisissez Équiper ou Utiliser."
 	if definition.is_relic():
 		return "Cette relique agit automatiquement tant qu’elle est dans le sac. Aucun emplacement d’équipement nécessaire."
 	if definition.is_consumable():
@@ -573,3 +589,103 @@ func _clear_children(container: Node) -> void:
 	for child in container.get_children():
 		container.remove_child(child)
 		child.free()
+
+
+func _build_library_controls() -> void:
+	var bag_layout := find_child("BagLayout", true, false) as VBoxContainer
+	var tools := VBoxContainer.new()
+	tools.name = "BagTools"
+	tools.add_theme_constant_override("separation", 8)
+	bag_layout.add_child(tools)
+	bag_layout.move_child(tools, 1)
+	_search = LineEdit.new()
+	_search.name = "InventorySearch"
+	_search.placeholder_text = "Rechercher un objet…"
+	_search.clear_button_enabled = true
+	_search.custom_minimum_size.y = 38
+	_search.text_changed.connect(func(_text: String): _apply_bag_filters())
+	tools.add_child(_search)
+	var row := HBoxContainer.new()
+	tools.add_child(row)
+	_category = OptionButton.new()
+	_category.name = "InventoryCategory"
+	_category.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for label in ["Tous les objets", "Armes", "Armures", "Accessoires", "Consommables", "Parchemins", "Reliques"]:
+		_category.add_item(label)
+	_category.item_selected.connect(func(_index: int): _apply_bag_filters())
+	row.add_child(_category)
+	_result_count = Label.new()
+	_result_count.name = "SearchCount"
+	_result_count.theme_type_variation = &"PremiumMuted"
+	_result_count.add_theme_font_size_override("font_size", 13)
+	tools.add_child(_result_count)
+	var equipment := find_child("EquipmentContent", true, false) as VBoxContainer
+	_hero_name = Label.new()
+	_hero_name.name = "InventoryHeroName"
+	_hero_name.theme_type_variation = &"PremiumSubtitle"
+	_hero_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	equipment.add_child(_hero_name)
+	equipment.move_child(_hero_name, 0)
+	_hero_summary = Label.new()
+	_hero_summary.name = "InventoryHeroStats"
+	_hero_summary.theme_type_variation = &"PremiumMuted"
+	_hero_summary.add_theme_font_size_override("font_size", 14)
+	_hero_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hero_summary.text = "Caractéristiques"
+	equipment.add_child(_hero_summary)
+	var stats := GridContainer.new()
+	stats.name = "InventoryHeroStatRows"
+	stats.columns = 2
+	stats.add_theme_constant_override("h_separation", 12)
+	stats.add_theme_constant_override("v_separation", 5)
+	equipment.add_child(stats)
+	for caption in ["Niveau", "Vitalité", "PA", "PM", "Armure", "Initiative", "Puissance", "Critique", "Force", "Rés. magique", "Rés. glace"]:
+		var label := Label.new()
+		label.text = caption
+		label.theme_type_variation = &"PremiumMuted"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.add_theme_font_size_override("font_size", 14)
+		stats.add_child(label)
+		var value := Label.new()
+		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		value.add_theme_font_size_override("font_size", 14)
+		stats.add_child(value)
+		_hero_stat_values.append(value)
+	_inventory_grid.get_parent().resized.connect(_update_grid_columns)
+
+
+func _update_grid_columns() -> void:
+	if not is_node_ready():
+		return
+	var scroll := _inventory_grid.get_parent() as ScrollContainer
+	var available := maxf(64, scroll.size.x - scroll.get_v_scroll_bar().size.x - 4)
+	_inventory_grid.columns = clampi(int((available + 8) / 72), 2, 8)
+
+
+func _apply_bag_filters() -> void:
+	if _search == null:
+		return
+	var query := _search.text.strip_edges().to_lower()
+	var filtering := not query.is_empty() or _category.selected > 0
+	var matches := 0
+	for child in _inventory_grid.get_children():
+		var tile := child as InventoryItemTile
+		var definition := tile.item_definition
+		var shown := not filtering
+		if definition != null:
+			shown = (query.is_empty() or definition.display_name.to_lower().contains(query)) and (_category.selected == 0 or int(definition.category) == _category.selected - 1)
+			if shown:
+				matches += 1
+		tile.visible = shown
+	_result_count.text = "%d objet%s" % [matches, "s" if matches != 1 else ""] if matches > 0 else "Aucun objet trouvé"
+	_update_grid_columns()
+
+
+func _update_hero_stats(unit: Unit) -> void:
+	if unit == null:
+		return
+	var values := [str(CombatGlossary.champion_level(unit)), "%d / %d" % [unit.current_hp, unit.max_hp.get_int()], str(unit.max_ap.get_int()), str(unit.max_mp.get_int()), "%.0f" % unit.armure.get_value(), "%.0f" % unit.initiative.get_value(), str(unit.attack_power.get_int()), "%.0f %%" % (unit.crit_chance.get_value() * 100), "%.0f" % unit.force.get_value(), "%.0f" % unit.resist_magique.get_value(), "%.0f %%" % (unit.get_resistance_value(Spell.Element.ICE) * 100)]
+	for index in values.size():
+		_hero_stat_values[index].text = values[index]
+	var labels := _hero_stat_values[6].get_parent().get_children()
+	(labels[12] as Label).text = "Prouesse" if CombatGlossary.uses_champion_progression(unit) else "Attaque"

@@ -25,6 +25,7 @@ func _run() -> void:
 	_test_fixed_canonical_start()
 	_test_complete_route()
 	_test_halt_economy_and_restore()
+	_test_specialized_itinerary_services()
 	_test_atomic_rejections()
 	_test_defeat()
 	print("Catabase integration: %d checks, %d failures (simulated victories)" % [_checks, _failures.size()])
@@ -164,6 +165,9 @@ func _advance_to_halt(manager) -> void:
 
 func _test_halt_economy_and_restore() -> void:
 	var m := _manager(2401)
+	# Existing saves keep universal halts and their purchase receipts.
+	m.expedition.route.initialize(2401, 3)
+	m.expedition.route.choose_node("d01_0")
 	_advance_to_halt(m)
 	_check(ExpeditionRouteCatalog.is_halt(str(m.expedition.route.get_current_node().kind)), "First halt absent")
 	var hp_before: int = m.expedition.character.unit.current_hp
@@ -204,6 +208,67 @@ func _test_halt_economy_and_restore() -> void:
 	_check(restored.claim_expedition_reward("leave_hub").get("success", false), "Cannot leave after multiple services")
 	_dispose(restored)
 	_dispose(m)
+
+
+func _test_specialized_itinerary_services() -> void:
+	for kind in ["hub", "merchant", "lore", "sanctuary"]:
+		var m := _manager(2401)
+		var target_depth := 8 if kind == "sanctuary" else 4
+		var can_reach := {}
+		for node in m.expedition.route.nodes:
+			if int(node.depth) == target_depth and str(node.kind) == kind and not node.hidden:
+				can_reach[str(node.id)] = true
+		for depth in range(target_depth - 1, 0, -1):
+			for node in m.expedition.route.nodes:
+				if int(node.depth) != depth:
+					continue
+				for edge in node.edges:
+					if can_reach.has(str(edge)):
+						can_reach[str(node.id)] = true
+		for depth in range(1, target_depth + 1):
+			if depth > 1:
+				for option in m.expedition.route.get_available_nodes():
+					if can_reach.has(str(option.id)):
+						_check(m.choose_expedition_node(str(option.id)), "Specialized halt path inaccessible")
+						break
+			if m.expedition.route.phase == "combat":
+				_win(m)
+			if depth < target_depth:
+				_claim(m)
+		_check(str(m.expedition.route.get_current_node().kind) == kind, "Did not reach advertised halt")
+		var services: Array = m.expedition.hub_services(m.item_catalog)
+		_check(services.size() == (3 if kind == "merchant" else 1), "Halt offers unrelated services")
+		for service in services:
+			_check(str(service.kind) == kind, "Service does not match map promise")
+		var invalid_service := "rest" if kind != "hub" else "lore"
+		var before := _json(m.get_expedition_snapshot())
+		_check(not m.use_catabase_hub_service(invalid_service).get("success", false), "Can use a service from discarded halt")
+		_check(_json(m.get_expedition_snapshot()) == before, "Unavailable service mutated session")
+		m.expedition.character.unit.current_hp -= 30
+		var hp_before: int = m.expedition.character.unit.current_hp
+		var gold_before: int = m.expedition.gold
+		var service: Dictionary = services[0]
+		_check(m.use_catabase_hub_service(str(service.id)).get("success", false), "Advertised halt service failed")
+		match kind:
+			"hub":
+				_check(m.expedition.character.unit.current_hp > hp_before, "Refuge did not heal")
+				_check(m.expedition.gold == gold_before, "Free refuge charged gold")
+			"merchant":
+				_check(m.expedition.gold == gold_before - int(service.cost), "Merchant cost incorrect")
+				_check(m.expedition.character.unit.current_hp == hp_before, "Merchant healed for free")
+			"lore":
+				_check(m.expedition.gold == gold_before + 20, "Memory oboles missing")
+				_check("d08_secret" in m.expedition.route.revealed_node_ids, "Memory failed to reveal secret")
+			"sanctuary":
+				_check(m.expedition.build.is_axis_discovered(str(service.branch_id)), "Sanctuary failed to unlock branch")
+				_check(m.expedition.gold == gold_before - int(service.cost), "Branch cost incorrect")
+		var saved := _json(m.get_expedition_snapshot())
+		var restored := _manager(17)
+		_check(restored.restore_expedition_snapshot(saved), "Specialized halt receipt failed to restore")
+		_check(_json(restored.get_expedition_snapshot()) == saved, "Specialized save changed on restore")
+		_check(not restored.use_catabase_hub_service(str(service.id)).get("success", false), "Reload repeated service")
+		_dispose(restored)
+		_dispose(m)
 
 
 func _test_atomic_rejections() -> void:

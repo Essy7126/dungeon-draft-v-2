@@ -359,16 +359,16 @@
     ]
   ],
   "water": {
-    "color": "#348f89",
+    "color": "#0a4845",
     "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/water_material.png",
-    "shader_path": "res://battle/painted/registered_terrain/shaders/water_ink.gdshader"
+    "shader_path": "res://assets/catabase/combat/cavern_v1/cavern_water.gdshader"
   },
   "land": {
-    "color": "#8b965c",
-    "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/land_composed_v4.png",
+    "color": "#38332b",
+    "texture_path": "res://assets/catabase/combat/cavern_v1/land_v2.png",
     "texture_scale": [
-      1,
-      1
+      1.2113564668769716,
+      1.2096774193548387
     ],
     "texture_repeat": false
   },
@@ -475,7 +475,7 @@
         ]
       ],
       "width": 10.5,
-      "color": "#8E8854",
+      "color": "#344741",
       "confidence": "visible"
     },
     {
@@ -679,7 +679,7 @@
         ]
       ],
       "width": 10.5,
-      "color": "#8E8854",
+      "color": "#344741",
       "confidence": "visible_with_local_inference"
     },
     {
@@ -707,7 +707,7 @@
         ]
       ],
       "width": 10.5,
-      "color": "#8E8854",
+      "color": "#344741",
       "confidence": "inferred"
     },
     {
@@ -739,7 +739,7 @@
         ]
       ],
       "width": 10.5,
-      "color": "#8E8854",
+      "color": "#344741",
       "confidence": "visible"
     },
     {
@@ -767,163 +767,11 @@
         ]
       ],
       "width": 10.5,
-      "color": "#8E8854",
+      "color": "#344741",
       "confidence": "inferred"
     }
   ],
   "world_decor": [
-    {
-      "id": "tree_foreground_left",
-      "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/environment_clusters_v4.png",
-      "anchor": [
-        378,
-        973.5
-      ],
-      "pivot": [
-        0.500443243,
-        0.875748165
-      ],
-      "scale": 0.589622642,
-      "layer": "foreground",
-      "region_px": [
-        0,
-        518,
-        740,
-        506
-      ],
-      "contact_profiles": [
-        [
-          [
-            0.114865,
-            0.93083
-          ],
-          [
-            0.195946,
-            0.938735
-          ],
-          [
-            0.285135,
-            0.944664
-          ]
-        ],
-        [
-          [
-            0.308108,
-            0.936759
-          ],
-          [
-            0.395946,
-            0.924901
-          ],
-          [
-            0.487838,
-            0.91502
-          ],
-          [
-            0.571622,
-            0.913043
-          ],
-          [
-            0.645946,
-            0.944664
-          ]
-        ],
-        [
-          [
-            0.683784,
-            0.944664
-          ],
-          [
-            0.762162,
-            0.934783
-          ],
-          [
-            0.847297,
-            0.934783
-          ]
-        ]
-      ]
-    },
-    {
-      "id": "rock_mass_foreground_right",
-      "texture_path": "res://asset/map/painted/greece/greek_drawn_courtyard_v1/environment_clusters_v4.png",
-      "anchor": [
-        1728.75,
-        1177.5
-      ],
-      "pivot": [
-        0.565191012,
-        0.82978644
-      ],
-      "scale": 0.849420849,
-      "layer": "foreground",
-      "region_px": [
-        740,
-        528,
-        796,
-        496
-      ],
-      "contact_profiles": [
-        [
-          [
-            0.057789,
-            0.917339
-          ],
-          [
-            0.119347,
-            0.925403
-          ],
-          [
-            0.184673,
-            0.925403
-          ],
-          [
-            0.248744,
-            0.933468
-          ]
-        ],
-        [
-          [
-            0.31407,
-            0.929435
-          ],
-          [
-            0.376884,
-            0.925403
-          ],
-          [
-            0.439698,
-            0.925403
-          ],
-          [
-            0.515075,
-            0.907258
-          ],
-          [
-            0.577889,
-            0.893145
-          ]
-        ],
-        [
-          [
-            0.634422,
-            0.864919
-          ],
-          [
-            0.728643,
-            0.846774
-          ],
-          [
-            0.791457,
-            0.826613
-          ],
-          [
-            0.854271,
-            0.798387
-          ]
-        ]
-      ]
-    },
     {
       "id": "cliff_bench_14_6",
       "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
@@ -1020,6 +868,16 @@
         510.92893691
       ],
       "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cavern_peripheral_mist",
+      "scene_path": "res://assets/catabase/combat/cavern_v1/CavernMist.tscn",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground",
       "scale": 1
     }
   ],
@@ -1162,6 +1020,13 @@
       },
       "geometry_invariant": "Land polygon, shorelines, canvas, exclusions, all floor and VOID cells, origin, axes, blocker/spawn data and foreground world anchors unchanged from the accepted registered terrain version.",
       "art_direction": "Warm sunlit Greek sanctuary; continuous olive grove, limestone bluff, textured meadow, separate foreground vegetation and stones; quiet tactical center."
+    },
+    "current_art_direction": {
+      "name": "Catabase I — Caverne des brumes",
+      "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+      "manifest": "res://assets/catabase/combat/cavern_v1/manifest.json",
+      "replaces": "Outdoor grove and both foreground vegetation clusters",
+      "gameplay": "Original cells, blockers, pits, spawns and geometry retained."
     }
   },
   "combat_ground_band": {
@@ -1169,7 +1034,41 @@
     "width_cells": 0.42,
     "minimum_shore_clearance_native_px": 20.0,
     "shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
-    "description": "Continuous compacted limestone soil around the canonical combat footprint; outer feather, no raised edge or tactical cells."
+    "description": "Cavern stone dust around the unchanged tactical footprint.",
+    "shader_parameters": {
+      "band_earth": "#423e32",
+      "band_light": "#555143",
+      "band_shadow": "#302f29"
+    }
   },
-  "geometry_manifest_path": "res://data/arenas/greek_drawn_courtyard_v1/geometry_manifest.json"
+  "geometry_manifest_path": "res://data/arenas/greek_drawn_courtyard_v1/geometry_manifest.json",
+  "floor_palette": {
+    "shade": "#302b23",
+    "body": "#544c40",
+    "light": "#7c705b",
+    "warmth": [
+      -0.025,
+      -0.008,
+      0.012,
+      0.025
+    ],
+    "painted_steps": 0.18,
+    "bevel_flatten_strength": 0.92
+  },
+  "props_palette": {
+    "ink": "#24251f",
+    "top": "#7c705b",
+    "left": "#544c40",
+    "right": "#36372e",
+    "highlight": "#968566",
+    "bench": "#70634e"
+  },
+  "ground_details": {
+    "enabled": false
+  },
+  "pit_palette": {
+    "floor": "#10191b",
+    "back_wall": "#46504a",
+    "left_wall": "#293933"
+  }
 }

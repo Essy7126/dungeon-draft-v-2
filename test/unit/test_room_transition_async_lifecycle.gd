@@ -1,11 +1,23 @@
 extends GutTest
 
 const Factory = preload("res://test/support/factory.gd")
+const FixtureCleanup = preload("res://test/support/isolated_battlefield_cleanup.gd")
 const UnitViewScript = preload("res://battle/unit_view.gd")
 const ProjectileScene = preload(
 	"res://battle/vfx/skeleton_ranged_projectile_vfx.tscn"
 )
 const RANGED_PATH := "res://data/units/ennemie/skeleton_ranged.tres"
+
+var _fields: Array[Factory.Battlefield] = []
+
+
+func after_each() -> void:
+	for field in _fields:
+		for unit: Unit in field.grid.get_units():
+			unit.clear_combat_effect_history()
+		field.terrain.dispose()
+		FixtureCleanup.dispose_grid(field.grid)
+	_fields.clear()
 
 
 class ControlledVisual extends Node2D:
@@ -92,6 +104,7 @@ func _make_controlled_view(unit: Unit, parent: Node = self) -> Dictionary:
 
 func _make_runner_fixture(ranged := false) -> Dictionary:
 	var field := Factory.make_battlefield(8, 1)
+	_fields.append(field)
 	# Le squelette tactique de production n'a plus d'attaque basique : ce test
 	# isole volontairement le cycle async generique avec un attaquant synthetique.
 	var attacker := (

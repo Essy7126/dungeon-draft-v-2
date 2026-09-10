@@ -4,12 +4,14 @@ param(
     [Parameter(Position=0)][ValidateSet('new','attach','check','prepare','open','verify','test')][string]$Command='open',
     [string]$Map='res://data/halts/emerald_sanctuary_v1.json',
     [string]$Id='',
-    [ValidateSet('sanctuary','merchant','hub','lore')][string]$Kind='sanctuary',
+    [ValidateSet('sanctuary','merchant','hub','lore','forge')][string]$Kind='sanctuary',
     [string]$Brief='',
     [string]$Image='',
+    [string]$Plan='',
     [string]$GodotPath='',
     [string]$PythonPath='',
-    [switch]$Record
+    [switch]$Record,
+    [ValidateRange(0,60)][int]$WaitForEngineSeconds=0
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -27,7 +29,7 @@ try {
         $runRoot=New-DevRun "halt-$Command"
         $arguments=@('-X','utf8',(Join-Path $PSScriptRoot 'halt_workshop.py'),$Command)
         switch ($Command) {
-            'new' {$arguments+=@($Id,'--kind',$Kind,'--brief',$Brief)}
+            'new' {$arguments+=@($Id,'--kind',$Kind,'--brief',$Brief); if ($Plan) {$arguments+=@('--plan',$Plan)}}
             'attach' {$arguments+=@($Id,$Image)}
             'test' {$arguments=@('-X','utf8','-m','unittest','discover','-s','tools/halt_workshop','-p','test_*.py','-v')}
             default {$arguments+=@($Map)}
@@ -55,7 +57,15 @@ try {
         exit 0
     }
     $runRoot=New-DevRun 'halt-verify'
-    $engineLock=[IO.File]::Open((Join-Path $root 'artifacts/dev/engine.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+    $haltLockDeadline=[DateTime]::UtcNow.AddSeconds($WaitForEngineSeconds)
+    while (-not $engineLock) {
+        try {
+            $engineLock=[IO.File]::Open((Join-Path $root 'artifacts/dev/engine.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+        } catch [IO.IOException] {
+            if ([DateTime]::UtcNow -ge $haltLockDeadline) {throw}
+            Start-Sleep -Milliseconds 500
+        }
+    }
     $userdata=Join-Path $runRoot 'userdata'
     [IO.Directory]::CreateDirectory($userdata) | Out-Null
     $environment=@{APPDATA=$userdata;LOCALAPPDATA=$userdata}
@@ -65,7 +75,13 @@ try {
     $import=Invoke-DevProcess $godot @('--headless','--editor','--recovery-mode','--path',$root,'--log-file',(Join-Path $runRoot 'import.engine.log'),'--import') $root $runRoot 'import' 240 $environment
     $errors=@(Get-DevEngineErrors $runRoot 'import' | Sort-Object -Unique)
     if (-not(Test-DevProcessSuccess $import) -or $errors.Count -gt 0) {throw "Import failed: $($errors -join ' | ')"}
-    $arguments=@('--path',$root,'--rendering-method','gl_compatibility','--audio-driver','Dummy','--position','-3000,-3000','--log-file',(Join-Path $runRoot 'verify.engine.log'),'res://tools/halt_workshop/VerifyLivingHalt.tscn','--',"--halt-manifest=$Map","--output-root=$runRoot")
+    # A scene with an uncompilable Node script can keep an empty window alive.
+    # Check the runner itself first; successful import alone is not that proof.
+    $compile=Invoke-DevProcess $godot @('--headless','--path',$root,'--script','res://tools/halt_workshop/compile_living_halt.gd','--log-file',(Join-Path $runRoot 'compile.engine.log')) $root $runRoot 'compile' 60 $environment
+    $errors=@(Get-DevEngineErrors $runRoot 'compile' | Sort-Object -Unique)
+    $compileOutput=Get-Content -LiteralPath (Join-Path $runRoot 'compile.stdout.log') -Raw
+    if (-not(Test-DevProcessSuccess $compile) -or $errors.Count -gt 0 -or $compileOutput -notmatch '(?m)^HALT_VERIFIER_COMPILED\r?$') {throw "Rendered verifier failed compilation: $($errors -join ' | ')"}
+    $arguments=@('--verbose','--path',$root,'--rendering-method','gl_compatibility','--audio-driver','Dummy','--position','-3000,-3000','--log-file',(Join-Path $runRoot 'verify.engine.log'),'res://tools/halt_workshop/VerifyLivingHalt.tscn','--',"--halt-manifest=$Map","--output-root=$runRoot")
     if($Record){$arguments+='--record'}
     $result=Invoke-DevProcess $godot $arguments $root $runRoot 'verify' 300 $environment
     $errors=@(Get-DevEngineErrors $runRoot 'verify' | Sort-Object -Unique)

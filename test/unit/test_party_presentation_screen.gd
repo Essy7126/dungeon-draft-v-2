@@ -47,7 +47,7 @@ func test_fixed_trio_uses_real_3d_previews_including_warrior() -> void:
 	)
 	assert_eq(
 		cards[1].disciplines_label.text,
-		"Disciplines : Pyromancie, Cryomancie, Foudromancie, Géomancie",
+		"Arbres de compétences : Pyromancie, Cryomancie, Foudromancie, Géomancie",
 	)
 	assert_eq(cards[1].role_label.text, "Mage de combat élémentaire")
 	assert_false(cards[1].badge_label.visible)
@@ -109,14 +109,14 @@ func test_title_has_one_primary_entry_and_quit() -> void:
 	assert_eq(menu_items.map(func(control): return control.name), [
 		&"MenuEyebrow", &"BoutonNouvellePartie", &"BoutonQuitter",
 	])
-	assert_eq((menu_items[0] as Label).text, "CHOISISSEZ VOTRE DESTIN")
+	assert_eq((menu_items[0] as Label).text, "LE SEUIL DES ENFERS")
 	var buttons := menu_items.filter(func(control): return control is Button)
 	assert_eq(buttons.map(func(button): return button.name), [
 		&"BoutonNouvellePartie", &"BoutonQuitter",
 	])
 	assert_eq(
 		buttons.map(func(button): return button.text),
-		["COMMENCER L’ODYSSÉE", "QUITTER"],
+		["Nouvelle partie", "Quitter le jeu"],
 	)
 	assert_eq(
 		title.get_script().get_script_constant_map()["CHARACTER_SELECTION_SCENE_PATH"],
