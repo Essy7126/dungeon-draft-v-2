@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "emerald_sanctuary_v1",
+  "manifest_sha256": "f5d5108325b03ce413fbd2f224c4461361356ef6b921cb545c8940dc307bf913",
+  "source_sha256": "e97a9650c05defbb0dd0094199d3991c0aa2bd4399f4d6bfbe23c6273450b31f",
+  "mask_sha256": "4d2e412f910ac1af9d7f0ec6a506a356056405135f70fb2a9b8230cdee4c69ee",
+  "size": [
+    1672,
+    941
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}
