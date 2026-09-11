@@ -15,8 +15,8 @@ static func run(battle: Node, output: String) -> Dictionary:
 	GameManager.set_reduced_motion_enabled(prior)
 	controller.set_process(false)
 	var frames: Array[Image] = []
-	for index in 8:
-		controller.seek_for_review(float(index) * 0.45)
+	for index in 48:
+		controller.seek_for_review(float(index) * 0.20)
 		await RenderingServer.frame_post_draw
 		var frame := battle.get_viewport().get_texture().get_image()
 		frame.save_png(output.path_join("lethe-motion-%02d.png" % index))
@@ -26,6 +26,8 @@ static func run(battle: Node, output: String) -> Dictionary:
 		"torch": Rect2(520, 99, 38, 60),
 		"lantern": Rect2(122, 652, 34, 60),
 		"stable_ground": Rect2(1000, 850, 28, 12),
+		"stable_hull": Rect2(300, 760, 24, 12),
+		"stable_wall": Rect2(390, 270, 24, 16),
 	}
 	var metrics := { }
 	for name in regions:
@@ -59,6 +61,8 @@ static func run(battle: Node, output: String) -> Dictionary:
 	for name in ["water", "torch", "lantern"]:
 		valid = valid and metrics[name].changed > 10
 	valid = valid and metrics.stable_ground.samples > 0 and metrics.stable_ground.changed == 0
+	valid = valid and metrics.stable_hull.samples > 0 and metrics.stable_hull.changed == 0
+	valid = valid and metrics.stable_wall.samples > 0 and metrics.stable_wall.changed == 0
 	return {
 		"ok": valid,
 		"clock_advances": advances,

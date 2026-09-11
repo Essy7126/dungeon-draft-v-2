@@ -23,12 +23,16 @@
   "validation_status": "PASS: geometry/support/materials/picking/movement/guard/framing/cross-resolution; 3 tests 15940 assertions; captures inspected",
   "plan_sha256": "193c4b64b9a3ed7d959791cb4e406b910e357a26c88a3f2f73676c3b433958e9",
   "gameplay_fingerprint": "6c270a92cbce87dae00ba15dfa4bcd9177556bf603df76bb53dd024654364f02",
-  "qa_report": "artifacts/dev/20260911-165646-lethe-traces-review-ccb4bc95/summary.json",
+  "qa_report": "artifacts/dev/20260911-175102-lethe-traces-review-063c4286/summary.json",
   "effects": {
+    "visual_status": "REVISED: still captures inspected at both resolutions; user artistic acceptance pending",
+    "research": "docs/maps/lethe_shader_research_2026-09-11.md",
     "shader": "living.gdshader",
     "stable_ground_pixels_changed": 0,
-    "motion_report": "artifacts/dev/20260911-165646-lethe-traces-review-ccb4bc95/review-1920x1080.json",
+    "motion_report": "artifacts/dev/20260911-175102-lethe-traces-review-063c4286/review-1920x1080.json",
     "controller": "Living.tscn",
-    "reduced_motion_freezes": true
+    "reduced_motion_freezes": true,
+    "water_flow": "water_flow.json",
+    "pipeline": "docs/maps/painted_combat_effects_pipeline.md"
   }
 }

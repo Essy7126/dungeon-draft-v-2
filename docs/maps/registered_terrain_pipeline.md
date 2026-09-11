@@ -1,5 +1,9 @@
 # Cartes peintes enregistrées sur la grille de combat
 
+Pour les eaux, flammes et lumières, consulter la
+[pipeline des effets sur peinture de combat](painted_combat_effects_pipeline.md) :
+masques par salle, courant, intégration, réduction des animations et contrôles.
+
 Le modèle utilise [RegisteredTerrainBattle.tscn](../../battle/painted/registered_terrain/RegisteredTerrainBattle.tscn). Une scène partagée compose le terrain, les vraies dalles de combat, les fosses, le bandeau de terre et les décors à partir d'un plan JSON. Chaque nouvelle carte porte sa propre topologie et son biome, sans copier le contrôleur de combat.
 
 ## Contrat de production Catabase
