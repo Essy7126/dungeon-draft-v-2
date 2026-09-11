@@ -1,0 +1,146 @@
+{
+  "document_status": "CURRENT",
+  "branch": "feature/observatory-live-v1-2",
+  "commit_reference": "HEAD contenant ce document ; Git reste l’unique autorité pour meta.source_game_commit",
+  "updated_at_utc": "2026-08-06T10:45:38Z",
+  "validation_method": "Parcours des Resources de production, tests d’export et test de non-substitution du SHA",
+  "manifest_version": "3.0.0",
+  "previous_verified_commit": "296f17c7c76626f1d2acd3cc5e650daf356d8ba8",
+  "run_roots": [
+    {
+      "alias": "primary_run",
+      "path": "res://data/runs/first_run.tres",
+      "kind": "production",
+      "is_primary": true,
+      "expected_flow_mode": "single_encounter",
+      "authority": "production_root",
+      "include_in_snapshot": true,
+      "launch_path": "res://ui/party/PartyPresentationScreen.tscn -> GameManager.start_preconfigured_run",
+      "notes": "Run principale SINGLE_ENCOUNTER. Ses six RoomData sont propres au graphe de production."
+    },
+    {
+      "alias": "test_wave_run",
+      "path": "res://data/runs/fixed_trio_prototype_run.tres",
+      "kind": "test",
+      "is_primary": false,
+      "expected_flow_mode": "wave_chain",
+      "authority": "explicit_test_root",
+      "include_in_snapshot": true,
+      "launch_path": "res://hub/data/lanternbound_archivist.tres -> ArchivistPanel -> GameManager.configure_next_run",
+      "notes": "Outil de test WAVE_CHAIN. Ses quatre RoomData et son profil de contenu sont distincts de la production."
+    }
+  ],
+  "production_roots": [
+    {
+      "domain": "runs",
+      "path": "res://data/runs/first_run.tres",
+      "resource_type": "RunData",
+      "authority": "production_root",
+      "identity_field": "manifest_alias:primary_run",
+      "traversal_strategy": "ordered_resource_graph",
+      "include_in_snapshot": true,
+      "evidence": "res://ui/party/PartyPresentationScreen.tscn reference directement cette ressource avant GameManager.start_preconfigured_run.",
+      "notes": "Run, salles, vagues et rencontres sont parcourues dans l'ordre de leurs references Resource."
+    },
+    {
+      "domain": "characters",
+      "path": "res://data/units/alliés/elfe.tres",
+      "resource_type": "UnitData",
+      "authority": "production_reference",
+      "identity_field": "unit_id",
+      "traversal_strategy": "explicit_resource",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.PRODUCTION_HERO_DATA_PATHS et PartyPresentationScreen ordonnent le trio de production.",
+      "notes": "Heros de production."
+    },
+    {
+      "domain": "characters",
+      "path": "res://data/units/alliés/mage.tres",
+      "resource_type": "UnitData",
+      "authority": "production_reference",
+      "identity_field": "unit_id",
+      "traversal_strategy": "explicit_resource",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.PRODUCTION_HERO_DATA_PATHS et PartyPresentationScreen ordonnent le trio de production.",
+      "notes": "Heros de production."
+    },
+    {
+      "domain": "characters",
+      "path": "res://data/units/alliés/Guerrier.tres",
+      "resource_type": "UnitData",
+      "authority": "production_reference",
+      "identity_field": "unit_id",
+      "traversal_strategy": "explicit_resource",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.PRODUCTION_HERO_DATA_PATHS et PartyPresentationScreen ordonnent le trio de production.",
+      "notes": "Heros de production."
+    },
+    {
+      "domain": "items",
+      "path": "res://data/items/catalogs/default_item_catalog.tres",
+      "resource_type": "ItemCatalog",
+      "authority": "catalog",
+      "identity_field": "item_id",
+      "traversal_strategy": "catalog_get_definitions",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.DEFAULT_ITEM_CATALOG precharge ce catalogue et l'initialise au demarrage de run.",
+      "notes": "Le catalogue combine references explicites et decouverte triee."
+    },
+    {
+      "domain": "rewards",
+      "path": "res://data/post_combat/post_combat_reward_service.gd",
+      "script_class": "PostCombatRewardService",
+      "authority": "static_service_definition",
+      "identity_field": "reward_id",
+      "traversal_strategy": "explicit_preloads",
+      "include_in_snapshot": true,
+      "evidence": "GameManager instancie PostCombatRewardService et appelle build_options/apply.",
+      "notes": "Trois recompenses generiques declarees par prechargement."
+    },
+    {
+      "domain": "reward_pools",
+      "path": "res://data/post_combat/first_run_equipment_reward_service.gd",
+      "script_class": "FirstRunEquipmentRewardService",
+      "authority": "static_service_definition",
+      "identity_field": "POOL_TAG",
+      "traversal_strategy": "catalog_tag_filter",
+      "include_in_snapshot": true,
+      "evidence": "GameManager instancie le service et le reinitialise avec le catalogue de production.",
+      "notes": "Le pool exige le tag first_run_equipment_reward et au moins deux options."
+    }
+  ],
+  "graph_traversal": [
+    {"domain": "rooms", "from": "RunData.rooms", "strategy": "ordered_parent_index", "deduplication": "none; order is semantic"},
+    {"domain": "waves", "from": "RoomData.waves for WAVE_CHAIN only", "strategy": "ordered_parent_index", "deduplication": "none; profiles remain distinct; no pseudo-wave for SINGLE_ENCOUNTER"},
+    {"domain": "encounters", "from": "RoomData.encounter_definition for SINGLE_ENCOUNTER; RoomWaveData.encounter_definition with RoomData fallback for WAVE_CHAIN", "strategy": "resource_path identity", "deduplication": "by normalized resource_path"},
+    {"domain": "enemies", "from": "EncounterDefinition.roster_units, active RoomData.enemies fallback, Spell.summon_unit_data", "strategy": "recursive closure", "deduplication": "by UnitData.get_effective_unit_id; maximum depth 8"},
+    {"domain": "enemy_spells", "from": "reachable UnitData.spells", "strategy": "resource reference", "deduplication": "by Spell.get_effective_spell_id"},
+    {"domain": "ai_profiles", "from": "reachable UnitData.ai_profile", "strategy": "resource reference", "deduplication": "by profile_id or resource_path"}
+  ],
+  "domains": [
+    {"domain": "project", "authority": "production_root", "include_in_snapshot": true},
+    {"domain": "characters", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "disciplines", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "spells", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "items", "authority": "catalog", "include_in_snapshot": true},
+    {"domain": "rewards", "authority": "static_service_definition", "include_in_snapshot": true},
+    {"domain": "reward_pools", "authority": "static_service_definition", "include_in_snapshot": true},
+    {"domain": "runs", "authority": "production_root", "include_in_snapshot": true},
+    {"domain": "rooms", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "waves", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "encounters", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "enemies", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "enemy_spells", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "ai_profiles", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "contract", "authority": "versioned_contract", "include_in_snapshot": true},
+    {"domain": "audits", "authority": "derived", "include_in_snapshot": true}
+  ],
+  "exclusions": [
+    {"domain": "legacy_runs", "path": "res://data/runs/run_default.tres", "reason": "Ressource non referencee par le parcours de lancement verifie."},
+    {"domain": "laboratories", "path": "res://labs", "reason": "Laboratoires et captures exclus du snapshot de production."}
+  ],
+  "deferred_domains": [
+    {"domain": "architecture", "status": "deferred", "reason": "Le graphe complet des scripts et scenes n'est pas inclus."},
+    {"domain": "theorycraft", "status": "deferred", "reason": "Aucune simulation de combat, DPS ou score de difficulte n'est calcule."}
+  ]
+}
