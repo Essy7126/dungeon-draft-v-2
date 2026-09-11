@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BattlePresentationProfile" format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/battle_presentation_profile.gd" id="1_5c03l"]
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="2_5fc8g"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_achilles.tres" id="3_1o08b"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_standard.tres" id="4_bpu1u"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_elite.tres" id="5_cmv1y"]
+
+[resource]
+script = ExtResource("1_5c03l")
+profile_id = &"lethe_traces_v1"
+camera_offset_adjustment = Vector2(-80, 0)
+camera_keep_painting_in_view = true
+global_unit_scale_multiplier = 1.08
+unit_profiles = Array[ExtResource("2_5fc8g")]([ExtResource("3_1o08b"), ExtResource("4_bpu1u"), ExtResource("5_cmv1y")])
+ally_outline_color = Color(0.63, 0.9, 1, 0.34)
+enemy_outline_color = Color(1, 0.77, 0.39, 0.38)

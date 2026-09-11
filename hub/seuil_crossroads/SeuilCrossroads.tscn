@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://hub/seuil_crossroads/seuil_crossroads.gd" id="1"]
+
+[node name="SeuilCrossroads" type="Node2D"]
+script = ExtResource("1")
+manifest_path = "res://data/halts/seuil_crossroads_v1.json"
+preview_mode = false

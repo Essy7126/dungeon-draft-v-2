@@ -34,3 +34,14 @@ static func all_rooms() -> Array[RoomData]:
 	for index in ROOM_COUNT:
 		result.append(get_room(index))
 	return result
+
+
+static func get_room_for_node(node: Dictionary) -> RoomData:
+	# Destination identity survives the visual mirroring of the route.
+	var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(
+		"res://data/rooms/catabase_routes/catalog.json"
+	))
+	var entry: Dictionary = catalog.get(str(node.get("title", "")), {})
+	if not entry.is_empty() and ExpeditionRouteCatalog.is_combat(str(node.get("kind", ""))):
+		return load(str(entry.room)) as RoomData
+	return get_room(maxi(0, int(node.get("room_index", 0))))

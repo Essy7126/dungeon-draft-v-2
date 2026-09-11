@@ -371,7 +371,7 @@
   },
   "land": {
     "color": "#38332b",
-    "texture_path": "res://assets/catabase/combat/cavern_v1/land_v4.png",
+    "texture_path": "res://assets/catabase/combat/seuil_three_paths_v1/land.png",
     "texture_scale": [
       1,
       1

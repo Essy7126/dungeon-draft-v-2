@@ -56,7 +56,7 @@ static func create(seed_value: int, hero_visual_variants: Dictionary = {}) -> Ru
 
 
 static func make_room(node: Dictionary, seed_value: int) -> RoomData:
-	var template := ExpeditionMapCatalog.get_room(maxi(0, int(node.get("room_index", 0))))
+	var template := ExpeditionMapCatalog.get_room_for_node(node)
 	var room := template.duplicate(false) as RoomData
 	room.room_name = str(node.get("title", template.room_name))
 	room.waves = []
@@ -69,6 +69,7 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 	MonsterEncounterCatalog.configure_encounter(encounter, node)
 	if MonsterEncounterCatalog.uses_monsters(node) and (
 			template.resource_path.begins_with("res://data/rooms/catabase_expansion/")
+			or template.resource_path.begins_with("res://data/rooms/catabase_routes/")
 			or room.enemy_spawn_zone.size() < MonsterEncounterCatalog.composition_for(node).size()
 		):
 		# Some historical rooms were authored for two enemies and the expansion

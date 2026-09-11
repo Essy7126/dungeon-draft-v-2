@@ -1,0 +1,182 @@
+{
+	"L'atrium des cendres": {
+		"base_room": "res://data/rooms/catabase_expansion/room_08_braises.tres",
+		"removed_cells": 13.0,
+		"room": "res://data/rooms/catabase_routes/route_9dbc9bf0b28c/room.tres"
+	},
+	"La bibliothèque engloutie": {
+		"base_room": "res://data/rooms/odyssey/room_04.tres",
+		"removed_cells": 16.0,
+		"room": "res://data/rooms/catabase_routes/route_3e2e3a9f02e6/room.tres"
+	},
+	"La fosse des revenants": {
+		"base_room": "res://data/rooms/odyssey/room_04.tres",
+		"removed_cells": 18.0,
+		"room": "res://data/rooms/catabase_routes/route_069acb50834a/room.tres"
+	},
+	"La garde des sources": {
+		"base_room": "res://data/rooms/odyssey/room_02.tres",
+		"removed_cells": 32.0,
+		"room": "res://data/rooms/catabase_routes/route_9c104c2158d3/room.tres"
+	},
+	"La sente des derniers souffles": {
+		"base_room": "res://data/rooms/catabase_expansion/room_11_mesures.tres",
+		"removed_cells": 19.0,
+		"room": "res://data/rooms/catabase_routes/route_07c0eec87146/room.tres"
+	},
+	"La sente des oliviers": {
+		"base_room": "res://data/rooms/catabase_expansion/room_06_porteurs.tres",
+		"removed_cells": 16.0,
+		"room": "res://data/rooms/catabase_routes/route_76ac69bb7c8d/room.tres"
+	},
+	"Le défi sans repos": {
+		"base_room": "res://data/rooms/catabase_expansion/room_14_escalier.tres",
+		"removed_cells": 14.0,
+		"room": "res://data/rooms/catabase_routes/route_c4c2dea072c8/room.tres"
+	},
+	"Le gué des serments": {
+		"base_room": "res://data/rooms/catabase_expansion/room_07_citerne.tres",
+		"removed_cells": 21.0,
+		"room": "res://data/rooms/catabase_routes/route_1c7d4c943b3a/room.tres"
+	},
+	"Le jardin des dalles fendues": {
+		"base_room": "res://data/rooms/catabase_expansion/room_14_escalier.tres",
+		"removed_cells": 12.0,
+		"room": "res://data/rooms/catabase_routes/route_e2e672411ec5/room.tres"
+	},
+	"Le pont des longs traits": {
+		"base_room": "res://data/rooms/catabase_expansion/room_12_necropole.tres",
+		"removed_cells": 22.0,
+		"room": "res://data/rooms/catabase_routes/route_b96b57fdd066/room.tres"
+	},
+	"Le portique des oboles": {
+		"base_room": "res://data/rooms/catabase_expansion/room_06_porteurs.tres",
+		"removed_cells": 17.0,
+		"room": "res://data/rooms/catabase_routes/route_b8d185cf95d7/room.tres"
+	},
+	"Le péage du dernier bronze": {
+		"base_room": "res://data/rooms/catabase_expansion/room_12_necropole.tres",
+		"removed_cells": 19.0,
+		"room": "res://data/rooms/catabase_routes/route_b23af0ab449c/room.tres"
+	},
+	"Le rempart des terrasses": {
+		"base_room": "res://data/rooms/catabase_expansion/room_11_mesures.tres",
+		"removed_cells": 21.0,
+		"room": "res://data/rooms/catabase_routes/route_0d28d3531a6d/room.tres"
+	},
+	"Le vestibule des derniers noms": {
+		"base_room": "res://data/rooms/catabase_expansion/room_15_moirai.tres",
+		"removed_cells": 18.0,
+		"room": "res://data/rooms/catabase_routes/route_db86840b0d77/room.tres"
+	},
+	"Le vestibule des lances noires": {
+		"base_room": "res://data/rooms/catabase_expansion/room_15_moirai.tres",
+		"removed_cells": 21.0,
+		"room": "res://data/rooms/catabase_routes/route_e8ce7358aad5/room.tres"
+	},
+	"Les arches du poursuivant": {
+		"base_room": "res://data/rooms/catabase_expansion/room_10_digue.tres",
+		"removed_cells": 21.0,
+		"room": "res://data/rooms/catabase_routes/route_edf5091bbf07/room.tres"
+	},
+	"Les braises du cloître": {
+		"base_room": "res://data/rooms/catabase_expansion/room_09_peristyle.tres",
+		"removed_cells": 23.0,
+		"room": "res://data/rooms/catabase_routes/route_edce0087c741/room.tres"
+	},
+	"Les chaînes sous les arches": {
+		"base_room": "res://data/rooms/catabase_expansion/room_10_digue.tres",
+		"removed_cells": 24.0,
+		"room": "res://data/rooms/catabase_routes/route_1ef5b3b032f6/room.tres"
+	},
+	"Les duellistes du gué": {
+		"base_room": "res://data/rooms/catabase_expansion/room_08_braises.tres",
+		"removed_cells": 14.0,
+		"room": "res://data/rooms/catabase_routes/route_260dc8ac79d8/room.tres"
+	},
+	"Les fers de la terrasse": {
+		"base_room": "res://data/rooms/catabase_expansion/room_12_necropole.tres",
+		"removed_cells": 20.0,
+		"room": "res://data/rooms/catabase_routes/route_771ea3313950/room.tres"
+	},
+	"Les gardes de la foudre": {
+		"base_room": "res://data/rooms/catabase_expansion/room_12_necropole.tres",
+		"removed_cells": 19.0,
+		"room": "res://data/rooms/catabase_routes/route_187361a8c16c/room.tres"
+	},
+	"Les gardes du pacte": {
+		"base_room": "res://data/rooms/catabase_expansion/room_09_peristyle.tres",
+		"removed_cells": 22.0,
+		"room": "res://data/rooms/catabase_routes/route_3864f6096a0f/room.tres"
+	},
+	"Les gardiens du foyer": {
+		"base_room": "res://data/rooms/catabase_expansion/room_08_braises.tres",
+		"removed_cells": 15.0,
+		"room": "res://data/rooms/catabase_routes/route_05e69842c3b5/room.tres"
+	},
+	"Les gardiens du souffle": {
+		"base_room": "res://data/rooms/catabase_expansion/room_15_moirai.tres",
+		"removed_cells": 22.0,
+		"room": "res://data/rooms/catabase_routes/route_eacb7a8a9a52/room.tres"
+	},
+	"Les guetteurs du bosquet": {
+		"base_room": "res://data/rooms/odyssey/room_02.tres",
+		"removed_cells": 30.0,
+		"room": "res://data/rooms/catabase_routes/route_e256ea3fc3b3/room.tres"
+	},
+	"Les lances du dernier tribut": {
+		"base_room": "res://data/rooms/catabase_expansion/room_14_escalier.tres",
+		"removed_cells": 13.0,
+		"room": "res://data/rooms/catabase_routes/route_87fe0750363a/room.tres"
+	},
+	"Les lances oubliées": {
+		"base_room": "res://data/rooms/odyssey/room_02.tres",
+		"removed_cells": 32.0,
+		"room": "res://data/rooms/catabase_routes/route_10ce1ff88330/room.tres"
+	},
+	"Les ombres du serment": {
+		"base_room": "res://data/rooms/catabase_expansion/room_14_escalier.tres",
+		"removed_cells": 12.0,
+		"room": "res://data/rooms/catabase_routes/route_299beaee5ea3/room.tres"
+	},
+	"Les pas sans retour": {
+		"base_room": "res://data/rooms/catabase_expansion/room_09_peristyle.tres",
+		"removed_cells": 24.0,
+		"room": "res://data/rooms/catabase_routes/route_fb47987c42d5/room.tres"
+	},
+	"Les percepteurs d'airain": {
+		"base_room": "res://data/rooms/odyssey/room_02.tres",
+		"removed_cells": 31.0,
+		"room": "res://data/rooms/catabase_routes/route_b44f12cdbcc1/room.tres"
+	},
+	"Les porteurs d'airain": {
+		"base_room": "res://data/rooms/catabase_expansion/room_09_peristyle.tres",
+		"removed_cells": 24.0,
+		"room": "res://data/rooms/catabase_routes/route_ff526a1b2810/room.tres"
+	},
+	"Les porteurs du jardin": {
+		"base_room": "res://data/rooms/catabase_expansion/room_14_escalier.tres",
+		"removed_cells": 14.0,
+		"room": "res://data/rooms/catabase_routes/route_d7294103cd53/room.tres"
+	},
+	"Les roseaux du tireur": {
+		"base_room": "res://data/rooms/catabase_expansion/room_07_citerne.tres",
+		"removed_cells": 18.0,
+		"room": "res://data/rooms/catabase_routes/route_6d5efdb88ff0/room.tres"
+	},
+	"Les terrasses de l'orage": {
+		"base_room": "res://data/rooms/catabase_expansion/room_11_mesures.tres",
+		"removed_cells": 20.0,
+		"room": "res://data/rooms/catabase_routes/route_f318d84c36ad/room.tres"
+	},
+	"Les traces du Léthé": {
+		"base_room": "res://data/rooms/catabase_expansion/room_06_porteurs.tres",
+		"removed_cells": 16.0,
+		"room": "res://data/rooms/catabase_routes/route_f51a86b714b9/room.tres"
+	},
+	"Les veilleurs des stèles": {
+		"base_room": "res://data/rooms/catabase_expansion/room_10_digue.tres",
+		"removed_cells": 23.0,
+		"room": "res://data/rooms/catabase_routes/route_664fcf9fcb74/room.tres"
+	}
+}

@@ -110,7 +110,7 @@ func _ready() -> void:
 			Vector4(
 				float(torch.get("flame_strength", 1.0)),
 				float(torch.get("light_strength", 1.0)),
-				0,
+				float(torch.get("steady_light", 0.0)),
 				0,
 			)
 		)

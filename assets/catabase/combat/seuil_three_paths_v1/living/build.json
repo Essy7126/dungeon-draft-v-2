@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "seuil_crossroads_v1",
+  "manifest_sha256": "5a94ef54317e2fa7477967cdf52bdb14ab0be33d44a8e3c10442ce763fffbb6d",
+  "manifest_hash_mode": "lf_utf8_v1",
+  "generator": "python_pillow_v2",
+  "source_sha256": "98ef5fceda4482a07bf9f90afe0755d3721707abd7eee9b9d1c6d7de8fc30299",
+  "mask_sha256": "fe9814015c3405538ec72b7840a8415e34cd0774771b996404521b0df7c4a43d",
+  "flow_sha256": "a7c9cf04aab1a9426aa6194e6a0f21068a9a69a8c3007a10ee1daf9a8d192fad",
+  "size": [
+    1586,
+    992
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "flow_channels": [
+    "direction_x",
+    "direction_y",
+    "speed_div_4",
+    "water_coverage"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}

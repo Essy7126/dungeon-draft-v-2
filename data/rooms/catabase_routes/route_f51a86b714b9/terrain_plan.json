@@ -1,0 +1,196 @@
+{
+  "allowed_floor_polygon": [
+    [
+      404.00001525878895,
+      515.3999900817864
+    ],
+    [
+      455.60001373291004,
+      489.5999908447259
+    ],
+    [
+      971.5999984741211,
+      231.59999847412092
+    ],
+    [
+      1051.599998474121,
+      231.59999847412092
+    ],
+    [
+      1154.7999954223633,
+      231.59999847412098
+    ],
+    [
+      1464.3999862670898,
+      386.3999938964839
+    ],
+    [
+      1619.1999816894531,
+      463.79999160766545
+    ],
+    [
+      1670.7999801635742,
+      489.599990844726
+    ],
+    [
+      1670.7999801635742,
+      569.599990844726
+    ],
+    [
+      1567.599983215332,
+      621.1999893188471
+    ],
+    [
+      1103.1999969482422,
+      853.3999824523916
+    ],
+    [
+      1051.599998474121,
+      879.199981689452
+    ],
+    [
+      868.4000015258788,
+      879.199981689452
+    ],
+    [
+      816.8000030517577,
+      853.3999824523916
+    ],
+    [
+      507.20001220703114,
+      698.5999870300286
+    ],
+    [
+      404.00001525878895,
+      646.9999885559075
+    ]
+  ],
+  "canvas_size": [
+    1920.0,
+    1200.0
+  ],
+  "combat_ground_band": {
+    "enabled": false
+  },
+  "floor_palette": {
+    "bevel_flatten_strength": 0.82,
+    "body": "#7d8973",
+    "light": "#bac2a1",
+    "painted_steps": 0.25,
+    "shade": "#46574c"
+  },
+  "geometry_manifest_path": "geometry_manifest.json",
+  "ground_details": {
+    "enabled": false
+  },
+  "land": {
+    "color": "#252f2e",
+    "texture_path": "res://assets/catabase/combat/lethe_traces_v1/land.png",
+    "texture_scale": [
+      1.210592686002522,
+      1.2096774193548387
+    ],
+    "texture_repeat": false,
+    "shader_path": "res://assets/catabase/combat/lethe_traces_v1/living.gdshader"
+  },
+  "land_polygon": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      1920.0,
+      0.0
+    ],
+    [
+      1920.0,
+      1200.0
+    ],
+    [
+      0.0,
+      1200.0
+    ]
+  ],
+  "metadata": {
+    "art_method": "image_gen with canonical geometry calibration; engine tiles and props retained",
+    "biome": "lethe",
+    "tactical_intent": "Passage longitudinal avec contournement.",
+    "route_stage": "Lethe 1/5, expedition II",
+    "boat": "Same wooden boat, three benches and amber lantern; left mooring, outside combat"
+  },
+  "minimum_floor_margin_px": 30,
+  "pit_palette": {
+    "back_wall": "#46574c",
+    "depth_native_px": 13.0,
+    "floor": "#00000000",
+    "left_wall": "#354b40"
+  },
+  "props_palette": {
+    "highlight": "#c3b887",
+    "ink": "#233d39",
+    "left": "#73846f",
+    "right": "#46574c",
+    "top": "#a3ae8e"
+  },
+  "shorelines": [
+    {
+      "points": [
+        [
+          922.4716267339218,
+          157.25806451612902
+        ],
+        [
+          1152.484237074401,
+          157.25806451612902
+        ],
+        [
+          1735.9899117276166,
+          423.38709677419354
+        ],
+        [
+          1735.9899117276166,
+          592.741935483871
+        ],
+        [
+          1127.061790668348,
+          886.6935483870968
+        ],
+        [
+          848.625472887768,
+          886.6935483870968
+        ],
+        [
+          331.70239596469105,
+          622.983870967742
+        ],
+        [
+          328.0706179066835,
+          459.6774193548387
+        ],
+        [
+          922.4716267339218,
+          157.25806451612902
+        ]
+      ],
+      "width": 1.0,
+      "color": "#548f7e"
+    }
+  ],
+  "soil_patches": [],
+  "version": 1.0,
+  "water": {
+    "color": "#252f2e"
+  },
+  "world_decor": [
+    {
+      "scene_path": "res://assets/catabase/combat/lethe_traces_v1/Living.tscn",
+      "id": "lethe_living",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground"
+    }
+  ],
+  "minimum_floor_shore_clearance_native_px": 20
+}

@@ -1775,7 +1775,7 @@ func on_battle_won() -> void:
 		_emit_current_room_cleared_once()
 		combat_report_ready.emit(_last_combat_report)
 		save_expedition()
-		_request_scene_change(EXPEDITION_SCREEN_PATH)
+		_request_scene_change(get_expedition_destination_scene())
 		return
 	_resolve_current_glory_challenge()
 	_award_current_encounter_progression()
@@ -2440,6 +2440,8 @@ func open_painted_halt() -> bool:
 
 
 func get_expedition_destination_scene() -> String:
+	if preload("res://hub/seuil_crossroads/seuil_route_choices.gd").active(expedition):
+		return "res://hub/seuil_crossroads/SeuilCrossroads.tscn"
 	if is_painted_halt_active():
 		return PAINTED_HALT_SCREEN_PATH
 	return MERCHANT_HALL_SCREEN_PATH if is_merchant_hall_active() else EXPEDITION_SCREEN_PATH

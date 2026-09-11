@@ -10,6 +10,8 @@ uniform float effect_time = 0.0;
 uniform float strength = 1.0;
 uniform bool water_enabled = true;
 uniform bool fire_enabled = true;
+uniform float fire_warp_strength = 1.0;
+uniform float fire_flicker_speed = 1.0;
 uniform bool foliage_enabled = true;
 uniform vec4 water_color : source_color = vec4(0.28, 0.85, 0.58, 1.0);
 uniform int torch_count = 0;
@@ -49,11 +51,11 @@ void fragment() {
 		float core = exp(-dot(q, q) * 1.7);
 		float orange = smoothstep(0.04, 0.22, original.r - original.b);
 		float phase = float(i) * 1.731;
-		float f = flicker(t, phase);
-		offset.x += core * orange * (sin(t * 8.0 + q.y * 2.6 + phase) * 2.8) * torch_strength[i].x;
-		offset.y += core * orange * f * 2.0 * torch_strength[i].x;
+		float f = flicker(t * fire_flicker_speed, phase);
+		offset.x += core * orange * (sin(t * 8.0 + q.y * 2.6 + phase) * 2.8) * torch_strength[i].x * fire_warp_strength;
+		offset.y += core * orange * f * 2.0 * torch_strength[i].x * fire_warp_strength;
 		vec2 halo = (p - center) / vec2(94.0, 117.0);
-		fire_glow += exp(-dot(halo, halo) * 1.8) * f * torch_strength[i].y;
+		fire_glow += exp(-dot(halo, halo) * 1.8) * (f + torch_strength[i].z) * torch_strength[i].y;
 		flame += core * orange * f * torch_strength[i].x;
 	}
 	vec3 painted = texture(TEXTURE, clamp(UV + offset * strength / source_size, vec2(0.0), vec2(1.0))).rgb;

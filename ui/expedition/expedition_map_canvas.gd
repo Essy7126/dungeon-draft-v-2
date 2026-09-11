@@ -38,6 +38,8 @@ var _depth_y: Dictionary = {}
 var _selected_id: String = ""
 var _layout_queued: bool = false
 var _overview_height := 0.0
+var subtitle_text := "Les routes se dessinent. Leurs secrets restent à découvrir."
+var footer_text := "Choisir un nœud ouvre sa fiche. Le départ se confirme ensuite."
 
 
 func _init() -> void:
@@ -347,7 +349,7 @@ func _draw() -> void:
 	_draw_motifs()
 	var font: Font = ThemeDB.fallback_font
 	draw_string(font, Vector2(LEFT, 29), "LE CHEMIN DES OMBRES", HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 20, INK)
-	draw_string(font, Vector2(LEFT, 50), "Les routes se dessinent. Leurs secrets restent à découvrir.", HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 12, MUTED)
+	draw_string(font, Vector2(LEFT, 50), subtitle_text, HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 12, MUTED)
 	if _overview_height <= 0.0:
 		_draw_legend(font)
 	for node in _preview_nodes:
@@ -398,7 +400,7 @@ func _draw() -> void:
 		draw_string(font, Vector2(9, y), ROMANS[int(depth) - 1], HORIZONTAL_ALIGNMENT_LEFT, 35, 12, GOLD.darkened(0.25))
 		draw_line(Vector2(39, y - 4), Vector2(46, y - 4), MUTED, 1.0)
 	draw_string(font, Vector2(LEFT, custom_minimum_size.y - 14),
-		"Choisir un nœud ouvre sa fiche. Le départ se confirme ensuite.", HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 11, MUTED)
+		footer_text, HORIZONTAL_ALIGNMENT_CENTER, size.x - LEFT - RIGHT, 11, MUTED)
 
 
 func _draw_legend(font: Font) -> void:

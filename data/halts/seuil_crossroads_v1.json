@@ -1,0 +1,463 @@
+{
+  "schema_version": 1,
+  "id": "seuil_crossroads_v1",
+  "title": "Le Seuil de Catabase",
+  "kind": "hub",
+  "stage": "playable_study",
+  "style": "res://data/halts/styles/roots_bronze_v1.json",
+  "source": {
+    "image": "res://assets/catabase/combat/seuil_three_paths_v1/land.png",
+    "size": [
+      1586,
+      992
+    ],
+    "provider": "image_gen",
+    "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+    "prompt": "res://hub/seuil_crossroads/ART_PROMPT.md",
+    "sha256": "98ef5fceda4482a07bf9f90afe0755d3721707abd7eee9b9d1c6d7de8fc30299"
+  },
+  "build_dir": "res://assets/catabase/combat/seuil_three_paths_v1/living",
+  "world": {
+    "width": 2200,
+    "player_scale": 0.52,
+    "player_height_ratio": 0.09,
+    "speed": 240,
+    "foot_clearance": 12,
+    "spawn": [
+      0.5,
+      0.56
+    ]
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.24,
+        0.3
+      ],
+      [
+        0.36,
+        0.24
+      ],
+      [
+        0.54,
+        0.245
+      ],
+      [
+        0.615,
+        0.195
+      ],
+      [
+        0.69,
+        0.24
+      ],
+      [
+        0.77,
+        0.3
+      ],
+      [
+        0.88,
+        0.39
+      ],
+      [
+        0.82,
+        0.52
+      ],
+      [
+        0.745,
+        0.62
+      ],
+      [
+        0.76,
+        0.68
+      ],
+      [
+        0.71,
+        0.715
+      ],
+      [
+        0.65,
+        0.7
+      ],
+      [
+        0.55,
+        0.74
+      ],
+      [
+        0.44,
+        0.79
+      ],
+      [
+        0.3,
+        0.68
+      ],
+      [
+        0.235,
+        0.6
+      ],
+      [
+        0.17,
+        0.54
+      ],
+      [
+        0.225,
+        0.48
+      ],
+      [
+        0.21,
+        0.36
+      ]
+    ],
+    "obstacles": []
+  },
+  "landmarks": [
+    {
+      "id": "boat",
+      "title": "La barque du passeur",
+      "action": "exit",
+      "point": [
+        0.718,
+        0.672
+      ],
+      "focus": [
+        0.769,
+        0.754
+      ],
+      "radius": 0.065,
+      "hit_polygon": [
+        [
+          0.7,
+          0.73
+        ],
+        [
+          0.8,
+          0.69
+        ],
+        [
+          0.84,
+          0.75
+        ],
+        [
+          0.76,
+          0.825
+        ],
+        [
+          0.705,
+          0.81
+        ]
+      ],
+      "description": "Embarquer sur les eaux du Léthé. Ce passage mène aux Traces du Léthé."
+    },
+    {
+      "id": "gate",
+      "title": "La porte ronde",
+      "action": "exit",
+      "point": [
+        0.646,
+        0.238
+      ],
+      "focus": [
+        0.653,
+        0.137
+      ],
+      "radius": 0.055,
+      "hit_polygon": [
+        [
+          0.615,
+          0.07
+        ],
+        [
+          0.7,
+          0.07
+        ],
+        [
+          0.71,
+          0.2
+        ],
+        [
+          0.62,
+          0.22
+        ]
+      ],
+      "description": "Franchir le sceau de bronze. Ce passage mène au Portique des oboles."
+    },
+    {
+      "id": "well",
+      "title": "Le puits des racines",
+      "action": "exit",
+      "point": [
+        0.247,
+        0.485
+      ],
+      "focus": [
+        0.182,
+        0.432
+      ],
+      "radius": 0.057,
+      "hit_polygon": [
+        [
+          0.135,
+          0.345
+        ],
+        [
+          0.225,
+          0.355
+        ],
+        [
+          0.24,
+          0.485
+        ],
+        [
+          0.145,
+          0.5
+        ]
+      ],
+      "description": "Descendre sous la pierre, vers les racines. Ce passage mène à la Sente des oliviers."
+    }
+  ],
+  "water": {
+    "tint": "#31c6b5",
+    "polygons": [
+      [
+        [
+          0,
+          0.34
+        ],
+        [
+          0.115,
+          0.355
+        ],
+        [
+          0.115,
+          0.58
+        ],
+        [
+          0.05,
+          0.58
+        ],
+        [
+          0,
+          0.55
+        ]
+      ],
+      [
+        [
+          0.3,
+          0.89
+        ],
+        [
+          0.54,
+          0.81
+        ],
+        [
+          0.66,
+          0.76
+        ],
+        [
+          0.695,
+          0.82
+        ],
+        [
+          0.81,
+          0.86
+        ],
+        [
+          0.88,
+          0.7
+        ],
+        [
+          0.96,
+          0.52
+        ],
+        [
+          1,
+          0.47
+        ],
+        [
+          1,
+          0.7
+        ],
+        [
+          0.91,
+          0.92
+        ],
+        [
+          0.6,
+          1
+        ],
+        [
+          0.28,
+          1
+        ]
+      ]
+    ],
+    "regions": [],
+    "exclusions": []
+  },
+  "cascades": [],
+  "torches": [
+    {
+      "id": "arch_left",
+      "point": [
+        0.097,
+        0.143
+      ],
+      "radius": [
+        0.008,
+        0.021
+      ],
+      "flame_strength": 0.22,
+      "light_strength": 0.18,
+      "smoke_strength": 0,
+      "ember_count": 0,
+      "ember_strength": 0
+    },
+    {
+      "id": "arch_right",
+      "point": [
+        0.211,
+        0.111
+      ],
+      "radius": [
+        0.008,
+        0.021
+      ],
+      "flame_strength": 0.22,
+      "light_strength": 0.18,
+      "smoke_strength": 0,
+      "ember_count": 0,
+      "ember_strength": 0
+    },
+    {
+      "id": "well_lantern",
+      "point": [
+        0.215,
+        0.4
+      ],
+      "radius": [
+        0.008,
+        0.021
+      ],
+      "flame_strength": 0.5,
+      "light_strength": 1.1,
+      "smoke_strength": 0,
+      "ember_count": 0,
+      "ember_strength": 0,
+      "steady_light": 1.6
+    },
+    {
+      "id": "boat_lantern",
+      "point": [
+        0.824,
+        0.73
+      ],
+      "radius": [
+        0.008,
+        0.021
+      ],
+      "flame_strength": 0.5,
+      "light_strength": 1.1,
+      "smoke_strength": 0,
+      "ember_count": 0,
+      "ember_strength": 0,
+      "steady_light": 1.6
+    }
+  ],
+  "foliage": [],
+  "bounce": [],
+  "mist": [],
+  "foreground": [],
+  "review": {
+    "forbidden_points": [
+      [
+        0.535885,
+        0.636557
+      ],
+      [
+        0.538278,
+        0.505845
+      ],
+      [
+        0.161483,
+        0.581296
+      ],
+      [
+        0.876196,
+        0.626993
+      ],
+      [
+        0.345096,
+        0.197662
+      ]
+    ],
+    "stable_pixel": [
+      0.438995,
+      0.817216
+    ],
+    "water_pixel": [
+      0.610048,
+      0.596174
+    ],
+    "fire_pixel": [
+      0.954545,
+      0.518597
+    ],
+    "waterfall_pixel": [
+      0.351675,
+      0.223167
+    ],
+    "foliage_pixel": [
+      0.3229665071770335,
+      0.2603613177470776
+    ]
+  },
+  "subtitle": "EAU ÉMERAUDE · PIERRE ANCIENNE · FEU VIVANT",
+  "ambience": {
+    "footsteps": "stone",
+    "sources": [
+      {
+        "id": "central_basin",
+        "kind": "water",
+        "point": [
+          0.535,
+          0.6
+        ],
+        "radius": 0.35,
+        "gain_db": -15
+      },
+      {
+        "id": "rear_spring",
+        "kind": "water",
+        "point": [
+          0.351,
+          0.23
+        ],
+        "radius": 0.25,
+        "gain_db": -19
+      },
+      {
+        "id": "west_brazier",
+        "kind": "fire",
+        "point": [
+          0.209,
+          0.32
+        ],
+        "radius": 0.23,
+        "gain_db": -17
+      },
+      {
+        "id": "east_brazier",
+        "kind": "fire",
+        "point": [
+          0.953,
+          0.52
+        ],
+        "radius": 0.23,
+        "gain_db": -17
+      }
+    ]
+  },
+  "audio": {
+    "enabled": false,
+    "sources": []
+  }
+}

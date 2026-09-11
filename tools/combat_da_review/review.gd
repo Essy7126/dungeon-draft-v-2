@@ -90,6 +90,11 @@ func _launch() -> void:
 		+ JSON.stringify({ "ok": saved == OK, "room": _room_path, "capture": destination })
 	)
 	var reports := { }
+	if "--lethe-motion-review" in OS.get_cmdline_user_args():
+		reports["motion"] = await preload("res://tools/lethe_map_review/motion_review.gd").run(
+			battle,
+			destination.get_base_dir(),
+		)
 	if "--motion-review" in OS.get_cmdline_user_args():
 		reports["motion"] = await preload("res://tools/combat_da_review/cavern_motion_review.gd").run(
 			battle,
@@ -123,6 +128,12 @@ func _launch() -> void:
 	}
 	for key in ["registered_terrain_initialization", "greek_combat_ground_band"]:
 		var value: Dictionary = battle.get_meta(key, { })
+		if key == "greek_combat_ground_band" and value.is_empty():
+			var terrain := battle.get_node_or_null("GreekTerrainComposition")
+			var plan: Dictionary = terrain.get("plan") if terrain != null else { }
+			var band: Dictionary = plan.get("combat_ground_band", { })
+			if band.get("enabled", true) == false and not battle.get("combat_band_active"):
+				value = { "ok": true, "skipped": true, "reason": "explicitly disabled in plan" }
 		reports[key] = value
 		valid = valid and bool(value.get("ok", false))
 	if "--production-qa" in OS.get_cmdline_user_args():
@@ -133,6 +144,21 @@ func _launch() -> void:
 		)
 		reports["production_qa"] = qa
 		valid = valid and qa.get("ok", false)
+		for argument in OS.get_cmdline_user_args():
+			if argument.begins_with("--compare-report="):
+				var previous: Variant = JSON.parse_string(
+					FileAccess.get_file_as_string(argument.trim_prefix("--compare-report="))
+				)
+				var comparison := { "ok": false, "errors": ["previous_report_invalid"] }
+				if previous is Dictionary and previous.get("production_qa", { }).get("ok", false):
+					comparison = preload(
+						"res://tools/registered_terrain_validation/framing_proportion_checks.gd"
+					).compare_cross_resolution(
+						qa.framing_after,
+						previous.production_qa.framing_after,
+					)
+				reports["cross_resolution"] = comparison
+				valid = valid and comparison.ok
 	reports["gameplay_fingerprint"] = ArenaSnapshotService.gameplay_fingerprint(source)
 	reports["room"] = _room_path
 	reports["capture"] = destination

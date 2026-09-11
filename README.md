@@ -48,6 +48,25 @@ La [référence V3](docs/design/achilles/catabase_run_recomposable_v3.md), les
 la [pipeline des maps](docs/maps/catabase_expansion_v1.md) et les
 [commandes de validation](tests/expedition/README.md) décrivent le contenu et ses limites.
 
+L’[audit du parcours v4](docs/maps/catabase_route_audit_2026-09-11.md) relie les vingt
+étapes, les embranchements, les quinze maps et les décors des haltes. Il distingue
+les affectations actuelles des points de cohérence à arbitrer avant de construire
+de nouveaux lieux ; c’est un instantané de conception daté.
+
+L’[Explorateur de run](tools/run_explorer/README.md) affiche le parcours complet,
+le décor de chaque destination et sa rencontre. Ouvrir
+`tools/run_explorer/RunExplorer.tscn` avec **F6**, ou lancer
+`./tools/run_explorer/explorer.ps1`. Les boutons permettent de jouer une destination
+dans une session de laboratoire isolée ou d'examiner le rendu sans combat.
+Les [dispositions par destination](docs/maps/catabase_route_layouts_2026-09-11.md)
+différencient désormais 36 arènes de branches ; le bouton **Décor / dalles**
+permet de comparer leurs sols tout en conservant les peintures actuelles.
+
+Au [Seuil de Catabase](hub/seuil_crossroads/README.md), la première victoire
+laisse place à l'exploration du décor : la barque, la porte ronde et le puits
+mènent aux trois branches de l'étape II. Le bouton **Après le combat** de
+l'explorateur permet d'essayer directement ces interactions.
+
 L'[habillage peint Meshy](docs/design/achilles/catabase_meshy_ui_v1.md) complète les
 sorts, équipements, marqueurs et menus. L'inventaire conserve ses actions visibles,
 les kits de quatre à six sorts tiennent dans le HUD, et les retours visuels au clic

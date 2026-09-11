@@ -1,0 +1,235 @@
+{
+	"canvas_size": [
+		1920.0,
+		1200.0
+	],
+	"combat_ground_band": {
+		"description": "Visible stone floor with a narrow compacted-earth transition, generated around the canonical cell boundary.",
+		"enabled": true,
+		"minimum_shore_clearance_native_px": 20.0,
+		"shader_parameters": {
+			"band_earth": "#423e32",
+			"band_light": "#555143",
+			"band_shadow": "#302f29"
+		},
+		"shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+		"tint": "#ffffffff",
+		"width_cells": 0.42
+	},
+	"excluded_floor_polygons": [],
+	"floor_palette": {
+		"bevel_flatten_strength": 0.72,
+		"body": "#555746",
+		"light": "#777661",
+		"painted_steps": 0.4,
+		"shade": "#30362f",
+		"warmth": [
+			-0.06,
+			-0.02,
+			0.02,
+			0.055
+		]
+	},
+	"geometry_manifest_path": "geometry_manifest.json",
+	"ground_details": {
+		"enabled": false
+	},
+	"land": {
+		"color": "#38332b",
+		"shader_path": "res://assets/catabase/combat/cavern_v1/cavern_torches.gdshader",
+		"texture_path": "res://assets/catabase/combat/cavern_ford_v1/land.png",
+		"texture_repeat": false,
+		"texture_scale": [
+			1.0,
+			1.0
+		]
+	},
+	"land_polygon": [
+		[
+			0.0,
+			0.0
+		],
+		[
+			1920.0,
+			0.0
+		],
+		[
+			1920.0,
+			480.0
+		],
+		[
+			1800.0,
+			510.0
+		],
+		[
+			1680.0,
+			630.0
+		],
+		[
+			1540.0,
+			700.0
+		],
+		[
+			1460.0,
+			850.0
+		],
+		[
+			1330.0,
+			975.0
+		],
+		[
+			1090.0,
+			1030.0
+		],
+		[
+			960.0,
+			1050.0
+		],
+		[
+			820.0,
+			1025.0
+		],
+		[
+			620.0,
+			980.0
+		],
+		[
+			490.0,
+			900.0
+		],
+		[
+			420.0,
+			750.0
+		],
+		[
+			290.0,
+			630.0
+		],
+		[
+			160.0,
+			570.0
+		],
+		[
+			0.0,
+			540.0
+		]
+	],
+	"metadata": {
+		"current_art_direction": {
+			"continuity": "res://assets/catabase/combat/cavern_v1/land_v4.png",
+			"reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+			"scene": "Gue souterrain"
+		},
+		"peripheral_bench_count": 0.0,
+		"source_geometry": "res://data/arenas/lethe_crossing_v1/geometry_manifest.json",
+		"tactical_intent": "Passage longitudinal avec contournement."
+	},
+	"minimum_floor_margin_px": 32.0,
+	"pit_palette": {
+		"back_wall": "#46504a",
+		"floor": "#10191b",
+		"left_wall": "#293933"
+	},
+	"props_palette": {
+		"bench": "#70634e",
+		"highlight": "#968566",
+		"ink": "#24251f",
+		"left": "#544c40",
+		"right": "#36372e",
+		"top": "#7c705b"
+	},
+	"shorelines": [
+		{
+			"color": "#ffffff00",
+			"id": "river_bank",
+			"points": [
+				[
+					1920.0,
+					480.0
+				],
+				[
+					1800.0,
+					510.0
+				],
+				[
+					1680.0,
+					630.0
+				],
+				[
+					1540.0,
+					700.0
+				],
+				[
+					1460.0,
+					850.0
+				],
+				[
+					1330.0,
+					975.0
+				],
+				[
+					1090.0,
+					1030.0
+				],
+				[
+					960.0,
+					1050.0
+				],
+				[
+					820.0,
+					1025.0
+				],
+				[
+					620.0,
+					980.0
+				],
+				[
+					490.0,
+					900.0
+				],
+				[
+					420.0,
+					750.0
+				],
+				[
+					290.0,
+					630.0
+				],
+				[
+					160.0,
+					570.0
+				],
+				[
+					0.0,
+					540.0
+				]
+			],
+			"width": 8.0
+		}
+	],
+	"soil_patches": [],
+	"version": 1.0,
+	"water": {
+		"color": "#0a4845",
+		"shader_path": "res://assets/catabase/combat/cavern_v1/cavern_water.gdshader",
+		"texture_path": "res://assets/catabase/combat/cavern_ford_v1/land.png",
+		"texture_repeat": false,
+		"texture_scale": [
+			1.0,
+			1.0
+		],
+		"tint": "#ffffffff"
+	},
+	"world_decor": [
+		{
+			"anchor": [
+				0.0,
+				0.0
+			],
+			"id": "cavern_peripheral_mist",
+			"layer": "foreground",
+			"scale": 1.0,
+			"scene_path": "res://assets/catabase/combat/cavern_ford_v1/Atmosphere.tscn"
+		}
+	]
+}

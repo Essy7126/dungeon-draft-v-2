@@ -1,0 +1,85 @@
+{
+	"allowed_floor_polygon": [
+		[
+			0.0,
+			0.0
+		],
+		[
+			1920.0,
+			0.0
+		],
+		[
+			1920.0,
+			1200.0
+		],
+		[
+			0.0,
+			1200.0
+		]
+	],
+	"canvas_size": [
+		1920.0,
+		1200.0
+	],
+	"combat_ground_band": {
+		"enabled": false
+	},
+	"floor_palette": {
+		"bevel_flatten_strength": 0.82,
+		"body": "#95745b",
+		"light": "#c8a47a",
+		"painted_steps": 0.25,
+		"shade": "#594039"
+	},
+	"geometry_manifest_path": "geometry_manifest.json",
+	"ground_details": {
+		"enabled": false
+	},
+	"land": {
+		"color": "#2f2222"
+	},
+	"land_polygon": [
+		[
+			0.0,
+			0.0
+		],
+		[
+			1920.0,
+			0.0
+		],
+		[
+			1920.0,
+			1200.0
+		],
+		[
+			0.0,
+			1200.0
+		]
+	],
+	"metadata": {
+		"art_method": "Existing Catabase terrain renderer, original authored topology and palette; dedicated environmental paintings remain future art work.",
+		"biome": "ember",
+		"tactical_intent": "Passage transversal avec contournement."
+	},
+	"minimum_floor_margin_px": 30.0,
+	"pit_palette": {
+		"back_wall": "#594039",
+		"depth_native_px": 13.0,
+		"floor": "#2f2222",
+		"left_wall": "#594039"
+	},
+	"props_palette": {
+		"highlight": "#c8a47a",
+		"ink": "#2f2222",
+		"left": "#95745b",
+		"right": "#594039",
+		"top": "#c8a47a"
+	},
+	"shorelines": [],
+	"soil_patches": [],
+	"version": 1.0,
+	"water": {
+		"color": "#2f2222"
+	},
+	"world_decor": []
+}

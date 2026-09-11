@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://assets/catabase/combat/lethe_traces_v1/living.gd" id="1"]
+[node name="LetheLiving" type="Node2D"]
+script = ExtResource("1")
