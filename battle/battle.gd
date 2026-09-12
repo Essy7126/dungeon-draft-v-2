@@ -97,6 +97,7 @@ const COMBAT_HIGHLIGHT_MARKER := preload(
 var grid: GridData
 var pathfinder: Pathfinder
 var spell_caster: SpellCaster
+var _challenge_battle: Node
 var terrain_effects: TerrainEffects
 var _mastery_adapter: MasteryCombatAdapter
 var _mastery_panel
@@ -1072,6 +1073,11 @@ func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
+	if GameManager.expedition != null and GameManager.expedition.challenges.enabled:
+		_challenge_battle = preload("res://battle/catabase_challenge_battle.gd").new()
+		add_child(_challenge_battle)
+		await _challenge_battle.prepare(self)
+		if _closing: return
 	_enqueue_existing_pending_evolutions()
 	GameManager.apply_pending_next_combat_rewards()
 	GameManager.begin_combat_report()
@@ -1347,6 +1353,8 @@ func _on_turn_started(unit: Unit) -> void:
 		return
 
 	# 6. Déroulement normal.
+	if is_instance_valid(_challenge_battle):
+		_challenge_battle.start_turn(unit)
 	_update_active_highlight(unit)
 	_hud_port.update_info(unit)
 	_hud_port.build_actions(unit)

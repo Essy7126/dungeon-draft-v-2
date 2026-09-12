@@ -1,85 +1,233 @@
 {
-	"allowed_floor_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			1200.0
-		],
-		[
-			0.0,
-			1200.0
-		]
-	],
-	"canvas_size": [
-		1920.0,
-		1200.0
-	],
-	"combat_ground_band": {
-		"enabled": false
-	},
-	"floor_palette": {
-		"bevel_flatten_strength": 0.82,
-		"body": "#aca67c",
-		"light": "#d8c9a1",
-		"painted_steps": 0.25,
-		"shade": "#5c6559"
-	},
-	"geometry_manifest_path": "geometry_manifest.json",
-	"ground_details": {
-		"enabled": false
-	},
-	"land": {
-		"color": "#252f2e"
-	},
-	"land_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			1200.0
-		],
-		[
-			0.0,
-			1200.0
-		]
-	],
-	"metadata": {
-		"art_method": "Existing Catabase terrain renderer, original authored topology and palette; dedicated environmental paintings remain future art work.",
-		"biome": "limestone",
-		"tactical_intent": "Passage transversal avec contournement."
-	},
-	"minimum_floor_margin_px": 30.0,
-	"pit_palette": {
-		"back_wall": "#5c6559",
-		"depth_native_px": 13.0,
-		"floor": "#252f2e",
-		"left_wall": "#5c6559"
-	},
-	"props_palette": {
-		"highlight": "#d8c9a1",
-		"ink": "#252f2e",
-		"left": "#aca67c",
-		"right": "#5c6559",
-		"top": "#d8c9a1"
-	},
-	"shorelines": [],
-	"soil_patches": [],
-	"version": 1.0,
-	"water": {
-		"color": "#252f2e"
-	},
-	"world_decor": []
+  "allowed_floor_polygon": [
+    [
+      384.00001525878895,
+      495.3999900817864
+    ],
+    [
+      435.60001373291004,
+      469.5999908447259
+    ],
+    [
+      951.5999984741211,
+      211.59999847412092
+    ],
+    [
+      1071.599998474121,
+      211.59999847412092
+    ],
+    [
+      1174.7999954223633,
+      211.59999847412098
+    ],
+    [
+      1484.3999862670898,
+      366.3999938964839
+    ],
+    [
+      1639.1999816894531,
+      443.79999160766545
+    ],
+    [
+      1690.7999801635742,
+      469.599990844726
+    ],
+    [
+      1690.7999801635742,
+      589.599990844726
+    ],
+    [
+      1587.599983215332,
+      641.1999893188471
+    ],
+    [
+      1123.1999969482422,
+      873.3999824523916
+    ],
+    [
+      1071.599998474121,
+      899.199981689452
+    ],
+    [
+      848.4000015258788,
+      899.199981689452
+    ],
+    [
+      796.8000030517577,
+      873.3999824523916
+    ],
+    [
+      487.20001220703114,
+      718.5999870300286
+    ],
+    [
+      384.00001525878895,
+      666.9999885559075
+    ]
+  ],
+  "canvas_size": [
+    1920.0,
+    1200.0
+  ],
+  "combat_ground_band": {
+    "enabled": false
+  },
+  "floor_palette": {
+    "bevel_flatten_strength": 0.82,
+    "body": "#71787a",
+    "light": "#a6aca7",
+    "painted_steps": 0.25,
+    "shade": "#3b4852"
+  },
+  "geometry_manifest_path": "geometry_manifest.json",
+  "ground_details": {
+    "enabled": false
+  },
+  "land": {
+    "color": "#ffffff",
+    "texture_path": "res://assets/catabase/combat/puits_descent_v1/land.png",
+    "texture_scale": [
+      1.210592686002522,
+      1.2096774193548387
+    ],
+    "texture_repeat": false,
+    "shader_path": "res://assets/catabase/combat/puits_descent_v1/living.gdshader"
+  },
+  "land_polygon": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      1920.0,
+      0.0
+    ],
+    [
+      1920.0,
+      1200.0
+    ],
+    [
+      0.0,
+      1200.0
+    ]
+  ],
+  "metadata": {
+    "art_method": "Built-in image_gen, canonical floor guide, painted basalt/lava/bones; engine geometry preserved",
+    "biome": "basalt",
+    "tactical_intent": "Passage transversal avec contournement.",
+    "route_stage": "expedition II — passage du puits",
+    "current_art_direction": {
+      "scene": "Le pied du puits",
+      "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png"
+    }
+  },
+  "minimum_floor_margin_px": 30.0,
+  "pit_palette": {
+    "back_wall": "#3a454d",
+    "depth_native_px": 13.0,
+    "floor": "#00000000",
+    "left_wall": "#2c3742"
+  },
+  "props_palette": {
+    "highlight": "#bd9a5d",
+    "ink": "#202e37",
+    "left": "#5b6b73",
+    "right": "#374953",
+    "top": "#899391",
+    "bench": "#725b42"
+  },
+  "shorelines": [
+    {
+      "id": "painted_basalt_ledge",
+      "points": [
+        [
+          423.7074401008827,
+          489.9193548387097
+        ],
+        [
+          520.5548549810844,
+          367.741935483871
+        ],
+        [
+          835.3089533417402,
+          205.6451612903226
+        ],
+        [
+          1101.639344262295,
+          163.30645161290323
+        ],
+        [
+          1343.7578814627993,
+          296.3709677419355
+        ],
+        [
+          1634.3001261034046,
+          402.8225806451613
+        ],
+        [
+          1767.4653215636822,
+          504.43548387096774
+        ],
+        [
+          1694.8297604035308,
+          597.5806451612904
+        ],
+        [
+          1489.029003783102,
+          731.8548387096774
+        ],
+        [
+          1283.2282471626734,
+          822.5806451612904
+        ],
+        [
+          1137.9571248423706,
+          889.1129032258065
+        ],
+        [
+          920.0504413619167,
+          967.741935483871
+        ],
+        [
+          786.8852459016393,
+          937.5
+        ],
+        [
+          496.34300126103403,
+          828.6290322580645
+        ],
+        [
+          405.54854981084486,
+          677.4193548387098
+        ],
+        [
+          399.49558638083226,
+          568.5483870967743
+        ],
+        [
+          423.7074401008827,
+          489.9193548387097
+        ]
+      ],
+      "width": 1.0,
+      "color": "#ffffff00"
+    }
+  ],
+  "soil_patches": [],
+  "version": 1.0,
+  "water": {
+    "color": "#252936"
+  },
+  "world_decor": [
+    {
+      "id": "puits_descent_living",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground",
+      "scene_path": "res://assets/catabase/combat/puits_descent_v1/Living.tscn"
+    }
+  ],
+  "minimum_floor_shore_clearance_native_px": 20
 }

@@ -1,0 +1,65 @@
+[
+  {
+    "asset": "pose_1",
+    "source_mode": "RGB",
+    "native_size": [
+      564,
+      1024
+    ],
+    "bbox": [
+      26,
+      113,
+      557,
+      977
+    ],
+    "cutout_size": [
+      531,
+      864
+    ],
+    "method": "rembg birefnet-general-lite, CPU, decontaminate; detached background removed",
+    "raw_sha256": "ffcfec75361dda8bf669da83ffb92845fcaebe4e9a874176ec26d6821289bf06",
+    "alpha_sha256": "bd7d81ebea3fa117615868a517150e9d4ae63cd41e27b2565d0ffc950660fa96"
+  },
+  {
+    "asset": "pose_2",
+    "source_mode": "RGB",
+    "native_size": [
+      414,
+      1024
+    ],
+    "bbox": [
+      28,
+      22,
+      391,
+      984
+    ],
+    "cutout_size": [
+      363,
+      962
+    ],
+    "method": "rembg birefnet-general-lite, CPU, decontaminate; detached background removed",
+    "raw_sha256": "7bb3e2b291c45acdec1200a2ed9ca367fd62438b035b4785ab329a0d024cd4d5",
+    "alpha_sha256": "9cd036560b544f6a0068531d8cdd526ce5299b030320c61758021d2aaefc9df0"
+  },
+  {
+    "asset": "pose_3",
+    "source_mode": "RGB",
+    "native_size": [
+      558,
+      1024
+    ],
+    "bbox": [
+      24,
+      124,
+      542,
+      953
+    ],
+    "cutout_size": [
+      518,
+      829
+    ],
+    "method": "rembg birefnet-general-lite, CPU, decontaminate; detached background removed",
+    "raw_sha256": "58b157f732511b032f590be424624fa8e076a19bc7c7a8a859ec577ff01452d1",
+    "alpha_sha256": "1aa4b40ba9544267d9d07808c263355fa23585b71a958f2ff18e0b10b22dc096"
+  }
+]

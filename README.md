@@ -9,6 +9,11 @@ GDScript et des ressources data-driven.
 
 La priorité actuelle de travail est **Catabase d’Achille**. La [base de reprise du 5 septembre 2026](docs/ai/REPRISE_PROJET_2026-09-05.md) rassemble la direction artistique, les enseignements Dofus, les évolutions présentes dans le code et le prochain axe VFX. La présentation du trio ci-dessous décrit uniquement l’archive historique.
 
+Le titre propose huit musiques locales, avec **Passage of Time** au premier lancement.
+Le panneau **Musique** en bas à droite permet de choisir le morceau et son volume ;
+ces préférences sont conservées entre les lancements. Les crédits sont accessibles
+dans le jeu et dans [les attributions musicales](assets/audio/title/CREDITS.md).
+
 La [Cour des Sources](docs/maps/greek_drawn_courtyard_v1.md) est une nouvelle map grecque dessinée, construite à partir de l’observation directe de Dofus et jouable avec les dalles et le combat communs. Ouvrir `tools/labs/greek_drawn_arena/GreekDrawnCourtyard.tscn` puis **F6** dans Godot.
 
 
@@ -36,8 +41,21 @@ Le parcours public suit **Nouvelle partie → sélection d’Achille → cinéma
 entrée jouable, on peut marcher entre les trois statues et lire leurs souvenirs ;
 franchir la porte commence l’aventure. La reprise rejoint directement la sauvegarde existante.
 
-Le premier combat propose quatre sorts fixes, puis le kit se construit en cours
-de run. Le parcours à embranchements comprend environ quinze combats et cinq haltes.
+Le prototype de deck a été retiré : Achille utilise ses sorts habituels, leur
+progression et son équipement. Les **défis facultatifs** avant les combats restent
+présents et modifient le combat suivant. Les sauvegardes de l'essai reprennent
+automatiquement avec le système de sorts. Le parcours à embranchements comprend
+environ quinze combats et cinq haltes. Voir les [défis conservés et la direction retenue](docs/design/catabase_challenges_without_deck_2026-09-12.md).
+
+Les combats peints intègrent les effets doux des quatre techniques de départ,
+les pas, impacts ennemis, soins, boucliers et esquives, avec une harpe discrète.
+Le sac, le grimoire, les récompenses et les interactions des haltes disposent
+aussi de retours sonores courts aux aigus adoucis.
+Musique : **Soft Mysterious Harp Loop**, **VWolfdog (Jordy Hake)**,
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/),
+[source](https://opengameart.org/content/soft-mysterious-harp-loop) ; vitesse/hauteur,
+aigus et niveau adaptés. [Crédits audio et licences](assets/audio/catabase/CREDITS.md).
+
 Dix nouvelles arènes complètent les cinq historiques ; les haltes proposent des
 zones de commerce, de récupération, de lore et de découverte de branches.
 

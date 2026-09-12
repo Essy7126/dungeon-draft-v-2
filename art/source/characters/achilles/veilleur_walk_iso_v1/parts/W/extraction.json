@@ -1,0 +1,92 @@
+{
+  "core": {
+    "box": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      169,
+      28,
+      383,
+      471
+    ],
+    "sha256": "fbc275386235cb0fda91a96b3245f77e5b41056df6a492b9426ae83cf536368b"
+  },
+  "near_arm": {
+    "box": [
+      512,
+      0,
+      1024,
+      512
+    ],
+    "alpha_bbox": [
+      191,
+      60,
+      309,
+      484
+    ],
+    "sha256": "e881eeb4e257ec87bc07d583952c3388e8be62a09f0179edda404ae17df1f3ca"
+  },
+  "far_arm": {
+    "box": [
+      1024,
+      0,
+      1536,
+      512
+    ],
+    "alpha_bbox": [
+      147,
+      57,
+      314,
+      437
+    ],
+    "sha256": "2dd9c1e6ea4d1a521d262787fb5c85d2ddeec6aff09884ae423c7e6a12abf925"
+  },
+  "near_leg": {
+    "box": [
+      0,
+      512,
+      512,
+      1024
+    ],
+    "alpha_bbox": [
+      171,
+      18,
+      378,
+      444
+    ],
+    "sha256": "8f3cfdc5f3d39c00bbde9135ff141f726f0b88782bf36ceacdc705b022af88c0"
+  },
+  "far_leg": {
+    "box": [
+      512,
+      512,
+      1024,
+      1024
+    ],
+    "alpha_bbox": [
+      169,
+      31,
+      366,
+      437
+    ],
+    "sha256": "ebd5acb756c78c45d3e454f0a9581d67d4eb9697e5ef97ab5bebacad9725ee72"
+  },
+  "reference": {
+    "box": [
+      1024,
+      512,
+      1536,
+      1024
+    ],
+    "alpha_bbox": [
+      138,
+      2,
+      352,
+      482
+    ],
+    "sha256": "8ccc0761f0300eec520c8ff15ac51909c6b9bdee8a057c4a16a48108ad73abff"
+  }
+}

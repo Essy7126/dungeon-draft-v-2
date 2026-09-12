@@ -1,0 +1,42 @@
+{
+  "scope": "design artifacts only; no Godot runtime validation",
+  "checks_passed": 32,
+  "checks": [
+    "Source graph unchanged since model execution",
+    "Independent DP agrees on 280 non-secret paths",
+    "Origin partition 160/80/40",
+    "14 to 16 combats in mixed uncertainty configuration",
+    "Syntactic loadouts counted exactly",
+    "Single desired item probability agrees with (7/8)^5",
+    "combat_sensitivity.csv: 2592 data rows",
+    "combat_summary.csv: 24 data rows",
+    "guard_experiment.csv: 648 data rows",
+    "run_budget.csv: 27 data rows",
+    "Hand-audited three-turn encounter",
+    "Hand-audited healing clamp",
+    "Budget fails strictly at zero HP",
+    "Finite onguents can rescue that budget",
+    "No combat rotation exceeds six AP",
+    "24 root technique rows",
+    "16 permanent relic rows",
+    "24 build recipes",
+    "Local link resolves: README.md -> CATALOGUE.md",
+    "Local link resolves: README.md -> model.py",
+    "Local link resolves: README.md -> results.json",
+    "Local link resolves: README.md -> combat_sensitivity.csv",
+    "Local link resolves: README.md -> combat_summary.csv",
+    "Local link resolves: README.md -> guard_experiment.csv",
+    "Local link resolves: README.md -> run_budget.csv",
+    "Local link resolves: README.md -> ../../../data/units/allies/achilles.tres",
+    "Local link resolves: README.md -> ../../../core/expedition/expedition_build_state.gd",
+    "Local link resolves: README.md -> ../../../core/expedition/expedition_build_catalog.gd",
+    "Local link resolves: README.md -> ../../../core/expedition/expedition_equipment_catalog.gd",
+    "Local link resolves: README.md -> ../../../core/damage_resolver.gd",
+    "Local link resolves: README.md -> ../../../core/expedition/catabase_early_encounters.gd",
+    "Local link resolves: CATALOGUE.md -> README.md"
+  ],
+  "words": {
+    "README.md": 6477,
+    "CATALOGUE.md": 8100
+  }
+}

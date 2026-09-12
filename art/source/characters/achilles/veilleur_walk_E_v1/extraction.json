@@ -1,0 +1,114 @@
+[
+  {
+    "name": "arm_R",
+    "size": [
+      159,
+      288
+    ]
+  },
+  {
+    "name": "arm_L",
+    "size": [
+      159,
+      287
+    ]
+  },
+  {
+    "name": "hand_R",
+    "size": [
+      120,
+      295
+    ]
+  },
+  {
+    "name": "hand_L",
+    "size": [
+      122,
+      292
+    ]
+  },
+  {
+    "name": "thigh_R",
+    "size": [
+      172,
+      292
+    ]
+  },
+  {
+    "name": "thigh_L",
+    "size": [
+      160,
+      289
+    ]
+  },
+  {
+    "name": "shin_R",
+    "size": [
+      146,
+      289
+    ]
+  },
+  {
+    "name": "shin_L",
+    "size": [
+      147,
+      289
+    ]
+  },
+  {
+    "name": "flat_R",
+    "size": [
+      208,
+      233
+    ]
+  },
+  {
+    "name": "flat_L",
+    "size": [
+      220,
+      231
+    ]
+  },
+  {
+    "name": "toe_R",
+    "size": [
+      215,
+      241
+    ]
+  },
+  {
+    "name": "toe_L",
+    "size": [
+      214,
+      245
+    ]
+  },
+  {
+    "name": "swing_R",
+    "size": [
+      200,
+      233
+    ]
+  },
+  {
+    "name": "swing_L",
+    "size": [
+      197,
+      234
+    ]
+  },
+  {
+    "name": "heel_R",
+    "size": [
+      227,
+      204
+    ]
+  },
+  {
+    "name": "heel_L",
+    "size": [
+      225,
+      199
+    ]
+  }
+]

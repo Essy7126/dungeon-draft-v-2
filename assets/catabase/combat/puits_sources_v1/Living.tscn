@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://assets/catabase/combat/puits_sources_v1/living.gd" id="1"]
+[node name="PuitsSourcesLiving" type="Node2D"]
+script = ExtResource("1")
+
+

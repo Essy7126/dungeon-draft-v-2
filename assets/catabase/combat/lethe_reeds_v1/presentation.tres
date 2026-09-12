@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BattlePresentationProfile" format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/battle_presentation_profile.gd" id="1_khokd"]
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="2_1lsoh"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_achilles.tres" id="3_kl6cd"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_standard.tres" id="4_vapoy"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_elite.tres" id="5_p04w1"]
+
+[resource]
+script = ExtResource("1_khokd")
+profile_id = &"lethe_reeds_v1"
+camera_offset_adjustment = Vector2(-120, 50)
+camera_keep_painting_in_view = true
+global_unit_scale_multiplier = 1.08
+unit_profiles = Array[ExtResource("2_1lsoh")]([ExtResource("3_kl6cd"), ExtResource("4_vapoy"), ExtResource("5_p04w1")])
+ally_outline_color = Color(0.63, 0.9, 1, 0.34)
+enemy_outline_color = Color(1, 0.77, 0.39, 0.38)

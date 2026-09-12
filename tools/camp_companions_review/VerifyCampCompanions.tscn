@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/camp_companions_review/verify_production.gd" id="1"]
+
+[node name="CampCompanionsProductionProbe" type="Node"]
+script = ExtResource("1")
+

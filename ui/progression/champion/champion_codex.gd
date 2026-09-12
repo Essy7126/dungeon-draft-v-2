@@ -60,6 +60,7 @@ func _ready() -> void:
 	refresh()
 	resized.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
+	AudioManager.play_feedback(&"open")
 
 
 func configure(state: CharacterRunState, p_read_only: bool = false) -> void:
@@ -121,6 +122,8 @@ func get_close_button() -> Button:
 
 
 func select_section(section_id: StringName) -> void:
+	if section_id != _section_id:
+		AudioManager.play_feedback(&"select")
 	if character_state != null and section_id not in [&"advanced", &"attributes"]:
 		var catalog := character_state.progression_profile.mastery_catalog
 		if SkillTreeResolver.champion_doctrine_by_id(catalog.doctrines, section_id) == null:
@@ -139,6 +142,8 @@ func select_section(section_id: StringName) -> void:
 
 
 func inspect_node(node_id: StringName) -> void:
+	if node_id != _selected_node_id:
+		AudioManager.play_feedback(&"select")
 	_selected_node_id = node_id
 	_last_node_by_section[_section_id] = node_id
 	_selected_spell = null
@@ -199,7 +204,9 @@ func _build() -> void:
 	_close_button = _button("Fermer  ×", 14)
 	_close_button.custom_minimum_size = Vector2(110, 42)
 	_close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_close_button.pressed.connect(func() -> void: close_requested.emit())
+	_close_button.pressed.connect(func() -> void:
+		AudioManager.play_feedback(&"close")
+		close_requested.emit())
 	header.add_child(_close_button)
 	_spells = HBoxContainer.new()
 	_spells.add_theme_constant_override("separation", 8)
@@ -706,6 +713,7 @@ func _purchase_selected() -> void:
 	var acquired := character_state.progression_profile.mastery_catalog.node_catalog().get(_selected_node_id) as SkillTreeNodeData
 	var result := character_state.purchase_mastery_node(_selected_node_id)
 	if bool(result.get("purchased", false)):
+		AudioManager.play_feedback(&"reward")
 		build_changed.emit()
 		refresh()
 		_show_feedback("Maîtrise acquise : %s\n−%d PMa · %d PMa restants" % [acquired.display_name, acquired.mastery_cost, character_state.champion_progression.unspent_mastery_points])

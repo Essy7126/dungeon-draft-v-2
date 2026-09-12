@@ -80,12 +80,14 @@ func open_for_character(character_id: StringName, manager = GameManager) -> bool
 	move_to_front()
 	_refresh()
 	_close_button.grab_focus.call_deferred()
+	AudioManager.play_feedback(&"open")
 	return true
 
 
 func close_screen() -> void:
 	if not visible:
 		return
+	AudioManager.play_feedback(&"close")
 	hide()
 	_disconnect_manager()
 	_selected_instance_id = &""
@@ -373,6 +375,7 @@ func _select_inventory_item(instance_id: StringName) -> void:
 	_detail_scroll.scroll_vertical = 0
 	_refresh()
 	if changed and GameManager.expedition != null:
+		AudioManager.play_feedback(&"select")
 		CatabaseUITheme.reveal(_detail_scroll)
 
 
@@ -384,6 +387,7 @@ func _select_equipment_slot(slot: int) -> void:
 	_detail_scroll.scroll_vertical = 0
 	_refresh()
 	if changed and GameManager.expedition != null:
+		AudioManager.play_feedback(&"select")
 		CatabaseUITheme.reveal(_detail_scroll)
 
 
@@ -583,6 +587,7 @@ func _refresh_action_truth(
 
 func _set_feedback_state(success: bool) -> void:
 	_feedback.theme_type_variation = &"PremiumPositive" if success else &"PremiumDanger"
+	AudioManager.play_feedback(&"equip" if success else &"error")
 
 
 func _clear_children(container: Node) -> void:

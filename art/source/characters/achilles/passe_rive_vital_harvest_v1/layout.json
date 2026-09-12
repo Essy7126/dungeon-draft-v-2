@@ -1,0 +1,231 @@
+{
+  "id": "vital_harvest",
+  "name": "Moisson vitale",
+  "subtitle": "S’élever, ouvrir le torse, libérer l’impulsion.",
+  "color": "#e9676a",
+  "durations": [
+    140,
+    180,
+    300,
+    95,
+    260,
+    225
+  ],
+  "phase": [
+    "Se recueillir",
+    "Éveiller les paumes",
+    "S’élever",
+    "Libérer la vie",
+    "Rester suspendu",
+    "Se poser"
+  ],
+  "event_ms": 620,
+  "cooldown_ms": 1750,
+  "damage": 34,
+  "range": 740,
+  "mode": "vital",
+  "hitstop_ms": 45,
+  "scale": 0.94,
+  "source_dir": "art/source/characters/achilles/passe_rive_vital_harvest_v1",
+  "source_file": "vital_rgb.png",
+  "source_size": [
+    1024,
+    1536
+  ],
+  "boxes": [
+    [
+      158,
+      0,
+      421,
+      508
+    ],
+    [
+      622,
+      0,
+      903,
+      508
+    ],
+    [
+      135,
+      509,
+      439,
+      1010
+    ],
+    [
+      624,
+      509,
+      910,
+      1010
+    ],
+    [
+      137,
+      1013,
+      438,
+      1519
+    ],
+    [
+      627,
+      1013,
+      900,
+      1535
+    ]
+  ],
+  "anchors": [
+    [
+      274,
+      490
+    ],
+    [
+      744,
+      490
+    ],
+    [
+      259,
+      994
+    ],
+    [
+      748,
+      994
+    ],
+    [
+      265,
+      1499
+    ],
+    [
+      744,
+      1508
+    ]
+  ],
+  "idle_file": "frames/vital_harvest_05.png",
+  "idle_animation": "vital_harvest_idle",
+  "levitation": [
+    [
+      0,
+      0
+    ],
+    [
+      140,
+      0
+    ],
+    [
+      320,
+      18
+    ],
+    [
+      620,
+      34
+    ],
+    [
+      780,
+      36
+    ],
+    [
+      975,
+      16
+    ],
+    [
+      1200,
+      0
+    ]
+  ],
+  "vfx": {
+    "palms": [
+      [
+        [
+          259,
+          449
+        ],
+        [
+          401,
+          452
+        ]
+      ],
+      [
+        [
+          251,
+          447
+        ],
+        [
+          416,
+          446
+        ]
+      ],
+      [
+        [
+          253,
+          435
+        ],
+        [
+          440,
+          433
+        ]
+      ],
+      [
+        [
+          253,
+          427
+        ],
+        [
+          427,
+          424
+        ]
+      ],
+      [
+        [
+          250,
+          445
+        ],
+        [
+          426,
+          441
+        ]
+      ],
+      [
+        [
+          259,
+          448
+        ],
+        [
+          403,
+          448
+        ]
+      ]
+    ],
+    "chest": [
+      [
+        345,
+        328
+      ],
+      [
+        345,
+        334
+      ],
+      [
+        360,
+        315
+      ],
+      [
+        360,
+        315
+      ],
+      [
+        353,
+        319
+      ],
+      [
+        347,
+        334
+      ]
+    ],
+    "palm_strength": [
+      0,
+      0.25,
+      0.85,
+      1,
+      0.75,
+      0
+    ],
+    "release_frame": 3
+  },
+  "proposal": true
+}

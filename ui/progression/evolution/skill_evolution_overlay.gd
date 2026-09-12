@@ -5,9 +5,6 @@ signal selection_changed(request_id: StringName, upgrade_id: StringName)
 signal confirmation_requested(request_id: StringName, upgrade_id: StringName)
 signal confirmation_finished(request_id: StringName, upgrade_id: StringName)
 
-const REVEAL_SFX := preload(
-	"res://asset/bruitage sort/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3"
-)
 
 @export var reduced_motion := false
 
@@ -77,7 +74,7 @@ func present(
 	call_deferred("_configure_focus")
 	for index in _cards.size():
 		_cards[index].play_entrance(0.0 if reduced_motion else float(index) * 0.09)
-	AudioManager.play_sfx(REVEAL_SFX, -11.0)
+	AudioManager.play_feedback(&"open")
 	return true
 
 
@@ -121,7 +118,7 @@ func select_upgrade_by_id(
 	if focus_card:
 		_cards[selected_index].grab_card_focus()
 	selection_changed.emit(_request.request_id, upgrade_id)
-	AudioManager.play_sfx(REVEAL_SFX, -16.0)
+	AudioManager.play_feedback(&"select")
 	return true
 
 
@@ -143,7 +140,7 @@ func resolve_confirmation(success: bool, error_message: String = "") -> void:
 		confirm_button.text = "ÉVOLUTION ACQUISE"
 		for card in _cards:
 			card.play_confirmation(card.upgrade_id == _selected_upgrade_id)
-		AudioManager.play_sfx(REVEAL_SFX, -7.0)
+		AudioManager.play_feedback(&"reward")
 		_finish_confirmation_after_delay()
 		return
 	_locked = false

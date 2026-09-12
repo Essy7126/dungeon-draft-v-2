@@ -1,0 +1,10 @@
+const fs=require('fs'),path=require('path');const base='art/source/characters/achilles/passe_rive_iso_v1';
+const actions=JSON.parse(fs.readFileSync('tools/passe_rive_spells/layout.json')).actions;
+for(const a of actions.slice(0,6)){
+ const first=fs.readFileSync(path.join(base,a.id+'_directions_prompt.txt'),'utf8');
+ const common=first.split('\nLayout exactly')[0];const detail=first.slice(first.indexOf('Action '+a.name));
+ const s=common+`\nDraw ONLY the FRONT-LEFT view (S), looking and attacking toward SCREEN LEFT, in EVERY pose. FOUR full body sprites, 2 columns by 2 rows, reading order. Use the SECOND character of the turnaround as the viewing angle. The ivory mask nose points LEFT, toes point LEFT. Torso faces three-quarter lower-left toward viewer, never screen right. Anatomical LEFT forearm with shield is near the camera; anatomical RIGHT hand and spear arm are farther away. Draw the proper opposite side of the body, never mirror or switch hands. The action reference image faces the WRONG direction for this task: it supplies mechanics ONLY. Reinterpret every pose facing LEFT.\n`+detail.replaceAll('Row 1','Pose 1').replaceAll('Row 2','Pose 2').replaceAll('Row 3','Pose 3').replaceAll('Row 4','Pose 4');
+ const b=common+`\nDraw EIGHT sprites in exactly TWO COLUMNS by FOUR ROWS. Both columns are BACK views, rear hood and rear cape visible. LEFT COLUMN N faces SCREEN UPPER RIGHT away from viewer (turnaround character 3). RIGHT COLUMN W faces SCREEN UPPER LEFT away from viewer (turnaround character 4). All four phases in the same column keep that viewing direction. There are NO front/chest views in this sheet. Mask barely visible on the appropriate side edge, do not show front chest brooch on the back. Correct spear right hand and shield left forearm. Left column attacks RIGHT, right column attacks LEFT.\n`+detail;
+ fs.writeFileSync(path.join(base,a.id+'_S_prompt.txt'),s);fs.writeFileSync(path.join(base,a.id+'_back_prompt.txt'),b);
+}
+console.log('ANGLE_PROMPTS_READY');

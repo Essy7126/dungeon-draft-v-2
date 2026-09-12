@@ -1,0 +1,523 @@
+[
+  {
+    "source_box": [
+      48,
+      0,
+      207,
+      402
+    ],
+    "bounds": [
+      6,
+      8,
+      154,
+      395
+    ],
+    "head": 74,
+    "torso_x": 77.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/00.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      282,
+      135
+    ],
+    "registered_bounds": [
+      290,
+      143,
+      488,
+      664
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          355.5,
+          602.0
+        ],
+        "area": 183
+      },
+      {
+        "center": [
+          458.0,
+          618.0
+        ],
+        "area": 249
+      }
+    ]
+  },
+  {
+    "source_box": [
+      338,
+      1,
+      509,
+      397
+    ],
+    "bounds": [
+      6,
+      8,
+      165,
+      390
+    ],
+    "head": 74,
+    "torso_x": 79.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/01.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      275,
+      136
+    ],
+    "registered_bounds": [
+      283,
+      144,
+      495,
+      657
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          462.5,
+          610.0
+        ],
+        "area": 222
+      },
+      {
+        "center": [
+          371.5,
+          614.0
+        ],
+        "area": 195
+      }
+    ]
+  },
+  {
+    "source_box": [
+      629,
+      1,
+      806,
+      399
+    ],
+    "bounds": [
+      6,
+      8,
+      171,
+      392
+    ],
+    "head": 73,
+    "torso_x": 80.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/02.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      268,
+      136
+    ],
+    "registered_bounds": [
+      276,
+      144,
+      496,
+      659
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          461.0,
+          598.0
+        ],
+        "area": 209
+      },
+      {
+        "center": [
+          374.0,
+          620.0
+        ],
+        "area": 211
+      }
+    ]
+  },
+  {
+    "source_box": [
+      930,
+      0,
+      1097,
+      410
+    ],
+    "bounds": [
+      5,
+      8,
+      161,
+      404
+    ],
+    "head": 75,
+    "torso_x": 81.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/03.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      276,
+      135
+    ],
+    "registered_bounds": [
+      282,
+      143,
+      492,
+      674
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          445.0,
+          583.0
+        ],
+        "area": 209
+      },
+      {
+        "center": [
+          404.5,
+          630.5
+        ],
+        "area": 245
+      }
+    ]
+  },
+  {
+    "source_box": [
+      41,
+      440,
+      198,
+      853
+    ],
+    "bounds": [
+      6,
+      7,
+      151,
+      406
+    ],
+    "head": 72,
+    "torso_x": 79.5,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/04.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      272,
+      131
+    ],
+    "registered_bounds": [
+      280,
+      137,
+      474,
+      674
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          419.5,
+          572.0
+        ],
+        "area": 253
+      },
+      {
+        "center": [
+          396.0,
+          628.0
+        ],
+        "area": 248
+      }
+    ]
+  },
+  {
+    "source_box": [
+      339,
+      438,
+      502,
+      854
+    ],
+    "bounds": [
+      6,
+      8,
+      158,
+      411
+    ],
+    "head": 73,
+    "torso_x": 81.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/05.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      276,
+      128
+    ],
+    "registered_bounds": [
+      284,
+      136,
+      488,
+      677
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          384.5,
+          559.5
+        ],
+        "area": 230
+      },
+      {
+        "center": [
+          416.0,
+          627.5
+        ],
+        "area": 267
+      }
+    ]
+  },
+  {
+    "source_box": [
+      633,
+      439,
+      803,
+      854
+    ],
+    "bounds": [
+      6,
+      7,
+      164,
+      409
+    ],
+    "head": 75,
+    "torso_x": 83.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/06.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      274,
+      129
+    ],
+    "registered_bounds": [
+      282,
+      135,
+      493,
+      675
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          379.5,
+          571.5
+        ],
+        "area": 113
+      },
+      {
+        "center": [
+          419.0,
+          631.0
+        ],
+        "area": 252
+      }
+    ]
+  },
+  {
+    "source_box": [
+      933,
+      437,
+      1095,
+      853
+    ],
+    "bounds": [
+      6,
+      8,
+      157,
+      410
+    ],
+    "head": 76,
+    "torso_x": 82.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/07.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      280,
+      127
+    ],
+    "registered_bounds": [
+      288,
+      135,
+      490,
+      675
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          394.5,
+          590.0
+        ],
+        "area": 182
+      },
+      {
+        "center": [
+          430.0,
+          626.5
+        ],
+        "area": 248
+      }
+    ]
+  },
+  {
+    "source_box": [
+      44,
+      877,
+      203,
+      1283
+    ],
+    "bounds": [
+      6,
+      8,
+      153,
+      400
+    ],
+    "head": 78,
+    "torso_x": 80.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/08.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      277,
+      122
+    ],
+    "registered_bounds": [
+      285,
+      130,
+      481,
+      656
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          399.0,
+          591.0
+        ],
+        "area": 149
+      },
+      {
+        "center": [
+          427.5,
+          610.5
+        ],
+        "area": 251
+      }
+    ]
+  },
+  {
+    "source_box": [
+      339,
+      879,
+      500,
+      1283
+    ],
+    "bounds": [
+      6,
+      7,
+      156,
+      399
+    ],
+    "head": 75,
+    "torso_x": 81.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/09.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      276,
+      125
+    ],
+    "registered_bounds": [
+      284,
+      133,
+      485,
+      658
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          420.0,
+          600.0
+        ],
+        "area": 246
+      }
+    ]
+  },
+  {
+    "source_box": [
+      631,
+      878,
+      798,
+      1285
+    ],
+    "bounds": [
+      6,
+      8,
+      162,
+      402
+    ],
+    "head": 72,
+    "torso_x": 83.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/10.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      271,
+      123
+    ],
+    "registered_bounds": [
+      279,
+      131,
+      488,
+      660
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          371.0,
+          585.5
+        ],
+        "area": 220
+      },
+      {
+        "center": [
+          440.5,
+          615.5
+        ],
+        "area": 233
+      }
+    ]
+  },
+  {
+    "source_box": [
+      933,
+      878,
+      1106,
+      1289
+    ],
+    "bounds": [
+      5,
+      8,
+      167,
+      403
+    ],
+    "head": 73,
+    "torso_x": 82.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/W_v1_spear_restored/11.png",
+    "scale": 1.3353566009104705,
+    "offset": [
+      280,
+      123
+    ],
+    "registered_bounds": [
+      286,
+      131,
+      503,
+      664
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          362.0,
+          583.5
+        ],
+        "area": 199
+      },
+      {
+        "center": [
+          457.0,
+          621.0
+        ],
+        "area": 248
+      }
+    ]
+  }
+]

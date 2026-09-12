@@ -4,9 +4,6 @@ extends Control
 const CHARACTER_PREVIEW_SCENE := preload(
 	"res://ui/characters/CharacterPreview3D.tscn"
 )
-const PRESENTATION_IMPACT_SFX := preload(
-	"res://asset/bruitage sort/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3"
-)
 
 enum Phase {
 	VICTORY_REVEAL,
@@ -571,7 +568,7 @@ func _start_victory_reveal() -> void:
 	victory_title.modulate.a = 0.0
 	victory_title.scale = Vector2(0.82, 0.82)
 	victory_title.pivot_offset = victory_title.size * 0.5
-	AudioManager.play_sfx(PRESENTATION_IMPACT_SFX, -5.0)
+	AudioManager.play_feedback(&"reward")
 	if _reduced_motion:
 		victory_title.modulate.a = 1.0
 		victory_title.scale = Vector2.ONE
@@ -704,7 +701,7 @@ func _animate_progression(generation: int) -> void:
 				return
 			_update_progress_row_at_xp(row, target_xp)
 			if target_xp != delta.xp_after:
-				AudioManager.play_sfx(PRESENTATION_IMPACT_SFX, -9.0)
+				AudioManager.play_feedback(&"confirm")
 				await get_tree().create_timer(threshold_pause_duration).timeout
 				if generation != _sequence_generation:
 					return

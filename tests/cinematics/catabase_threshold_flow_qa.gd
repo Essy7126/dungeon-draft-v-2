@@ -10,6 +10,10 @@ var _failed := false
 var _finishing := false
 
 
+func _verify_title(_title: Node) -> void:
+	pass
+
+
 func _ready() -> void:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--output="):
@@ -43,6 +47,9 @@ func _ready() -> void:
 	get_tree().root.add_child.call_deferred(title)
 	await _frames(5)
 	get_tree().current_scene = title
+	await _verify_title(title)
+	if _failed:
+		return
 	await _capture("01-title.png")
 	await _click(title.get_node("UI/Boutons/BoutonNouvellePartie"))
 	if not await _until(
@@ -120,6 +127,17 @@ func _ready() -> void:
 	_report["entry_state"] = hall.get_entry_state()
 	_report["actor_profile"] = str(hall.player.sprite_profile.profile_id)
 	await _capture("03-entry.png")
+	if not _check(
+		hall.get_entry_state().welcome_open,
+		"Charon greets the selected hero automatically",
+	):
+		return
+	await _click(hall.find_child("ContinueDialogue", true, false))
+	if not _check(
+		not hall.entry_input_blocked() and not hall.is_player_moving(),
+		"closing speech restores exploration without moving",
+	):
+		return
 	for landmark_id in ["statue_memory", "zeus_memory", "fallen_oath", "threshold_gate"]:
 		var landmark_index := -1
 		for index: int in hall.definition.landmarks.size():

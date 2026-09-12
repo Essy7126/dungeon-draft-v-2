@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bhxy4lh81uk3i"]
 
 [ext_resource type="Script" path="res://ui/titre_ecran.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/catabase/title/underworld_gate_emerald_v1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/catabase/title/underworld_gate_mythology_v3.png" id="2"]
 [ext_resource type="Shader" path="res://ui/menus/catabase_title.gdshader" id="3"]
-[ext_resource type="AudioStream" path="res://asset/musique/Dungeon Draft.mp3" id="4"]
+[ext_resource type="Script" path="res://core/audio/title_soundtrack.gd" id="4"]
 
 [sub_resource type="ShaderMaterial" id="BackdropMaterial"]
 resource_local_to_scene = true
@@ -50,6 +50,5 @@ layout_mode = 2
 text = "Quitter le jeu"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4")
-autoplay = true
-parameters/looping = true
+script = ExtResource("4")
+bus = &"Music"

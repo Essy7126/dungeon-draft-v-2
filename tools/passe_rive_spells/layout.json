@@ -429,6 +429,685 @@
         "Rebondir"
       ],
       "proposal": true
+    },
+    {
+      "id": "sky_bow",
+      "name": "Tir céleste",
+      "subtitle": "L’arc tendu, le buste ouvert vers le ciel.",
+      "color": "#e8d4a0",
+      "durations": [
+        120,
+        130,
+        300,
+        70,
+        140,
+        150
+      ],
+      "event_ms": 550,
+      "cooldown_ms": 1150,
+      "damage": 28,
+      "range": 760,
+      "mode": "lob",
+      "hitstop_ms": 40,
+      "scale": 1.06,
+      "source_dir": "art/source/characters/achilles/passe_rive_bow_v1",
+      "source_file": "bow_rgb.png",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "boxes": [
+        [
+          104,
+          35,
+          438,
+          497
+        ],
+        [
+          577,
+          0,
+          900,
+          501
+        ],
+        [
+          81,
+          475,
+          451,
+          1004
+        ],
+        [
+          569,
+          474,
+          927,
+          1005
+        ],
+        [
+          115,
+          975,
+          461,
+          1502
+        ],
+        [
+          600,
+          1032,
+          928,
+          1502
+        ]
+      ],
+      "anchors": [
+        [
+          237,
+          487
+        ],
+        [
+          724,
+          487
+        ],
+        [
+          261,
+          994
+        ],
+        [
+          748,
+          994
+        ],
+        [
+          262,
+          1490
+        ],
+        [
+          730,
+          1490
+        ]
+      ],
+      "exclude_rects": [
+        [
+          [
+            260,
+            483,
+            315,
+            498
+          ]
+        ],
+        [
+          [
+            807,
+            483,
+            862,
+            502
+          ]
+        ],
+        [
+          [
+            398,
+            975,
+            452,
+            1005
+          ]
+        ],
+        [],
+        [
+          [
+            115,
+            975,
+            399,
+            1014
+          ]
+        ],
+        []
+      ],
+      "phase": [
+        "Encocher",
+        "Lever l’arc",
+        "Pleine tension",
+        "Décocher",
+        "Accompagner",
+        "Abaisser l’arc"
+      ],
+      "idle_file": "frames/sky_bow_05.png",
+      "idle_animation": "sky_bow_idle",
+      "release_offset": [
+        92,
+        -269
+      ],
+      "proposal": true
+    },
+    {
+      "id": "ivory_bow",
+      "name": "Trait d’ivoire",
+      "subtitle": "S’ancrer, tendre l’ivoire, libérer la puissance.",
+      "color": "#efe4c1",
+      "durations": [
+        140,
+        180,
+        300,
+        1000,
+        65,
+        240
+      ],
+      "phase": [
+        "Encocher",
+        "Descendre sur l’appui",
+        "Transformer l’arc",
+        "Tenir la puissance",
+        "Décocher",
+        "Relâcher"
+      ],
+      "event_ms": 1620,
+      "cooldown_ms": 2400,
+      "damage": 52,
+      "range": 850,
+      "mode": "charged",
+      "hitstop_ms": 65,
+      "scale": 1.06,
+      "source_dir": "art/source/characters/achilles/passe_rive_ivory_bow_v1",
+      "source_file": "ivory_rgb.png",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "boxes": [
+        [
+          35,
+          20,
+          493,
+          496
+        ],
+        [
+          540,
+          20,
+          999,
+          496
+        ],
+        [
+          30,
+          510,
+          496,
+          977
+        ],
+        [
+          532,
+          510,
+          1012,
+          977
+        ],
+        [
+          30,
+          978,
+          494,
+          1496
+        ],
+        [
+          535,
+          1010,
+          991,
+          1496
+        ]
+      ],
+      "anchors": [
+        [
+          232,
+          477
+        ],
+        [
+          747,
+          477
+        ],
+        [
+          244,
+          951
+        ],
+        [
+          749,
+          951
+        ],
+        [
+          258,
+          1470
+        ],
+        [
+          730,
+          1470
+        ]
+      ],
+      "idle_file": "frames/ivory_bow_05.png",
+      "idle_animation": "ivory_bow_idle",
+      "release_offset": [
+        125,
+        -171
+      ],
+      "release_angle_degrees": -5,
+      "projectile_speed": 1450,
+      "tremor": {
+        "frame": 3,
+        "start_ms": 620,
+        "end_ms": 1620,
+        "center": [
+          155,
+          391
+        ],
+        "radius": [
+          91,
+          43
+        ],
+        "max_pixels": 1.7
+      },
+      "proposal": true
+    },
+    {
+      "id": "vital_harvest",
+      "name": "Moisson vitale",
+      "subtitle": "S’élever, ouvrir le torse, libérer l’impulsion.",
+      "color": "#e9676a",
+      "durations": [
+        140,
+        180,
+        300,
+        95,
+        260,
+        225
+      ],
+      "phase": [
+        "Se recueillir",
+        "Éveiller les paumes",
+        "S’élever",
+        "Libérer la vie",
+        "Rester suspendu",
+        "Se poser"
+      ],
+      "event_ms": 620,
+      "cooldown_ms": 1750,
+      "damage": 34,
+      "range": 740,
+      "mode": "vital",
+      "hitstop_ms": 45,
+      "scale": 0.94,
+      "source_dir": "art/source/characters/achilles/passe_rive_vital_harvest_v1",
+      "source_file": "vital_rgb.png",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "boxes": [
+        [
+          158,
+          0,
+          421,
+          508
+        ],
+        [
+          622,
+          0,
+          903,
+          508
+        ],
+        [
+          135,
+          509,
+          439,
+          1010
+        ],
+        [
+          624,
+          509,
+          910,
+          1010
+        ],
+        [
+          137,
+          1013,
+          438,
+          1519
+        ],
+        [
+          627,
+          1013,
+          900,
+          1535
+        ]
+      ],
+      "anchors": [
+        [
+          274,
+          490
+        ],
+        [
+          744,
+          490
+        ],
+        [
+          259,
+          994
+        ],
+        [
+          748,
+          994
+        ],
+        [
+          265,
+          1499
+        ],
+        [
+          744,
+          1508
+        ]
+      ],
+      "idle_file": "frames/vital_harvest_05.png",
+      "idle_animation": "vital_harvest_idle",
+      "levitation": [
+        [
+          0,
+          0
+        ],
+        [
+          140,
+          0
+        ],
+        [
+          320,
+          18
+        ],
+        [
+          620,
+          34
+        ],
+        [
+          780,
+          36
+        ],
+        [
+          975,
+          16
+        ],
+        [
+          1200,
+          0
+        ]
+      ],
+      "vfx": {
+        "palms": [
+          [
+            [
+              259,
+              449
+            ],
+            [
+              401,
+              452
+            ]
+          ],
+          [
+            [
+              251,
+              447
+            ],
+            [
+              416,
+              446
+            ]
+          ],
+          [
+            [
+              253,
+              435
+            ],
+            [
+              440,
+              433
+            ]
+          ],
+          [
+            [
+              253,
+              427
+            ],
+            [
+              427,
+              424
+            ]
+          ],
+          [
+            [
+              250,
+              445
+            ],
+            [
+              426,
+              441
+            ]
+          ],
+          [
+            [
+              259,
+              448
+            ],
+            [
+              403,
+              448
+            ]
+          ]
+        ],
+        "chest": [
+          [
+            345,
+            328
+          ],
+          [
+            345,
+            334
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            353,
+            319
+          ],
+          [
+            347,
+            334
+          ]
+        ],
+        "palm_strength": [
+          0,
+          0.25,
+          0.85,
+          1,
+          0.75,
+          0
+        ],
+        "release_frame": 3
+      },
+      "proposal": true
+    },
+    {
+      "id": "fauche",
+      "key": "0",
+      "name": "Fauche",
+      "subtitle": "Le bassin entraîne la lance, la lame fait le tour du corps.",
+      "color": "#b8efdb",
+      "durations": [
+        140,
+        95,
+        65,
+        65,
+        70,
+        100,
+        110,
+        155
+      ],
+      "phase": [
+        "Charger l’appui arrière",
+        "Passer derrière le corps",
+        "Engager le bassin",
+        "Faucher",
+        "Traverser devant",
+        "Amortir sur l’autre jambe",
+        "Freiner la lance",
+        "Revenir en garde"
+      ],
+      "event_ms": 300,
+      "cooldown_ms": 1000,
+      "damage": 26,
+      "range": 260,
+      "mode": "sweep",
+      "hitstop_ms": 42,
+      "scale": 1.45,
+      "frame_size": [
+        1152,
+        768
+      ],
+      "pivot": [
+        576,
+        662
+      ],
+      "source_dir": "art/source/characters/achilles/passe_rive_fauche_v1",
+      "source_file": "fauche_rgb.png",
+      "source_size": [
+        1086,
+        1448
+      ],
+      "boxes": [
+        [
+          10,
+          65,
+          598,
+          385
+        ],
+        [
+          640,
+          65,
+          1080,
+          385
+        ],
+        [
+          100,
+          400,
+          595,
+          728
+        ],
+        [
+          550,
+          404,
+          1082,
+          728
+        ],
+        [
+          110,
+          733,
+          497,
+          1062
+        ],
+        [
+          573,
+          731,
+          1069,
+          1062
+        ],
+        [
+          102,
+          1060,
+          549,
+          1435
+        ],
+        [
+          649,
+          1070,
+          1078,
+          1435
+        ]
+      ],
+      "anchors": [
+        [
+          395,
+          376
+        ],
+        [
+          835,
+          376
+        ],
+        [
+          292,
+          722
+        ],
+        [
+          771,
+          723
+        ],
+        [
+          307,
+          1057.5
+        ],
+        [
+          870,
+          1055
+        ],
+        [
+          290,
+          1422
+        ],
+        [
+          843,
+          1422
+        ]
+      ],
+      "idle_file": "frames/fauche_07.png",
+      "idle_animation": "fauche_idle",
+      "sweep_trail": {
+        "tip_source": [
+          [
+            25,
+            199
+          ],
+          [
+            1063,
+            184
+          ],
+          [
+            581,
+            498
+          ],
+          [
+            1071,
+            525
+          ],
+          [
+            374,
+            967
+          ],
+          [
+            581,
+            831
+          ],
+          [
+            540,
+            1065
+          ],
+          [
+            1059,
+            1079
+          ]
+        ],
+        "depth": [
+          -1,
+          -1,
+          -0.4,
+          0,
+          1,
+          0.4,
+          -1,
+          -1
+        ],
+        "tail_ms": 150,
+        "start_ms": 140,
+        "end_ms": 535
+      },
+      "proposal": true
     }
   ]
 }

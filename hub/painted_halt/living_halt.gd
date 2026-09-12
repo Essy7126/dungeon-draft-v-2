@@ -99,6 +99,22 @@ func _ready() -> void:
 	effect_material.set_shader_parameter("materials", ImageTexture.create_from_image(_mask))
 	effect_material.set_shader_parameter("source_size", Vector2(size_data[0], size_data[1]))
 	effect_material.set_shader_parameter("water_color", Color(str(definition.water.tint)))
+	effect_material.set_shader_parameter("water_caustic_strength", float(definition.water.get(
+				"caustic_strength",
+				1.0,
+			)))
+	effect_material.set_shader_parameter("water_distortion_strength", float(definition.water.get(
+				"distortion_strength",
+				1.0,
+			)))
+	var far_fade: Array = definition.water.get("far_fade", [0.0, 0.0])
+	effect_material.set_shader_parameter("water_far_fade", Vector2(far_fade[0], far_fade[1]))
+	var foliage_motion: Dictionary = definition.get("foliage_motion", { })
+	effect_material.set_shader_parameter(
+		"foliage_strength",
+		float(foliage_motion.get("strength", 1.0)),
+	)
+	effect_material.set_shader_parameter("foliage_speed", float(foliage_motion.get("speed", 1.0)))
 	if _flow != null:
 		effect_material.set_shader_parameter("flow_map", ImageTexture.create_from_image(_flow))
 		effect_material.set_shader_parameter("has_flow_map", true)
@@ -111,7 +127,7 @@ func _ready() -> void:
 				float(torch.get("flame_strength", 1.0)),
 				float(torch.get("light_strength", 1.0)),
 				float(torch.get("steady_light", 0.0)),
-				0,
+				1.0 if bool(torch.get("enclosed", false)) else 0.0,
 			)
 		)
 	while torch_data.size() < 12:
@@ -384,12 +400,15 @@ func _advance_move(delta: float) -> void:
 		800.0 * delta,
 	)
 	var travel := _speed * delta
-	while is_player_moving() and travel > 0.0:
+	while is_player_moving():
 		var offset := _path[_path_index] - player.position
 		var distance := _ground_distance(offset)
 		if distance < 0.15:
 			_path_index += 1
 			continue
+		# Reached points finish an approach even when no travel budget remains.
+		if travel <= 0.0:
+			break
 		var used := minf(travel, distance)
 		var next := player.position + offset * used / distance
 		if not nav.is_walkable(next):

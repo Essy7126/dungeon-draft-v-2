@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://i5c6lt5m6q0w" path="res://debug/DebugOverlay.tscn" id="3_debug"]
 [ext_resource type="Script" uid="uid://b7j325rx638ux" path="res://battle/floating_text_spawner.gd" id="4_text"]
 [ext_resource type="Script" uid="uid://pm1sjpja3a5s" path="res://battle/impact_juice.gd" id="5_impact"]
-[ext_resource type="AudioStream" uid="uid://ccb7eepjta8nh" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="6_music"]
+[ext_resource type="Script" path="res://battle/audio/catabase_battle_audio.gd" id="6_audio"]
 
 [node name="Battle" type="Node2D" unique_id=1613455326]
 texture_filter = 2
@@ -58,7 +58,5 @@ script = ExtResource("5_impact")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1100484532]
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=139157478]
-stream = ExtResource("6_music")
-autoplay = true
-parameters/looping = true
+[node name="CombatAudio" type="Node" parent="." unique_id=139157478]
+script = ExtResource("6_audio")

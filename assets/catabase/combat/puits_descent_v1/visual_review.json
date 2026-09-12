@@ -1,0 +1,9 @@
+{
+  "controller": "WorldDecor_puits_descent_living",
+  "boat_region": [440, 215, 42, 60],
+  "regions": {
+    "lava": [155, 640, 90, 60],
+    "lantern": [446, 231, 30, 36],
+    "stable_ground": [1070, 290, 16, 10]
+  }
+}

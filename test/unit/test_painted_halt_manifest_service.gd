@@ -294,3 +294,100 @@ func test_relative_actor_height_validation_and_embedded_plan_reference() -> void
 	for invalid in [0, -0.2, 0.36, NAN, INF, "0.24"]:
 		manifest.world.player_height_ratio = invalid
 		assert_false(Service.validate(manifest).ok, "Invalid actor height must not reach prepare")
+
+
+func test_optional_water_effects_preserve_legacy_defaults_and_accept_closed_boundaries() -> void:
+	var original := manifest.duplicate(true)
+	assert_true(Service.validate(manifest).ok)
+	assert_eq(manifest, original, "Absent water settings keep the authored manifest unchanged")
+	for strength in [0, 1.0, 4]:
+		manifest.water.caustic_strength = strength
+		manifest.water.distortion_strength = strength
+		assert_true(Service.validate(manifest).ok)
+	for bounds in [[0, 0], [0.5, 0.5], [1, 1], [0, 1], [0.2, 0.7]]:
+		manifest.water.far_fade = bounds
+		assert_true(
+			Service.validate(manifest).ok,
+			"Ordered or equal normalized fade bounds are valid",
+		)
+
+
+func test_water_strengths_reject_nonfinite_nonnumeric_and_out_of_range_values() -> void:
+	for key in ["caustic_strength", "distortion_strength"]:
+		for invalid in [-0.01, 4.01, NAN, INF, -INF, "1", true, null, [], { }]:
+			var wrong := manifest.duplicate(true)
+			wrong.water[key] = invalid
+			var result := Service.prepare_images(wrong)
+			assert_false(result.ok, "Invalid water strength cannot reach mask preparation")
+			assert_string_contains(str(result.get("errors", [])), "water." + key)
+			assert_false(result.has("materials"))
+
+
+func test_water_far_fade_requires_exactly_two_finite_normalized_ordered_bounds() -> void:
+	for invalid in [
+		[],
+		[0],
+		[0, 0.5, 1],
+		[0.8, 0.2],
+		[-0.1, 0.5],
+		[0.5, 1.1],
+		[NAN, 1],
+		[0, INF],
+		[-INF, 1],
+		[true, 1],
+		[0, "1"],
+		"0,1",
+		null,
+		{ },
+	]:
+		var wrong := manifest.duplicate(true)
+		wrong.water.far_fade = invalid
+		var result := Service.prepare_images(wrong)
+		assert_false(result.ok, "Invalid fade bounds cannot reach the shader")
+		assert_string_contains(str(result.get("errors", [])), "water.far_fade")
+		assert_false(result.has("materials"))
+
+
+func test_optional_foliage_motion_accepts_defaults_and_finite_closed_boundaries() -> void:
+	var original := manifest.duplicate(true)
+	assert_true(Service.validate(manifest).ok)
+	assert_eq(manifest, original)
+	for settings in [
+		{ },
+		{ "strength": 0 },
+		{ "speed": 4 },
+		{ "strength": 4.0, "speed": 0.0 },
+		{ "strength": 1.5, "speed": 0.75 },
+	]:
+		manifest.foliage_motion = settings
+		assert_true(Service.validate(manifest).ok)
+
+
+func test_foliage_motion_rejects_invalid_objects_and_nonfinite_or_non_numeric_fields() -> void:
+	for invalid in [null, [], "wind", 1, true]:
+		manifest.foliage_motion = invalid
+		var result := Service.validate(manifest)
+		assert_false(result.ok)
+		assert_string_contains(str(result.errors), "foliage_motion")
+	for field in ["strength", "speed"]:
+		for invalid in [-0.01, 4.01, NAN, INF, -INF, "1", true, null, [], { }]:
+			manifest.foliage_motion = { field: invalid }
+			var result := Service.prepare_images(manifest)
+			assert_false(result.ok)
+			assert_string_contains(str(result.errors), "foliage_motion." + field)
+			assert_false(result.has("materials"))
+
+
+func test_enclosed_lantern_flag_accepts_only_boolean_values_and_remains_optional() -> void:
+	manifest.torches = [{ "point": [0.5, 0.5], "radius": [0.01, 0.02] }]
+	assert_true(Service.validate(manifest).ok)
+	assert_false(manifest.torches[0].has("enclosed"), "Validation does not rewrite legacy lamps")
+	for enclosed in [true, false]:
+		manifest.torches[0].enclosed = enclosed
+		assert_true(Service.validate(manifest).ok)
+	for invalid in [0, 1, 0.0, "true", "false", null, [], { }, NAN]:
+		manifest.torches[0].enclosed = invalid
+		var result := Service.prepare_images(manifest)
+		assert_false(result.ok)
+		assert_string_contains(str(result.errors), "torches.enclosed")
+		assert_false(result.has("materials"))

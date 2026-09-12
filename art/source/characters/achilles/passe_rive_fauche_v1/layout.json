@@ -1,0 +1,33 @@
+{
+  "id": "fauche",
+  "key": "0",
+  "name": "Fauche",
+  "subtitle": "Le bassin entraîne la lance, la lame fait le tour du corps.",
+  "color": "#b8efdb",
+  "durations": [140, 95, 65, 65, 70, 100, 110, 155],
+  "phase": ["Charger l’appui arrière", "Passer derrière le corps", "Engager le bassin", "Faucher", "Traverser devant", "Amortir sur l’autre jambe", "Freiner la lance", "Revenir en garde"],
+  "event_ms": 300,
+  "cooldown_ms": 1000,
+  "damage": 26,
+  "range": 260,
+  "mode": "sweep",
+  "hitstop_ms": 42,
+  "scale": 1.45,
+  "frame_size": [1152, 768],
+  "pivot": [576, 662],
+  "source_dir": "art/source/characters/achilles/passe_rive_fauche_v1",
+  "source_file": "fauche_rgb.png",
+  "source_size": [1086, 1448],
+  "boxes": [[10,65,598,385],[640,65,1080,385],[100,400,595,728],[550,404,1082,728],[110,733,497,1062],[573,731,1069,1062],[102,1060,549,1435],[649,1070,1078,1435]],
+  "anchors": [[395,376],[835,376],[292,722],[771,723],[307,1057.5],[870,1055],[290,1422],[843,1422]],
+  "idle_file": "frames/fauche_07.png",
+  "idle_animation": "fauche_idle",
+  "sweep_trail": {
+    "tip_source": [[25,199],[1063,184],[581,498],[1071,525],[374,967],[581,831],[540,1065],[1059,1079]],
+    "depth": [-1,-1,-0.4,0,1,0.4,-1,-1],
+    "tail_ms": 150,
+    "start_ms": 140,
+    "end_ms": 535
+  },
+  "proposal": true
+}

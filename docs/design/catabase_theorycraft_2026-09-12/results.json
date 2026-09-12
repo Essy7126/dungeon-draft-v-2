@@ -1,0 +1,1064 @@
+{
+  "source": "core\\expedition\\expedition_route_itineraries.gd",
+  "sha256": "3b306e9ae10174cb5fa192b686ec936f6f0bdee12f671571d43179cef680dfc8",
+  "route_counts": [
+    {
+      "secrets": false,
+      "library_fight": false,
+      "trial_fight": false,
+      "mirrored": false,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "14": 28,
+        "15": 252
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": false,
+      "trial_fight": false,
+      "mirrored": true,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "14": 28,
+        "15": 252
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": false,
+      "trial_fight": true,
+      "mirrored": false,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "14": 21,
+        "15": 196,
+        "16": 63
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": false,
+      "trial_fight": true,
+      "mirrored": true,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "14": 21,
+        "15": 196,
+        "16": 63
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": true,
+      "trial_fight": false,
+      "mirrored": false,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "15": 280
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": true,
+      "trial_fight": false,
+      "mirrored": true,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "15": 280
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": true,
+      "trial_fight": true,
+      "mirrored": false,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "15": 210,
+        "16": 70
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": false,
+      "library_fight": true,
+      "trial_fight": true,
+      "mirrored": true,
+      "total": 280,
+      "by_origin": {
+        "puits": 160,
+        "porte": 80,
+        "barque": 40
+      },
+      "fights": {
+        "15": 210,
+        "16": 70
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": false,
+      "trial_fight": false,
+      "mirrored": false,
+      "total": 385,
+      "by_origin": {
+        "puits": 220,
+        "porte": 110,
+        "barque": 55
+      },
+      "fights": {
+        "14": 70,
+        "15": 315
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": false,
+      "trial_fight": false,
+      "mirrored": true,
+      "total": 455,
+      "by_origin": {
+        "puits": 260,
+        "porte": 130,
+        "barque": 65
+      },
+      "fights": {
+        "14": 35,
+        "15": 420
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": false,
+      "trial_fight": true,
+      "mirrored": false,
+      "total": 385,
+      "by_origin": {
+        "puits": 220,
+        "porte": 110,
+        "barque": 55
+      },
+      "fights": {
+        "14": 56,
+        "15": 266,
+        "16": 63
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": false,
+      "trial_fight": true,
+      "mirrored": true,
+      "total": 455,
+      "by_origin": {
+        "puits": 260,
+        "porte": 130,
+        "barque": 65
+      },
+      "fights": {
+        "14": 28,
+        "15": 343,
+        "16": 84
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": true,
+      "trial_fight": false,
+      "mirrored": false,
+      "total": 385,
+      "by_origin": {
+        "puits": 220,
+        "porte": 110,
+        "barque": 55
+      },
+      "fights": {
+        "15": 385
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": true,
+      "trial_fight": false,
+      "mirrored": true,
+      "total": 455,
+      "by_origin": {
+        "puits": 260,
+        "porte": 130,
+        "barque": 65
+      },
+      "fights": {
+        "15": 455
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": true,
+      "trial_fight": true,
+      "mirrored": false,
+      "total": 385,
+      "by_origin": {
+        "puits": 220,
+        "porte": 110,
+        "barque": 55
+      },
+      "fights": {
+        "15": 308,
+        "16": 77
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    },
+    {
+      "secrets": true,
+      "library_fight": true,
+      "trial_fight": true,
+      "mirrored": true,
+      "total": 455,
+      "by_origin": {
+        "puits": 260,
+        "porte": 130,
+        "barque": 65
+      },
+      "fights": {
+        "15": 364,
+        "16": 91
+      },
+      "elite_range": [
+        2,
+        7
+      ],
+      "hub_range": [
+        0,
+        4
+      ]
+    }
+  ],
+  "syntactic_starts": 67584,
+  "loot_at_least_one_in_5_offers": {
+    "1_useful": 0.487091,
+    "3_useful": 0.87748,
+    "6_useful": 0.989349
+  },
+  "simulations": 2592,
+  "guard_comparisons": 648,
+  "model": "deterministic rotation abstraction, not Godot playtests",
+  "baseline_examples": [
+    {
+      "build": "duelliste",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "puits",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 3,
+      "won": true,
+      "hp_left": 90.33,
+      "net_loss": 19.67,
+      "gross_loss": 19.67,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 110.0,
+          "enemy_hp": [
+            0,
+            64.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 90.33,
+          "enemy_hp": [
+            0,
+            23.3
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 90.33,
+          "enemy_hp": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "duelliste",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "porte",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 6,
+      "won": true,
+      "hp_left": 58.36,
+      "net_loss": 51.64,
+      "gross_loss": 51.64,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 95.25,
+          "enemy_hp": [
+            14.6,
+            38.0,
+            90.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 73.11,
+          "enemy_hp": [
+            0,
+            14.6,
+            90.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 73.11,
+          "enemy_hp": [
+            0,
+            0,
+            76.24
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 58.36,
+          "enemy_hp": [
+            0,
+            0,
+            48.71
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 58.36,
+          "enemy_hp": [
+            0,
+            0,
+            21.18
+          ]
+        },
+        {
+          "turn": 6,
+          "hp": 58.36,
+          "enemy_hp": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "duelliste",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "barque",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 6,
+      "won": true,
+      "hp_left": 50.98,
+      "net_loss": 59.02,
+      "gross_loss": 59.02,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 95.25,
+          "enemy_hp": [
+            33.73,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 80.49,
+          "enemy_hp": [
+            0,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 65.74,
+          "enemy_hp": [
+            0,
+            9.3,
+            50.0
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 58.36,
+          "enemy_hp": [
+            0,
+            0,
+            50.0
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 50.98,
+          "enemy_hp": [
+            0,
+            0,
+            9.3
+          ]
+        },
+        {
+          "turn": 6,
+          "hp": 50.98,
+          "enemy_hp": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "rempart",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "puits",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 5,
+      "won": true,
+      "hp_left": 110.0,
+      "net_loss": 0.0,
+      "gross_loss": 0.0,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 110.0,
+          "enemy_hp": [
+            19.0,
+            64.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 110.0,
+          "enemy_hp": [
+            0,
+            64.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 110.0,
+          "enemy_hp": [
+            0,
+            40.52
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 110.0,
+          "enemy_hp": [
+            0,
+            17.04
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 110.0,
+          "enemy_hp": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "rempart",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "porte",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 11,
+      "won": true,
+      "hp_left": 102.36,
+      "net_loss": 7.64,
+      "gross_loss": 7.64,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 110.0,
+          "enemy_hp": [
+            38.0,
+            38.0,
+            90.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 102.49,
+          "enemy_hp": [
+            11.0,
+            38.0,
+            90.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 102.49,
+          "enemy_hp": [
+            0,
+            38.0,
+            90.0
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            11.0,
+            90.0
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            90.0
+          ]
+        },
+        {
+          "turn": 6,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            74.12
+          ]
+        },
+        {
+          "turn": 7,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            58.24
+          ]
+        },
+        {
+          "turn": 8,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            42.35
+          ]
+        },
+        {
+          "turn": 9,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            26.47
+          ]
+        },
+        {
+          "turn": 10,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            10.59
+          ]
+        },
+        {
+          "turn": 11,
+          "hp": 102.36,
+          "enemy_hp": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "rempart",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "barque",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 14,
+      "won": true,
+      "hp_left": 98.26,
+      "net_loss": 11.74,
+      "gross_loss": 11.74,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 110.0,
+          "enemy_hp": [
+            55.0,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 104.13,
+          "enemy_hp": [
+            30.45,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 104.13,
+          "enemy_hp": [
+            5.91,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 98.26,
+          "enemy_hp": [
+            5.91,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            50.0,
+            50.0
+          ]
+        },
+        {
+          "turn": 6,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            26.52,
+            50.0
+          ]
+        },
+        {
+          "turn": 7,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            26.52,
+            50.0
+          ]
+        },
+        {
+          "turn": 8,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            3.04,
+            50.0
+          ]
+        },
+        {
+          "turn": 9,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            0,
+            50.0
+          ]
+        },
+        {
+          "turn": 10,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            0,
+            50.0
+          ]
+        },
+        {
+          "turn": 11,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            0,
+            26.52
+          ]
+        },
+        {
+          "turn": 12,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            0,
+            3.04
+          ]
+        },
+        {
+          "turn": 13,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            0,
+            3.04
+          ]
+        },
+        {
+          "turn": 14,
+          "hp": 98.26,
+          "enemy_hp": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "foudroyant",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "puits",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 4,
+      "won": true,
+      "hp_left": 80.49,
+      "net_loss": 29.51,
+      "gross_loss": 29.51,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 100.16,
+          "enemy_hp": [
+            19.69,
+            51.33
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 80.49,
+          "enemy_hp": [
+            0,
+            41.82
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 80.49,
+          "enemy_hp": [
+            0,
+            13.32
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 80.49,
+          "enemy_hp": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "foudroyant",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "porte",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 5,
+      "won": true,
+      "hp_left": 65.74,
+      "net_loss": 44.26,
+      "gross_loss": 44.26,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 95.25,
+          "enemy_hp": [
+            3.8,
+            22.79,
+            90.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 80.49,
+          "enemy_hp": [
+            0,
+            0,
+            90.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 80.49,
+          "enemy_hp": [
+            0,
+            0,
+            55.8
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 65.74,
+          "enemy_hp": [
+            0,
+            0,
+            21.6
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 65.74,
+          "enemy_hp": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "foudroyant",
+      "armor": "mixte",
+      "kit": "aucun",
+      "route": "barque",
+      "guard_rule": "unlimited",
+      "hp_scale": 1.0,
+      "damage_scale": 1.0,
+      "turns": 5,
+      "won": true,
+      "hp_left": 52.62,
+      "net_loss": 57.38,
+      "gross_loss": 57.38,
+      "trace": [
+        {
+          "turn": 1,
+          "hp": 95.25,
+          "enemy_hp": [
+            36.28,
+            34.79,
+            50.0
+          ]
+        },
+        {
+          "turn": 2,
+          "hp": 67.38,
+          "enemy_hp": [
+            8.92,
+            19.58,
+            50.0
+          ]
+        },
+        {
+          "turn": 3,
+          "hp": 60.0,
+          "enemy_hp": [
+            0,
+            0,
+            50.0
+          ]
+        },
+        {
+          "turn": 4,
+          "hp": 52.62,
+          "enemy_hp": [
+            0,
+            0,
+            26.6
+          ]
+        },
+        {
+          "turn": 5,
+          "hp": 52.62,
+          "enemy_hp": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

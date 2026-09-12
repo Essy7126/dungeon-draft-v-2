@@ -94,6 +94,7 @@ function Get-DevTestPaths([string]$Target) {
         'terrain' { @('*terrain*.gd') }
         'studio' { @('test_dungeon_draft_studio_2_0.gd') }
         'halts' { @('test_painted_halt*.gd') }
+        'audio' { @('test_title_music.gd','test_context_audio.gd','test_catabase_battle_audio.gd','test_inventory_equipment_system.gd','test_equipment_reward_presentation.gd','test_skill_evolution_card_presentation.gd','test_post_combat_flow.gd','test_champion_codex.gd','test_painted_halt_audio_lifecycle.gd','test_painted_halt_runtime.gd','test_painted_halt_catabase.gd','test_catabase_threshold.gd','test_battle_grid_lifecycle.gd','test_combat_effect_dedup_lifecycle.gd') }
         'all' { @('test_*.gd') }
         default { @() }
     })

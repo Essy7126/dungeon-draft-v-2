@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BattlePresentationProfile" format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/battle_presentation_profile.gd" id="1_riuwc"]
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="2_4x8te"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_achilles.tres" id="3_faf8t"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_standard.tres" id="4_iyiux"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_elite.tres" id="5_1iyme"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_spectre_greatsword.tres" id="6_5ehot"]
+
+[resource]
+script = ExtResource("1_riuwc")
+profile_id = &"puits_sources_v1"
+camera_offset_adjustment = Vector2(-80, -20)
+camera_keep_painting_in_view = true
+unit_profiles = Array[ExtResource("2_4x8te")]([ExtResource("3_faf8t"), ExtResource("4_iyiux"), ExtResource("5_1iyme"), ExtResource("6_5ehot")])

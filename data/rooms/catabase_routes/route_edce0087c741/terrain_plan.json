@@ -1,85 +1,253 @@
 {
-	"allowed_floor_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			1200.0
-		],
-		[
-			0.0,
-			1200.0
-		]
-	],
-	"canvas_size": [
-		1920.0,
-		1200.0
-	],
-	"combat_ground_band": {
-		"enabled": false
-	},
-	"floor_palette": {
-		"bevel_flatten_strength": 0.82,
-		"body": "#aca67c",
-		"light": "#d8c9a1",
-		"painted_steps": 0.25,
-		"shade": "#5c6559"
-	},
-	"geometry_manifest_path": "geometry_manifest.json",
-	"ground_details": {
-		"enabled": false
-	},
-	"land": {
-		"color": "#252f2e"
-	},
-	"land_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			1200.0
-		],
-		[
-			0.0,
-			1200.0
-		]
-	],
-	"metadata": {
-		"art_method": "Existing Catabase terrain renderer, original authored topology and palette; dedicated environmental paintings remain future art work.",
-		"biome": "limestone",
-		"tactical_intent": "Passage longitudinal avec contournement."
-	},
-	"minimum_floor_margin_px": 30.0,
-	"pit_palette": {
-		"back_wall": "#5c6559",
-		"depth_native_px": 13.0,
-		"floor": "#252f2e",
-		"left_wall": "#5c6559"
-	},
-	"props_palette": {
-		"highlight": "#d8c9a1",
-		"ink": "#252f2e",
-		"left": "#aca67c",
-		"right": "#5c6559",
-		"top": "#d8c9a1"
-	},
-	"shorelines": [],
-	"soil_patches": [],
-	"version": 1.0,
-	"water": {
-		"color": "#252f2e"
-	},
-	"world_decor": []
+  "allowed_floor_polygon": [
+    [
+      332.40001678466786,
+      469.599990844726
+    ],
+    [
+      384.00001525878895,
+      443.79999160766545
+    ],
+    [
+      900.0,
+      185.79999923706046
+    ],
+    [
+      1123.1999969482422,
+      185.79999923706046
+    ],
+    [
+      1484.3999862670898,
+      366.3999938964839
+    ],
+    [
+      1639.1999816894531,
+      443.79999160766545
+    ],
+    [
+      1690.7999801635742,
+      469.599990844726
+    ],
+    [
+      1690.7999801635742,
+      641.199989318847
+    ],
+    [
+      1639.1999816894531,
+      666.9999885559075
+    ],
+    [
+      1123.1999969482422,
+      924.9999809265125
+    ],
+    [
+      899.9999999999999,
+      924.9999809265125
+    ],
+    [
+      487.20001220703114,
+      718.5999870300286
+    ],
+    [
+      332.40001678466786,
+      641.199989318847
+    ]
+  ],
+  "canvas_size": [
+    1920.0,
+    1200.0
+  ],
+  "combat_ground_band": {
+    "enabled": false
+  },
+  "floor_palette": {
+    "bevel_flatten_strength": 0.82,
+    "body": "#71787a",
+    "light": "#a6aca7",
+    "painted_steps": 0.25,
+    "shade": "#3b4852"
+  },
+  "geometry_manifest_path": "geometry_manifest.json",
+  "ground_details": {
+    "enabled": false
+  },
+  "land": {
+    "color": "#ffffff",
+    "texture_path": "res://assets/catabase/combat/braises_cloitre_v1/land.png",
+    "texture_scale": [
+      1.210592686002522,
+      1.2096774193548387
+    ],
+    "texture_repeat": false,
+    "shader_path": "res://assets/catabase/combat/braises_cloitre_v1/living.gdshader"
+  },
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      1200
+    ],
+    [
+      0,
+      1200
+    ]
+  ],
+  "metadata": {
+    "art_method": "Built-in image_gen, approved abyss stone palette and occupancy guide, rock-hewn Greek cloister beside abyss with localized embers; engine geometry preserved",
+    "biome": "basalt",
+    "tactical_intent": "Passage longitudinal avec contournement.",
+    "route_stage": "expedition IX — braises du cloître",
+    "current_art_direction": {
+      "scene": "Les braises du cloître",
+      "reference": "res://asset/map/painted/merchant/hall_v1/hall.png"
+    }
+  },
+  "minimum_floor_margin_px": 30.0,
+  "pit_palette": {
+    "back_wall": "#3a454d",
+    "depth_native_px": 13.0,
+    "floor": "#00000000",
+    "left_wall": "#2c3742"
+  },
+  "props_palette": {
+    "highlight": "#bd9a5d",
+    "ink": "#202e37",
+    "left": "#5b6b73",
+    "right": "#374953",
+    "top": "#899391",
+    "bench": "#725b42"
+  },
+  "shorelines": [
+    {
+      "id": "painted_courtyard_limits",
+      "points": [
+        [
+          0.0,
+          629.0322580645161
+        ],
+        [
+          181.58890290037832,
+          562.5
+        ],
+        [
+          341.3871374527112,
+          509.27419354838713
+        ],
+        [
+          398.2849936948297,
+          459.6774193548387
+        ],
+        [
+          467.2887767969735,
+          381.0483870967742
+        ],
+        [
+          726.3556116015133,
+          297.5806451612903
+        ],
+        [
+          932.156368221942,
+          222.58064516129033
+        ],
+        [
+          1065.3215636822194,
+          222.58064516129033
+        ],
+        [
+          1150.063051702396,
+          247.98387096774195
+        ],
+        [
+          1283.2282471626734,
+          298.7903225806452
+        ],
+        [
+          1404.2875157629255,
+          347.1774193548387
+        ],
+        [
+          1513.2408575031525,
+          399.19354838709677
+        ],
+        [
+          1646.4060529634298,
+          471.77419354838713
+        ],
+        [
+          1749.3064312736442,
+          562.5
+        ],
+        [
+          1761.4123581336696,
+          629.0322580645161
+        ],
+        [
+          1761.4123581336696,
+          731.8548387096774
+        ],
+        [
+          1920.0,
+          810.483870967742
+        ],
+        [
+          1920.0,
+          1200.0
+        ],
+        [
+          665.8259773013871,
+          1200.0
+        ],
+        [
+          544.7667087011349,
+          1118.9516129032259
+        ],
+        [
+          409.18032786885243,
+          1028.225806451613
+        ],
+        [
+          260.2774274905422,
+          955.6451612903226
+        ],
+        [
+          193.69482976040354,
+          895.1612903225807
+        ],
+        [
+          72.63556116015133,
+          701.6129032258065
+        ],
+        [
+          0.0,
+          629.0322580645161
+        ]
+      ],
+      "width": 1.0,
+      "color": "#ffffff00"
+    }
+  ],
+  "soil_patches": [],
+  "version": 1.0,
+  "water": {
+    "color": "#49261f"
+  },
+  "world_decor": [
+    {
+      "id": "braises_cloitre_living",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground",
+      "scene_path": "res://assets/catabase/combat/braises_cloitre_v1/Living.tscn"
+    }
+  ],
+  "minimum_floor_shore_clearance_native_px": 20
 }

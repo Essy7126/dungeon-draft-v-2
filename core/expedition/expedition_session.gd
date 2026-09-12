@@ -3,6 +3,7 @@ extends RefCounted
 ## Destination rewards are transactions. Reopening a screen cannot reroll them.
 
 var route := ExpeditionRouteState.new()
+var challenges := preload("res://core/expedition/catabase_challenge_state.gd").new()
 var build := ExpeditionBuildState.new()
 var character: CharacterRunState
 var gold: int = 0
@@ -50,6 +51,8 @@ func enter(node_id: String) -> bool:
 func combat_won() -> bool:
 	if not route.mark_combat_won():
 		return false
+	if challenges.enabled:
+		challenges.finish_combat(6 if int(route.get_current_node().depth) >= 3 else 5)
 	_clear_encounter_effects()
 	build.is_editable = true
 	award_destination()
@@ -89,6 +92,8 @@ func award_destination() -> void:
 	awarded_node_ids.append(str(node.id))
 	last_message = "%s franchi · +%d XP · +%d oboles" % [node.title, int(result.get("gained_xp", 0)), gained_gold]
 	journal.append(last_message)
+	if challenges.enabled and xp > 0:
+		journal.append(challenges.result_text)
 
 
 func reward_options(item_catalog: ItemCatalog) -> Array[Dictionary]:
@@ -333,10 +338,20 @@ func _failure(reason: String) -> Dictionary:
 
 
 func to_snapshot() -> Dictionary:
-	return {"version": 2, "route": route.to_snapshot(), "build": build.to_snapshot(), "gold": gold, "awarded_node_ids": awarded_node_ids.duplicate(), "journal": journal.duplicate(), "last_message": last_message, "reward_spell_id": reward_spell_id, "reward_item_id": reward_item_id, "hub_used_ids": hub_used_ids.duplicate(true), "hub_stock_ids": hub_stock_ids.duplicate(), "branch_receipts": branch_receipts.duplicate()}
+	var result := {"version": 2, "route": route.to_snapshot(), "build": build.to_snapshot(), "gold": gold, "awarded_node_ids": awarded_node_ids.duplicate(), "journal": journal.duplicate(), "last_message": last_message, "reward_spell_id": reward_spell_id, "reward_item_id": reward_item_id, "hub_used_ids": hub_used_ids.duplicate(true), "hub_stock_ids": hub_stock_ids.duplicate(), "branch_receipts": branch_receipts.duplicate()}
+	if challenges.enabled: result["challenges"] = challenges.snapshot()
+	return result
 
 
 func restore_snapshot(snapshot: Dictionary) -> bool:
+	var candidate_challenges := preload("res://core/expedition/catabase_challenge_state.gd").new()
+	if snapshot.has("challenges"):
+		if not snapshot.challenges is Dictionary or not candidate_challenges.restore(snapshot.challenges):
+			return false
+	elif snapshot.has("deck"):
+		# Retired prototype saves resume with the normal loadout; only consequences survive.
+		if not snapshot.deck is Dictionary or not candidate_challenges.restore_retired_deck(snapshot.deck):
+			return false
 	if int(snapshot.get("version", 0)) != 2 or not snapshot.get("route") is Dictionary or not snapshot.get("build") is Dictionary:
 		return false
 	var candidate_route := ExpeditionRouteState.new()
@@ -420,5 +435,6 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	hub_used_ids = snapshot.hub_used_ids.duplicate(true)
 	hub_stock_ids.assign(snapshot.hub_stock_ids)
 	branch_receipts = snapshot.branch_receipts.duplicate()
+	challenges = candidate_challenges
 	build.is_editable = is_editable()
 	return true

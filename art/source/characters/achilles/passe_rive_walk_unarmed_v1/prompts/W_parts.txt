@@ -1,0 +1,8 @@
+Edit this original Passe-rive BACK-VIEW animation cutout atlas into the opposite REAR THREE-QUARTER view: character facing SCREEN UPPER-LEFT, walking away from camera. Same sixteen separate pieces and exact cell layout. The viewer sees back of hood, back of torso, back of hands, heels of BOTH sandals. No front mask visible except a very tiny ivory cheek sliver at the LEFT edge. No brooch on back, no weapons.
+Preserve original adult slender proportions and mature dark petrol / muted jade / ivory / bronze costume, same restrained broad clean cel shading and consistent piece dimensions. Keep anatomical asymmetry of the jade drape and ivory sash, do not switch the costume to a different character.
+Row 1: back of hooded head facing upper-left, back torso/scarf without head or limbs, back hip wrap/ivory waist band, long jade cape tail.
+Row 2: right upper arm, right forearm bronze cuff relaxed glove, left upper arm, left forearm bronze cuff glove. Vertical neutral isolated pieces with rounded overlapping ends.
+Row 3: right thigh, right shin with bronze ankle band, right flat sandal BACK/HEEL VIEW toes UPPER-LEFT, same right sandal heel raised push-off toes UPPER-LEFT.
+Row 4: left thigh, left shin with bronze ankle band, left flat sandal BACK/HEEL VIEW toes UPPER-LEFT, separate ivory sash ribbon.
+Critical correction: BOTH flat sandal drawings MUST point in the SAME UPPER-LEFT direction. Do not make one point left and one right. The exposed heel is toward lower-right, toes toward upper-left on BOTH.
+The left side is the nearer side, screen left in this rear view. All independent pieces, no assembled character, no text or grid, real alpha transparency or pure white fallback; never paint a checker pattern. No floor shadows.

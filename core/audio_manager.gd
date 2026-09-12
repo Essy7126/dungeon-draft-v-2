@@ -6,6 +6,7 @@ extends Node
 
 var _musique: AudioStreamPlayer
 var _sfx: AudioStreamPlayer
+var feedback: Node
 
 func _ready() -> void:
 	_musique = AudioStreamPlayer.new()
@@ -17,6 +18,14 @@ func _ready() -> void:
 	_sfx.name = "SFX"
 	_sfx.bus = "SFX"
 	add_child(_sfx)
+	feedback = preload("res://core/audio/feedback_player.gd").new()
+	feedback.name = "InterfaceFeedback"
+	feedback.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(feedback)
+
+
+func play_feedback(cue: StringName) -> bool:
+	return feedback.play(cue) if is_instance_valid(feedback) else false
 
 
 func _exit_tree() -> void:

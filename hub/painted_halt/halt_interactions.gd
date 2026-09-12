@@ -69,6 +69,8 @@ func hit_test(at: Vector2) -> int:
 
 
 func open(index: int) -> void:
+	if not active or selected != index:
+		AudioManager.play_feedback(&"open")
 	selected = index
 	active = true
 	hall.stop_movement()
@@ -81,6 +83,8 @@ func open(index: int) -> void:
 
 
 func close() -> void:
+	if active:
+		AudioManager.play_feedback(&"close")
 	active = false
 	_overlay.hide()
 	if _previous_focus != null:
@@ -161,6 +165,7 @@ func activate(service_id: String) -> Dictionary:
 		return { "success": false }
 	_busy = true
 	var result := bridge.use_service(service_id)
+	AudioManager.play_feedback(&"confirm" if bool(result.get("success", false)) else &"error")
 	_busy = false
 	if bool(result.get("success", false)):
 		awakened[str(hall.definition.landmarks[selected].id)] = true

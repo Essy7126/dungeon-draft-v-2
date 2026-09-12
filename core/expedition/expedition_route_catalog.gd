@@ -1,7 +1,7 @@
 class_name ExpeditionRouteCatalog
 extends RefCounted
 ## Ordinary paths: 15 fights / 5 halts; optional exchanges: 14–16 / 6–4.
-const REVISION := 4
+const REVISION := 5
 const DEPTH_COUNT := 20
 const COMBAT_KINDS: Array[String] = ["normal", "elite", "boss"]
 const HALT_KINDS: Array[String] = ["hub", "merchant", "sanctuary", "lore", "cache", "event"]
@@ -11,7 +11,7 @@ const MAP_BY_DEPTH := {1: 0, 2: 5, 3: 1, 5: 6, 6: 7, 7: 2, 9: 8, 10: 9, 11: 3, 1
 
 static func create_nodes(seed_value: int, revision: int = REVISION) -> Array[Dictionary]:
 	if revision >= 4:
-		return preload("res://core/expedition/expedition_route_itineraries.gd").create_nodes(seed_value, MAP_BY_DEPTH)
+		return preload("res://core/expedition/expedition_route_itineraries.gd").create_nodes(seed_value, MAP_BY_DEPTH, revision >= 5)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var layers: Array = [

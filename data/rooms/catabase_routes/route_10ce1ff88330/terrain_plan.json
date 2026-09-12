@@ -1,848 +1,251 @@
 {
-	"canvas_size": [
-		1920.0,
-		1200.0
-	],
-	"combat_ground_band": {
-		"description": "Visible stone floor with a narrow compacted-earth transition, generated around the canonical cell boundary.",
-		"enabled": true,
-		"minimum_shore_clearance_native_px": 20.0,
-		"shader_parameters": {
-			"band_earth": "#423e32",
-			"band_light": "#555143",
-			"band_shadow": "#302f29"
-		},
-		"shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
-		"tint": "#ffffffff",
-		"width_cells": 0.42
-	},
-	"excluded_floor_polygons": [],
-	"floor_palette": {
-		"bevel_flatten_strength": 0.72,
-		"body": "#555746",
-		"light": "#777661",
-		"painted_steps": 0.4,
-		"shade": "#30362f",
-		"warmth": [
-			-0.06,
-			-0.02,
-			0.02,
-			0.055
-		]
-	},
-	"geometry_manifest_path": "geometry_manifest.json",
-	"ground_details": {
-		"enabled": false
-	},
-	"land": {
-		"color": "#38332b",
-		"shader_path": "res://assets/catabase/combat/cavern_v1/cavern_torches.gdshader",
-		"texture_path": "res://assets/catabase/combat/cavern_pillars_v1/land.png",
-		"texture_repeat": false,
-		"texture_scale": [
-			1.0,
-			1.0
-		]
-	},
-	"land_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			631.5
-		],
-		[
-			1893.0,
-			627.0
-		],
-		[
-			1870.5,
-			640.5
-		],
-		[
-			1837.5,
-			658.5
-		],
-		[
-			1803.0,
-			679.5
-		],
-		[
-			1774.5,
-			691.5
-		],
-		[
-			1731.0,
-			702.0
-		],
-		[
-			1684.5,
-			711.0
-		],
-		[
-			1665.0,
-			739.5
-		],
-		[
-			1656.0,
-			777.0
-		],
-		[
-			1636.5,
-			793.5
-		],
-		[
-			1602.0,
-			792.0
-		],
-		[
-			1579.5,
-			801.0
-		],
-		[
-			1542.0,
-			804.0
-		],
-		[
-			1504.5,
-			808.5
-		],
-		[
-			1494.0,
-			832.5
-		],
-		[
-			1473.0,
-			837.0
-		],
-		[
-			1455.0,
-			859.5
-		],
-		[
-			1438.5,
-			876.0
-		],
-		[
-			1411.5,
-			888.0
-		],
-		[
-			1392.0,
-			900.0
-		],
-		[
-			1378.5,
-			915.0
-		],
-		[
-			1350.0,
-			922.5
-		],
-		[
-			1321.5,
-			928.5
-		],
-		[
-			1294.5,
-			933.0
-		],
-		[
-			1278.0,
-			922.5
-		],
-		[
-			1255.5,
-			916.5
-		],
-		[
-			1239.0,
-			910.5
-		],
-		[
-			1216.5,
-			913.5
-		],
-		[
-			1197.0,
-			923.5
-		],
-		[
-			1170.0,
-			923.5
-		],
-		[
-			1135.5,
-			910.0
-		],
-		[
-			1116.0,
-			920.5
-		],
-		[
-			1087.5,
-			917.5
-		],
-		[
-			1066.5,
-			918.0
-		],
-		[
-			1054.5,
-			940.5
-		],
-		[
-			1036.5,
-			958.5
-		],
-		[
-			1024.5,
-			984.0
-		],
-		[
-			1006.5,
-			997.5
-		],
-		[
-			981.0,
-			999.0
-		],
-		[
-			946.5,
-			997.5
-		],
-		[
-			925.5,
-			1003.5
-		],
-		[
-			892.5,
-			1000.5
-		],
-		[
-			867.0,
-			1012.5
-		],
-		[
-			841.5,
-			1009.5
-		],
-		[
-			813.0,
-			1008.0
-		],
-		[
-			783.0,
-			1012.5
-		],
-		[
-			759.0,
-			1005.0
-		],
-		[
-			735.0,
-			1018.5
-		],
-		[
-			645.0,
-			1069.5
-		],
-		[
-			562.5,
-			1116.0
-		],
-		[
-			510.0,
-			1149.0
-		],
-		[
-			493.5,
-			1167.0
-		],
-		[
-			474.0,
-			1173.0
-		],
-		[
-			435.0,
-			1173.0
-		],
-		[
-			414.0,
-			1168.5
-		],
-		[
-			376.5,
-			1165.5
-		],
-		[
-			348.0,
-			1149.0
-		],
-		[
-			315.0,
-			1140.0
-		],
-		[
-			240.0,
-			1129.5
-		],
-		[
-			120.0,
-			1128.0
-		],
-		[
-			0.0,
-			1128.0
-		],
-		[
-			0.0,
-			732.0
-		],
-		[
-			57.0,
-			717.0
-		],
-		[
-			99.0,
-			702.0
-		],
-		[
-			132.0,
-			700.5
-		],
-		[
-			150.0,
-			678.0
-		],
-		[
-			147.0,
-			654.0
-		],
-		[
-			133.5,
-			634.5
-		],
-		[
-			139.5,
-			613.5
-		],
-		[
-			159.0,
-			594.0
-		],
-		[
-			178.5,
-			576.0
-		],
-		[
-			202.5,
-			559.5
-		],
-		[
-			226.5,
-			544.5
-		],
-		[
-			246.0,
-			522.0
-		],
-		[
-			225.0,
-			504.0
-		],
-		[
-			217.5,
-			483.0
-		],
-		[
-			196.5,
-			471.0
-		],
-		[
-			190.5,
-			442.5
-		],
-		[
-			168.0,
-			430.5
-		],
-		[
-			147.0,
-			421.5
-		],
-		[
-			120.0,
-			424.5
-		],
-		[
-			93.0,
-			421.5
-		],
-		[
-			60.0,
-			429.0
-		],
-		[
-			30.0,
-			430.5
-		],
-		[
-			0.0,
-			427.5
-		]
-	],
-	"metadata": {
-		"current_art_direction": {
-			"continuity": "res://assets/catabase/combat/cavern_v1/land_v4.png",
-			"reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
-			"scene": "Galerie des piliers brises"
-		},
-		"peripheral_bench_count": 0.0,
-		"source_geometry": "res://data/arenas/ashen_hell_courtyard_v1/geometry_manifest.json",
-		"tactical_intent": "Passage transversal avec contournement."
-	},
-	"minimum_floor_margin_px": 32.0,
-	"pit_palette": {
-		"back_wall": "#46504a",
-		"floor": "#10191b",
-		"left_wall": "#293933"
-	},
-	"props_palette": {
-		"bench": "#70634e",
-		"highlight": "#968566",
-		"ink": "#24251f",
-		"left": "#544c40",
-		"right": "#36372e",
-		"top": "#7c705b"
-	},
-	"shorelines": [
-		{
-			"color": "#ffffff00",
-			"confidence": "visible",
-			"id": "west_inlet_visible",
-			"points": [
-				[
-					0.0,
-					427.5
-				],
-				[
-					30.0,
-					430.5
-				],
-				[
-					60.0,
-					429.0
-				],
-				[
-					93.0,
-					421.5
-				],
-				[
-					120.0,
-					424.5
-				],
-				[
-					147.0,
-					421.5
-				],
-				[
-					168.0,
-					430.5
-				],
-				[
-					190.5,
-					442.5
-				],
-				[
-					196.5,
-					471.0
-				],
-				[
-					217.5,
-					483.0
-				],
-				[
-					225.0,
-					504.0
-				],
-				[
-					246.0,
-					522.0
-				],
-				[
-					226.5,
-					544.5
-				],
-				[
-					202.5,
-					559.5
-				],
-				[
-					178.5,
-					576.0
-				],
-				[
-					159.0,
-					594.0
-				],
-				[
-					139.5,
-					613.5
-				],
-				[
-					133.5,
-					634.5
-				],
-				[
-					147.0,
-					654.0
-				],
-				[
-					150.0,
-					678.0
-				],
-				[
-					132.0,
-					700.5
-				],
-				[
-					99.0,
-					702.0
-				],
-				[
-					57.0,
-					717.0
-				],
-				[
-					0.0,
-					732.0
-				]
-			],
-			"width": 10.5
-		},
-		{
-			"color": "#ffffff00",
-			"confidence": "visible_with_local_inference",
-			"id": "southeast_main_bank",
-			"points": [
-				[
-					1920.0,
-					631.5
-				],
-				[
-					1893.0,
-					627.0
-				],
-				[
-					1870.5,
-					640.5
-				],
-				[
-					1837.5,
-					658.5
-				],
-				[
-					1803.0,
-					679.5
-				],
-				[
-					1774.5,
-					691.5
-				],
-				[
-					1731.0,
-					702.0
-				],
-				[
-					1684.5,
-					711.0
-				],
-				[
-					1665.0,
-					739.5
-				],
-				[
-					1656.0,
-					777.0
-				],
-				[
-					1636.5,
-					793.5
-				],
-				[
-					1602.0,
-					792.0
-				],
-				[
-					1579.5,
-					801.0
-				],
-				[
-					1542.0,
-					804.0
-				],
-				[
-					1504.5,
-					808.5
-				],
-				[
-					1494.0,
-					832.5
-				],
-				[
-					1473.0,
-					837.0
-				],
-				[
-					1455.0,
-					859.5
-				],
-				[
-					1438.5,
-					876.0
-				],
-				[
-					1411.5,
-					888.0
-				],
-				[
-					1392.0,
-					900.0
-				],
-				[
-					1378.5,
-					915.0
-				],
-				[
-					1350.0,
-					922.5
-				],
-				[
-					1321.5,
-					928.5
-				],
-				[
-					1294.5,
-					933.0
-				],
-				[
-					1278.0,
-					922.5
-				],
-				[
-					1255.5,
-					916.5
-				],
-				[
-					1239.0,
-					910.5
-				],
-				[
-					1216.5,
-					913.5
-				],
-				[
-					1197.0,
-					923.5
-				],
-				[
-					1170.0,
-					923.5
-				],
-				[
-					1135.5,
-					910.0
-				],
-				[
-					1116.0,
-					920.5
-				],
-				[
-					1087.5,
-					917.5
-				],
-				[
-					1066.5,
-					918.0
-				],
-				[
-					1054.5,
-					940.5
-				],
-				[
-					1036.5,
-					958.5
-				],
-				[
-					1024.5,
-					984.0
-				],
-				[
-					1006.5,
-					997.5
-				],
-				[
-					981.0,
-					999.0
-				],
-				[
-					946.5,
-					997.5
-				],
-				[
-					925.5,
-					1003.5
-				],
-				[
-					892.5,
-					1000.5
-				],
-				[
-					867.0,
-					1012.5
-				],
-				[
-					841.5,
-					1009.5
-				],
-				[
-					813.0,
-					1008.0
-				],
-				[
-					783.0,
-					1012.5
-				],
-				[
-					759.0,
-					1005.0
-				],
-				[
-					735.0,
-					1018.5
-				]
-			],
-			"width": 10.5
-		},
-		{
-			"color": "#ffffff00",
-			"confidence": "inferred",
-			"id": "south_bank_under_hud",
-			"points": [
-				[
-					735.0,
-					1018.5
-				],
-				[
-					645.0,
-					1069.5
-				],
-				[
-					562.5,
-					1116.0
-				],
-				[
-					510.0,
-					1149.0
-				],
-				[
-					493.5,
-					1167.0
-				]
-			],
-			"width": 10.5
-		},
-		{
-			"color": "#ffffff00",
-			"confidence": "visible",
-			"id": "southwest_bank_visible",
-			"points": [
-				[
-					493.5,
-					1167.0
-				],
-				[
-					474.0,
-					1173.0
-				],
-				[
-					435.0,
-					1173.0
-				],
-				[
-					414.0,
-					1168.5
-				],
-				[
-					376.5,
-					1165.5
-				],
-				[
-					348.0,
-					1149.0
-				]
-			],
-			"width": 10.5
-		},
-		{
-			"color": "#ffffff00",
-			"confidence": "inferred",
-			"id": "southwest_bank_under_chat",
-			"points": [
-				[
-					348.0,
-					1149.0
-				],
-				[
-					315.0,
-					1140.0
-				],
-				[
-					240.0,
-					1129.5
-				],
-				[
-					120.0,
-					1128.0
-				],
-				[
-					0.0,
-					1128.0
-				]
-			],
-			"width": 10.5
-		}
-	],
-	"soil_patches": [],
-	"version": 1.0,
-	"water": {
-		"color": "#0a4845",
-		"shader_path": "res://assets/catabase/combat/cavern_v1/cavern_water.gdshader",
-		"texture_path": "res://assets/catabase/combat/cavern_pillars_v1/land.png",
-		"texture_repeat": false,
-		"texture_scale": [
-			1.0,
-			1.0
-		],
-		"tint": "#ffffffff"
-	},
-	"world_decor": [
-		{
-			"anchor": [
-				0.0,
-				0.0
-			],
-			"id": "cavern_peripheral_mist",
-			"layer": "foreground",
-			"scale": 1.0,
-			"scene_path": "res://assets/catabase/combat/cavern_pillars_v1/Atmosphere.tscn"
-		}
-	]
+  "canvas_size": [
+    1920.0,
+    1200.0
+  ],
+  "combat_ground_band": {
+    "enabled": false
+  },
+  "excluded_floor_polygons": [],
+  "floor_palette": {
+    "bevel_flatten_strength": 0.82,
+    "body": "#7d8973",
+    "light": "#bac2a1",
+    "painted_steps": 0.25,
+    "shade": "#46574c",
+    "warmth": [
+      -0.06,
+      -0.02,
+      0.02,
+      0.055
+    ]
+  },
+  "geometry_manifest_path": "geometry_manifest.json",
+  "ground_details": {
+    "enabled": false
+  },
+  "land": {
+    "color": "#536663",
+    "texture_path": "res://assets/catabase/combat/lethe_lances_v1/land.png",
+    "texture_scale": [
+      1.210592686002522,
+      1.2096774193548387
+    ],
+    "texture_repeat": false,
+    "shader_path": "res://assets/catabase/combat/lethe_lances_v1/living.gdshader"
+  },
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      1200
+    ],
+    [
+      0,
+      1200
+    ]
+  ],
+  "metadata": {
+    "current_art_direction": {
+      "scene": "Les lances oubliées — amarrage du Léthé",
+      "reference": "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+      "continuity": "res://assets/catabase/combat/lethe_traces_v1/land.png"
+    },
+    "peripheral_bench_count": 0.0,
+    "source_geometry": "res://data/arenas/ashen_hell_courtyard_v1/geometry_manifest.json",
+    "tactical_intent": "Passage transversal avec contournement.",
+    "biome": "lethe",
+    "route_stage": "expedition III",
+    "boat": "Brown hull, three benches, curved prow, rope and amber lantern; left mooring",
+    "art_method": "Built-in image_gen with canonical floor guide; engine floor and obstacles retained"
+  },
+  "minimum_floor_margin_px": 30,
+  "pit_palette": {
+    "back_wall": "#46574c",
+    "floor": "#00000000",
+    "left_wall": "#354b40"
+  },
+  "props_palette": {
+    "bench": "#84744f",
+    "highlight": "#c3b887",
+    "ink": "#233d39",
+    "left": "#73846f",
+    "right": "#46574c",
+    "top": "#a3ae8e"
+  },
+  "shorelines": [
+    {
+      "id": "painted_bank",
+      "points": [
+        [
+          387.3896595208071,
+          371.3709677419355
+        ],
+        [
+          629.5081967213115,
+          233.46774193548387
+        ],
+        [
+          1095.5863808322824,
+          229.83870967741936
+        ],
+        [
+          1229.9621689785624,
+          291.53225806451616
+        ],
+        [
+          1338.9155107187894,
+          349.5967741935484
+        ],
+        [
+          1525.3467843631777,
+          552.8225806451613
+        ],
+        [
+          1525.3467843631777,
+          679.8387096774194
+        ],
+        [
+          1433.341740226986,
+          798.3870967741935
+        ],
+        [
+          1246.9104665825976,
+          898.7903225806452
+        ],
+        [
+          1105.2711223203025,
+          948.3870967741935
+        ],
+        [
+          889.7856242118537,
+          966.5322580645162
+        ],
+        [
+          716.670870113493,
+          933.8709677419355
+        ],
+        [
+          572.6103404791929,
+          866.1290322580645
+        ],
+        [
+          443.07692307692304,
+          675.0
+        ],
+        [
+          389.8108448928121,
+          538.3064516129033
+        ],
+        [
+          387.3896595208071,
+          371.3709677419355
+        ]
+      ],
+      "width": 1.0,
+      "color": "#ffffff00"
+    }
+  ],
+  "soil_patches": [],
+  "version": 1.0,
+  "water": {
+    "color": "#103f40"
+  },
+  "world_decor": [
+    {
+      "id": "lethe_lances_living",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground",
+      "scene_path": "res://assets/catabase/combat/lethe_lances_v1/Living.tscn"
+    }
+  ],
+  "allowed_floor_polygon": [
+    [
+      389.0159049999999,
+      397.900617
+    ],
+    [
+      426.8490249999999,
+      378.984057
+    ],
+    [
+      653.8477449999999,
+      265.48469700000004
+    ],
+    [
+      918.679585,
+      246.56813700000004
+    ],
+    [
+      1038.6795849999999,
+      246.56813700000004
+    ],
+    [
+      1190.012065,
+      322.234377
+    ],
+    [
+      1227.8451849999997,
+      341.150937
+    ],
+    [
+      1454.8439049999997,
+      568.149657
+    ],
+    [
+      1454.8439049999997,
+      688.149657
+    ],
+    [
+      1379.1776649999997,
+      801.6490170000001
+    ],
+    [
+      1190.012065,
+      896.2318170000001
+    ],
+    [
+      1152.178945,
+      915.148377
+    ],
+    [
+      963.013345,
+      971.8980569999999
+    ],
+    [
+      843.013345,
+      971.8980569999999
+    ],
+    [
+      691.6808649999999,
+      934.0649369999999
+    ],
+    [
+      616.0146249999999,
+      896.2318170000001
+    ],
+    [
+      578.1815049999999,
+      877.315257
+    ],
+    [
+      426.84902499999987,
+      688.149657
+    ],
+    [
+      389.0159049999999,
+      517.900617
+    ]
+  ],
+  "minimum_floor_shore_clearance_native_px": 20
 }

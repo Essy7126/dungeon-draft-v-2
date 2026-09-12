@@ -414,6 +414,22 @@ func update_material_preview(definition: Dictionary, prepared: Dictionary) -> vo
 					"tint",
 					"#48d896",
 				))))
+	_preview_shader.set_shader_parameter("water_caustic_strength", float(definition.water.get(
+				"caustic_strength",
+				1.0,
+			)))
+	_preview_shader.set_shader_parameter("water_distortion_strength", float(definition.water.get(
+				"distortion_strength",
+				1.0,
+			)))
+	var far_fade: Array = definition.water.get("far_fade", [0.0, 0.0])
+	_preview_shader.set_shader_parameter("water_far_fade", Vector2(far_fade[0], far_fade[1]))
+	var foliage_motion: Dictionary = definition.get("foliage_motion", { })
+	_preview_shader.set_shader_parameter(
+		"foliage_strength",
+		float(foliage_motion.get("strength", 1.0)),
+	)
+	_preview_shader.set_shader_parameter("foliage_speed", float(foliage_motion.get("speed", 1.0)))
 	var torches := PackedVector4Array()
 	var strengths := PackedVector4Array()
 	for torch: Dictionary in definition.get("torches", []):
@@ -422,8 +438,8 @@ func update_material_preview(definition: Dictionary, prepared: Dictionary) -> vo
 			Vector4(
 				float(torch.get("flame_strength", 1.0)),
 				float(torch.get("light_strength", 1.0)),
-				0,
-				0,
+				float(torch.get("steady_light", 0.0)),
+				1.0 if bool(torch.get("enclosed", false)) else 0.0,
 			)
 		)
 	_preview_shader.set_shader_parameter("torch_count", torches.size())

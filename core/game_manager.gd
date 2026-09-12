@@ -285,7 +285,7 @@ func start_configured_run() -> bool:
 	_threshold_entry_pending = false
 	if selected_run.catabase_route_enabled:
 		_next_run_start_room_index = 0
-		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants)
+		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants, true)
 	start_run(selected_run)
 	return run_active
 
@@ -2236,7 +2236,7 @@ func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array
 
 
 # Catabase orchestration stays at destination boundaries, outside combat.
-func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}) -> bool:
+func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false) -> bool:
 	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
 	var fingerprint := _current_replacement_fingerprint()
@@ -2254,6 +2254,7 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	cancel_expedition_replacement()
 	expedition = ExpeditionSession.new()
 	expedition.initialize(get_character_state(&"achilles"), run_seed)
+	expedition.challenges.enabled = challenges_enabled
 	last_restore_error = &""
 	# The cinematic and selected hero lead directly to the same authored opening.
 	return choose_expedition_node("d01_0")

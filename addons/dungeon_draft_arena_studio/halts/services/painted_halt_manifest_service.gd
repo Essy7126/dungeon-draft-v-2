@@ -76,7 +76,7 @@ static func validate(manifest: Dictionary, allow_calibration := false) -> Dictio
 		else ["playable_study", "reviewed"]
 	):
 		errors.append("Calibration incomplète : définir les chemins et passer à playable_study.")
-	for key in ["source", "world", "navigation", "water", "review", "ambience"]:
+	for key in ["source", "world", "navigation", "water", "review", "ambience", "foliage_motion"]:
 		if manifest.has(key) and not manifest[key] is Dictionary:
 			errors.append("%s doit être un objet." % key)
 	for key in ["landmarks", "cascades", "torches", "foliage", "bounce", "mist", "foreground"]:
@@ -112,6 +112,13 @@ static func validate(manifest: Dictionary, allow_calibration := false) -> Dictio
 	_validate_polygon(outline, "Chemin", errors, allow_calibration)
 	_validate_polygon_list(nav.get("obstacles", []), "Obstacle", errors)
 	var water: Dictionary = manifest.get("water", { })
+	for key in ["caustic_strength", "distortion_strength"]:
+		if water.has(key):
+			_range(water[key], 0, 4, "water." + key, errors)
+	if water.has("far_fade"):
+		var far_fade: Variant = water.far_fade
+		if not _point_valid(far_fade) or float(far_fade[0]) > float(far_fade[1]):
+			errors.append("water.far_fade nécessite deux bornes normalisées avec début <= fin.")
 	_validate_polygon_list(water.get("polygons", []), "Eau", errors)
 	_validate_polygon_list(water.get("exclusions", []), "Exclusion eau", errors)
 	var regions: Variant = water.get("regions", [])
@@ -130,6 +137,10 @@ static func validate(manifest: Dictionary, allow_calibration := false) -> Dictio
 			):
 				errors.append("Le courant nécessite une direction non nulle.")
 			_range(region.get("speed", 1.0), 0, 4, "Vitesse du courant", errors)
+	var foliage_motion: Dictionary = manifest.get("foliage_motion", { })
+	for key in ["strength", "speed"]:
+		if foliage_motion.has(key):
+			_range(foliage_motion[key], 0, 4, "foliage_motion." + key, errors)
 	for key in ["foliage", "bounce"]:
 		_validate_polygon_list(manifest.get(key, []), key, errors)
 	_validate_anchor(world.get("spawn", []), "Arrivée", errors, allow_calibration)
@@ -172,6 +183,8 @@ static func validate(manifest: Dictionary, allow_calibration := false) -> Dictio
 			errors.append("Torche invalide.")
 			continue
 		_validate_anchor(torch.get("point", []), "Torche", errors)
+		if torch.has("enclosed") and not torch.enclosed is bool:
+			errors.append("torches.enclosed doit être un booléen.")
 		var radius: Variant = torch.get("radius", [])
 		if not _point_valid(radius) or float(radius[0]) <= 0 or float(radius[1]) <= 0:
 			errors.append("Les rayons d’une torche doivent être positifs et normalisés.")

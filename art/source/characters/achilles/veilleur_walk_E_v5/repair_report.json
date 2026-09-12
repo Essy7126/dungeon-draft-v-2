@@ -1,0 +1,14 @@
+{
+  "source": "legs_repair_generated.png",
+  "method": "Registered by framing; dark-trouser matte; bounded missing areas only; all existing source pixels preserved. Generated boots are unused.",
+  "parts": {
+    "L": {
+      "added_pixels": 1741,
+      "changed_existing_pixels": 0
+    },
+    "R": {
+      "added_pixels": 2315,
+      "changed_existing_pixels": 0
+    }
+  }
+}

@@ -23,6 +23,7 @@ var _edition: Label
 var _entry_tween: Tween
 var _elapsed := 0.0
 var _pointer := Vector2.ZERO
+var _music_controls: PanelContainer
 
 
 func _ready() -> void:
@@ -73,6 +74,10 @@ func _ready() -> void:
 	_edition.add_theme_font_override("font", BODY)
 	_edition.add_theme_color_override("font_color", Color("999b91"))
 	$UI.add_child(_edition)
+	_music_controls = preload("res://ui/menus/title_music_controls.gd").new()
+	_music_controls.name = "TitleMusicControls"
+	_music_controls.soundtrack = $AudioStreamPlayer
+	$UI.add_child(_music_controls)
 	for label: Label in [logo, $UI/Subtitle, $UI/Boutons/MenuEyebrow]:
 		label.add_theme_font_override("font", HEADING)
 		label.add_theme_color_override("font_color", GOLD)
@@ -147,11 +152,12 @@ func _on_quitter() -> void:
 
 
 func _configure_focus_navigation() -> void:
-	var actions: Array[Button] = []
+	var actions: Array[Control] = []
 	for child in boutons.get_children():
 		if child is Button:
 			actions.append(child)
 	actions.append(_motion_toggle)
+	actions.append_array(_music_controls.focus_controls())
 	for index in actions.size():
 		var button := actions[index]
 		button.focus_neighbor_top = button.get_path_to(actions[posmod(index - 1, actions.size())])
@@ -222,3 +228,4 @@ func _apply_responsive_layout() -> void:
 	_edition.position = Vector2(viewport_size.x - 365 * s, viewport_size.y - 47 * s)
 	_edition.size = Vector2(325, 28) * s
 	_edition.add_theme_font_size_override("font_size", roundi(12 * s))
+	_music_controls.apply_layout(viewport_size, s)

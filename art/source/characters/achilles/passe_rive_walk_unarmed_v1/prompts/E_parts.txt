@@ -1,0 +1,26 @@
+Use case: identity-preserve.
+Create a professional 2D cutout animation ASSET SHEET for the referenced original game character Passe-rive, UNARMED. Reference image is character identity, palette and costume only.
+One square 2048px atlas, exactly FOUR equal columns and FOUR equal rows, sixteen isolated illustrated pieces, generous empty margins inside every cell, no overlap between cells, no text, no grid lines. Real transparent alpha background. No floor/shadow/glow/checker pattern. All pieces share the SAME adult slender proportions, hand painted flat cel shading, restrained clean broad shapes, dark petrol blue and muted jade, ivory mask and sash, muted bronze. Slightly simplify the illustration for isometric game readability while keeping its mature mask, hood and lean identity. NO SPEAR, NO SHIELD, NO WEAPON, no extra armor.
+Camera is orthographic isometric viewed from above about 25 degrees, character FRONT THREE QUARTER facing screen lower-right. All pieces share this same view. Pieces are drawn straight vertically down in a relaxed neutral pose, with soft rounded overlapping joint ends hidden after assembly. Render the entire requested part, including portions normally hidden by adjacent limbs. Limb pieces are slim black clothed stylized anatomy, NOT muscular.
+Read the following inventory strictly left to right, top to bottom:
+ROW 1:
+1. Complete hooded HEAD with long ivory angular adult mask, black asymmetric scar marking, dark neck. No shoulders or body.
+2. Complete TORSO from neck to waist, muted jade scarf draping across chest, round bronze brooch on character's right chest (screen left), dark tunic. NO arms, NO head, NO belt, NO legs. Fully drawn side edges.
+3. Compact PELVIS / HIP WRAP, ivory band around waist over dark petrol short split tunic, ends at upper thigh. No legs, no dangling sash, no chest. A complete independent costume piece.
+4. One long narrow flowing muted jade/dark petrol CAPE TAIL, hangs from waist to near knee, tapered pointed hem; separate full fabric piece.
+ROW 2:
+1. RIGHT UPPER ARM, shoulder to elbow, downward, complete black fabric sleeve with rounded joint ends.
+2. RIGHT FOREARM with bronze cuff and relaxed closed black glove hand, elbow to fingertips, downward. No upper arm.
+3. LEFT UPPER ARM, shoulder to elbow, downward, same costume and proportions, far-side view.
+4. LEFT FOREARM with bronze cuff and relaxed closed black glove hand, elbow to fingertips, downward, far-side view.
+ROW 3:
+1. RIGHT THIGH, hip to knee, straight downward, black trouser, rounded ends.
+2. RIGHT SHIN, knee to ankle, downward, black trouser, muted bronze band above ankle. No foot.
+3. RIGHT SANDAL FOOT flat on isometric floor, toes pointing lower-right, top visible, dark sandal with restrained straps, isolated with little ankle stump. Whole foot without long shin.
+4. Same RIGHT SANDAL FOOT heel raised, poised on toe for walk push-off, SAME CAMERA, toes still lower-right, isolated ankle stump. Whole foot without long shin.
+ROW 4:
+1. LEFT THIGH, hip to knee, straight downward, black trouser, rounded ends.
+2. LEFT SHIN, knee to ankle, downward, same bronze band, far-side view. No foot.
+3. LEFT SANDAL FOOT flat on isometric floor toes lower-right, seen slightly more from front than right foot. Same foot size, isolate small ankle stump.
+4. Long narrow IVORY SASH TAIL, hanging ribbon from waist to knee with two tapered unequal tips, isolated fabric piece.
+This is a production atlas of separate reusable raster pieces, NOT sixteen full characters, NOT a sequence of full poses. No exposed skin except ivory mask, no childlike head, no blue glow. Preserve characteristic mask and costume; remove weapons completely.

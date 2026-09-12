@@ -1,0 +1,138 @@
+[gd_resource type="SpriteFrames" load_steps=29 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/veilleur_walk_simple_v2/E_atlas.png" id="E"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/veilleur_walk_simple_v2/S_atlas.png" id="S"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/veilleur_walk_simple_v2/N_atlas.png" id="N"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/veilleur_walk_simple_v2/W_atlas.png" id="W"]
+
+[sub_resource type="AtlasTexture" id="E_0"]
+atlas = ExtResource("E")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="E_1"]
+atlas = ExtResource("E")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="E_2"]
+atlas = ExtResource("E")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="E_3"]
+atlas = ExtResource("E")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="E_4"]
+atlas = ExtResource("E")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="E_5"]
+atlas = ExtResource("E")
+region = Rect2(1280, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="S_0"]
+atlas = ExtResource("S")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="S_1"]
+atlas = ExtResource("S")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="S_2"]
+atlas = ExtResource("S")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="S_3"]
+atlas = ExtResource("S")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="S_4"]
+atlas = ExtResource("S")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="S_5"]
+atlas = ExtResource("S")
+region = Rect2(1280, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="N_0"]
+atlas = ExtResource("N")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="N_1"]
+atlas = ExtResource("N")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="N_2"]
+atlas = ExtResource("N")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="N_3"]
+atlas = ExtResource("N")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="N_4"]
+atlas = ExtResource("N")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="N_5"]
+atlas = ExtResource("N")
+region = Rect2(1280, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="W_0"]
+atlas = ExtResource("W")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="W_1"]
+atlas = ExtResource("W")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="W_2"]
+atlas = ExtResource("W")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="W_3"]
+atlas = ExtResource("W")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="W_4"]
+atlas = ExtResource("W")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="W_5"]
+atlas = ExtResource("W")
+region = Rect2(1280, 0, 256, 256)
+
+[resource]
+animations = [
+{"frames": [
+{"duration": 1.0, "texture": SubResource("E_0")},
+{"duration": 1.0, "texture": SubResource("E_1")},
+{"duration": 1.0, "texture": SubResource("E_2")},
+{"duration": 1.0, "texture": SubResource("E_3")},
+{"duration": 1.0, "texture": SubResource("E_4")},
+{"duration": 1.0, "texture": SubResource("E_5")}
+], "loop": true, "name": &"walk_E", "speed": 8.571428571428571},
+{"frames": [
+{"duration": 1.0, "texture": SubResource("S_0")},
+{"duration": 1.0, "texture": SubResource("S_1")},
+{"duration": 1.0, "texture": SubResource("S_2")},
+{"duration": 1.0, "texture": SubResource("S_3")},
+{"duration": 1.0, "texture": SubResource("S_4")},
+{"duration": 1.0, "texture": SubResource("S_5")}
+], "loop": true, "name": &"walk_S", "speed": 8.571428571428571},
+{"frames": [
+{"duration": 1.0, "texture": SubResource("N_0")},
+{"duration": 1.0, "texture": SubResource("N_1")},
+{"duration": 1.0, "texture": SubResource("N_2")},
+{"duration": 1.0, "texture": SubResource("N_3")},
+{"duration": 1.0, "texture": SubResource("N_4")},
+{"duration": 1.0, "texture": SubResource("N_5")}
+], "loop": true, "name": &"walk_N", "speed": 8.571428571428571},
+{"frames": [
+{"duration": 1.0, "texture": SubResource("W_0")},
+{"duration": 1.0, "texture": SubResource("W_1")},
+{"duration": 1.0, "texture": SubResource("W_2")},
+{"duration": 1.0, "texture": SubResource("W_3")},
+{"duration": 1.0, "texture": SubResource("W_4")},
+{"duration": 1.0, "texture": SubResource("W_5")}
+], "loop": true, "name": &"walk_W", "speed": 8.571428571428571}
+]

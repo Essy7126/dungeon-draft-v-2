@@ -63,6 +63,33 @@ func _ready() -> void:
 		_finish()
 		return
 	_hall.set_process(false)
+	_check(_hall.get_entry_state().welcome_open, "Charon appears without interaction")
+	for extent: Vector2i in [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(1200, 896)]:
+		await _resize(extent)
+		await _capture("charon_%dx%d.png" % [extent.x, extent.y])
+		var welcome: Control = _hall.find_child("CharonWelcome", true, false)
+		for part in ["SpeakerPortrait", "SpeechBubble", "SpeechText", "ContinueDialogue"]:
+			var element := welcome.find_child(part, true, false) as Control
+			_check(
+				Rect2(Vector2.ZERO, Vector2(extent)).encloses(element.get_global_rect()),
+				"dialogue %s fits %s" % [part, extent],
+			)
+		var speech := welcome.find_child("SpeechText", true, false) as Label
+		var bubble := welcome.find_child("SpeechBubble", true, false) as Control
+		_check(bubble.size.y < extent.y * 0.42, "speech leaves the map visible %s" % extent)
+		_check(
+			speech.get_visible_line_count() == speech.get_line_count(),
+			"every dialogue line fits %s" % extent,
+		)
+	var dismiss := InputEventKey.new()
+	dismiss.keycode = KEY_SPACE
+	dismiss.pressed = true
+	_viewport.push_input(dismiss, true)
+	await _frames(3)
+	_check(
+		not _hall.get_entry_state().welcome_open and not _hall.is_player_moving(),
+		"space dismisses speech without moving",
+	)
 	_hall.reduced = false
 	_hall.clock = 12.0
 	_hall.advance_world(0)

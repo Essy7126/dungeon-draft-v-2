@@ -1,0 +1,16 @@
+{
+  "status": "TECHNIQUE_STUDY_NOT_APPROVED_ART",
+  "source": "art/source/vfx/peleid_fresco_v1",
+  "source_pivot": [1195, 518],
+  "study_width_px": 72,
+  "source_width_px": 831,
+  "tempo_factors": [0.7, 1.0, 1.35],
+  "contact_scale_keys": [[0, 0.7, 0.22], [33, 1, 1], [65, 1.02, 0.9], [155, 1.04, 0.9]],
+  "contact_erosion_ms": [65, 155],
+  "chips_start_ms": [25, 35, 45],
+  "chips_end_ms": [255, 285, 320],
+  "chips_travel_px": [[9, -16], [19, -3], [12, 12]],
+  "chips_rotation_deg": [-22, 30, 18],
+  "chip_gravity_px": 6,
+  "palette_reference": {"ivory": "DDD7BD", "bronze": "B48A4E", "terracotta": "B5503F", "petrol": "24565A"}
+}

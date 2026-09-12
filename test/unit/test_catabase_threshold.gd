@@ -9,6 +9,31 @@ var _source_variants: Dictionary
 var _source_exit_fade: float
 
 
+func test_speech_ignores_held_keys_and_dismisses_once_per_presentation() -> void:
+	var speech = preload("res://ui/dialogue/portrait_dialogue.gd").new()
+	add_child_autofree(speech)
+	watch_signals(speech)
+	var expected_dismissals := 0
+	for code in [KEY_SPACE, KEY_ENTER, KEY_ESCAPE]:
+		speech.present("Charon", "Le passeur", "Le seuil t’attend.", null)
+		var key := InputEventKey.new()
+		key.keycode = code
+		key.pressed = true
+		key.echo = true
+		speech._input(key)
+		assert_true(speech.visible, "A held key from the previous scene cannot skip speech")
+		key.echo = false
+		key.pressed = false
+		speech._input(key)
+		assert_true(speech.visible, "Releasing that key also leaves speech open")
+		key.pressed = true
+		speech._input(key)
+		speech.dismiss()
+		expected_dismissals += 1
+		assert_false(speech.visible)
+		assert_signal_emit_count(speech, "dismissed", expected_dismissals)
+
+
 class EntryManager extends "res://core/game_manager.gd":
 	var scenes: Array[String] = []
 	var battles := 0
@@ -224,6 +249,22 @@ func test_direct_scene_visit_reads_memory_and_reaches_gate_without_creating_a_ru
 	hall.set_process(false)
 	assert_false(hall.get_entry_state().configured)
 	assert_false(hall.depart().success)
+	assert_true(hall.get_entry_state().welcome_open, "Charon speaks immediately on arrival")
+	var entry_position: Vector2 = hall.player.position
+	assert_false(hall.request_move(hall.point(hall.definition.landmarks[0].point)))
+	assert_false(hall.interactions.request(0), "No plaque interaction behind the speech")
+	hall.advance_world(0.5)
+	assert_eq(hall.player.position, entry_position)
+	hall.show_menu()
+	assert_false(hall.get_entry_state().menu_open, "No competing menu behind the speech")
+	var welcome := hall.find_child("CharonWelcome", true, false)
+	var dismiss_key := InputEventKey.new()
+	dismiss_key.keycode = KEY_ESCAPE
+	dismiss_key.pressed = true
+	welcome._input(dismiss_key)
+	assert_false(hall.get_entry_state().welcome_open)
+	assert_false(hall.entry_input_blocked())
+	assert_false(hall.get_entry_state().menu_open, "Escape returns directly to exploration")
 	for id in ["statue_memory", "zeus_memory", "fallen_oath", "threshold_gate"]:
 		var index: int = -1
 		for candidate in hall.definition.landmarks.size():

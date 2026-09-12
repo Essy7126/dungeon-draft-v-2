@@ -1,0 +1,52 @@
+{
+  "source_sha256": "7bfd1095070adcddc5c23b47623bfafca776cb5c75f846e2a573ffa55e0d3a9d",
+  "joints": {
+    "R": {
+      "hip": [
+        580,
+        749
+      ],
+      "knee": [
+        546,
+        868
+      ],
+      "ankle": [
+        500,
+        992
+      ],
+      "shoulder": [
+        465,
+        422
+      ]
+    },
+    "L": {
+      "hip": [
+        705,
+        752
+      ],
+      "knee": [
+        711,
+        844
+      ],
+      "ankle": [
+        715,
+        936
+      ],
+      "shoulder": [
+        768,
+        432
+      ]
+    }
+  },
+  "measurements": {
+    "R": {
+      "thigh_source_px": 123.76186811776881,
+      "shin_source_px": 132.25732493892352
+    },
+    "L": {
+      "thigh_source_px": 92.19544457292888,
+      "shin_source_px": 92.0869154657707
+    }
+  },
+  "scale": 0.32
+}

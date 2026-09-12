@@ -352,6 +352,8 @@ func _refresh_resources() -> void:
 
 
 func _navigate(page: String) -> void:
+	if page != _page:
+		AudioManager.play_feedback(&"select")
 	if page in ["build", "gear", "attributes", "journal"] and _page not in ["build", "gear", "attributes", "journal"]:
 		_return_page = _page
 	_page = page
@@ -535,6 +537,7 @@ func _confirm_reward_selection() -> void:
 	var chosen: Dictionary = _reward_offers.get(_selected_reward, {}).duplicate()
 	var result: Dictionary = GameManager.claim_expedition_reward(_selected_reward)
 	if bool(result.get("success", false)):
+		AudioManager.play_feedback(&"reward")
 		_last_reward = chosen
 		_selected_reward = ""
 		if GameManager.expedition == null or not GameManager.run_active:
@@ -960,6 +963,7 @@ func _render_journal() -> void:
 
 
 func _action_result(result: Dictionary) -> void:
+	AudioManager.play_feedback(&"confirm" if bool(result.get("success", false)) else &"error")
 	_render()
 	_status.text = str(result.get("message", result.get("reason", "Choix enregistré.")))
 	if _status.text.is_empty(): _status.text = "Choix enregistré."

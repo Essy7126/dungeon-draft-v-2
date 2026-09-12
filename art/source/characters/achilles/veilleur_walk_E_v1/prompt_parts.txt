@@ -1,0 +1,20 @@
+Use case: identity-preserve. Create a CLEAN SEPARATED BODY-PART ATLAS for 2D cutout animation of the EXACT supplied original Veilleur d'airain character. This is not a walk spritesheet: each cell contains ONLY ONE specified DISCONNECTED BODY PART, not a whole character.
+Square canvas, exact 4 columns x 4 rows = 16 equal cells, centered pieces, generous blank padding. Same 3/4 front view looking toward screen right/down. All pieces have matching scale within their type. Solid uniform light gray background. No numbers, no labels, no letters, no guide lines, no other elements.
+Read cells left to right top to bottom:
+01: anatomical RIGHT near upper arm only, dark petroleum sleeve, shoulder to elbow; straight relaxed downward, rounded ends for overlap.
+02: anatomical LEFT far upper arm only, same sleeve, shoulder to elbow, straight down.
+03: RIGHT near forearm plus closed glove hand, dark sleeve, ivory wrist band, simple black closed glove, extended in relaxed straight downward position.
+04: LEFT far forearm plus closed glove hand, same construction, straight down.
+05: RIGHT near thigh only, dark opaque trouser fabric, upper thigh to rounded knee, extended downward.
+06: LEFT far thigh only, dark trouser fabric, upper thigh to rounded knee.
+07: RIGHT near shin only, dark trouser fabric, rounded knee to ankle, extended downward, NO boot or cuff.
+08: LEFT far shin only, same construction, NO boot or cuff.
+09: RIGHT near CLOSED BOOT in FLAT PLANTED stance, 3/4 down-right facing, broad ivory ankle cuff, matte bronze sole, simple outside bronze ankle disk, chunky dark toe. Include entire boot, no leg above cuff.
+10: LEFT far CLOSED BOOT in FLAT PLANTED stance, same viewing direction and identity. Do not mirror the image to leftward facing. Entire boot.
+11: RIGHT near boot TOE-OFF, heel raised, forefoot on ground, visible bending of shoe sole at the ball, weight presses the toe; ankle leans forward.
+12: LEFT far boot TOE-OFF, same direction, heel raised, forefoot planted.
+13: RIGHT near boot in SWING, heel tucked slightly backward, toe relaxed down a little, mild sole view, anatomical ankle above; not an exaggerated ballet foot.
+14: LEFT far boot in SWING, same construction and view.
+15: RIGHT near boot at HEEL CONTACT, heel low on floor, forefoot and toe slightly raised, cuff upright, same shoe size.
+16: LEFT far boot at HEEL CONTACT, same direction and angle.
+All pieces faithfully preserve the reference costume: petroleum sleeves, plain dark trousers and gloves, warm ivory cuffs, antique bronze shoe edge. Clean broad shaded planes, minimal detail, strong dark outer contour. No fingers spread, weapons, accessories, flesh, muscle anatomy or redesign. Draw the limb ends completely, including parts normally hidden by tunic or cuff, with simple overlap caps. NEVER draw a helmet, torso, head or entire person on this atlas. All shoes point to screen RIGHT and DOWN consistently; the four foot states are real distinct DRAWINGS of rolling/flexing shoes, not identical boot stamps.

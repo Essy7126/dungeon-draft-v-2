@@ -1,0 +1,10 @@
+{
+  "controller": "WorldDecor_gue_serments_living",
+  "boat_region": [1349, 202, 30, 38],
+  "regions": {
+    "lava": [90, 590, 95, 80],
+    "inlet": [965, 98, 70, 30],
+    "lamp": [1354, 211, 20, 20],
+    "stable_ground": [1190, 325, 25, 20]
+  }
+}

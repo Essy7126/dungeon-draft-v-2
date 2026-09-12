@@ -1,0 +1,69 @@
+{
+  "art_calibration_sha256": "3a6f21211e1c26c826cddc157fdbcab35adc475cd8569d8fd798098bde31ddec",
+  "gameplay_fingerprint": "6db326701728540069df5ced2559466118cdad17ee5c0c1776caa4972caf25f1",
+  "gameplay_unchanged_after_reload": true,
+  "geometry_bytes_unchanged": true,
+  "geometry_sha256": "844a5dd77ace7b742ee83e37f67266b1c89f68a61b539a9e94052f5b06a93957",
+  "guide": "calibration.png",
+  "guide_sha256": "015eb2fecd01e53378d0c54ba572c6663769f823f6fcf6547284d2ba78a6e425",
+  "image": "res://assets/catabase/combat/lethe_reeds_v1/land.png",
+  "image_sha256": "4a5e890fc8465ae3aa6ec93d07f64b21fc974a7a3ae986f6eaa5958bcf4aa248",
+  "image_size": [
+    1586.0,
+    992.0
+  ],
+  "initial_prompt": "PROMPT.md",
+  "material_mask_sha256": "b4e08afa6d57e6b085fb476c81dd738920c63eb2c2d544a133a965fa0f902994",
+  "native_canvas": [
+    1920.0,
+    1200.0
+  ],
+  "normalization": "Final built-in output retained byte-for-byte; UV scale only, no crop or postprocessing",
+  "plan_sha256": "fd0c312efb6282f6acdc3d24a9c792dbb2df08d14a33f1ad5fb9851ee90aa4ae",
+  "prompt": "PROMPT-west-bank.md",
+  "provider": "image_gen built-in",
+  "provider_source_basename": "exec-8a0aba51-32cb-4191-a411-e63155f329ff.png",
+  "room_before_sha256": "997cd5a23525330be30734abf8d332a3fb1884ec9003a01303dbc65b8062a4c4",
+  "room_sha256": "5bd3d7264fce0b6d31425cb16cef37af6008e35704c3d21bcfbd5f15fea67215",
+  "target_room": "res://data/rooms/catabase_routes/route_6d5efdb88ff0/room.tres",
+  "texture_scale": [
+    1.21059268600252,
+    1.20967741935484
+  ],
+  "validation_status": "PASS: saved gameplay, full floor support, GPU at two sizes, route units and real expedition launch",
+  "validation_reports": {
+    "gpu": "artifacts/dev/20260912-135650-lethe-reeds-review-a5e78c11/summary.json",
+    "expedition": "artifacts/dev/20260912-135504-lethe-reeds-expedition-8d762996/summary.json",
+    "unit": "artifacts/dev/20260912-134727-test-test_unit_test_catabase_route_layouts.gd-ea0c756c/gut-strict-report.json",
+    "dry_support": "artifacts/dev/lethe-reeds/final-dry-surface-audit.json",
+    "prepare": "artifacts/dev/20260912-134019-lethe-reeds-prepare-fc3ac9b8/summary.json",
+    "shared_lances_oracle": "artifacts/dev/20260912-125743-lethe-lances-review-d5c7b8e5/summary.json"
+  },
+  "visual_review": {
+    "inspected": [
+      "1920x1080_after_move_guard",
+      "1200x896_after_move_guard",
+      "1600x900_real_deployment"
+    ],
+    "boat_fully_visible": true,
+    "hud_overlap": false,
+    "source_pixels_unchanged": true,
+    "camera_offset": [
+      -120,
+      50
+    ],
+    "limits": "Movement and guard verified; no complete victory or free boat navigation. Production Explorer report does not expose instantiated enemy roles."
+  },
+  "runtime_asset_sha256": {
+    "land.png": "4a5e890fc8465ae3aa6ec93d07f64b21fc974a7a3ae986f6eaa5958bcf4aa248",
+    "material_mask.png": "b4e08afa6d57e6b085fb476c81dd738920c63eb2c2d544a133a965fa0f902994",
+    "living.gd": "0bca4259205db5e98f7258637cb71a9043e56198395f138d128ba63cedb4ad85",
+    "living.gdshader": "77450dacef5fe803ce8883517daf4324b701df0e0f0b4cb45439dfe98feafa43",
+    "pit_water.gdshader": "606af410d7744a82b4bc218774f1d15c6930cd8429b2c9b34f5a5f342455f815",
+    "Living.tscn": "8242a3c5aa977c3bac02f69b8319afffa3753e9a9936031c27691a21330104fc",
+    "presentation.tres": "e7a4d5aef2c98329cb78263b1c0ac5e672b74994e7080f4a8d4a22c254fa3b0b",
+    "fx.json": "e6fd2cf56e8c83b1c4ac8a334825e6aec3051fcf6b72a0083e394df75cc07c67",
+    "visual_review.json": "e8a3d5b40592ab107131fd52ca1986519d421b87aa6a93abef3f30de020e6a79",
+    "art_calibration.json": "3a6f21211e1c26c826cddc157fdbcab35adc475cd8569d8fd798098bde31ddec"
+  }
+}

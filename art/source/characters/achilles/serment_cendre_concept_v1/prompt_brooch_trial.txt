@@ -1,0 +1,3 @@
+Use case: precise-object-edit. The input is a small crop from an original 2D game character, centered on a simple circular bronze cloth clasp.
+Change ONLY the INNER FLAT SURFACE of this circular clasp from bronze to muted JADE GREEN (#638F80), with one restrained dark jade shadow plane. This is a controlled local paint correction trial.
+Preserve exactly the round silhouette, thin dark contour, bronze outer rim, original camera angle, surrounding jade cloth and dark tunic, framing and graphic style. Keep it very simple, no added ornament, writing, engraving or texture. The circular clasp should occupy the same proportion of the crop as in the reference. Output the same tight crop, no padding, no additional image elements.

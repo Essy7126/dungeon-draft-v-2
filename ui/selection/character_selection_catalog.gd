@@ -41,12 +41,15 @@ static func _append_run_entries(entries: Array[Dictionary], run_path: String, va
 		party_note = "Groupe fixe · %s" % " · ".join(party_names)
 	for hero in resolution.heroes:
 		var is_catabase_achilles := run_path == CATABASE_RUN_PATH and hero.get_effective_unit_id() == &"achilles"
-		var painted := is_catabase_achilles and not variants.is_empty()
+		var painted: bool = is_catabase_achilles and variants.get("achilles", "") == "painted_g"
+		var passe_rive: bool = is_catabase_achilles and variants.get("achilles", "") == "passe_rive"
+		var entry_id: StringName = &"achilles_passe_rive" if passe_rive else (&"achilles_painted_g" if painted else hero.get_effective_unit_id())
+		var display_name := "Passe-rive" if passe_rive else (("Achille peint" if painted else "Achille classique") if is_catabase_achilles else hero.unit_name)
 		entries.append({
-			"id": &"achilles_painted_g" if painted else hero.get_effective_unit_id(),
-			"display_name": ("Achille peint" if painted else "Achille classique") if is_catabase_achilles else hero.unit_name,
-			"appearance": "STYLE PEINT  ·  Bronze et turquoise" if painted else "APPARENCE ORIGINALE  ·  Tenue disponible en jeu",
-			"use_preview_portrait": painted,
+			"id": entry_id,
+			"display_name": display_name,
+			"appearance": "PASSE-RIVE  ·  Ivoire, jade et bronze" if passe_rive else ("STYLE PEINT  ·  Bronze et turquoise" if painted else "APPARENCE ORIGINALE  ·  Tenue disponible en jeu"),
+			"use_preview_portrait": painted or passe_rive,
 			"unit": hero,
 			"run": run,
 			"chapter": run.run_name if run_path == PHILOSOPHER_TRIAL_RUN_PATH else ("Catabase" if run_path == CATABASE_RUN_PATH else "L’Odyssée du trio"),
