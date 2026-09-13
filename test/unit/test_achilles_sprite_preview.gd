@@ -2,7 +2,7 @@ extends GutTest
 
 const PREVIEW := preload("res://ui/characters/CharacterPreview3D.tscn")
 const ACHILLES_PATH := "res://data/units/allies/achilles.tres"
-const FRAMES_PATH := "res://assets/characters/Achilles/sprites_cour_des_sources_v1/achilles_sprite_frames.tres"
+const FRAMES_PATH := "res://assets/characters/Achilles/autosprite_v1/sprite_frames.tres"
 
 
 func test_canonical_preview_uses_same_sprite_frames_and_stable_idle_without_model() -> void:
@@ -31,15 +31,16 @@ func test_canonical_preview_uses_same_sprite_frames_and_stable_idle_without_mode
 	assert_eq(sprite.transform, transform)
 
 
-func test_preview_exposes_twelve_clips_and_pauses_without_changing_framing() -> void:
+func test_preview_exposes_all_supplied_directions_and_pauses_without_changing_framing() -> void:
 	var preview := _create_preview(load(ACHILLES_PATH) as UnitData)
 	var sprite := preview.get_sprite_instance()
 	var clips := preview.get_available_clips()
-	assert_eq(clips.size(), 12)
+	assert_eq(clips.size(), 112)
 	var expected: Array[StringName] = []
-	for action: String in ["attack", "idle", "walk"]:
-		for direction: String in ["E", "N", "S", "W"]:
+	for action: String in ["attack", "bow", "bow_death", "bow_piercing", "dash", "death", "guard", "hit", "hook", "idle", "run", "sweep", "volley", "walk"]:
+		for direction: String in ["E", "N", "NE", "NW", "S", "SE", "SW", "W"]:
 			expected.append(StringName("%s_%s" % [action, direction]))
+	expected.sort_custom(func(a: StringName, b: StringName) -> bool: return str(a).naturalnocasecmp_to(str(b)) < 0)
 	assert_eq(clips, expected)
 	var transform := sprite.transform
 	var reference := preview.get_sprite_reference_rect()

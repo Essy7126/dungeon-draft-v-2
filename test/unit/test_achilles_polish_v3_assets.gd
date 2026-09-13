@@ -11,7 +11,7 @@ const PRESERVED_STEMS := ["idle", "attack", "dash", "guard", "sweep", "hit", "de
 const SHOT := preload("res://data/spells/achilles/pelion_shot.tres")
 
 
-func test_actual_classic_scene_selects_complete_v3_profile_and_sprite_resources() -> void:
+func test_preserved_v3_profile_has_complete_sprite_resources() -> void:
 	var visual := await _classic_view()
 	assert_eq(visual.scene_file_path, "res://characters/achilles/AchillesIsoUnitView.tscn")
 	assert_eq(visual.sprite_profile.resource_path, PROFILE_PATH)
@@ -206,11 +206,12 @@ func _opaque_bottom(texture: Texture2D) -> int:
 
 
 func _classic_view() -> AchillesIsoUnitView:
-	# Instantiate the actual shipped UnitData scene without replacing its profile.
+	# Keep regression coverage of the previous art contract after AutoSprite ships.
 	var owner := Node2D.new()
 	owner.position = Vector2(143, 207)
 	add_child_autofree(owner)
 	var visual := CANONICAL.visual_scene.instantiate() as AchillesIsoUnitView
+	visual.sprite_profile = load(PROFILE_PATH) as AchillesSpriteVisualProfile
 	owner.add_child(visual)
 	await wait_process_frames(3)
 	visual.set_process(false)

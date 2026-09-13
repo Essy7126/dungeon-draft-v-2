@@ -39,6 +39,10 @@ func set_environment_time(time_seconds: float, position_native: Vector2) -> void
 
 func advance_ground_stride(distance: float) -> void:
 	# Keep planted footsteps proportional to the calibrated body, independent of world width.
+	if _backend is PasseRiveAutoSpriteBackend and _walking:
+		_ground_stride += maxf(distance, 0.0)
+		(_backend as PasseRiveAutoSpriteBackend).advance_ground_distance(distance)
+		return
 	super.advance_ground_stride(normalized_stride_distance(distance))
 
 

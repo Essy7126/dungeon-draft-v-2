@@ -12,6 +12,7 @@ static func get_entries(include_archived_adventures: bool = false) -> Array[Dict
 	var entries: Array[Dictionary] = []
 	_append_run_entries(entries, CATABASE_RUN_PATH)
 	_append_run_entries(entries, CATABASE_RUN_PATH, {"achilles": "painted_g"})
+	_append_run_entries(entries, CATABASE_RUN_PATH, {"achilles": "passe_rive"})
 	# Historical content remains available to explicit lab/test callers only.
 	if include_archived_adventures:
 		_append_run_entries(entries, TRIO_RUN_PATH)
@@ -48,7 +49,7 @@ static func _append_run_entries(entries: Array[Dictionary], run_path: String, va
 		entries.append({
 			"id": entry_id,
 			"display_name": display_name,
-			"appearance": "PASSE-RIVE  ·  Ivoire, jade et bronze" if passe_rive else ("STYLE PEINT  ·  Bronze et turquoise" if painted else "APPARENCE ORIGINALE  ·  Tenue disponible en jeu"),
+			"appearance": "PASSE-RIVE  ·  Capuche bleue et écharpe sauge" if passe_rive else ("STYLE PEINT  ·  Bronze et turquoise" if painted else "APPARENCE ORIGINALE  ·  Tenue disponible en jeu"),
 			"use_preview_portrait": painted or passe_rive,
 			"unit": hero,
 			"run": run,

@@ -1,5 +1,11 @@
 # Catabase — sons intégrés
 
+## Ambiance de caverne
+
+**Loopable Dungeon Ambience**, **JaggedStone**, CC0 1.0.
+[Source](https://opengameart.org/content/loopable-dungeon-ambience) ;
+[adaptations et provenance](ambience/CREDITS.md).
+
 ## Musique
 
 **Soft Mysterious Harp Loop**, **VWolfdog (Jordy Hake)**.

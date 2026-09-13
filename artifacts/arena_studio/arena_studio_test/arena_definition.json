@@ -1028,9 +1028,9 @@
     1.0,
     1.0
   ],
-  "generated_at": "2026-08-26T13:52:22",
+  "generated_at": "2026-09-13T07:50:10",
   "generated_by": "dungeon_draft_studio_2_0_0",
-  "godot_version": "4.7-stable (official)",
+  "godot_version": "4.7.1-stable (official)",
   "grid_origin": [
     688.0,
     164.0
@@ -1054,6 +1054,7 @@
   "occlusion_mask_path": "",
   "presentation_profile_path": "res://data/maps/painted/room_01_forest_presentation.tres",
   "production_notes": "",
+  "registered_terrain_plan_path": "",
   "runtime_entry": "res://data/rooms/maps/painted_battle.tscn",
   "schema_version": 3,
   "source_image_size": [

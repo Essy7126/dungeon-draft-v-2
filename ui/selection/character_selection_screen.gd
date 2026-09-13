@@ -160,7 +160,7 @@ func _build_roster() -> void:
 	var note := _panel(_canvas, Rect2(32, 734, 300, 52), Color("1b1714"), Color(LINE, 0.7), 4)
 	note.name = "RosterNote"
 	_label(note, "UN HÉROS, SON AVENTURE" if include_archived_adventures else "UNE DESCENTE EN SOLO", Rect2(14, 6, 272, 18), 13, GOLD, BOLD)
-	_label(note, "Le groupe est lié au récit choisi." if include_archived_adventures else "Deux apparences, la même aventure.", Rect2(14, 27, 272, 18), 15, MUTED)
+	_label(note, "Le groupe est lié au récit choisi." if include_archived_adventures else "Trois apparences, la même aventure.", Rect2(14, 27, 272, 18), 15, MUTED)
 
 
 func _build_stage() -> void:

@@ -83,6 +83,12 @@ func get_target_cell_failure_reason(
 func on_costs_resolved(_ctx) -> void:
 	pass
 
+
+## Optional spatial override, shared by targeting previews and actual impacts.
+## Null preserves the authored AoE. An empty array is a valid empty override.
+func get_area_override(_caster, _spell, _cell: Vector2i, _grid) -> Variant:
+	return null
+
 # Cellules de la zone d'effet calculées, squelette du rapport posé.
 func on_area_resolved(_ctx) -> void:
 	pass

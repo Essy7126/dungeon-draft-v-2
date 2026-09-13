@@ -1162,6 +1162,8 @@ func add_sourced_shield(
 		_shield_instances.erase(existing)
 		return null
 	var applied := amount - previous_source_value
+	existing.max_absorption_per_hit = maxi(0, int(options.get("max_absorption_per_hit", 0)))
+	existing.remaining_impacts = maxi(-1, int(options.get("remaining_impacts", -1)))
 	EventBus.shield_gained.emit(self, applied)
 	EventBus.shield_applied.emit(self, source, applied)
 	shield_changed.emit(self)
@@ -1254,6 +1256,10 @@ func restore_shield_instances_snapshot(snapshot: Variant) -> bool:
 			):
 			return false
 		instance.value = shield_value
+		instance.max_absorption_per_hit = int(data.get("max_absorption_per_hit", 0))
+		instance.remaining_impacts = int(data.get("remaining_impacts", -1))
+		if instance.max_absorption_per_hit < 0 or instance.remaining_impacts < -1 or instance.remaining_impacts == 0:
+			return false
 		candidates.append(instance)
 		seen_sources[source_id] = true
 	var before := get_shield_instances_snapshot()
@@ -1401,6 +1407,8 @@ func _absorb_with_shield_instances(
 			int(round(float(instance.value) * effectiveness)),
 		)
 		var damage_absorbed := mini(effective_capacity, remaining)
+		if instance.max_absorption_per_hit > 0:
+			damage_absorbed = mini(damage_absorbed, instance.max_absorption_per_hit)
 		if damage_absorbed <= 0:
 			continue
 		var shield_points_spent := mini(
@@ -1408,6 +1416,10 @@ func _absorb_with_shield_instances(
 			maxi(1, int(ceil(float(damage_absorbed) / effectiveness - 0.000001))),
 		)
 		instance.value -= shield_points_spent
+		if instance.remaining_impacts > 0:
+			instance.remaining_impacts -= 1
+			if instance.remaining_impacts == 0:
+				instance.value = 0
 		remaining -= damage_absorbed
 		absorbed += damage_absorbed
 		breakdown.append({

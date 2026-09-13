@@ -5,6 +5,7 @@ extends RefCounted
 static func required_step(session: ExpeditionSession) -> String:
 	if session == null:
 		return "map"
+	if session.needs_preparation: return "departure"
 	if session.is_editable() and session.character.champion_progression.unspent_attribute_points > 0:
 		return "progression"
 	if session.route.phase != "reward":

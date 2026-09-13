@@ -1,5 +1,22 @@
 # Atelier audio — essai gratuit
 
+## Caverne suspendue — 13 septembre 2026
+
+Une boucle de 109 secondes accompagne le Seuil et les combats peints : souffle
+sombre, eau lointaine, aigus atténués et longues variations de niveau. Source
+CC0 JaggedStone, attributions dans `assets/audio/catabase/ambience/CREDITS.md`.
+Recette et mesures reproductibles : `build_cavern_ambience.py` et le manifeste.
+Le lecteur utilise Ambience, entre en 2,5 s et se libère à la sortie de scène.
+Le Seuil respecte son réglage de sons et la pause. Aperçu de 40 secondes :
+`artifacts/audio/cavern_v1/ecoute_caverne.wav`.
+
+Contrôle dédié : `./tools/audio_workshop/verify_cavern.ps1`, **10 vérifications
+WASAPI réussies** sur les contrôleurs de production du Seuil et du combat,
+rapport `artifacts/dev/20260913-093735-cavern-audio-20f7dc95/summary.json`.
+Le parcours réel valide aussi la caverne au Seuil, mais son passage de porte
+reste en échec ; la suite élargie conserve cinq échecs de sauvegarde/inventaire.
+Voir `docs/ai/cavern_ambience_work.md` pour les preuves et limites.
+
 ## Sélection pour l’écran titre — 12 septembre 2026
 
 [Panneau d’écoute : huit musiques](title_music_panel.html), avec les sources,

@@ -185,6 +185,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _render() -> void:
 	if not inspection_only and GameManager.expedition != null:
 		var required := FLOW.required_step(GameManager.expedition)
+		if required == "departure": _page = required
 		if _page in ["map", "preparation"] and required != "map":
 			_page = required
 		elif _page in ["rewards", "capacity"] and _page != required:
@@ -223,6 +224,7 @@ func _render() -> void:
 		return
 	_refresh_resources()
 	match _page:
+		"departure": _render_departure()
 		"progression", "attributes": _render_progression()
 		"capacity": _render_choice_screen(true)
 		"rewards": _render_choice_screen()
@@ -483,7 +485,7 @@ func _render_rewards(parent: Control, capacity_only := false) -> void:
 		_selected_reward = ""
 	_reward_choices.clear()
 	_reward_offers.clear()
-	var offers: Array[Dictionary] = session.reward_options(GameManager.item_catalog)
+	var offers: Array[Dictionary] = session.reward_options(GameManager.item_catalog, GameManager.run_inventory)
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_top", 20)
 	margin.add_theme_constant_override("margin_bottom", 14)
@@ -576,6 +578,15 @@ func _render_preparation() -> void:
 	var open_map := _button(_body, "Choisir mon prochain chemin  →", true)
 	open_map.name = "OpenRouteMap"
 	open_map.pressed.connect(func(): _navigate("map"))
+
+
+func _render_departure() -> void:
+	var column := _scroll_column(_body)
+	var view := preload("res://ui/expedition/catabase_departure_view.gd").new()
+	column.add_child(view)
+	view.configure(GameManager.expedition, GameManager.confirm_catabase_preparation)
+	_navigation.hide()
+	_flow_rail.hide()
 
 
 func _render_build() -> void:

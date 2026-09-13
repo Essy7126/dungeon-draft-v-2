@@ -15,10 +15,12 @@ var last_message := "Achille entre dans Catabase avec ses quatre techniques habi
 var hub_used_ids: Dictionary = {}
 var hub_stock_ids: Array[String] = []
 var branch_receipts: Dictionary = {}
+var needs_preparation := false
 
 
 func initialize(state: CharacterRunState, seed_value: int) -> void:
 	character = state
+	character.unit.set_meta("ct_session", weakref(self))
 	route.initialize(seed_value)
 	build.initialize(state)
 	gold = 0
@@ -33,7 +35,41 @@ func is_editable() -> bool:
 	return not awarded_node_ids.is_empty() and route.phase in ["map", "reward"]
 
 
+func prepare_start(selection: Dictionary, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+	if not needs_preparation or not route.current_node_id.is_empty() or not CatabasePreparationCatalog.valid(selection):
+		return _failure("Cette préparation n'est pas disponible.")
+	var ids: Array[String] = ["catabase_ct_" + String(selection.weapon), "catabase_ct_" + String(selection.armor), "ct_relic_" + String(selection.relic), "ct_supply_" + String(selection.supply)]
+	if inventory == null or inventory.get_empty_slot_count() < 4: return _failure("Quatre places libres sont nécessaires pour préparer le départ.")
+	for id in ids:
+		if item_catalog.get_definition(StringName(id)) == null or not inventory.can_accept(StringName(id)): return _failure("Un objet de préparation est indisponible.")
+	var service := EquipmentService.new()
+	if not service.initialize(item_catalog): return _failure("Le catalogue d'équipement est invalide.")
+	var before_inventory := inventory.to_snapshot()
+	var before_equipment := character.equipment_loadout.to_snapshot()
+	for index in ids.size():
+		var added := inventory.try_add(StringName(ids[index]))
+		var ok := bool(added.get("success", false))
+		if ok and index < 2:
+			ok = bool(service.equip(inventory, character, added.instance_ids[0], ItemDefinition.EquipmentSlot.WEAPON if index == 0 else ItemDefinition.EquipmentSlot.ARMOR).get("success", false))
+		if not ok:
+			inventory.restore_snapshot(before_inventory)
+			character.equipment_loadout.restore_snapshot(before_equipment, item_catalog)
+			service.rebuild_state(character)
+			return _failure("La préparation a été annulée sans consommer d'objet.")
+	if not build.configure_start(selection):
+		inventory.restore_snapshot(before_inventory)
+		character.equipment_loadout.restore_snapshot(before_equipment, item_catalog)
+		service.rebuild_state(character)
+		return _failure("Le choix de techniques n'est pas valide.")
+	gold = 60
+	needs_preparation = false
+	last_message = "Départ : %s · %s · 60 oboles" % [CatabasePreparationCatalog.WEAPONS[selection.weapon][0], CatabasePreparationCatalog.ARMORS[selection.armor][0]]
+	journal.append(last_message)
+	return {"success": true, "message": last_message}
+
+
 func enter(node_id: String) -> bool:
+	if needs_preparation: return false
 	if not route.choose_node(node_id):
 		return false
 	character.begin_encounter()
@@ -96,7 +132,7 @@ func award_destination() -> void:
 		journal.append(challenges.result_text)
 
 
-func reward_options(item_catalog: ItemCatalog) -> Array[Dictionary]:
+func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	if route.phase != "reward":
 		return result
@@ -116,6 +152,14 @@ func reward_options(item_catalog: ItemCatalog) -> Array[Dictionary]:
 	var item := _equipment_offer(item_catalog)
 	if not item.is_empty():
 		result.append(item)
+	if not build.starting_selection.is_empty():
+		var relics := CatabasePreparationCatalog.relic_items()
+		var offset := posmod(hash("%d:%s:relic" % [route.seed, node.id]), relics.size())
+		for index in relics.size():
+			var relic: ItemDefinition = relics[(offset + index) % relics.size()]
+			if inventory != null and inventory.get_slots().any(func(instance): return instance != null and instance.definition_id == relic.item_id): continue
+			result.append({"id": "relic:" + String(relic.item_id), "item_id": String(relic.item_id), "title": relic.display_name, "description": relic.description})
+			break
 	match str(node.kind):
 		"hub":
 			result.append({"id": "rest", "title": "Le feu des compagnons", "description": "Récupérer 30 % de vos PV maximum. Une seule faveur à ce refuge."})
@@ -131,7 +175,7 @@ func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog
 	if route.phase != "reward":
 		return _failure("La récompense a déjà été choisie.")
 	var selected: Dictionary = {}
-	for option in reward_options(item_catalog):
+	for option in reward_options(item_catalog, inventory):
 		if option.id == option_id:
 			selected = option
 	if selected.is_empty():
@@ -340,10 +384,13 @@ func _failure(reason: String) -> Dictionary:
 func to_snapshot() -> Dictionary:
 	var result := {"version": 2, "route": route.to_snapshot(), "build": build.to_snapshot(), "gold": gold, "awarded_node_ids": awarded_node_ids.duplicate(), "journal": journal.duplicate(), "last_message": last_message, "reward_spell_id": reward_spell_id, "reward_item_id": reward_item_id, "hub_used_ids": hub_used_ids.duplicate(true), "hub_stock_ids": hub_stock_ids.duplicate(), "branch_receipts": branch_receipts.duplicate()}
 	if challenges.enabled: result["challenges"] = challenges.snapshot()
+	result["needs_preparation"] = needs_preparation
 	return result
 
 
 func restore_snapshot(snapshot: Dictionary) -> bool:
+	if not snapshot.get("needs_preparation", false) is bool: return false
+	var pending_start: bool = snapshot.get("needs_preparation", false)
 	var candidate_challenges := preload("res://core/expedition/catabase_challenge_state.gd").new()
 	if snapshot.has("challenges"):
 		if not snapshot.challenges is Dictionary or not candidate_challenges.restore(snapshot.challenges):
@@ -357,6 +404,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	var candidate_route := ExpeditionRouteState.new()
 	if not candidate_route.restore_snapshot(snapshot.route):
 		return false
+	if pending_start and (not candidate_route.current_node_id.is_empty() or not candidate_route.completed_node_ids.is_empty() or not snapshot.build.get("starting_selection", {}).is_empty()): return false
 	var expected: Array[String] = candidate_route.completed_node_ids.duplicate()
 	if candidate_route.phase == "reward":
 		expected.append(candidate_route.current_node_id)
@@ -419,7 +467,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	if not saved_spell.is_empty() and saved_spell not in build.catalog.card_spell_ids():
 		return false
 	var saved_axis := build.catalog.get_spell_axis(saved_spell)
-	if build.catalog.DISCOVERY_DEPTHS.has(saved_axis) and saved_axis not in discoveries:
+	if build.catalog.DISCOVERY_DEPTHS.has(saved_axis) and saved_axis not in discoveries and not build._starting_axis_available(saved_axis, snapshot.build.get("starting_selection", {})):
 		return false
 	if not build.restore_snapshot(snapshot.build):
 		return false
@@ -436,5 +484,6 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	hub_stock_ids.assign(snapshot.hub_stock_ids)
 	branch_receipts = snapshot.branch_receipts.duplicate()
 	challenges = candidate_challenges
-	build.is_editable = is_editable()
+	needs_preparation = pending_start
+	build.is_editable = needs_preparation or is_editable()
 	return true

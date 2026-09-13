@@ -9,6 +9,7 @@ var steps: AudioStreamPlayer2D
 var _distance := 0.0
 var enabled := true
 var _listener: AudioListener2D
+var cavern: AudioStreamPlayer
 
 
 func configure(world: Node2D, actor: Node2D, definition: Dictionary, extent: Vector2) -> void:
@@ -38,8 +39,19 @@ func configure(world: Node2D, actor: Node2D, definition: Dictionary, extent: Vec
 	enabled = true
 
 
+func enable_cavern() -> void:
+	if is_instance_valid(cavern):
+		return
+	cavern = preload("res://core/audio/cavern_ambience.gd").new()
+	cavern.name = "CavernAmbience"
+	cavern.gain_db = -3.0
+	add_child(cavern)
+
+
 func advance(distance: float, halted: bool, audible: bool) -> void:
 	enabled = audible
+	if is_instance_valid(cavern):
+		cavern.stream_paused = halted or not audible
 	for source in sources:
 		source.stream_paused = halted or not audible
 	if steps == null:
@@ -61,6 +73,10 @@ func _exit_tree() -> void:
 
 
 func dispose() -> void:
+	if is_instance_valid(cavern):
+		cavern.dispose()
+		cavern.queue_free()
+	cavern = null
 	for source in sources:
 		_release_player(source)
 	sources.clear()

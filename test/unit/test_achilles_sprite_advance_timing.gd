@@ -87,8 +87,8 @@ func _assert_advance_arrival(distance: int) -> void:
 		if bool(state.arrived) or Time.get_ticks_msec() - int(state.release_at) < 315:
 			continue
 		late_samples += 1
-		assert_eq(sprite.animation, &"dash_E", "Long advance must not drop to idle in flight")
-		assert_eq(sprite.frame, 2, "Planted landing cannot slide across the grid")
+		assert_eq(sprite.animation, &"run_SE", "Long advance must keep the supplied sprint until arrival")
+		assert_between(sprite.frame, 0, 6, "Translation samples the native seven-frame sprint")
 		assert_false(sprite.is_playing(), "Charge is sampled by the manual clock")
 		assert_true(bool(adapter.sprite_backend.get_runtime_state().manual_clock))
 		assert_true(adapter._action_pending, "Ordinary movement must not replace the active advance")
@@ -100,21 +100,21 @@ func _assert_advance_arrival(distance: int) -> void:
 	assert_almost_eq(view.position, battle.grid_cell_to_parent_local(destination, battle), Vector2(0.001, 0.001))
 	assert_false(adapter._action_pending)
 	assert_false(view._optional_visual_action_pending)
-	assert_eq(sprite.animation, &"dash_E")
+	assert_eq(sprite.animation, &"dash_SE")
 	assert_eq(sprite.frame, 3, "Real arrival starts a short planted reception")
 	var landing_seconds := float(adapter.sprite_backend.get_runtime_state().landing_duration_seconds)
 	adapter.sprite_backend.advance_simulation(landing_seconds - 0.001)
 	assert_eq(sprite.frame, 3)
 	adapter.sprite_backend.advance_simulation(0.001)
-	assert_eq(sprite.animation, &"idle_E")
+	assert_eq(sprite.animation, &"idle_SE")
 	assert_eq(sprite.frame, 0)
 	assert_false(sprite.is_playing())
 	# Arrival cancels the remaining fallback budget. It must neither emit a
 	# stale completion nor let parent-motion tracking restart the walk clip.
 	adapter.sprite_backend.advance_simulation(adapter.sprite_profile.advance_duration_seconds + 0.5)
 	await wait_process_frames(2)
-	assert_eq(sprite.animation, &"idle_E")
-	assert_eq(sprite.frame, 0)
+	assert_eq(sprite.animation, &"idle_SE")
+	assert_gt(sprite.frame, 0, "Breathing resumes after the planted arrival")
 	assert_false(sprite.is_playing())
 	assert_eq(state.releases, 1)
 	assert_eq(state.finishes, 0)

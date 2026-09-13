@@ -6,7 +6,7 @@ extends Node2D
 signal visual_initialized(success: bool)
 
 const SpriteBackend := preload("res://characters/achilles/2d/achilles_sprite_2d_backend.gd")
-const DEFAULT_PROFILE := preload("res://data/visuals/achilles/achilles_kit_sprite_profile_v2.tres")
+const DEFAULT_PROFILE := preload("res://data/visuals/achilles/achilles_autosprite_profile_v1.tres")
 
 @export var sprite_profile: AchillesSpriteVisualProfile = DEFAULT_PROFILE
 @export_range(0.05, 2.0, 0.01) var display_scale := 0.35
@@ -17,6 +17,7 @@ var _backend: AchillesSprite2DBackend
 var _local_profile: AchillesSpriteVisualProfile
 var _facing := "S"
 var _visual_ready := false
+var locomotion_running := false
 
 
 func _ready() -> void:
@@ -26,7 +27,8 @@ func _ready() -> void:
 		return
 	_local_profile = sprite_profile.duplicate(true) as AchillesSpriteVisualProfile
 	_local_profile.display_scale = display_scale
-	_backend = SpriteBackend.new()
+	var backend_type := _local_profile.backend_script if _local_profile.backend_script != null else SpriteBackend
+	_backend = backend_type.new() as AchillesSprite2DBackend
 	_backend.name = "AchillesSprite"
 	add_child(_backend)
 	_visual_ready = _backend.configure(_local_profile)
@@ -51,6 +53,11 @@ func is_visual_ready() -> bool:
 func face_for_direction(direction: Vector2) -> String:
 	if direction.is_zero_approx() or not direction.is_finite():
 		return _facing
+	if sprite_profile.directions_are_screen_space:
+		_facing = AchillesAutoSpriteProfile.screen_facing(direction)
+		if _visual_ready:
+			_backend.set_facing_label(_facing)
+		return _facing
 	var vertical := direction.y / maxf(isometric_vertical_ratio, 0.01)
 	var grid_direction := Vector2(direction.x + vertical, vertical - direction.x)
 	if absf(grid_direction.x) >= absf(grid_direction.y):
@@ -64,7 +71,7 @@ func face_for_direction(direction: Vector2) -> String:
 
 func play_walk(direction := Vector2.ZERO) -> bool:
 	face_for_direction(direction)
-	return _backend.play_move(_facing, false) if _visual_ready else false
+	return _backend.play_move(_facing, locomotion_running) if _visual_ready else false
 
 
 func play_idle() -> bool:

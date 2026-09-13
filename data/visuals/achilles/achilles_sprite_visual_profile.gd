@@ -5,6 +5,9 @@ extends Resource
 @export var profile_id: StringName = &"achilles_cour_des_sources_sprites_v1"
 @export_file("*.tres") var sprite_frames_path := "res://assets/characters/Achilles/sprites_cour_des_sources_v1/achilles_sprite_frames.tres"
 @export var frames: SpriteFrames
+## Optional presentation adapter for a different authored sheet contract.
+@export var backend_script: Script
+@export var directions_are_screen_space := false
 @export var expanded_kit_enabled := false
 @export_range(0.05, 2.0, 0.01) var attack_duration_seconds := 0.60
 @export_range(0.0, 1.0, 0.01) var attack_release_seconds := 0.30

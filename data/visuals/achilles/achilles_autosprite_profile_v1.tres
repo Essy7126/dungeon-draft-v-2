@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="AchillesAutoSpriteProfile" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/achilles/achilles_autosprite_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://characters/achilles/2d/achilles_autosprite_backend.gd" id="2_backend"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"achilles_autosprite_v1"
+sprite_frames_path = "res://assets/characters/Achilles/autosprite_v1/sprite_frames.tres"
+backend_script = ExtResource("2_backend")
+directions_are_screen_space = true
+expanded_kit_enabled = true
+frame_canvas_size = Vector2i(256, 256)
+foot_anchor = Vector2(128, 236)
+display_scale = 0.42
+attack_release_frame = 8
+attack_duration_seconds = 0.85
+attack_release_seconds = 0.28
+shot_duration_seconds = 1.0
+shot_release_seconds = 0.48
+sweep_duration_seconds = 0.9
+sweep_release_seconds = 0.34
+guard_duration_seconds = 0.48
+guard_release_seconds = 0.24
+advance_duration_seconds = 1.2
+advance_release_seconds = 0.1
+death_duration_seconds = 0.25
+death_fade_seconds = 0.25
+action_clip_settings = {
+"attack": {"frame_count": 25, "duration_seconds": 0.85, "release_seconds": 0.28, "release_frame": 8},
+"sweep": {"frame_count": 25, "duration_seconds": 0.9, "release_seconds": 0.34, "release_frame": 9},
+"hook": {"frame_count": 25, "duration_seconds": 0.9, "release_seconds": 0.4, "release_frame": 11},
+"bow": {"frame_count": 25, "duration_seconds": 1.0, "release_seconds": 0.48, "release_frame": 12},
+"bow_piercing": {"frame_count": 25, "duration_seconds": 1.0, "release_seconds": 0.48, "release_frame": 12},
+"bow_death": {"frame_count": 25, "duration_seconds": 1.05, "release_seconds": 0.5, "release_frame": 12},
+"volley": {"frame_count": 25, "duration_seconds": 1.05, "release_seconds": 0.5, "release_frame": 12},
+"guard": {"frame_count": 4, "duration_seconds": 0.48, "release_seconds": 0.24, "release_frame": 2}
+}
+cast_origins = {
+"N": Vector2(10, -62), "NE": Vector2(18, -59), "E": Vector2(24, -52),
+"SE": Vector2(22, -45), "S": Vector2(-10, -43), "SW": Vector2(-24, -45),
+"W": Vector2(-24, -52), "NW": Vector2(-18, -59)
+}

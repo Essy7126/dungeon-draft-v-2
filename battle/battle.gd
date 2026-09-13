@@ -1073,6 +1073,11 @@ func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
+	if GameManager.expedition != null and not GameManager.expedition.build.starting_selection.is_empty():
+		var marks := preload("res://battle/catabase_build_marks.gd").new()
+		marks.battle = self
+		marks.z_index = 25
+		add_child(marks)
 	if GameManager.expedition != null and GameManager.expedition.challenges.enabled:
 		_challenge_battle = preload("res://battle/catabase_challenge_battle.gd").new()
 		add_child(_challenge_battle)

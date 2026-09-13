@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "source": "https://opengameart.org/content/loopable-dungeon-ambience",
+  "download": "https://opengameart.org/sites/default/files/dungeon_ambient_1_0.ogg",
+  "author": "JaggedStone",
+  "license": "CC0 1.0",
+  "speed": 0.82,
+  "sample_rate": 32000,
+  "duration_seconds": 109.011875,
+  "rms_dbfs": -29.99356041861595,
+  "peak_dbfs": -17.758259307790595,
+  "loop_seam_delta": 0.0035100355744361877,
+  "source_sha256": "df491823e4877371c34dbda4e9321cd83a4a14fa7573cee0ebca1ae423b70e6e",
+  "output_sha256": "ffd8f100c34641552eb8af0bb175814a3693f8544430c9be723dbd420714c82d"
+}

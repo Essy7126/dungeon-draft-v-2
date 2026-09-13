@@ -16,6 +16,9 @@ enum ExpiryPolicy {
 @export var expires_activation: int = -1
 @export_range(-1000, 1000, 1) var priority: int = 0
 @export var tags: Array[StringName] = []
+## Zero/-1 preserve unlimited absorption of historical shields.
+@export var max_absorption_per_hit: int = 0
+@export var remaining_impacts: int = -1
 
 
 func configure(
@@ -47,6 +50,7 @@ func is_valid() -> bool:
 		and value > 0 \
 		and initial_value >= value \
 		and created_activation >= 0 \
+		and max_absorption_per_hit >= 0 and remaining_impacts >= -1 and remaining_impacts != 0 \
 		and (expiry_policy != ExpiryPolicy.START_OF_ACTIVATION or expires_activation > created_activation)
 
 
@@ -70,4 +74,6 @@ func to_snapshot() -> Dictionary:
 		"expires_activation": expires_activation,
 		"priority": priority,
 		"tags": tags.map(func(tag: StringName) -> String: return str(tag)),
+		"max_absorption_per_hit": max_absorption_per_hit,
+		"remaining_impacts": remaining_impacts,
 	}

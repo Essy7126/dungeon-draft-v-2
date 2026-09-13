@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://characters/achilles/passe_rive_iso_unit_view.gd" id="1_adapter"]
-[ext_resource type="Resource" path="res://assets/characters/Achilles/passe_rive_iso_v1/profile.tres" id="2_profile"]
+[ext_resource type="Script" path="res://characters/achilles/passe_rive_autosprite_view.gd" id="1_adapter"]
+[ext_resource type="Resource" path="res://data/visuals/achilles/passe_rive_autosprite_profile_v1.tres" id="2_profile"]
 
 [node name="PasseRiveIsoUnitView" type="Node2D"]
 script = ExtResource("1_adapter")

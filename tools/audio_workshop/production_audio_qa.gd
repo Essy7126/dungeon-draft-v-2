@@ -6,6 +6,40 @@ var _context_cues: Dictionary = { }
 var _sound_capture: AudioEffectCapture
 var _sound_bus := -1
 var _title_music: WeakRef
+var _threshold_cavern: WeakRef
+
+
+func _verify_threshold(hall: Node) -> void:
+	var cave: AudioStreamPlayer = hall.ambience.cavern
+	if not _check(cave != null, "threshold owns cavern ambience"):
+		return
+	_threshold_cavern = weakref(cave)
+	await _verify_cavern(cave, "threshold")
+	hall.audio_enabled = false
+	await _frames(3)
+	_check(cave.stream_paused, "threshold sound toggle suspends cavern")
+	hall.audio_enabled = true
+	await _frames(3)
+	_check(not cave.stream_paused, "threshold sound toggle restores cavern")
+
+
+func _verify_cavern(cave: AudioStreamPlayer, label: String) -> void:
+	await get_tree().create_timer(2.7).timeout
+	_check(
+		cave.playing and cave.stream.loop and cave.bus == &"Ambience",
+		label + " cavern loops on own bus",
+	)
+	var index := AudioServer.get_bus_index(&"Ambience")
+	var capture := AudioEffectCapture.new()
+	capture.buffer_length = 2.0
+	AudioServer.add_bus_effect(index, capture)
+	cave.seek(cave.stream.get_length() - 0.3)
+	await get_tree().create_timer(1.0).timeout
+	var peak := _peak(capture)
+	_report[label + "_cavern_peak"] = peak
+	_check(peak > 0.0001 and peak < 0.16, label + " quiet real cavern signal across loop")
+	_check(cave.get_playback_position() < 2.0, label + " cavern crossed loop boundary")
+	AudioServer.remove_bus_effect(index, AudioServer.get_bus_effect_count(index) - 1)
 
 
 func _verify_title(title: Node) -> void:
@@ -82,6 +116,11 @@ func _finish(exit_code: int) -> void:
 	var audio := battle.get_node_or_null("CombatAudio")
 	if not _check(audio != null, "production scene owns audio without audition toolbar"):
 		return
+	_check(
+		_threshold_cavern != null and _threshold_cavern.get_ref() == null,
+		"threshold cavern released before battle",
+	)
+	await _verify_cavern(audio.cavern, "battle")
 	_check(get_tree().root.find_child("AudioCombatTrial", true, false) == null, "no audio trial scene")
 	_check(audio.music.playing and audio.music.bus == &"Music", "production harp on Music bus")
 	_check(audio.music.stream.loop_mode == AudioStreamWAV.LOOP_FORWARD, "production harp loops")

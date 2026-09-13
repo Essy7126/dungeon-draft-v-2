@@ -1,5 +1,13 @@
 # Reprise — nouveau personnage et chaîne de production Ankama
 
+**13 septembre — priorité courante : [Passe-rive simplifié V2 pour AutoSprite](../../art/source/characters/achilles/passe_rive_redesign_v2/README.md).**
+La V1 est jugée trop musclée et trop détaillée. V2 : vêtements amples,
+ombres et accessoires simplifiés, identité et allure adulte conservées.
+Une proposition sans équipement, PNG transparent prêt à essayer. Aucun test
+AutoSprite ni animation ; attente du retour sur le design. La recherche IA du
+12 septembre a été interrompue, sans nouveau rapport livré. Ne pas reprendre
+automatiquement le cycle du Veilleur ou les essais de découpe de jambes V2.
+
 **Nouvelle instruction du 12 septembre : revenir au plus simple.** L'utilisateur
 fournit une ancienne planche et demande une tentative directe de marche dessinée,
 peu d'images, quatre angles, puis essai Godot. Cela remplace la priorité externe

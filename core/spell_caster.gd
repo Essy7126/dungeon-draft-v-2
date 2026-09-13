@@ -107,6 +107,11 @@ func get_aoe_cells(
 	) -> Array:
 	var result: Array = []
 	var actor := _grid.get_unit(origin) as Unit if _grid != null else null
+	if actor != null:
+		for modifier in _gather_modifiers(actor, spell):
+			var override_cells: Variant = modifier.get_area_override(actor, spell, center, _grid)
+			if override_cells is Array:
+				return override_cells
 	if actor != null and actor.mastery_combat_adapter != null:
 		var modified: Array = actor.mastery_combat_adapter.preview_target_cells(actor, spell, center)
 		if not modified.is_empty():

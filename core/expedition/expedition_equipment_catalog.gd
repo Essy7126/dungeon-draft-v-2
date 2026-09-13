@@ -90,6 +90,16 @@ func _init() -> void:
 
 
 func definitions() -> Array[ItemDefinition]:
+	if not _items.any(func(item: ItemDefinition): return item.item_id == &"catabase_ct_marteau"):
+		for item in _items:
+			var weapon := CatabasePreparationCatalog.weapon_for_item(String(item.item_id))
+			if weapon.is_empty(): continue
+			var modifier := CatabaseCombatModifier.new()
+			modifier.mode = "weapon"
+			modifier.weapon_id = weapon
+			item.spell_modifiers.append(modifier)
+			item.description += "\nActions d'arme : " + String(CatabasePreparationCatalog.WEAPONS[weapon][0]) + "."
+		CatabasePreparationCatalog.add_items(self)
 	return _items.duplicate()
 
 
@@ -112,6 +122,9 @@ static func merge_into(source: ItemCatalog) -> ItemCatalog:
 				exists = true
 				break
 		if not exists:
+			merged.definitions.append(definition)
+	for definition in CatabasePreparationCatalog.relic_items():
+		if not merged.definitions.any(func(item: ItemDefinition): return item.item_id == definition.item_id):
 			merged.definitions.append(definition)
 	merged.rebuild_index()
 	return merged

@@ -13,6 +13,7 @@ const SOUNDS := {
 @export_range(0.0, 1.0) var music_volume := 0.5
 
 var music: AudioStreamPlayer
+var cavern: AudioStreamPlayer
 var voices: Array[AudioStreamPlayer] = []
 var _battle: Node
 var _disposed := false
@@ -25,6 +26,9 @@ var _facts: Dictionary = { }
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_battle = get_parent()
+	cavern = preload("res://core/audio/cavern_ambience.gd").new()
+	cavern.name = "CavernAmbience"
+	add_child(cavern)
 	music = AudioStreamPlayer.new()
 	music.name = "Music"
 	music.bus = &"Music"
@@ -182,6 +186,8 @@ func dispose() -> void:
 	if _disposed:
 		return
 	_disposed = true
+	if is_instance_valid(cavern):
+		cavern.dispose()
 	for binding in [
 		[EventBus.combat_started, _on_combat_started],
 		[EventBus.voluntary_movement_prepared, _on_walk_prepared],

@@ -1,0 +1,19 @@
+{
+  "size": [
+    1024,
+    1536
+  ],
+  "mode": "RGBA",
+  "alpha_zero_pixels": 1127517,
+  "alpha_opaque_pixels": 50857,
+  "bbox": [
+    218,
+    24,
+    810,
+    1515
+  ],
+  "generator": "ImageGen built-in",
+  "background_cleanup": "BiRefNet general lite, existing CPU environment",
+  "animation_tested": false,
+  "autosprite_tested": false
+}

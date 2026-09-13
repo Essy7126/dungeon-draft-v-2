@@ -97,34 +97,7 @@ func _fight(node: Dictionary, seed_value: int, kit: String) -> Dictionary:
 	data.max_hp = Progression.base_hp_for_level(level)
 	data.attack_power = Progression.base_prowess_for_level(level)
 	var hero := Unit.from_data(data)
-	var catalog := ExpeditionBuildCatalog.new()
-	var ids: Array = {
-		"briseur": [
-			"exp_frappe_ouverte",
-			"exp_crochet",
-			"achilles_fulminant_dash",
-			"achilles_bronze_guard",
-		],
-		"chasseur": [
-			"achilles_peleid_strike",
-			"exp_tir_de_guet",
-			"exp_marque",
-			"achilles_bronze_guard",
-		],
-		"airain": [
-			"achilles_peleid_strike",
-			"exp_heurt",
-			"achilles_fulminant_dash",
-			"exp_garde_eaque",
-		],
-	}[kit]
-	hero.spells.clear()
-	for id: String in ids:
-		var spell := catalog.get_spell(id)
-		if spell == null:
-			errors.append("Missing hero spell: " + id)
-		else:
-			hero.spells.append(spell)
+	var hero_context := _prepare_hero(hero, data, kit, int(node.depth))
 	grid.place_unit(hero, room.hero_spawn_zone[0])
 	var units: Array = [hero]
 	var roster: Array = []
@@ -235,6 +208,7 @@ func _fight(node: Dictionary, seed_value: int, kit: String) -> Dictionary:
 		"enemy_casts": enemy_casts,
 		"roster": roster,
 	}
+	_release_hero(hero_context)
 	for unit: Unit in units:
 		unit.clear_combat_effect_history()
 		unit.active_statuses.clear()
@@ -343,3 +317,38 @@ func _position_score(
 		):
 			danger += 2.0
 	return access - float(nearest) - danger
+
+
+func _prepare_hero(hero: Unit, _data: UnitData, kit: String, _depth: int) -> Dictionary:
+	var catalog := ExpeditionBuildCatalog.new()
+	var ids: Array = {
+		"briseur": [
+			"exp_frappe_ouverte",
+			"exp_crochet",
+			"achilles_fulminant_dash",
+			"achilles_bronze_guard",
+		],
+		"chasseur": [
+			"achilles_peleid_strike",
+			"exp_tir_de_guet",
+			"exp_marque",
+			"achilles_bronze_guard",
+		],
+		"airain": [
+			"achilles_peleid_strike",
+			"exp_heurt",
+			"achilles_fulminant_dash",
+			"exp_garde_eaque",
+		],
+	}[kit]
+	hero.spells.clear()
+	for id: String in ids:
+		var spell := catalog.get_spell(id)
+		if spell == null:
+			errors.append("Missing hero spell: " + id)
+		else:
+			hero.spells.append(spell)
+	return {}
+
+func _release_hero(_context: Dictionary) -> void:
+	pass

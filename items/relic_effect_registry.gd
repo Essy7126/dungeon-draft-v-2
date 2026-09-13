@@ -416,6 +416,9 @@ func _register_defaults() -> void:
 		register_descriptor(KIND_TARGET, {"id": value[0], "label": value[1], "requires": value[2]})
 	for value in [
 		[ItemReactiveEffectData.RESULT_CURRENT_AP, "Donner ou enlever des PA ce tour", []],
+		[&"ct_passive", "Activer une relique de préparation de Catabase", []],
+		[&"ct_bronze", "Stocker le bronze absorbé, réserve limitée", [&"shield_absorption", &"damage_source"]],
+		[&"ct_supply", "Consommer une relique éphémère pour un PA", []],
 		[ItemReactiveEffectData.RESULT_NEXT_TURN_AP, "Donner ou enlever des PA au tour suivant", []],
 		[ItemReactiveEffectData.RESULT_CURRENT_MP, "Donner ou enlever des PM ce tour", []],
 		[ItemReactiveEffectData.RESULT_NEXT_TURN_MP, "Donner ou enlever des PM au tour suivant", []],

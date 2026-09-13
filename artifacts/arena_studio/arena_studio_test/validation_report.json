@@ -3,9 +3,9 @@
   "blocking_errors": 0,
   "context": "arena_validation",
   "errors": 0,
-  "generated_at": "2026-08-26T13:52:22",
+  "generated_at": "2026-09-13T07:50:10",
   "generated_by": "dungeon_draft_studio_2_0_0",
-  "godot_version": "4.7-stable (official)",
+  "godot_version": "4.7.1-stable (official)",
   "information": 6,
   "messages": [
     {
@@ -163,7 +163,7 @@
         "EDITOR_ONLY": 24,
         "FUTURE_EXPLICIT": 17,
         "MANIFEST_ONLY": 10,
-        "RUNTIME_CONSUMED": 83,
+        "RUNTIME_CONSUMED": 84,
         "UNKNOWN": 0,
         "UNSUPPORTED": 0
       },
@@ -614,6 +614,13 @@
           "gameplay": false,
           "key": "ArenaDefinition.production_notes",
           "property": "production_notes",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.registered_terrain_plan_path",
+          "property": "registered_terrain_plan_path",
           "type": "ArenaDefinition"
         },
         {

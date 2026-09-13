@@ -7,7 +7,7 @@ const PortraitDialogue := preload("res://ui/dialogue/portrait_dialogue.gd")
 const CHARON_PORTRAIT := preload("res://assets/catabase/dialogue/charon_v1/portrait.png")
 const CHARON_GREETING := "Te voilà, Achille. Au-delà de cette porte, un nouveau monde t’attend.\n\nMais souviens-toi : ici, c’est moi, Charon, qui déciderai si tu peux poursuivre ta route… ou si ton voyage s’arrête."
 const CLASSIC_PROFILE := preload(
-	"res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres"
+	"res://data/visuals/achilles/achilles_autosprite_profile_v1.tres"
 )
 const PAINTED_PROFILE := preload(
 	"res://data/visuals/achilles/achilles_painted_g_sprite_profile.tres"
@@ -48,6 +48,7 @@ func _ready() -> void:
 	await super._ready()
 	if world == null or not is_inside_tree():
 		return
+	ambience.enable_cavern()
 	_route_line = Line2D.new()
 	_route_line.name = "ThresholdRoute"
 	_route_line.width = 2.0
@@ -67,7 +68,7 @@ func _ready() -> void:
 
 
 static func profile_for_variants(variants: Dictionary) -> AchillesSpriteVisualProfile:
-	return PAINTED_PROFILE if str(variants.get("achilles", "")) == "painted_g" else CLASSIC_PROFILE
+	return RunHeroVisualVariants.exploration_profile(variants)
 
 
 func _material_shader() -> Shader:
@@ -421,6 +422,7 @@ func request_move(destination: Vector2) -> bool:
 	interactions.cancel()
 	_path = route.path
 	_path_index = 0
+	_choose_route_gait()
 	_target = route.destination
 	_marker.position = _target
 	_marker.show()
@@ -473,7 +475,7 @@ func _advance_move(delta: float) -> void:
 	for index in range(_path_index, _path.size()):
 		remaining += _ground_distance(_path[index] - previous)
 		previous = _path[index]
-	var desired_speed := minf(float(definition.world.speed), sqrt(1200.0 * remaining))
+	var desired_speed := minf(float(definition.world.speed) * _route_speed_multiplier, sqrt(1200.0 * remaining))
 	if _path_index + 1 < _path.size():
 		var approach := _path[_path_index] - player.position
 		var departure := _path[_path_index + 1] - _path[_path_index]

@@ -285,7 +285,7 @@ func start_configured_run() -> bool:
 	_threshold_entry_pending = false
 	if selected_run.catabase_route_enabled:
 		_next_run_start_room_index = 0
-		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants, true)
+		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants, true, true)
 	start_run(selected_run)
 	return run_active
 
@@ -749,6 +749,11 @@ func equip_inventory_item(
 	if result.get("success", false):
 		equipment_changed.emit(result.duplicate(true))
 		if expedition != null:
+			if slot == ItemDefinition.EquipmentSlot.WEAPON:
+				var equipped := state.equipment_loadout.get_item(slot)
+				if equipped != null:
+					var weapon := CatabasePreparationCatalog.weapon_for_item(String(equipped.definition_id))
+					expedition.build.learn_weapon(weapon)
 			_save_expedition_transaction(result)
 	return result
 
@@ -2236,7 +2241,7 @@ func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array
 
 
 # Catabase orchestration stays at destination boundaries, outside combat.
-func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false) -> bool:
+func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false) -> bool:
 	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
 	var fingerprint := _current_replacement_fingerprint()
@@ -2256,8 +2261,26 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	expedition.initialize(get_character_state(&"achilles"), run_seed)
 	expedition.challenges.enabled = challenges_enabled
 	last_restore_error = &""
+	if prepare_loadout:
+		expedition.needs_preparation = true
+		_pending_expedition_action = "open_destination"
+		if not save_expedition(): return false
+		_pending_expedition_action = ""
+		_request_scene_change(EXPEDITION_SCREEN_PATH)
+		return true
 	# The cinematic and selected hero lead directly to the same authored opening.
 	return choose_expedition_node("d01_0")
+
+
+func confirm_catabase_preparation(selection: Dictionary) -> Dictionary:
+	if expedition == null or not run_active: return {"success": false, "message": "Aucune run en préparation."}
+	var result := expedition.prepare_start(selection, run_inventory, item_catalog)
+	if not bool(result.get("success", false)): return result
+	champion_build_changed.emit(&"achilles")
+	var entered := choose_expedition_node("d01_0")
+	result["saved"] = entered
+	if not entered: result["message"] = str(get_expedition_save_status().get("message", "Reprenez la sauvegarde du départ."))
+	return result
 
 
 func choose_expedition_node(node_id: String) -> bool:

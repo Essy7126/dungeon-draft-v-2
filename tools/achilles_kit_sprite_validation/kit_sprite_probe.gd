@@ -50,6 +50,23 @@ const CLIP_MAX_FRAMES := 360
 const CLIP_INTERVAL_USEC := 50000
 
 
+func _uses_autosprite() -> bool:
+	return is_instance_valid(_observed_visual) and (_observed_visual.get("sprite_profile") is AchillesAutoSpriteProfile or _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile)
+
+
+func _expected_action_stem() -> String:
+	if _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile:
+		return PasseRiveAutoSpriteBackend.action_for(StringName("cast:" + str(_active.spell_id)), _active.presentation)
+	return str(_active.presentation.animation_stem)
+
+
+func _expected_sprite_direction() -> String:
+	if not _uses_autosprite():
+		return str(configuration.direction)
+	var delta: Vector2 = _battle.grid_cell_to_global(_hero.grid_pos + Vector2i(placement.direction_vector)) - _battle.grid_cell_to_global(_hero.grid_pos)
+	return AchillesAutoSpriteProfile.screen_facing(delta)
+
+
 func _ready() -> void:
 	_output = ProjectSettings.globalize_path("res://artifacts/achilles_kit_sprite_validation_v2")
 	for argument: String in OS.get_cmdline_user_args():
@@ -275,7 +292,7 @@ func _cast(spell_id: StringName, target: Vector2i) -> void:
 	_active["enemies_after"] = _enemy_snapshots()
 	_active["uses_after"] = _hero.get_spell_uses(spell)
 	_active["controller_returned_idle"] = ( _battle.get("turn_state") as TurnState).current == TurnState.State.IDLE
-	_active["sprite_returned_idle"] = str(_sprite.animation) == "idle_%s" % configuration.direction and _sprite.frame == 0
+	_active["sprite_returned_idle"] = str(_sprite.animation) == "idle_%s" % _expected_sprite_direction() and (_uses_autosprite() or _sprite.frame == 0)
 	_active["view_destination_error_px"] = _view_destination_error(_hero.grid_pos)
 	_active["barrier_cells_after"] = adapter.barrier_cells()
 	_active["observation_end_usec"] = Time.get_ticks_usec()
@@ -295,7 +312,7 @@ func _check_action(spell_id: StringName, expected_hits: int) -> void:
 		_errors.append(prefix + "visual_marker_or_finish_not_unique")
 	if not bool(_active.controller_returned_idle) or not bool(_active.sprite_returned_idle):
 		_errors.append(prefix + "did_not_return_to_correct_idle")
-	var expected_clip := "%s_%s" % [_active.presentation.animation_stem, configuration.direction]
+	var expected_clip := "%s_%s" % [_expected_action_stem(), _expected_sprite_direction()]
 	if not (_active.clips as Array).has(expected_clip):
 		_errors.append(prefix + "expected_family_direction_not_played:" + expected_clip)
 	var hits: Dictionary = {}
@@ -415,7 +432,7 @@ func _process(_delta: float) -> void:
 			var destination := Vector2i(placement.dash_cell)
 			if _view_destination_error(destination) < 0.01 and int(_active.view_arrival_usec) == 0:
 				_active.view_arrival_usec = Time.get_ticks_usec()
-			elif _view_destination_error(destination) >= 0.01 and not str(_sprite.animation).begins_with("dash_"):
+			elif _view_destination_error(destination) >= 0.01 and not str(_sprite.animation).begins_with("dash_") and not (_uses_autosprite() and str(_sprite.animation).begins_with("run_")):
 				_active.non_charge_samples_during_dash += 1
 		var stem := str(_sprite.animation).get_slice("_", 0)
 		var label := "%s_%s_%d" % [_active.spell_id, stem, _sprite.frame]
@@ -464,7 +481,7 @@ func _on_sprite_animation_changed() -> void:
 	var clip := str(_sprite.animation)
 	if not (_active.clips as Array).has(clip):
 		(_active.clips as Array).append(clip)
-	if clip.begins_with(str(_active.presentation.animation_stem) + "_") and int(_active.animation_started_usec) == 0:
+	if clip.begins_with(_expected_action_stem() + "_") and int(_active.animation_started_usec) == 0:
 		_active.animation_started_usec = Time.get_ticks_usec()
 
 
@@ -853,7 +870,7 @@ func _check_actual_effects(counter: Dictionary) -> void:
 			_errors.append("effect_published_without_phase:%s" % entry.effect_id)
 		if bool(state.get("closed", false)):
 			continue
-		if int(entry.drawn.sprite_count) <= 0 or str(entry.drawn.frames_path) != "res://assets/vfx/achilles_kit_v2/effects.tres":
+		if int(entry.drawn.sprite_count) <= 0 or str(entry.drawn.frames_path) != preload("res://core/vfx_manager.gd").ACHILLES_EFFECTS_PATH:
 			_errors.append("effect_missing_canonical_drawn_sprites:%s" % entry.effect_id)
 	for action: Dictionary in _actions:
 		var entries: Array[Dictionary] = []

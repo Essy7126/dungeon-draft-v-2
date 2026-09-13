@@ -30,7 +30,7 @@ aucune collision n'est dérivée de leurs pixels.
 
 ## Sélection de personnage
 
-Le menu ouvre désormais le [nouvel écran de sélection](docs/design/character_selection_2026-09-05.md) : aperçu du personnage, orientations, animations, statistiques et capacités réelles. Seules les deux apparences d’Achille sont proposées ; elles lancent la même aventure Catabase en solo. Le refuge reste accessible depuis cet écran.
+Le menu ouvre désormais le [nouvel écran de sélection](docs/design/character_selection_2026-09-05.md) : aperçu du personnage, orientations, animations, statistiques et capacités réelles. Trois apparences d’Achille sont proposées : originale, peinte et Passe-rive ; elles lancent la même aventure Catabase en solo. Le refuge reste accessible depuis cet écran.
 
 Pour le voir directement, ouvrir `ui/selection/CharacterSelectionScreen.tscn` et lancer **F6** dans Godot.
 
@@ -39,9 +39,13 @@ Pour le voir directement, ouvrir `ui/selection/CharacterSelectionScreen.tscn` et
 Le parcours public suit **Nouvelle partie → sélection d’Achille → cinématique →
 [Seuil des Ombres](docs/maps/underworld_threshold_2026-09-10.md) → run**. Dans cette
 entrée jouable, on peut marcher entre les trois statues et lire leurs souvenirs ;
-franchir la porte commence l’aventure. La reprise rejoint directement la sauvegarde existante.
+franchir la porte ouvre désormais la **préparation des six constructions** : arme,
+protection, deux techniques libres, relique permanente et éphémère. Les six départs
+sont personnalisables et évoluent par mutations pendant la run. Voir le
+[lot jouable et ses règles](docs/design/catabase_first_six_2026-09-13.md).
+La reprise rejoint directement la sauvegarde existante.
 
-Le prototype de deck a été retiré : Achille utilise ses sorts habituels, leur
+Le prototype de deck a été retiré : Achille utilise ses sorts équipés, leur
 progression et son équipement. Les **défis facultatifs** avant les combats restent
 présents et modifient le combat suivant. Les sauvegardes de l'essai reprennent
 automatiquement avec le système de sorts. Le parcours à embranchements comprend
@@ -51,6 +55,10 @@ Les combats peints intègrent les effets doux des quatre techniques de départ,
 les pas, impacts ennemis, soins, boucliers et esquives, avec une harpe discrète.
 Le sac, le grimoire, les récompenses et les interactions des haltes disposent
 aussi de retours sonores courts aux aigus adoucis.
+Le Seuil des Ombres et les combats peints ajoutent une caverne suspendue : souffle
+grave, eau lointaine et longues respirations de volume, sur un bus d’ambiance
+séparé. La boucle locale de 109 secondes entre progressivement ; elle respecte
+la pause et la coupure des sons au Seuil. [Source et adaptation](assets/audio/catabase/ambience/CREDITS.md).
 Musique : **Soft Mysterious Harp Loop**, **VWolfdog (Jordy Hake)**,
 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/),
 [source](https://opengameart.org/content/soft-mysterious-harp-loop) ; vitesse/hauteur,

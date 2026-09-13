@@ -14,6 +14,10 @@ func _verify_title(_title: Node) -> void:
 	pass
 
 
+func _verify_threshold(_hall: Node) -> void:
+	pass
+
+
 func _ready() -> void:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--output="):
@@ -137,6 +141,9 @@ func _ready() -> void:
 		not hall.entry_input_blocked() and not hall.is_player_moving(),
 		"closing speech restores exploration without moving",
 	):
+		return
+	await _verify_threshold(hall)
+	if _failed:
 		return
 	for landmark_id in ["statue_memory", "zeus_memory", "fallen_oath", "threshold_gate"]:
 		var landmark_index := -1

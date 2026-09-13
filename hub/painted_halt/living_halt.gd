@@ -43,6 +43,7 @@ var _ready_for_play := false
 var _path := PackedVector2Array()
 var _path_index := 0
 var _speed := 0.0
+var _route_speed_multiplier := 1.0
 var _target := Vector2.ZERO
 var _marker: Destination
 var _interface: Control
@@ -217,6 +218,11 @@ func _material_shader() -> Shader:
 
 func _configure_player(actor: Player) -> void:
 	actor.display_scale = ScaleReference.display_scale(definition)
+	var run := GameManager.get_active_run_data()
+	if not preview_mode and run != null:
+		actor.sprite_profile = RunHeroVisualVariants.exploration_profile(run.hero_visual_variants)
+		if actor.sprite_profile is PasseRiveAutoSpriteProfile:
+			actor.display_scale = ScaleReference.height_ratio(definition) * world_size.y / 214.0
 
 
 func _create_interactions() -> Interactions:
@@ -360,6 +366,7 @@ func request_move(destination: Vector2) -> bool:
 		interactions.cancel()
 	_path = candidate
 	_path_index = 0
+	_choose_route_gait()
 	_target = destination
 	_marker.position = destination
 	_marker.show()
@@ -368,6 +375,20 @@ func request_move(destination: Vector2) -> bool:
 
 func is_player_moving() -> bool:
 	return _path_index < _path.size()
+
+
+func _choose_route_gait() -> void:
+	var distance := 0.0
+	var previous := player.position
+	for point in _path:
+		distance += _ground_distance(point - previous)
+		previous = point
+	player.locomotion_running = player.sprite_profile is PasseRiveAutoSpriteProfile and distance >= 300.0 * player.display_scale
+	_route_speed_multiplier = 1.0
+	if player.sprite_profile is PasseRiveAutoSpriteProfile:
+		var stride := 300.0 if player.locomotion_running else 180.0
+		var cycle_seconds := 0.60 if player.locomotion_running else 0.72
+		_route_speed_multiplier = stride * player.display_scale / cycle_seconds / maxf(float(definition.world.speed), 1.0)
 
 
 func stop_movement(cancel_interaction := true) -> void:
@@ -396,7 +417,7 @@ func _advance_move(delta: float) -> void:
 		previous = _path[i]
 	_speed = move_toward(
 		_speed,
-		minf(float(definition.world.speed), sqrt(1200.0 * remaining)),
+		minf(float(definition.world.speed) * _route_speed_multiplier, sqrt(1200.0 * remaining)),
 		800.0 * delta,
 	)
 	var travel := _speed * delta

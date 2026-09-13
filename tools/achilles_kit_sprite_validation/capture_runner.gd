@@ -45,6 +45,8 @@ func _launch() -> void:
 	run.randomize_seed_each_run = false
 	run.rooms = [arena]
 	run.hub_room_selection_enabled = false
+	if OS.get_cmdline_user_args().has("--appearance=passe_rive"):
+		run.hero_visual_variants = {"achilles": "passe_rive"}
 	run.content_profile = load("res://data/runs/profiles/odyssey_content_profile.tres") as RunContentProfile
 	var resolution := RunHeroResolver.resolve_runtime_hero_data(run, false)
 	if not resolution.is_valid():

@@ -8,13 +8,13 @@ const FLIGHT_IDS := [
 ]
 const DIRECTIONS := {"N": Vector2i.UP, "E": Vector2i.RIGHT, "S": Vector2i.DOWN, "W": Vector2i.LEFT}
 const BODY_CONTRACTS := {
-	"exp_braise": {"stem": "bow", "projectile": "fire", "release": 0.34, "duration": 0.74},
-	"exp_givre": {"stem": "bow", "projectile": "frost", "release": 0.34, "duration": 0.74},
-	"exp_foudre": {"stem": "bow_death", "projectile": "arrow_lightning", "release": 0.44, "duration": 0.86},
-	"exp_tir_de_guet": {"stem": "bow", "projectile": "arrow", "release": 0.34, "duration": 0.74},
-	"exp_rupture": {"stem": "bow", "projectile": "arrow_heavy", "release": 0.34, "duration": 0.74},
-	"exp_rupture_mutation": {"stem": "bow_piercing", "projectile": "arrow_piercing", "release": 0.38, "duration": 0.78},
-	"exp_rupture_legend": {"stem": "bow_death", "projectile": "arrow_death_line", "release": 0.44, "duration": 0.86},
+	"exp_braise": {"stem": "bow", "projectile": "fire", "release": 0.48, "duration": 1.0},
+	"exp_givre": {"stem": "bow", "projectile": "frost", "release": 0.48, "duration": 1.0},
+	"exp_foudre": {"stem": "bow_death", "projectile": "arrow_lightning", "release": 0.5, "duration": 1.05},
+	"exp_tir_de_guet": {"stem": "bow", "projectile": "arrow", "release": 0.48, "duration": 1.0},
+	"exp_rupture": {"stem": "bow", "projectile": "arrow_heavy", "release": 0.48, "duration": 1.0},
+	"exp_rupture_mutation": {"stem": "bow_piercing", "projectile": "arrow_piercing", "release": 0.48, "duration": 1.0},
+	"exp_rupture_legend": {"stem": "bow_death", "projectile": "arrow_death_line", "release": 0.5, "duration": 1.05},
 }
 
 
@@ -55,13 +55,14 @@ func test_actual_classic_scene_selects_current_run_bow_forms_in_every_direction(
 	await wait_process_frames(3)
 	visual.set_process(false)
 	visual.sprite_backend.set_process(false)
-	assert_eq(visual.sprite_profile.profile_id, &"achilles_polish_sprites_v3")
+	assert_eq(visual.sprite_profile.profile_id, &"achilles_autosprite_v1")
 	var catalog := ExpeditionBuildCatalog.new()
 	var sprite := visual.sprite_backend.animated_sprite
 	var counts := {"release": 0, "finish": 0}
 	visual.cast_release_reached.connect(func() -> void: counts.release += 1)
 	visual.animation_finished.connect(func(_clip: StringName) -> void: counts.finish += 1)
 	for direction: String in DIRECTIONS:
+		var facing := AchillesAutoSpriteProfile.screen_facing(IsoProjection.new().grid_to_world(DIRECTIONS[direction]))
 		for id: String in BODY_CONTRACTS:
 			var contract: Dictionary = BODY_CONTRACTS[id]
 			var spell := catalog.get_spell(id)
@@ -74,16 +75,16 @@ func test_actual_classic_scene_selects_current_run_bow_forms_in_every_direction(
 			assert_eq(str(presentation.spell_id), id)
 			assert_eq(str(presentation.action_family), "shot", id)
 			assert_eq(str(presentation.projectile_animation), str(contract.projectile), id)
-			assert_eq(sprite.animation, StringName("%s_%s" % [contract.stem, direction]), id)
-			assert_eq(visual.sprite_backend.get_runtime_state().release_frame, 4)
+			assert_eq(sprite.animation, StringName("%s_%s" % [contract.stem, facing]), id)
+			assert_eq(visual.sprite_backend.get_runtime_state().release_frame, 12)
 			visual.sprite_backend.advance_simulation(float(contract.release) - 0.001)
 			assert_eq(counts.release, before)
-			assert_eq(sprite.frame, 3, id)
+			assert_eq(sprite.frame, 11, id)
 			visual.sprite_backend.advance_simulation(0.001)
 			assert_eq(counts.release, before + 1)
-			assert_eq(sprite.frame, 4, id)
+			assert_eq(sprite.frame, 12, id)
 			visual.sprite_backend.advance_simulation(float(contract.duration) - float(contract.release) + 0.001)
 			assert_eq(counts.finish, before + 1)
-			assert_eq(sprite.animation, StringName("idle_" + direction))
+			assert_eq(sprite.animation, StringName("idle_" + facing))
 			assert_eq(sprite.frame, 0)
 			assert_false(sprite.is_playing())

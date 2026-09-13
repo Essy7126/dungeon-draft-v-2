@@ -1,8 +1,12 @@
 # Mémoire courte — animation des personnages
 
-Mise à jour : 12 septembre 2026. Lire les liens utiles seulement ; cette fiche ne remplace pas leurs preuves. Avant édition, vérifier Git et conserver les travaux en cours.
+Mise à jour : 13 septembre 2026. Lire les liens utiles seulement ; cette fiche ne remplace pas leurs preuves. Avant édition, vérifier Git et conserver les travaux en cours.
 
 ## Contrat artistique et retours utilisateur
+
+- **13 septembre — correction du design Passe-rive : V1 trop musclée et détaillée.** [V2 simplifiée](../../art/source/characters/achilles/passe_rive_redesign_v2/README.md) : vêtements amples, grandes ombres, masque et accessoires simplifiés, chaussures fermées sans orteils. Une génération ImageGen et détourage logiciel ; PNG 1024 × 1536. Allure adulte et identité conservées, sans équipement. Revue artistique attendue ; aucun test AutoSprite ou animation. Le retour V1 ci-dessous est désormais connu.
+
+- **13 septembre — nouvelle priorité : Passe-rive pour AutoSprite.** L'utilisateur a trouvé AutoSprite pour marche/idle/attaque et demande de régénérer Passe-rive moins fin et moins grand, proche de Dofus sans devenir petit, compact ou enfantin. [Nouvelle proposition](../../art/source/characters/achilles/passe_rive_redesign_v1/README.md) : une génération ImageGen, sans armes pour dégager les membres, PNG 1024 × 1536 détouré avec l'autorisation logicielle existante. Revue artistique attendue ; AutoSprite et animations non testés. Cette demande suspend la recherche IA commencée le 12 septembre et les retouches du Veilleur. La V2 simple expérimentale contient des découpes de jambes rejetées ; ne pas la présenter comme livrée ou validée.
 
 - **Retour sur la marche simple : « problèmes au niveau du passage des pieds sinon le reste est correct ».** Préserver le reste. Demande actuelle : identifier un outil de correction locale. La planche suggère des poses de jambes trop similaires et un passage insuffisamment décrit ; examiner ordre/timing puis remplacer les dessins nécessaires. Krita documente lecture image par image et pelure d'oignon. Aucun correctif ni installation réalisés pour cette question.
 
