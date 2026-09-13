@@ -2,10 +2,12 @@ class_name PasseRiveAutoSpriteBackend
 extends AchillesAutoSpriteBackend
 
 const MANIFEST := "res://assets/characters/PasseRive/autosprite_v1/manifest.json"
+const COMBAT_MANIFEST := "res://assets/characters/PasseRive/combat_v2/manifest.json"
 const LANDING_SECONDS := 0.30
 var _geometry: Dictionary = { }
 var _dodging := false
 var _ground_phase := 0.0
+var _combat_mode := false
 
 
 func configure(profile: AchillesSpriteVisualProfile) -> bool:
@@ -14,7 +16,25 @@ func configure(profile: AchillesSpriteVisualProfile) -> bool:
 		_last_error = &"PASSE_RIVE_GEOMETRY_MISSING"
 		return false
 	_geometry = metadata.geometry
+	var combat: Variant = JSON.parse_string(FileAccess.get_file_as_string(COMBAT_MANIFEST))
+	if not combat is Dictionary or not combat.get("geometry") is Dictionary:
+		_last_error = &"PASSE_RIVE_COMBAT_GEOMETRY_MISSING"
+		return false
+	_geometry.merge(combat.geometry, true)
 	return super.configure(profile)
+
+
+func set_combat_mode(enabled: bool) -> void:
+	_combat_mode = enabled
+	if _active and _can_play_loop() and _stem == "idle":
+		_sample_idle()
+
+
+func _sample_idle() -> void:
+	if _combat_mode:
+		_sample_weighted_clip(StringName("combat_idle_" + _facing), 0.0)
+	else:
+		super._sample_idle()
 
 
 func _select_clip(stem: String) -> void:
@@ -41,20 +61,26 @@ static func action_for(action_id: StringName, presentation: Dictionary) -> Strin
 	var id := String(presentation.get("spell_id", String(action_id).trim_prefix("cast:")))
 	var stem := String(presentation.get("animation_stem", "attack"))
 	if String(action_id).begins_with("preview:"):
-		return String(action_id).trim_prefix("preview:")
+		stem = String(action_id).trim_prefix("preview:")
 	if stem == "dash" or id in ["achilles_advance", "achilles_fulminant_dash"]:
 		return "dash"
 	if stem == "guard" or id in ["achilles_guard", "achilles_bronze_guard"]:
 		return "dodge"
 	if stem == "sweep" or id.begins_with("exp_moisson") or id.begins_with("exp_fauchage"):
 		return "jump"
-	return "bow"
+	if stem in ["jump", "dodge", "bow_quick", "bow_charged", "bow_air"]:
+		return stem
+	if stem == "volley":
+		return "bow_air"
+	if stem in ["bow_piercing", "bow_death"]:
+		return "bow_charged"
+	return "bow_quick"
 
 
 func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary:
 	var stem := action_for(action_id, presentation)
-	if stem not in ["bow", "jump", "dodge", "dash"]:
-		stem = "bow"
+	if stem not in ["bow_quick", "bow_charged", "bow_air", "jump", "dodge", "dash"]:
+		stem = "bow_quick"
 	var settings := _profile.get_action_clip_settings(stem)
 	return {
 		"stem": stem,
@@ -74,16 +100,9 @@ func _sample_action_at(seconds: float) -> void:
 			phase = 2.0 + fposmod((seconds - _release_time) * 25.0, 12.0)
 		_sample_weighted_clip(StringName("dash_" + _facing), phase)
 	else:
-		# Skip Achilles' run-as-dash adapter; keep its shared event owner.
-		var clip := StringName(_stem + "_" + _facing)
-		var phase := float(_release_frame) * seconds / maxf(_release_time, 0.0001)
-		if seconds >= _release_time:
-			phase = _release_frame + (_clip_weight(clip) - _release_frame) * clampf(
-				(seconds - _release_time) / maxf(_action_duration - _release_time, 0.0001),
-				0,
-				1,
-			)
-		_sample_weighted_clip(clip, phase)
+		# Shared weighted sampling publishes the exact release drawing even when
+		# one busy frame crosses the complete anticipation and recovery.
+		super._sample_action_at(seconds)
 
 
 func finish_dash_landing(direction := "S") -> bool:

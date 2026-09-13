@@ -75,6 +75,7 @@ func test_six_departures_persist_reward_mutate_and_resume() -> void:
 			"Opening loadout/gear/relic resume: " + weapon,
 		)
 		assert_true(m.expedition.combat_won())
+		_resolve_level(m)
 		assert_true(m.claim_expedition_reward("supplies").get("success", false))
 		assert_true(m.expedition.is_editable())
 		var checkpoint: Dictionary = JSON.parse_string(JSON.stringify(m.get_expedition_snapshot()))
@@ -251,6 +252,7 @@ func test_all_six_progress_to_twenty_with_exclusive_mutations_and_weapon_pivot()
 			if m.expedition.route.phase == "combat":
 				assert_true(m.expedition.combat_won())
 			assert_eq(m.expedition.build.completed_depth, depth)
+			_resolve_level(m)
 			if depth == 2:
 				assert_true(m.purchase_expedition_technique(mutation).success, weapon)
 				assert_false(m.purchase_expedition_technique("ct." + roots[weapon] + "_b").success)
@@ -374,7 +376,20 @@ func test_departure_ui_changes_presets_and_commits_the_visible_selection() -> vo
 	var preset: Button = view.find_child("Preset_hampe", true, false)
 	preset.pressed.emit()
 	assert_eq(view.selection.weapon, "hampe")
-	assert_true(view.summary.text.contains("Flux"))
+	assert_eq(view.selection.techniques, CatabasePreparationCatalog.preset("hampe").techniques)
+	assert_null(view.confirm, "Departure must be reviewed before committing")
+	for index in 6:
+		view.find_child("DepartureNext", true, false).pressed.emit()
+	assert_eq(view.step, 6)
 	view.confirm.pressed.emit()
 	assert_false(m.expedition.needs_preparation)
 	assert_eq(m.expedition.build.starting_selection.weapon, "hampe")
+
+
+func _resolve_level(manager) -> void:
+	if manager.expedition.advancement_step.is_empty(): return
+	assert_true(manager.advance_expedition_level_step().success)
+	while manager.expedition.character.champion_progression.unspent_attribute_points > 0:
+		assert_true(manager.spend_champion_attribute(&"achilles", &"vitality"))
+	assert_true(manager.advance_expedition_level_step().success)
+	assert_true(manager.advance_expedition_level_step().success)

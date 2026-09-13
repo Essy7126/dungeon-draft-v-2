@@ -1,6 +1,6 @@
 class_name ExpeditionScreen
 extends Control
-## One decision at a time: progression, reward, preparation, then the full-page route.
+## Dedicated decisions: level announcement, attributes, spells, loot, then the route.
 
 signal inspection_closed
 
@@ -23,6 +23,7 @@ const TREE_CANVAS := preload("res://ui/expedition/expedition_tree_canvas.gd")
 const HUB_CANVAS := preload("res://ui/expedition/catabase_hub_canvas.gd")
 
 var inspection_only := false
+var allow_attribute_edits := false
 var initial_page := "map"
 var _page := "map"
 var _axis := "briseur"
@@ -33,6 +34,8 @@ var _show_loadout := false
 var _selected_node := ""
 var _root: VBoxContainer
 var _body: Control
+var _body_host: VBoxContainer
+var _decision_panel: PanelContainer
 var _summary: Label
 var _status: Label
 var _seed: LineEdit
@@ -156,13 +159,14 @@ func _ready() -> void:
 	_flow_rail.name = "ExpeditionFlowSteps"
 	_flow_rail.add_theme_constant_override("h_separation", 20)
 	_root.add_child(_flow_rail)
-	for title in ["01  Renforcer", "02  Récompense", "03  Préparer", "04  Explorer"]:
+	for title in ["01  Caractéristiques", "02  Sorts", "03  Butin", "04  Explorer"]:
 		var step := _label(_flow_rail, title, 14, MUTED)
 		step.autowrap_mode = TextServer.AUTOWRAP_OFF
 		_flow_labels.append(step)
-	_body = VBoxContainer.new()
-	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_root.add_child(_body)
+	_body_host = VBoxContainer.new()
+	_body_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_root.add_child(_body_host)
+	_body = _body_host
 	_status = _label(_root, "", 15, GOLD)
 	_render()
 	ART_THEME.reveal(_root)
@@ -189,7 +193,7 @@ func _render() -> void:
 		if _page in ["map", "preparation"] and required != "map":
 			_page = required
 		elif _page in ["rewards", "capacity"] and _page != required:
-			_page = "preparation" if required == "map" else required
+			_page = required
 	var previous_focus := get_viewport().gui_get_focus_owner()
 	var focus_name := ""
 	if previous_focus != null and _body.is_ancestor_of(previous_focus) and not str(previous_focus.name).begins_with("@"):
@@ -200,9 +204,13 @@ func _render() -> void:
 		_map_scroll_position = _route_view.get_scroll_position()
 	if is_instance_valid(_tree_scroll) and _tree_scroll.is_inside_tree():
 		_tree_scroll_position = _tree_scroll.scroll_vertical
-	for child in _body.get_children():
-		_body.remove_child(child)
+	for child in _body_host.get_children():
+		_body_host.remove_child(child)
 		child.queue_free()
+	_body = _body_host
+	_decision_panel = null
+	if _page in ["departure", "level_up", "progression", "advancement", "learn_choice", "capacity", "rewards", "loot_received"]:
+		_create_decision_window()
 	var session := GameManager.expedition
 	_resource_strip.visible = session != null
 	_hero_banner.show()
@@ -213,7 +221,7 @@ func _render() -> void:
 	_close_button.tooltip_text = "Fermer cet écran et retrouver la run · Échap" if inspection_only else "Revenir à votre écran précédent · Échap" if auxiliary else "Revenir à la préparation · Échap" if _page == "map" else "Pause et options de la run · Échap"
 	if is_instance_valid(_flow_rail):
 		_flow_rail.visible = session != null and not inspection_only and not auxiliary and _page != "map"
-		var step_index := 0 if _page == "progression" else 1 if _page in ["rewards", "capacity", "hub"] else 3 if _page == "map" else 2
+		var step_index := 0 if _page in ["progression", "level_up"] else 1 if _page == "advancement" else 3 if _page == "map" else 2
 		for index in _flow_labels.size():
 			_flow_labels[index].add_theme_color_override("font_color", GOLD if index == step_index else TEAL if index < step_index else MUTED)
 	for page_id in _navigation_buttons:
@@ -225,6 +233,10 @@ func _render() -> void:
 	_refresh_resources()
 	match _page:
 		"departure": _render_departure()
+		"level_up": _render_level_up()
+		"advancement": _render_advancement()
+		"learn_choice": _render_learning_choice()
+		"loot_received": _render_loot_received()
 		"progression", "attributes": _render_progression()
 		"capacity": _render_choice_screen(true)
 		"rewards": _render_choice_screen()
@@ -250,6 +262,127 @@ func _restore_body_focus(control_name: String) -> void:
 		return
 	if control != null and control.is_visible_in_tree() and control.focus_mode != Control.FOCUS_NONE:
 		control.grab_focus()
+
+
+func _create_decision_window() -> void:
+	var center := HBoxContainer.new()
+	center.alignment = BoxContainer.ALIGNMENT_CENTER
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_body_host.add_child(center)
+	_decision_panel = PanelContainer.new()
+	_decision_panel.name = "CatabaseDecisionWindow"
+	_decision_panel.custom_minimum_size.x = minf(1120, maxf(720, size.x - 100))
+	_decision_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("172c31")
+	style.border_color = GOLD.darkened(0.35)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(12)
+	style.content_margin_left = 24
+	style.content_margin_right = 24
+	style.content_margin_top = 20
+	style.content_margin_bottom = 20
+	style.shadow_color = Color(0, 0, 0, 0.55)
+	style.shadow_size = 14
+	_decision_panel.add_theme_stylebox_override("panel", style)
+	center.add_child(_decision_panel)
+	_body = VBoxContainer.new()
+	_body.add_theme_constant_override("separation", 12)
+	_decision_panel.add_child(_body)
+
+
+func _render_level_up() -> void:
+	var session := GameManager.expedition
+	var level := session.character.champion_progression.current_level
+	_label(_body, "ACHILLE S'ÉLÈVE", 15, GOLD, true)
+	_label(_body, "NIVEAU %d" % level, 42, GOLD, true)
+	_label(_body, "Niveau %d → %d · Votre victoire ouvre de nouveaux choix." % [session.advancement_from_level, level], 20, TEXT)
+	var column := _scroll_column(_body)
+	for row in [
+		["level", "%d point%s de caractéristiques" % [session.character.champion_progression.unspent_attribute_points, "s" if session.character.champion_progression.unspent_attribute_points > 1 else ""], "Renforcez votre vie, vos dégâts ou vos défenses. Les valeurs avant et après sont affichées dans la fenêtre suivante."],
+		["destiny", "%d points de destin disponibles" % session.build.points, "Apprenez une technique ou faites évoluer vos sorts. Vous pouvez conserver ces points pour un achat plus coûteux."],
+		["oboles", "Puis, votre butin", "Choisissez un équipement, une relique ou une autre récompense. Vous retrouverez la carte seulement après ces décisions."],
+	]:
+		var card := _card(column, GOLD)
+		_illustrated_title(card, row[1], ART_THEME.icon("resources", row[0]), 48)
+		_label(card, row[2], 17, TEXT)
+	var next := _button(_body, "Renforcer mes caractéristiques  →", true)
+	next.name = "BeginLevelUp"
+	next.pressed.connect(_advance_level_window)
+	next.grab_focus.call_deferred()
+
+
+func _advance_level_window() -> void:
+	var result := GameManager.advance_expedition_level_step()
+	if bool(result.get("success", false)): _continue_flow()
+	else: _action_result(result)
+
+
+func _render_advancement() -> void:
+	var session := GameManager.expedition
+	_label(_body, "Faites évoluer vos sorts", 28, TEXT, true)
+	_label(_body, "%d points de destin · Les propositions ci-dessous sont accessibles à votre niveau. Une technique apprise doit ensuite être équipée dans « Mes actions ». Vous pouvez aussi économiser." % session.build.points, 17, MUTED)
+	var column := _scroll_column(_body)
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	column.add_child(grid)
+	var offers := session.build.get_offers()
+	var preferred := str(CatabasePreparationCatalog.WEAPONS.get(session.build.starting_selection.get("weapon", ""), ["", "", "", "", "briseur"])[4])
+	offers.sort_custom(func(a: Dictionary, b: Dictionary): return int(a.axis == preferred) > int(b.axis == preferred))
+	var count := 0
+	for offer in offers:
+		if not bool(offer.available) or bool(offer.owned): continue
+		var tile := preload("res://ui/expedition/catabase_choice_tile.gd").new()
+		tile.name = "LevelSpell_" + str(offer.id)
+		grid.add_child(tile)
+		tile.configure(str(offer.title) + " · %d pts" % int(offer.cost), str(offer.description), CatabasePaintedIconCatalog.node_icon(offer))
+		tile.pressed.connect(func(): _selected_technique = str(offer.id); _page = "learn_choice"; _render())
+		count += 1
+		if count == 6: break
+	if count == 0: _label(column, "Aucun achat accessible avec vos points actuels. Conservez-les pour les prochains apprentissages.", 19, TEXT)
+	var all := _button(_body, "Ouvrir l'arbre complet et mes actions")
+	all.name = "OpenLevelSpellTree"
+	all.pressed.connect(func(): _skills_tab = "learn"; _navigate("build"))
+	var next := _button(_body, "Conserver mes points et choisir le butin  →" if session.build.points > 0 else "Choisir mon butin  →", true)
+	next.name = "FinishLevelSpells"
+	next.pressed.connect(_advance_level_window)
+
+
+func _render_learning_choice() -> void:
+	_label(_body, "Confirmer cet apprentissage", 28, GOLD, true)
+	var column := _scroll_column(_body)
+	for offer in GameManager.expedition.build.get_offers():
+		if str(offer.id) == _selected_technique:
+			_render_technique(column, offer, _body)
+			if bool(offer.owned):
+				_label(column, "Apprentissage acquis. Les évolutions remplacent leur sort de base ; les nouvelles techniques sont disponibles dans vos actions à équiper.", 18, TEAL)
+			break
+	var back := _button(_body, "Revenir à mes choix de sorts  →")
+	back.name = "BackToLevelSpells"
+	back.pressed.connect(func(): _page = "advancement"; _render())
+
+
+func _render_loot_received() -> void:
+	_label(_body, "Récompense obtenue", 28, GOLD, true)
+	var column := _scroll_column(_body)
+	var item := GameManager.item_catalog.get_definition(StringName(_last_reward.get("item_id", "")))
+	if item != null:
+		_illustrated_title(column, item.display_name, item.get_inventory_icon(), 120)
+		_label(column, item.description, 19, TEXT)
+		_label(column, "L'objet est dans votre inventaire. Une arme ou une protection doit être équipée ; une relique permanente agit depuis l'inventaire.", 17, MUTED)
+		var equip := _button(_body, "Ouvrir l'inventaire pour m'équiper", true)
+		equip.name = "EquipReceivedLoot"
+		equip.pressed.connect(_open_inventory)
+	else:
+		_label(column, str(_last_reward.get("title", "Butin conservé")), 24, TEXT)
+		_label(column, str(_last_reward.get("description", "")), 18, MUTED)
+	if GameManager.expedition.build.completed_depth <= 3:
+		_label(column, "Avant la prochaine salle : vérifiez vos PV et vos sorts équipés. Sur la carte, inspectez les ennemis et la conséquence du défi avant de vous engager.", 18, TEAL)
+	var next := _button(_body, "Revenir à la carte  →", true)
+	next.name = "OpenRouteMap"
+	next.pressed.connect(_continue_flow)
 
 
 func _focus_page_action() -> void:
@@ -325,6 +458,8 @@ func _commit_destination(node_id: String) -> void:
 
 func _on_screen_resized() -> void:
 	if not is_instance_valid(_body): return
+	if is_instance_valid(_decision_panel):
+		_decision_panel.custom_minimum_size.x = minf(1120, maxf(720, size.x - 100))
 	for card in _reward_choices.values():
 		if is_instance_valid(card) and card.is_inside_tree():
 			card.set_card_extent(_reward_extent())
@@ -397,42 +532,56 @@ func _on_inventory_closed() -> void:
 	ART_THEME.apply_tab(_navigation_buttons.gear, false, "equipment")
 	if is_instance_valid(_attributes_view) and _attributes_view.is_inside_tree():
 		_attributes_view.refresh()
-	_navigation_buttons.gear.grab_focus.call_deferred()
+	if _navigation.visible: _navigation_buttons.gear.grab_focus.call_deferred()
+	else: _restore_body_focus.call_deferred("EquipReceivedLoot")
 
 
 func _continue_flow() -> void:
 	var required := FLOW.required_step(GameManager.expedition)
-	_page = "preparation" if required == "map" else required
+	_page = required
 	_return_page = ""
 	_render()
 
 
 func _render_progression() -> void:
 	_label(_body, "Caractéristiques", 28, TEXT, true)
+	if _page == "attributes":
+		var session := GameManager.expedition
+		var pending := FLOW.required_step(session)
+		if session.is_editable() and pending != "map":
+			_label(_body, "Progression en attente · %d point(s) de caractéristiques · %d point(s) de destin. Vos choix restent disponibles ici après le combat." % [session.character.champion_progression.unspent_attribute_points, session.build.points], 17, GOLD)
+			var resume := _button(_body, "Reprendre ma progression  →", true)
+			resume.name = "ResumeCharacterProgression"
+			resume.pressed.connect(func():
+				if inspection_only:
+					_close()
+					GameManager.open_expedition_progression()
+				else: _continue_flow()
+			)
 	_attributes_view = ATTRIBUTES_VIEW.new()
 	_attributes_view.name = "ExpeditionAttributesView"
 	_attributes_view.focus_mode = Control.FOCUS_ALL
 	_attributes_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_body.add_child(_attributes_view)
-	_attributes_view.configure(GameManager.expedition, inspection_only)
+	_attributes_view.configure(GameManager.expedition, inspection_only and not allow_attribute_edits, _page == "attributes")
 	_attributes_view.attribute_requested.connect(_spend_attribute)
 	if _page == "progression":
 		_progression_continue = _button(_body, "Continuer  →", true)
 		_progression_continue.name = "ContinueExpeditionFlow"
-		_progression_continue.pressed.connect(_continue_flow)
+		_progression_continue.pressed.connect(_advance_level_window if not GameManager.expedition.advancement_step.is_empty() else _continue_flow)
 		_refresh_progression_action()
 
 
 func _refresh_progression_action() -> void:
 	if not is_instance_valid(_progression_continue) or not _progression_continue.is_inside_tree(): return
 	var remaining := GameManager.expedition.character.champion_progression.unspent_attribute_points
-	_progression_continue.text = "Continuer vers la récompense  →" if remaining == 0 else "Encore %d point%s à répartir" % [remaining, "s" if remaining > 1 else ""]
+	_progression_continue.text = ("Continuer vers les sorts  →" if not GameManager.expedition.advancement_step.is_empty() else "Continuer vers le butin  →") if remaining == 0 else "Encore %d point%s à répartir" % [remaining, "s" if remaining > 1 else ""]
 	_progression_continue.disabled = remaining > 0 or inspection_only
 	if remaining == 0: _progression_continue.grab_focus.call_deferred()
 
 
 func _spend_attribute(attribute_id: StringName) -> void:
-	if inspection_only: return
+	if inspection_only and not allow_attribute_edits: return
 	var success := GameManager.spend_champion_attribute(&"achilles", attribute_id)
 	if success:
 		_attributes_view.refresh()
@@ -446,9 +595,9 @@ func _spend_attribute(attribute_id: StringName) -> void:
 
 func _render_choice_screen(capacity_only := false) -> void:
 	if not capacity_only:
-		var heading := _label(_body, "Choisissez une carte", 28, TEXT, true)
+		var heading := _label(_body, "Votre butin · équipement et reliques", 28, TEXT, true)
 		heading.name = "RewardHeading"
-		_label(_body, "Un seul choix. Sélectionnez une carte, puis confirmez en bas de l'écran.", 16, MUTED)
+		_label(_body, "Choisissez un seul objet ou une autre récompense. Les équipements vont dans l'inventaire : vous pourrez les équiper avant de reprendre la carte.", 16, MUTED)
 	var column := _scroll_column(_body)
 	_render_rewards(column, capacity_only)
 	if not capacity_only:
@@ -544,7 +693,7 @@ func _confirm_reward_selection() -> void:
 		_selected_reward = ""
 		if GameManager.expedition == null or not GameManager.run_active:
 			return
-		_page = "preparation"
+		_page = "loot_received"
 		_render()
 	else:
 		_action_result(result)
@@ -581,9 +730,8 @@ func _render_preparation() -> void:
 
 
 func _render_departure() -> void:
-	var column := _scroll_column(_body)
 	var view := preload("res://ui/expedition/catabase_departure_view.gd").new()
-	column.add_child(view)
+	_body.add_child(view)
 	view.configure(GameManager.expedition, GameManager.confirm_catabase_preparation)
 	_navigation.hide()
 	_flow_rail.hide()

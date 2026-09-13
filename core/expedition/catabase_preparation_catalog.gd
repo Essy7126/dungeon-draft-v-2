@@ -144,14 +144,14 @@ static func preset(weapon: String) -> Dictionary:
 
 static func valid(selection: Dictionary) -> bool:
 	if (
-			not WEAPONS.has(selection.get("weapon")) or not ARMORS.has(selection.get("armor")) \
+		not WEAPONS.has(selection.get("weapon")) or not ARMORS.has(selection.get("armor")) \
 				or not RELICS.has(selection.get("relic"))
 		or not SUPPLIES.has(selection.get("supply"))
 	):
 		return false
 	var techniques: Variant = selection.get("techniques")
 	return (
-			techniques is Array and techniques.size() == 2 and techniques[0] != techniques[1] \
+		techniques is Array and techniques.size() == 2 and techniques[0] != techniques[1] \
 				and techniques[0] in TECHNIQUES
 		and techniques[1] in TECHNIQUES
 	)
@@ -176,17 +176,9 @@ static func add_items(catalog) -> void:
 			[row[4]],
 			row[1],
 		)
-		item.icon = CatabasePaintedIconCatalog.item_icon(
-			"catabase_"
-			+ {
-				"marteau": "masse_airain",
-				"xiphos": "xiphos_danse",
-				"disque": "prisme",
-				"hampe": "fer_braise",
-				"lame": "lame_sang",
-				"arc": "javeline",
-			}[id]
-		)
+		item.icon = choice_icon("weapon", id)
+		item.inventory_icon = item.icon
+		item.card_texture = null
 		var mod := CatabaseCombatModifier.new()
 		mod.mode = "weapon"
 		mod.weapon_id = id
@@ -200,15 +192,9 @@ static func add_items(catalog) -> void:
 			["airain"],
 			row[4],
 		)
-		item.icon = CatabasePaintedIconCatalog.item_icon(
-			"catabase_"
-			+ {
-				"airain": "cuirasse",
-				"sceau": "prisme",
-				"mixte": "lin_survivant",
-				"legere": "sandales",
-			}[id]
-		)
+		item.icon = choice_icon("armor", id)
+		item.inventory_icon = item.icon
+		item.card_texture = null
 		if int(row[1]) != 0:
 			catalog._stat(item, &"armure", row[1])
 		if int(row[2]) != 0:
@@ -248,7 +234,11 @@ static func _relic(id: String, title: String, description: String) -> ItemDefini
 	item.description = description
 	item.category = ItemDefinition.Category.RELIC
 	item.tags.assign([&"catabase_build"])
-	item.icon = CatabasePaintedIconCatalog.item_icon("catabase_agrafe")
+	item.icon = choice_icon(
+		"relic" if id.begins_with("ct_relic_") else "supply",
+		id.trim_prefix("ct_relic_").trim_prefix("ct_supply_"),
+	)
+	item.inventory_icon = item.icon
 	return item
 
 
@@ -258,3 +248,8 @@ static func _effect(id: StringName, value: int, trigger: StringName) -> ItemReac
 	effect.value = value
 	effect.trigger_id = trigger
 	return effect
+
+
+static func choice_icon(group: String, id: String) -> Texture2D:
+	var path := "res://assets/catabase/preparation/%s_%s.svg" % [group, id]
+	return load(path) as Texture2D if ResourceLoader.exists(path) else null

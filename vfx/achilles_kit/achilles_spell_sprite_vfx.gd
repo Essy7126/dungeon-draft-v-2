@@ -185,11 +185,25 @@ func _render() -> void:
 		var sprite := _sprites[index]
 		var target := _targets[index]
 		var angle := (target - _origin).angle() if in_flight or _animation == &"sweep" else 0.0
+		if in_flight:
+			angle = _flight_angle(target, progress)
 		_render_sprite(sprite, texture,
-			_origin.lerp(target, progress) if in_flight else target,
+			_flight_position(target, progress) if in_flight else target,
 			angle, scale_ratio, tint)
 		if in_flight:
-			_render_trail(index, texture, progress, angle, scale_ratio, tint)
+			_render_trail(index, texture, progress, scale_ratio, tint)
+
+
+func _arc_height() -> float:
+	return clampf(float(_presentation.get("projectile_arc_ratio", 0.0)), 0.0, 1.5) * _width
+
+
+func _flight_position(target: Vector2, progress: float) -> Vector2:
+	return _origin.lerp(target, progress) + Vector2.UP * 4.0 * _arc_height() * progress * (1.0 - progress)
+
+
+func _flight_angle(target: Vector2, progress: float) -> float:
+	return (target - _origin + Vector2.UP * 4.0 * _arc_height() * (1.0 - 2.0 * progress)).angle()
 
 
 func _render_sprite(sprite: Sprite2D, texture: Texture2D, point: Vector2,
@@ -202,7 +216,7 @@ func _render_sprite(sprite: Sprite2D, texture: Texture2D, point: Vector2,
 
 
 func _render_trail(target_index: int, texture: Texture2D, progress: float,
-		angle: float, scale_ratio: Vector2, tint: Color) -> void:
+		scale_ratio: Vector2, tint: Color) -> void:
 	var count := _trail_count()
 	var spacing := clampf(float(_presentation.get("projectile_trail_spacing", 0.06)), 0.02, 0.12)
 	var alpha := clampf(float(_presentation.get("projectile_trail_alpha", 0.18)), 0.0, 0.3)
@@ -214,8 +228,8 @@ func _render_trail(target_index: int, texture: Texture2D, progress: float,
 		var trail_tint := tint
 		trail_tint.a *= alpha * (1.0 - float(index) / float(count)) * waiting_fade \
 			* clampf(progress / delay, 0.0, 1.0)
-		_render_sprite(trail, texture, _origin.lerp(_targets[target_index], trail_progress),
-			angle, scale_ratio * (1.0 - 0.06 * float(index + 1)), trail_tint)
+		_render_sprite(trail, texture, _flight_position(_targets[target_index], trail_progress),
+			_flight_angle(_targets[target_index], trail_progress), scale_ratio * (1.0 - 0.06 * float(index + 1)), trail_tint)
 
 
 func _palette_tint() -> Color:
@@ -252,6 +266,7 @@ func get_visual_runtime_state() -> Dictionary:
 		"animation": _animation, "requested_animation": _requested_animation,
 		"used_animation_fallback": _used_animation_fallback,
 		"head_count": _sprites.size(), "trail_count": _trails.size(),
+		"arc_height": _arc_height(),
 		"closed": _closed,
 	}
 

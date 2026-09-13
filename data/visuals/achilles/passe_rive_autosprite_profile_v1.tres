@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("1")
-profile_id = &"passe_rive_autosprite_v1"
-sprite_frames_path = "res://assets/characters/PasseRive/autosprite_v1/sprite_frames.tres"
+profile_id = &"passe_rive_combat_v2"
+sprite_frames_path = "res://assets/characters/PasseRive/combat_v2/sprite_frames.tres"
 backend_script = ExtResource("2")
 directions_are_screen_space = true
 expanded_kit_enabled = true
@@ -23,6 +23,9 @@ advance_duration_seconds = 1.2
 advance_release_seconds = 0.1
 action_clip_settings = {
 "bow": {"frame_count": 25, "duration_seconds": 0.9, "release_seconds": 0.22, "release_frame": 6},
+"bow_quick": {"frame_count": 6, "duration_seconds": 0.58, "release_seconds": 0.20, "release_frame": 3},
+"bow_charged": {"frame_count": 8, "duration_seconds": 1.05, "release_seconds": 0.58, "release_frame": 4},
+"bow_air": {"frame_count": 9, "duration_seconds": 1.10, "release_seconds": 0.52, "release_frame": 4},
 "jump": {"frame_count": 25, "duration_seconds": 0.85, "release_seconds": 0.46, "release_frame": 12},
 "dodge": {"frame_count": 25, "duration_seconds": 0.65, "release_seconds": 0.18, "release_frame": 6}
 }

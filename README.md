@@ -36,6 +36,19 @@ Pour le voir directement, ouvrir `ui/selection/CharacterSelectionScreen.tscn` et
 
 ## Catabase : chemin et build recomposable
 
+Le départ se prépare dans sept fenêtres illustrées : arme, protection, deux techniques,
+relique permanente, relique éphémère, puis récapitulatif. Les vingt objets possèdent
+leur propre icône dessinée. À chaque montée de niveau des nouvelles constructions,
+une annonce ouvre les caractéristiques, les apprentissages de sorts, puis le butin.
+Les points de destin peuvent être conservés ; un objet obtenu peut être équipé depuis
+la fenêtre de réception avant de revenir à la carte. La sauvegarde reprend à l'étape
+de progression restante, sans répéter les gains.
+
+La progression et le butin sont prioritaires sur l'entrée au carrefour. **Menu →
+Caractéristiques** reste accessible après le combat : fiche détaillée (base, bonus,
+total, résistances, équipement et effets), répartition des points et bouton pour
+reprendre les décisions en attente. La consultation en combat reste en lecture seule.
+
 Le parcours public suit **Nouvelle partie → sélection d’Achille → cinématique →
 [Seuil des Ombres](docs/maps/underworld_threshold_2026-09-10.md) → run**. Dans cette
 entrée jouable, on peut marcher entre les trois statues et lire leurs souvenirs ;

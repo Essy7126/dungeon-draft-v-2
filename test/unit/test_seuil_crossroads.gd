@@ -43,7 +43,7 @@ func test_victory_rewards_resume_and_three_physical_routes() -> void:
 			manager.begin_combat_report()
 			manager.on_battle_won()
 			assert_true(Routes.active(manager.expedition))
-			assert_eq(manager.requested, "res://hub/seuil_crossroads/SeuilCrossroads.tscn")
+			assert_eq(manager.requested, "res://ui/expedition/ExpeditionScreen.tscn", "Progression precedes the physical crossroads")
 			assert_false(Routes.can_depart(manager.expedition))
 			var awarded := manager.expedition.gold
 			manager.on_battle_won()
@@ -52,13 +52,14 @@ func test_victory_rewards_resume_and_three_physical_routes() -> void:
 			assert_true(manager.restore_expedition_snapshot(won))
 			assert_eq(
 				manager.get_expedition_destination_scene(),
-				"res://hub/seuil_crossroads/SeuilCrossroads.tscn",
+				"res://ui/expedition/ExpeditionScreen.tscn",
 			)
 			while manager.expedition.character.champion_progression.unspent_attribute_points > 0:
 				assert_true(manager.spend_champion_attribute(&"achilles", &"vitality"))
 			assert_true(manager.claim_expedition_reward("supplies").success)
 			assert_false(manager.claim_expedition_reward("supplies").success)
 			assert_true(Routes.can_depart(manager.expedition))
+			assert_eq(manager.get_expedition_destination_scene(), "res://hub/seuil_crossroads/SeuilCrossroads.tscn")
 			var destination := Routes.destination(manager.expedition, landmark)
 			assert_eq(destination.title, Routes.DESTINATIONS[landmark])
 			ids[destination.id] = true
@@ -69,3 +70,32 @@ func test_victory_rewards_resume_and_three_physical_routes() -> void:
 			remove_child(manager)
 			manager.free()
 		assert_eq(ids.size(), 3)
+
+
+func test_new_build_victory_and_resume_route_to_each_pending_level_window() -> void:
+	var manager := Manager.new()
+	manager.expedition_save_path = "user://level_window_routing_%d.json" % Time.get_ticks_usec()
+	add_child(manager)
+	assert_true(manager.start_expedition(2401, {}, false, true))
+	assert_true(manager.confirm_catabase_preparation(CatabasePreparationCatalog.preset("marteau")).success)
+	manager.begin_combat_report()
+	manager.on_battle_won()
+	assert_eq(manager.expedition.advancement_step, "level_up")
+	assert_eq(manager.requested, "res://ui/expedition/ExpeditionScreen.tscn")
+	assert_true(manager.resume_expedition(manager.expedition_save_path))
+	assert_eq(manager.requested, "res://ui/expedition/ExpeditionScreen.tscn")
+	assert_true(manager.advance_expedition_level_step().success)
+	while manager.expedition.character.champion_progression.unspent_attribute_points > 0:
+		assert_true(manager.spend_champion_attribute(&"achilles", &"vitality"))
+	assert_true(manager.advance_expedition_level_step().success)
+	assert_true(manager.open_expedition_progression(), "Recovery still works after all attribute points were spent")
+	assert_eq(manager.requested, "res://ui/expedition/ExpeditionScreen.tscn")
+	assert_false(manager.claim_expedition_reward("supplies").success)
+	assert_true(manager.advance_expedition_level_step().success)
+	assert_true(manager.claim_expedition_reward("supplies").success)
+	assert_true(Routes.can_depart(manager.expedition))
+	assert_eq(manager.get_expedition_destination_scene(), "res://hub/seuil_crossroads/SeuilCrossroads.tscn")
+	manager.cleanup_run_state()
+	ExpeditionSaveService.remove_snapshot(manager.expedition_save_path)
+	manager.queue_free()
+	await get_tree().process_frame

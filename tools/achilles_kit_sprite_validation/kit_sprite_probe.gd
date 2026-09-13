@@ -67,6 +67,11 @@ func _expected_sprite_direction() -> String:
 	return AchillesAutoSpriteProfile.screen_facing(delta)
 
 
+func _expected_idle_clip() -> String:
+	var stem := "combat_idle" if _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile else "idle"
+	return "%s_%s" % [stem, _expected_sprite_direction()]
+
+
 func _ready() -> void:
 	_output = ProjectSettings.globalize_path("res://artifacts/achilles_kit_sprite_validation_v2")
 	for argument: String in OS.get_cmdline_user_args():
@@ -283,7 +288,7 @@ func _cast(spell_id: StringName, target: Vector2i) -> void:
 		_resolve_optional_choice()
 		var resolved: bool = _hero.current_ap == int(_active.before.ap) - int(_active.expected_ap_cost) \
 			and not bool(_battle.get("_spell_resolution_pending"))
-		var at_rest := str(_sprite.animation).begins_with("idle_")
+		var at_rest := str(_sprite.animation) == _expected_idle_clip()
 		var at_destination: bool = spell_id != DASH or (_hero.grid_pos == target and _view_destination_error(target) < 0.01)
 		if resolved and at_rest and at_destination and bool(_battle._can_accept_player_intent()):
 			break
@@ -292,7 +297,7 @@ func _cast(spell_id: StringName, target: Vector2i) -> void:
 	_active["enemies_after"] = _enemy_snapshots()
 	_active["uses_after"] = _hero.get_spell_uses(spell)
 	_active["controller_returned_idle"] = ( _battle.get("turn_state") as TurnState).current == TurnState.State.IDLE
-	_active["sprite_returned_idle"] = str(_sprite.animation) == "idle_%s" % _expected_sprite_direction() and (_uses_autosprite() or _sprite.frame == 0)
+	_active["sprite_returned_idle"] = str(_sprite.animation) == _expected_idle_clip() and (_uses_autosprite() or _sprite.frame == 0)
 	_active["view_destination_error_px"] = _view_destination_error(_hero.grid_pos)
 	_active["barrier_cells_after"] = adapter.barrier_cells()
 	_active["observation_end_usec"] = Time.get_ticks_usec()
@@ -749,7 +754,8 @@ func _run_damage_death_turns() -> Dictionary:
 			leaked_markers += 1
 	var completed_hits := 0
 	for span: Dictionary in _hit_spans:
-		if str(span.get("next_clip", "")).begins_with("idle_"):
+		var idle_prefix := "combat_idle_" if _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile else "idle_"
+		if str(span.get("next_clip", "")).begins_with(idle_prefix):
 			completed_hits += 1
 	if incoming_hits < 2 or enemy_casts < 2 or incoming_damage != int(before.hp) - _hero.current_hp:
 		_errors.append("hit_death_incoming_damage_evidence_mismatch")
@@ -906,8 +912,12 @@ func _check_actual_effects(counter: Dictionary) -> void:
 						_errors.append(prefix + "bastion_effect_before_actual_arrival")
 				_require_target_count(impacts, 2, prefix)
 		elif spell_id == SHOT:
-			var flight := _require_effect(entries, &"arrow", &"flight", prefix, checks)
-			var impact := _require_effect(entries, &"impact", &"impact", prefix, checks)
+			var presentation: Dictionary = action.presentation
+			var flight := _require_effect(entries, StringName(presentation.projectile_animation), &"flight", prefix, checks)
+			var impact := _require_effect(entries, StringName(presentation.impact_animation), &"impact", prefix, checks)
+			if _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile and str(presentation.animation_stem) == "volley":
+				if not flight.any(func(entry): return float(entry.state.get("arc_height", 0.0)) > 0.0):
+					_errors.append(prefix + "aerial_shot_missing_curved_flight")
 			var first_damage := 0
 			var last_damage := 0
 			for event: Dictionary in action.events:

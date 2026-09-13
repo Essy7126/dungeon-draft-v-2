@@ -2308,6 +2308,15 @@ func choose_expedition_node(node_id: String) -> bool:
 	return true
 
 
+func advance_expedition_level_step() -> Dictionary:
+	if expedition == null or not run_active:
+		return {"success": false, "message": "Aucune expédition en cours."}
+	var result := expedition.advance_level_step()
+	if bool(result.get("success", false)):
+		_save_expedition_transaction(result)
+	return result
+
+
 func claim_expedition_reward(option_id: String) -> Dictionary:
 	if expedition == null or not run_active:
 		return {"success": false, "message": "Aucune expédition en cours."}
@@ -2464,11 +2473,20 @@ func open_painted_halt() -> bool:
 
 
 func get_expedition_destination_scene() -> String:
+	# Progression and loot must be resolved before a location can take over the UI.
+	if expedition != null and HALT_FLOW.required_step(expedition) not in ["map", "hub"]:
+		return EXPEDITION_SCREEN_PATH
 	if preload("res://hub/seuil_crossroads/seuil_route_choices.gd").active(expedition):
 		return "res://hub/seuil_crossroads/SeuilCrossroads.tscn"
 	if is_painted_halt_active():
 		return PAINTED_HALT_SCREEN_PATH
 	return MERCHANT_HALL_SCREEN_PATH if is_merchant_hall_active() else EXPEDITION_SCREEN_PATH
+
+
+func open_expedition_progression() -> bool:
+	if expedition == null or not run_active or not expedition.is_editable():
+		return false
+	return _request_saved_exit("open_expedition_workshop")
 
 
 func open_merchant_hall() -> bool:

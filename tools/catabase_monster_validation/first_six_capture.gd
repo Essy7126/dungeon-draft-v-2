@@ -25,6 +25,9 @@ func _run() -> void:
 			if preset == null:
 				break
 			preset.pressed.emit()
+			for step in 6:
+				scene.find_child("DepartureNext", true, false).pressed.emit()
+				await get_tree().process_frame
 			var confirm: Button = scene.find_child("ConfirmCatabaseDeparture", true, false)
 			var parent := confirm.get_parent()
 			while parent != null and not parent is ScrollContainer:

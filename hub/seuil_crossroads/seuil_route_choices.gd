@@ -23,6 +23,7 @@ static func active(session: ExpeditionSession) -> bool:
 static func can_depart(session: ExpeditionSession) -> bool:
 	return (
 		active(session) and session.route.phase == "map"
+		and session.advancement_step.is_empty()
 		and session.character.champion_progression.unspent_attribute_points == 0
 	)
 

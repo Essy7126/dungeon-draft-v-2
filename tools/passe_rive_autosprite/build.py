@@ -26,7 +26,7 @@ def contact(image):
     # Both soles can differ by 40–55 px vertically in an isometric stance.
     points = set()
     for y in range(floor - 70, floor):
-        for x in range(256):
+        for x in range(image.width):
             r, g, b, a = image.getpixel((x, y))
             # Neutral dark boots; reject bronze cuffs, bow and quiver.
             if a > 128 and max(r, g, b) < 85 and b >= r - 8 and b >= g - 8:

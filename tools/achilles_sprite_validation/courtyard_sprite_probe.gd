@@ -361,7 +361,8 @@ func _verify_stable_rest(visual: Node2D, unit_view: Node2D, phase: String) -> Di
 	var animated_idle := profile is AchillesAutoSpriteProfile or profile is PasseRiveAutoSpriteProfile
 	var anchor := Vector2(profile.get("foot_anchor"))
 	if profile is PasseRiveAutoSpriteProfile:
-		var geometry: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PasseRiveAutoSpriteBackend.MANIFEST)).geometry[String(_sprite.animation)]
+		var backend := visual.get("sprite_backend") as PasseRiveAutoSpriteBackend
+		var geometry: Dictionary = backend._geometry[String(_sprite.animation)]
 		anchor = Vector2(geometry.anchor[0], geometry.anchor[1])
 	var local_foot := _sprite.offset + anchor
 	if _sprite.centered:
@@ -380,7 +381,8 @@ func _verify_stable_rest(visual: Node2D, unit_view: Node2D, phase: String) -> Di
 		maximum_drift = maxf(maximum_drift, first_foot.distance_to(current_foot))
 		maximum_anchor_error = maxf(maximum_anchor_error,
 			current_foot.distance_to(unit_view.get_global_transform_with_canvas().origin))
-		if not String(_sprite.animation).begins_with("idle_") or (not animated_idle and _sprite.frame != 0) \
+		var resting := String(_sprite.animation).begins_with("idle_") or (profile is PasseRiveAutoSpriteProfile and String(_sprite.animation).begins_with("combat_idle_"))
+		if not resting or (not animated_idle and _sprite.frame != 0) \
 				or _sprite.is_playing() or _sprite.transform != initial_pose or unit_view.transform != initial_unit:
 			unexpected_pose_samples += 1
 		samples += 1

@@ -1,0 +1,3138 @@
+{
+  "version": 2,
+  "generator": "built-in image_gen.imagegen",
+  "software_preparation_authorized": true,
+  "cell_size": [
+    384,
+    384
+  ],
+  "clips": {
+    "combat_idle": {
+      "poses": [
+        0
+      ],
+      "weights": [
+        1
+      ],
+      "duration": 2.0,
+      "release": null
+    },
+    "bow_quick": {
+      "poses": [
+        0,
+        1,
+        2,
+        3,
+        14,
+        0
+      ],
+      "weights": [
+        0.4,
+        0.9,
+        0.7,
+        0.65,
+        0.85,
+        0.4
+      ],
+      "duration": 0.58,
+      "release": 0.2,
+      "release_frame": 3
+    },
+    "bow_charged": {
+      "poses": [
+        0,
+        4,
+        5,
+        6,
+        7,
+        4,
+        14,
+        0
+      ],
+      "weights": [
+        0.4,
+        0.8,
+        0.9,
+        2,
+        0.6,
+        0.7,
+        0.8,
+        0.4
+      ],
+      "duration": 1.05,
+      "release": 0.58,
+      "release_frame": 4
+    },
+    "bow_air": {
+      "poses": [
+        0,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        0
+      ],
+      "weights": [
+        0.4,
+        0.8,
+        0.7,
+        1,
+        0.45,
+        0.7,
+        0.9,
+        0.5,
+        0.3
+      ],
+      "duration": 1.1,
+      "release": 0.52,
+      "release_frame": 4
+    }
+  },
+  "flight_height_px": {
+    "9": 20,
+    "10": 42,
+    "11": 42,
+    "12": 18
+  },
+  "geometry": {
+    "combat_idle_N": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_N": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_N": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_N": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_NE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_NE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_NE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_NE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_E": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_E": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_E": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_E": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_SE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_SE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_SE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_SE": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_S": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_S": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_S": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_S": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_SW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_SW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_SW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_SW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_W": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_W": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_W": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_W": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "combat_idle_NW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_quick_NW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_charged_NW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    },
+    "bow_air_NW": {
+      "anchor": [
+        192,
+        330
+      ],
+      "scale": 1.0,
+      "reference_frame": 0
+    }
+  },
+  "sheets": [
+    {
+      "direction": "N",
+      "file": "passe_rive_combat_n_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_n_concept_v1.png",
+      "source_sha256": "1a07dfa7f7e356cc74fcfff6fb1422000d179d4a989adbc3455be9ed52be0b3b",
+      "sha256": "d62b6f8ab0b9615115ee45b24ab1f0f49848fd0a8b976a1d650ad9c3df81441e",
+      "scale": 0.9264069264069265
+    },
+    {
+      "direction": "NE",
+      "file": "passe_rive_combat_ne_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_ne_concept_v1.png",
+      "source_sha256": "7cdccb45efc56f10ae775bd532a26509e01a772bad9baf0424c9682fdfa8b783",
+      "sha256": "e10c1ada59167dd881a3f0cfc0b252815f7fb96046625f0a5628695135e3d41c",
+      "scale": 0.895397489539749
+    },
+    {
+      "direction": "E",
+      "file": "passe_rive_combat_e_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_e_concept_v1.png",
+      "source_sha256": "99e5b466ae720dfb298d4b75fa9c9220e70d72af46086e0e2e88414ffb0368ca",
+      "sha256": "dd8f66188a6b0ae536659e24ba4888adeeb86405d3bc16f85ae058dd595b0c12",
+      "scale": 0.8492063492063492
+    },
+    {
+      "direction": "SE",
+      "file": "passe_rive_combat_se_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_se_concept_v1.png",
+      "source_sha256": "76fc8af0761bb90049b566fe905fbe1699ab4977b329257626c44e09ec96ebe5",
+      "sha256": "73d954ada45b7aff654ce69f2c24e2a26708c444a79c88e48eba4cc690fee3d3",
+      "scale": 0.8492063492063492
+    },
+    {
+      "direction": "S",
+      "file": "passe_rive_combat_s_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_s_concept_v1.png",
+      "source_sha256": "f77814546d8193dbd80dc501bc992b41f09ead81e786acacfaf5458092e98f06",
+      "sha256": "29eee81ea89fb00605a709a5f223395ed80010c8e9094f3a8376b83898eebd1c",
+      "scale": 0.8663967611336032
+    },
+    {
+      "direction": "SW",
+      "file": "passe_rive_combat_sw_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_sw_concept_v1.png",
+      "source_sha256": "19b0b046d1d102b375f26afef52e30ae9d259562701b1481b95576fb75db38fd",
+      "sha256": "02a70062b56e5493f47042f003a916a0f0cff3260ea212e8fa4847ada213e495",
+      "scale": 0.8359375
+    },
+    {
+      "direction": "W",
+      "file": "passe_rive_combat_w_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_w_concept_v1.png",
+      "source_sha256": "1300c63d569a44b16f6ab689a32924ac0d64af742ae375076769a61a3d7df2ba",
+      "sha256": "d3a9d070b446fe442758bca8968749af2796bf98b3a601cf34ae7bc968e62d6a",
+      "scale": 0.8262548262548263
+    },
+    {
+      "direction": "NW",
+      "file": "passe_rive_combat_nw_v2.png",
+      "source_file": "art\\source\\passe_rive\\combat_v2\\passe_rive_combat_nw_concept_v1.png",
+      "source_sha256": "a14550460b7bf14f45d43eaff357ffe42bd196baff8b6c0c5236c437edd5ed6d",
+      "sha256": "12cb87cebedc5e7a602749ca851b7bb751246b7158c3c31915e02e30fb58aa89",
+      "scale": 0.9067796610169492
+    }
+  ],
+  "poses": {
+    "N": [
+      {
+        "source_contact": [
+          82.98,
+          230.0
+        ],
+        "source_size": [
+          181,
+          231
+        ],
+        "translation": [
+          115,
+          117
+        ],
+        "bounds": [
+          115,
+          117,
+          283,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          57.83,
+          275.5
+        ],
+        "source_size": [
+          129,
+          277
+        ],
+        "translation": [
+          138,
+          75
+        ],
+        "bounds": [
+          138,
+          75,
+          258,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          59.06,
+          284.0
+        ],
+        "source_size": [
+          124,
+          286
+        ],
+        "translation": [
+          137,
+          67
+        ],
+        "bounds": [
+          137,
+          67,
+          252,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          61.47,
+          291.0
+        ],
+        "source_size": [
+          123,
+          293
+        ],
+        "translation": [
+          135,
+          60
+        ],
+        "bounds": [
+          135,
+          60,
+          249,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          74.66,
+          260.0
+        ],
+        "source_size": [
+          150,
+          262
+        ],
+        "translation": [
+          123,
+          89
+        ],
+        "bounds": [
+          123,
+          89,
+          262,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          80.14,
+          228.0
+        ],
+        "source_size": [
+          181,
+          242
+        ],
+        "translation": [
+          118,
+          119
+        ],
+        "bounds": [
+          118,
+          119,
+          286,
+          343
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          80.3,
+          245.5
+        ],
+        "source_size": [
+          174,
+          254
+        ],
+        "translation": [
+          118,
+          103
+        ],
+        "bounds": [
+          118,
+          103,
+          279,
+          338
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          88.16,
+          242.5
+        ],
+        "source_size": [
+          177,
+          250
+        ],
+        "translation": [
+          110,
+          105
+        ],
+        "bounds": [
+          110,
+          105,
+          274,
+          337
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          50.62,
+          216.0
+        ],
+        "source_size": [
+          120,
+          217
+        ],
+        "translation": [
+          145,
+          130
+        ],
+        "bounds": [
+          145,
+          130,
+          256,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          54.72,
+          284.5
+        ],
+        "source_size": [
+          114,
+          293
+        ],
+        "translation": [
+          141,
+          46
+        ],
+        "bounds": [
+          141,
+          46,
+          247,
+          317
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          51.17,
+          270.0
+        ],
+        "source_size": [
+          123,
+          274
+        ],
+        "translation": [
+          145,
+          38
+        ],
+        "bounds": [
+          145,
+          38,
+          259,
+          292
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          53.26,
+          275.0
+        ],
+        "source_size": [
+          119,
+          279
+        ],
+        "translation": [
+          143,
+          33
+        ],
+        "bounds": [
+          143,
+          33,
+          253,
+          291
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          55.67,
+          214.0
+        ],
+        "source_size": [
+          131,
+          218
+        ],
+        "translation": [
+          140,
+          114
+        ],
+        "bounds": [
+          140,
+          114,
+          261,
+          316
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          52.67,
+          180.5
+        ],
+        "source_size": [
+          131,
+          184
+        ],
+        "translation": [
+          143,
+          163
+        ],
+        "bounds": [
+          143,
+          163,
+          264,
+          333
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          83.32,
+          231.0
+        ],
+        "source_size": [
+          181,
+          232
+        ],
+        "translation": [
+          115,
+          116
+        ],
+        "bounds": [
+          115,
+          116,
+          283,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          83.34,
+          231.0
+        ],
+        "source_size": [
+          181,
+          232
+        ],
+        "translation": [
+          115,
+          116
+        ],
+        "bounds": [
+          115,
+          116,
+          283,
+          331
+        ],
+        "flight_height": 0
+      }
+    ],
+    "NE": [
+      {
+        "source_contact": [
+          48.28,
+          223.0
+        ],
+        "source_size": [
+          149,
+          239
+        ],
+        "translation": [
+          149,
+          130
+        ],
+        "bounds": [
+          149,
+          130,
+          282,
+          344
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          46.15,
+          264.0
+        ],
+        "source_size": [
+          142,
+          281
+        ],
+        "translation": [
+          151,
+          94
+        ],
+        "bounds": [
+          151,
+          94,
+          278,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          49.15,
+          274.0
+        ],
+        "source_size": [
+          165,
+          291
+        ],
+        "translation": [
+          148,
+          85
+        ],
+        "bounds": [
+          148,
+          85,
+          296,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          56.82,
+          272.0
+        ],
+        "source_size": [
+          136,
+          289
+        ],
+        "translation": [
+          141,
+          86
+        ],
+        "bounds": [
+          141,
+          86,
+          263,
+          345
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          63.05,
+          250.5
+        ],
+        "source_size": [
+          161,
+          264
+        ],
+        "translation": [
+          136,
+          106
+        ],
+        "bounds": [
+          136,
+          106,
+          280,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          72.31,
+          233.5
+        ],
+        "source_size": [
+          206,
+          240
+        ],
+        "translation": [
+          127,
+          121
+        ],
+        "bounds": [
+          127,
+          121,
+          311,
+          336
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          66.61,
+          257.0
+        ],
+        "source_size": [
+          187,
+          270
+        ],
+        "translation": [
+          132,
+          100
+        ],
+        "bounds": [
+          132,
+          100,
+          299,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          64.24,
+          254.0
+        ],
+        "source_size": [
+          167,
+          266
+        ],
+        "translation": [
+          134,
+          103
+        ],
+        "bounds": [
+          134,
+          103,
+          284,
+          341
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          47.21,
+          202.0
+        ],
+        "source_size": [
+          137,
+          216
+        ],
+        "translation": [
+          150,
+          149
+        ],
+        "bounds": [
+          150,
+          149,
+          273,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          56.18,
+          275.5
+        ],
+        "source_size": [
+          145,
+          297
+        ],
+        "translation": [
+          142,
+          63
+        ],
+        "bounds": [
+          142,
+          63,
+          272,
+          329
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          43.11,
+          268.0
+        ],
+        "source_size": [
+          143,
+          273
+        ],
+        "translation": [
+          153,
+          48
+        ],
+        "bounds": [
+          153,
+          48,
+          281,
+          292
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          44.35,
+          272.5
+        ],
+        "source_size": [
+          121,
+          278
+        ],
+        "translation": [
+          152,
+          44
+        ],
+        "bounds": [
+          152,
+          44,
+          260,
+          293
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          57.45,
+          201.5
+        ],
+        "source_size": [
+          160,
+          210
+        ],
+        "translation": [
+          141,
+          132
+        ],
+        "bounds": [
+          141,
+          132,
+          284,
+          320
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          58.53,
+          162.5
+        ],
+        "source_size": [
+          171,
+          172
+        ],
+        "translation": [
+          140,
+          184
+        ],
+        "bounds": [
+          140,
+          184,
+          293,
+          338
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          54.86,
+          227.0
+        ],
+        "source_size": [
+          125,
+          242
+        ],
+        "translation": [
+          143,
+          127
+        ],
+        "bounds": [
+          143,
+          127,
+          255,
+          344
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          46.28,
+          223.5
+        ],
+        "source_size": [
+          147,
+          240
+        ],
+        "translation": [
+          151,
+          130
+        ],
+        "bounds": [
+          151,
+          130,
+          283,
+          345
+        ],
+        "flight_height": 0
+      }
+    ],
+    "E": [
+      {
+        "source_contact": [
+          79.54,
+          234.5
+        ],
+        "source_size": [
+          171,
+          252
+        ],
+        "translation": [
+          124,
+          131
+        ],
+        "bounds": [
+          124,
+          131,
+          269,
+          345
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          56.3,
+          255.0
+        ],
+        "source_size": [
+          163,
+          270
+        ],
+        "translation": [
+          144,
+          113
+        ],
+        "bounds": [
+          144,
+          113,
+          282,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          55.49,
+          258.0
+        ],
+        "source_size": [
+          172,
+          274
+        ],
+        "translation": [
+          145,
+          111
+        ],
+        "bounds": [
+          145,
+          111,
+          291,
+          344
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          71.76,
+          266.0
+        ],
+        "source_size": [
+          168,
+          282
+        ],
+        "translation": [
+          131,
+          104
+        ],
+        "bounds": [
+          131,
+          104,
+          274,
+          343
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          80.31,
+          254.0
+        ],
+        "source_size": [
+          164,
+          263
+        ],
+        "translation": [
+          124,
+          114
+        ],
+        "bounds": [
+          124,
+          114,
+          263,
+          337
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          93.76,
+          237.0
+        ],
+        "source_size": [
+          212,
+          241
+        ],
+        "translation": [
+          112,
+          129
+        ],
+        "bounds": [
+          112,
+          129,
+          292,
+          334
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          84.64,
+          245.5
+        ],
+        "source_size": [
+          219,
+          248
+        ],
+        "translation": [
+          120,
+          122
+        ],
+        "bounds": [
+          120,
+          122,
+          306,
+          333
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          86.81,
+          235.5
+        ],
+        "source_size": [
+          174,
+          239
+        ],
+        "translation": [
+          118,
+          130
+        ],
+        "bounds": [
+          118,
+          130,
+          266,
+          333
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          38.98,
+          227.0
+        ],
+        "source_size": [
+          159,
+          228
+        ],
+        "translation": [
+          159,
+          137
+        ],
+        "bounds": [
+          159,
+          137,
+          294,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          41.57,
+          277.0
+        ],
+        "source_size": [
+          165,
+          291
+        ],
+        "translation": [
+          157,
+          75
+        ],
+        "bounds": [
+          157,
+          75,
+          297,
+          322
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          46.28,
+          266.0
+        ],
+        "source_size": [
+          141,
+          282
+        ],
+        "translation": [
+          153,
+          62
+        ],
+        "bounds": [
+          153,
+          62,
+          273,
+          301
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          58.2,
+          278.0
+        ],
+        "source_size": [
+          151,
+          294
+        ],
+        "translation": [
+          143,
+          52
+        ],
+        "bounds": [
+          143,
+          52,
+          271,
+          302
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          64.03,
+          211.5
+        ],
+        "source_size": [
+          146,
+          225
+        ],
+        "translation": [
+          138,
+          132
+        ],
+        "bounds": [
+          138,
+          132,
+          262,
+          323
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          79.17,
+          176.0
+        ],
+        "source_size": [
+          174,
+          188
+        ],
+        "translation": [
+          125,
+          181
+        ],
+        "bounds": [
+          125,
+          181,
+          273,
+          341
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          81.08,
+          231.5
+        ],
+        "source_size": [
+          168,
+          249
+        ],
+        "translation": [
+          123,
+          133
+        ],
+        "bounds": [
+          123,
+          133,
+          266,
+          344
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          78.23,
+          232.5
+        ],
+        "source_size": [
+          171,
+          250
+        ],
+        "translation": [
+          126,
+          133
+        ],
+        "bounds": [
+          126,
+          133,
+          271,
+          345
+        ],
+        "flight_height": 0
+      }
+    ],
+    "SE": [
+      {
+        "source_contact": [
+          72.62,
+          238.0
+        ],
+        "source_size": [
+          180,
+          252
+        ],
+        "translation": [
+          130,
+          128
+        ],
+        "bounds": [
+          130,
+          128,
+          283,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          56.28,
+          259.5
+        ],
+        "source_size": [
+          172,
+          274
+        ],
+        "translation": [
+          144,
+          110
+        ],
+        "bounds": [
+          144,
+          110,
+          290,
+          343
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          77.29,
+          262.5
+        ],
+        "source_size": [
+          209,
+          270
+        ],
+        "translation": [
+          126,
+          107
+        ],
+        "bounds": [
+          126,
+          107,
+          303,
+          336
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          79.92,
+          256.5
+        ],
+        "source_size": [
+          177,
+          271
+        ],
+        "translation": [
+          124,
+          112
+        ],
+        "bounds": [
+          124,
+          112,
+          274,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          85.02,
+          234.5
+        ],
+        "source_size": [
+          172,
+          254
+        ],
+        "translation": [
+          120,
+          131
+        ],
+        "bounds": [
+          120,
+          131,
+          266,
+          347
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          95.09,
+          229.0
+        ],
+        "source_size": [
+          222,
+          244
+        ],
+        "translation": [
+          111,
+          136
+        ],
+        "bounds": [
+          111,
+          136,
+          300,
+          343
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          104.11,
+          221.5
+        ],
+        "source_size": [
+          232,
+          237
+        ],
+        "translation": [
+          104,
+          142
+        ],
+        "bounds": [
+          104,
+          142,
+          301,
+          343
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          103.61,
+          227.5
+        ],
+        "source_size": [
+          200,
+          240
+        ],
+        "translation": [
+          104,
+          137
+        ],
+        "bounds": [
+          104,
+          137,
+          274,
+          341
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          50.61,
+          215.5
+        ],
+        "source_size": [
+          154,
+          230
+        ],
+        "translation": [
+          149,
+          147
+        ],
+        "bounds": [
+          149,
+          147,
+          280,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          47.4,
+          269.0
+        ],
+        "source_size": [
+          155,
+          286
+        ],
+        "translation": [
+          152,
+          82
+        ],
+        "bounds": [
+          152,
+          82,
+          284,
+          325
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          54.11,
+          265.0
+        ],
+        "source_size": [
+          173,
+          278
+        ],
+        "translation": [
+          146,
+          63
+        ],
+        "bounds": [
+          146,
+          63,
+          293,
+          299
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          58.5,
+          257.0
+        ],
+        "source_size": [
+          171,
+          270
+        ],
+        "translation": [
+          142,
+          70
+        ],
+        "bounds": [
+          142,
+          70,
+          287,
+          299
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          67.8,
+          208.0
+        ],
+        "source_size": [
+          164,
+          222
+        ],
+        "translation": [
+          134,
+          135
+        ],
+        "bounds": [
+          134,
+          135,
+          273,
+          324
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          62.98,
+          182.0
+        ],
+        "source_size": [
+          162,
+          187
+        ],
+        "translation": [
+          139,
+          175
+        ],
+        "bounds": [
+          139,
+          175,
+          277,
+          334
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          76.9,
+          233.0
+        ],
+        "source_size": [
+          181,
+          246
+        ],
+        "translation": [
+          127,
+          132
+        ],
+        "bounds": [
+          127,
+          132,
+          281,
+          341
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          71.87,
+          236.5
+        ],
+        "source_size": [
+          180,
+          250
+        ],
+        "translation": [
+          131,
+          129
+        ],
+        "bounds": [
+          131,
+          129,
+          284,
+          341
+        ],
+        "flight_height": 0
+      }
+    ],
+    "S": [
+      {
+        "source_contact": [
+          87.85,
+          246.5
+        ],
+        "source_size": [
+          184,
+          247
+        ],
+        "translation": [
+          116,
+          116
+        ],
+        "bounds": [
+          116,
+          116,
+          275,
+          330
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          62.92,
+          283.5
+        ],
+        "source_size": [
+          116,
+          285
+        ],
+        "translation": [
+          137,
+          84
+        ],
+        "bounds": [
+          137,
+          84,
+          238,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          56.61,
+          283.5
+        ],
+        "source_size": [
+          108,
+          285
+        ],
+        "translation": [
+          143,
+          84
+        ],
+        "bounds": [
+          143,
+          84,
+          237,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          66.68,
+          283.5
+        ],
+        "source_size": [
+          122,
+          285
+        ],
+        "translation": [
+          134,
+          84
+        ],
+        "bounds": [
+          134,
+          84,
+          240,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          90.41,
+          236.5
+        ],
+        "source_size": [
+          182,
+          244
+        ],
+        "translation": [
+          114,
+          125
+        ],
+        "bounds": [
+          114,
+          125,
+          272,
+          336
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          90.99,
+          247.0
+        ],
+        "source_size": [
+          183,
+          256
+        ],
+        "translation": [
+          113,
+          116
+        ],
+        "bounds": [
+          113,
+          116,
+          272,
+          338
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          59.0,
+          235.0
+        ],
+        "source_size": [
+          126,
+          244
+        ],
+        "translation": [
+          141,
+          126
+        ],
+        "bounds": [
+          141,
+          126,
+          250,
+          337
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          60.15,
+          247.5
+        ],
+        "source_size": [
+          130,
+          257
+        ],
+        "translation": [
+          140,
+          116
+        ],
+        "bounds": [
+          140,
+          116,
+          253,
+          339
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          56.5,
+          204.5
+        ],
+        "source_size": [
+          120,
+          217
+        ],
+        "translation": [
+          143,
+          153
+        ],
+        "bounds": [
+          143,
+          153,
+          247,
+          341
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          60.88,
+          262.5
+        ],
+        "source_size": [
+          114,
+          284
+        ],
+        "translation": [
+          139,
+          83
+        ],
+        "bounds": [
+          139,
+          83,
+          238,
+          329
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          50.68,
+          289.5
+        ],
+        "source_size": [
+          110,
+          305
+        ],
+        "translation": [
+          148,
+          37
+        ],
+        "bounds": [
+          148,
+          37,
+          243,
+          301
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          63.09,
+          288.0
+        ],
+        "source_size": [
+          119,
+          304
+        ],
+        "translation": [
+          137,
+          38
+        ],
+        "bounds": [
+          137,
+          38,
+          240,
+          301
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          57.85,
+          206.5
+        ],
+        "source_size": [
+          121,
+          224
+        ],
+        "translation": [
+          142,
+          133
+        ],
+        "bounds": [
+          142,
+          133,
+          247,
+          327
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          85.79,
+          187.0
+        ],
+        "source_size": [
+          131,
+          187
+        ],
+        "translation": [
+          118,
+          168
+        ],
+        "bounds": [
+          118,
+          168,
+          231,
+          330
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          86.26,
+          243.0
+        ],
+        "source_size": [
+          183,
+          245
+        ],
+        "translation": [
+          117,
+          119
+        ],
+        "bounds": [
+          117,
+          119,
+          276,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          89.13,
+          246.0
+        ],
+        "source_size": [
+          183,
+          248
+        ],
+        "translation": [
+          115,
+          117
+        ],
+        "bounds": [
+          115,
+          117,
+          274,
+          332
+        ],
+        "flight_height": 0
+      }
+    ],
+    "SW": [
+      {
+        "source_contact": [
+          96.58,
+          236.0
+        ],
+        "source_size": [
+          186,
+          256
+        ],
+        "translation": [
+          111,
+          133
+        ],
+        "bounds": [
+          111,
+          133,
+          266,
+          347
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          86.15,
+          248.5
+        ],
+        "source_size": [
+          150,
+          268
+        ],
+        "translation": [
+          120,
+          122
+        ],
+        "bounds": [
+          120,
+          122,
+          245,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          144.48,
+          246.0
+        ],
+        "source_size": [
+          214,
+          266
+        ],
+        "translation": [
+          71,
+          124
+        ],
+        "bounds": [
+          71,
+          124,
+          250,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          103.86,
+          253.5
+        ],
+        "source_size": [
+          172,
+          274
+        ],
+        "translation": [
+          105,
+          118
+        ],
+        "bounds": [
+          105,
+          118,
+          249,
+          347
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          90.18,
+          241.5
+        ],
+        "source_size": [
+          182,
+          254
+        ],
+        "translation": [
+          117,
+          128
+        ],
+        "bounds": [
+          117,
+          128,
+          269,
+          340
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          101.17,
+          233.0
+        ],
+        "source_size": [
+          196,
+          242
+        ],
+        "translation": [
+          107,
+          135
+        ],
+        "bounds": [
+          107,
+          135,
+          271,
+          337
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          134.2,
+          245.0
+        ],
+        "source_size": [
+          227,
+          248
+        ],
+        "translation": [
+          80,
+          125
+        ],
+        "bounds": [
+          80,
+          125,
+          270,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          81.64,
+          242.0
+        ],
+        "source_size": [
+          182,
+          243
+        ],
+        "translation": [
+          124,
+          128
+        ],
+        "bounds": [
+          124,
+          128,
+          276,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          107.11,
+          186.5
+        ],
+        "source_size": [
+          158,
+          196
+        ],
+        "translation": [
+          102,
+          174
+        ],
+        "bounds": [
+          102,
+          174,
+          234,
+          338
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          100.11,
+          283.0
+        ],
+        "source_size": [
+          169,
+          303
+        ],
+        "translation": [
+          108,
+          73
+        ],
+        "bounds": [
+          108,
+          73,
+          249,
+          326
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          145.18,
+          267.0
+        ],
+        "source_size": [
+          196,
+          288
+        ],
+        "translation": [
+          71,
+          65
+        ],
+        "bounds": [
+          71,
+          65,
+          235,
+          306
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          111.96,
+          267.0
+        ],
+        "source_size": [
+          162,
+          283
+        ],
+        "translation": [
+          98,
+          65
+        ],
+        "bounds": [
+          98,
+          65,
+          233,
+          302
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          89.52,
+          223.5
+        ],
+        "source_size": [
+          147,
+          240
+        ],
+        "translation": [
+          117,
+          125
+        ],
+        "bounds": [
+          117,
+          125,
+          240,
+          326
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          100.67,
+          165.5
+        ],
+        "source_size": [
+          197,
+          168
+        ],
+        "translation": [
+          108,
+          192
+        ],
+        "bounds": [
+          108,
+          192,
+          273,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          87.24,
+          241.0
+        ],
+        "source_size": [
+          188,
+          261
+        ],
+        "translation": [
+          119,
+          129
+        ],
+        "bounds": [
+          119,
+          129,
+          276,
+          347
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          97.55,
+          233.0
+        ],
+        "source_size": [
+          188,
+          253
+        ],
+        "translation": [
+          110,
+          135
+        ],
+        "bounds": [
+          110,
+          135,
+          267,
+          346
+        ],
+        "flight_height": 0
+      }
+    ],
+    "W": [
+      {
+        "source_contact": [
+          82.79,
+          237.5
+        ],
+        "source_size": [
+          176,
+          259
+        ],
+        "translation": [
+          124,
+          134
+        ],
+        "bounds": [
+          124,
+          134,
+          269,
+          348
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          104.91,
+          253.0
+        ],
+        "source_size": [
+          169,
+          272
+        ],
+        "translation": [
+          105,
+          121
+        ],
+        "bounds": [
+          105,
+          121,
+          245,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          134.67,
+          242.0
+        ],
+        "source_size": [
+          195,
+          262
+        ],
+        "translation": [
+          81,
+          130
+        ],
+        "bounds": [
+          81,
+          130,
+          242,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          110.02,
+          264.5
+        ],
+        "source_size": [
+          172,
+          284
+        ],
+        "translation": [
+          101,
+          111
+        ],
+        "bounds": [
+          101,
+          111,
+          243,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          99.36,
+          249.0
+        ],
+        "source_size": [
+          201,
+          258
+        ],
+        "translation": [
+          110,
+          124
+        ],
+        "bounds": [
+          110,
+          124,
+          276,
+          337
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          118.57,
+          234.0
+        ],
+        "source_size": [
+          224,
+          243
+        ],
+        "translation": [
+          94,
+          137
+        ],
+        "bounds": [
+          94,
+          137,
+          279,
+          338
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          140.55,
+          237.0
+        ],
+        "source_size": [
+          239,
+          238
+        ],
+        "translation": [
+          76,
+          134
+        ],
+        "bounds": [
+          76,
+          134,
+          273,
+          331
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          100.37,
+          237.5
+        ],
+        "source_size": [
+          198,
+          241
+        ],
+        "translation": [
+          109,
+          134
+        ],
+        "bounds": [
+          109,
+          134,
+          273,
+          333
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          101.2,
+          218.0
+        ],
+        "source_size": [
+          152,
+          230
+        ],
+        "translation": [
+          108,
+          150
+        ],
+        "bounds": [
+          108,
+          150,
+          234,
+          340
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          104.98,
+          290.0
+        ],
+        "source_size": [
+          169,
+          309
+        ],
+        "translation": [
+          105,
+          70
+        ],
+        "bounds": [
+          105,
+          70,
+          245,
+          325
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          136.05,
+          275.5
+        ],
+        "source_size": [
+          189,
+          296
+        ],
+        "translation": [
+          80,
+          60
+        ],
+        "bounds": [
+          80,
+          60,
+          236,
+          305
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          114.9,
+          274.0
+        ],
+        "source_size": [
+          166,
+          291
+        ],
+        "translation": [
+          97,
+          62
+        ],
+        "bounds": [
+          97,
+          62,
+          234,
+          302
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          100.66,
+          241.0
+        ],
+        "source_size": [
+          150,
+          263
+        ],
+        "translation": [
+          109,
+          113
+        ],
+        "bounds": [
+          109,
+          113,
+          233,
+          330
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          95.76,
+          181.5
+        ],
+        "source_size": [
+          190,
+          184
+        ],
+        "translation": [
+          113,
+          180
+        ],
+        "bounds": [
+          113,
+          180,
+          270,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          78.88,
+          238.5
+        ],
+        "source_size": [
+          178,
+          258
+        ],
+        "translation": [
+          127,
+          133
+        ],
+        "bounds": [
+          127,
+          133,
+          274,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          83.27,
+          238.0
+        ],
+        "source_size": [
+          177,
+          260
+        ],
+        "translation": [
+          123,
+          133
+        ],
+        "bounds": [
+          123,
+          133,
+          269,
+          348
+        ],
+        "flight_height": 0
+      }
+    ],
+    "NW": [
+      {
+        "source_contact": [
+          99.32,
+          218.5
+        ],
+        "source_size": [
+          156,
+          236
+        ],
+        "translation": [
+          102,
+          132
+        ],
+        "bounds": [
+          102,
+          132,
+          243,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          95.58,
+          256.0
+        ],
+        "source_size": [
+          135,
+          272
+        ],
+        "translation": [
+          105,
+          98
+        ],
+        "bounds": [
+          105,
+          98,
+          227,
+          345
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          143.77,
+          254.0
+        ],
+        "source_size": [
+          202,
+          271
+        ],
+        "translation": [
+          62,
+          100
+        ],
+        "bounds": [
+          62,
+          100,
+          245,
+          346
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          112.03,
+          255.0
+        ],
+        "source_size": [
+          177,
+          270
+        ],
+        "translation": [
+          90,
+          99
+        ],
+        "bounds": [
+          90,
+          99,
+          250,
+          344
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          155.7,
+          243.0
+        ],
+        "source_size": [
+          181,
+          263
+        ],
+        "translation": [
+          51,
+          110
+        ],
+        "bounds": [
+          51,
+          110,
+          215,
+          348
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          177.51,
+          228.5
+        ],
+        "source_size": [
+          203,
+          247
+        ],
+        "translation": [
+          31,
+          123
+        ],
+        "bounds": [
+          31,
+          123,
+          215,
+          347
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          192.18,
+          243.0
+        ],
+        "source_size": [
+          229,
+          247
+        ],
+        "translation": [
+          18,
+          110
+        ],
+        "bounds": [
+          18,
+          110,
+          226,
+          334
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          93.51,
+          241.5
+        ],
+        "source_size": [
+          189,
+          252
+        ],
+        "translation": [
+          107,
+          111
+        ],
+        "bounds": [
+          107,
+          111,
+          278,
+          340
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          107.13,
+          193.5
+        ],
+        "source_size": [
+          148,
+          206
+        ],
+        "translation": [
+          95,
+          155
+        ],
+        "bounds": [
+          95,
+          155,
+          229,
+          342
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          95.89,
+          273.0
+        ],
+        "source_size": [
+          149,
+          290
+        ],
+        "translation": [
+          105,
+          62
+        ],
+        "bounds": [
+          105,
+          62,
+          240,
+          325
+        ],
+        "flight_height": 20
+      },
+      {
+        "source_contact": [
+          122.49,
+          266.5
+        ],
+        "source_size": [
+          181,
+          286
+        ],
+        "translation": [
+          81,
+          46
+        ],
+        "bounds": [
+          81,
+          46,
+          245,
+          305
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          115.98,
+          274.5
+        ],
+        "source_size": [
+          161,
+          290
+        ],
+        "translation": [
+          87,
+          39
+        ],
+        "bounds": [
+          87,
+          39,
+          233,
+          302
+        ],
+        "flight_height": 42
+      },
+      {
+        "source_contact": [
+          90.45,
+          206.5
+        ],
+        "source_size": [
+          141,
+          219
+        ],
+        "translation": [
+          110,
+          125
+        ],
+        "bounds": [
+          110,
+          125,
+          238,
+          324
+        ],
+        "flight_height": 18
+      },
+      {
+        "source_contact": [
+          107.66,
+          157.5
+        ],
+        "source_size": [
+          182,
+          160
+        ],
+        "translation": [
+          94,
+          187
+        ],
+        "bounds": [
+          94,
+          187,
+          259,
+          332
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          91.26,
+          221.0
+        ],
+        "source_size": [
+          161,
+          239
+        ],
+        "translation": [
+          109,
+          130
+        ],
+        "bounds": [
+          109,
+          130,
+          255,
+          347
+        ],
+        "flight_height": 0
+      },
+      {
+        "source_contact": [
+          97.78,
+          218.0
+        ],
+        "source_size": [
+          155,
+          236
+        ],
+        "translation": [
+          103,
+          132
+        ],
+        "bounds": [
+          103,
+          132,
+          244,
+          346
+        ],
+        "flight_height": 0
+      }
+    ]
+  },
+  "validation": {
+    "directions": 8,
+    "drawings": 128,
+    "new_clips": 32,
+    "runtime_clips": 152,
+    "clipping_checks": 128,
+    "actual_alpha": true
+  }
+}

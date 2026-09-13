@@ -8,7 +8,7 @@ const PAINTED_SCENE_PATH := "res://characters/achilles/AchillesPaintedGUnitView.
 const PAINTED_FRAMES_PATH := "res://assets/characters/Achilles/sprites_painted_g/achilles_sprite_frames.tres"
 const PAINTED_PORTRAIT_PATH := "res://assets/characters/Achilles/sprites_painted_g/achilles_portrait.tres"
 const PASSE_RIVE_SCENE_PATH := "res://characters/achilles/PasseRiveIsoUnitView.tscn"
-const PASSE_RIVE_FRAMES_PATH := "res://assets/characters/PasseRive/autosprite_v1/sprite_frames.tres"
+const PASSE_RIVE_FRAMES_PATH := "res://assets/characters/PasseRive/combat_v2/sprite_frames.tres"
 const PASSE_RIVE_PORTRAIT_PATH := "res://assets/characters/PasseRive/autosprite_v1/portrait.tres"
 
 

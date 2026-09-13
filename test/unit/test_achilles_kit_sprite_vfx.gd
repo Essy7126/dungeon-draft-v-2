@@ -69,6 +69,30 @@ func test_cancelled_or_missed_projectile_does_not_create_a_late_hit() -> void:
 	assert_false(stale.visible)
 
 
+func test_aerial_projectile_and_trail_follow_curve_without_early_impact() -> void:
+	var effect := _effect()
+	effect.configure(_frames(), {"projectile_arc_ratio": 0.65, "projectile_trail_count": 1},
+		Vector2(0, 20), [Vector2(100, 20)], 100.0)
+	effect.start_flight(0.4)
+	effect.set_process(false)
+	assert_eq(effect._sprites[0].global_position, Vector2(0, 20))
+	assert_lt(effect._sprites[0].global_rotation, 0.0, "Launch rises toward the sky.")
+	effect.advance_simulation(0.2)
+	assert_almost_eq(effect._sprites[0].global_position, Vector2(50, -45), Vector2.ONE * 0.001)
+	assert_lt(effect._trails[0].global_position.x, effect._sprites[0].global_position.x)
+	assert_lt(effect._trails[0].global_position.y, 20.0)
+	assert_eq(effect.get_visual_runtime_state().head_count, 1)
+	assert_false(effect.get_visual_runtime_state().impact_reached)
+	effect.advance_simulation(0.2)
+	assert_eq(effect._sprites[0].global_position, Vector2(100, 20))
+	assert_gt(effect._sprites[0].global_rotation, 0.0, "Arrival points downward.")
+	assert_eq(effect.get_visual_runtime_state().phase, &"awaiting_impact")
+	assert_false(effect.get_visual_runtime_state().impact_reached)
+	effect.confirm_impact([Vector2(100, 20)])
+	assert_eq(effect._sprites[0].global_position, Vector2(100, 20))
+	assert_true(effect.get_visual_runtime_state().impact_reached)
+
+
 func test_hold_stays_on_one_frame_and_bursts_end_without_oscillation() -> void:
 	var hold := _effect()
 	hold.start_hold()

@@ -37,7 +37,7 @@ if ($VerboseEngine) { $arguments = @('--verbose') + $arguments }
 foreach ($path in $scripts) { $arguments += @('-gtest',$path) }
 $gut = Invoke-DevProcess $godot $arguments $taskRepo $runRoot 'gut' 900 $environment
 $inputPath = Join-Path $runRoot 'strict-input.json'
-Write-DevJson $inputPath @{schema_version=1;suite_id='passe-rive-autosprite';godot=@{path=$godot;version=$version};gut_version=$toolchain.gut_version;selection=@{directory='res://test/unit';prefix='test_';suffix='.gd';include_subdirectories=$false;scripts=$scripts};expected=@{minimum_tests=9;failures=@()};process=@{import=$import;gut=$gut};files=@{import_stdout='import.stdout.log';import_stderr='import.stderr.log';gut_stdout='gut.stdout.log';gut_stderr='gut.stderr.log';junit='gut.junit.xml'}}
+Write-DevJson $inputPath @{schema_version=1;suite_id='passe-rive-autosprite';godot=@{path=$godot;version=$version};gut_version=$toolchain.gut_version;selection=@{directory='res://test/unit';prefix='test_';suffix='.gd';include_subdirectories=$false;scripts=$scripts};expected=@{minimum_tests=12;failures=@()};process=@{import=$import;gut=$gut};files=@{import_stdout='import.stdout.log';import_stderr='import.stderr.log';gut_stdout='gut.stdout.log';gut_stderr='gut.stderr.log';junit='gut.junit.xml'}}
 $reportPath = Join-Path $runRoot 'gut-strict-report.json'
 $analysis = Invoke-DevProcess (Get-Process -Id $PID).Path @('-NoProfile','-File',(Join-Path $taskRepo 'tools/ci/run_gut_strict.ps1'),'-Mode','Analyze','-AnalysisFixturePath',$inputPath,'-ReportPath',$reportPath) $taskRepo $runRoot 'analyzer' 60
 $summary = Get-DevStrictSummary $reportPath $analysis

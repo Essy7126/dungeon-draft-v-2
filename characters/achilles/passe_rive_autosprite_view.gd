@@ -9,10 +9,24 @@ func _ready() -> void:
 	EventBus.attack_dodged.connect(_on_attack_dodged)
 
 
+func _initialize_sprite_backend() -> void:
+	super._initialize_sprite_backend()
+	if sprite_backend is PasseRiveAutoSpriteBackend:
+		(sprite_backend as PasseRiveAutoSpriteBackend).set_combat_mode(true)
+
+
 func _exit_tree() -> void:
 	if EventBus.attack_dodged.is_connected(_on_attack_dodged):
 		EventBus.attack_dodged.disconnect(_on_attack_dodged)
 	super._exit_tree()
+
+
+func get_action_presentation() -> Dictionary:
+	var presentation := super.get_action_presentation()
+	if PasseRiveAutoSpriteBackend.action_for(&"cast", presentation) == "bow_air":
+		# Presentation distance scales with the battlefield, not the sprite atlas.
+		presentation["projectile_arc_ratio"] = 0.65
+	return presentation
 
 
 func _on_attack_dodged(target: Unit, _attacker: Unit) -> void:
