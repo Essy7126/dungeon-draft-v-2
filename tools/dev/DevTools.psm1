@@ -90,6 +90,7 @@ function Get-DevTestPaths([string]$Target) {
     $root=Get-DevRoot
     $patterns = @(switch ($Target) {
         'smoke' { @('test_champion_codex.gd','test_spell_codex_detail.gd') }
+        'catabase' { @('test_catabase*.gd','test_expedition*.gd','test_paris*.gd','test_relic*.gd','test_inventory_equipment_system.gd','test_post_combat_flow.gd','test_painted_halt_catabase.gd') }
         'monsters' { @('test_catabase_monster*.gd') }
         'terrain' { @('*terrain*.gd') }
         'studio' { @('test_dungeon_draft_studio_2_0.gd') }
@@ -100,7 +101,7 @@ function Get-DevTestPaths([string]$Target) {
     })
     if ($patterns.Count -eq 0) {
         $relative=$Target -replace '^res://',''
-        if ($relative -notmatch '^test/unit/[^:]+\.gd$' -or $relative -match '(^|/)\.\.(/|$)') { throw 'Use smoke, monsters, terrain, studio, halts, all or an exact test/unit/*.gd path.' }
+        if ($relative -notmatch '^test/unit/[^:]+\.gd$' -or $relative -match '(^|/)\.\.(/|$)') { throw 'Use smoke, catabase, monsters, terrain, studio, halts, all or an exact test/unit/*.gd path.' }
         if (-not (Test-Path -LiteralPath (Join-Path $root $relative))) { throw "Test missing: $relative" }
         return @('res://' + $relative)
     }

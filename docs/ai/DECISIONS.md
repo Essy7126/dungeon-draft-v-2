@@ -1,5 +1,36 @@
 # Décisions d’architecture
 
+## Catabase r6 — run courte exigeante, 2026-09-14
+
+Statut : DÉCISION VALIDÉE pour l'intention utilisateur ; implémentation
+WORKTREE_CANDIDATE sur `main`, base `055584c37f60d99b2f87bdbb4d670895bf8ef2b2`.
+Ce bloc ne déclare pas l'ensemble du dépôt CURRENT.
+
+- Catabase solo ; Achille ou Passe-rive, même profil mécanique. Les autres
+  personnages ne participent pas à cette run. Cette décision remplace les
+  anciennes hypothèses de trio dans les audits historiques.
+- Une victoire en Normal vise 30–45 minutes. Normal doit rester exigeant,
+  dynamique et tactique ; Facile doit permettre de gagner après quelques
+  essais. Ce sont des objectifs humains, pas des taux prouvés par un bot.
+- Autorisation explicite d'implémenter, tester, auditer et rééquilibrer la
+  proposition : 20 profondeurs, 12 combats, trois élites, trois refuges ;
+  aucun quota d'échecs imposé, farm obligatoire ou adaptation cachée au build.
+- Les armes, techniques, déplacements PA/PM et ressources existants portent
+  la profondeur. Six grandes fenêtres de comparaison ponctuent la run ; les
+  points peuvent être conservés. Le combat final ne force pas une allocation
+  de caractéristiques sans utilité avant la victoire.
+- Léthé conserve ses cinq escales II–VI. Les engagements de branche restent
+  lisibles jusqu'aux jonctions VII/XI/XVI/XIX ; les secrets ne téléportent pas
+  vers une autre branche.
+- Réglage déduit pendant l'audit : une mémoire sans secret futur accessible
+  offre un choix unique entre deux fournitures déjà existantes, à la place
+  des 20 oboles/révélation. XIX reste une préparation sans soin ni objet offert.
+- Le choix Normal/Facile appartient à la préparation, persiste dans la
+  sauvegarde, ne modifie ni XP ni règles IA. Les routes sauvegardées r2–r5
+  gardent leurs contrats historiques. Aucun commit/push autorisé.
+
+Preuves, fichiers et limites : [suivi r6](CATABASE_R6_WORKLOG_2026-09-14.md).
+
 ## Studio Terrain — création depuis une illustration 2026-08-24
 
 - **DÉCISION VALIDÉE** — l'illustration doit être visible avant de demander la

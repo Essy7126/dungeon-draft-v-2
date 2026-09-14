@@ -2241,8 +2241,8 @@ func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array
 
 
 # Catabase orchestration stays at destination boundaries, outside combat.
-func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false) -> bool:
-	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
+func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false, difficulty_id: String = "normal") -> bool:
+	if difficulty_id not in ["normal", "easy"] or not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
 	var fingerprint := _current_replacement_fingerprint()
 	if _has_expedition_to_replace() and _replacement_consent != fingerprint:
@@ -2258,7 +2258,8 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 		return false
 	cancel_expedition_replacement()
 	expedition = ExpeditionSession.new()
-	expedition.initialize(get_character_state(&"achilles"), run_seed)
+	expedition.initialize(get_character_state(&"achilles"), run_seed, difficulty_id)
+	CatabasePreparationCatalog.contextualize_item_descriptions(item_catalog, expedition.route.get_balance_revision())
 	expedition.challenges.enabled = challenges_enabled
 	last_restore_error = &""
 	if prepare_loadout:
@@ -2419,6 +2420,7 @@ func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
 	_connect_inventory_signal()
 	_relic_runtime_service.initialize(run_inventory, item_catalog, heroes, _active_run_data.action_classification_catalog)
 	expedition = prepared.session
+	CatabasePreparationCatalog.contextualize_item_descriptions(item_catalog, expedition.route.get_balance_revision())
 	_expedition_boundary_snapshot = snapshot.duplicate(true)
 	for node_id in expedition.route.completed_node_ids:
 		for node in expedition.route.nodes:
@@ -2446,17 +2448,22 @@ func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 
 
 ## Presentation replacement only: keep the authored route identity/fingerprint.
-## The central merchant of depth IV is d04_1 for every seeded lane inversion.
+## Historical routes use d04_1; r6 keeps the place across seeded lane inversions.
 func is_merchant_hall_active() -> bool:
 	if expedition == null or not run_active or expedition.route.phase != "reward":
 		return false
 	var node := expedition.route.get_current_node()
+	if expedition.route.get_balance_revision() >= 1:
+		return str(node.get("halt_art_key", "")) == "etal_passeur" \
+			and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
 	return str(node.get("id", "")) == "d04_1" \
 		and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
 
 
 func get_painted_halt_manifest() -> String:
 	if expedition == null or not run_active or expedition.route.phase != "reward":
+		return ""
+	if bool(expedition.route.get_current_node().get("preparation_only", false)):
 		return ""
 	# Mandatory progression/capacity choices remain on the expedition screen.
 	if HALT_FLOW.required_step(expedition) != "hub":

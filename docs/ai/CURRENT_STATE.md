@@ -1,5 +1,29 @@
 # État courant vérifié du projet
 
+## Catabase r6 — WORKTREE_CANDIDATE, vérification du 2026-09-14
+
+Base Git : `main@055584c37f60d99b2f87bdbb4d670895bf8ef2b2` ; modifications
+locales non commitées. Ce point n'actualise pas les preuves historiques ci-dessous.
+
+La nouvelle route est la valeur par défaut : 12 combats sur 20 profondeurs,
+trois élites et trois refuges. Normal/Facile est sélectionnable au départ et
+sauvegardé. Les anciennes routes r2–r5 restent restaurables. Les rencontres
+utilisent des profils fixes indépendants du héros et les effets des six armes
+progressent avec le build. Les transactions de halte sont uniques ; XIX ne
+donne aucun soin. La durée humaine 30–45 min n'est pas encore certifiée.
+
+Les attaques préparées ont maintenant un indicateur raccordé au plateau,
+avec un contre-jeu affiché sur deux lignes et contrôlé à 720p/1080p. Les quatre
+haltes interactives existantes suivent leur identité dans la nouvelle route ;
+l'étal IV conserve sa salle propre. Douze runs automatisées et trois
+contre-tests ont été exécutés, sans en déduire un taux de victoire humain.
+
+État des tests et limites actualisés dans le
+[suivi d'intégration](CATABASE_R6_WORKLOG_2026-09-14.md), qui distingue
+contrats simulés et combats réellement exécutés. Le
+[rapport d'audit et rééquilibrage](CATABASE_R6_AUDIT_RUNS_2026-09-14.md)
+expose les résultats, les régressions historiques et les critères encore ouverts.
+
 > Cinquième carte intégrée le 6 septembre 2026 : [Le Temple du Serment Noir](../maps/black_oath_temple_v1.md) prolonge Catabase après le Gué du Léthé. Temple grec noir dessiné : 152 dalles, nef libre de six cases sur quatorze, huit bases de colonnes et deux fosses ; 144 cases praticables connectées. Cadrage local borné à la peinture pour garder le plateau visible avec l'inspecteur compact, zoom et proportions conservés. Tests ciblés : 38/38, 10 614 assertions. Deux parcours GPU finaux 1920 × 1080 et 1200 × 896 : cinq salles/actions, quatre transitions et dix captures par format ; proportions comparées et captures inspectées. Les salles I–IV, leurs rencontres et les profils économie/progression conservent leurs SHA-256. Le catalogue Studio passe désormais ; l'échec de portrait signalé dans le bilan IV ci-dessous est historique. [Pipeline actualisée](../maps/registered_terrain_pipeline.md), preuves et limites dans la fiche V.
 
 

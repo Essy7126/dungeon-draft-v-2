@@ -12,7 +12,9 @@ func test_all_seventeen_destinations_resolve_across_seeded_lane_swaps_and_varian
 	var seen := {}
 	var camp_ids := {}
 	for seed_value in range(64):
-		for destination in ROUTES.create_nodes(seed_value):
+		# The 17-key painted catalogue mirrors saved revision 3: it includes the
+		# Obole and muted-oath variant, before revision 4 introduced the Comptoir.
+		for destination in ROUTES.create_nodes(seed_value, 3):
 			var key := ART.resolve_key(destination)
 			if ROUTES.is_halt(str(destination.kind)):
 				assert_false(key.is_empty(), str(destination.title))
@@ -27,6 +29,20 @@ func test_all_seventeen_destinations_resolve_across_seeded_lane_swaps_and_varian
 				assert_eq(key, "", "Combat variants cannot display the corresponding halt")
 	assert_eq(seen.size(), 17, "Both secret destinations and the conditional sanctuary are covered")
 	assert_gt(camp_ids.size(), 1, "Stable art survives real lane inversions")
+
+
+func test_revision_six_reuses_halt_art_with_an_explicit_final_preparation_title() -> void:
+	for seed_value in range(8):
+		for destination in ROUTES.create_nodes(seed_value, 6):
+			if not ROUTES.is_halt(str(destination.kind)):
+				continue
+			var key := ART.resolve_key(destination)
+			assert_false(key.is_empty(), str(destination.title))
+			if bool(destination.get("preparation_only", false)):
+				assert_eq(key, "feu_avant_paris")
+				assert_string_contains(str(destination.title), "préparer")
+			else:
+				assert_eq(str(ART.DESTINATIONS[key].title), str(destination.title))
 
 
 func test_metadata_can_rename_a_halt_but_cannot_expose_unknown_or_combat_content() -> void:

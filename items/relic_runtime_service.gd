@@ -116,7 +116,9 @@ func begin_combat(units: Array, grid: GridData = null) -> void:
 	_grid = grid
 	_in_combat = true
 	for hero in _heroes:
-		CatabaseCombatModifier.reset_actor(hero)
+		var session: Variant = CatabaseCombatModifier.session_for(hero)
+		var revision: int = session.route.get_balance_revision() if session != null else 0
+		CatabaseCombatModifier.reset_actor(hero, revision)
 	process_trigger(ItemReactiveEffectData.TRIGGER_COMBAT_START, {
 		"eligible_heroes": _living_heroes(),
 		"active_unit": _living_heroes()[0] if not _living_heroes().is_empty() else null,

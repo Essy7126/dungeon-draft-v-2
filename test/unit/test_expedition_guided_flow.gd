@@ -23,7 +23,8 @@ func before_each() -> void:
 	assert_true(resolution.is_valid())
 	assert_true(GameManager._prepare_preconfigured_run(run, resolution.heroes))
 	GameManager.expedition = ExpeditionSession.new()
-	GameManager.expedition.initialize(GameManager.get_character_state(&"achilles"), 2401)
+	# Historical r5 flow remains resumable, including its per-level review window.
+	GameManager.expedition.initialize(GameManager.get_character_state(&"achilles"), 2401, "normal", 5)
 	assert_true(GameManager.expedition.enter("d01_0"))
 
 
@@ -100,7 +101,7 @@ func test_characteristics_menu_is_available_after_combat_and_exposes_recovery() 
 func test_new_build_level_windows_resume_and_finish_before_loot_and_route() -> void:
 	var session := GameManager.expedition
 	# Use the real preparation transaction before starting the isolated fight.
-	session.initialize(GameManager.get_character_state(&"achilles"), 2401)
+	session.initialize(GameManager.get_character_state(&"achilles"), 2401, "normal", 5)
 	session.needs_preparation = true
 	assert_true(session.prepare_start(CatabasePreparationCatalog.preset("hampe"), GameManager.run_inventory, GameManager.item_catalog).success)
 	assert_true(session.enter("d01_0"))

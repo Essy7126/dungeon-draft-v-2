@@ -57,10 +57,12 @@ static func populate(c) -> void:
 		0,
 		0,
 		0.0,
-		"2 PA · réduit les 3 prochains impacts de 6 chacun jusqu'à votre prochaine activation. Les gros coups traversent cette garde.",
+		"2 PA · réduit les 3 prochains impacts de max(6 ; 33 % Prouesse) chacun jusqu'à votre prochaine activation. Les gros coups traversent cette garde.",
 	)
 	c._self_only(s)
-	_mode(s, "salve")
+	var salve := _mode(s, "salve")
+	salve.scaling_ratio = 0.33
+	salve.minimum_amount = 6
 	s = c._spell(
 		"ct_lancer",
 		"Lancer du disque",
@@ -92,7 +94,7 @@ static func populate(c) -> void:
 		1,
 		4,
 		0.7,
-		"3 PA · 70 % Prouesse magique Feu. Braise : 6 dégâts au début du tour de l'occupant, alliés inclus, pendant 2 tours.",
+		"3 PA · 70 % Prouesse magique Feu. Braise : max(6 ; 15 % Prouesse) dégâts au début du tour de l'occupant, alliés inclus, pendant 2 tours.",
 	)
 	s.can_target_free_cell = true
 	s.damage_type = Spell.DamageType.MAGICAL
@@ -100,7 +102,10 @@ static func populate(c) -> void:
 	s.terrain_effect = c.get_spell("exp_braise").terrain_effect.duplicate(true)
 	s.terrain_effect.surface_id = &"ct_braise"
 	s.terrain_effect.damage = 6
-	s.terrain_effect.description = "6 dégâts Feu au début du tour ; 2 tours. Peut être déplacée par Flux."
+	s.terrain_effect.description = "max(6 ; 15 % Prouesse) dégâts Feu au début du tour ; 2 tours. Peut être déplacée par Flux."
+	var braise := _mode(s, "braise")
+	braise.scaling_ratio = 0.15
+	braise.minimum_amount = 6
 	s = c._spell(
 		"ct_flux",
 		"Flux des cendres",
@@ -186,7 +191,7 @@ static func populate(c) -> void:
 		1,
 		4,
 		0.01,
-		"3 PA · consomme jusqu'à 30 de votre réserve d'urne pour infliger 150 % du bronze consommé en ligne. Ne recharge pas l'urne.",
+		"3 PA · consomme jusqu'à max(30 ; 165 % Prouesse) de votre réserve d'urne pour infliger 150 % du bronze réellement consommé en ligne. Ne recharge pas l'urne.",
 	)
 	c._line(s)
 	_mode(s, "bronze")
@@ -268,10 +273,103 @@ static func populate(c) -> void:
 			)
 
 
-static func _mode(spell: Spell, mode: String) -> void:
+## Runtime values are gated by ct_balance_revision. Keep the matching text on
+## loaded revision-5 saves without storing presentation data in the snapshot.
+static func apply_balance_descriptions(c, balance_revision: int) -> void:
+	var modern := balance_revision >= CatabaseCombatModifier.SCALING_BALANCE_REVISION
+	_set_description(
+		c,
+		"exp_ct_salve",
+		(
+			"2 PA · réduit les 3 prochains impacts de max(6 ; 33 % Prouesse) chacun jusqu'à votre prochaine activation. Les gros coups traversent cette garde."
+			if modern
+			else "2 PA · réduit les 3 prochains impacts de 6 chacun jusqu'à votre prochaine activation. Les gros coups traversent cette garde."
+		),
+	)
+	_set_description(
+		c,
+		"exp_ct_braise",
+		(
+			"3 PA · 70 % Prouesse magique Feu. Braise : max(6 ; 15 % Prouesse) dégâts au début du tour de l'occupant, alliés inclus, pendant 2 tours."
+			if modern
+			else "3 PA · 70 % Prouesse magique Feu. Braise : 6 dégâts au début du tour de l'occupant, alliés inclus, pendant 2 tours."
+		),
+	)
+	_set_description(
+		c,
+		"exp_ct_repercussion",
+		(
+			"3 PA · consomme jusqu'à max(30 ; 165 % Prouesse) de votre réserve d'urne pour infliger 150 % du bronze réellement consommé en ligne. Ne recharge pas l'urne."
+			if modern
+			else "3 PA · consomme jusqu'à 30 de votre réserve d'urne pour infliger 150 % du bronze consommé en ligne. Ne recharge pas l'urne."
+		),
+	)
+	var salve_descriptions := [
+		(
+			"2 PA · 5 impacts réduits de max(5 ; 27,5 % Prouesse), jusqu'à votre prochaine activation."
+			if modern else "2 PA · 5 impacts réduits de 5, jusqu'à votre prochaine activation."
+		),
+		(
+			"2 PA · 3 impacts réduits de max(8 ; 44 % Prouesse), jusqu'à votre prochaine activation."
+			if modern else "2 PA · 3 impacts réduits de 8, jusqu'à votre prochaine activation."
+		),
+	]
+	var braise_descriptions := [
+		(
+			"3 PA · 50 % Prouesse magique ; braise de max(6 ; 25 % Prouesse) pendant 3 tour(s). Flux conserve cette durée."
+			if modern else "3 PA · 50 % Prouesse magique ; braise de 5 dégâts pendant 3 tour(s). Flux conserve cette durée."
+		),
+		(
+			"3 PA · 90 % Prouesse magique ; braise de max(10 ; 15 % Prouesse) pendant 1 tour(s). Flux conserve cette durée."
+			if modern else "3 PA · 90 % Prouesse magique ; braise de 10 dégâts pendant 1 tour(s). Flux conserve cette durée."
+		),
+	]
+	for index in 2:
+		var suffix := "_a" if index == 0 else "_b"
+		_set_description(c, "exp_ct_salve" + suffix, salve_descriptions[index])
+		_set_description(
+			c,
+			"exp_ct_salve" + suffix + "_final",
+			salve_descriptions[index]
+			+ "\nAccomplissement : cette forme coûte 1 PA de moins (minimum 1).",
+		)
+		_set_description(c, "exp_ct_braise" + suffix, braise_descriptions[index])
+		_set_description(
+			c,
+			"exp_ct_braise" + suffix + "_final",
+			braise_descriptions[index]
+			+ "\nAccomplissement : cette forme coûte 1 PA de moins (minimum 1).",
+		)
+	var base_surface: TerrainEffectData = c.get_spell("exp_ct_braise").terrain_effect
+	if base_surface != null:
+		base_surface.description = (
+			"max(6 ; 15 % Prouesse) dégâts Feu au début du tour ; 2 tours. Peut être déplacée par Flux."
+			if modern else "6 dégâts Feu au début du tour ; 2 tours. Peut être déplacée par Flux."
+		)
+
+
+static func _set_description(c, spell_id: String, description: String) -> void:
+	var spell: Spell = c.get_spell(spell_id)
+	if spell == null:
+		return
+	spell.description = description
+	for node in c.nodes:
+		if String(node.get("spell_id", "")) == spell_id:
+			node["description"] = description
+
+
+static func _mode(spell: Spell, mode: String) -> CatabaseCombatModifier:
 	var modifier := CatabaseCombatModifier.new()
 	modifier.mode = mode
 	spell.modifiers.append(modifier)
+	return modifier
+
+
+static func _find_mode(spell: Spell, mode: String) -> CatabaseCombatModifier:
+	for modifier in spell.modifiers:
+		if modifier is CatabaseCombatModifier and modifier.mode == mode:
+			return modifier
+	return null
 
 
 static func _configure_mutation(c, s: Spell, root: String, variant: int) -> void:
@@ -284,12 +382,18 @@ static func _configure_mutation(c, s: Spell, root: String, variant: int) -> void
 				c._self_area(s)
 				s.description = "4 PA · 100 % Prouesse à chaque ennemi adjacent ; fissure son armure de 25 pendant 2 activations."
 		"ct_salve":
-			(s.modifiers[0] as CatabaseCombatModifier).amount = 5 if variant == 0 else 8
-			(s.modifiers[0] as CatabaseCombatModifier).charges = 5 if variant == 0 else 3
-			s.description = "2 PA · %d impacts réduits de %d, jusqu'à votre prochaine activation." % [
-				5 if variant == 0 else 3,
-				5 if variant == 0 else 8,
-			]
+			var guard := _find_mode(s, "salve")
+			guard.scaling_ratio = 0.275 if variant == 0 else 0.44
+			guard.minimum_amount = 5 if variant == 0 else 8
+			guard.charges = 5 if variant == 0 else 3
+			s.description = (
+				"2 PA · %d impacts réduits de max(%d ; %s Prouesse), jusqu'à votre prochaine activation."
+				% [
+					5 if variant == 0 else 3,
+					5 if variant == 0 else 8,
+					"27,5 %" if variant == 0 else "44 %",
+				]
+			)
 		"ct_retour":
 			s.description = "2 PA · Retour du disque : %d %% Prouesse sur le trajet. Nécessite votre disque au sol." % [
 				110 if variant == 0 else 55
@@ -299,13 +403,20 @@ static func _configure_mutation(c, s: Spell, root: String, variant: int) -> void
 				s.applied_status.mp_reduction = 2
 				s.description += " -2 PM à la prochaine activation des ennemis touchés."
 		"ct_braise":
+			var ember := _find_mode(s, "braise")
 			s.terrain_effect.damage = 5 if variant == 0 else 10
 			s.terrain_effect.duration = 3 if variant == 0 else 1
-			s.description = "3 PA · %d %% Prouesse magique ; braise de %d dégâts pendant %d tour(s). Flux conserve cette durée." % [
-				50 if variant == 0 else 90,
-				s.terrain_effect.damage,
-				s.terrain_effect.duration,
-			]
+			ember.scaling_ratio = 0.25 if variant == 0 else 0.15
+			ember.minimum_amount = 6 if variant == 0 else 10
+			s.description = (
+				"3 PA · %d %% Prouesse magique ; braise de max(%d ; %d %% Prouesse) pendant %d tour(s). Flux conserve cette durée."
+				% [
+					50 if variant == 0 else 90,
+					6 if variant == 0 else 10,
+					25 if variant == 0 else 15,
+					s.terrain_effect.duration,
+				]
+			)
 		"ct_entaille":
 			s.applied_status.damage_per_turn = 8 if variant == 0 else 2
 			if variant == 1:

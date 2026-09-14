@@ -18,6 +18,7 @@ fixées dans `toolchain.json`. Le diagnostic ne remplace pas un import ou un tes
 
 ```powershell
 ./dev.ps1 test smoke
+./dev.ps1 test catabase
 ./dev.ps1 test audio
 ./dev.ps1 test halts
 ./dev.ps1 test monsters

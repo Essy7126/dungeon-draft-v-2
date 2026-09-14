@@ -1,5 +1,47 @@
 # Baseline d’équilibrage structurelle
 
+## Catabase r6 — candidat 2026-09-14, non certifié humainement
+
+Branche `main`, base `055584c37f60d99b2f87bdbb4d670895bf8ef2b2` + worktree.
+
+- Combats I/II/III/V/VI/VIII/X/XII/XIII/XV/XVII/XX ; élites VI/X/XV ;
+  refuges VII/XI/XVI. 24 points de maîtrise avant Pâris ; capacité XII conservée.
+- XP brutes : 100/125/145/175/195/215/245/265/295/325/355/345,
+  soit 2 440 avant Pâris et 2 785 après, hors Sagesse. Les haltes valent 0 XP.
+- Normal : refuges 30 % PV maximum une fois. Facile : 40 %, PV ennemis ×0,90,
+  dégâts ennemis ×0,80, mêmes PA/PM, compositions, règles et récompenses.
+- Les PV/attaques ennemis proviennent des références fixes du catalogue,
+  jamais des statistiques réelles du joueur ; les packs sont normalisés par
+  leur résistance totale. Voir `V1_*` dans le catalogue des rencontres.
+- Pâris : 560 PV, 4 PA, 3 PM ; deux spectres à 150 PV, 2 PA, 3 PM.
+  Flèche 80, feu 65, glace 55, vortex 45 ; fouet 100, balayage 75, attraction 60.
+  Feu propre à Pâris : 20 par déclenchement, Brûlure 12. Seconde forme sous
+  20 % après un coup non fatal : soin intégral et 30 bouclier, une fois.
+- Salve : réduction max(6 ; arrondi(33 % P)) sur trois impacts ; variantes
+  max(5 ; arrondi(27,5 % P)) sur cinq ou max(8 ; arrondi(44 % P)) sur trois.
+  Urne : plafond max(40 ; arrondi(2,2 P)), dépense max(30 ; arrondi(1,65 P)),
+  charge égale à la moitié arrondie vers le bas de la garde réellement absorbée ;
+  Répercussion inflige 1,5 fois la réserve dépensée. Pas de boucle de recharge.
+  Coupe : plafond max(30 ; plancher(10 % PV)), soin de 15 % des dégâts
+  physiques directs réellement infligés, réserve débitée du soin réel.
+  Les réserves sont figées à l'entrée ; les sorts utilisent la Prouesse du lancer.
+- Braise : 0,70 P direct + max(6 ; 0,15 P) ×2 ; durable 0,50 P +
+  max(6 ; 0,25 P) ×3 ; brève 0,90 P + max(10 ; 0,15 P) ×1.
+  Conduction : +8 % sur la référence Prouesse des dégâts élémentaires en r6,
+  sans amplifier les actions physiques neutres ; bonus global en legacy.
+- Économie préservée : 60 au départ, +35/+65 par victoire normale/élite ;
+  fournitures de butin +40 oboles ET soin 5 %, et non un achat de soin à 40.
+  Mémoire tardive sans secret futur : une fourniture garde/mobilité au choix,
+  sans oboles supplémentaires. XIX : ni soin ni objet.
+- Plaque d'offrande en r6 : max(24 ; arrondi(10 % PV maximum à l'usage)),
+  toujours 1 PA et une activation. L'ouverture et les anciennes runs gardent
+  24. Ajustement motivé par son alternative tardive au Souffle (+2 PM), pour
+  que le choix de mémoire ne soit pas automatiquement dominé par la mobilité.
+
+Valeurs initiales à confronter aux runs : le
+[suivi](CATABASE_R6_WORKLOG_2026-09-14.md) fait autorité sur les validations
+réellement effectuées et sur les ajustements suivants.
+
 ## Impulsion du vide et Choc — PROVISIONAL (2026-08-12)
 
 - Impulsion du vide : **+1 PM pendant l'activation courante**, une fois par

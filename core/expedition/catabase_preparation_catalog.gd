@@ -74,7 +74,7 @@ const RELICS := {
 	],
 	"urne": [
 		"Urne de bronze",
-		"Stocke la moitié de la garde absorbée, maximum 40. Répercussion dépense cette réserve.",
+		"Stocke la moitié de la garde réellement absorbée, jusqu'à max(40 ; 220 % Prouesse). Répercussion dépense cette réserve.",
 		2,
 	],
 	"fil": [
@@ -84,7 +84,7 @@ const RELICS := {
 	],
 	"coupe": [
 		"Coupe des blessures",
-		"Soigne 15 % des dégâts physiques directs réellement infligés. Réserve de 30 PV par combat, sans soin sur les effets secondaires.",
+		"Soigne 15 % des PV retirés par dégâts physiques directs. Réserve par combat : max(30 ; 10 % des PV max d'entrée), sans soin sur les effets secondaires.",
 		4,
 	],
 	"meche": [
@@ -101,7 +101,7 @@ const RELICS := {
 const SUPPLIES := {
 	"onguent": ["Dernier onguent", "1 PA · soigne 24 PV · usage unique.", 1],
 	"souffle": ["Souffle en fiole", "1 PA · donne 2 PM ce tour · usage unique.", 2],
-	"plaque": ["Plaque d'offrande", "1 PA · 24 garde jusqu'au prochain tour · usage unique.", 3],
+	"plaque": ["Plaque d'offrande", "1 PA · max(24 ; 10 % PV max) garde jusqu'au prochain tour · usage unique.", 3],
 	"sel": ["Sel blanc", "1 PA · retire les pénalités de PA, PM et statistiques · usage unique.", 4],
 }
 const PRESETS := {
@@ -155,6 +155,22 @@ static func valid(selection: Dictionary) -> bool:
 				and techniques[0] in TECHNIQUES
 		and techniques[1] in TECHNIQUES
 	)
+
+
+## Advisory only: deliberate future pivots remain legal, but inert opening
+## combinations are never presented as equivalent without an explicit warning.
+static func compatibility_warnings(selection: Dictionary) -> Array[String]:
+	var warnings: Array[String] = []
+	if not valid(selection):
+		return warnings
+	var techniques: Array = selection.get("techniques", [])
+	if "exp_ct_repercussion" in techniques and selection.get("relic") != "urne":
+		warnings.append("Répercussion reste inactive sans Urne de bronze.")
+	if selection.get("relic") == "fil" and selection.get("weapon") != "disque":
+		warnings.append("Le Fil du retour ne s'active qu'avec le Disque de bronze.")
+	if selection.get("relic") == "meche" and selection.get("weapon") != "hampe":
+		warnings.append("La Mèche errante ne s'active qu'avec la Hampe des braises.")
+	return warnings
 
 
 static func spell_ids(selection: Dictionary) -> Array[String]:
@@ -225,6 +241,41 @@ static func relic_items() -> Array[ItemDefinition]:
 		)
 		result.append(item)
 	return result
+
+
+## Only definitions with Catabase-owned IDs are mutated. Call this after the
+## run catalogue has been generated, once its saved route revision is known.
+static func contextualize_item_descriptions(catalog: ItemCatalog, balance_revision: int) -> void:
+	if catalog == null:
+		return
+	var modern := balance_revision >= CatabaseCombatModifier.SCALING_BALANCE_REVISION
+	for id in RELICS:
+		var relic := catalog.get_definition(StringName("ct_relic_" + id))
+		if _is_generated_catabase_definition(relic):
+			relic.description = _relic_description(id, modern)
+	for id in SUPPLIES:
+		var supply := catalog.get_definition(StringName("ct_supply_" + id))
+		if _is_generated_catabase_definition(supply):
+			supply.description = _supply_description(id, modern)
+
+
+static func _is_generated_catabase_definition(item: ItemDefinition) -> bool:
+	return item != null and item.resource_path.is_empty() and &"catabase_build" in item.tags
+
+
+static func _relic_description(id: String, modern: bool) -> String:
+	if not modern:
+		if id == "urne":
+			return "Stocke la moitié de la garde absorbée, maximum 40. Répercussion dépense cette réserve."
+		if id == "coupe":
+			return "Soigne 15 % des dégâts physiques directs réellement infligés. Réserve de 30 PV par combat, sans soin sur les effets secondaires."
+	return str(RELICS[id][1])
+
+
+static func _supply_description(id: String, modern: bool) -> String:
+	if not modern and id == "plaque":
+		return "1 PA · 24 garde jusqu'au prochain tour · usage unique."
+	return str(SUPPLIES[id][1])
 
 
 static func _relic(id: String, title: String, description: String) -> ItemDefinition:

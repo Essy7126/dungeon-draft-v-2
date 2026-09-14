@@ -67,21 +67,24 @@ func _manager(file := "checkpoint.json") -> HaltManager:
 	return manager
 
 
-func _advance(manager: HaltManager, kind: String) -> void:
+func _advance(manager: HaltManager, kind: String, first_merchant := false) -> void:
 	assert_true(manager.start_expedition(2401))
-	for depth in range(1, 9):
+	# The existing forge moves to IX; the altar moves to IV. The first
+	# merchant at IV keeps its own MerchantHall, not the forge's painting.
+	var target_depth := 9 if kind == "merchant" and not first_merchant else 4
+	var target_family := "airain" if first_merchant else "styx"
+	for depth in range(1, target_depth + 1):
 		if depth > 1:
 			var choices := manager.expedition.route.get_available_nodes()
 			var selected: Dictionary = choices[0]
-			if depth == 8:
-				for node: Dictionary in choices:
-					if str(node.kind) == kind:
-						selected = node
+			for node: Dictionary in choices:
+				if str(node.get("route_family", "")) == target_family:
+					selected = node
 			assert_true(manager.choose_expedition_node(str(selected.id)))
 		if manager.expedition.route.phase == "combat":
 			manager.begin_combat_report()
 			manager.on_battle_won()
-		if depth < 8:
+		if depth < target_depth:
 			var options := manager.expedition.reward_options(manager.item_catalog)
 			assert_true(manager.claim_expedition_reward(str(options.back().id)).success)
 	# Allocate any outstanding attributes through the actual progression API.
@@ -91,6 +94,41 @@ func _advance(manager: HaltManager, kind: String) -> void:
 		assert_true(manager.spend_champion_attribute(&"achilles", &"vitality"))
 		if progression.unspent_attribute_points == before:
 			break
+	for step in range(8):
+		if manager.expedition.advancement_step.is_empty():
+			break
+		assert_true(manager.advance_expedition_level_step().get("success", false))
+	assert_true(manager.expedition.advancement_step.is_empty())
+
+
+func test_r6_first_merchant_keeps_its_own_hall_after_lane_mirroring() -> void:
+	var manager := _manager()
+	_advance(manager, "merchant", true)
+	assert_eq(str(manager.expedition.route.get_current_node().halt_art_key), "etal_passeur")
+	assert_true(manager.is_merchant_hall_active())
+	assert_false(manager.is_painted_halt_active())
+	assert_eq(manager.get_expedition_destination_scene(), manager.MERCHANT_HALL_SCREEN_PATH)
+
+
+func test_r6_painted_places_bind_by_identity_and_never_replace_other_roles() -> void:
+	var catalog := preload("res://core/expedition/painted_halt_catalog.gd")
+	var seen := {}
+	for seed_value in range(8):
+		for node in ExpeditionRouteCatalog.create_nodes(seed_value, 6):
+			var key := str(node.get("halt_art_key", ""))
+			var manifest: String = catalog.manifest_for(node)
+			if key in catalog.R6_BINDINGS and not bool(node.hidden):
+				assert_false(manifest.is_empty(), key)
+				seen[key] = true
+				var disguised: Dictionary = node.duplicate(true)
+				disguised.kind = "normal"
+				assert_eq(catalog.manifest_for(disguised), "")
+				disguised = node.duplicate(true)
+				disguised.hidden = true
+				assert_eq(catalog.manifest_for(disguised), "")
+			else:
+				assert_eq(manifest, "")
+	assert_eq(seen.size(), 4)
 
 
 func test_bound_halt_services_and_return_survive_real_checkpoint() -> void:

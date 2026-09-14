@@ -12,14 +12,32 @@ const FAMILY_PATHS := {
 	&"officiant": "res://data/units/enemies/catabase_lamie_lethe.tres",
 }
 const ROLE_FAMILIES := {
-	&"sentinelle": &"sentinelle", &"brute": &"sentinelle",
-	&"rabatteur": &"sentinelle", &"porte_egide": &"sentinelle", &"executeur": &"sentinelle", &"champion": &"sentinelle",
-	&"rejeton": &"rejeton", &"fondeur": &"rejeton", &"artilleur": &"rejeton", &"conducteur": &"rejeton",
-	&"molosse": &"molosse", &"chasseur": &"molosse", &"deplaceur": &"molosse", &"alpha": &"molosse",
-	&"lamie": &"lamie", &"tisseuse": &"lamie", &"oracle": &"lamie",
-	&"archer": &"archer", &"traqueur": &"archer", &"guetteur": &"archer",
-	&"officiant": &"officiant", &"guerisseur": &"officiant", &"collecteur": &"officiant", &"protecteur": &"officiant",
-	&"serviteur": &"molosse", &"porteur": &"rejeton",
+	&"sentinelle": &"sentinelle",
+	&"brute": &"sentinelle",
+	&"rabatteur": &"sentinelle",
+	&"porte_egide": &"sentinelle",
+	&"executeur": &"sentinelle",
+	&"champion": &"sentinelle",
+	&"rejeton": &"rejeton",
+	&"fondeur": &"rejeton",
+	&"artilleur": &"rejeton",
+	&"conducteur": &"rejeton",
+	&"molosse": &"molosse",
+	&"chasseur": &"molosse",
+	&"deplaceur": &"molosse",
+	&"alpha": &"molosse",
+	&"lamie": &"lamie",
+	&"tisseuse": &"lamie",
+	&"oracle": &"lamie",
+	&"archer": &"archer",
+	&"traqueur": &"archer",
+	&"guetteur": &"archer",
+	&"officiant": &"officiant",
+	&"guerisseur": &"officiant",
+	&"collecteur": &"officiant",
+	&"protecteur": &"officiant",
+	&"serviteur": &"molosse",
+	&"porteur": &"rejeton",
 }
 const ADVANCED_ROLES := {
 	&"sentinelle": [&"rabatteur", &"porte_egide"],
@@ -43,6 +61,9 @@ static func family_for(role: StringName) -> StringName:
 
 
 static func grade_for(node: Dictionary) -> int:
+	if int(node.get("balance_revision", 0)) == 1:
+		var explicit_grade := int(node.get("encounter_grade", 0))
+		return explicit_grade if explicit_grade in [1, 2, 3] else 0
 	var depth := int(node.get("depth", 2))
 	return 1 if depth <= 5 else (2 if depth <= 12 else 3)
 
@@ -54,6 +75,9 @@ static func build_unit(role: StringName, node: Dictionary) -> UnitData:
 	var source := load(str(FAMILY_PATHS[family])) as UnitData
 	var unit := source.duplicate(false) as UnitData
 	var grade := grade_for(node)
+	if grade == 0:
+		push_error("Catabase : grade de rencontre explicite invalide pour %s" % role)
+		return null
 	unit.spells = []
 	unit.resistances = source.resistances.duplicate(true)
 	unit.ai_profile = source.ai_profile.duplicate(true) as EnemyAIProfile
@@ -69,12 +93,18 @@ static func build_unit(role: StringName, node: Dictionary) -> UnitData:
 	unit.presentation_badge = GRADE_NAMES[grade - 1].to_upper()
 	unit.progression_summary = "%s · %s" % [GRADE_NAMES[grade - 1], _family_name(family)]
 	match family:
-		&"sentinelle": _build_sentinelle(unit, role, grade)
-		&"rejeton": _build_rejeton(unit, role, grade)
-		&"molosse": _build_molosse(unit, role, grade)
-		&"lamie": _build_lamie(unit, role, grade)
-		&"archer": _build_archer(unit, role, grade)
-		&"officiant": _build_officiant(unit, role, grade)
+		&"sentinelle":
+			_build_sentinelle(unit, role, grade)
+		&"rejeton":
+			_build_rejeton(unit, role, grade)
+		&"molosse":
+			_build_molosse(unit, role, grade)
+		&"lamie":
+			_build_lamie(unit, role, grade)
+		&"archer":
+			_build_archer(unit, role, grade)
+		&"officiant":
+			_build_officiant(unit, role, grade)
 	if role in [&"serviteur", &"porteur"]:
 		_build_minion(unit, role, grade)
 	unit.active_spell_slots = maxi(1, unit.spells.size())
@@ -84,18 +114,59 @@ static func build_unit(role: StringName, node: Dictionary) -> UnitData:
 	return unit
 
 
-static func scale_secondary_effects(unit: UnitData, hp_multiplier: float, attack_multiplier: float) -> void:
+static func scale_secondary_effects(
+	unit: UnitData,
+	hp_multiplier: float,
+	attack_multiplier: float,
+) -> void:
 	# Call once on the independently built unit, with the final factory budgets.
 	# Damage/shield scaling already reads the final runtime stats.
 	for spell: Spell in unit.spells:
 		spell.heal = maxi(0, roundi(spell.heal * hp_multiplier))
-		spell.bonus_damage_if_marked = maxi(0, roundi(spell.bonus_damage_if_marked * attack_multiplier))
+		spell.bonus_damage_if_marked = maxi(
+			0,
+			roundi(spell.bonus_damage_if_marked * attack_multiplier),
+		)
 		if spell.applied_status != null:
 			_scale_status(spell.applied_status, attack_multiplier)
 		if spell.terrain_effect != null:
-			spell.terrain_effect.damage = maxi(0, roundi(spell.terrain_effect.damage * attack_multiplier))
+			spell.terrain_effect.damage = maxi(
+				0,
+				roundi(spell.terrain_effect.damage * attack_multiplier),
+			)
 			if spell.terrain_effect.applied_status != null:
 				_scale_status(spell.terrain_effect.applied_status, attack_multiplier)
+
+
+static func apply_fixed_balance(unit: UnitData, target_hp: int, target_attack: int) -> void:
+	## Applies an authored final budget once. Direct scaling reads the new prowess;
+	## flat heals, statuses and terrain follow the same fixed encounter ratio.
+	if unit == null:
+		return
+	var hp_multiplier := float(maxi(1, target_hp)) / float(maxi(1, unit.max_hp))
+	var attack_multiplier := float(maxi(1, target_attack)) / float(maxi(1, unit.attack_power))
+	unit.max_hp = maxi(1, target_hp)
+	unit.attack_power = maxi(1, target_attack)
+	scale_secondary_effects(unit, hp_multiplier, attack_multiplier)
+
+
+static func clone_unit(source: UnitData) -> UnitData:
+	## Runtime-owned combat data. Visuals and immutable presentation assets stay shared.
+	if source == null:
+		return null
+	var unit := source.duplicate(false) as UnitData
+	unit.resistances = source.resistances.duplicate(true)
+	unit.ai_profile = source.ai_profile.duplicate(true) as EnemyAIProfile if source.ai_profile != null else null
+	unit.spells = []
+	for source_spell: Spell in source.spells:
+		unit.spells.append(_clone_spell(source_spell))
+	if source.combat_form_change != null:
+		var form := source.combat_form_change.duplicate(false) as CombatFormChangeData
+		form.spells = []
+		for source_spell: Spell in source.combat_form_change.spells:
+			form.spells.append(_clone_spell(source_spell))
+		unit.combat_form_change = form
+	return unit
 
 
 static func _build_sentinelle(unit: UnitData, role: StringName, grade: int) -> void:
@@ -151,7 +222,9 @@ static func _build_sentinelle(unit: UnitData, role: StringName, grade: int) -> v
 
 
 static func _build_rejeton(unit: UnitData, role: StringName, grade: int) -> void:
-	unit.unit_name = ["Rejeton de braise", "Rejeton de la fournaise", "Fondeur des Enfers"][grade - 1]
+	unit.unit_name = ["Rejeton de braise", "Rejeton de la fournaise", "Fondeur des Enfers"][
+		grade - 1
+	]
 	unit.role = "Feu et zones"
 	unit.spells.append(_legacy_spell("braise_trait", grade))
 	unit.presentation_summary = "Fragile au contact. Ses feux occupent le terrain ; les molosses peuvent vous y pousser."
@@ -232,12 +305,14 @@ static func _build_lamie(unit: UnitData, role: StringName, grade: int) -> void:
 
 
 static func _build_archer(unit: UnitData, role: StringName, grade: int) -> void:
-	unit.unit_name = ["Tireur du passeur", "Éclaireur des roseaux", "Traqueur du passeur"][grade - 1]
+	unit.unit_name = ["Tireur du passeur", "Éclaireur des roseaux", "Traqueur du passeur"][
+		grade - 1
+	]
 	unit.role = "Tireur mobile"
 	unit.max_hp = [38, 40, 42][grade - 1]
 	unit.attack_power = 10
 	unit.max_mp = [3, 4, 5][grade - 1]
-	unit.resistances = {}
+	unit.resistances = { }
 	unit.armure = 5.0
 	unit.minimum_range = 2
 	unit.preferred_range = 4
@@ -265,7 +340,9 @@ static func _build_archer(unit: UnitData, role: StringName, grade: int) -> void:
 
 
 static func _build_officiant(unit: UnitData, role: StringName, grade: int) -> void:
-	unit.unit_name = ["Officiant des oboles", "Officiant du convoi", "Guérisseur des défunts"][grade - 1]
+	unit.unit_name = ["Officiant des oboles", "Officiant du convoi", "Guérisseur des défunts"][
+		grade - 1
+	]
 	unit.role = "Soutien à charges limitées"
 	unit.max_hp = [40, 44, 48][grade - 1]
 	unit.attack_power = 6
@@ -280,7 +357,10 @@ static func _build_officiant(unit: UnitData, role: StringName, grade: int) -> vo
 	var heal := _spell("soin")
 	heal.max_uses_per_combat = 2 if grade == 1 else 3
 	heal.heal = [12, 16, 20][grade - 1]
-	heal.description = "Rend %d PV de base, une activation sur deux. %d soins par combat." % [heal.heal, heal.max_uses_per_combat]
+	heal.description = "Rend %d PV de base, une activation sur deux. %d soins par combat." % [
+		heal.heal,
+		heal.max_uses_per_combat,
+	]
 	var bolt := _legacy_spell("lethe_trait", grade)
 	bolt.spell_name = "Trait de l’officiant"
 	bolt.spell_id = &"catabase_evolution_trait_officiant"
@@ -310,7 +390,7 @@ static func _build_minion(unit: UnitData, role: StringName, grade: int) -> void:
 	unit.max_ap = 4
 	unit.max_mp = 3 if role == &"porteur" else 4
 	unit.armure = 0.0
-	unit.resistances = {}
+	unit.resistances = { }
 	unit.spells.assign([_legacy_spell("braise_trait" if role == &"porteur" else "styx_morsure", 1)])
 	if role == &"serviteur":
 		unit.spells[0].bonus_damage_status_id = &"catabase_chasse"
@@ -339,6 +419,8 @@ static func _clone_spell(source: Spell) -> Spell:
 	spell.shield_scaling = source.shield_scaling.duplicate(true) as SpellScalingData if source.shield_scaling != null else null
 	spell.applied_status = source.applied_status.duplicate(true) as StatusData if source.applied_status != null else null
 	spell.terrain_effect = source.terrain_effect.duplicate(true) as TerrainEffectData if source.terrain_effect != null else null
+	if spell.terrain_effect != null and source.terrain_effect.applied_status != null:
+		spell.terrain_effect.applied_status = source.terrain_effect.applied_status.duplicate(true) as StatusData
 	spell.modifiers = []
 	for modifier: SpellModifier in source.modifiers:
 		spell.modifiers.append(modifier.duplicate(true) as SpellModifier)
@@ -353,7 +435,7 @@ static func _fracture() -> Spell:
 	status.status_name = "Armure fendue"
 	status.description = "−15 armure pendant deux activations."
 	status.duration = 2
-	status.stat_modifiers = {"armure": -15.0}
+	status.stat_modifiers = { "armure": -15.0 }
 	status.color = Color(0.85, 0.55, 0.2)
 	spell.applied_status = status
 	return spell
@@ -436,7 +518,9 @@ static func _ice_field() -> Spell:
 	effect.cell_type = 4
 	effect.dangerous_for_ai = true
 	effect.ai_danger_weight = 2.0
-	effect.applied_status = load("res://data/spells/catabase_monsters/status/oubli.tres").duplicate(true) as StatusData
+	effect.applied_status = load("res://data/spells/catabase_monsters/status/oubli.tres").duplicate(
+		true
+	) as StatusData
 	effect.same_surface_policy = TerrainEffectData.SameSurfacePolicy.REFRESH_DURATION
 	spell.terrain_effect = effect
 	return spell
@@ -448,4 +532,13 @@ static func _scale_status(status: StatusData, multiplier: float) -> void:
 
 
 static func _family_name(family: StringName) -> String:
-	return str({&"sentinelle": "Airain", &"rejeton": "Braise", &"molosse": "Styx", &"lamie": "Léthé", &"archer": "Tireurs", &"officiant": "Officiants"}.get(family, family))
+	return str(
+		{
+			&"sentinelle": "Airain",
+			&"rejeton": "Braise",
+			&"molosse": "Styx",
+			&"lamie": "Léthé",
+			&"archer": "Tireurs",
+			&"officiant": "Officiants",
+		}.get(family, family)
+	)

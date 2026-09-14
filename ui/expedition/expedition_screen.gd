@@ -575,7 +575,7 @@ func _render_progression() -> void:
 func _refresh_progression_action() -> void:
 	if not is_instance_valid(_progression_continue) or not _progression_continue.is_inside_tree(): return
 	var remaining := GameManager.expedition.character.champion_progression.unspent_attribute_points
-	_progression_continue.text = ("Continuer vers les sorts  →" if not GameManager.expedition.advancement_step.is_empty() else "Continuer vers le butin  →") if remaining == 0 else "Encore %d point%s à répartir" % [remaining, "s" if remaining > 1 else ""]
+	_progression_continue.text = ("Continuer vers les sorts  →" if not GameManager.expedition.advancement_step.is_empty() and GameManager.expedition.wants_build_review() else "Continuer vers le butin  →") if remaining == 0 else "Encore %d point%s à répartir" % [remaining, "s" if remaining > 1 else ""]
 	_progression_continue.disabled = remaining > 0 or inspection_only
 	if remaining == 0: _progression_continue.grab_focus.call_deferred()
 
@@ -903,6 +903,9 @@ func _render_hub() -> void:
 		var map_button := _button(card, "Consulter le parchemin")
 		map_button.pressed.connect(func(): _page = "map"; _render())
 		return
+	if bool(GameManager.expedition.route.get_current_node().get("preparation_only", false)):
+		_render_final_preparation()
+		return
 	if GameManager.is_painted_halt_active():
 		var column := _scroll_column(_body)
 		var card := _card(column, GOLD)
@@ -978,6 +981,27 @@ func _render_hub() -> void:
 		if session.gold < cost: _label(card, "Il vous manque %d oboles." % (cost - session.gold), 15, RED)
 	var leave := _button(right, "Reprendre la route  →", true)
 	leave.name = "LeaveHub"
+	leave.disabled = inspection_only
+	leave.pressed.connect(func():
+		var result: Dictionary = GameManager.claim_expedition_reward("leave_hub")
+		if bool(result.get("success", false)): _page = "map"
+		_action_result(result)
+	)
+
+
+func _render_final_preparation() -> void:
+	var column := _scroll_column(_body)
+	var card := _card(column, GOLD)
+	_label(card, "DEVANT PÂRIS · DERNIÈRE PRÉPARATION", 15, GOLD)
+	_label(card, "Votre prochain choix vous mène au dernier combat.", 25, TEXT, true)
+	_label(card, "Pâris est accompagné de deux spectres. Ne laissez pas trois adversaires exploiter le même tour. Sous 20 % de vie, une blessure non fatale réveille sa seconde chance : préparez votre fin de combat.", 18)
+	_label(card, "Aucun soin ni objet offert ici. Changez librement vos techniques et votre équipement ; conservez vos fournitures pour le moment décisif.", 18)
+	var build_button := _button(card, "Réviser mes techniques")
+	build_button.pressed.connect(func(): _navigate("build"))
+	var gear := _button(card, "Vérifier mon équipement")
+	gear.pressed.connect(_open_inventory)
+	var leave := _button(card, "Prêt : rejoindre Pâris  →", true)
+	leave.name = "LeaveFinalPreparation"
 	leave.disabled = inspection_only
 	leave.pressed.connect(func():
 		var result: Dictionary = GameManager.claim_expedition_reward("leave_hub")

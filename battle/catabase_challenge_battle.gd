@@ -19,6 +19,10 @@ func prepare(owner_battle: Node) -> void:
 	state.begin_encounter()
 	budget = 6 if int(GameManager.expedition.route.get_current_node().depth) >= 3 else 5
 	_apply_consequences()
+	# r6 contracts punctuate the three elites; incoming effects still apply to
+	# the following ordinary fight. Refusal never changes the baseline roster.
+	if GameManager.expedition.route.get_balance_revision() >= 1 and int(GameManager.expedition.route.get_current_node().depth) not in [6, 10, 15]:
+		return
 	_find_seal()
 	layer = CanvasLayer.new()
 	layer.layer = 40

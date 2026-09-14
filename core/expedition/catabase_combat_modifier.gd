@@ -6,13 +6,114 @@ extends SpellModifier
 @export var amount := 0.5
 @export var price := 12
 @export var charges := 3
+@export var scaling_ratio := 0.0
+@export var minimum_amount := 0
 
-static func reset_actor(hero: Unit) -> void:
+
+const SCALING_BALANCE_REVISION := 1
+const LEGACY_BRONZE_CAP := 40
+const LEGACY_BRONZE_SPEND_CAP := 30
+const LEGACY_HEALING_CAP := 30
+
+
+static func reset_actor(hero: Unit, balance_revision: int = 0) -> void:
+	var session: Variant = session_for(hero)
+	var has_conduction: bool = (
+		balance_revision >= SCALING_BALANCE_REVISION
+		and session != null
+		and session.build != null
+		and session.build.unlocked_node_ids.has("elements.liaison_b")
+	)
 	for key in hero.get_meta_list():
 		if String(key).begins_with("ct_") and key != &"ct_session": hero.remove_meta(key)
-	hero.set_meta("ct_healing", 30)
+	var prowess := hero.attack_power.get_value()
+	var bronze_cap := LEGACY_BRONZE_CAP
+	var bronze_spend_cap := LEGACY_BRONZE_SPEND_CAP
+	var healing_cap := LEGACY_HEALING_CAP
+	if balance_revision >= SCALING_BALANCE_REVISION:
+		bronze_cap = maxi(LEGACY_BRONZE_CAP, roundi(prowess * 2.2))
+		bronze_spend_cap = maxi(
+			LEGACY_BRONZE_SPEND_CAP,
+			roundi(prowess * 1.65),
+		)
+		healing_cap = maxi(
+			LEGACY_HEALING_CAP,
+			floori(hero.max_hp.get_value() * 0.1),
+		)
+	hero.set_meta("ct_balance_revision", balance_revision)
+	hero.set_meta("ct_bronze_cap", bronze_cap)
+	hero.set_meta("ct_bronze_spend_cap", bronze_spend_cap)
+	hero.set_meta("ct_healing_cap", healing_cap)
+	hero.set_meta("ct_conduction", has_conduction)
+	hero.set_meta("ct_healing", healing_cap)
 	hero.set_meta("ct_gold_earned", 0)
 	hero.set_meta("ct_bronze", 0)
+
+
+static func uses_scaling_balance(hero: Unit) -> bool:
+	return (
+		hero != null
+		and int(hero.get_meta("ct_balance_revision", 0)) >= SCALING_BALANCE_REVISION
+	)
+
+
+static func bronze_cap(hero: Unit) -> int:
+	if hero == null:
+		return LEGACY_BRONZE_CAP
+	return int(hero.get_meta("ct_bronze_cap", LEGACY_BRONZE_CAP))
+
+
+static func bronze_spend_cap(hero: Unit) -> int:
+	if hero == null:
+		return LEGACY_BRONZE_SPEND_CAP
+	return int(hero.get_meta("ct_bronze_spend_cap", LEGACY_BRONZE_SPEND_CAP))
+
+
+static func healing_cap(hero: Unit) -> int:
+	if hero == null:
+		return LEGACY_HEALING_CAP
+	return int(hero.get_meta("ct_healing_cap", LEGACY_HEALING_CAP))
+
+
+static func _scaled_amount(hero: Unit, ratio: float, floor_amount: int) -> int:
+	if hero == null or not uses_scaling_balance(hero) or ratio <= 0.0:
+		return floor_amount
+	return maxi(floor_amount, roundi(hero.attack_power.get_value() * ratio))
+
+
+static func _elemental_scaled_amount(
+		hero: Unit,
+		ratio: float,
+		floor_amount: int,
+	) -> int:
+	if hero == null or not uses_scaling_balance(hero) or ratio <= 0.0:
+		return floor_amount
+	var prowess := hero.attack_power.get_value()
+	if bool(hero.get_meta("ct_conduction", false)):
+		prowess *= 1.08
+	return maxi(floor_amount, roundi(prowess * ratio))
+
+
+static func _conduction_damage_bonus(hero: Unit, spell: Spell) -> int:
+	if (
+		hero == null or spell == null or not uses_scaling_balance(hero)
+		or not bool(hero.get_meta("ct_conduction", false))
+		or spell.element == Spell.Element.NONE or spell.damage_scaling == null
+	):
+		return 0
+	var prowess := hero.attack_power.get_value()
+	var max_hp := hero.max_hp.get_value()
+	var normal := SpellScalingResolver.resolve_from_values(
+		spell.damage_scaling,
+		prowess,
+		max_hp,
+	)
+	var conducted := SpellScalingResolver.resolve_from_values(
+		spell.damage_scaling,
+		prowess * 1.08,
+		max_hp,
+	)
+	return maxi(0, conducted - normal)
 
 static func session_for(hero: Unit):
 	if not hero.has_meta("ct_session"): return null
@@ -87,11 +188,23 @@ func on_costs_resolved(ctx) -> void:
 			ctx.caster.set_meta("ct_toll_turn", ctx.caster.activation_index)
 			ctx.caster.set_meta("ct_toll", amount)
 	if mode == "bronze":
-		var spent := mini(30, int(ctx.caster.get_meta("ct_bronze", 0)))
+		var spent := mini(
+			bronze_spend_cap(ctx.caster),
+			int(ctx.caster.get_meta("ct_bronze", 0)),
+		)
 		ctx.caster.set_meta("ct_bronze", int(ctx.caster.get_meta("ct_bronze", 0)) - spent)
 		ctx.set_meta("ct_bronze_spent", spent)
 
 func on_targets_resolved(ctx) -> void:
+	if mode == "braise" and ctx.spell.terrain_effect != null:
+		# Each cast owns its payload: a later temporary Prouesse change must not
+		# rewrite braises which are already active on the board.
+		ctx.spell.terrain_effect = ctx.spell.terrain_effect.duplicate(true)
+		ctx.spell.terrain_effect.damage = _elemental_scaled_amount(
+			ctx.caster,
+			scaling_ratio,
+			minimum_amount,
+		)
 	if mode == "harvest":
 		for cell in ctx.affected_cells:
 			var target = ctx.grid.get_unit(cell)
@@ -112,7 +225,11 @@ func on_targets_resolved(ctx) -> void:
 		if toll > 0 and not toll_used:
 			percent += toll
 			toll_used = true
-		ctx.damage_bonus_by_cell[cell] = int(ctx.damage_bonus_by_cell.get(cell, 0)) + roundi(ctx.spell.get_scaled_damage(hero) * percent)
+		ctx.damage_bonus_by_cell[cell] = (
+			int(ctx.damage_bonus_by_cell.get(cell, 0))
+			+ roundi(ctx.spell.get_scaled_damage(hero) * percent)
+			+ _conduction_damage_bonus(hero, ctx.spell)
+		)
 	if toll_used:
 		hero.remove_meta("ct_toll")
 		hero.remove_meta("ct_toll_turn")
@@ -121,7 +238,7 @@ func on_damage_resolved(ctx) -> void:
 	var hero: Unit = ctx.caster
 	match mode:
 		"salve":
-			var reduction := int(amount) if amount > 1 else 6
+			var reduction := _scaled_amount(hero, scaling_ratio, minimum_amount)
 			hero.add_sourced_shield(&"ct_salve", reduction * charges, hero, {"tags": [&"guard", &"salve"], "expires_after_activations": 1, "max_absorption_per_hit": reduction, "remaining_impacts": charges})
 		"cleanse":
 			cleanse(hero)

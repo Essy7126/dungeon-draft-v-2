@@ -42,9 +42,15 @@ func _process(_delta: float) -> void:
 		if session != null:
 			lines.append("Oboles · %d" % session.gold)
 		if hero.get_meta("ct_relic_2", false):
-			lines.append("Bronze · %d / 40" % int(hero.get_meta("ct_bronze", 0)))
+			lines.append("Bronze · %d / %d" % [
+				int(hero.get_meta("ct_bronze", 0)),
+				CatabaseCombatModifier.bronze_cap(hero),
+			])
 		if hero.get_meta("ct_relic_4", false):
-			lines.append("Soin disponible · %d PV" % int(hero.get_meta("ct_healing", 0)))
+			lines.append("Soin disponible · %d / %d PV" % [
+				int(hero.get_meta("ct_healing", 0)),
+				CatabaseCombatModifier.healing_cap(hero),
+			])
 		if int(hero.get_meta("ct_toll_turn", -1)) == hero.activation_index:
 			lines.append(
 				"Prochain impact · +%d %%" % roundi(float(hero.get_meta("ct_toll", 0)) * 100)

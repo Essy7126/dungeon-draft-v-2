@@ -232,6 +232,7 @@ func _layout_map() -> void:
 			if int(node["depth"]) == depth:
 				layer.append(node)
 		layer.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["lane"]) < int(b["lane"]))
+		var layer_card_width := minf(card_width, (usable_width - GAP * maxi(0, layer.size() - 1)) / maxi(1, layer.size()))
 		var previous_right := map_left - GAP
 		for index in layer.size():
 			var node: Dictionary = layer[index]
@@ -242,10 +243,10 @@ func _layout_map() -> void:
 				fraction = 0.08 + 0.84 * float(index) / float(layer.size() - 1)
 			var drift := sin(float(depth) * 1.71 + float(index) * 0.9) * 0.065
 			fraction = float(node.get("map_x", clampf(fraction + drift, 0.0, 1.0)))
-			var right_limit := map_left + usable_width - card_width - (layer.size() - index - 1) * (card_width + GAP)
-			var x := clampf(map_left + fraction * (usable_width - card_width), previous_right + GAP, right_limit)
-			previous_right = x + card_width
-			var rect := Rect2(Vector2(x, cursor_y), Vector2(card_width, extent))
+			var right_limit := map_left + usable_width - layer_card_width - (layer.size() - index - 1) * (layer_card_width + GAP)
+			var x := clampf(map_left + fraction * (usable_width - layer_card_width), previous_right + GAP, right_limit)
+			previous_right = x + layer_card_width
+			var rect := Rect2(Vector2(x, cursor_y), Vector2(layer_card_width, extent))
 			_place_button(String(node["id"]), rect)
 			ordered_ids.append(String(node["id"]))
 		cursor_y += pitch
@@ -422,6 +423,8 @@ func _draw_legend(font: Font) -> void:
 
 
 func _kind_label(node: Dictionary) -> String:
+	if bool(node.get("preparation_only", false)):
+		return "PRÉPARATION"
 	return String(KIND_LABELS.get(CatabasePaintedIconCatalog.route_presentation_kind(node), "DESTINATION"))
 
 

@@ -1,5 +1,34 @@
 # Problèmes connus et suivis
 
+## Catabase r6 — suivi du candidat 2026-09-14
+
+Base `main@055584c37f60d99b2f87bdbb4d670895bf8ef2b2`, worktree non commité.
+
+- INCONNU : durée et difficulté humaines de la run 30–45 min. Une victoire ou
+  une défaite de bot ne constitue pas un taux de victoire humain.
+- À SURVEILLER : poids des premiers points de Sagesse, récupération issue des
+  montées de niveau, intérêt relatif des six armes et lenteur des phases IA.
+- CORRIGÉ DANS LE CANDIDAT : Salve/réserves/Braise qui devenaient des valeurs
+  plates tardives ; Conduction globale malgré sa vocation élémentaire ;
+  préparation finale pouvant être confondue avec un quatrième refuge.
+- CORRIGÉ DANS LE CANDIDAT : découverte d'un secret à la profondeur déjà
+  engagée ; les mémoires devenues sans débouché offrent désormais un choix
+  unique entre deux fournitures tactiques existantes.
+- CORRIGÉ DANS LE CANDIDAT : indicateurs des attaques préparées non raccordés
+  au plateau ; nom/contre-jeu désormais entiers et lisibles à 720p/1080p.
+  Sentence/Visée conservent un libellé générique, amélioration P2 documentée.
+- CORRIGÉ DANS LE CANDIDAT : accès aux haltes interactives encore indexés sur
+  les anciennes profondeurs. Les quatre lieux disponibles suivent leur identité
+  r6 ; l'étal de IV conserve sa salle propre malgré les inversions de colonnes.
+- RÉGRESSION ÉLARGIE NON VERTE : 438/454 tests réussis, 16 échecs historiques
+  classés dans le rapport r6 (assets, ancien lancement, vertical slice,
+  inventaire). L'ancien test de lancement accède à une salle nulle ; le lot
+  rapporte aussi des ressources non libérées à sa fermeture, dont l'origine
+  totale reste non attribuée. Aucun échec n'est masqué. Les sept suites liées
+  à l'intégration passent à 50/50 ; runs et GPU ne rapportent pas d'erreur moteur.
+- Les points ci-dessus ne sont pas une déclaration CURRENT générale :
+  [preuves et tâches restantes](CATABASE_R6_WORKLOG_2026-09-14.md).
+
 ## Studio Terrain — suites du test humain 2026-08-24
 
 - **PROUVÉ** — les champs de données `random_destination` et

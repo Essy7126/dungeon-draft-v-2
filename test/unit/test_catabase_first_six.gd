@@ -391,5 +391,5 @@ func _resolve_level(manager) -> void:
 	assert_true(manager.advance_expedition_level_step().success)
 	while manager.expedition.character.champion_progression.unspent_attribute_points > 0:
 		assert_true(manager.spend_champion_attribute(&"achilles", &"vitality"))
-	assert_true(manager.advance_expedition_level_step().success)
-	assert_true(manager.advance_expedition_level_step().success)
+	while not manager.expedition.advancement_step.is_empty():
+		assert_true(manager.advance_expedition_level_step().success)

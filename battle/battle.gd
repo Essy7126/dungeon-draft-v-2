@@ -16,6 +16,9 @@ signal _mastery_choice_finished
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
+const TacticalTelegraphLayerScript = preload(
+	"res://battle/tactical_telegraph_layer.gd"
+)
 const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
 const ArenaFeatureRendererScript = preload(
 	"res://battle/arena_feature_renderer.gd"
@@ -146,6 +149,7 @@ var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
 var _movement_path_preview = null
+var _tactical_telegraphs: TacticalTelegraphLayer = null
 var _arena_tile_parent: Node2D = null
 var arena_dynamic_surface_layer: Node2D = null
 var terrain_surface_visual_adapter: DynamicSurfaceVisualAdapter = null
@@ -404,6 +408,7 @@ func _setup_view() -> void:
 	grid_view.cell_hovered.connect(_on_cell_hovered)
 	_unit_view_parent = _find_unit_view_parent()
 	_setup_movement_path_preview()
+	_setup_tactical_telegraphs()
 
 
 func _setup_movement_path_preview() -> void:
@@ -429,6 +434,22 @@ func _setup_movement_path_preview() -> void:
 func _clear_movement_path_preview() -> void:
 	if is_instance_valid(_movement_path_preview):
 		_movement_path_preview.clear_path()
+
+
+func _setup_tactical_telegraphs() -> void:
+	if grid_view == null:
+		return
+	if is_instance_valid(_tactical_telegraphs):
+		_tactical_telegraphs.setup(grid_view, grid)
+		return
+	_tactical_telegraphs = TacticalTelegraphLayerScript.new() as TacticalTelegraphLayer
+	_tactical_telegraphs.name = "TacticalTelegraphs"
+	# A child of the grid view inherits every painted/isometric transform. The
+	# positive Z keeps warnings above terrain and units while CanvasLayer HUDs
+	# remain on top.
+	_tactical_telegraphs.z_index = 20
+	grid_view.add_child(_tactical_telegraphs)
+	_tactical_telegraphs.setup(grid_view, grid)
 
 
 func _setup_arena_visuals() -> void:
@@ -2733,10 +2754,14 @@ func _exit_tree() -> void:
 	_evolution_queue.clear()
 	if is_instance_valid(_spell_impact_scheduler):
 		_spell_impact_scheduler.cancel_all()
+	if is_instance_valid(_tactical_telegraphs):
+		_tactical_telegraphs.dispose()
 
 
 func _begin_battle_shutdown() -> void:
 	_deferred_spell_reaction_context = null
+	if is_instance_valid(_tactical_telegraphs):
+		_tactical_telegraphs.dispose()
 	if _mastery_adapter != null:
 		_mastery_adapter.dispose()
 		_mastery_adapter = null

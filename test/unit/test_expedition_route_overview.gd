@@ -5,7 +5,8 @@ const ROUTE_VIEW := preload("res://ui/expedition/expedition_route_view.gd")
 
 func _session() -> ExpeditionSession:
 	var session := ExpeditionSession.new()
-	session.route.initialize(2401)
+	# These layout expectations describe the retained r5 graph (53/55 nodes).
+	session.route.initialize(2401, 5)
 	session.route.choose_node("d01_0")
 	session.route.mark_combat_won()
 	session.route.complete_current_node()

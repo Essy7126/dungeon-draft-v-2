@@ -1,6 +1,12 @@
 extends RefCounted
 
 
+static func plaque_guard_amount(hero: Unit) -> int:
+	if not CatabaseCombatModifier.uses_scaling_balance(hero):
+		return 24
+	return maxi(24, roundi(hero.max_hp.get_value() * 0.1))
+
+
 ## Executed by RelicRuntimeService: same inventory, activation and event contracts.
 static func apply(
 	effect: ItemReactiveEffectData,
@@ -27,7 +33,13 @@ static func apply(
 			for absorption: Dictionary in context.get("source_absorption", []):
 				if &"guard" in absorption.get("tags", []):
 					guarded += int(absorption.get("amount_absorbed", 0))
-			hero.set_meta("ct_bronze", mini(40, before + floori(guarded * 0.5)))
+			hero.set_meta(
+				"ct_bronze",
+				mini(
+					CatabaseCombatModifier.bronze_cap(hero),
+					before + floori(guarded * 0.5),
+				),
+			)
 			return int(hero.get_meta("ct_bronze")) > before
 		&"ct_supply":
 			if hero.current_ap < 1 or inventory.get_instance(instance.instance_id) == null:
@@ -44,7 +56,7 @@ static func apply(
 				3:
 					changed = hero.add_sourced_shield(
 						&"ct_supply",
-						24,
+						plaque_guard_amount(hero),
 						hero,
 						{ "tags": [&"guard"], "expires_after_activations": 1 },
 					) != null

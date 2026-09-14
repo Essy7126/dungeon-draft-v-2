@@ -37,6 +37,7 @@ func initialize(state: CharacterRunState) -> bool:
 	if character_state != null:
 		_clear_stats()
 	character_state = state
+	_apply_balance_presentation()
 	starting_selection.clear()
 	weapon_unlocks.clear()
 	points = STARTING_POINTS
@@ -117,6 +118,11 @@ func get_offers() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for node in catalog.nodes:
 		var offer := node.duplicate(true)
+		if (
+			String(node.id) == "elements.liaison_b"
+			and _uses_scaling_balance()
+		):
+			offer["description"] = "+8 % de Prouesse dans le calcul de vos dégâts élémentaires uniquement."
 		offer["discovered"] = is_axis_discovered(String(node.axis))
 		offer["owned"] = _node_owned(node)
 		offer["reason"] = _purchase_failure(node)
@@ -515,10 +521,18 @@ func _learn(spell_id: String, replace_family: bool) -> void:
 func _apply_stats() -> void:
 	if character_state == null:
 		return
+	_apply_balance_presentation()
 	_clear_stats()
 	for id in unlocked_node_ids:
 		var data: Array = catalog.get_node(id).get("stat", [])
 		if data.size() != 3 or String(data[0]) == "heal_budget":
+			continue
+		# Revision 6 resolves Conduction on elemental actions only. Older route
+		# snapshots retain the former global +8 % Prouesse contract.
+		if (
+			id == "elements.liaison_b"
+			and _uses_scaling_balance()
+		):
 			continue
 		var stat := character_state.unit.get(String(data[0])) as Stat
 		if stat != null:
@@ -526,6 +540,18 @@ func _apply_stats() -> void:
 	character_state.unit.current_hp = mini(character_state.unit.current_hp, character_state.unit.max_hp.get_int())
 	character_state.unit.stats_changed.emit(character_state.unit)
 	character_state.unit.hp_changed.emit(character_state.unit)
+
+
+func _uses_scaling_balance() -> bool:
+	return character_state != null and character_state.unit != null \
+		and int(character_state.unit.get_meta("ct_balance_revision", 0)) >= 1
+
+
+func _apply_balance_presentation() -> void:
+	preload("res://core/expedition/catabase_first_six_spells.gd").apply_balance_descriptions(
+		catalog,
+		1 if _uses_scaling_balance() else 0,
+	)
 
 
 func _clear_stats() -> void:

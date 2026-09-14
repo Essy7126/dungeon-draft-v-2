@@ -1,7 +1,7 @@
 class_name ExpeditionRouteCatalog
 extends RefCounted
-## Ordinary paths: 15 fights / 5 halts; optional exchanges: 14–16 / 6–4.
-const REVISION := 5
+## Revision 6: twelve fights and three guaranteed refuges. Older saves regenerate unchanged.
+const REVISION := 6
 const DEPTH_COUNT := 20
 const COMBAT_KINDS: Array[String] = ["normal", "elite", "boss"]
 const HALT_KINDS: Array[String] = ["hub", "merchant", "sanctuary", "lore", "cache", "event"]
@@ -9,7 +9,9 @@ const HALT_DEPTHS := [4, 8, 12, 16, 19]
 const MAP_BY_DEPTH := {1: 0, 2: 5, 3: 1, 5: 6, 6: 7, 7: 2, 9: 8, 10: 9, 11: 3, 13: 10, 14: 11, 15: 12, 16: 13, 17: 13, 18: 14, 20: 4}
 
 
-static func create_nodes(seed_value: int, revision: int = REVISION) -> Array[Dictionary]:
+static func create_nodes(seed_value: int, revision: int = REVISION, difficulty_id := "normal") -> Array[Dictionary]:
+	if revision >= 6:
+		return preload("res://core/expedition/catabase_route_v6.gd").create_nodes(seed_value, difficulty_id)
 	if revision >= 4:
 		return preload("res://core/expedition/expedition_route_itineraries.gd").create_nodes(seed_value, MAP_BY_DEPTH, revision >= 5)
 	var rng := RandomNumberGenerator.new()

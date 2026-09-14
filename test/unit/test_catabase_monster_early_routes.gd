@@ -65,7 +65,9 @@ func test_mirrored_routes_preserve_first_branch_destinations_and_legacy_v4_resto
 	}
 	var seen_lanes := { }
 	for seed_value in [2401, 42, 777, 1, 2, 9]:
-		var nodes := ExpeditionRouteCatalog.create_nodes(seed_value)
+		# This contract protects the mirrored revision-5 itinerary. Revision 6 has
+		# a deliberately different graph and is covered by test_catabase_route_r6.
+		var nodes := ExpeditionRouteCatalog.create_nodes(seed_value, 5)
 		var by_id := { }
 		for node in nodes:
 			by_id[str(node.id)] = node
