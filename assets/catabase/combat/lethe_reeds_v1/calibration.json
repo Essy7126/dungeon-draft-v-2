@@ -1,0 +1,215 @@
+{
+  "canvas_size": [
+    1920,
+    1200
+  ],
+  "allowed_floor_polygon": [
+    [
+      384.00001525878895,
+      443.7999916076655
+    ],
+    [
+      435.60001373291004,
+      417.99999237060496
+    ],
+    [
+      848.4000015258789,
+      211.59999847412092
+    ],
+    [
+      1071.599998474121,
+      211.59999847412092
+    ],
+    [
+      1174.7999954223633,
+      211.59999847412098
+    ],
+    [
+      1484.3999862670898,
+      366.3999938964839
+    ],
+    [
+      1639.1999816894531,
+      443.79999160766545
+    ],
+    [
+      1639.1999816894531,
+      666.9999885559074
+    ],
+    [
+      1535.999984741211,
+      718.5999870300285
+    ],
+    [
+      1381.1999893188477,
+      795.99998474121
+    ],
+    [
+      1174.7999954223633,
+      899.199981689452
+    ],
+    [
+      848.4000015258788,
+      899.199981689452
+    ],
+    [
+      796.8000030517577,
+      873.3999824523916
+    ],
+    [
+      487.20001220703114,
+      718.5999870300286
+    ],
+    [
+      384.00001525878895,
+      666.9999885559075
+    ]
+  ],
+  "shore_polygon": [
+    [
+      344.00001525878895,
+      403.7999916076655
+    ],
+    [
+      395.60001373291004,
+      377.99999237060496
+    ],
+    [
+      808.4000015258789,
+      171.59999847412092
+    ],
+    [
+      1111.599998474121,
+      171.59999847412092
+    ],
+    [
+      1214.7999954223633,
+      171.59999847412098
+    ],
+    [
+      1524.3999862670898,
+      326.3999938964839
+    ],
+    [
+      1679.1999816894531,
+      403.79999160766545
+    ],
+    [
+      1679.1999816894531,
+      706.9999885559074
+    ],
+    [
+      1575.999984741211,
+      758.5999870300285
+    ],
+    [
+      1421.1999893188477,
+      835.99998474121
+    ],
+    [
+      1214.7999954223633,
+      939.199981689452
+    ],
+    [
+      808.4000015258788,
+      939.199981689452
+    ],
+    [
+      756.8000030517577,
+      913.3999824523916
+    ],
+    [
+      447.20001220703114,
+      758.5999870300286
+    ],
+    [
+      344.00001525878895,
+      706.9999885559075
+    ]
+  ],
+  "boat_region": [
+    105,
+    745,
+    385,
+    890
+  ],
+  "floor_count": 112,
+  "obstacle_count": 8,
+  "pit_cell_count": 83,
+  "floor_bounds": {
+    "min": [
+      444.00001525878895,
+      271.5999984741209
+    ],
+    "max": [
+      1579.1999816894531,
+      839.199981689452
+    ]
+  },
+  "reserve_bounds": {
+    "min": [
+      384.00001525878895,
+      211.59999847412092
+    ],
+    "max": [
+      1639.1999816894531,
+      899.199981689452
+    ]
+  },
+  "shore_bounds": {
+    "min": [
+      344.00001525878895,
+      171.59999847412092
+    ],
+    "max": [
+      1679.1999816894531,
+      939.199981689452
+    ]
+  },
+  "reserve_margin_px": 60,
+  "shore_margin_px": 100,
+  "tile_diagonal_native_px": [
+    103.1999969482422,
+    51.599998474121
+  ],
+  "boat_benches": 3,
+  "reserve_semantics": "Outer footprint envelope only. Internal pit and route-cut cells may be open water; the engine retains actual floor and pit rendering.",
+  "room_sha256": "997cd5a23525330be30734abf8d332a3fb1884ec9003a01303dbc65b8062a4c4",
+  "geometry_sha256": "844a5dd77ace7b742ee83e37f67266b1c89f68a61b539a9e94052f5b06a93957",
+  "terrain_plan_sha256": "12aa7aafe0d4d960884b09c0a666065d48e87fe1dc0efc396e7712ab880bdee3",
+  "boat_rect_disjoint_from_shore": true,
+  "camera_proposal": {
+    "offset": [
+      -120,
+      -30
+    ],
+    "zoom_multiplier": 1.0,
+    "keep_painting_in_view": true,
+    "engine_review_required": true
+  },
+  "route_reference": {
+    "seed": 2401,
+    "catalog_revision": 4,
+    "node_id": "d05_1",
+    "depth": 5,
+    "kind": "normal",
+    "reward": "ranged",
+    "incoming": [
+      "d04_2"
+    ],
+    "outgoing": [
+      "d06_2"
+    ],
+    "evidence": "docs/maps/catabase_route_audit_2026-09-11.md; current expedition_route_itineraries.gd"
+  },
+  "encounter_reference": {
+    "name": "Les roseaux sifflants",
+    "roster": [
+      "archer",
+      "archer",
+      "archer"
+    ],
+    "authority": "core/expedition/catabase_monster_encounter_catalog.gd"
+  },
+  "legend": "Green cells: engine floor. Dark teal cells: engine pits; no new walkable islands. Blue/red: hero/enemy anchors. Orange: existing low obstacles. Reserve protects actual floor cells from painted blockers; internal recesses may remain water. Brown oval is boat outside combat. Geometry is never inferred from painting."
+}

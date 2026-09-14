@@ -291,5 +291,80 @@ class HaltContentTests(unittest.TestCase):
         self.assertEqual(style["proportions"]["default_player_height_ratio"], workshop.DEFAULT_PLAYER_HEIGHT_RATIO)
 
 
+    def test_optional_water_effects_preserve_defaults_and_accept_boundaries(self):
+        self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+        for strength in [0, 1.0, 4]:
+            self.data["water"].update(caustic_strength=strength, distortion_strength=strength)
+            self.save()
+            with self.subTest(strength=strength):
+                self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+        for bounds in [[0, 0], [0.5, 0.5], [1, 1], [0, 1], [0.2, 0.7]]:
+            self.data["water"]["far_fade"] = bounds
+            self.save()
+            with self.subTest(bounds=bounds):
+                self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+
+    def test_water_strengths_reject_nonfinite_nonnumeric_and_out_of_range_before_build(self):
+        for field in ["caustic_strength", "distortion_strength"]:
+            for value in [-0.01, 4.01, float("nan"), float("inf"), -float("inf"), "1", True, None, [], {}]:
+                self.data["water"][field] = value
+                self.manifest.write_text(json.dumps(self.data), encoding="utf-8")
+                with self.subTest(field=field, value=value), self.assertRaisesRegex(ValueError, f"water.{field}"):
+                    workshop.prepare(self.manifest, self.root)
+                self.assertFalse((self.root / "built").exists())
+            self.data["water"].pop(field)
+
+    def test_water_far_fade_requires_two_finite_normalized_ordered_bounds_before_build(self):
+        for value in [[], [0], [0, 0.5, 1], [0.8, 0.2], [-0.1, 0.5], [0.5, 1.1],
+                      [float("nan"), 1], [0, float("inf")], [-float("inf"), 1],
+                      [True, 1], [0, "1"], "0,1", None, {}]:
+            self.data["water"]["far_fade"] = value
+            self.manifest.write_text(json.dumps(self.data), encoding="utf-8")
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "water.far_fade"):
+                workshop.prepare(self.manifest, self.root)
+            self.assertFalse((self.root / "built").exists())
+
+
+    def test_optional_foliage_motion_accepts_defaults_and_closed_boundaries(self):
+        self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+        for settings in [{}, {"strength": 0}, {"speed": 4}, {"strength": 4.0, "speed": 0.0},
+                         {"strength": 1.5, "speed": 0.75}]:
+            self.data["foliage_motion"] = settings
+            self.save()
+            with self.subTest(settings=settings):
+                self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+
+    def test_foliage_motion_rejects_invalid_objects_and_fields_before_build(self):
+        for value in [None, [], "wind", 1, True]:
+            self.data["foliage_motion"] = value
+            self.save()
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "foliage_motion"):
+                workshop.prepare(self.manifest, self.root)
+            self.assertFalse((self.root / "built").exists())
+        for field in ["strength", "speed"]:
+            for value in [-0.01, 4.01, float("nan"), float("inf"), -float("inf"), "1", True, None, [], {}]:
+                self.data["foliage_motion"] = {field: value}
+                self.manifest.write_text(json.dumps(self.data), encoding="utf-8")
+                with self.subTest(field=field, value=value), self.assertRaisesRegex(ValueError, f"foliage_motion.{field}"):
+                    workshop.prepare(self.manifest, self.root)
+                self.assertFalse((self.root / "built").exists())
+
+    def test_enclosed_lantern_flag_accepts_only_booleans_and_remains_optional(self):
+        self.data["torches"] = [{"point": [0.5, 0.5], "radius": [0.01, 0.02]}]
+        self.save()
+        self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+        self.assertNotIn("enclosed", self.data["torches"][0])
+        for value in [True, False]:
+            self.data["torches"][0]["enclosed"] = value
+            self.save()
+            self.assertEqual(workshop.validate(self.manifest, self.root), self.data)
+        for value in [0, 1, 0.0, "true", "false", None, [], {}, float("nan")]:
+            self.data["torches"][0]["enclosed"] = value
+            self.manifest.write_text(json.dumps(self.data), encoding="utf-8")
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "torches.enclosed"):
+                workshop.prepare(self.manifest, self.root)
+            self.assertFalse((self.root / "built").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

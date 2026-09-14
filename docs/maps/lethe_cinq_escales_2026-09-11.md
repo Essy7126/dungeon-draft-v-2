@@ -72,3 +72,48 @@ sauvegardes ; ne pas réécrire silencieusement une run en cours.
 Le cadrage initial de ce document ne changeait ni les liaisons ni les ressources
 de combat. Les vérifications de l'intégration ultérieure sont consignées dans
 le dossier de revue lié ci-dessus. Les quatre peintures suivantes ne sont pas générées.
+
+### Révision du 12 septembre : Les lances oubliées
+
+La salle de l'étape III, **Les lances oubliées**, a été confirmée par l'utilisateur
+et reprise avec une peinture aquatique dédiée, la barque et le style Émeraude.
+Elle constitue le second arrêt existant après Les traces du Léthé ; son nom de
+production est conservé. Voir [l'intégration et les validations](../../tools/lethe_lances_review/README.md).
+La géométrie et les rencontres sont conservées. Cette reprise visuelle ne
+construit pas encore le tronçon exclusif de cinq escales décrit ci-dessus.
+
+### Révision du 12 septembre : La stèle des noms
+
+La halte existante de l'étape IV, **La stèle des noms**, possède maintenant
+sa propre rive funéraire, un saule, des pierres de mémoire immergées et un
+relief de Charon. La même barque prolonge le fil du fleuve. Achille approche
+la stèle pour le récit, puis repart par l'amarrage. Voir
+[la halte et ses validations](../../tools/stele_names_review/README.md).
+
+Cette création remplace visuellement la halte de récit déjà présente dans le
+parcours ; elle n'applique pas le nom provisoire « L'amarrage des amphores »
+ni les nouvelles connexions proposées dans le cadrage initial.
+
+### Révision du 12 septembre : Les roseaux du tireur
+
+La salle de combat existante de l’étape V, **Les roseaux du tireur**, reçoit
+une berge pavée ouverte dans les roseaux, après La stèle des noms. La même
+barque à trois bancs, son cordage et sa lanterne ambrée maintiennent la
+continuité du fleuve. La ressource est `route_6d5efdb88ff0`, atteinte sur
+`d05_1` avec la graine 2401. Voir [la pipeline de cette salle](../../tools/lethe_reeds_review/README.md).
+
+La création sépare une base peinte sèche, assez large pour soutenir les
+112 cellules de sol, et l’eau des fosses dessinée par le moteur selon la
+géométrie canonique. Le contour réel non convexe du bord supérieur sec et
+la poche centrale servent au contrôle de support. Les retouches ont utilisé
+des guides opaques pour supprimer entièrement les encoches qui laissaient
+des pointes de dalle au-dessus de l’eau ou des faces verticales. Les marges
+requises de 30 pixels natifs sur le sol et de 20 pixels aux rives sont conservées.
+
+L’audit indépendant de la peinture finale valide les 112 cellules, avec une
+marge minimale de 31,0049 pixels natifs. Les tests unitaires du parcours et la
+non-régression de l’oracle partagé sur Les lances oubliées sont également
+consignés dans le dossier de revue. La validation GPU finale de cette nouvelle
+salle est encore en cours : elle mesure six régions du décor, dont deux témoins
+de pierre fixes, à huit instants et dans deux formats. Les règles de combat,
+les cellules de fosse et les déplacements restent ceux de la salle existante.

@@ -25,489 +25,481 @@
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_pair_definition.gd" id="23_guus4"]
 [ext_resource type="Script" path="res://data/rooms/room_wave_data.gd" id="24_hacrw"]
 
-[sub_resource type="Resource" id="Resource_li4af"]
+[sub_resource type="Resource" id="Resource_4uec2"]
 script = ExtResource("4_6avr8")
 normal_texture = ExtResource("3_xlqka")
 wall_texture = ExtResource("5_kljn8")
 lava_texture = ExtResource("2_ujvqi")
 ice_texture = ExtResource("1_4uec2")
-source_top_ratio = Vector2(0.5, 0.245)
-source_right_ratio = Vector2(0.94, 0.5)
-source_left_ratio = Vector2(0.06, 0.5)
-cell_inset_ratio = 0.08
 
-[sub_resource type="Resource" id="Resource_nyhcj"]
+[sub_resource type="Resource" id="Resource_ujvqi"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_nee66"]
+[sub_resource type="Resource" id="Resource_xlqka"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_k026b"]
+[sub_resource type="Resource" id="Resource_6avr8"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(9, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_nsxi2"]
+[sub_resource type="Resource" id="Resource_kljn8"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(10, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_aram2"]
+[sub_resource type="Resource" id="Resource_nyhbp"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(11, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_8lije"]
+[sub_resource type="Resource" id="Resource_yui2g"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(12, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_brv4i"]
+[sub_resource type="Resource" id="Resource_u1qob"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(13, 0)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_eiovg"]
+[sub_resource type="Resource" id="Resource_4qbby"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 1)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_gdnsm"]
+[sub_resource type="Resource" id="Resource_f5iqp"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 1)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_is0d1"]
+[sub_resource type="Resource" id="Resource_j3uoc"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(13, 1)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_43x7w"]
+[sub_resource type="Resource" id="Resource_ektyw"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_fhtyj"]
+[sub_resource type="Resource" id="Resource_x8rm8"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_yhhkx"]
+[sub_resource type="Resource" id="Resource_t4acw"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(9, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_r314e"]
+[sub_resource type="Resource" id="Resource_ibcui"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(10, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_2geoq"]
+[sub_resource type="Resource" id="Resource_2yao2"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(11, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_w7yue"]
+[sub_resource type="Resource" id="Resource_4vvkj"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(12, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_mc8se"]
+[sub_resource type="Resource" id="Resource_23p0l"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(13, 2)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_hl2jp"]
+[sub_resource type="Resource" id="Resource_02ic4"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_uiup3"]
+[sub_resource type="Resource" id="Resource_by5ry"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_v0fcs"]
+[sub_resource type="Resource" id="Resource_7gjhg"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ik6u3"]
+[sub_resource type="Resource" id="Resource_rcr06"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_m0sjm"]
+[sub_resource type="Resource" id="Resource_guus4"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_rwl5c"]
+[sub_resource type="Resource" id="Resource_hacrw"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_8tw5l"]
+[sub_resource type="Resource" id="Resource_li4af"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(13, 3)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_1tenr"]
+[sub_resource type="Resource" id="Resource_nyhcj"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_kvqj0"]
+[sub_resource type="Resource" id="Resource_nee66"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ral5k"]
+[sub_resource type="Resource" id="Resource_k026b"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 4)
-cell_type = 3
-terrain_id = &"lava"
+terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ys7y3"]
+[sub_resource type="Resource" id="Resource_nsxi2"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 4)
-cell_type = 3
-terrain_id = &"lava"
+terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_smcp2"]
+[sub_resource type="Resource" id="Resource_aram2"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_eoouk"]
+[sub_resource type="Resource" id="Resource_8lije"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ea1pv"]
+[sub_resource type="Resource" id="Resource_brv4i"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(9, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_v6n5v"]
+[sub_resource type="Resource" id="Resource_eiovg"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(10, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_j5url"]
+[sub_resource type="Resource" id="Resource_gdnsm"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(13, 4)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_i8qdw"]
+[sub_resource type="Resource" id="Resource_is0d1"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 5)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_cagw5"]
+[sub_resource type="Resource" id="Resource_43x7w"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 5)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_owk51"]
+[sub_resource type="Resource" id="Resource_fhtyj"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 5)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_103f1"]
+[sub_resource type="Resource" id="Resource_yhhkx"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 5)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_yk2p0"]
+[sub_resource type="Resource" id="Resource_r314e"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 5)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_fkhxq"]
+[sub_resource type="Resource" id="Resource_2geoq"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 6)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_as1p0"]
+[sub_resource type="Resource" id="Resource_w7yue"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 6)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_0ornb"]
+[sub_resource type="Resource" id="Resource_mc8se"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 6)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_oxudd"]
+[sub_resource type="Resource" id="Resource_hl2jp"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 6)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_fn0wv"]
+[sub_resource type="Resource" id="Resource_uiup3"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 6)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_kldlu"]
+[sub_resource type="Resource" id="Resource_v0fcs"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 7)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_a5hgo"]
+[sub_resource type="Resource" id="Resource_ik6u3"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 7)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_7kd72"]
+[sub_resource type="Resource" id="Resource_m0sjm"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 7)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_okx02"]
+[sub_resource type="Resource" id="Resource_rwl5c"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 7)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ksbcp"]
+[sub_resource type="Resource" id="Resource_8tw5l"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 7)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ssfwl"]
+[sub_resource type="Resource" id="Resource_1tenr"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 7)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ih3aj"]
+[sub_resource type="Resource" id="Resource_kvqj0"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 8)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_43gp3"]
+[sub_resource type="Resource" id="Resource_ral5k"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 8)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_7y37p"]
+[sub_resource type="Resource" id="Resource_ys7y3"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 8)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_w20xs"]
+[sub_resource type="Resource" id="Resource_smcp2"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 8)
-cell_type = 3
-terrain_id = &"lava"
+terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_6i1r1"]
+[sub_resource type="Resource" id="Resource_eoouk"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 8)
-cell_type = 3
-terrain_id = &"lava"
+terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_np0gn"]
+[sub_resource type="Resource" id="Resource_ea1pv"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 8)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_quy7x"]
+[sub_resource type="Resource" id="Resource_v6n5v"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 9)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_eygdy"]
+[sub_resource type="Resource" id="Resource_j5url"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 9)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_ml1cg"]
+[sub_resource type="Resource" id="Resource_i8qdw"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 9)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_hjnym"]
+[sub_resource type="Resource" id="Resource_cagw5"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 9)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_f3ox6"]
+[sub_resource type="Resource" id="Resource_owk51"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 9)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_dhl4k"]
+[sub_resource type="Resource" id="Resource_103f1"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 9)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_m27tc"]
+[sub_resource type="Resource" id="Resource_yk2p0"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(1, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_c88on"]
+[sub_resource type="Resource" id="Resource_fkhxq"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(2, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_o25hm"]
+[sub_resource type="Resource" id="Resource_as1p0"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_smrin"]
+[sub_resource type="Resource" id="Resource_0ornb"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_7qi4w"]
+[sub_resource type="Resource" id="Resource_oxudd"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_s4feo"]
+[sub_resource type="Resource" id="Resource_fn0wv"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_t1rbr"]
+[sub_resource type="Resource" id="Resource_kldlu"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_1dxjt"]
+[sub_resource type="Resource" id="Resource_a5hgo"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 10)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_lhv1p"]
+[sub_resource type="Resource" id="Resource_7kd72"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(1, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_gia4o"]
+[sub_resource type="Resource" id="Resource_okx02"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(2, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_qgv4i"]
+[sub_resource type="Resource" id="Resource_ksbcp"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_1ete0"]
+[sub_resource type="Resource" id="Resource_ssfwl"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_rnc68"]
+[sub_resource type="Resource" id="Resource_ih3aj"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_kfpn8"]
+[sub_resource type="Resource" id="Resource_43gp3"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_rn3qf"]
+[sub_resource type="Resource" id="Resource_7y37p"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_5f6mh"]
+[sub_resource type="Resource" id="Resource_w20xs"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 11)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_7ohoe"]
+[sub_resource type="Resource" id="Resource_6i1r1"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(1, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_gx5pc"]
+[sub_resource type="Resource" id="Resource_np0gn"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(2, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_64wuy"]
+[sub_resource type="Resource" id="Resource_quy7x"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(3, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_xskwp"]
+[sub_resource type="Resource" id="Resource_eygdy"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(4, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_x7dg2"]
+[sub_resource type="Resource" id="Resource_ml1cg"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(5, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_uuety"]
+[sub_resource type="Resource" id="Resource_hjnym"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(6, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_lm0jd"]
+[sub_resource type="Resource" id="Resource_f3ox6"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(7, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_fo6rx"]
+[sub_resource type="Resource" id="Resource_dhl4k"]
 script = ExtResource("7_yui2g")
 coordinate = Vector2i(8, 12)
 terrain_id = &"stone"
 
-[sub_resource type="Resource" id="Resource_1b4pu"]
+[sub_resource type="Resource" id="Resource_m27tc"]
 script = ExtResource("8_u1qob")
 decoration_id = &"pillar_9_2"
 scene_path = "res://battle/painted/registered_terrain/props/StonePlinth.tscn"
 cell = Vector2i(9, 2)
 gameplay_preset = &"low_obstacle"
 
-[sub_resource type="Resource" id="Resource_amuxd"]
+[sub_resource type="Resource" id="Resource_c88on"]
 script = ExtResource("8_u1qob")
 decoration_id = &"pillar_10_2"
 scene_path = "res://battle/painted/registered_terrain/props/StonePlinth.tscn"
 cell = Vector2i(10, 2)
 gameplay_preset = &"low_obstacle"
 
-[sub_resource type="Resource" id="Resource_hulpi"]
+[sub_resource type="Resource" id="Resource_o25hm"]
 script = ExtResource("8_u1qob")
 decoration_id = &"pillar_3_6"
 scene_path = "res://battle/painted/registered_terrain/props/StonePlinth.tscn"
 cell = Vector2i(3, 6)
 gameplay_preset = &"low_obstacle"
 
-[sub_resource type="Resource" id="Resource_oaijx"]
+[sub_resource type="Resource" id="Resource_smrin"]
 script = ExtResource("8_u1qob")
 decoration_id = &"pillar_4_6"
 scene_path = "res://battle/painted/registered_terrain/props/StonePlinth.tscn"
 cell = Vector2i(4, 6)
 gameplay_preset = &"low_obstacle"
 
-[sub_resource type="Resource" id="Resource_7hejt"]
+[sub_resource type="Resource" id="Resource_7qi4w"]
 script = ExtResource("8_u1qob")
 decoration_id = &"pillar_3_10"
 scene_path = "res://battle/painted/registered_terrain/props/StonePlinth.tscn"
 cell = Vector2i(3, 10)
 gameplay_preset = &"low_obstacle"
 
-[sub_resource type="Resource" id="Resource_rlo6q"]
+[sub_resource type="Resource" id="Resource_s4feo"]
 script = ExtResource("8_u1qob")
 decoration_id = &"pillar_4_10"
 scene_path = "res://battle/painted/registered_terrain/props/StonePlinth.tscn"
 cell = Vector2i(4, 10)
 gameplay_preset = &"low_obstacle"
 
-[sub_resource type="Resource" id="Resource_n8bou"]
+[sub_resource type="Resource" id="Resource_t1rbr"]
 script = ExtResource("13_x8rm8")
 room_index = 8
 roster_units = Array[ExtResource("9_4qbby")]([ExtResource("10_f5iqp"), ExtResource("11_j3uoc"), ExtResource("12_ektyw")])
@@ -528,7 +520,7 @@ maximum_path_distance_by_role = {
 }
 forbidden_initial_spawn_cells = Array[Vector2i]([Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0), Vector2i(10, 0), Vector2i(11, 0), Vector2i(12, 0), Vector2i(13, 0), Vector2i(7, 1), Vector2i(8, 1), Vector2i(9, 1), Vector2i(10, 1), Vector2i(11, 1), Vector2i(12, 1), Vector2i(13, 1), Vector2i(7, 2), Vector2i(8, 2), Vector2i(9, 2), Vector2i(10, 2), Vector2i(12, 2), Vector2i(13, 2), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3), Vector2i(6, 3), Vector2i(7, 3), Vector2i(8, 3), Vector2i(9, 3), Vector2i(10, 3), Vector2i(11, 3), Vector2i(12, 3), Vector2i(13, 3), Vector2i(3, 4), Vector2i(4, 4), Vector2i(5, 4), Vector2i(6, 4), Vector2i(7, 4), Vector2i(8, 4), Vector2i(9, 4), Vector2i(11, 4), Vector2i(12, 4), Vector2i(13, 4), Vector2i(3, 5), Vector2i(4, 5), Vector2i(6, 5), Vector2i(7, 5), Vector2i(3, 6), Vector2i(4, 6), Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6), Vector2i(3, 7), Vector2i(4, 7), Vector2i(5, 7), Vector2i(6, 7), Vector2i(7, 7), Vector2i(8, 7), Vector2i(9, 7), Vector2i(3, 8), Vector2i(4, 8), Vector2i(5, 8), Vector2i(6, 8), Vector2i(7, 8), Vector2i(8, 8), Vector2i(9, 8), Vector2i(3, 9), Vector2i(4, 9), Vector2i(5, 9), Vector2i(6, 9), Vector2i(7, 9), Vector2i(8, 9), Vector2i(9, 9), Vector2i(1, 10), Vector2i(2, 10), Vector2i(3, 10), Vector2i(4, 10), Vector2i(5, 10), Vector2i(6, 10), Vector2i(7, 10), Vector2i(8, 10), Vector2i(9, 10), Vector2i(1, 11), Vector2i(2, 11), Vector2i(3, 11), Vector2i(4, 11), Vector2i(5, 11), Vector2i(6, 11), Vector2i(7, 11), Vector2i(8, 11), Vector2i(1, 12), Vector2i(2, 12), Vector2i(3, 12), Vector2i(4, 12), Vector2i(5, 12), Vector2i(6, 12), Vector2i(7, 12), Vector2i(8, 12)])
 
-[sub_resource type="Resource" id="Resource_xieb8"]
+[sub_resource type="Resource" id="Resource_1dxjt"]
 script = ExtResource("14_t4acw")
 layout_id = &"route_260dc8ac79d8"
 debug_name = "Les duellistes du gué"
@@ -539,10 +531,6 @@ Vector2i(3, 6): 2,
 Vector2i(3, 10): 2,
 Vector2i(4, 6): 2,
 Vector2i(4, 10): 2,
-Vector2i(5, 4): 3,
-Vector2i(6, 4): 3,
-Vector2i(6, 8): 3,
-Vector2i(7, 8): 3,
 Vector2i(9, 2): 2,
 Vector2i(10, 2): 2
 }
@@ -764,10 +752,10 @@ Vector2i(5, 3): {
 "walkable": true
 },
 Vector2i(5, 4): {
-"ai_danger_weight": 3.0,
+"ai_danger_weight": 0.0,
 "movement_cost": 1,
 "projectile_passable": true,
-"terrain_id": &"lava",
+"terrain_id": &"stone",
 "transparent": true,
 "walkable": true
 },
@@ -844,10 +832,10 @@ Vector2i(6, 3): {
 "walkable": true
 },
 Vector2i(6, 4): {
-"ai_danger_weight": 3.0,
+"ai_danger_weight": 0.0,
 "movement_cost": 1,
 "projectile_passable": true,
-"terrain_id": &"lava",
+"terrain_id": &"stone",
 "transparent": true,
 "walkable": true
 },
@@ -876,10 +864,10 @@ Vector2i(6, 7): {
 "walkable": true
 },
 Vector2i(6, 8): {
-"ai_danger_weight": 3.0,
+"ai_danger_weight": 0.0,
 "movement_cost": 1,
 "projectile_passable": true,
-"terrain_id": &"lava",
+"terrain_id": &"stone",
 "transparent": true,
 "walkable": true
 },
@@ -980,10 +968,10 @@ Vector2i(7, 7): {
 "walkable": true
 },
 Vector2i(7, 8): {
-"ai_danger_weight": 3.0,
+"ai_danger_weight": 0.0,
 "movement_cost": 1,
 "projectile_passable": true,
-"terrain_id": &"lava",
+"terrain_id": &"stone",
 "transparent": true,
 "walkable": true
 },
@@ -1229,12 +1217,12 @@ Vector2i(13, 4): {
 }
 }
 
-[sub_resource type="Resource" id="Resource_1lc2j"]
+[sub_resource type="Resource" id="Resource_lhv1p"]
 script = ExtResource("15_ibcui")
 theme_id = &"forest"
 hybrid_floor_policy = 2
 
-[sub_resource type="Resource" id="Resource_3wtwq"]
+[sub_resource type="Resource" id="Resource_gia4o"]
 script = ExtResource("17_4vvkj")
 obstacle_id = &"pillar_9_2"
 cell = Vector2i(9, 2)
@@ -1242,7 +1230,7 @@ preset = 1
 blocks_line_of_sight = false
 blocks_projectiles = false
 
-[sub_resource type="Resource" id="Resource_s0haw"]
+[sub_resource type="Resource" id="Resource_qgv4i"]
 script = ExtResource("17_4vvkj")
 obstacle_id = &"pillar_10_2"
 cell = Vector2i(10, 2)
@@ -1250,7 +1238,7 @@ preset = 1
 blocks_line_of_sight = false
 blocks_projectiles = false
 
-[sub_resource type="Resource" id="Resource_swsmh"]
+[sub_resource type="Resource" id="Resource_1ete0"]
 script = ExtResource("17_4vvkj")
 obstacle_id = &"pillar_3_6"
 cell = Vector2i(3, 6)
@@ -1258,7 +1246,7 @@ preset = 1
 blocks_line_of_sight = false
 blocks_projectiles = false
 
-[sub_resource type="Resource" id="Resource_kmvgr"]
+[sub_resource type="Resource" id="Resource_rnc68"]
 script = ExtResource("17_4vvkj")
 obstacle_id = &"pillar_4_6"
 cell = Vector2i(4, 6)
@@ -1266,7 +1254,7 @@ preset = 1
 blocks_line_of_sight = false
 blocks_projectiles = false
 
-[sub_resource type="Resource" id="Resource_qqxax"]
+[sub_resource type="Resource" id="Resource_kfpn8"]
 script = ExtResource("17_4vvkj")
 obstacle_id = &"pillar_3_10"
 cell = Vector2i(3, 10)
@@ -1274,7 +1262,7 @@ preset = 1
 blocks_line_of_sight = false
 blocks_projectiles = false
 
-[sub_resource type="Resource" id="Resource_ffpxx"]
+[sub_resource type="Resource" id="Resource_rn3qf"]
 script = ExtResource("17_4vvkj")
 obstacle_id = &"pillar_4_10"
 cell = Vector2i(4, 10)
@@ -1282,66 +1270,55 @@ preset = 1
 blocks_line_of_sight = false
 blocks_projectiles = false
 
-[sub_resource type="Resource" id="Resource_0lmbj"]
+[sub_resource type="Resource" id="Resource_5f6mh"]
 script = ExtResource("19_02ic4")
 map_id = &"route_260dc8ac79d8"
 debug_name = "Les duellistes du gué"
 background_texture_path = "res://data/rooms/catabase_expansion/braises/grid_reference.png"
-foreground_texture_path = ""
-occlusion_mask_path = ""
 source_image_size = Vector2i(1920, 1200)
 logical_grid_size = Vector2i(15, 13)
 grid_origin = Vector2(960, 220)
 axis_x = Vector2(51.6, 25.8)
 axis_y = Vector2(-51.6, 25.8)
-image_offset = Vector2(0, 0)
-image_scale = Vector2(1, 1)
-camera_offset = Vector2(0, 0)
-camera_zoom = 1.0
-crop_rect = Rect2(0, 0, 0, 0)
 presentation_profile = ExtResource("18_23p0l")
-foreground_offset = Vector2(0, 0)
-foreground_scale = Vector2(1, 1)
 foreground_occluder_polygon = PackedVector2Array()
-foreground_occluder_sort_y = 0.0
-foreground_full_hide_rect = Rect2(0, 0, 0, 0)
 calibration_cells = Array[Vector2i]([Vector2i(7, 0), Vector2i(4, 6), Vector2i(8, 12)])
 calibration_pixels = Array[Vector2]([Vector2(1321.2, 400.59998), Vector2(856.80005, 478), Vector2(753.6001, 736)])
 
-[sub_resource type="Resource" id="Resource_rqo7o"]
+[sub_resource type="Resource" id="Resource_7ohoe"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"E_11_2"
 cell = Vector2i(11, 2)
 
-[sub_resource type="Resource" id="Resource_u243y"]
+[sub_resource type="Resource" id="Resource_gx5pc"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"E_10_4"
 cell = Vector2i(10, 4)
 
-[sub_resource type="Resource" id="Resource_xs8qd"]
+[sub_resource type="Resource" id="Resource_64wuy"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"E_5_5"
 cell = Vector2i(5, 5)
 
-[sub_resource type="Resource" id="Resource_8gwea"]
+[sub_resource type="Resource" id="Resource_xskwp"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"H_4_11"
 kind = 0
 cell = Vector2i(4, 11)
 
-[sub_resource type="Resource" id="Resource_c4p34"]
+[sub_resource type="Resource" id="Resource_x7dg2"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"H_5_11"
 kind = 0
 cell = Vector2i(5, 11)
 
-[sub_resource type="Resource" id="Resource_qrifg"]
+[sub_resource type="Resource" id="Resource_uuety"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"H_4_12"
 kind = 0
 cell = Vector2i(4, 12)
 
-[sub_resource type="Resource" id="Resource_bnvui"]
+[sub_resource type="Resource" id="Resource_lm0jd"]
 script = ExtResource("21_7gjhg")
 spawn_id = &"H_5_12"
 kind = 0
@@ -1349,12 +1326,11 @@ cell = Vector2i(5, 12)
 
 [resource]
 script = ExtResource("20_by5ry")
-schema_version = 3
 arena_id = &"route_260dc8ac79d8"
 display_name = "Les duellistes du gué"
 visual_mode = 2
 theme_id = &"forest"
-modular_visual_profile = SubResource("Resource_1lc2j")
+modular_visual_profile = SubResource("Resource_lhv1p")
 background_path = "res://data/rooms/catabase_expansion/braises/grid_reference.png"
 registered_terrain_plan_path = "res://data/rooms/catabase_routes/route_260dc8ac79d8/terrain_plan.json"
 source_image_size = Vector2i(1920, 1200)
@@ -1362,42 +1338,22 @@ grid_size = Vector2i(15, 13)
 grid_origin = Vector2(960, 220)
 axis_x = Vector2(51.6, 25.8)
 axis_y = Vector2(-51.6, 25.8)
-image_offset = Vector2(0, 0)
-image_scale = Vector2(1, 1)
-foreground_path = ""
-occlusion_mask_path = ""
-foreground_offset = Vector2(0, 0)
-foreground_scale = Vector2(1, 1)
 foreground_occluder_polygon = PackedVector2Array()
-foreground_occluder_sort_y = 0.0
-foreground_full_hide_rect = Rect2(0, 0, 0, 0)
-camera_offset = Vector2(0, 0)
-camera_zoom = 1.0
-camp_orientation = 0
-border_thickness = 1
-cells = Array[ExtResource("7_yui2g")]([SubResource("Resource_nyhcj"), SubResource("Resource_nee66"), SubResource("Resource_k026b"), SubResource("Resource_nsxi2"), SubResource("Resource_aram2"), SubResource("Resource_8lije"), SubResource("Resource_brv4i"), SubResource("Resource_eiovg"), SubResource("Resource_gdnsm"), SubResource("Resource_is0d1"), SubResource("Resource_43x7w"), SubResource("Resource_fhtyj"), SubResource("Resource_yhhkx"), SubResource("Resource_r314e"), SubResource("Resource_2geoq"), SubResource("Resource_w7yue"), SubResource("Resource_mc8se"), SubResource("Resource_hl2jp"), SubResource("Resource_uiup3"), SubResource("Resource_v0fcs"), SubResource("Resource_ik6u3"), SubResource("Resource_m0sjm"), SubResource("Resource_rwl5c"), SubResource("Resource_8tw5l"), SubResource("Resource_1tenr"), SubResource("Resource_kvqj0"), SubResource("Resource_ral5k"), SubResource("Resource_ys7y3"), SubResource("Resource_smcp2"), SubResource("Resource_eoouk"), SubResource("Resource_ea1pv"), SubResource("Resource_v6n5v"), SubResource("Resource_j5url"), SubResource("Resource_i8qdw"), SubResource("Resource_cagw5"), SubResource("Resource_owk51"), SubResource("Resource_103f1"), SubResource("Resource_yk2p0"), SubResource("Resource_fkhxq"), SubResource("Resource_as1p0"), SubResource("Resource_0ornb"), SubResource("Resource_oxudd"), SubResource("Resource_fn0wv"), SubResource("Resource_kldlu"), SubResource("Resource_a5hgo"), SubResource("Resource_7kd72"), SubResource("Resource_okx02"), SubResource("Resource_ksbcp"), SubResource("Resource_ssfwl"), SubResource("Resource_ih3aj"), SubResource("Resource_43gp3"), SubResource("Resource_7y37p"), SubResource("Resource_w20xs"), SubResource("Resource_6i1r1"), SubResource("Resource_np0gn"), SubResource("Resource_quy7x"), SubResource("Resource_eygdy"), SubResource("Resource_ml1cg"), SubResource("Resource_hjnym"), SubResource("Resource_f3ox6"), SubResource("Resource_dhl4k"), SubResource("Resource_m27tc"), SubResource("Resource_c88on"), SubResource("Resource_o25hm"), SubResource("Resource_smrin"), SubResource("Resource_7qi4w"), SubResource("Resource_s4feo"), SubResource("Resource_t1rbr"), SubResource("Resource_1dxjt"), SubResource("Resource_lhv1p"), SubResource("Resource_gia4o"), SubResource("Resource_qgv4i"), SubResource("Resource_1ete0"), SubResource("Resource_rnc68"), SubResource("Resource_kfpn8"), SubResource("Resource_rn3qf"), SubResource("Resource_5f6mh"), SubResource("Resource_7ohoe"), SubResource("Resource_gx5pc"), SubResource("Resource_64wuy"), SubResource("Resource_xskwp"), SubResource("Resource_x7dg2"), SubResource("Resource_uuety"), SubResource("Resource_lm0jd"), SubResource("Resource_fo6rx")])
-obstacles = Array[ExtResource("17_4vvkj")]([SubResource("Resource_3wtwq"), SubResource("Resource_s0haw"), SubResource("Resource_swsmh"), SubResource("Resource_kmvgr"), SubResource("Resource_qqxax"), SubResource("Resource_ffpxx")])
-spawns = Array[ExtResource("21_7gjhg")]([SubResource("Resource_rqo7o"), SubResource("Resource_u243y"), SubResource("Resource_xs8qd"), SubResource("Resource_8gwea"), SubResource("Resource_c4p34"), SubResource("Resource_qrifg"), SubResource("Resource_bnvui")])
-objectives = Array[ExtResource("16_2yao2")]([])
-decorations = Array[ExtResource("8_u1qob")]([SubResource("Resource_1b4pu"), SubResource("Resource_amuxd"), SubResource("Resource_hulpi"), SubResource("Resource_oaijx"), SubResource("Resource_7hejt"), SubResource("Resource_rlo6q")])
-vortex_pairs = Array[ExtResource("23_guus4")]([])
-vortex_networks = Array[ExtResource("22_rcr06")]([])
+cells = Array[ExtResource("7_yui2g")]([SubResource("Resource_ujvqi"), SubResource("Resource_xlqka"), SubResource("Resource_6avr8"), SubResource("Resource_kljn8"), SubResource("Resource_nyhbp"), SubResource("Resource_yui2g"), SubResource("Resource_u1qob"), SubResource("Resource_4qbby"), SubResource("Resource_f5iqp"), SubResource("Resource_j3uoc"), SubResource("Resource_ektyw"), SubResource("Resource_x8rm8"), SubResource("Resource_t4acw"), SubResource("Resource_ibcui"), SubResource("Resource_2yao2"), SubResource("Resource_4vvkj"), SubResource("Resource_23p0l"), SubResource("Resource_02ic4"), SubResource("Resource_by5ry"), SubResource("Resource_7gjhg"), SubResource("Resource_rcr06"), SubResource("Resource_guus4"), SubResource("Resource_hacrw"), SubResource("Resource_li4af"), SubResource("Resource_nyhcj"), SubResource("Resource_nee66"), SubResource("Resource_k026b"), SubResource("Resource_nsxi2"), SubResource("Resource_aram2"), SubResource("Resource_8lije"), SubResource("Resource_brv4i"), SubResource("Resource_eiovg"), SubResource("Resource_gdnsm"), SubResource("Resource_is0d1"), SubResource("Resource_43x7w"), SubResource("Resource_fhtyj"), SubResource("Resource_yhhkx"), SubResource("Resource_r314e"), SubResource("Resource_2geoq"), SubResource("Resource_w7yue"), SubResource("Resource_mc8se"), SubResource("Resource_hl2jp"), SubResource("Resource_uiup3"), SubResource("Resource_v0fcs"), SubResource("Resource_ik6u3"), SubResource("Resource_m0sjm"), SubResource("Resource_rwl5c"), SubResource("Resource_8tw5l"), SubResource("Resource_1tenr"), SubResource("Resource_kvqj0"), SubResource("Resource_ral5k"), SubResource("Resource_ys7y3"), SubResource("Resource_smcp2"), SubResource("Resource_eoouk"), SubResource("Resource_ea1pv"), SubResource("Resource_v6n5v"), SubResource("Resource_j5url"), SubResource("Resource_i8qdw"), SubResource("Resource_cagw5"), SubResource("Resource_owk51"), SubResource("Resource_103f1"), SubResource("Resource_yk2p0"), SubResource("Resource_fkhxq"), SubResource("Resource_as1p0"), SubResource("Resource_0ornb"), SubResource("Resource_oxudd"), SubResource("Resource_fn0wv"), SubResource("Resource_kldlu"), SubResource("Resource_a5hgo"), SubResource("Resource_7kd72"), SubResource("Resource_okx02"), SubResource("Resource_ksbcp"), SubResource("Resource_ssfwl"), SubResource("Resource_ih3aj"), SubResource("Resource_43gp3"), SubResource("Resource_7y37p"), SubResource("Resource_w20xs"), SubResource("Resource_6i1r1"), SubResource("Resource_np0gn"), SubResource("Resource_quy7x"), SubResource("Resource_eygdy"), SubResource("Resource_ml1cg"), SubResource("Resource_hjnym"), SubResource("Resource_f3ox6"), SubResource("Resource_dhl4k")])
+obstacles = Array[ExtResource("17_4vvkj")]([SubResource("Resource_gia4o"), SubResource("Resource_qgv4i"), SubResource("Resource_1ete0"), SubResource("Resource_rnc68"), SubResource("Resource_kfpn8"), SubResource("Resource_rn3qf")])
+spawns = Array[ExtResource("21_7gjhg")]([SubResource("Resource_7ohoe"), SubResource("Resource_gx5pc"), SubResource("Resource_64wuy"), SubResource("Resource_xskwp"), SubResource("Resource_x7dg2"), SubResource("Resource_uuety"), SubResource("Resource_lm0jd")])
+decorations = Array[ExtResource("8_u1qob")]([SubResource("Resource_m27tc"), SubResource("Resource_c88on"), SubResource("Resource_o25hm"), SubResource("Resource_smrin"), SubResource("Resource_7qi4w"), SubResource("Resource_s4feo")])
 calibration_cells = Array[Vector2i]([Vector2i(7, 0), Vector2i(4, 6), Vector2i(8, 12)])
 calibration_pixels = Array[Vector2]([Vector2(1321.2, 400.59998), Vector2(856.80005, 478), Vector2(753.6001, 736)])
 presentation_profile_path = "res://data/rooms/catabase_expansion/presentation.tres"
 source_room_path = "res://data/rooms/catabase_routes/route_260dc8ac79d8/room.tres"
-source_visual_path = ""
-intentionally_isolated_cells = Array[Vector2i]([])
 production_notes = "Disposition de trajet : Les duellistes du gué. Décor et adversaires conservés."
 room_name = "Les duellistes du gué"
 battle_scene = ExtResource("6_nyhbp")
-arena_visual_profile = SubResource("Resource_li4af")
-grid_layout = SubResource("Resource_xieb8")
-painted_map_visual_data = SubResource("Resource_0lmbj")
-encounter_definition = SubResource("Resource_n8bou")
-waves = Array[ExtResource("24_hacrw")]([])
-minimum_wave_count = 1
-maximum_wave_count = 1
+arena_visual_profile = SubResource("Resource_4uec2")
+grid_layout = SubResource("Resource_1dxjt")
+painted_map_visual_data = SubResource("Resource_5f6mh")
+encounter_definition = SubResource("Resource_t1rbr")
 ultimate_reward_base_chance = 0
 ultimate_reward_min_gain_per_wave = 0
 ultimate_reward_max_gain_per_wave = 0

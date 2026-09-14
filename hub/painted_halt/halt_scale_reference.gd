@@ -3,8 +3,8 @@
 extends RefCounted
 
 ## One standing pose and foot anchor for authoring and runtime calibration.
-## Height is measured from the ground to the top of idle_S, including its spear and plume.
-const PROFILE := preload("res://data/visuals/achilles/achilles_kit_sprite_profile_v2.tres")
+## Height is measured from the ground to the top of idle_S, including its helmet plume.
+const PROFILE := preload("res://data/visuals/achilles/achilles_autosprite_profile_v1.tres")
 static var _texture: Texture2D
 static var _height := 0.0
 

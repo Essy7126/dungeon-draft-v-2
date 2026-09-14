@@ -1,0 +1,10 @@
+Edit this original Passe-rive cutout atlas to create the SAME sixteen animation pieces seen from the OPPOSITE FRONT THREE-QUARTER angle. This is a new real view of the same character facing SCREEN LOWER-LEFT in an isometric game, 25 degree downward camera. No weapons.
+Keep all sixteen cells and pieces in their existing order, equal sizes, consistent exact costume, same mature slender anatomy, dark petrol / jade / ivory / bronze, same broad cel shading. Keep the original piece silhouettes and vertical joint orientations wherever possible. Do not assemble a character or add any extra item.
+Change head mask and hood to face left, all feet/toes to face lower-left; redraw the chest/hip drape from this angle. The brooch remains on his ANATOMICAL RIGHT chest (viewer's LEFT chest in either frontal angle), now partly farther away, NOT swapped to the other shoulder. Ivory waist sash remains on anatomical right. The dark asymmetric mask scar remains anatomically correct. This must NOT be a simple mirrored whole sheet.
+Rows remain:
+1 hooded head, torso/scarf/brooch without limbs, compact pelvis/ivory belt, long jade cape tail.
+2 right upper arm, right forearm/bronze cuff/gloved hand, left upper arm, left forearm/bronze cuff/gloved hand.
+3 right thigh, right shin, right flat sandal, right toe-raised sandal.
+4 left thigh, left shin, left flat sandal, ivory hanging sash.
+Show hidden overlapping joint ends. The right limbs are now the farther side, the left limbs the nearer side. All feet must clearly face lower-left, same view as face.
+Real TRANSPARENT ALPHA background, no painted checkerboard, no labels, no lines, no shadows on the background. If alpha unsupported use flat pure white, never draw a checkerboard.

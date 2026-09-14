@@ -59,6 +59,7 @@ func _init() -> void:
 	_create_doctrine_roots()
 	_create_nodes()
 	_create_serments()
+	preload("res://core/expedition/catabase_first_six_spells.gd").populate(self)
 	var tempest := _copy("achilles_peleid_strike", "tempest", "Tempête du Péléide",
 		"4 PA · Autour de soi, croix de 1 case · 70 % Prouesse physique à chaque ennemi adjacent. Une utilisation par activation. Forme exclusive de Frappe.")
 	_self_area(tempest)
@@ -69,6 +70,15 @@ func _init() -> void:
 		if projectile != null:
 			projectile.impact_delay_seconds = 0.2
 	_apply_painted_icons()
+	for id in spells:
+		var presented := (spells[id] as Spell).duplicate(false) as Spell
+		var first_six: Dictionary = preload("res://core/expedition/catabase_first_six_spells.gd").PRESENTATION
+		var family := get_spell_family(String(id))
+		if first_six.has(family):
+			presented.icon = CatabasePaintedIconCatalog.spell_icon(first_six[family][0])
+		presented.modifiers = presented.modifiers.duplicate()
+		presented.modifiers.append(CatabaseCombatModifier.new())
+		spells[id] = presented
 
 
 func axes() -> Dictionary:
@@ -154,6 +164,15 @@ func all_spells() -> Array[Spell]:
 
 func get_action_classifications() -> Array[CombatActionClassificationData]:
 	var result: Array[CombatActionClassificationData] = []
+	var first_six: Dictionary = preload("res://core/expedition/catabase_first_six_spells.gd").PRESENTATION
+	for id in spells:
+		var family := get_spell_family(String(id))
+		if not first_six.has(family): continue
+		var entry := CombatActionClassificationData.new()
+		entry.ability_id = StringName(id)
+		entry.classification = first_six[family][1]
+		if String(id).begins_with("exp_ct_masse_b"): entry.classification = CombatActionClassificationData.Classification.AREA
+		result.append(entry)
 	for kind in ACTION_IDS:
 		for id in ACTION_IDS[kind]:
 			var entry := CombatActionClassificationData.new()

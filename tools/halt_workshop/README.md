@@ -139,12 +139,28 @@ monumentaux. Trois contrôles sont nécessaires :
 | `cascades` | Polygones du flux, point d'impact et largeur de projection en pixels source |
 | `torches` | Centre et rayons normalisés ; maximum 12, scintillement indépendant |
 | `foliage`, `bounce` | Feuillage oscillant et surfaces de pierre recevant les reflets mobiles |
+| `foliage_motion` | Objet facultatif : `strength` et `speed`, nombres finis de 0 à 4, défaut 1 |
 | `mist` | Rectangles normalisés `[x,y,largeur,hauteur]`, teinte et opacité de la brume |
 | `foreground` | Découpes et ancrages de profondeur pour masquer Achille derrière le décor |
 | `ambience` | Sources d’eau ou de feu localisées et pas de pierre ; pause et bouton Son |
 | `review` | Destinations interdites et échantillons de matières utilisés par les contrôles de rendu |
 
 Le masque `materials.png` contient **R=eau, G=cascades, B=feuillage, A=reflets sur pierre**. Son alpha est une donnée ; `process/fix_alpha_border=false` est indispensable. L'original n'est jamais repeint par l'outil de préparation. Le runtime refuse une source, un manifeste ou un masque dont l'empreinte diffère du `build.json`.
+
+Pour une lanterne fermée, définir `torches[].enclosed: true`, placer le centre
+sur le vitrage lumineux et limiter les rayons au verre. Ce mode anime la
+luminance et le halo sans déformer la cage métallique. `flame_strength` règle
+le foyer, `light_strength` le halo et `steady_light` son apport constant.
+Supprimer les braises avec `ember_count: 0` et réduire `smoke_strength` selon
+le combustible. Une torche ouverte conserve le mode historique (`enclosed`
+absent ou faux). Studio et jeu transmettent les mêmes réglages.
+
+Tracer séparément rideaux de feuilles et touffes de roseaux, en excluant
+tronc, rochers et lanternes. Vérifier plusieurs zones à plusieurs instants :
+un seul pixel mobile ne prouve pas que la végétation entière est animée.
+L'exemple `tools/stele_names_review/verify_motion.ps1` mesure les trois vitrages,
+sept groupes végétaux et des témoins fixes en 720p/1080p, puis produit des
+planches temporelles à inspecter.
 
 Les courants de `flow.png` encodent la direction dans RG, la vitesse divisée par
 4 dans B et la couverture d’eau dans A. Le hachage du manifeste normalise UTF-8

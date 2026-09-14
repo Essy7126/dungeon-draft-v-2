@@ -1,0 +1,18 @@
+{
+  "model": "hf_mult_motion_control",
+  "resolution": "720p",
+  "source_duration_seconds": 4.8,
+  "source_fps": 30,
+  "source_size": [
+    640,
+    960
+  ],
+  "source_cycle_seconds": 1.2,
+  "inputs": {
+    "image": "reference.png",
+    "video": "motion_4cycles.mp4"
+  },
+  "scope": "Only E walk. Compare against source for left/right identity, foot contact, spear integrity, mask and costume stability, and cycle closure. Do not approve from a smooth video alone.",
+  "submission_status": "NOT_SUBMITTED",
+  "free_attempt": "One available; tool requires explicit user choice to spend it."
+}

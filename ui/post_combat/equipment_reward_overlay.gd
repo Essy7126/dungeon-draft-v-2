@@ -5,9 +5,6 @@ signal selection_changed(item_id: StringName)
 signal confirmation_requested(item_id: StringName)
 signal confirmation_finished
 
-const REVEAL_SFX := preload(
-	"res://asset/bruitage sort/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3"
-)
 const CARD_ASPECT := 0.535
 
 @export var reduced_motion := false
@@ -76,7 +73,7 @@ func present(options: Array[Dictionary], use_reduced_motion: bool = false) -> bo
 	call_deferred("_configure_focus")
 	for index in _cards.size():
 		_cards[index].play_entrance(0.0 if reduced_motion else float(index) * 0.09)
-	AudioManager.play_sfx(REVEAL_SFX, -11.0)
+	AudioManager.play_feedback(&"open")
 	return true
 
 
@@ -113,7 +110,7 @@ func select_item_by_id(item_id: StringName, focus_card: bool = false) -> bool:
 	if focus_card:
 		_cards[selected_index].grab_card_focus()
 	selection_changed.emit(item_id)
-	AudioManager.play_sfx(REVEAL_SFX, -16.0)
+	AudioManager.play_feedback(&"select")
 	return true
 
 
@@ -139,7 +136,7 @@ func resolve_confirmation(success: bool, error_message: String = "") -> void:
 		)
 		for card in _cards:
 			card.play_confirmation(card.item_id == _selected_item_id)
-		AudioManager.play_sfx(REVEAL_SFX, -7.0)
+		AudioManager.play_feedback(&"reward")
 		_finish_confirmation_after_delay()
 		return
 	_locked = false

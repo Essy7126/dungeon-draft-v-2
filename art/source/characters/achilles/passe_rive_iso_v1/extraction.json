@@ -1,0 +1,1362 @@
+{
+  "strike_N": {
+    "sheet": "strike_directions.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_N/00.png",
+        "box": [
+          430,
+          59,
+          681,
+          358
+        ],
+        "bounds": [
+          6,
+          7,
+          244,
+          292
+        ],
+        "head_y": 15,
+        "anchor": [
+          126.0,
+          291
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_N/01.png",
+        "box": [
+          413,
+          413,
+          726,
+          701
+        ],
+        "bounds": [
+          7,
+          7,
+          307,
+          282
+        ],
+        "head_y": 15,
+        "anchor": [
+          135.0,
+          281
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_N/02.png",
+        "box": [
+          430,
+          745,
+          699,
+          1030
+        ],
+        "bounds": [
+          7,
+          7,
+          263,
+          278
+        ],
+        "head_y": 14,
+        "anchor": [
+          126.5,
+          277
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_N/03.png",
+        "box": [
+          442,
+          1062,
+          694,
+          1403
+        ],
+        "bounds": [
+          7,
+          6,
+          245,
+          334
+        ],
+        "head_y": 19,
+        "anchor": [
+          112.0,
+          333
+        ]
+      }
+    ]
+  },
+  "strike_W": {
+    "sheet": "strike_directions.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_W/00.png",
+        "box": [
+          783,
+          52,
+          1026,
+          358
+        ],
+        "bounds": [
+          7,
+          7,
+          237,
+          300
+        ],
+        "head_y": 14,
+        "anchor": [
+          121.5,
+          299
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_W/01.png",
+        "box": [
+          749,
+          411,
+          1052,
+          708
+        ],
+        "bounds": [
+          7,
+          7,
+          296,
+          290
+        ],
+        "head_y": 15,
+        "anchor": [
+          186.0,
+          289
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_W/02.png",
+        "box": [
+          749,
+          755,
+          1032,
+          1024
+        ],
+        "bounds": [
+          6,
+          7,
+          276,
+          262
+        ],
+        "head_y": 14,
+        "anchor": [
+          166.0,
+          261
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_W/03.png",
+        "box": [
+          779,
+          1053,
+          1026,
+          1405
+        ],
+        "bounds": [
+          7,
+          7,
+          241,
+          345
+        ],
+        "head_y": 26,
+        "anchor": [
+          136.0,
+          344
+        ]
+      }
+    ]
+  },
+  "strike_S": {
+    "sheet": "strike_S.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_S/00.png",
+        "box": [
+          45,
+          101,
+          528,
+          564
+        ],
+        "bounds": [
+          7,
+          6,
+          476,
+          457
+        ],
+        "head_y": 14,
+        "anchor": [
+          272.5,
+          456
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_S/01.png",
+        "box": [
+          547,
+          123,
+          1233,
+          565
+        ],
+        "bounds": [
+          7,
+          7,
+          679,
+          435
+        ],
+        "head_y": 16,
+        "anchor": [
+          446.0,
+          434
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_S/02.png",
+        "box": [
+          37,
+          711,
+          580,
+          1135
+        ],
+        "bounds": [
+          7,
+          6,
+          537,
+          417
+        ],
+        "head_y": 15,
+        "anchor": [
+          318.5,
+          416
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/strike_S/03.png",
+        "box": [
+          682,
+          643,
+          1182,
+          1145
+        ],
+        "bounds": [
+          7,
+          7,
+          494,
+          495
+        ],
+        "head_y": 16,
+        "anchor": [
+          292.5,
+          494
+        ]
+      }
+    ]
+  },
+  "dash_N": {
+    "sheet": "dash_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_N/00.png",
+        "box": [
+          47,
+          63,
+          493,
+          396
+        ],
+        "bounds": [
+          6,
+          7,
+          439,
+          327
+        ],
+        "head_y": 20,
+        "anchor": [
+          177.5,
+          326
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_N/01.png",
+        "box": [
+          88,
+          404,
+          505,
+          743
+        ],
+        "bounds": [
+          7,
+          7,
+          411,
+          332
+        ],
+        "head_y": 25,
+        "anchor": [
+          37.0,
+          331
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_N/02.png",
+        "box": [
+          97,
+          778,
+          501,
+          1092
+        ],
+        "bounds": [
+          6,
+          7,
+          397,
+          308
+        ],
+        "head_y": 17,
+        "anchor": [
+          138.0,
+          307
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_N/03.png",
+        "box": [
+          147,
+          1090,
+          471,
+          1474
+        ],
+        "bounds": [
+          6,
+          6,
+          318,
+          377
+        ],
+        "head_y": 31,
+        "anchor": [
+          126.0,
+          376
+        ]
+      }
+    ]
+  },
+  "dash_W": {
+    "sheet": "dash_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_W/00.png",
+        "box": [
+          530,
+          64,
+          989,
+          396
+        ],
+        "bounds": [
+          6,
+          6,
+          453,
+          326
+        ],
+        "head_y": 16,
+        "anchor": [
+          260.0,
+          325
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_W/01.png",
+        "box": [
+          526,
+          409,
+          969,
+          756
+        ],
+        "bounds": [
+          6,
+          7,
+          437,
+          341
+        ],
+        "head_y": 19,
+        "anchor": [
+          372.0,
+          340
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_W/02.png",
+        "box": [
+          523,
+          780,
+          930,
+          1095
+        ],
+        "bounds": [
+          6,
+          6,
+          401,
+          309
+        ],
+        "head_y": 15,
+        "anchor": [
+          264.5,
+          308
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/dash_W/03.png",
+        "box": [
+          551,
+          1090,
+          876,
+          1472
+        ],
+        "bounds": [
+          6,
+          6,
+          318,
+          376
+        ],
+        "head_y": 30,
+        "anchor": [
+          198.0,
+          375
+        ]
+      }
+    ]
+  },
+  "shot_N": {
+    "sheet": "shot_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_N/00.png",
+        "box": [
+          163,
+          18,
+          464,
+          405
+        ],
+        "bounds": [
+          7,
+          6,
+          295,
+          380
+        ],
+        "head_y": 20,
+        "anchor": [
+          123.0,
+          379
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_N/01.png",
+        "box": [
+          181,
+          395,
+          478,
+          785
+        ],
+        "bounds": [
+          6,
+          6,
+          291,
+          384
+        ],
+        "head_y": 16,
+        "anchor": [
+          80.0,
+          383
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_N/02.png",
+        "box": [
+          104,
+          751,
+          502,
+          1128
+        ],
+        "bounds": [
+          6,
+          6,
+          392,
+          371
+        ],
+        "head_y": 30,
+        "anchor": [
+          113.5,
+          370
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_N/03.png",
+        "box": [
+          90,
+          1153,
+          477,
+          1459
+        ],
+        "bounds": [
+          7,
+          7,
+          380,
+          299
+        ],
+        "head_y": 15,
+        "anchor": [
+          193.0,
+          298
+        ]
+      }
+    ]
+  },
+  "shot_W": {
+    "sheet": "shot_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_W/00.png",
+        "box": [
+          580,
+          17,
+          866,
+          405
+        ],
+        "bounds": [
+          6,
+          6,
+          279,
+          381
+        ],
+        "head_y": 20,
+        "anchor": [
+          145.5,
+          380
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_W/01.png",
+        "box": [
+          582,
+          395,
+          875,
+          802
+        ],
+        "bounds": [
+          6,
+          6,
+          287,
+          400
+        ],
+        "head_y": 20,
+        "anchor": [
+          185.5,
+          399
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_W/02.png",
+        "box": [
+          543,
+          754,
+          916,
+          1149
+        ],
+        "bounds": [
+          6,
+          6,
+          367,
+          389
+        ],
+        "head_y": 29,
+        "anchor": [
+          253.0,
+          388
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_W/03.png",
+        "box": [
+          526,
+          1158,
+          928,
+          1459
+        ],
+        "bounds": [
+          7,
+          7,
+          396,
+          294
+        ],
+        "head_y": 15,
+        "anchor": [
+          270.5,
+          293
+        ]
+      }
+    ]
+  },
+  "guard_N": {
+    "sheet": "guard_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_N/00.png",
+        "box": [
+          166,
+          3,
+          375,
+          433
+        ],
+        "bounds": [
+          6,
+          6,
+          203,
+          423
+        ],
+        "head_y": 82,
+        "anchor": [
+          108.5,
+          422
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_N/01.png",
+        "box": [
+          158,
+          400,
+          407,
+          792
+        ],
+        "bounds": [
+          6,
+          7,
+          243,
+          385
+        ],
+        "head_y": 86,
+        "anchor": [
+          124.0,
+          384
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_N/02.png",
+        "box": [
+          132,
+          789,
+          384,
+          1110
+        ],
+        "bounds": [
+          6,
+          7,
+          246,
+          315
+        ],
+        "head_y": 73,
+        "anchor": [
+          122.5,
+          314
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_N/03.png",
+        "box": [
+          113,
+          1110,
+          425,
+          1496
+        ],
+        "bounds": [
+          7,
+          6,
+          306,
+          380
+        ],
+        "head_y": 79,
+        "anchor": [
+          143.0,
+          379
+        ]
+      }
+    ]
+  },
+  "guard_W": {
+    "sheet": "guard_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_W/00.png",
+        "box": [
+          651,
+          3,
+          859,
+          433
+        ],
+        "bounds": [
+          7,
+          7,
+          201,
+          423
+        ],
+        "head_y": 55,
+        "anchor": [
+          99.0,
+          422
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_W/01.png",
+        "box": [
+          616,
+          401,
+          867,
+          793
+        ],
+        "bounds": [
+          6,
+          6,
+          244,
+          385
+        ],
+        "head_y": 86,
+        "anchor": [
+          124.5,
+          384
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_W/02.png",
+        "box": [
+          650,
+          790,
+          893,
+          1110
+        ],
+        "bounds": [
+          7,
+          6,
+          237,
+          313
+        ],
+        "head_y": 72,
+        "anchor": [
+          121.0,
+          312
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_W/03.png",
+        "box": [
+          599,
+          1108,
+          910,
+          1496
+        ],
+        "bounds": [
+          7,
+          6,
+          305,
+          382
+        ],
+        "head_y": 80,
+        "anchor": [
+          168.0,
+          381
+        ]
+      }
+    ]
+  },
+  "sweep_N": {
+    "sheet": "sweep_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_N/00.png",
+        "box": [
+          120,
+          6,
+          428,
+          397
+        ],
+        "bounds": [
+          6,
+          6,
+          302,
+          385
+        ],
+        "head_y": 25,
+        "anchor": [
+          153.0,
+          384
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_N/01.png",
+        "box": [
+          81,
+          437,
+          507,
+          753
+        ],
+        "bounds": [
+          6,
+          6,
+          420,
+          309
+        ],
+        "head_y": 15,
+        "anchor": [
+          160.0,
+          308
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_N/02.png",
+        "box": [
+          88,
+          807,
+          472,
+          1103
+        ],
+        "bounds": [
+          6,
+          6,
+          378,
+          289
+        ],
+        "head_y": 14,
+        "anchor": [
+          191.0,
+          288
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_N/03.png",
+        "box": [
+          92,
+          1136,
+          463,
+          1478
+        ],
+        "bounds": [
+          6,
+          6,
+          364,
+          336
+        ],
+        "head_y": 17,
+        "anchor": [
+          160.5,
+          335
+        ]
+      }
+    ]
+  },
+  "sweep_W": {
+    "sheet": "sweep_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_W/00.png",
+        "box": [
+          592,
+          6,
+          900,
+          397
+        ],
+        "bounds": [
+          7,
+          7,
+          301,
+          385
+        ],
+        "head_y": 26,
+        "anchor": [
+          153.0,
+          384
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_W/01.png",
+        "box": [
+          516,
+          436,
+          950,
+          753
+        ],
+        "bounds": [
+          6,
+          7,
+          428,
+          311
+        ],
+        "head_y": 15,
+        "anchor": [
+          276.0,
+          310
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_W/02.png",
+        "box": [
+          548,
+          809,
+          950,
+          1103
+        ],
+        "bounds": [
+          6,
+          7,
+          396,
+          287
+        ],
+        "head_y": 15,
+        "anchor": [
+          200.5,
+          286
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/sweep_W/03.png",
+        "box": [
+          565,
+          1135,
+          930,
+          1476
+        ],
+        "bounds": [
+          6,
+          6,
+          359,
+          335
+        ],
+        "head_y": 17,
+        "anchor": [
+          208.5,
+          334
+        ]
+      }
+    ]
+  },
+  "bash_N": {
+    "sheet": "bash_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_N/00.png",
+        "box": [
+          139,
+          16,
+          398,
+          398
+        ],
+        "bounds": [
+          6,
+          7,
+          252,
+          375
+        ],
+        "head_y": 61,
+        "anchor": [
+          113.0,
+          374
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_N/01.png",
+        "box": [
+          52,
+          419,
+          440,
+          754
+        ],
+        "bounds": [
+          6,
+          6,
+          381,
+          328
+        ],
+        "head_y": 14,
+        "anchor": [
+          201.0,
+          327
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_N/02.png",
+        "box": [
+          19,
+          781,
+          499,
+          1087
+        ],
+        "bounds": [
+          6,
+          6,
+          473,
+          300
+        ],
+        "head_y": 21,
+        "anchor": [
+          217.0,
+          299
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_N/03.png",
+        "box": [
+          122,
+          1090,
+          375,
+          1474
+        ],
+        "bounds": [
+          7,
+          6,
+          247,
+          377
+        ],
+        "head_y": 68,
+        "anchor": [
+          116.0,
+          376
+        ]
+      }
+    ]
+  },
+  "bash_W": {
+    "sheet": "bash_back.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_W/00.png",
+        "box": [
+          630,
+          12,
+          893,
+          400
+        ],
+        "bounds": [
+          7,
+          6,
+          257,
+          381
+        ],
+        "head_y": 62,
+        "anchor": [
+          136.5,
+          380
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_W/01.png",
+        "box": [
+          577,
+          424,
+          983,
+          753
+        ],
+        "bounds": [
+          6,
+          6,
+          400,
+          323
+        ],
+        "head_y": 14,
+        "anchor": [
+          184.0,
+          322
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_W/02.png",
+        "box": [
+          526,
+          781,
+          1007,
+          1090
+        ],
+        "bounds": [
+          6,
+          7,
+          475,
+          302
+        ],
+        "head_y": 23,
+        "anchor": [
+          276.5,
+          301
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_W/03.png",
+        "box": [
+          653,
+          1087,
+          922,
+          1481
+        ],
+        "bounds": [
+          7,
+          6,
+          263,
+          387
+        ],
+        "head_y": 69,
+        "anchor": [
+          144.0,
+          386
+        ]
+      }
+    ]
+  },
+  "shot_S": {
+    "sheet": "shot_S.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_S/00.png",
+        "box": [
+          58,
+          48,
+          563,
+          636
+        ],
+        "bounds": [
+          7,
+          7,
+          499,
+          582
+        ],
+        "head_y": 19,
+        "anchor": [
+          311.0,
+          581
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_S/01.png",
+        "box": [
+          661,
+          25,
+          1127,
+          640
+        ],
+        "bounds": [
+          7,
+          6,
+          459,
+          608
+        ],
+        "head_y": 24,
+        "anchor": [
+          238.5,
+          607
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_S/02.png",
+        "box": [
+          24,
+          649,
+          669,
+          1200
+        ],
+        "bounds": [
+          7,
+          6,
+          639,
+          544
+        ],
+        "head_y": 30,
+        "anchor": [
+          421.5,
+          543
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/shot_S/03.png",
+        "box": [
+          695,
+          769,
+          1196,
+          1194
+        ],
+        "bounds": [
+          7,
+          7,
+          494,
+          418
+        ],
+        "head_y": 16,
+        "anchor": [
+          270.5,
+          417
+        ]
+      }
+    ]
+  },
+  "guard_S": {
+    "sheet": "guard_S.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_S/00.png",
+        "box": [
+          193,
+          8,
+          486,
+          639
+        ],
+        "bounds": [
+          6,
+          7,
+          286,
+          625
+        ],
+        "head_y": 56,
+        "anchor": [
+          128.5,
+          624
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_S/01.png",
+        "box": [
+          697,
+          21,
+          1142,
+          622
+        ],
+        "bounds": [
+          7,
+          7,
+          438,
+          594
+        ],
+        "head_y": 101,
+        "anchor": [
+          222.0,
+          593
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_S/02.png",
+        "box": [
+          133,
+          640,
+          579,
+          1197
+        ],
+        "bounds": [
+          6,
+          7,
+          440,
+          550
+        ],
+        "head_y": 149,
+        "anchor": [
+          222.0,
+          549
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/guard_S/03.png",
+        "box": [
+          678,
+          629,
+          1162,
+          1200
+        ],
+        "bounds": [
+          7,
+          6,
+          477,
+          565
+        ],
+        "head_y": 107,
+        "anchor": [
+          241.5,
+          564
+        ]
+      }
+    ]
+  },
+  "bash_S": {
+    "sheet": "bash_S.png",
+    "poses": [
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_S/00.png",
+        "box": [
+          52,
+          86,
+          506,
+          590
+        ],
+        "bounds": [
+          6,
+          6,
+          448,
+          497
+        ],
+        "head_y": 16,
+        "anchor": [
+          278.0,
+          496
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_S/01.png",
+        "box": [
+          595,
+          131,
+          1228,
+          567
+        ],
+        "bounds": [
+          6,
+          7,
+          626,
+          430
+        ],
+        "head_y": 19,
+        "anchor": [
+          341.5,
+          429
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_S/02.png",
+        "box": [
+          27,
+          728,
+          713,
+          1141
+        ],
+        "bounds": [
+          7,
+          7,
+          679,
+          406
+        ],
+        "head_y": 21,
+        "anchor": [
+          391.0,
+          405
+        ]
+      },
+      {
+        "file": "art/source/characters/achilles/passe_rive_iso_v1/matte/bash_S/03.png",
+        "box": [
+          732,
+          654,
+          1186,
+          1186
+        ],
+        "bounds": [
+          6,
+          6,
+          448,
+          525
+        ],
+        "head_y": 34,
+        "anchor": [
+          272.5,
+          524
+        ]
+      }
+    ]
+  }
+}

@@ -35,6 +35,7 @@ func after_each() -> void:
 	await get_tree().process_frame
 	GameManager.cleanup_run_state()
 	GameManager.expedition_save_path = _previous_save_path
+	AudioManager.feedback.stop()
 	GameManager.set_reduced_motion_enabled(_previous_reduced_motion)
 	if FileAccess.file_exists(_save_path):
 		DirAccess.remove_absolute(_save_path)
@@ -46,6 +47,137 @@ func test_guide_does_not_interrupt_the_opening_combat() -> void:
 	assert_eq(GameManager.expedition.route.phase, "combat")
 	assert_eq(FLOW.required_step(GameManager.expedition), "map")
 	assert_eq(GameManager.expedition.build.points, 0)
+
+
+func test_detailed_character_sheet_reports_real_modifiers_and_clamps_without_mutating() -> void:
+	var hero := GameManager.expedition.character.unit
+	hero.attack_power.add_modifier(10, Stat.ModType.FLAT, "equipment_fixture")
+	hero.attack_power.add_modifier(0.25, Stat.ModType.PERCENT, "temporary_fixture", 2)
+	hero.get_resistance(Spell.Element.FIRE).add_modifier(0.9, Stat.ModType.FLAT, "fixture")
+	var count := hero.resistances.size()
+	var modifiers := hero.attack_power.get_modifiers()
+	var rows := preload("res://core/expedition/expedition_character_sheet.gd").rows(hero)
+	assert_eq(rows.size(), 17)
+	for row in rows:
+		if row.id == "attack_power":
+			assert_eq(row.total, str(hero.attack_power.get_int()))
+			assert_string_contains(row.bonus, "+10")
+			assert_string_contains(row.bonus, "25.0 %")
+			assert_string_contains(row.detail, "2 tour(s)")
+		if row.id == "resistance_%d" % Spell.Element.FIRE:
+			assert_eq(row.total, "75.0 %", "Show the actual clamped resistance")
+	assert_eq(hero.resistances.size(), count, "Reading missing elemental stats does not create them")
+	assert_eq(hero.attack_power.get_modifiers(), modifiers)
+
+
+func test_characteristics_menu_is_available_after_combat_and_exposes_recovery() -> void:
+	assert_true(GameManager.expedition.combat_won())
+	var screen := _open_screen()
+	await _settle()
+	var persistent := GameManager.get_persistent_run_ui()
+	assert_true(persistent.open_pause_menu())
+	_press(persistent.pause_menu, "CharactersButton")
+	await _settle()
+	var sheet: Control = persistent.get("_expedition_inspection")
+	assert_not_null(sheet)
+	if sheet == null: return
+	assert_eq(sheet.get("_page"), "attributes")
+	assert_true(sheet.find_child("DetailedCharacterSheet", true, false).is_visible_in_tree())
+	assert_not_null(sheet.find_child("Detailed_resist_magique_total", true, false))
+	assert_false((sheet.find_child("ResumeCharacterProgression", true, false) as Button).disabled)
+	assert_true(persistent.has_active_modal(), "The sheet blocks walking beneath it")
+	_press(sheet, "AllocateAttributes")
+	assert_false((sheet.find_child("Attribute_vitality", true, false) as Button).disabled, "The post-combat sheet allows spending")
+	var previous_points := GameManager.expedition.character.champion_progression.unspent_attribute_points
+	_press(sheet, "Attribute_vitality")
+	assert_eq(GameManager.expedition.character.champion_progression.unspent_attribute_points, previous_points - 1)
+	_press(sheet, "CloseExpeditionScreen")
+	await _settle()
+	assert_false(persistent.has_active_modal())
+	assert_eq(screen.get("_page"), "progression")
+
+
+func test_new_build_level_windows_resume_and_finish_before_loot_and_route() -> void:
+	var session := GameManager.expedition
+	# Use the real preparation transaction before starting the isolated fight.
+	session.initialize(GameManager.get_character_state(&"achilles"), 2401)
+	session.needs_preparation = true
+	assert_true(session.prepare_start(CatabasePreparationCatalog.preset("hampe"), GameManager.run_inventory, GameManager.item_catalog).success)
+	assert_true(session.enter("d01_0"))
+	assert_true(session.combat_won())
+	assert_eq(FLOW.required_step(session), "level_up")
+	var legacy_receipt := session.to_snapshot()
+	legacy_receipt.erase("advancement_step")
+	legacy_receipt.erase("advancement_from_level")
+	assert_true(session.restore_snapshot(legacy_receipt), "Existing first-six reward saves gain the level announcement")
+	assert_eq(FLOW.required_step(session), "level_up")
+	var invalid_receipt := session.to_snapshot()
+	invalid_receipt.advancement_step = "skip"
+	assert_false(session.restore_snapshot(invalid_receipt))
+	assert_eq(FLOW.required_step(session), "level_up")
+	assert_false(session.claim("supplies", GameManager.run_inventory, GameManager.item_catalog).success)
+	assert_false(session.enter("d02_0"))
+	var offers := session.reward_options(GameManager.item_catalog).duplicate(true)
+	var screen := _open_screen()
+	await _settle()
+	assert_not_null(screen.find_child("CatabaseDecisionWindow", true, false))
+	assert_eq(screen.get("_page"), "level_up")
+	_press(screen, "BeginLevelUp")
+	await _settle()
+	assert_eq(screen.get("_page"), "progression")
+	assert_false(GameManager.advance_expedition_level_step().success, "No bypass of unspent attributes")
+	for point in session.character.champion_progression.unspent_attribute_points:
+		_press(screen, "Attribute_vitality")
+		await _settle()
+	_press(screen, "ContinueExpeditionFlow")
+	await _settle()
+	assert_eq(screen.get("_page"), "advancement")
+	session.award_destination()
+	assert_eq(session.advancement_step, "advancement", "Reprocessing a cleared encounter cannot replay the announcement")
+	var saved_points := session.build.points
+	assert_true(GameManager.save_expedition())
+	screen.queue_free()
+	await _settle()
+	assert_true(GameManager.restore_expedition_snapshot(ExpeditionSaveService.read_snapshot(_save_path)))
+	session = GameManager.expedition
+	screen = _open_screen()
+	await _settle()
+	assert_eq(screen.get("_page"), "advancement", "Reopening resumes the remaining window")
+	_press(screen, "OpenLevelSpellTree")
+	await _settle()
+	assert_eq(screen.get("_page"), "build")
+	_press(screen, "CloseExpeditionScreen")
+	await _settle()
+	assert_eq(screen.get("_page"), "advancement")
+	_press(screen, "FinishLevelSpells")
+	await _settle()
+	assert_eq(screen.get("_page"), "rewards")
+	assert_eq(session.build.points, saved_points, "Saving points is a valid choice")
+	assert_eq(session.reward_options(GameManager.item_catalog), offers, "No reward reroll")
+	_press(screen, "RewardOption_0")
+	_press(screen, "ConfirmExpeditionReward")
+	await _settle()
+	assert_eq(screen.get("_page"), "loot_received")
+	_press(screen, "OpenRouteMap")
+	await _settle()
+	assert_eq(screen.get("_page"), "map")
+	assert_eq(session.advancement_step, "")
+	assert_null(screen.find_child("PurchaseTechnique", true, false))
+
+
+func test_twenty_departure_objects_have_distinct_inventory_art() -> void:
+	var paths: Array[String] = []
+	for group in ["weapon", "armor", "relic", "supply"]:
+		var entries: Dictionary = {"weapon": CatabasePreparationCatalog.WEAPONS, "armor": CatabasePreparationCatalog.ARMORS, "relic": CatabasePreparationCatalog.RELICS, "supply": CatabasePreparationCatalog.SUPPLIES}[group]
+		for id in entries:
+			var item_id: String = ("catabase_ct_" if group in ["weapon", "armor"] else "ct_" + str(group) + "_") + str(id)
+			var item := GameManager.item_catalog.get_definition(StringName(item_id))
+			assert_not_null(item)
+			assert_not_null(item.get_inventory_icon())
+			var path := item.get_inventory_icon().resource_path
+			assert_false(path in paths, "Every object must have its own illustration")
+			paths.append(path)
+	assert_eq(paths.size(), 20)
 
 
 func test_attributes_precede_rewards_and_destiny_can_be_saved() -> void:
@@ -111,7 +243,7 @@ func test_progression_has_its_own_screen_and_explicit_continue() -> void:
 	assert_null(screen.find_child("CommitDestination", true, false))
 
 
-func test_reward_selection_requires_confirmation_then_leads_to_preparation_and_map() -> void:
+func test_reward_selection_requires_confirmation_then_leads_to_receipt_and_map() -> void:
 	assert_true(GameManager.expedition.combat_won())
 	_spend_attributes()
 	var screen := _open_screen()
@@ -124,7 +256,7 @@ func test_reward_selection_requires_confirmation_then_leads_to_preparation_and_m
 	_press(screen, "ConfirmExpeditionReward")
 	await _settle()
 	assert_eq(GameManager.expedition.route.phase, "map")
-	assert_eq(screen.get("_page"), "preparation")
+	assert_eq(screen.get("_page"), "loot_received")
 	assert_gt(GameManager.expedition.build.points, 0)
 	assert_null(screen.find_child("CommitDestination", true, false))
 	_press(screen, "OpenRouteMap")
@@ -426,7 +558,7 @@ func test_known_reward_technique_shows_oboles_and_preserves_the_selected_choice(
 	await _settle()
 	assert_eq(session.gold, gold_before + 40)
 	assert_eq(session.character.loadout.get_known_spells().size(), known_before)
-	assert_eq(screen.get("_page"), "preparation")
+	assert_eq(screen.get("_page"), "loot_received")
 
 func _open_screen(inspection := false) -> Control:
 	var screen := SCREEN.instantiate() as Control
@@ -462,7 +594,7 @@ func _reach_reward(depth: int) -> void:
 			assert_true(session.combat_won())
 
 
-func _press(screen: Control, button_name: String) -> void:
+func _press(screen: Node, button_name: String) -> void:
 	var button := screen.find_child(button_name, true, false) as Button
 	assert_not_null(button, button_name)
 	if button == null:

@@ -27,6 +27,8 @@ var _granted_depths: Array[int] = []
 var _card_spell_ids: Array[String] = []
 var _last_encounter_id: String = ""
 var discovered_branches: Array[String] = []
+var starting_selection: Dictionary = {}
+var weapon_unlocks: Array[String] = []
 
 
 func initialize(state: CharacterRunState) -> bool:
@@ -35,6 +37,8 @@ func initialize(state: CharacterRunState) -> bool:
 	if character_state != null:
 		_clear_stats()
 	character_state = state
+	starting_selection.clear()
+	weapon_unlocks.clear()
 	points = STARTING_POINTS
 	unlocked_node_ids.clear()
 	_granted_depths.clear()
@@ -50,6 +54,38 @@ func initialize(state: CharacterRunState) -> bool:
 	state.loadout.initialize(catalog.base_spells(), 4)
 	if state.champion_progression != null:
 		sync_level(state.champion_progression.current_level)
+	changed.emit()
+	return true
+
+
+func configure_start(selection: Dictionary) -> bool:
+	if character_state == null or completed_depth != 0 or not is_editable or not starting_selection.is_empty() or not CatabasePreparationCatalog.valid(selection):
+		return false
+	starting_selection = selection.duplicate(true)
+	weapon_unlocks.assign([String(selection.weapon)])
+	character_state.loadout.initialize(_starting_spells(starting_selection), 4)
+	changed.emit()
+	return true
+
+
+func _starting_spells(selection: Dictionary) -> Array[Spell]:
+	if selection.is_empty(): return catalog.base_spells()
+	var result: Array[Spell] = []
+	for id in CatabasePreparationCatalog.spell_ids(selection): result.append(catalog.get_spell(id))
+	return result
+
+
+func learn_weapon(weapon: String) -> bool:
+	if starting_selection.is_empty() or not CatabasePreparationCatalog.WEAPONS.has(weapon) or not is_editable: return false
+	if weapon not in weapon_unlocks: weapon_unlocks.append(weapon)
+	var row: Array = CatabasePreparationCatalog.WEAPONS[weapon]
+	for index in 2:
+		var base_id: String = row[index + 2]
+		character_state.loadout.learn_spell(catalog.get_spell(base_id))
+		var selected := base_id
+		for spell in character_state.loadout.get_known_spells():
+			if catalog.get_spell_family(String(spell.spell_id)) == base_id: selected = String(spell.spell_id)
+		character_state.loadout.equip_spell(StringName(selected), index)
 	changed.emit()
 	return true
 
@@ -107,6 +143,11 @@ func purchase(id: String) -> Dictionary:
 func equip(spell_id: String, slot: int) -> bool:
 	if not is_editable or character_state == null or completed_depth == 0:
 		return false
+	if slot < 0 or slot >= character_state.loadout.get_active_slot_count(): return false
+	if not starting_selection.is_empty() and slot < 2:
+		var current := character_state.loadout.get_spell_slot_ids()
+		if spell_id.is_empty() or catalog.get_spell_family(spell_id) != catalog.get_spell_family(String(current[slot])):
+			return false
 	if spell_id.is_empty():
 		if slot < 0 or slot >= character_state.loadout.get_active_slot_count():
 			return false
@@ -142,8 +183,12 @@ func undo_last_purchase() -> Dictionary:
 	candidate.points = points + int(removed.cost)
 	candidate.correction_used = true
 	var allowed: Array[String] = []
-	for spell in catalog.base_spells():
+	for spell in _starting_spells(starting_selection):
 		allowed.append(String(spell.spell_id))
+	for weapon in weapon_unlocks:
+		for index in [2, 3]:
+			var id: String = CatabasePreparationCatalog.WEAPONS[weapon][index]
+			if id not in allowed: allowed.append(id)
 	for id in _card_spell_ids:
 		if not allowed.has(id):
 			allowed.append(id)
@@ -224,7 +269,11 @@ func choose_depth_eight(option: String) -> Dictionary:
 
 
 func is_axis_discovered(axis: String) -> bool:
-	return catalog.AXES.has(axis) and (not catalog.DISCOVERY_DEPTHS.has(axis) or discovered_branches.has(axis))
+	return catalog.AXES.has(axis) and (not catalog.DISCOVERY_DEPTHS.has(axis) or discovered_branches.has(axis) or _starting_axis_available(axis, starting_selection))
+
+
+func _starting_axis_available(axis: String, selection: Dictionary) -> bool:
+	return axis == "elements" and selection.get("weapon", "") == "hampe"
 
 
 func unlock_branch(branch_id: String) -> Dictionary:
@@ -267,18 +316,28 @@ func to_snapshot() -> Dictionary:
 		"correction_used": correction_used,
 		"discovered_branches": discovered_branches.duplicate(),
 		"depth_eight_choice": depth_eight_choice,
+		"starting_selection": starting_selection.duplicate(true), "weapon_unlocks": weapon_unlocks.duplicate(),
 		"loadout": character_state.loadout.to_snapshot() if character_state != null else {}}
 
 
 func restore_snapshot(snapshot: Dictionary) -> bool:
 	if character_state == null or int(snapshot.get("version", 0)) != VERSION:
 		return false
+	var selection: Variant = snapshot.get("starting_selection", {})
+	var weapons: Variant = snapshot.get("weapon_unlocks", [])
+	if not selection is Dictionary or (not selection.is_empty() and not CatabasePreparationCatalog.valid(selection)) or not weapons is Array: return false
+	var restored_weapons: Array[String] = []
+	for weapon in weapons:
+		if not weapon is String or not CatabasePreparationCatalog.WEAPONS.has(weapon) or weapon in restored_weapons: return false
+		restored_weapons.append(weapon)
+	if (selection.is_empty() and not weapons.is_empty()) or (not selection.is_empty() and selection.weapon not in weapons): return false
 	if not snapshot.get("correction_used", false) is bool:
 		return false
 	for key in ["points", "completed_depth", "current_level"]:
 		if not _integer_value(snapshot.get(key)):
 			return false
 	var restored_depth := int(snapshot.completed_depth)
+	if restored_depth == 0 and not selection.is_empty() and weapons != [selection.weapon]: return false
 	var restored_level := int(snapshot.current_level)
 	if restored_depth < 0 or restored_depth > MAX_DEPTH or restored_level < 1 or restored_level > 14:
 		return false
@@ -307,8 +366,12 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		earned += int(DEPTH_POINTS.get(index + 1, 0))
 	var restored_nodes: Array[String] = []
 	var expected_known: Array[String] = []
-	for spell in catalog.base_spells():
+	for spell in _starting_spells(selection):
 		expected_known.append(String(spell.spell_id))
+	for weapon in restored_weapons:
+		for index in [2, 3]:
+			var id: String = CatabasePreparationCatalog.WEAPONS[weapon][index]
+			if id not in expected_known: expected_known.append(id)
 	var spent := 0
 	var exclusive_groups: Array[String] = []
 	for value in nodes_value:
@@ -318,7 +381,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		var node := catalog.get_node(id)
 		if node.is_empty() or restored_nodes.has(id) or int(node.minimum_depth) > restored_depth:
 			return false
-		if catalog.DISCOVERY_DEPTHS.has(String(node.axis)) and not discovered.has(String(node.axis)):
+		if catalog.DISCOVERY_DEPTHS.has(String(node.axis)) and not discovered.has(String(node.axis)) and not _starting_axis_available(String(node.axis), selection):
 			return false
 		var group := String(node.get("exclusive_group", ""))
 		if not group.is_empty():
@@ -329,7 +392,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		for prerequisite in node.prerequisites:
 			var prerequisite_node := catalog.get_node(String(prerequisite))
 			var taught_by_card: bool = String(prerequisite_node.get("kind", "")) == "apprentissage" \
-				and cards_value.has(String(prerequisite_node.get("spell_id", "")))
+				and (cards_value.has(String(prerequisite_node.get("spell_id", ""))) or expected_known.has(String(prerequisite_node.get("spell_id", ""))))
 			if not restored_nodes.has(String(prerequisite)) and not taught_by_card:
 				return false
 		restored_nodes.append(id)
@@ -348,7 +411,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 			return false
 		cards.append(String(value))
 		var axis := catalog.get_spell_axis(String(value))
-		if catalog.DISCOVERY_DEPTHS.has(axis) and not discovered.has(axis):
+		if catalog.DISCOVERY_DEPTHS.has(axis) and not discovered.has(axis) and not _starting_axis_available(axis, selection):
 			return false
 		if not expected_known.has(String(value)):
 			expected_known.append(String(value))
@@ -376,12 +439,14 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		equipped_families.append(family)
 	if restored_depth == 0:
 		var starter_ids: Array[StringName] = []
-		for spell in catalog.base_spells():
+		for spell in _starting_spells(selection):
 			starter_ids.append(spell.spell_id)
 		if candidate.get_spell_slot_ids() != starter_ids:
 			return false
 	# Commit only after every invariant, including loadout rights, has passed.
 	points = int(snapshot.points)
+	starting_selection = selection.duplicate(true)
+	weapon_unlocks = restored_weapons
 	completed_depth = restored_depth
 	current_level = restored_level
 	_granted_depths = grants

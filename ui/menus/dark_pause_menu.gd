@@ -4,6 +4,7 @@ extends CanvasLayer
 signal resume_requested
 signal return_to_title_requested(reason: StringName)
 signal equipment_requested
+signal characteristics_requested
 signal reduced_motion_changed(enabled: bool)
 
 const UNAVAILABLE_ACTIONS := [
@@ -52,13 +53,14 @@ func _ready() -> void:
 		&"return_to_title": _return_button,
 	}
 	_resume_button.configure("REPRENDRE")
-	_characters_button.configure("PERSONNAGES", false)
+	_characters_button.configure("CARACTÉRISTIQUES", false)
 	_equipment_button.configure("ÉQUIPEMENTS", true)
 	_compendium_button.configure("COMPENDIUM", false)
 	_options_button.configure("ANIMATIONS : STANDARD")
 	_abandon_button.configure("ABANDONNER LA RUN")
 	_resume_button.pressed.connect(_request_resume)
 	_equipment_button.pressed.connect(func() -> void: equipment_requested.emit())
+	_characters_button.pressed.connect(func() -> void: characteristics_requested.emit())
 	_options_button.pressed.connect(_toggle_reduced_motion)
 	_close_button.pressed.connect(_request_resume)
 	_abandon_button.pressed.connect(

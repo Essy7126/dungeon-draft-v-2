@@ -180,7 +180,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	last_restore_error = ""
 	if not _is_integer(snapshot.get("version")) or int(snapshot["version"]) != SNAPSHOT_VERSION:
 		return _reject("Version de sauvegarde d'expédition inconnue.")
-	if not _is_integer(snapshot.get("catalog_revision")) or int(snapshot["catalog_revision"]) not in [2, 3, Catalog.REVISION]:
+	if not _is_integer(snapshot.get("catalog_revision")) or int(snapshot["catalog_revision"]) not in [2, 3, 4, Catalog.REVISION]:
 		return _reject("Le catalogue de cette expédition n'est plus compatible.")
 	if not _is_integer(snapshot.get("seed")) or int(snapshot["seed"]) < 0 or int(snapshot["seed"]) > 0x7fffffff:
 		return _reject("Graine d'expédition invalide.")

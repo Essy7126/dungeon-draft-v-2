@@ -1,0 +1,107 @@
+{
+  "name": "Veilleur — marche simple dessinée",
+  "order": [
+    "E",
+    "S",
+    "N",
+    "W"
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 7,
+  "duration": 0.7,
+  "display_scale": 0.52,
+  "views": {
+    "E": {
+      "label": "Bas droite",
+      "atlas": "E_atlas.png",
+      "pivot": [
+        128,
+        239
+      ],
+      "stride": [
+        90,
+        45
+      ],
+      "frames": [
+        "frames/E/00.png",
+        "frames/E/01.png",
+        "frames/E/02.png",
+        "frames/E/03.png",
+        "frames/E/04.png",
+        "frames/E/05.png",
+        "frames/E/06.png"
+      ]
+    },
+    "S": {
+      "label": "Bas gauche",
+      "atlas": "S_atlas.png",
+      "pivot": [
+        128,
+        239
+      ],
+      "stride": [
+        -90,
+        45
+      ],
+      "frames": [
+        "frames/S/00.png",
+        "frames/S/01.png",
+        "frames/S/02.png",
+        "frames/S/03.png",
+        "frames/S/04.png",
+        "frames/S/05.png",
+        "frames/S/06.png"
+      ]
+    },
+    "N": {
+      "label": "Haut droite",
+      "atlas": "N_atlas.png",
+      "pivot": [
+        128,
+        239
+      ],
+      "stride": [
+        90,
+        -45
+      ],
+      "frames": [
+        "frames/N/00.png",
+        "frames/N/01.png",
+        "frames/N/02.png",
+        "frames/N/03.png",
+        "frames/N/04.png",
+        "frames/N/05.png",
+        "frames/N/06.png"
+      ]
+    },
+    "W": {
+      "label": "Haut gauche",
+      "atlas": "W_atlas.png",
+      "pivot": [
+        128,
+        239
+      ],
+      "stride": [
+        -90,
+        -45
+      ],
+      "frames": [
+        "frames/W/00.png",
+        "frames/W/01.png",
+        "frames/W/02.png",
+        "frames/W/03.png",
+        "frames/W/04.png",
+        "frames/W/05.png",
+        "frames/W/06.png"
+      ]
+    }
+  },
+  "rest_frame": 1,
+  "frame_resource": "res://assets/characters/Achilles/veilleur_walk_simple_v1/walk_frames.tres",
+  "artistic_approval": false,
+  "generation_calls": 1,
+  "method": "Whole drawn poses; cutout and translation only"
+}

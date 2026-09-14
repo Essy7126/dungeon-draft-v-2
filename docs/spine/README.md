@@ -1,5 +1,13 @@
 # Spine — dossier de reprise local
 
+**Ajout courant : [Fauche](../../art/source/characters/achilles/passe_rive_fauche_v1/README.md), touche 0.** Huit poses : prise au talon, balayage circulaire, balancier du bassin et traînée derrière/devant le corps. Palette : **dix gestes / 50 dessins**. [Essayer](http://127.0.0.1:8734/files/passe_rive_spells_v1/review.html?spell=fauche). Les entrées suivantes conservent l’historique des ajouts.
+
+**Dernier ajout : [Moisson vitale](../../art/source/characters/achilles/passe_rive_vital_harvest_v1/README.md), touche 9.** Six poses sans arme, bras bas, torse en avant et tête en arrière, paumes vertes, légère lévitation et impulsion rouge depuis le torse vers la cible. Palette : neuf gestes / 42 dessins. [Essayer](http://127.0.0.1:8734/files/passe_rive_spells_v1/review.html?spell=vital_harvest).
+
+**Nouvel ajout : [Trait d’ivoire](../../art/source/characters/achilles/passe_rive_ivory_bow_v1/README.md), touche 8.** Arc presque horizontal devenu robuste et ivoire, appui arrière, bras renforcé et tremblement pendant une charge longue. La palette compte huit gestes et 36 dessins. [Essayer](http://127.0.0.1:8734/files/passe_rive_spells_v1/review.html?spell=ivory_bow).
+
+**Ajout du 11 septembre : [Tir céleste à l’arc](../../art/source/characters/achilles/passe_rive_bow_v1/README.md), touche 7.** Six nouvelles poses, pleine tension, décoche, trajectoire courbe et repos avec l’arc. [Ouvrir directement le tir](http://127.0.0.1:8734/files/passe_rive_spells_v1/review.html?spell=sky_bow).
+
 ## Dernière livraison — six sorts Passe-rive V1
 
 La [palette de six gestes](../../art/source/characters/achilles/passe_rive_spells_v1/README.md)

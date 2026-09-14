@@ -1,0 +1,21 @@
+{
+  "duration": 0.8,
+  "frames": 48,
+  "stride": 0.82,
+  "stance": 0.6,
+  "scale": 260,
+  "pivot": [
+    384,
+    662
+  ],
+  "canvas": [
+    768,
+    768
+  ],
+  "thigh": 0.5,
+  "shin": 0.48,
+  "pelvis_height": 1.048,
+  "bob": 0.015,
+  "arm_swing": 0.31,
+  "foot_lift": 0.12
+}

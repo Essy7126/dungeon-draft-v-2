@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "stage": "planning",
+  "id": "stele_names_v1",
+  "world": {
+    "width": 2400,
+    "player_height_ratio": 0.18,
+    "speed": 210,
+    "foot_clearance": 18,
+    "spawn": [
+      0.31,
+      0.71
+    ]
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.24,
+        0.7
+      ],
+      [
+        0.33,
+        0.58
+      ],
+      [
+        0.41,
+        0.57
+      ],
+      [
+        0.44,
+        0.47
+      ],
+      [
+        0.49,
+        0.44
+      ],
+      [
+        0.54,
+        0.41
+      ],
+      [
+        0.58,
+        0.37
+      ],
+      [
+        0.64,
+        0.29
+      ],
+      [
+        0.71,
+        0.3
+      ],
+      [
+        0.77,
+        0.39
+      ],
+      [
+        0.85,
+        0.4
+      ],
+      [
+        0.92,
+        0.49
+      ],
+      [
+        0.91,
+        0.61
+      ],
+      [
+        0.86,
+        0.7
+      ],
+      [
+        0.78,
+        0.72
+      ],
+      [
+        0.76,
+        0.82
+      ],
+      [
+        0.65,
+        0.86
+      ],
+      [
+        0.56,
+        0.82
+      ],
+      [
+        0.49,
+        0.73
+      ],
+      [
+        0.42,
+        0.74
+      ],
+      [
+        0.36,
+        0.82
+      ],
+      [
+        0.29,
+        0.8
+      ]
+    ],
+    "obstacles": [
+      [
+        [
+          0.625,
+          0.47
+        ],
+        [
+          0.7,
+          0.42
+        ],
+        [
+          0.77,
+          0.47
+        ],
+        [
+          0.69,
+          0.52
+        ]
+      ]
+    ]
+  },
+  "landmarks": [
+    {
+      "id": "names_stele",
+      "title": "La stèle des noms",
+      "action": "dialogue",
+      "point": [
+        0.64,
+        0.6
+      ],
+      "focus": [
+        0.695,
+        0.365
+      ],
+      "radius": 0.07,
+      "description": "Les noms confiés au passeur résistent un instant à l’oubli."
+    },
+    {
+      "id": "ferryman_boat",
+      "title": "La barque",
+      "action": "exit",
+      "point": [
+        0.31,
+        0.71
+      ],
+      "focus": [
+        0.195,
+        0.73
+      ],
+      "radius": 0.09
+    }
+  ],
+  "instructions": "Draw normalized entrance, exits, circulation loop, obstacles and interactions before generation. Place equal-height Achilles idle_S references beside the entrance, work surface and exit, with feet on the same adjacent floor. H is feet to silhouette top, including spear and plume; H/image_height is world.player_height_ratio. Furniture ratios use body B excluding spear and plume, as measured in the shared style reference. Export or attach the plan as a second reference; omit reference characters from the final painting."
+}

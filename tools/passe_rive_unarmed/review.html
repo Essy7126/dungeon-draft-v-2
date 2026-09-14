@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Passe-rive · Marche sans armes</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101f22;color:#e7e9df;font:15px system-ui}main{max-width:1240px;margin:auto;padding:30px}h1{font:normal 34px Georgia;margin:4px 0 12px}.kicker{font-size:11px;letter-spacing:2px;color:#cab681}.intro{max-width:770px;color:#b7cbc6;line-height:1.6}.tools{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:20px 0}button,select{font:inherit;color:inherit;background:#243b3c;border:1px solid #52716b;border-radius:7px;padding:10px 13px;cursor:pointer}button:hover{background:#375250}label{display:flex;align-items:center;gap:6px}canvas{display:block;width:100%;border-radius:10px;background:#314547}#stage{border:1px solid #4a6460}.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}h2{font-size:15px;font-weight:500;color:#c2d1c9}.note{padding:13px 16px;background:#233836;border-left:3px solid #c4ac77;color:#c7d5ca;line-height:1.6;font-size:13px}.meta{color:#9db8b2;font-size:12px;line-height:1.6}input[type=range]{width:190px;accent-color:#cab681}a{color:#ceb983}#status{min-width:112px}.light #body,.light #feet{background:#d7dfd8}@media(max-width:650px){main{padding:14px}.row{grid-template-columns:1fr}h1{font-size:28px}}
+</style>
+<main><div class="kicker">PASSE-RIVE / MARCHE SANS ARMES · RÉVISION 2</div><h1>Un pas plus tranquille.</h1>
+<p class="intro">Pas plus courts, pieds moins hauts, bras détendus. Le bassin accompagne maintenant la jambe qui porte le poids. Les dessins sont ceux de la version précédente ; compare le mouvement à vitesse normale, puis au ralenti.</p>
+<div class="tools"><select id="direction" aria-label="Orientation"></select><button id="play">Pause</button><button id="prev">← Image</button><button id="next">Image →</button><span id="status"></span><select id="speed" aria-label="Vitesse"><option value="1">Vitesse normale</option><option value="0.5">Ralenti × ½</option><option value="0.25">Ralenti × ¼</option></select><button id="light">Fond clair</button><label><input id="travel" type="checkbox" checked>Sur la carte</label><label><input id="contacts" type="checkbox">Repères d’appui</label></div>
+<canvas id="stage" width="1200" height="580" aria-label="Marche sur le décor forêt"></canvas>
+<div class="row"><section><h2>Silhouette et balancement</h2><canvas id="body" width="590" height="500"></canvas></section><section><h2>Raccordement des jambes et des pieds</h2><canvas id="feet" width="590" height="500"></canvas></section></div>
+<div class="tools"><input id="scrub" type="range" min="0" max="59" value="0" aria-label="Image du cycle"><label><input id="onion" type="checkbox">Images voisines</label><label><input id="compare" type="checkbox">Comparer avant / après</label><button id="restart">Repartir du début</button></div>
+<p class="note">Marche seule, sans lance ni bouclier. Les repères montrent les points de contact du modèle de mouvement ; observe aussi la semelle dessinée. Le rendu reste un essai à juger en mouvement.</p>
+<p class="meta" id="timing">Espace : pause · ← / → : image par image.</p></main>
+<script type="module">
+const $=id=>document.getElementById(id),C=id=>$(id).getContext('2d');
+const data=await(await fetch('walk_review.json')).json(),N=data.frame_count;const map=new Image();map.src='map.webp';await map.decode();
+$('scrub').max=N-1;$('timing').textContent=`Espace : pause · ← / → : image par image · ${N} images par boucle de ${data.duration} s. L’ancienne marche conserve son rythme dans le comparatif.`;
+let assets={},audits={};for(const d of data.order){let im=new Image();im.src=data.views[d].atlas;await im.decode();assets[d]=im;audits[d]=await(await fetch(d+'_audit.json')).json();$('direction').add(new Option(data.views[d].label,d))}
+let dir=data.order[0],time=0,playing=true,rate=1,last=performance.now();
+let previous=null,previousDir=null;
+async function loadPrevious(){if(!$('compare').checked||previousDir===dir)return;const d=dir,im=new Image();im.src=`../passe_rive_walk_unarmed_v1/${d}_walk.png`;await im.decode();if(dir===d){previous=im;previousDir=d;draw()}}
+function frame(){return Math.floor((time/data.duration%1)*data.frame_count)%data.frame_count}
+function actor(c,d,f,x,y,s){c.drawImage(assets[d],f%8*768,Math.floor(f/8)*768,768,768,x-data.pivot[0]*s,y-data.pivot[1]*s,768*s,768*s)}
+function dot(c,p,color,r=4){c.beginPath();c.fillStyle=color;c.arc(p[0],p[1],r,0,Math.PI*2);c.fill()}
+function draw(){let f=frame(),v=data.views[dir],a=audits[dir][f],c=C('stage');c.clearRect(0,0,1200,580);c.drawImage(map,0,-30,1200,670);c.fillStyle='#08161522';c.fillRect(0,0,1200,580);
+ let u=$('travel').checked?(time/data.duration%4)-2:0;let x=620+u*v.stride[0]*.35,y=365+u*v.stride[1]*.35;
+ c.fillStyle='#07191360';c.beginPath();c.ellipse(x,y,16,6,0,0,Math.PI*2);c.fill();actor(c,dir,f,x,y,.35);
+ if($('contacts').checked)for(let s of ['R','L']){let ft=a.feet[s],k=ft.contact==='heel'?'heel':'toe';if(ft.contact!=='swing')dot(c,[x+(ft[k][0]-384)*.35,y+(ft[k][1]-662)*.35],s==='R'?'#e8ad70':'#82dcca',3)}
+ c.font='14px system-ui';c.fillStyle='#eef0db';c.fillText(v.label+' · marche sans armes',22,30);
+ c=C('body');c.clearRect(0,0,590,500);if($('compare').checked){
+  let oldFrame=Math.floor((time/.8%1)*48)%48,s=.72;
+  if(previousDir===dir&&previous)c.drawImage(previous,oldFrame%8*768,Math.floor(oldFrame/8)*768,768,768,156-384*s,430-662*s,768*s,768*s);
+  actor(c,dir,f,435,430,s);c.fillStyle=document.body.classList.contains('light')?'#203530':'#dfdfc8';c.font='15px system-ui';c.fillText('Avant',130,55);c.fillText('Maintenant',398,55);
+ }else{if($('onion').checked){c.globalAlpha=.18;actor(c,dir,(f+N-2)%N,296,458,.98);actor(c,dir,(f+2)%N,296,458,.98);c.globalAlpha=1}actor(c,dir,f,296,458,.98)}
+ c=C('feet');c.clearRect(0,0,590,500);c.drawImage(assets[dir],f%8*768+235,Math.floor(f/8)*768+460,330,260,8,22,574,452);
+ if($('contacts').checked)for(let s of ['R','L']){let ft=a.feet[s];for(let k of ['heel','toe'])dot(c,[8+(ft[k][0]-235)*574/330,22+(ft[k][1]-460)*452/260],ft.contact==='swing'?'#aaaaaa':s==='R'?'#e8ad70':'#82dcca',5)}
+ $('status').textContent=`Image ${String(f+1).padStart(2,'0')} / ${data.frame_count}`;$('scrub').value=f;
+}
+function setFrame(i){playing=false;time=((i+N)%N+.001)/N*data.duration;$('play').textContent='Lecture';draw()}
+function setDirection(d){dir=d;$('direction').value=d;loadPrevious();draw()}
+$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'Pause':'Lecture'};$('direction').onchange=()=>setDirection($('direction').value);$('prev').onclick=()=>setFrame(frame()-1);$('next').onclick=()=>setFrame(frame()+1);$('scrub').oninput=()=>setFrame(+$('scrub').value);$('speed').onchange=()=>rate=+$('speed').value;$('restart').onclick=()=>{time=0;draw()};$('light').onclick=()=>{document.body.classList.toggle('light');$('light').textContent=document.body.classList.contains('light')?'Fond sombre':'Fond clair';draw()};for(let id of ['travel','contacts','onion'])$(id).onchange=draw;
+document.addEventListener('keydown',e=>{if(['Space','ArrowRight','ArrowLeft'].includes(e.code))e.preventDefault();if(e.code==='Space')$('play').click();if(e.code==='ArrowRight')setFrame(frame()+1);if(e.code==='ArrowLeft')setFrame(frame()-1)});
+$('compare').onchange=()=>{loadPrevious();draw()};
+window.unarmedWalk={ready:true,setFrame,setDirection,getState:()=>({dir,frame:frame(),playing,time,previousDir,loaded:Object.fromEntries(data.order.map(d=>[d,data.frame_count]))})};
+function loop(now){if(playing)time+=(now-last)/1000*rate;last=now;draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+</script></html>

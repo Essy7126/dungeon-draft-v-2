@@ -104,7 +104,7 @@ func _test_lane_junctions() -> void:
 
 
 func _test_legacy_snapshot() -> void:
-	for revision in [2, 3]:
+	for revision in [2, 3, 4]:
 		var legacy := RouteState.new()
 		legacy.initialize(2401, revision)
 		_check(legacy.to_snapshot().catalog_revision == revision, "Legacy revision lost")
@@ -114,10 +114,13 @@ func _test_legacy_snapshot() -> void:
 		_round_trip(legacy)
 		var current := RouteState.new()
 		current.initialize(2401)
-		_check(current.to_snapshot().catalog_revision == 4, "New run does not use itineraries")
+		_check(current.to_snapshot().catalog_revision == RouteCatalog.REVISION, "New run does not use current itineraries")
 		var bad := legacy.to_snapshot()
-		bad.catalog_revision = 4
-		_check(not current.restore_snapshot(bad), "Legacy graph silently changed topology")
+		if revision < 4:
+			bad.catalog_revision = 4
+			_check(not current.restore_snapshot(bad), "Legacy graph silently changed topology")
+		bad.catalog_revision = 999
+		_check(not current.restore_snapshot(bad), "Unknown catalogue revision accepted")
 
 
 func _walk_paths(node: Dictionary, by_id: Dictionary, length: int, combats: int,

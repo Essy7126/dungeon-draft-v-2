@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BattlePresentationProfile" format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/battle_presentation_profile.gd" id="1_sinr3"]
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="2_mt183"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_achilles.tres" id="3_3g75a"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_standard.tres" id="4_eevjd"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_elite.tres" id="5_f13h2"]
+
+[resource]
+script = ExtResource("1_sinr3")
+profile_id = &"gue_serments_v1"
+camera_offset_adjustment = Vector2(-80, -20)
+camera_keep_painting_in_view = true
+global_unit_scale_multiplier = 1.08
+unit_profiles = Array[ExtResource("2_mt183")]([ExtResource("3_3g75a"), ExtResource("4_eevjd"), ExtResource("5_f13h2")])
+ally_outline_color = Color(0.63, 0.9, 1, 0.34)
+enemy_outline_color = Color(1, 0.77, 0.39, 0.38)

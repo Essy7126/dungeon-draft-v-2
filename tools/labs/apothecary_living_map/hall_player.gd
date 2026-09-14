@@ -49,6 +49,13 @@ func play_walk(direction := Vector2.ZERO) -> bool:
 	return started
 
 
+func _process(delta: float) -> void:
+	# Locomotion remains distance driven; the supplied breathing loop also plays
+	# while standing, with the same scene pause as navigation.
+	if not _walking and is_visual_ready():
+		_backend.advance_simulation(delta)
+
+
 ## Distance must be measured on the floor: length(Vector2(dx, dy / 0.5)).
 func advance_ground_stride(distance: float) -> void:
 	if not _walking or not is_visual_ready() or not is_finite(distance):

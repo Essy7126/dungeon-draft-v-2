@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "stele_names_v1",
+  "manifest_sha256": "ac1c1ee42b4068c22eecf90f6a16561451c63b04069e8f6a1bad58d5a821f09a",
+  "manifest_hash_mode": "lf_utf8_v1",
+  "generator": "python_pillow_v2",
+  "source_sha256": "9853e8770b7d4b9989f65fb316abd7b73a66d4fd219d136d75fb044ef72c9f0a",
+  "mask_sha256": "d86770df6afa3acd998b7c56e8c30707f53db8f3a6df12a68cb863bf0afaee22",
+  "flow_sha256": "294a39076009bff15451e9b2770123cdcacd62a289d2d79defbdfb8745adfdf4",
+  "size": [
+    1672,
+    941
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "flow_channels": [
+    "direction_x",
+    "direction_y",
+    "speed_div_4",
+    "water_coverage"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}

@@ -1,0 +1,18 @@
+{
+  "source_piece_sha256": {
+    "leg_L": "d5940a1d6afbd9a4d48b62be54bdbb981c771cbdd70c47dc4d8624ae689b7d7e",
+    "leg_R": "c0e5360183b2fe2a05a09ba2b552c3cac56e370e0b6914bfb55173f40af9651e",
+    "boot_L": "cf0131fb9044b53bf55bd0a5edb64b68ba20230534f8a11d97b5b48ffcb1279d",
+    "boot_R": "188134514b1994bb808201ea217bbe55ea94fac66e7e646a5c610a2fd03497d0",
+    "arm_L": "72255f8eea2d1e70681a4e96e426f49295405044e56a3b7d08c0c3c343b6da83",
+    "arm_R": "7b515a8a23665cc6d8eea68835f6befc1fe844ae662c21e32223353f6cd207ca",
+    "core": "63f964dab597415622f402c0aa722e8c4c4a940ca7c5cd5dab867e491f73706e"
+  },
+  "boots": "Original rigid PNG, rotation and translation only. No animated scaling.",
+  "anatomy_note": "Shared near-leg sagittal lengths with 0.95 far depth projection; source far-pose length was not an anatomical limit.",
+  "sagittal_lengths": [
+    39.60379779768602,
+    73.65910670107262
+  ],
+  "far_projection": 0.95
+}

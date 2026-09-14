@@ -3,8 +3,11 @@ extends "res://hub/painted_halt/living_halt.gd"
 const ThresholdInteractions := preload("res://hub/catabase_threshold/threshold_interactions.gd")
 const ThresholdNavigation := preload("res://hub/catabase_threshold/threshold_navigation.gd")
 const Fog := preload("res://hub/catabase_threshold/threshold_fog.gd")
+const PortraitDialogue := preload("res://ui/dialogue/portrait_dialogue.gd")
+const CHARON_PORTRAIT := preload("res://assets/catabase/dialogue/charon_v1/portrait.png")
+const CHARON_GREETING := "Te voilà, Achille. Au-delà de cette porte, un nouveau monde t’attend.\n\nMais souviens-toi : ici, c’est moi, Charon, qui déciderai si tu peux poursuivre ta route… ou si ton voyage s’arrête."
 const CLASSIC_PROFILE := preload(
-	"res://data/visuals/achilles/achilles_polish_sprite_profile_v3.tres"
+	"res://data/visuals/achilles/achilles_autosprite_profile_v1.tres"
 )
 const PAINTED_PROFILE := preload(
 	"res://data/visuals/achilles/achilles_painted_g_sprite_profile.tres"
@@ -25,6 +28,7 @@ var _hovered := -1
 var _movement_feedback := ""
 var _feedback_until := 0.0
 var _route_line: Line2D
+var _welcome: PortraitDialogue
 
 
 func _init() -> void:
@@ -44,6 +48,7 @@ func _ready() -> void:
 	await super._ready()
 	if world == null or not is_inside_tree():
 		return
+	ambience.enable_cavern()
 	_route_line = Line2D.new()
 	_route_line.name = "ThresholdRoute"
 	_route_line.width = 2.0
@@ -58,10 +63,12 @@ func _ready() -> void:
 	if not _fog.configure(world_size, definition):
 		push_error("THRESHOLD_FOG: " + _fog.configuration_error)
 	_apply_effects()
+	_welcome.present("Charon", "Le vieux passeur", CHARON_GREETING, CHARON_PORTRAIT)
+	_update_status()
 
 
 static func profile_for_variants(variants: Dictionary) -> AchillesSpriteVisualProfile:
-	return PAINTED_PROFILE if str(variants.get("achilles", "")) == "painted_g" else CLASSIC_PROFILE
+	return RunHeroVisualVariants.exploration_profile(variants)
 
 
 func _material_shader() -> Shader:
@@ -95,7 +102,7 @@ func _sync_motion(value: bool) -> void:
 
 
 func entry_input_blocked() -> bool:
-	return _menu_open or _departure_started
+	return _menu_open or _departure_started or (is_instance_valid(_welcome) and _welcome.visible)
 
 
 func _build_interface() -> void:
@@ -168,12 +175,17 @@ func _build_interface() -> void:
 	_dialogue_content.add_theme_constant_override("separation", 16)
 	_dialogue.add_child(_dialogue_content)
 	_dialogue.hide()
+	_welcome = PortraitDialogue.new()
+	_welcome.name = "CharonWelcome"
+	_interface.add_child(_welcome)
+	_welcome.dismissed.connect(_update_status)
 	_update_status()
 
 
 func _update_status() -> void:
 	if _objective == null:
 		return
+	_objective.visible = not (is_instance_valid(_welcome) and _welcome.visible)
 	if is_player_moving():
 		_walked = true
 	if clock < _feedback_until:
@@ -279,7 +291,7 @@ func close_dialogue() -> void:
 
 
 func show_menu() -> void:
-	if _departure_started:
+	if _departure_started or (is_instance_valid(_welcome) and _welcome.visible):
 		return
 	interactions.active = false
 	stop_movement()
@@ -306,6 +318,8 @@ func depart() -> Dictionary:
 	_departure_started = true
 	stop_movement()
 	var result: Dictionary = _manager().finish_catabase_threshold()
+	if bool(result.get("success", false)):
+		AudioManager.play_feedback(&"confirm")
 	_departure_pending = bool(result.get("pending", false))
 	if not bool(result.get("success", false)):
 		_departure_started = _departure_pending
@@ -325,6 +339,8 @@ func retry_departure() -> bool:
 	if not _departure_pending:
 		return false
 	var success: bool = _manager().retry_expedition_save()
+	if success:
+		AudioManager.play_feedback(&"confirm")
 	_departure_pending = not success
 	return success
 
@@ -381,6 +397,7 @@ func get_entry_state() -> Dictionary:
 		"departure_started": _departure_started,
 		"save_pending": _departure_pending,
 		"menu_open": _menu_open,
+		"welcome_open": is_instance_valid(_welcome) and _welcome.visible,
 		"variant": str(_entry_run.hero_visual_variants.get("achilles", "")) if _entry_run != null else "",
 		"ready": is_ready_for_play(),
 	}
@@ -405,6 +422,7 @@ func request_move(destination: Vector2) -> bool:
 	interactions.cancel()
 	_path = route.path
 	_path_index = 0
+	_choose_route_gait()
 	_target = route.destination
 	_marker.position = _target
 	_marker.show()
@@ -457,7 +475,7 @@ func _advance_move(delta: float) -> void:
 	for index in range(_path_index, _path.size()):
 		remaining += _ground_distance(_path[index] - previous)
 		previous = _path[index]
-	var desired_speed := minf(float(definition.world.speed), sqrt(1200.0 * remaining))
+	var desired_speed := minf(float(definition.world.speed) * _route_speed_multiplier, sqrt(1200.0 * remaining))
 	if _path_index + 1 < _path.size():
 		var approach := _path[_path_index] - player.position
 		var departure := _path[_path_index + 1] - _path[_path_index]

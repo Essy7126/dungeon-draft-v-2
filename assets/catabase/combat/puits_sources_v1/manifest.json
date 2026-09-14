@@ -1,0 +1,37 @@
+{
+  "gameplay_fingerprint": "a7ccef984f1feeee6cccce268f4284c58e7c21f113ba458a76c67a6f2101e30c",
+  "gameplay_unchanged_after_reload": true,
+  "geometry_bytes_unchanged": true,
+  "geometry_sha256": "f11f74d3ae1517992753d49cb15d94c5a2ae870eb0f9add8c39ca92c06380520",
+  "guide": "calibration.png",
+  "guide_sha256": "58b35005bf1e4c0d465d025a7ad4dd46921e339d6897329204116828dd6f555c",
+  "image": "res://assets/catabase/combat/puits_sources_v1/land.png",
+  "image_sha256": "f5f8f1d8ed552e4a1e5592865b23a40e9dfac9ec616f0c23ae5d05a29d1034b0",
+  "image_size": [
+    1586.0,
+    992.0
+  ],
+  "native_canvas": [
+    1920.0,
+    1200.0
+  ],
+  "normalization": "Original pixels retained; UV scale only",
+  "plan_sha256": "d60f106ccfb43ecc7e610861568993ea0cf381ace1a65a1fb1de20cc6efe7575",
+  "prompts": [
+    "PROMPT.md"
+  ],
+  "provider": "image_gen built-in",
+  "provider_source_basename": "exec-8c05daab-1d1a-4517-97f0-7f2ede8aa387.png",
+  "room_before_sha256": "f2be2a66926207459e664bdc06d54a4466c39eca2692c13c52d6d5869ce454a3",
+  "room_sha256": "d4e4bf8fe769356e7bcf07c494f53b4160ad7243aad582662a5f8819ded761c9",
+  "target_room": "res://data/rooms/catabase_routes/route_9c104c2158d3/room.tres",
+  "texture_scale": [
+    1.21059268600252,
+    1.20967741935484
+  ],
+  "validation_status": "passed final GPU review at 1920x1080 and 1200x896; both captures visually inspected",
+  "validation_reports": [
+    "res://artifacts/dev/20260912-130225-puits-sources-prepare-7deccd2b/summary.json",
+    "res://artifacts/dev/20260912-130328-puits-sources-review-80d44c16/summary.json"
+  ]
+}

@@ -20,7 +20,7 @@ const HINTS := {
 }
 
 
-static func create_nodes(seed_value: int, maps: Dictionary) -> Array[Dictionary]:
+static func create_nodes(seed_value: int, maps: Dictionary, preserve_mirrored_paths := false) -> Array[Dictionary]:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var layers: Array = [
@@ -86,7 +86,11 @@ static func create_nodes(seed_value: int, maps: Dictionary) -> Array[Dictionary]
 		# Partition a split or a merge into neighboring groups. No all-to-all ladders.
 		for lane in current.size():
 			for target in following.size():
-				var linked := floori(float(target) * current.size() / following.size()) == lane if following.size() >= current.size() else floori(float(lane) * following.size() / current.size()) == target
+				# Mirror the authored connections with their destinations. Rounding
+				# the displayed lanes changes who joins whom on asymmetric layers.
+				var source_lane := current.size() - 1 - lane if mirrored and preserve_mirrored_paths else lane
+				var target_lane := following.size() - 1 - target if mirrored and preserve_mirrored_paths else target
+				var linked := floori(float(target_lane) * current.size() / following.size()) == source_lane if following.size() >= current.size() else floori(float(source_lane) * following.size() / current.size()) == target_lane
 				if linked:
 					current[lane].edges.append(str(following[target].id))
 	for depth in [8, 16]:

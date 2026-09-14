@@ -87,6 +87,7 @@ func _ready() -> void:
 	)
 	pause_menu.resume_requested.connect(close_pause_menu)
 	pause_menu.equipment_requested.connect(_on_pause_equipment_requested)
+	pause_menu.characteristics_requested.connect(func(): close_pause_menu(); _on_attributes_requested())
 	pause_menu.set_action_available(&"equipment", true)
 	inventory_screen.screen_closed.connect(_on_inventory_screen_closed)
 	pause_menu.return_to_title_requested.connect(
@@ -390,6 +391,7 @@ func is_pause_menu_open() -> bool:
 
 
 func open_pause_menu() -> bool:
+	pause_menu.set_action_available(&"characters", GameManager.expedition != null)
 	if (
 		not GameManager.run_active
 		or _ui_mode == RunUIMode.TRANSITION
@@ -532,11 +534,11 @@ func _on_attributes_requested() -> void:
 
 
 func _open_expedition_inspection(page: String) -> void:
-	if GameManager.expedition == null or _ui_mode != RunUIMode.COMBAT \
-			or is_instance_valid(_expedition_inspection) \
-			or not _combat_context_allows_run_modal():
+	if GameManager.expedition == null or _ui_mode == RunUIMode.TRANSITION \
+			or is_instance_valid(_expedition_inspection):
 		return
-	_combat_controls_before_skill_tree = _hud_port.are_controls_enabled()
+	if _ui_mode == RunUIMode.COMBAT and not _combat_context_allows_run_modal(): return
+	_combat_controls_before_skill_tree = _hud_port.are_controls_enabled() if _ui_mode == RunUIMode.COMBAT else false
 	if not _claim_modal(MODAL_SKILL_TREE):
 		_combat_controls_before_skill_tree = false
 		return
@@ -547,11 +549,15 @@ func _open_expedition_inspection(page: String) -> void:
 func _show_expedition_inspection(page: String) -> void:
 	var screen: Control = load("res://ui/expedition/ExpeditionScreen.tscn").instantiate()
 	screen.set("inspection_only", true)
+	screen.set("allow_attribute_edits", _ui_mode == RunUIMode.NON_COMBAT and GameManager.expedition.is_editable())
 	screen.set("initial_page", page)
 	_expedition_inspection = screen
 	screen.connect("inspection_closed", func():
 		_expedition_inspection = null
 		_on_skill_tree_screen_closed()
+		var scene := get_tree().current_scene
+		if scene != null and scene.scene_file_path == "res://ui/expedition/ExpeditionScreen.tscn":
+			scene.call("_render")
 	)
 	overlay_layer.add_child(screen)
 

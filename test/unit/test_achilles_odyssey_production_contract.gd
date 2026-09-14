@@ -5,7 +5,7 @@ const CONTENT_PATH := "res://data/runs/profiles/odyssey_content_profile.tres"
 const MAIN_CONTENT_PATH := "res://data/runs/profiles/main_content_profile.tres"
 const ACHILLES_DATA_PATH := "res://data/units/allies/achilles.tres"
 const ACHILLES_VISUAL_PATH := "res://characters/achilles/AchillesIsoUnitView.tscn"
-const ACHILLES_PREVIEW_PATH := "res://assets/characters/Achilles/sprites_cour_des_sources_v1/achilles_sprite_frames.tres"
+const ACHILLES_PREVIEW_PATH := "res://assets/characters/Achilles/autosprite_v1/sprite_frames.tres"
 const GUARD_VFX_PATH := "res://battle/vfx/achilles_guard_sprite_vfx.tscn"
 const EXPECTED_SPELL_IDS: Array[StringName] = [
 	&"achilles_peleid_strike", &"achilles_fulminant_dash",

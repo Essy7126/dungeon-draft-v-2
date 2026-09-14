@@ -18,7 +18,7 @@ try {
         Write-Output @'
 Dungeon Draft tools (PowerShell 7.2+)
   ./dev.ps1 doctor [-GodotPath PATH]       Environment checks, no import
-  ./dev.ps1 test smoke|monsters|terrain|studio|halts|all|test/unit/test_name.gd
+  ./dev.ps1 test smoke|monsters|terrain|studio|halts|audio|all|test/unit/test_name.gd
   ./dev.ps1 capture inventory|hud [-Resolution 1280x720]
   ./dev.ps1 inspect res://data/spells/example.tres
   ./dev.ps1 references res://data/spells/example.tres

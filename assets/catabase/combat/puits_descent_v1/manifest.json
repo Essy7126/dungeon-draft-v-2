@@ -1,0 +1,38 @@
+{
+  "gameplay_fingerprint": "6c270a92cbce87dae00ba15dfa4bcd9177556bf603df76bb53dd024654364f02",
+  "gameplay_unchanged_after_reload": true,
+  "geometry_bytes_unchanged": true,
+  "geometry_sha256": "532e67571c86b7ab0c92f46f725d5b1e34c61c65822f5d248bede370a6cc2acf",
+  "guide": "calibration.png",
+  "guide_sha256": "fd56f1f6b0c021803084420bc7e2042b8b08744a0bf2a1edab9e039f780e0d51",
+  "image": "res://assets/catabase/combat/puits_descent_v1/land.png",
+  "image_sha256": "c68aa46a894b1da5af347e5406ffbc40f6842a2def97fb6e1723471efad8aadc",
+  "image_size": [
+    1586.0,
+    992.0
+  ],
+  "native_canvas": [
+    1920.0,
+    1200.0
+  ],
+  "normalization": "Original pixels retained; UV scale only",
+  "plan_sha256": "3d224466e99f5de37a0d9bd6bfe1b46cac4cb4a30748280e86242404daf151d9",
+  "prompts": [
+    "PROMPT.md",
+    "PROMPT-v2.md"
+  ],
+  "provider": "image_gen built-in",
+  "provider_source_basename": "exec-28e663ea-702f-4cd3-9eac-3bf76c851fff.png",
+  "room_before_sha256": "3070620411dc202d61eeac0f2a7f6356c433ae412ef2e66106bcf7697b295822",
+  "room_sha256": "3c45ae5fb4cf723cfd38083cbaa04a7e803a1bb202cd77dd3a944756d1ea0fbb",
+  "target_room": "res://data/rooms/catabase_routes/route_76ac69bb7c8d/room.tres",
+  "texture_scale": [
+    1.21059268600252,
+    1.20967741935484
+  ],
+  "validation_status": "passed GPU review at 1920x1080 and 1200x896; captures visually inspected",
+  "validation_reports": [
+    "res://artifacts/dev/20260912-124709-puits-descent-prepare-629405f5/summary.json",
+    "res://artifacts/dev/20260912-124818-puits-descent-review-477db2d9/summary.json"
+  ]
+}

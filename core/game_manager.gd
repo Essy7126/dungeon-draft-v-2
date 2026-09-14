@@ -285,7 +285,7 @@ func start_configured_run() -> bool:
 	_threshold_entry_pending = false
 	if selected_run.catabase_route_enabled:
 		_next_run_start_room_index = 0
-		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants)
+		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants, true, true)
 	start_run(selected_run)
 	return run_active
 
@@ -749,6 +749,11 @@ func equip_inventory_item(
 	if result.get("success", false):
 		equipment_changed.emit(result.duplicate(true))
 		if expedition != null:
+			if slot == ItemDefinition.EquipmentSlot.WEAPON:
+				var equipped := state.equipment_loadout.get_item(slot)
+				if equipped != null:
+					var weapon := CatabasePreparationCatalog.weapon_for_item(String(equipped.definition_id))
+					expedition.build.learn_weapon(weapon)
 			_save_expedition_transaction(result)
 	return result
 
@@ -2236,7 +2241,7 @@ func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array
 
 
 # Catabase orchestration stays at destination boundaries, outside combat.
-func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}) -> bool:
+func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false) -> bool:
 	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
 	var fingerprint := _current_replacement_fingerprint()
@@ -2254,9 +2259,28 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	cancel_expedition_replacement()
 	expedition = ExpeditionSession.new()
 	expedition.initialize(get_character_state(&"achilles"), run_seed)
+	expedition.challenges.enabled = challenges_enabled
 	last_restore_error = &""
+	if prepare_loadout:
+		expedition.needs_preparation = true
+		_pending_expedition_action = "open_destination"
+		if not save_expedition(): return false
+		_pending_expedition_action = ""
+		_request_scene_change(EXPEDITION_SCREEN_PATH)
+		return true
 	# The cinematic and selected hero lead directly to the same authored opening.
 	return choose_expedition_node("d01_0")
+
+
+func confirm_catabase_preparation(selection: Dictionary) -> Dictionary:
+	if expedition == null or not run_active: return {"success": false, "message": "Aucune run en préparation."}
+	var result := expedition.prepare_start(selection, run_inventory, item_catalog)
+	if not bool(result.get("success", false)): return result
+	champion_build_changed.emit(&"achilles")
+	var entered := choose_expedition_node("d01_0")
+	result["saved"] = entered
+	if not entered: result["message"] = str(get_expedition_save_status().get("message", "Reprenez la sauvegarde du départ."))
+	return result
 
 
 func choose_expedition_node(node_id: String) -> bool:
@@ -2282,6 +2306,15 @@ func choose_expedition_node(node_id: String) -> bool:
 	elif is_merchant_hall_active() or is_painted_halt_active():
 		_request_scene_change(get_expedition_destination_scene())
 	return true
+
+
+func advance_expedition_level_step() -> Dictionary:
+	if expedition == null or not run_active:
+		return {"success": false, "message": "Aucune expédition en cours."}
+	var result := expedition.advance_level_step()
+	if bool(result.get("success", false)):
+		_save_expedition_transaction(result)
+	return result
 
 
 func claim_expedition_reward(option_id: String) -> Dictionary:
@@ -2440,11 +2473,20 @@ func open_painted_halt() -> bool:
 
 
 func get_expedition_destination_scene() -> String:
+	# Progression and loot must be resolved before a location can take over the UI.
+	if expedition != null and HALT_FLOW.required_step(expedition) not in ["map", "hub"]:
+		return EXPEDITION_SCREEN_PATH
 	if preload("res://hub/seuil_crossroads/seuil_route_choices.gd").active(expedition):
 		return "res://hub/seuil_crossroads/SeuilCrossroads.tscn"
 	if is_painted_halt_active():
 		return PAINTED_HALT_SCREEN_PATH
 	return MERCHANT_HALL_SCREEN_PATH if is_merchant_hall_active() else EXPEDITION_SCREEN_PATH
+
+
+func open_expedition_progression() -> bool:
+	if expedition == null or not run_active or not expedition.is_editable():
+		return false
+	return _request_saved_exit("open_expedition_workshop")
 
 
 func open_merchant_hall() -> bool:

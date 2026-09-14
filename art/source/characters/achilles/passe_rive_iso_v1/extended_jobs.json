@@ -1,0 +1,122 @@
+[
+  {
+    "id": "sky_bow",
+    "dir": "S",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "sky_bow_S_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_bow_v1/bow_rgb.png"
+  },
+  {
+    "id": "sky_bow",
+    "dir": "N",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "sky_bow_N_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_bow_v1/bow_rgb.png"
+  },
+  {
+    "id": "sky_bow",
+    "dir": "W",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "sky_bow_W_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_bow_v1/bow_rgb.png"
+  },
+  {
+    "id": "ivory_bow",
+    "dir": "S",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "ivory_bow_S_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_ivory_bow_v1/ivory_rgb.png"
+  },
+  {
+    "id": "ivory_bow",
+    "dir": "N",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "ivory_bow_N_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_ivory_bow_v1/ivory_rgb.png"
+  },
+  {
+    "id": "ivory_bow",
+    "dir": "W",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "ivory_bow_W_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_ivory_bow_v1/ivory_rgb.png"
+  },
+  {
+    "id": "vital_harvest",
+    "dir": "S",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "vital_harvest_S_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_vital_harvest_v1/vital_rgb.png"
+  },
+  {
+    "id": "vital_harvest",
+    "dir": "N",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "vital_harvest_N_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_vital_harvest_v1/vital_rgb.png"
+  },
+  {
+    "id": "vital_harvest",
+    "dir": "W",
+    "cols": 2,
+    "rows": 3,
+    "prompt_file": "vital_harvest_W_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_vital_harvest_v1/vital_rgb.png"
+  },
+  {
+    "id": "fauche",
+    "dir": "S",
+    "cols": 2,
+    "rows": 4,
+    "prompt_file": "fauche_S_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_fauche_v1/fauche_rgb.png"
+  },
+  {
+    "id": "fauche",
+    "dir": "N",
+    "cols": 2,
+    "rows": 4,
+    "prompt_file": "fauche_N_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_fauche_v1/fauche_rgb.png"
+  },
+  {
+    "id": "fauche",
+    "dir": "W",
+    "cols": 2,
+    "rows": 4,
+    "prompt_file": "fauche_W_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_fauche_v1/fauche_rgb.png"
+  },
+  {
+    "id": "walk",
+    "dir": "S",
+    "cols": 4,
+    "rows": 3,
+    "prompt_file": "walk_S_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_walk_v3/candidate_b_rgb.png"
+  },
+  {
+    "id": "walk",
+    "dir": "N",
+    "cols": 4,
+    "rows": 3,
+    "prompt_file": "walk_N_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_walk_v3/candidate_b_rgb.png"
+  },
+  {
+    "id": "walk",
+    "dir": "W",
+    "cols": 4,
+    "rows": 3,
+    "prompt_file": "walk_W_prompt.txt",
+    "source": "art/source/characters/achilles/passe_rive_walk_v3/candidate_b_rgb.png"
+  }
+]

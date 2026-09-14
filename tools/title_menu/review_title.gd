@@ -1,6 +1,6 @@
 extends Node
 ## Rendered public-menu regression. Launch with isolated APPDATA / LOCALAPPDATA.
-const OUTPUT := "res://artifacts/dev/catabase-title-review"
+const OUTPUT := "res://artifacts/dev/title-mythology-v4/title"
 var _checks := 0
 var _failures: Array[String] = []
 
@@ -109,6 +109,10 @@ func _run() -> void:
 	report.store_string(JSON.stringify({ "checks": _checks, "failures": _failures }, "\t"))
 	report.close()
 	print("Catabase title: %d checks, %d failures" % [_checks, _failures.size()])
+	# Let the audio mixer release MP3 playback before shutting down the engine.
+	(title.get_node("AudioStreamPlayer") as AudioStreamPlayer).stop()
+	title.queue_free()
+	await _settle()
 	get_tree().quit(0 if _failures.is_empty() else 1)
 
 

@@ -1,0 +1,7 @@
+{
+  "date": "2026-09-12",
+  "status": "rejected_by_user",
+  "reason": "Mouvement mécanique et personnage sans vie ; reprise de la méthode demandée.",
+  "audit": "docs/design/achilles/animation_reset_2026-09-12.md",
+  "historical_technical_reports_unchanged": true
+}

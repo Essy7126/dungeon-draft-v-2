@@ -159,7 +159,7 @@ func test_menu_contains_exact_labels_and_only_real_actions_enabled() -> void:
 	var menu := await _spawn_menu()
 	var expected := {
 		&"resume": "REPRENDRE",
-		&"characters": "PERSONNAGES",
+		&"characters": "CARACTÉRISTIQUES",
 		&"equipment": "ÉQUIPEMENTS",
 		&"compendium": "COMPENDIUM",
 		&"options": "ANIMATIONS : STANDARD",

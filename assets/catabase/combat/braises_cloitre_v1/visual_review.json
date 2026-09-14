@@ -1,0 +1,10 @@
+{
+  "controller": "WorldDecor_braises_cloitre_living",
+  "boat_region": [191, 263, 40, 43],
+  "regions": {
+    "fissure": [94, 426, 32, 60],
+    "embers": [691, 172, 40, 30],
+    "brazier": [197, 275, 30, 27],
+    "stable_ground": [1190, 325, 25, 20]
+  }
+}

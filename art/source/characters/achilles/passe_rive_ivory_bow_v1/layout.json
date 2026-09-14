@@ -1,0 +1,122 @@
+{
+  "id": "ivory_bow",
+  "name": "Trait d’ivoire",
+  "subtitle": "S’ancrer, tendre l’ivoire, libérer la puissance.",
+  "color": "#efe4c1",
+  "durations": [
+    140,
+    180,
+    300,
+    1000,
+    65,
+    240
+  ],
+  "phase": [
+    "Encocher",
+    "Descendre sur l’appui",
+    "Transformer l’arc",
+    "Tenir la puissance",
+    "Décocher",
+    "Relâcher"
+  ],
+  "event_ms": 1620,
+  "cooldown_ms": 2400,
+  "damage": 52,
+  "range": 850,
+  "mode": "charged",
+  "hitstop_ms": 65,
+  "scale": 1.06,
+  "source_dir": "art/source/characters/achilles/passe_rive_ivory_bow_v1",
+  "source_file": "ivory_rgb.png",
+  "source_size": [
+    1024,
+    1536
+  ],
+  "boxes": [
+    [
+      35,
+      20,
+      493,
+      496
+    ],
+    [
+      540,
+      20,
+      999,
+      496
+    ],
+    [
+      30,
+      510,
+      496,
+      977
+    ],
+    [
+      532,
+      510,
+      1012,
+      977
+    ],
+    [
+      30,
+      978,
+      494,
+      1496
+    ],
+    [
+      535,
+      1010,
+      991,
+      1496
+    ]
+  ],
+  "anchors": [
+    [
+      232,
+      477
+    ],
+    [
+      747,
+      477
+    ],
+    [
+      244,
+      951
+    ],
+    [
+      749,
+      951
+    ],
+    [
+      258,
+      1470
+    ],
+    [
+      730,
+      1470
+    ]
+  ],
+  "idle_file": "frames/ivory_bow_05.png",
+  "idle_animation": "ivory_bow_idle",
+  "release_offset": [
+    125,
+    -171
+  ],
+  "release_angle_degrees": -5,
+  "projectile_speed": 1450,
+  "tremor": {
+    "frame": 3,
+    "start_ms": 620,
+    "end_ms": 1620,
+    "center": [
+      155,
+      391
+    ],
+    "radius": [
+      91,
+      43
+    ],
+    "max_pixels": 1.7
+  },
+  "proposal": true
+}

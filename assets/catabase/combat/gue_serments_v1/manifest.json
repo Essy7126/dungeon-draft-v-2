@@ -1,0 +1,37 @@
+{
+  "gameplay_fingerprint": "6db326701728540069df5ced2559466118cdad17ee5c0c1776caa4972caf25f1",
+  "gameplay_unchanged_after_reload": true,
+  "geometry_bytes_unchanged": true,
+  "geometry_sha256": "3a010919eac7282de9e344133038948d49eef593ce562814f044341eda8512f6",
+  "guide": "calibration.png",
+  "guide_sha256": "98a71f50997e7689c8e59c7fa0e59813414e1927b63bfdc53deb69166319558e",
+  "image": "res://assets/catabase/combat/gue_serments_v1/land.png",
+  "image_sha256": "c0c9bdcd97e8d5a829fd777d13c1b82c698c8ee66db436ddd8f50491e53fb13e",
+  "image_size": [
+    1586.0,
+    992.0
+  ],
+  "native_canvas": [
+    1920.0,
+    1200.0
+  ],
+  "normalization": "Original pixels retained; UV scale only",
+  "plan_sha256": "3e6bc4b5194fb00da6a53f2118fa331e7984b4d1bd4fa24c5cd07ee72d31b10f",
+  "previous_source": "land-water.png",
+  "prompts": [
+    "PROMPT.md",
+    "PROMPT-lava.md"
+  ],
+  "provider": "image_gen built-in",
+  "provider_source_basename": "exec-8f6f538c-5d0a-4ef0-84d0-824bf198ce76.png",
+  "room_before_sha256": "3f2564e824f2380882f8d34b347b0a3ea49d0a27d12a44eb3ef68093cc84e95e",
+  "room_sha256": "ccf1962b05e34f0f82d4a3c0413dd29936c6e982f9997d6ad60b1704d4b4677e",
+  "target_room": "res://data/rooms/catabase_routes/route_1c7d4c943b3a/room.tres",
+  "texture_scale": [
+    1.21059268600252,
+    1.20967741935484
+  ],
+  "validation_status": "PASS: lava revision, Studio and GPU two resolutions",
+  "gpu_report": "artifacts/dev/20260912-140331-gue-serments-review-34cb0022/summary.json",
+  "studio_report": "artifacts/dev/20260912-140215-gue-serments-prepare-6dd000d5/summary.json"
+}

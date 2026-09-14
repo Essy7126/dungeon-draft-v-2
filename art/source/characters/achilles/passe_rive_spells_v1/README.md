@@ -1,5 +1,13 @@
 # Passe-rive — six gestes jouables, V1
 
+**Palette courante : [Fauche](../passe_rive_fauche_v1/README.md) ajoutée sur 0.** Huit poses, lance tenue au talon, balayage circulaire et traînée en deux profondeurs. **Dix gestes, 50 poses peintes et 63 images chargées**, navigateur et Godot vérifiés. Cadre propre à Fauche : 1152×768 / pivot (576,662). Les notes suivantes conservent l’historique des lots précédents.
+
+**Ajout courant : [Moisson vitale](../passe_rive_vital_harvest_v1/README.md), touche 9.** Animation sans arme, légère lévitation, paumes vertes et petite explosion/traînée rouge vers l’adversaire. La palette compte **neuf gestes, 42 poses et 55 images chargées**. Les notes ci-dessous sont l’historique des lots précédents.
+
+**Dernier ajout : [Trait d’ivoire](../passe_rive_ivory_bow_v1/README.md), touche 8.** Charge longue, appui arrière, transformation ivoire et tremblement du bras. La palette compte maintenant **huit gestes, 36 dessins, 49 images chargées**. Les notes suivantes conservent l’historique des lots précédents.
+
+**Ajout du 11 septembre : [Tir céleste à l’arc](../passe_rive_bow_v1/README.md), touche 7.** Six nouvelles poses, pleine tension tenue, trajectoire courbe et repos à l’arc. La palette étendue contient désormais sept gestes / 30 dessins, et les contrôles couvrent 43 images. Les sections ci-dessous décrivent le socle initial.
+
 10 septembre 2026. **Essai artistique jouable, une direction trois-quarts droite.**
 
 [Ouvrir le terrain d’essai](http://127.0.0.1:8734/files/passe_rive_spells_v1/review.html) · [24 poses](../../../../../artifacts/spine_trial/passe_rive_spells_v1/poses_contact.png) · [Kit ZIP](../../../../../artifacts/spine_trial/passe_rive_spells_v1/passe_rive_spells_v1.zip).

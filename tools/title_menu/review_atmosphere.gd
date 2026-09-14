@@ -1,6 +1,6 @@
 extends Node
 ## Deterministic visual review of the painting, independent of mouse/camera input.
-const OUTPUT := "res://artifacts/dev/title-atmosphere-v2"
+const OUTPUT := "res://artifacts/dev/title-mythology-v4/atmosphere"
 var _failures: Array[String] = []
 var _checks := 0
 
@@ -39,6 +39,96 @@ func _run() -> void:
 		"Layered fog contributes visible pixels",
 	)
 	material.set_shader_parameter("fog_strength", 1.0)
+	# Freeze the camera and isolate cloth: temporal change must come from the
+	# banners themselves, not the fire, fog or movement of the entire painting.
+	material.set_shader_parameter("camera_strength", 0.0)
+	material.set_shader_parameter("fire_strength", 0.0)
+	material.set_shader_parameter("fog_strength", 0.0)
+	await _settle()
+	var wind_before := await _image()
+	material.set_shader_parameter("elapsed", 6.0)
+	await _settle()
+	var wind_after := await _image()
+	_check(
+		_region_changed(wind_before, wind_after, Rect2(0.54, 0.0, 0.05, 0.40)),
+		"Left banner flutters with a stationary camera",
+	)
+	_check(
+		_region_changed(wind_before, wind_after, Rect2(0.91, 0.0, 0.09, 0.28)),
+		"Right banner flutters with a stationary camera",
+	)
+	_check(
+		_region_changed(wind_before, wind_after, Rect2(0.925, 0.035, 0.055, 0.115)),
+		"Right gold embroidery moves with the fabric",
+	)
+	_check(wind_before.save_png(OUTPUT.path_join("wind_t4.png")) == OK, "Save wind start")
+	_check(wind_after.save_png(OUTPUT.path_join("wind_t6.png")) == OK, "Save wind end")
+	var stone_region := Rect2i(800, 130, 45, 100)
+	_check(
+		wind_before.get_region(stone_region).get_data()
+		== wind_after.get_region(stone_region).get_data(),
+		"Wind leaves the stone column stationary",
+	)
+	var right_hem_stone := Rect2i(1238, 172, 4, 4)
+	_check(
+		wind_before.get_region(right_hem_stone).get_data()
+		== wind_after.get_region(right_hem_stone).get_data(),
+		"Right banner does not pull the stone next to its inner hem",
+	)
+	material.set_shader_parameter("wind_strength", 0.0)
+	await _settle()
+	var wind_disabled := await _image()
+	material.set_shader_parameter("elapsed", 9.0)
+	await _settle()
+	_check(
+		wind_disabled.get_data() == (await _image()).get_data(),
+		"Disabling all effects and camera restores a completely still painting",
+	)
+	material.set_shader_parameter("fog_strength", 1.0)
+	material.set_shader_parameter("elapsed", 4.0)
+	await _settle()
+	var fog_before := await _image()
+	material.set_shader_parameter("elapsed", 7.0)
+	await _settle()
+	var fog_after := await _image()
+	_check(
+		_region_changed(fog_before, fog_after, Rect2(0.43, 0.84, 0.50, 0.15)),
+		"Foreground fog travels independently of the camera, wind and fire",
+	)
+	# Hide menu controls to inspect the left rock pockets underneath them.
+	title.get_node("UI").hide()
+	material.set_shader_parameter("rock_fog_strength", 0.0)
+	await _settle()
+	var no_rock_fog := await _image()
+	material.set_shader_parameter("rock_fog_strength", 1.0)
+	await _settle()
+	var rock_fog := await _image()
+	_check(
+		_region_changed(no_rock_fog, rock_fog, Rect2(0.015, 0.48, 0.27, 0.30)),
+		"Near-left rock pockets receive their own fog layer",
+	)
+	var foreground_rock := Rect2i(15, 610, 60, 55)
+	_check(
+		no_rock_fog.get_region(foreground_rock).get_data()
+		== rock_fog.get_region(foreground_rock).get_data(),
+		"Left fog respects the darkest foreground rock",
+	)
+	_check(rock_fog.save_png(OUTPUT.path_join("rock_fog_t7.png")) == OK, "Save rock fog start")
+	material.set_shader_parameter("elapsed", 10.0)
+	await _settle()
+	var rock_fog_later := await _image()
+	_check(
+		_region_changed(rock_fog, rock_fog_later, Rect2(0.015, 0.48, 0.27, 0.30)),
+		"Left rock mist drifts with the camera and wind disabled",
+	)
+	_check(rock_fog_later.save_png(OUTPUT.path_join("rock_fog_t10.png")) == OK, "Save rock fog end")
+	title.get_node("UI").show()
+	_check(fog_before.save_png(OUTPUT.path_join("fog_t4.png")) == OK, "Save isolated fog start")
+	_check(fog_after.save_png(OUTPUT.path_join("fog_t7.png")) == OK, "Save isolated fog end")
+	material.set_shader_parameter("wind_strength", 1.0)
+	material.set_shader_parameter("fire_strength", 1.0)
+	(title.get("_motion_toggle") as CheckButton).set_pressed_no_signal(true)
+	# Keep the camera stationary in the sequence so local animation is reviewable.
 	for index in range(96):
 		material.set_shader_parameter("elapsed", 4.0 + float(index) / 24.0)
 		await get_tree().process_frame
@@ -54,6 +144,7 @@ func _run() -> void:
 		"Save final full-resolution menu",
 	)
 	# Measure steady rendering without screenshot readback.
+	material.set_shader_parameter("camera_strength", 1.0)
 	title.set_process(true)
 	for index in range(20):
 		await get_tree().process_frame
@@ -78,6 +169,9 @@ func _run() -> void:
 		"Atmosphere: %d checks, %d failures; %.2f ms/frame at 1920x1080"
 		% [_checks, _failures.size(), average_frame_ms]
 	)
+	(title.get_node("AudioStreamPlayer") as AudioStreamPlayer).stop()
+	title.queue_free()
+	await _settle()
 	get_tree().quit(0 if _failures.is_empty() else 1)
 
 
@@ -96,3 +190,18 @@ func _check(condition: bool, label: String) -> void:
 	if not condition:
 		_failures.append(label)
 		printerr(label)
+
+
+func _region_changed(before: Image, after: Image, region: Rect2) -> bool:
+	var dimensions := Vector2(before.get_size())
+	var bounds := Rect2i(region.position * dimensions, region.size * dimensions)
+	var changed := 0
+	var sampled := 0
+	for y in range(bounds.position.y, bounds.end.y, 3):
+		for x in range(bounds.position.x, bounds.end.x, 3):
+			sampled += 1
+			var first := before.get_pixel(x, y)
+			var second := after.get_pixel(x, y)
+			if absf(first.r - second.r) + absf(first.g - second.g) + absf(first.b - second.b) > 0.012:
+				changed += 1
+	return sampled > 0 and float(changed) / float(sampled) > 0.03

@@ -1,0 +1,3 @@
+# Installed in artifacts/dev-tools/walk-tracking with --no-deps.
+# NumPy is supplied by the existing sprite-python environment.
+opencv-python-headless==5.0.0.93

@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="PasseRiveAutoSpriteProfile" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/achilles/passe_rive_autosprite_profile.gd" id="1"]
+[ext_resource type="Script" path="res://characters/achilles/2d/passe_rive_autosprite_backend.gd" id="2"]
+
+[resource]
+script = ExtResource("1")
+profile_id = &"passe_rive_combat_v2"
+sprite_frames_path = "res://assets/characters/PasseRive/combat_v2/sprite_frames.tres"
+backend_script = ExtResource("2")
+directions_are_screen_space = true
+expanded_kit_enabled = true
+frame_canvas_size = Vector2i(256, 256)
+foot_anchor = Vector2(130, 230)
+display_scale = 0.44
+run_min_path_cells = 3
+walk_segment_duration_seconds = 0.72
+run_segment_duration_seconds = 0.36
+hit_duration_seconds = 0.48
+death_duration_seconds = 1.05
+death_fade_seconds = 0.3
+advance_duration_seconds = 1.2
+advance_release_seconds = 0.1
+action_clip_settings = {
+"bow": {"frame_count": 25, "duration_seconds": 0.9, "release_seconds": 0.22, "release_frame": 6},
+"bow_quick": {"frame_count": 6, "duration_seconds": 0.58, "release_seconds": 0.20, "release_frame": 3},
+"bow_charged": {"frame_count": 8, "duration_seconds": 1.05, "release_seconds": 0.58, "release_frame": 4},
+"bow_air": {"frame_count": 9, "duration_seconds": 1.10, "release_seconds": 0.52, "release_frame": 4},
+"jump": {"frame_count": 25, "duration_seconds": 0.85, "release_seconds": 0.46, "release_frame": 12},
+"dodge": {"frame_count": 25, "duration_seconds": 0.65, "release_seconds": 0.18, "release_frame": 6}
+}
+cast_origins = {
+"N": Vector2(0, -67), "NE": Vector2(22, -64), "E": Vector2(27, -60),
+"SE": Vector2(24, -53), "S": Vector2(0, -52), "SW": Vector2(-24, -53),
+"W": Vector2(-27, -60), "NW": Vector2(-22, -64)
+}

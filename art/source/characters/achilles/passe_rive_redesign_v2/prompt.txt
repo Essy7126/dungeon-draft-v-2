@@ -1,0 +1,19 @@
+Redesign the reference character PASSE-RIVE as an ACTUAL SIMPLE DOFUS-STYLE IN-GAME CHARACTER. One full-body character only. This is a substantial stylistic redraw: use the input ONLY for the character's identity and costume colors, NOT its muscular anatomy, tall realistic proportions or detailed illustration rendering.
+
+Target: the graphic simplicity and appeal of a Dofus 2 playable character sprite, drawn cleanly at high resolution. A mature male ghostly ferryman, with adult proportions gently stylized to about 5.5 to 6 heads tall. Moderate shoulders, ordinary build under loose clothing. Long enough legs to feel adult, but less stretched than the input. Expressive clear silhouette. NOT a child, chibi, dwarf, tiny compact mascot, superhero or bodybuilder.
+
+CRUCIAL REDUCTION:
+- Arms are simple loose dark sleeves with nearly straight soft contours, NOT naked muscular arms or skin-tight muscle suits. Absolutely no deltoid, biceps, triceps or forearm muscle bulges, no vein lines, no muscle shading.
+- Legs are simple dark trousers, not anatomical leggings. Calves and thighs indicated by broad garment shapes, not separate muscle planes.
+- Render every shape as ONE FLAT BASE COLOR plus AT MOST ONE plain hard-edged shadow patch. No gradients, no painted faceting, no highlights running down limbs. Clean uniform dark contour, extremely few internal lines. Use under about 15 principal colors.
+- The face is a simple elongated adult ivory mask, narrow jade eyes, a simple nose and subtle straight mouth, ONE distinct diagonal black crack. No carved cheek shading, brow wrinkles, cheekbone facets or realistic facial rendering.
+- The petroleum hood is ONE clear graphic shape with one shadow inside. The jade shoulder scarf is two or three broad shapes with virtually no folds.
+- A plain small round dull bronze brooch, no engraved boat motif. Simple ivory belt wrap with ONE short sash tail; no layered fabric wrinkles. Short split dark teal tunic stopping at upper thigh so both knees are visible. Plain dull bronze wrist bands and ankle cuffs.
+- Simple closed dark soft boots with a rounded readable toe, slightly enlarged like a Dofus sprite; NO toes, nails, sandal straps or tiny seams. Simple gloved hands with very few finger lines.
+- No textures, brushwork, weathering, stitching, ornamentation, realism, anatomical studies, anime splash-art detail or 3D lighting.
+
+Keep his recognizable palette: dark petroleum hood and tunic, muted jade scarf, ivory mask and sash, charcoal sleeves/trousers/gloves/boots, restrained old bronze bands. Silent dignified adult spirit of the Greek underworld; no fog, particles, glow or VFX.
+
+One neutral standing pose, three-quarter view facing screen right, gentle elevated tactical camera. Arms relaxed slightly away from his sides, both empty hands visible. Feet naturally apart, legs not crossed, both full boots visible. No weapons or shield. Not a sprite sheet, no action, no additional view.
+
+Portrait composition, entire character with generous white margin around head and feet. Solid plain pure white background for software cutout, no ground shadow, no checkerboard, no lettering, no labels, no watermark. The end result should read as a charming SIMPLIFIED GAME SPRITE in the world of Dofus, not as a polished realistic fantasy concept painting.

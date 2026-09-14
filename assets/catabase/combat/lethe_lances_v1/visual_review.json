@@ -1,0 +1,35 @@
+{
+  "controller": "WorldDecor_lethe_lances_living",
+  "boat_region": [
+    96,
+    590,
+    380,
+    234
+  ],
+  "regions": {
+    "water": [
+      1490,
+      850,
+      60,
+      70
+    ],
+    "torch": [
+      437,
+      48,
+      40,
+      85
+    ],
+    "lantern": [
+      105,
+      646,
+      34,
+      48
+    ],
+    "stable_ground": [
+      960,
+      930,
+      25,
+      12
+    ]
+  }
+}

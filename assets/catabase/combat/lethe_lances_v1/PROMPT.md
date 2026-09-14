@@ -1,0 +1,15 @@
+# Les lances oubliées — peinture de production
+
+Outil image_gen intégré. Guide issu des 185 dalles de route_10ce1ff88330.
+Références de style : Sanctuaire Émeraude et Étal du passeur. La première
+proposition, trop proche du quai précédent, reste dans artifacts/dev/lethe-lances.
+La seconde proposition conserve l'emprise allongée du guide.
+
+Use case: sketch-to-render. Render the geometric guide in IMAGE1 into a 16:10 hand-painted game scene. IMAGE1 IS THE ONLY COMPOSITION, with mandatory exact shape, scale and position. IMAGE2 and IMAGE3 are STYLE ONLY: simplified blue-green stone, broad painted contours, emerald river, bronze accents and localized warm lights. Do not copy their architecture or layout.
+
+The guide shows a broad irregular LOW RIVER BANK attached to ancient stonework along the upper edge, not a symmetrical diamond island. Its low stone shoreline follows exactly the thin polygon outline: in normalized percentages vertices approximately (18,30),(32,19),(46,17),(56,17),(66,25),(78,44),(78,61),(74,70),(62,80),(52,84),(42,84),(34,81),(28,76),(20,61),(18,47). The long bottom part reaches y84%; do not shrink to a conventional diamond. Draw a simple low worn curb at this boundary, thin irregular earthy margin behind it. The shape is attached to the rear bank across y0..20 and does not float.
+ALL pale green area and ALL colored diamonds and gaps within in IMAGE1 become a continuous EMPTY LEVEL gray-green stone dust ground, very low contrast. No painted tactical paving, engraved grid, objects, vegetation, walls, holes or stairs in the reserve. Real game floor tiles/obstacles will be overlaid; this background must support the entire reserved footprint exactly. Do not render the colored guide, markers or diamonds.
+
+The brown oval at x9..23.5%, y58..71% becomes ONE small brown wooden rowboat moored alongside the LEFT shoreline, entirely outside the ground area, fully on river water. Three wooden benches, raised curved prow on the left, plank hull, rope tied to a small mooring post, one hanging amber lantern. The boat silhouette and lantern must fit fully inside x8..24%, y55..73%. Boat length about 3.5 of the small guide diamonds, enough for a few people, no giant boat. Provide a small step to disembark at the nearby bank edge, outside playable reserve.
+
+This is "Les lances oubliées", the next quiet stop on the Léthé. Along the upper background outside the reserve only, weathered broad blue-green masonry blocks and broken guard pillars, roots creeping along a recessed guard niche with two old bronze spears. A single small warm wall torch. Keep subject modest, no grand temple, no waterfall, no giant gates. Continuous emerald/turquoise water fills outside bank at both sides and bottom. Foreground is quiet flowing water, no barrier of rocks. Graphic painterly style matching IMAGE2 and IMAGE3, clear broad shapes, large stone blocks, restrained highlights, no micro-rock noise or gravel texture. No people, no enemies, no UI, no lettering. Do not zoom, crop, rotate or reframe IMAGE1. The bottom ground MUST extend to y84% and the top to y17%, maintaining the guide's irregular elongated shape.

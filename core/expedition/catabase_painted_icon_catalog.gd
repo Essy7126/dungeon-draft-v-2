@@ -41,6 +41,10 @@ const ROUTE_IDS := ["normal", "elite", "boss", "hub", "merchant", "sanctuary", "
 
 
 static func spell_family(spell_id: String) -> String:
+	var first_six: Dictionary = preload("res://core/expedition/catabase_first_six_spells.gd").PRESENTATION
+	for root in first_six:
+		if spell_id == root or spell_id.begins_with(root + "_"):
+			return spell_family(first_six[root][0])
 	for family in SPELL_FAMILIES:
 		if SPELL_FAMILIES[family].has(spell_id):
 			return String(family)

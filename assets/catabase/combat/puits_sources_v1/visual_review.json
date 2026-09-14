@@ -1,0 +1,10 @@
+{
+  "controller": "WorldDecor_puits_sources_living",
+  "boat_region": [390, 142, 35, 50],
+  "regions": {
+    "spring_left": [1440, 205, 35, 80],
+    "spring_right": [1620, 225, 40, 75],
+    "torch": [393, 146, 25, 32],
+    "stable_ground": [1200, 260, 20, 10]
+  }
+}

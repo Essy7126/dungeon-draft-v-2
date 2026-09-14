@@ -33,6 +33,16 @@ func after_each() -> void:
 func test_unsaved_draft_preview_routes_clicks_through_scaled_viewport() -> void:
 	var source_hash := FileAccess.get_sha256(MAP)
 	studio.document.set_property(["title"], "Aperçu non enregistré")
+	studio.document.set_property(["water", "caustic_strength"], 0.16)
+	studio.document.set_property(["water", "distortion_strength"], 0.68)
+	studio.document.set_property(["water", "far_fade"], [0.18, 0.46])
+	studio.document.set_property(["foliage_motion"], { "strength": 2.25, "speed": 0.72 })
+	studio.document.set_property(["torches", 0, "flame_strength"], 0.75)
+	studio.document.set_property(["torches", 0, "light_strength"], 1.3)
+	studio.document.set_property(["torches", 0, "steady_light"], 0.37)
+	studio.document.set_property(["torches", 0, "enclosed"], true)
+	studio._refresh_material_preview()
+	var authored_material := studio.canvas._painting.material as ShaderMaterial
 	var height_field := studio.find_child("PlayerHeightPercent", true, false) as SpinBox
 	assert_not_null(height_field)
 	height_field.value = 24
@@ -57,6 +67,30 @@ func test_unsaved_draft_preview_routes_clicks_through_scaled_viewport() -> void:
 		"The real player matches the authored reference",
 	)
 	assert_eq(str(runtime.definition.title), "Aperçu non enregistré")
+	for parameter in [
+		"water_caustic_strength",
+		"water_distortion_strength",
+		"water_far_fade",
+		"foliage_strength",
+		"foliage_speed",
+		"torch_strength",
+	]:
+		assert_eq(
+			runtime.effect_material.get_shader_parameter(parameter),
+			authored_material.get_shader_parameter(parameter),
+			"Exploring the unsaved draft preserves the editor's material settings: " + parameter,
+		)
+	assert_almost_eq(float(runtime.effect_material.get_shader_parameter("foliage_strength")), 2.25, 0.0001)
+	assert_almost_eq(float(runtime.effect_material.get_shader_parameter("foliage_speed")), 0.72, 0.0001)
+	var torch_settings: PackedVector4Array = runtime.effect_material.get_shader_parameter(
+		"torch_strength"
+	)
+	assert_eq(
+		torch_settings[0],
+		Vector4(0.75, 1.3, 0.37, 1.0),
+		"All four channels reach the enclosed lantern",
+	)
+	assert_eq(torch_settings[1].w, 0.0, "Unflagged flames keep their existing animation")
 	assert_true(
 		runtime.interactions.bridge.preview,
 		"Preview keeps transactions in its isolated session",
@@ -102,10 +136,25 @@ func test_shader_preview_uses_authored_materials_and_original_toggle() -> void:
 	var painting := studio.canvas._painting
 	assert_not_null(painting.material)
 	assert_true(painting.material is ShaderMaterial)
+	assert_eq(painting.material.get_shader_parameter("water_caustic_strength"), 1.0)
+	assert_eq(painting.material.get_shader_parameter("water_distortion_strength"), 1.0)
+	assert_eq(painting.material.get_shader_parameter("water_far_fade"), Vector2.ZERO)
+	assert_eq(painting.material.get_shader_parameter("foliage_strength"), 1.0)
+	assert_eq(painting.material.get_shader_parameter("foliage_speed"), 1.0)
+	var torch_settings: PackedVector4Array = painting.material.get_shader_parameter(
+		"torch_strength"
+	)
+	assert_eq(torch_settings[0].w, 0.0, "Legacy lights are open flames by default")
 	studio.document.set_property(["water", "tint"], "#2288cc")
+	studio.document.set_property(["water", "caustic_strength"], 0.16)
+	studio.document.set_property(["water", "distortion_strength"], 0.68)
+	studio.document.set_property(["water", "far_fade"], [0.18, 0.46])
 	studio._refresh_material_preview()
 	var tint: Color = painting.material.get_shader_parameter("water_color")
 	assert_eq(tint, Color("2288cc"))
+	assert_almost_eq(float(painting.material.get_shader_parameter("water_caustic_strength")), 0.16, 0.0001)
+	assert_almost_eq(float(painting.material.get_shader_parameter("water_distortion_strength")), 0.68, 0.0001)
+	assert_eq(painting.material.get_shader_parameter("water_far_fade"), Vector2(0.18, 0.46))
 	studio.canvas.set_effects_enabled(false)
 	assert_null(painting.material)
 	studio.canvas.set_effects_enabled(true)
@@ -154,6 +203,12 @@ func test_newly_attached_source_can_play_before_godot_import() -> void:
 	assert_not_null(runtime)
 	if runtime != null:
 		assert_true(runtime._ready_for_play)
+		assert_eq(runtime.effect_material.get_shader_parameter("foliage_strength"), 1.0)
+		assert_eq(runtime.effect_material.get_shader_parameter("foliage_speed"), 1.0)
+		var torch_settings: PackedVector4Array = runtime.effect_material.get_shader_parameter(
+			"torch_strength"
+		)
+		assert_eq(torch_settings[0].w, 0.0)
 		var painting := runtime.world.get_child(0) as TextureRect
 		assert_not_null(painting.texture)
 		if painting.texture != null:

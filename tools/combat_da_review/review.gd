@@ -159,6 +159,69 @@ func _launch() -> void:
 					)
 				reports["cross_resolution"] = comparison
 				valid = valid and comparison.ok
+	if "--lances-visual-review" in OS.get_cmdline_user_args():
+		var painted_decor: Dictionary = await preload(
+			"res://tools/lethe_lances_review/visual_checks.gd"
+		).run(battle, destination)
+		reports["painted_decor"] = painted_decor
+		valid = valid and painted_decor.get("ok", false)
+	if "--reeds-visual-review" in OS.get_cmdline_user_args():
+		var painted_decor: Dictionary = await preload(
+			"res://tools/lethe_lances_review/visual_checks.gd"
+		).run(
+			battle,
+			destination,
+			"res://assets/catabase/combat/lethe_reeds_v1/visual_review.json",
+			["water", "channel", "vegetation", "lantern", "stable_ground", "stable_wall"],
+		)
+		reports["painted_decor"] = painted_decor
+		var route_identity := _reeds_route_identity()
+		reports["route_identity"] = route_identity
+		valid = valid and bool(painted_decor.get("ok", false)) and bool(route_identity.ok)
+	if "--puits-visual-review" in OS.get_cmdline_user_args():
+		var painted_decor: Dictionary = await preload(
+			"res://tools/lethe_lances_review/visual_checks.gd"
+		).run(
+			battle,
+			destination,
+			"res://assets/catabase/combat/puits_descent_v1/visual_review.json",
+			["lava", "lantern", "stable_ground"],
+		)
+		reports["painted_decor"] = painted_decor
+		valid = valid and bool(painted_decor.get("ok", false))
+	if "--puits-sources-visual-review" in OS.get_cmdline_user_args():
+		var painted_decor: Dictionary = await preload(
+			"res://tools/lethe_lances_review/visual_checks.gd"
+		).run(
+			battle,
+			destination,
+			"res://assets/catabase/combat/puits_sources_v1/visual_review.json",
+			["spring_left", "spring_right", "torch", "stable_ground"],
+		)
+		reports["painted_decor"] = painted_decor
+		valid = valid and bool(painted_decor.get("ok", false))
+	if "--gue-serments-visual-review" in OS.get_cmdline_user_args():
+		var painted_decor: Dictionary = await preload(
+			"res://tools/lethe_lances_review/visual_checks.gd"
+		).run(
+			battle,
+			destination,
+			"res://assets/catabase/combat/gue_serments_v1/visual_review.json",
+			["lava", "inlet", "lamp", "stable_ground"],
+		)
+		reports["painted_decor"] = painted_decor
+		valid = valid and bool(painted_decor.get("ok", false))
+	if "--braises-cloitre-visual-review" in OS.get_cmdline_user_args():
+		var painted_decor: Dictionary = await preload(
+			"res://tools/lethe_lances_review/visual_checks.gd"
+		).run(
+			battle,
+			destination,
+			"res://assets/catabase/combat/braises_cloitre_v1/visual_review.json",
+			["fissure", "embers", "brazier", "stable_ground"],
+		)
+		reports["painted_decor"] = painted_decor
+		valid = valid and bool(painted_decor.get("ok", false))
 	reports["gameplay_fingerprint"] = ArenaSnapshotService.gameplay_fingerprint(source)
 	reports["room"] = _room_path
 	reports["capture"] = destination
@@ -187,3 +250,23 @@ func _launch() -> void:
 	for frame in range(3):
 		await get_tree().process_frame
 	get_tree().quit.call_deferred(0 if valid else 6)
+
+
+func _reeds_route_identity() -> Dictionary:
+	var node := { }
+	for candidate: Dictionary in ExpeditionRouteCatalog.create_nodes(2401):
+		if str(candidate.id) == "d05_1":
+			node = candidate
+	var expected_room: RoomData = null
+	if not node.is_empty():
+		expected_room = ExpeditionMapCatalog.get_room_for_node(node)
+	var resolved_path: String = expected_room.resource_path if expected_room != null else ""
+	return {
+		"ok": str(node.get("title", "")) == "Les roseaux du tireur"
+		and int(node.get("depth", -1)) == 5
+		and str(node.get("kind", "")) == "normal" and resolved_path == _room_path,
+		"seed": 2401,
+		"node_id": str(node.get("id", "")),
+		"title": str(node.get("title", "")),
+		"room": resolved_path,
+	}

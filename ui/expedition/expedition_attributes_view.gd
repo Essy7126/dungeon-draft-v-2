@@ -35,11 +35,15 @@ var _badge: PanelContainer
 var _note: Label
 var _compact := false
 var _density_applied := false
+var _details: VBoxContainer
+var _show_details := false
+var _tabs: Array[Button] = []
 
 
-func configure(session: ExpeditionSession, read_only: bool = false) -> void:
+func configure(session: ExpeditionSession, read_only: bool = false, show_details: bool = false) -> void:
 	_session = session
 	_read_only = read_only
+	_show_details = show_details
 	_reduced_motion = GameManager.is_reduced_motion_enabled()
 	if not _built:
 		_build()
@@ -80,6 +84,16 @@ func _build() -> void:
 	_points.name = "AttributePointsRemaining"
 	_points.autowrap_mode = TextServer.AUTOWRAP_OFF
 	_points.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var tabs := HBoxContainer.new()
+	add_child(tabs)
+	for entry in [["AllocateAttributes", "Répartir mes points", false], ["DetailedCharacterStats", "Statistiques détaillées", true]]:
+		var tab := Button.new()
+		tab.name = entry[0]
+		tab.text = entry[1]
+		ART.apply_button(tab)
+		tabs.add_child(tab)
+		_tabs.append(tab)
+		tab.pressed.connect(func(): _show_details = entry[2]; _refresh_tabs())
 	var scroll := ScrollContainer.new()
 	scroll.name = "AttributeScroll"
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -117,6 +131,9 @@ func _build() -> void:
 	var note := _label(content, "Les valeurs incluent votre équipement. Chaque point est conservé pour toute cette expédition.\nSurvolez une caractéristique pour consulter tous ses effets.", 14, MUTED)
 	note.name = "AttributeRunExplanation"
 	_note = note
+	_details = preload("res://ui/expedition/expedition_character_details.gd").new()
+	_details.name = "DetailedCharacterSheet"
+	content.add_child(_details)
 	_points.tooltip_text = note.text
 	_update_columns()
 
@@ -212,6 +229,8 @@ func refresh() -> void:
 	var unit := state.unit
 	var available := champion.unspent_attribute_points
 	var editable := not _read_only and _session.is_editable()
+	_details.refresh(_session)
+	_refresh_tabs()
 	_update_text(_points, "%d %s" % [available, "point disponible" if available == 1 else "points disponibles"], "points")
 	_refresh_guidance()
 	_update_text(_stat_labels.health, "%d / %d" % [unit.current_hp, unit.max_hp.get_int()], "health")
@@ -247,6 +266,15 @@ func refresh() -> void:
 			control.tooltip_text = details
 		button.tooltip_text += "\n" + details
 		_highlight_tile(id, button.has_focus() or button.is_hovered())
+
+
+func _refresh_tabs() -> void:
+	if _details == null: return
+	_details.visible = _show_details
+	_attribute_grid.visible = not _show_details
+	_note.visible = not _show_details
+	for index in _tabs.size(): ART.apply_tab(_tabs[index], _show_details == (index == 1))
+	_refresh_guidance()
 
 
 func _preview_text(row: Dictionary, can_spend: bool) -> String:
@@ -297,7 +325,7 @@ func _apply_density() -> void:
 	_points.add_theme_font_size_override("font_size", 15 if _compact else 17)
 	_guidance.add_theme_font_size_override("font_size", 14 if _compact else 16)
 	_turn_resources.add_theme_font_size_override("font_size", 14 if _compact else 15)
-	_note.show()
+	_note.visible = not _show_details
 	_attribute_grid.add_theme_constant_override("v_separation", 8 if _compact else 12)
 	for stat in _stat_tiles.values():
 		var value: Label = stat.value
@@ -347,6 +375,9 @@ func _apply_density() -> void:
 
 
 func _refresh_guidance() -> void:
+	if _show_details:
+		_guidance.text = "Statistiques actuelles · équipement et effets compris."
+		return
 	if _session == null or _session.character == null:
 		return
 	var champion := _session.character.champion_progression

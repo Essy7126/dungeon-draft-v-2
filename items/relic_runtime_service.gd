@@ -115,6 +115,8 @@ func begin_combat(units: Array, grid: GridData = null) -> void:
 	_combat_units = units.duplicate()
 	_grid = grid
 	_in_combat = true
+	for hero in _heroes:
+		CatabaseCombatModifier.reset_actor(hero)
 	process_trigger(ItemReactiveEffectData.TRIGGER_COMBAT_START, {
 		"eligible_heroes": _living_heroes(),
 		"active_unit": _living_heroes()[0] if not _living_heroes().is_empty() else null,
@@ -275,6 +277,8 @@ func manual_activation_state(hero: Unit, instance_id: StringName) -> Dictionary:
 		if effect == null or not effect.enabled or not effect.is_manual_trigger():
 			continue
 		manual_effect_found = true
+		if effect.result_id == &"ct_supply" and hero.current_ap < 1:
+			return _manual_state(false, MANUAL_REASON_CONDITION_NOT_MET, "Il faut 1 PA pour utiliser cette relique.")
 		if not registry.validate_effect(effect).is_empty():
 			continue
 		if not _conditions_pass(effect, hero, context, instance, effect_index):
@@ -645,6 +649,8 @@ func _apply_result(
 	) -> bool:
 	if effect.result_id == ItemReactiveEffectData.RESULT_REDUCE_VOLUNTARY_MOVE_COST:
 		return true
+	if effect.result_id in [&"ct_passive", &"ct_bronze", &"ct_supply"]:
+		return preload("res://items/catabase_relic_results.gd").apply(effect, hero, context, _inventory, instance)
 	if effect.result_id == ItemReactiveEffectData.RESULT_CANCEL_IN_PROGRESS:
 		context["cancelled"] = true
 		return true

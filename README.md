@@ -9,6 +9,11 @@ GDScript et des ressources data-driven.
 
 La priorité actuelle de travail est **Catabase d’Achille**. La [base de reprise du 5 septembre 2026](docs/ai/REPRISE_PROJET_2026-09-05.md) rassemble la direction artistique, les enseignements Dofus, les évolutions présentes dans le code et le prochain axe VFX. La présentation du trio ci-dessous décrit uniquement l’archive historique.
 
+Le titre propose huit musiques locales, avec **Passage of Time** au premier lancement.
+Le panneau **Musique** en bas à droite permet de choisir le morceau et son volume ;
+ces préférences sont conservées entre les lancements. Les crédits sont accessibles
+dans le jeu et dans [les attributions musicales](assets/audio/title/CREDITS.md).
+
 La [Cour des Sources](docs/maps/greek_drawn_courtyard_v1.md) est une nouvelle map grecque dessinée, construite à partir de l’observation directe de Dofus et jouable avec les dalles et le combat communs. Ouvrir `tools/labs/greek_drawn_arena/GreekDrawnCourtyard.tscn` puis **F6** dans Godot.
 
 
@@ -25,19 +30,53 @@ aucune collision n'est dérivée de leurs pixels.
 
 ## Sélection de personnage
 
-Le menu ouvre désormais le [nouvel écran de sélection](docs/design/character_selection_2026-09-05.md) : aperçu du personnage, orientations, animations, statistiques et capacités réelles. Seules les deux apparences d’Achille sont proposées ; elles lancent la même aventure Catabase en solo. Le refuge reste accessible depuis cet écran.
+Le menu ouvre désormais le [nouvel écran de sélection](docs/design/character_selection_2026-09-05.md) : aperçu du personnage, orientations, animations, statistiques et capacités réelles. Trois apparences d’Achille sont proposées : originale, peinte et Passe-rive ; elles lancent la même aventure Catabase en solo. Le refuge reste accessible depuis cet écran.
 
 Pour le voir directement, ouvrir `ui/selection/CharacterSelectionScreen.tscn` et lancer **F6** dans Godot.
 
 ## Catabase : chemin et build recomposable
 
+Le départ se prépare dans sept fenêtres illustrées : arme, protection, deux techniques,
+relique permanente, relique éphémère, puis récapitulatif. Les vingt objets possèdent
+leur propre icône dessinée. À chaque montée de niveau des nouvelles constructions,
+une annonce ouvre les caractéristiques, les apprentissages de sorts, puis le butin.
+Les points de destin peuvent être conservés ; un objet obtenu peut être équipé depuis
+la fenêtre de réception avant de revenir à la carte. La sauvegarde reprend à l'étape
+de progression restante, sans répéter les gains.
+
+La progression et le butin sont prioritaires sur l'entrée au carrefour. **Menu →
+Caractéristiques** reste accessible après le combat : fiche détaillée (base, bonus,
+total, résistances, équipement et effets), répartition des points et bouton pour
+reprendre les décisions en attente. La consultation en combat reste en lecture seule.
+
 Le parcours public suit **Nouvelle partie → sélection d’Achille → cinématique →
 [Seuil des Ombres](docs/maps/underworld_threshold_2026-09-10.md) → run**. Dans cette
 entrée jouable, on peut marcher entre les trois statues et lire leurs souvenirs ;
-franchir la porte commence l’aventure. La reprise rejoint directement la sauvegarde existante.
+franchir la porte ouvre désormais la **préparation des six constructions** : arme,
+protection, deux techniques libres, relique permanente et éphémère. Les six départs
+sont personnalisables et évoluent par mutations pendant la run. Voir le
+[lot jouable et ses règles](docs/design/catabase_first_six_2026-09-13.md).
+La reprise rejoint directement la sauvegarde existante.
 
-Le premier combat propose quatre sorts fixes, puis le kit se construit en cours
-de run. Le parcours à embranchements comprend environ quinze combats et cinq haltes.
+Le prototype de deck a été retiré : Achille utilise ses sorts équipés, leur
+progression et son équipement. Les **défis facultatifs** avant les combats restent
+présents et modifient le combat suivant. Les sauvegardes de l'essai reprennent
+automatiquement avec le système de sorts. Le parcours à embranchements comprend
+environ quinze combats et cinq haltes. Voir les [défis conservés et la direction retenue](docs/design/catabase_challenges_without_deck_2026-09-12.md).
+
+Les combats peints intègrent les effets doux des quatre techniques de départ,
+les pas, impacts ennemis, soins, boucliers et esquives, avec une harpe discrète.
+Le sac, le grimoire, les récompenses et les interactions des haltes disposent
+aussi de retours sonores courts aux aigus adoucis.
+Le Seuil des Ombres et les combats peints ajoutent une caverne suspendue : souffle
+grave, eau lointaine et longues respirations de volume, sur un bus d’ambiance
+séparé. La boucle locale de 109 secondes entre progressivement ; elle respecte
+la pause et la coupure des sons au Seuil. [Source et adaptation](assets/audio/catabase/ambience/CREDITS.md).
+Musique : **Soft Mysterious Harp Loop**, **VWolfdog (Jordy Hake)**,
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/),
+[source](https://opengameart.org/content/soft-mysterious-harp-loop) ; vitesse/hauteur,
+aigus et niveau adaptés. [Crédits audio et licences](assets/audio/catabase/CREDITS.md).
+
 Dix nouvelles arènes complètent les cinq historiques ; les haltes proposent des
 zones de commerce, de récupération, de lore et de découverte de branches.
 

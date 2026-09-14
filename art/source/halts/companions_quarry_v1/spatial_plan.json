@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "stage": "planning",
+  "id": "companions_quarry_v1",
+  "world": {
+    "width": 2200,
+    "player_height_ratio": 0.18,
+    "speed": 210,
+    "foot_clearance": 16,
+    "spawn": [
+      0.29,
+      0.76
+    ]
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.18,
+        0.72
+      ],
+      [
+        0.31,
+        0.57
+      ],
+      [
+        0.44,
+        0.53
+      ],
+      [
+        0.56,
+        0.45
+      ],
+      [
+        0.66,
+        0.45
+      ],
+      [
+        0.73,
+        0.53
+      ],
+      [
+        0.87,
+        0.56
+      ],
+      [
+        0.88,
+        0.7
+      ],
+      [
+        0.77,
+        0.79
+      ],
+      [
+        0.59,
+        0.86
+      ],
+      [
+        0.39,
+        0.85
+      ],
+      [
+        0.25,
+        0.82
+      ]
+    ],
+    "obstacles": [
+      [
+        [
+          0.4,
+          0.56
+        ],
+        [
+          0.49,
+          0.54
+        ],
+        [
+          0.54,
+          0.61
+        ],
+        [
+          0.48,
+          0.68
+        ],
+        [
+          0.4,
+          0.64
+        ]
+      ]
+    ]
+  },
+  "landmarks": [
+    {
+      "id": "quarry_hearth",
+      "title": "Le feu des compagnons",
+      "action": "rest",
+      "point": [
+        0.55,
+        0.67
+      ],
+      "focus": [
+        0.47,
+        0.6
+      ],
+      "radius": 0.07,
+      "description": "A makeshift camp left by the ancient Greek workers who excavated the underworld rock. Continue the basalt, bronze, lava and painted visual language of the preceding magma-springs room. A patched russet linen lean-to, rolled wool bedding, hand picks, wedges, chisels, wicker spoil baskets and a wooden drag-sled testify to manual excavation. A small sheltered hearth provides the rest interaction. A modest worn votive relief of bearded Hades with a TWO-pronged bident and a three-headed Cerberus, with a small bowl of pomegranate and coins, gives the place its Greek-underworld identity. Quarry chisel marks and half-extracted blocks appear in the rock. No industrial mine rails, electric lamps, modern gear, living characters or interface. Sparse old bones near the edge, warm lamps and one distant thin magma fissure. This is an intimate refuge, not a combat arena or monumental palace."
+    },
+    {
+      "id": "deeper_gallery",
+      "title": "Reprendre la descente",
+      "action": "exit",
+      "point": [
+        0.82,
+        0.6
+      ],
+      "focus": [
+        0.87,
+        0.47
+      ],
+      "radius": 0.07,
+      "description": "Le sentier continue sous la roche."
+    }
+  ],
+  "instructions": "Draw normalized entrance, exits, circulation loop, obstacles and interactions before generation. Place equal-height Achilles idle_S references beside the entrance, work surface and exit, with feet on the same adjacent floor. H is feet to silhouette top, including spear and plume; H/image_height is world.player_height_ratio. Furniture ratios use body B excluding spear and plume, as measured in the shared style reference. Export or attach the plan as a second reference; omit reference characters from the final painting."
+}

@@ -1,0 +1,90 @@
+{
+  "name": "Achille — Veilleur d’airain",
+  "working_name": true,
+  "status": "concept_and_static_construction_review",
+  "recommended": "c",
+  "backgrounds": [
+    {
+      "id": "sources",
+      "title": "Cour des Sources",
+      "file": "bg_sources.png",
+      "source": "artifacts/catabase_registered_maps_2026-09-05/current_1920x1080/room_01_combat_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "anchor": [
+        784,
+        449
+      ],
+      "note": "Capture du jeu du 5 septembre · insertion de comparaison",
+      "sha256": "7a8f5f3b2ab9de0ffe1210c3d8071c7519f7e041442ee3d63ca9504a01e4210f"
+    },
+    {
+      "id": "cendres",
+      "title": "Porte des Cendres",
+      "file": "bg_cendres.png",
+      "source": "artifacts/catabase_registered_maps_2026-09-05/current_1920x1080/room_02_combat_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "anchor": [
+        784,
+        449
+      ],
+      "note": "Capture du jeu du 5 septembre · insertion de comparaison",
+      "sha256": "21cec99b3ac009db616b649d29688cee4ceb389344f06bbfec6a196a8bfe2c5b"
+    },
+    {
+      "id": "sanctuaire",
+      "title": "Sanctuaire émeraude",
+      "file": "bg_sanctuaire.png",
+      "source": "asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+      "size": [
+        1672,
+        941
+      ],
+      "anchor": [
+        851,
+        783
+      ],
+      "note": "Peinture du sanctuaire · échelle indicative",
+      "sha256": "e97a9650c05defbb0dd0094199d3991c0aa2bd4399f4d6bfbe23c6273450b31f"
+    }
+  ],
+  "heights": [
+    96,
+    112,
+    128
+  ],
+  "default_height": 112,
+  "candidates": [
+    {
+      "id": "a",
+      "name": "Serment de cendre",
+      "file": "candidate_a.png"
+    },
+    {
+      "id": "b",
+      "name": "Cendre liée",
+      "file": "candidate_b.png"
+    },
+    {
+      "id": "c",
+      "name": "Veilleur d’airain",
+      "file": "candidate_c.png"
+    }
+  ],
+  "generation": "Built-in ImageGen; original concepts, pose sheet and local brooch correction.",
+  "transparency": "Source RGB with painted checkerboard; authorized local rembg birefnet-general-lite extraction.",
+  "limits": [
+    "Recommandation de concept, acceptation artistique utilisateur en attente.",
+    "Photomontages sur captures et peinture du projet, pas une intégration au combat.",
+    "Trois poses indépendantes, aucune marche ni animation produite.",
+    "La torsion V2 réoriente les deux pieds et le bassin ; le buste effectue une rotation modeste, pas un extrême validé.",
+    "La main ouverte ajoute des doigts à la moufle de repos ; une substitution doit être dessinée.",
+    "Deux calques dans le test ORA : corps de référence et patch de broche. Pas un personnage entièrement découpé.",
+    "La vue de dos et les côtés opposés restent à dessiner."
+  ]
+}

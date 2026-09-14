@@ -1,0 +1,59 @@
+{
+  "gameplay_fingerprint": "a7ccef984f1feeee6cccce268f4284c58e7c21f113ba458a76c67a6f2101e30c",
+  "gameplay_unchanged_after_reload": true,
+  "geometry_bytes_unchanged": true,
+  "geometry_sha256": "37a53db22174d917a6b191041da9010a35cdb50ebcf853b4b4187aeba0d3d93a",
+  "guide": "calibration.png",
+  "guide_sha256": "6b6f9d7e92f578115f2e34fad2487d883a456e77e2d1cb56c69cf8c66d9457c1",
+  "image": "res://assets/catabase/combat/lethe_lances_v1/land.png",
+  "image_sha256": "0c2ca24fb89da3d514836a16ba1ac0b3144d8940c30d302ed1939b76302ed14e",
+  "image_size": [
+    1586.0,
+    992.0
+  ],
+  "native_canvas": [
+    1920.0,
+    1200.0
+  ],
+  "normalization": "Original generated pixels retained, UV scale only; no crop or repaint",
+  "plan_sha256": "46fa23622eb90836d3b5755e1d94cc2914a28c0a3aa4fdea373928d8a5e70d44",
+  "prompt": "PROMPT.md",
+  "provider": "image_gen built-in",
+  "provider_source_basename": "exec-c5341e66-be2e-4abc-81ac-f074b0c024dc.png",
+  "room_before_sha256": "932e42eef4c837597827045dbe7b542782eba208e31745f4eb2760f4e04eacf6",
+  "room_sha256": "0d346e0bc7f985b38335d2e528ae10026c66f4d3bfdb2d41b555d7026899e44f",
+  "target_room": "res://data/rooms/catabase_routes/route_10ce1ff88330/room.tres",
+  "texture_scale": [
+    1.21059268600252,
+    1.20967741935484
+  ],
+  "validation_status": "PASS: import, persisted gameplay, two GPU formats, route tests and expedition launch",
+  "validation_reports": {
+    "prepare": "artifacts/dev/20260912-110335-lethe-lances-prepare-67071bfe/summary.json",
+    "gpu": "artifacts/dev/20260912-110523-lethe-lances-review-96c907f9/summary.json",
+    "unit": "artifacts/dev/20260912-110740-test-test_unit_test_catabase_route_layouts.gd-4b1ede52/gut-strict-report.json",
+    "expedition": "artifacts/dev/20260912-111012-lethe-lances-expedition-2e7225cc/summary.json"
+  },
+  "visual_review": {
+    "inspected": [
+      "1920x1080_after_move_guard",
+      "1200x896_after_move_guard",
+      "1600x900_expedition_deployment"
+    ],
+    "boat_fully_visible": true,
+    "hud_overlap": false,
+    "minimum_floor_shore_native_px": 53.3317565917969
+  },
+  "source_references": [
+    "res://asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+    "res://asset/map/painted/merchant/hall_v1/hall.png"
+  ],
+  "runtime_asset_sha256": {
+    "land.png": "0c2ca24fb89da3d514836a16ba1ac0b3144d8940c30d302ed1939b76302ed14e",
+    "living.gdshader": "a917cf173ddd18aa00ffb1957c87dac45c27ea93d925ed1e1404a1120caecdb0",
+    "living.gd": "9c44b58d2b71cbd3a76f65e306331a30f34f874a343e97227825cd32c53e8a3d",
+    "Living.tscn": "33e58554219fbbfdce71fc7ffe5a2ded76b9845da8dc40d707f37bd8b89ec821",
+    "presentation.tres": "d8b9f82fe39413396c4cf6e823c333ce79195b030ece08bdf3a7ce48f9cda20e",
+    "visual_review.json": "a1fadafb87269a95b268ffbe6cf05e01816a095c9405a41ec46f0e557fd5f82b"
+  }
+}

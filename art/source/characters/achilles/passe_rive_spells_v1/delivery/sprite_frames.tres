@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=44 format=3]
+[gd_resource type="SpriteFrames" load_steps=74 format=3]
 
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/strike_atlas.png" id="strike"]
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/dash_atlas.png" id="dash"]
@@ -6,6 +6,10 @@
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/guard_atlas.png" id="guard"]
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/sweep_atlas.png" id="sweep"]
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/bash_atlas.png" id="bash"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/sky_bow_atlas.png" id="sky_bow"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/ivory_bow_atlas.png" id="ivory_bow"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/vital_harvest_atlas.png" id="vital_harvest"]
+[ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/fauche_atlas.png" id="fauche"]
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/idle.png" id="idle"]
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_00.png" id="walk_0"]
 [ext_resource type="Texture2D" path="res://art/source/characters/achilles/passe_rive_spells_v1/delivery/frames/walk_01.png" id="walk_1"]
@@ -116,6 +120,110 @@ region = Rect2(0, 768, 768, 768)
 atlas = ExtResource("bash")
 region = Rect2(768, 768, 768, 768)
 
+[sub_resource type="AtlasTexture" id="sky_bow_0"]
+atlas = ExtResource("sky_bow")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sky_bow_1"]
+atlas = ExtResource("sky_bow")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sky_bow_2"]
+atlas = ExtResource("sky_bow")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sky_bow_3"]
+atlas = ExtResource("sky_bow")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sky_bow_4"]
+atlas = ExtResource("sky_bow")
+region = Rect2(0, 1536, 768, 768)
+
+[sub_resource type="AtlasTexture" id="sky_bow_5"]
+atlas = ExtResource("sky_bow")
+region = Rect2(768, 1536, 768, 768)
+
+[sub_resource type="AtlasTexture" id="ivory_bow_0"]
+atlas = ExtResource("ivory_bow")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="ivory_bow_1"]
+atlas = ExtResource("ivory_bow")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="ivory_bow_2"]
+atlas = ExtResource("ivory_bow")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="ivory_bow_3"]
+atlas = ExtResource("ivory_bow")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="ivory_bow_4"]
+atlas = ExtResource("ivory_bow")
+region = Rect2(0, 1536, 768, 768)
+
+[sub_resource type="AtlasTexture" id="ivory_bow_5"]
+atlas = ExtResource("ivory_bow")
+region = Rect2(768, 1536, 768, 768)
+
+[sub_resource type="AtlasTexture" id="vital_harvest_0"]
+atlas = ExtResource("vital_harvest")
+region = Rect2(0, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="vital_harvest_1"]
+atlas = ExtResource("vital_harvest")
+region = Rect2(768, 0, 768, 768)
+
+[sub_resource type="AtlasTexture" id="vital_harvest_2"]
+atlas = ExtResource("vital_harvest")
+region = Rect2(0, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="vital_harvest_3"]
+atlas = ExtResource("vital_harvest")
+region = Rect2(768, 768, 768, 768)
+
+[sub_resource type="AtlasTexture" id="vital_harvest_4"]
+atlas = ExtResource("vital_harvest")
+region = Rect2(0, 1536, 768, 768)
+
+[sub_resource type="AtlasTexture" id="vital_harvest_5"]
+atlas = ExtResource("vital_harvest")
+region = Rect2(768, 1536, 768, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_0"]
+atlas = ExtResource("fauche")
+region = Rect2(0, 0, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_1"]
+atlas = ExtResource("fauche")
+region = Rect2(1152, 0, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_2"]
+atlas = ExtResource("fauche")
+region = Rect2(0, 768, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_3"]
+atlas = ExtResource("fauche")
+region = Rect2(1152, 768, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_4"]
+atlas = ExtResource("fauche")
+region = Rect2(0, 1536, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_5"]
+atlas = ExtResource("fauche")
+region = Rect2(1152, 1536, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_6"]
+atlas = ExtResource("fauche")
+region = Rect2(0, 2304, 1152, 768)
+
+[sub_resource type="AtlasTexture" id="fauche_7"]
+atlas = ExtResource("fauche")
+region = Rect2(1152, 2304, 1152, 768)
+
 [resource]
 animations = [{"name": &"strike", "loop": false, "speed": 1000.0, "frames": [{"duration": 100.0, "texture": SubResource("strike_0")}, {"duration": 80.0, "texture": SubResource("strike_1")}, {"duration": 90.0, "texture": SubResource("strike_2")}, {"duration": 130.0, "texture": SubResource("strike_3")}]},
 {"name": &"dash", "loop": false, "speed": 1000.0, "frames": [{"duration": 100.0, "texture": SubResource("dash_0")}, {"duration": 110.0, "texture": SubResource("dash_1")}, {"duration": 90.0, "texture": SubResource("dash_2")}, {"duration": 130.0, "texture": SubResource("dash_3")}]},
@@ -123,5 +231,13 @@ animations = [{"name": &"strike", "loop": false, "speed": 1000.0, "frames": [{"d
 {"name": &"guard", "loop": false, "speed": 1000.0, "frames": [{"duration": 90.0, "texture": SubResource("guard_0")}, {"duration": 110.0, "texture": SubResource("guard_1")}, {"duration": 230.0, "texture": SubResource("guard_2")}, {"duration": 170.0, "texture": SubResource("guard_3")}]},
 {"name": &"sweep", "loop": false, "speed": 1000.0, "frames": [{"duration": 150.0, "texture": SubResource("sweep_0")}, {"duration": 65.0, "texture": SubResource("sweep_1")}, {"duration": 130.0, "texture": SubResource("sweep_2")}, {"duration": 170.0, "texture": SubResource("sweep_3")}]},
 {"name": &"bash", "loop": false, "speed": 1000.0, "frames": [{"duration": 130.0, "texture": SubResource("bash_0")}, {"duration": 65.0, "texture": SubResource("bash_1")}, {"duration": 110.0, "texture": SubResource("bash_2")}, {"duration": 150.0, "texture": SubResource("bash_3")}]},
+{"name": &"sky_bow", "loop": false, "speed": 1000.0, "frames": [{"duration": 120.0, "texture": SubResource("sky_bow_0")}, {"duration": 130.0, "texture": SubResource("sky_bow_1")}, {"duration": 300.0, "texture": SubResource("sky_bow_2")}, {"duration": 70.0, "texture": SubResource("sky_bow_3")}, {"duration": 140.0, "texture": SubResource("sky_bow_4")}, {"duration": 150.0, "texture": SubResource("sky_bow_5")}]},
+{"name": &"sky_bow_idle", "loop": true, "speed": 1.0, "frames": [{"duration": 1.0, "texture": SubResource("sky_bow_5")}]},
+{"name": &"ivory_bow", "loop": false, "speed": 1000.0, "frames": [{"duration": 140.0, "texture": SubResource("ivory_bow_0")}, {"duration": 180.0, "texture": SubResource("ivory_bow_1")}, {"duration": 300.0, "texture": SubResource("ivory_bow_2")}, {"duration": 1000.0, "texture": SubResource("ivory_bow_3")}, {"duration": 65.0, "texture": SubResource("ivory_bow_4")}, {"duration": 240.0, "texture": SubResource("ivory_bow_5")}]},
+{"name": &"ivory_bow_idle", "loop": true, "speed": 1.0, "frames": [{"duration": 1.0, "texture": SubResource("ivory_bow_5")}]},
+{"name": &"vital_harvest", "loop": false, "speed": 1000.0, "frames": [{"duration": 140.0, "texture": SubResource("vital_harvest_0")}, {"duration": 180.0, "texture": SubResource("vital_harvest_1")}, {"duration": 300.0, "texture": SubResource("vital_harvest_2")}, {"duration": 95.0, "texture": SubResource("vital_harvest_3")}, {"duration": 260.0, "texture": SubResource("vital_harvest_4")}, {"duration": 225.0, "texture": SubResource("vital_harvest_5")}]},
+{"name": &"vital_harvest_idle", "loop": true, "speed": 1.0, "frames": [{"duration": 1.0, "texture": SubResource("vital_harvest_5")}]},
+{"name": &"fauche", "loop": false, "speed": 1000.0, "frames": [{"duration": 140.0, "texture": SubResource("fauche_0")}, {"duration": 95.0, "texture": SubResource("fauche_1")}, {"duration": 65.0, "texture": SubResource("fauche_2")}, {"duration": 65.0, "texture": SubResource("fauche_3")}, {"duration": 70.0, "texture": SubResource("fauche_4")}, {"duration": 100.0, "texture": SubResource("fauche_5")}, {"duration": 110.0, "texture": SubResource("fauche_6")}, {"duration": 155.0, "texture": SubResource("fauche_7")}]},
+{"name": &"fauche_idle", "loop": true, "speed": 1.0, "frames": [{"duration": 1.0, "texture": SubResource("fauche_7")}]},
 {"name": &"idle", "loop": true, "speed": 1.0, "frames": [{"duration": 1.0, "texture": ExtResource("idle")}]},
 {"name": &"walk", "loop": true, "speed": 10.0, "frames": [{"duration": 1.0, "texture": ExtResource("walk_0")}, {"duration": 1.0, "texture": ExtResource("walk_1")}, {"duration": 1.0, "texture": ExtResource("walk_2")}, {"duration": 1.0, "texture": ExtResource("walk_3")}, {"duration": 1.0, "texture": ExtResource("walk_4")}, {"duration": 1.0, "texture": ExtResource("walk_5")}, {"duration": 1.0, "texture": ExtResource("walk_6")}, {"duration": 1.0, "texture": ExtResource("walk_7")}, {"duration": 1.0, "texture": ExtResource("walk_8")}, {"duration": 1.0, "texture": ExtResource("walk_9")}, {"duration": 1.0, "texture": ExtResource("walk_10")}, {"duration": 1.0, "texture": ExtResource("walk_11")}]}]

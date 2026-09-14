@@ -1,0 +1,579 @@
+[
+  {
+    "source_box": [
+      73,
+      31,
+      250,
+      421
+    ],
+    "bounds": [
+      5,
+      8,
+      172,
+      382
+    ],
+    "head": 29,
+    "torso_x": 102.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/00.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      257,
+      190
+    ],
+    "registered_bounds": [
+      263,
+      197,
+      472,
+      670
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          295.5,
+          599.5
+        ],
+        "area": 578
+      },
+      {
+        "center": [
+          396.0,
+          611.5
+        ],
+        "area": 337
+      }
+    ]
+  },
+  {
+    "source_box": [
+      361,
+      32,
+      549,
+      416
+    ],
+    "bounds": [
+      6,
+      8,
+      182,
+      378
+    ],
+    "head": 27,
+    "torso_x": 114.5,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/01.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      248,
+      192
+    ],
+    "registered_bounds": [
+      255,
+      199,
+      476,
+      664
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          293.0,
+          599.5
+        ],
+        "area": 634
+      },
+      {
+        "center": [
+          383.0,
+          612.0
+        ],
+        "area": 340
+      }
+    ]
+  },
+  {
+    "source_box": [
+      645,
+      31,
+      831,
+      414
+    ],
+    "bounds": [
+      6,
+      8,
+      181,
+      377
+    ],
+    "head": 28,
+    "torso_x": 111.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/02.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      234,
+      190
+    ],
+    "registered_bounds": [
+      241,
+      197,
+      460,
+      662
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          281.0,
+          575.0
+        ],
+        "area": 785
+      },
+      {
+        "center": [
+          360.0,
+          606.5
+        ],
+        "area": 347
+      }
+    ]
+  },
+  {
+    "source_box": [
+      946,
+      31,
+      1121,
+      425
+    ],
+    "bounds": [
+      6,
+      8,
+      169,
+      389
+    ],
+    "head": 28,
+    "torso_x": 99.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/03.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      240,
+      190
+    ],
+    "registered_bounds": [
+      247,
+      197,
+      451,
+      676
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          269.0,
+          601.0
+        ],
+        "area": 241
+      },
+      {
+        "center": [
+          289.5,
+          578.0
+        ],
+        "area": 374
+      },
+      {
+        "center": [
+          359.5,
+          621.0
+        ],
+        "area": 365
+      }
+    ]
+  },
+  {
+    "source_box": [
+      85,
+      471,
+      251,
+      848
+    ],
+    "bounds": [
+      5,
+      8,
+      161,
+      371
+    ],
+    "head": 30,
+    "torso_x": 93.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/04.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      272,
+      186
+    ],
+    "registered_bounds": [
+      278,
+      193,
+      473,
+      651
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          295.5,
+          580.0
+        ],
+        "area": 230
+      },
+      {
+        "center": [
+          330.0,
+          590.5
+        ],
+        "area": 601
+      }
+    ]
+  },
+  {
+    "source_box": [
+      385,
+      472,
+      548,
+      859
+    ],
+    "bounds": [
+      6,
+      8,
+      157,
+      381
+    ],
+    "head": 29,
+    "torso_x": 93.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/05.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      278,
+      187
+    ],
+    "registered_bounds": [
+      285,
+      194,
+      474,
+      663
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          302.0,
+          565.5
+        ],
+        "area": 419
+      },
+      {
+        "center": [
+          336.0,
+          559.0
+        ],
+        "area": 353
+      },
+      {
+        "center": [
+          362.0,
+          610.5
+        ],
+        "area": 360
+      }
+    ]
+  },
+  {
+    "source_box": [
+      674,
+      471,
+      842,
+      865
+    ],
+    "bounds": [
+      6,
+      8,
+      162,
+      388
+    ],
+    "head": 30,
+    "torso_x": 93.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/06.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      270,
+      186
+    ],
+    "registered_bounds": [
+      277,
+      193,
+      473,
+      671
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          324.0,
+          557.0
+        ],
+        "area": 309
+      },
+      {
+        "center": [
+          293.0,
+          589.5
+        ],
+        "area": 137
+      },
+      {
+        "center": [
+          364.5,
+          620.0
+        ],
+        "area": 353
+      }
+    ]
+  },
+  {
+    "source_box": [
+      962,
+      472,
+      1131,
+      865
+    ],
+    "bounds": [
+      6,
+      8,
+      163,
+      388
+    ],
+    "head": 30,
+    "torso_x": 91.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/07.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      260,
+      187
+    ],
+    "registered_bounds": [
+      267,
+      194,
+      464,
+      672
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          282.5,
+          567.0
+        ],
+        "area": 258
+      },
+      {
+        "center": [
+          313.0,
+          544.0
+        ],
+        "area": 319
+      },
+      {
+        "center": [
+          349.5,
+          619.0
+        ],
+        "area": 349
+      }
+    ]
+  },
+  {
+    "source_box": [
+      83,
+      905,
+      254,
+      1293
+    ],
+    "bounds": [
+      5,
+      7,
+      166,
+      383
+    ],
+    "head": 29,
+    "torso_x": 94.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/08.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      270,
+      175
+    ],
+    "registered_bounds": [
+      276,
+      181,
+      477,
+      653
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          293.5,
+          561.0
+        ],
+        "area": 279
+      },
+      {
+        "center": [
+          331.5,
+          524.5
+        ],
+        "area": 235
+      },
+      {
+        "center": [
+          340.5,
+          595.0
+        ],
+        "area": 364
+      }
+    ]
+  },
+  {
+    "source_box": [
+      372,
+      906,
+      546,
+      1295
+    ],
+    "bounds": [
+      6,
+      8,
+      168,
+      384
+    ],
+    "head": 28,
+    "torso_x": 97.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/09.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      262,
+      176
+    ],
+    "registered_bounds": [
+      269,
+      183,
+      472,
+      656
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          286.5,
+          562.0
+        ],
+        "area": 304
+      },
+      {
+        "center": [
+          322.0,
+          538.0
+        ],
+        "area": 292
+      },
+      {
+        "center": [
+          349.0,
+          600.5
+        ],
+        "area": 358
+      }
+    ]
+  },
+  {
+    "source_box": [
+      664,
+      906,
+      840,
+      1286
+    ],
+    "bounds": [
+      5,
+      7,
+      170,
+      374
+    ],
+    "head": 28,
+    "torso_x": 101.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/10.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      257,
+      176
+    ],
+    "registered_bounds": [
+      263,
+      182,
+      470,
+      643
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          280.0,
+          561.5
+        ],
+        "area": 344
+      },
+      {
+        "center": [
+          372.0,
+          569.0
+        ],
+        "area": 321
+      },
+      {
+        "center": [
+          297.0,
+          578.5
+        ],
+        "area": 375
+      }
+    ]
+  },
+  {
+    "source_box": [
+      953,
+      906,
+      1130,
+      1285
+    ],
+    "bounds": [
+      5,
+      7,
+      172,
+      374
+    ],
+    "head": 28,
+    "torso_x": 98.0,
+    "file": "art/source/characters/achilles/passe_rive_walk_iso_v1/cutouts/E_v1_spear_restored/11.png",
+    "scale": 1.24822695035461,
+    "offset": [
+      249,
+      176
+    ],
+    "registered_bounds": [
+      255,
+      182,
+      464,
+      643
+    ],
+    "ankle_candidates": [
+      {
+        "center": [
+          284.0,
+          546.0
+        ],
+        "area": 578
+      },
+      {
+        "center": [
+          388.5,
+          593.0
+        ],
+        "area": 377
+      }
+    ]
+  }
+]

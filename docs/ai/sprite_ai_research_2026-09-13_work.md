@@ -1,0 +1,12 @@
+# Recherche IA pour les animations peintes — fiche de travail
+
+- Demande : recherche approfondie AutoSprite, PixelLab et workflows adaptés à Catabase ; conserver le style peint (choix confirmé le 13 septembre).
+- Base inspectée : Git `c98436df`. Fichier préexistant non suivi à préserver : `docs/ai/theorycraft_first_six_work.md`.
+- Portée : recherche, lecture du pipeline et rapport ; aucune génération payante ni modification du jeu.
+- Contexte relu : README, mémoire d'animation du 12 septembre, atelier de sprites, dossier Spine. Les essais techniques ne valent pas validation artistique.
+- Constats en cours : AutoSprite publie API/MCP et storyboard ; son API isométrique produit cinq vues et miroir pour les trois autres, incompatible sans adaptation avec notre asymétrie. Documentation des offres divergente sur l'accès API Starter/Pro. PixelLab propose animation v3, retouche de séquences et MCP ; limites de résolution et orientation pixel art à expliciter.
+- Recherche terminée : [dossier complet](C:/Users/paolo/Documents/dungeon-draft-v-2/docs/design/achilles/painted_sprite_ai_workflows_2026-09-13.md), 35 sources publiques, comparaison AutoSprite/Ludo/PixelLab/Scenario, correction peinte, intégration et protocole.
+- Fraîcheur : contrôle Git final toujours sur `c98436df`, nombreuses modifications concurrentes préservées. Relus : nouvelle proposition Passe-rive, fiche d'intégration AutoSprite, assembleur `tools/achilles_autosprite/build.py`, profil/backend dédiés et manifeste de 56 planches. Le rapport recommande désormais d'évaluer ce lot avant de générer et de compléter l'adaptateur existant ; il ne propose plus sa reconstruction. Le Veilleur devient un témoin historique.
+- Incertitudes conservées : restriction des miroirs liée au chemin API documenté, sans conclure que les huit vues locales sont des miroirs ; extension Godot à venir selon interface ; aucun nouveau résultat moteur ou artistique revendiqué.
+- Vérifications : liens locaux, références, encodage, arithmétique des budgets et textures. Rapport documentaire dans `artifacts/dev/sprite-ai-research-20260913/report.json`. Aucun test moteur lancé pour ce travail documentaire ; les intégrations concurrentes conservent leurs propres validations.
+- Suite proposée : revue du lot fourni et preuve de correction ; comparer Ludo seulement sur le même canon si utile, puis éprouver les directions et les gestes manquants. Aucun achat ni job payant déclenché ici.

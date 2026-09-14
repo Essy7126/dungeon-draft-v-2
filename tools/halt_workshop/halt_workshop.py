@@ -173,7 +173,7 @@ def validate(path: Path, root: Path = ROOT) -> dict:
         raise ValueError("Unsupported schema or unsafe map identifier")
     if m.get("kind", "sanctuary") not in KINDS:
         raise ValueError("Unsupported halt kind")
-    for key in ["source", "world", "navigation", "water", "review", "ambience"]:
+    for key in ["source", "world", "navigation", "water", "review", "ambience", "foliage_motion"]:
         if not isinstance(m.get(key, {}), dict):
             raise ValueError(f"{key}: object required")
     for key in ["landmarks", "cascades", "torches", "foliage", "bounce", "foreground", "mist"]:
@@ -202,6 +202,18 @@ def validate(path: Path, root: Path = ROOT) -> dict:
         require_range(m["world"].get("player_scale"), 0.2, 1, "Player scale")
     require_range(m["world"].get("speed", 195), 1, 1000, "Player speed")
     require_range(m["world"].get("foot_clearance", 12), 0, 100, "Foot clearance")
+    water = m.get("water", {})
+    for key in ["caustic_strength", "distortion_strength"]:
+        if key in water:
+            require_range(water[key], 0, 4, f"water.{key}")
+    if "far_fade" in water:
+        far_fade = water["far_fade"]
+        if not valid_point(far_fade) or far_fade[0] > far_fade[1]:
+            raise ValueError("water.far_fade: expected normalized bounds with start <= end")
+    foliage_motion = m.get("foliage_motion", {})
+    for key in ["strength", "speed"]:
+        if key in foliage_motion:
+            require_range(foliage_motion[key], 0, 4, f"foliage_motion.{key}")
     for name, points in polygons(m):
         validate_polygon(points, name)
     if not m["landmarks"] or len(m.get("torches", [])) > 12:
@@ -236,6 +248,8 @@ def validate(path: Path, root: Path = ROOT) -> dict:
             raise ValueError("Cascade splash needs a normalized point")
         require_range(cascade.get("width", 20), 1, 1000, "Cascade width")
     for torch in m.get("torches", []):
+        if "enclosed" in torch and type(torch["enclosed"]) is not bool:
+            raise ValueError("torches.enclosed: boolean required")
         radius = torch.get("radius", [])
         if not valid_point(radius) or min(radius) <= 0:
             raise ValueError("Torch radius must be normalized and positive")

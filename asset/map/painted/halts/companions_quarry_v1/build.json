@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "companions_quarry_v1",
+  "manifest_sha256": "7f0b62fa6ea3b3b669fcd4725ae4e20a85eeebae8306f3f69ac63819b82c820f",
+  "manifest_hash_mode": "lf_utf8_v1",
+  "generator": "python_pillow_v2",
+  "source_sha256": "5622136e23ae6a2b559b39f79d5f2edee212111b55540fea6bcc087af2d4ac14",
+  "mask_sha256": "2f9e6079787f6029a8f3a6a83bf9795479a18c1c8ea9ab737831101164bc8ca4",
+  "flow_sha256": "09b80f9851bebf6ed45b4759a6ac8aba2ab95d06e0d99d53fae0c620c0525e82",
+  "size": [
+    1672,
+    941
+  ],
+  "channels": [
+    "water",
+    "cascades",
+    "foliage",
+    "stone_reflections"
+  ],
+  "flow_channels": [
+    "direction_x",
+    "direction_y",
+    "speed_div_4",
+    "water_coverage"
+  ],
+  "art_review": "candidate",
+  "navigation_runtime_tested": false
+}

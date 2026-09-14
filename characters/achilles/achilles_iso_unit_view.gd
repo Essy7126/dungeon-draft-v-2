@@ -124,7 +124,17 @@ func bind_unit(unit: Unit) -> void:
 func set_facing(direction: Vector2i) -> void:
 	if _closing or _dead or direction == Vector2i.ZERO:
 		return
-	if abs(direction.x) >= abs(direction.y):
+	if rendering_backend == "SPRITE_2D" and sprite_profile != null and sprite_profile.directions_are_screen_space:
+		var projected := IsoProjection.new().grid_to_world(direction)
+		var ancestor := get_parent()
+		while ancestor != null:
+			if ancestor.has_method("grid_cell_to_global") and is_instance_valid(ancestor.get("grid_view")):
+				var origin := _unit.grid_pos if _unit != null else Vector2i.ZERO
+				projected = ancestor.grid_cell_to_global(origin + direction) - ancestor.grid_cell_to_global(origin)
+				break
+			ancestor = ancestor.get_parent()
+		_facing = AchillesAutoSpriteProfile.screen_facing(projected)
+	elif abs(direction.x) >= abs(direction.y):
 		_facing = "E" if direction.x > 0 else "W"
 	else:
 		_facing = "S" if direction.y > 0 else "N"
@@ -946,7 +956,8 @@ func _ensure_viewport_backend() -> bool:
 func _initialize_sprite_backend() -> void:
 	if is_instance_valid(sprite_backend) or _closing:
 		return
-	sprite_backend = SPRITE_BACKEND_SCRIPT.new() as AchillesSprite2DBackend
+	var backend_type := sprite_profile.backend_script if sprite_profile != null and sprite_profile.backend_script != null else SPRITE_BACKEND_SCRIPT
+	sprite_backend = backend_type.new() as AchillesSprite2DBackend
 	sprite_backend.name = "Sprite2DBackend"
 	add_child(sprite_backend)
 	_connect_backend_signals(sprite_backend)

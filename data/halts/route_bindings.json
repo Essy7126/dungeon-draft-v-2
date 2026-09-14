@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
   "bindings": [
+    {"depth": 4, "kind": "hub", "title": "Le camp des compagnons", "manifest": "res://data/halts/companions_quarry_v1.json"},
+    {"depth": 4, "kind": "lore", "title": "La stèle des noms", "manifest": "res://data/halts/stele_names_v1.json"},
     {"depth": 8, "kind": "sanctuary", "manifest": "res://data/halts/emerald_sanctuary_v1.json"},
     {"depth": 8, "kind": "merchant", "manifest": "res://data/halts/bronze_forge_v1.json"}
   ]

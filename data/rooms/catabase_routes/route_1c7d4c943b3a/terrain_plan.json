@@ -1,85 +1,257 @@
 {
-	"allowed_floor_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			1200.0
-		],
-		[
-			0.0,
-			1200.0
-		]
-	],
-	"canvas_size": [
-		1920.0,
-		1200.0
-	],
-	"combat_ground_band": {
-		"enabled": false
-	},
-	"floor_palette": {
-		"bevel_flatten_strength": 0.82,
-		"body": "#6d9891",
-		"light": "#b0c3b1",
-		"painted_steps": 0.25,
-		"shade": "#345459"
-	},
-	"geometry_manifest_path": "geometry_manifest.json",
-	"ground_details": {
-		"enabled": false
-	},
-	"land": {
-		"color": "#122c35"
-	},
-	"land_polygon": [
-		[
-			0.0,
-			0.0
-		],
-		[
-			1920.0,
-			0.0
-		],
-		[
-			1920.0,
-			1200.0
-		],
-		[
-			0.0,
-			1200.0
-		]
-	],
-	"metadata": {
-		"art_method": "Existing Catabase terrain renderer, original authored topology and palette; dedicated environmental paintings remain future art work.",
-		"biome": "lethe",
-		"tactical_intent": "Passage longitudinal avec contournement."
-	},
-	"minimum_floor_margin_px": 30.0,
-	"pit_palette": {
-		"back_wall": "#345459",
-		"depth_native_px": 13.0,
-		"floor": "#122c35",
-		"left_wall": "#345459"
-	},
-	"props_palette": {
-		"highlight": "#b0c3b1",
-		"ink": "#122c35",
-		"left": "#6d9891",
-		"right": "#345459",
-		"top": "#b0c3b1"
-	},
-	"shorelines": [],
-	"soil_patches": [],
-	"version": 1.0,
-	"water": {
-		"color": "#122c35"
-	},
-	"world_decor": []
+  "allowed_floor_polygon": [
+    [
+      384.00001525878895,
+      443.7999916076655
+    ],
+    [
+      435.60001373291004,
+      417.99999237060496
+    ],
+    [
+      848.4000015258789,
+      211.59999847412092
+    ],
+    [
+      1071.599998474121,
+      211.59999847412092
+    ],
+    [
+      1174.7999954223633,
+      211.59999847412098
+    ],
+    [
+      1484.3999862670898,
+      366.3999938964839
+    ],
+    [
+      1639.1999816894531,
+      443.79999160766545
+    ],
+    [
+      1639.1999816894531,
+      666.9999885559074
+    ],
+    [
+      1535.999984741211,
+      718.5999870300285
+    ],
+    [
+      1381.1999893188477,
+      795.99998474121
+    ],
+    [
+      1174.7999954223633,
+      899.199981689452
+    ],
+    [
+      848.4000015258788,
+      899.199981689452
+    ],
+    [
+      796.8000030517577,
+      873.3999824523916
+    ],
+    [
+      487.20001220703114,
+      718.5999870300286
+    ],
+    [
+      384.00001525878895,
+      666.9999885559075
+    ]
+  ],
+  "canvas_size": [
+    1920.0,
+    1200.0
+  ],
+  "combat_ground_band": {
+    "enabled": false
+  },
+  "floor_palette": {
+    "bevel_flatten_strength": 0.82,
+    "body": "#71787a",
+    "light": "#a6aca7",
+    "painted_steps": 0.25,
+    "shade": "#3b4852"
+  },
+  "geometry_manifest_path": "geometry_manifest.json",
+  "ground_details": {
+    "enabled": false
+  },
+  "land": {
+    "color": "#ffffff",
+    "texture_path": "res://assets/catabase/combat/gue_serments_v1/land.png",
+    "texture_scale": [
+      1.210592686002522,
+      1.2096774193548387
+    ],
+    "texture_repeat": false,
+    "shader_path": "res://assets/catabase/combat/gue_serments_v1/living.gdshader"
+  },
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      1200
+    ],
+    [
+      0,
+      1200
+    ]
+  ],
+  "metadata": {
+    "art_method": "Built-in image_gen, canonical floor guide, painted basalt and lava ford; engine geometry preserved",
+    "biome": "basalt",
+    "tactical_intent": "Passage longitudinal avec contournement.",
+    "route_stage": "expedition V — suite du camp des compagnons",
+    "current_art_direction": {
+      "scene": "Le gué des serments",
+      "reference": "res://asset/map/painted/merchant/hall_v1/hall.png"
+    }
+  },
+  "minimum_floor_margin_px": 30.0,
+  "pit_palette": {
+    "back_wall": "#3a454d",
+    "depth_native_px": 13.0,
+    "floor": "#00000000",
+    "left_wall": "#2c3742"
+  },
+  "props_palette": {
+    "highlight": "#bd9a5d",
+    "ink": "#202e37",
+    "left": "#5b6b73",
+    "right": "#374953",
+    "top": "#899391",
+    "bench": "#725b42"
+  },
+  "shorelines": [
+    {
+      "id": "painted_ford_lip",
+      "points": [
+        [
+          323.22824716267337,
+          424.5967741935484
+        ],
+        [
+          514.5018915510718,
+          344.758064516129
+        ],
+        [
+          852.2572509457755,
+          174.19354838709677
+        ],
+        [
+          1186.3808322824716,
+          174.19354838709677
+        ],
+        [
+          1249.3316519546026,
+          205.6451612903226
+        ],
+        [
+          1307.4401008827238,
+          247.98387096774195
+        ],
+        [
+          1513.2408575031525,
+          341.1290322580645
+        ],
+        [
+          1676.670870113493,
+          423.38709677419354
+        ],
+        [
+          1706.935687263556,
+          440.3225806451613
+        ],
+        [
+          1706.935687263556,
+          510.48387096774195
+        ],
+        [
+          1761.4123581336696,
+          541.9354838709678
+        ],
+        [
+          1767.4653215636822,
+          644.758064516129
+        ],
+        [
+          1634.3001261034046,
+          719.758064516129
+        ],
+        [
+          1380.0756620428751,
+          840.7258064516129
+        ],
+        [
+          1198.4867591424968,
+          924.1935483870968
+        ],
+        [
+          871.6267339218158,
+          927.8225806451613
+        ],
+        [
+          702.1437578814628,
+          872.1774193548388
+        ],
+        [
+          595.6116015132409,
+          834.6774193548388
+        ],
+        [
+          366.80958385876414,
+          758.4677419354839
+        ],
+        [
+          369.2307692307692,
+          718.5483870967743
+        ],
+        [
+          237.2761664564943,
+          662.9032258064516
+        ],
+        [
+          226.38083228247163,
+          598.7903225806451
+        ],
+        [
+          323.22824716267337,
+          545.5645161290323
+        ],
+        [
+          323.22824716267337,
+          424.5967741935484
+        ]
+      ],
+      "width": 1.0,
+      "color": "#ffffff00"
+    }
+  ],
+  "soil_patches": [],
+  "version": 1.0,
+  "water": {
+    "color": "#49261f"
+  },
+  "world_decor": [
+    {
+      "id": "gue_serments_living",
+      "anchor": [
+        0,
+        0
+      ],
+      "layer": "foreground",
+      "scene_path": "res://assets/catabase/combat/gue_serments_v1/Living.tscn"
+    }
+  ],
+  "minimum_floor_shore_clearance_native_px": 20
 }

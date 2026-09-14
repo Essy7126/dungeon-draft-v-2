@@ -1,0 +1,37 @@
+{
+  "gameplay_fingerprint": "d89c09c8f4612bb7d82467e222326ceb5921a84b506b096aee8784c122a5eb0a",
+  "gameplay_unchanged_after_reload": true,
+  "geometry_bytes_unchanged": true,
+  "geometry_sha256": "804cb38bd41d07aa42290ee8e90386aacb921a5ece67bd1f0d9bd10c5f28593c",
+  "guide": "interior-guide-v2.png",
+  "guide_sha256": "13958c766e56056197e62202a9b014a229fb0fd486daab1026c62a3628901b24",
+  "image": "res://assets/catabase/combat/braises_cloitre_v1/land.png",
+  "image_sha256": "357c28b6422c06985aefd6758b31ff83dbdd3a3b87aea356db76dc376c4e8cdc",
+  "image_size": [
+    1586.0,
+    992.0
+  ],
+  "native_canvas": [
+    1920.0,
+    1200.0
+  ],
+  "normalization": "Original pixels retained; UV scale only",
+  "plan_sha256": "c08a4463e1fa2e862e4eefb10f2d7cd4e6f3745c15a3466ce7ac36262f3a252c",
+  "prompts": [
+    "PROMPT-v4-abyss.md",
+    "PROMPT-v5-clearance.md"
+  ],
+  "provider": "image_gen built-in",
+  "provider_source_basename": "exec-bee48266-ddfb-4fae-b02b-586652f9bc2b.png",
+  "room_before_sha256": "c03469027ddeda34ccaf6446769e0a2a58fc8ec60924137a9a2c5998c46c3510",
+  "room_sha256": "cacb75fe8c0a8fbeaae6c7f36b40aa9da148ce74223397d3e36f50330f72f7ec",
+  "target_room": "res://data/rooms/catabase_routes/route_edce0087c741/room.tres",
+  "texture_scale": [
+    1.21059268600252,
+    1.20967741935484
+  ],
+  "validation_status": "PASS: abyss composition, Studio, GPU two resolutions, route suite, visual inspection",
+  "gpu_report": "artifacts/dev/20260912-143039-braises-cloitre-review-d53ef3a2/summary.json",
+  "studio_report": "artifacts/dev/20260912-142933-braises-cloitre-prepare-f4b31e79/summary.json",
+  "route_test_report": "artifacts/dev/20260912-143156-test-test_unit_test_catabase_route_layouts.gd-231111c8/gut-strict-report.json"
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-09-12",
+  "reviewer": "Codex — rendered captures inspected visually",
+  "manifest": "res://data/halts/stele_names_v1.json",
+  "source_sha256": "9853e8770b7d4b9989f65fb316abd7b73a66d4fd219d136d75fb044ef72c9f0a",
+  "manifest_sha256_lf_utf8_v1": "2e32e40b9a5fa818fab95651d165bd5ffcfda60ef017ba82491ec2e1a6a32f06",
+  "artwork": {
+    "provider": "image_gen built-in",
+    "prompt": "art/source/halts/stele_names_v1/generation_prompt.txt",
+    "original_preserved": true,
+    "source_size": [
+      1672,
+      941
+    ],
+    "reference_height_ratio": 0.18,
+    "scale_decision": "Main stele retained as a monument of approximately 2.4 body heights; boat, knee-high post and low offering checked alongside Achille."
+  },
+  "automated": {
+    "prepare": "artifacts/dev/20260912-114853-halt-prepare-0d1edcfc/summary.json",
+    "gpu": "artifacts/dev/20260912-114858-halt-verify-ac068403/summary.json",
+    "gpu_checks": 271,
+    "gpu_captures": 42,
+    "movement_samples": 4168,
+    "unsafe_samples": 0,
+    "production": "artifacts/dev/20260912-115107-stele-names-production-d776ba53/summary.json",
+    "production_checks": 96,
+    "production_captures": 8,
+    "halts": "artifacts/dev/20260912-115359-test-halts-c12dcf29/gut-strict-report.json",
+    "halts_tests": 49,
+    "halts_assertions": 1141,
+    "python": "artifacts/dev/20260912-115049-stele-water-contract-python/unittest.log",
+    "python_tests": 26,
+    "all_passed": true
+  },
+  "visually_inspected": [
+    "artifacts/dev/20260912-114858-halt-verify-ac068403/1920x1080_living_clean.png",
+    "artifacts/dev/20260912-114858-halt-verify-ac068403/1280x720_names_stele.png",
+    "artifacts/dev/20260912-114858-halt-verify-ac068403/1920x1080_loop_4.png",
+    "artifacts/dev/20260912-115107-stele-names-production-d776ba53/production_1080p.png",
+    "artifacts/dev/20260912-115107-stele-names-production-d776ba53/stele_dialogue_720p.png",
+    "artifacts/dev/20260912-115107-stele-names-production-d776ba53/stele_lore_receipt.png",
+    "artifacts/dev/20260912-115107-stele-names-production-d776ba53/boat_departure_dialogue.png"
+  ],
+  "visual_findings": [
+    "Distinct willow memorial shore; continuity of the three-bench brown boat and teal river.",
+    "Dry walking surface readable at landing, memorial and right promenade; no hero/prop scale mismatch at these checked positions.",
+    "Far water mask boundary softened and procedural caustics restrained; painted source preserved.",
+    "Boat and landing visible; readable dialogue, receipt and departure controls at inspected resolutions."
+  ],
+  "limits": [
+    "Navigation and material contours are manually authored for this source image; replacement art requires recalibration.",
+    "Boat interaction completes the normal halt and returns to the route; it is not a sailing simulation.",
+    "The production review uses an isolated fixture with earlier victories simulated, not a new complete campaign."
+  ],
+  "later_shader_revision": "art/source/halts/stele_names_v1/shader_review.json"
+}

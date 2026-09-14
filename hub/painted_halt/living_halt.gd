@@ -43,6 +43,7 @@ var _ready_for_play := false
 var _path := PackedVector2Array()
 var _path_index := 0
 var _speed := 0.0
+var _route_speed_multiplier := 1.0
 var _target := Vector2.ZERO
 var _marker: Destination
 var _interface: Control
@@ -99,6 +100,22 @@ func _ready() -> void:
 	effect_material.set_shader_parameter("materials", ImageTexture.create_from_image(_mask))
 	effect_material.set_shader_parameter("source_size", Vector2(size_data[0], size_data[1]))
 	effect_material.set_shader_parameter("water_color", Color(str(definition.water.tint)))
+	effect_material.set_shader_parameter("water_caustic_strength", float(definition.water.get(
+				"caustic_strength",
+				1.0,
+			)))
+	effect_material.set_shader_parameter("water_distortion_strength", float(definition.water.get(
+				"distortion_strength",
+				1.0,
+			)))
+	var far_fade: Array = definition.water.get("far_fade", [0.0, 0.0])
+	effect_material.set_shader_parameter("water_far_fade", Vector2(far_fade[0], far_fade[1]))
+	var foliage_motion: Dictionary = definition.get("foliage_motion", { })
+	effect_material.set_shader_parameter(
+		"foliage_strength",
+		float(foliage_motion.get("strength", 1.0)),
+	)
+	effect_material.set_shader_parameter("foliage_speed", float(foliage_motion.get("speed", 1.0)))
 	if _flow != null:
 		effect_material.set_shader_parameter("flow_map", ImageTexture.create_from_image(_flow))
 		effect_material.set_shader_parameter("has_flow_map", true)
@@ -111,7 +128,7 @@ func _ready() -> void:
 				float(torch.get("flame_strength", 1.0)),
 				float(torch.get("light_strength", 1.0)),
 				float(torch.get("steady_light", 0.0)),
-				0,
+				1.0 if bool(torch.get("enclosed", false)) else 0.0,
 			)
 		)
 	while torch_data.size() < 12:
@@ -201,6 +218,11 @@ func _material_shader() -> Shader:
 
 func _configure_player(actor: Player) -> void:
 	actor.display_scale = ScaleReference.display_scale(definition)
+	var run := GameManager.get_active_run_data()
+	if not preview_mode and run != null:
+		actor.sprite_profile = RunHeroVisualVariants.exploration_profile(run.hero_visual_variants)
+		if actor.sprite_profile is PasseRiveAutoSpriteProfile:
+			actor.display_scale = ScaleReference.height_ratio(definition) * world_size.y / 214.0
 
 
 func _create_interactions() -> Interactions:
@@ -344,6 +366,7 @@ func request_move(destination: Vector2) -> bool:
 		interactions.cancel()
 	_path = candidate
 	_path_index = 0
+	_choose_route_gait()
 	_target = destination
 	_marker.position = destination
 	_marker.show()
@@ -352,6 +375,20 @@ func request_move(destination: Vector2) -> bool:
 
 func is_player_moving() -> bool:
 	return _path_index < _path.size()
+
+
+func _choose_route_gait() -> void:
+	var distance := 0.0
+	var previous := player.position
+	for point in _path:
+		distance += _ground_distance(point - previous)
+		previous = point
+	player.locomotion_running = player.sprite_profile is PasseRiveAutoSpriteProfile and distance >= 300.0 * player.display_scale
+	_route_speed_multiplier = 1.0
+	if player.sprite_profile is PasseRiveAutoSpriteProfile:
+		var stride := 300.0 if player.locomotion_running else 180.0
+		var cycle_seconds := 0.60 if player.locomotion_running else 0.72
+		_route_speed_multiplier = stride * player.display_scale / cycle_seconds / maxf(float(definition.world.speed), 1.0)
 
 
 func stop_movement(cancel_interaction := true) -> void:
@@ -380,16 +417,19 @@ func _advance_move(delta: float) -> void:
 		previous = _path[i]
 	_speed = move_toward(
 		_speed,
-		minf(float(definition.world.speed), sqrt(1200.0 * remaining)),
+		minf(float(definition.world.speed) * _route_speed_multiplier, sqrt(1200.0 * remaining)),
 		800.0 * delta,
 	)
 	var travel := _speed * delta
-	while is_player_moving() and travel > 0.0:
+	while is_player_moving():
 		var offset := _path[_path_index] - player.position
 		var distance := _ground_distance(offset)
 		if distance < 0.15:
 			_path_index += 1
 			continue
+		# Reached points finish an approach even when no travel budget remains.
+		if travel <= 0.0:
+			break
 		var used := minf(travel, distance)
 		var next := player.position + offset * used / distance
 		if not nav.is_walkable(next):

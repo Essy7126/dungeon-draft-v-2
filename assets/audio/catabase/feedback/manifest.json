@@ -1,0 +1,266 @@
+{
+  "cost_eur": 0,
+  "material_license": "Sonniss GDC 2.0; see ../CREDITS.md",
+  "steps": "Kenney Impact Sounds CC0; accepted first audition, unchanged.",
+  "cues": [
+    {
+      "cue": "select",
+      "peak_dbfs": -23,
+      "duration": 0.11,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.11,
+          1.1,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "open",
+      "peak_dbfs": -20,
+      "duration": 0.3,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.3,
+          0.9,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "close",
+      "peak_dbfs": -22,
+      "duration": 0.22,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.22,
+          0.95,
+          true,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "confirm",
+      "peak_dbfs": -18,
+      "duration": 0.34,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.17,
+          1,
+          false,
+          0.4,
+          0
+        ],
+        [
+          "soft_v5/guard.wav",
+          0.28,
+          0.8,
+          false,
+          0.45,
+          0.06
+        ]
+      ]
+    },
+    {
+      "cue": "error",
+      "peak_dbfs": -24,
+      "duration": 0.15,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.15,
+          0.65,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "equip",
+      "peak_dbfs": -17,
+      "duration": 0.35,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.32,
+          0.9,
+          false,
+          0.5,
+          0
+        ],
+        [
+          "natural_v2/audition/Chainmail_Impact_Hard_03.wav",
+          0.26,
+          0.75,
+          false,
+          0.4,
+          0.09
+        ]
+      ]
+    },
+    {
+      "cue": "reward",
+      "peak_dbfs": -16,
+      "duration": 0.95,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.3,
+          0.8,
+          false,
+          0.18,
+          0
+        ],
+        [
+          "soft_v5/guard.wav",
+          0.85,
+          0.85,
+          false,
+          0.6,
+          0.1
+        ]
+      ]
+    },
+    {
+      "cue": "turn",
+      "peak_dbfs": -23,
+      "duration": 0.16,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.16,
+          0.85,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "heal",
+      "peak_dbfs": -19,
+      "duration": 0.55,
+      "layers": [
+        [
+          "soft_v5/guard.wav",
+          0.55,
+          0.78,
+          true,
+          0.35,
+          0
+        ],
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.25,
+          0.8,
+          false,
+          0.15,
+          0.2
+        ]
+      ]
+    },
+    {
+      "cue": "block",
+      "peak_dbfs": -13,
+      "duration": 0.32,
+      "layers": [
+        [
+          "soft_v5/guard.wav",
+          0.32,
+          0.92,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "dodge",
+      "peak_dbfs": -19,
+      "duration": 0.28,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.28,
+          1.1,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "hit",
+      "peak_dbfs": -13,
+      "duration": 0.36,
+      "layers": [
+        [
+          "natural_v2/audition/Chainmail_Impact_Hard_03.wav",
+          0.36,
+          0.82,
+          false,
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "cue": "magic_hit",
+      "peak_dbfs": -15,
+      "duration": 0.48,
+      "layers": [
+        [
+          "soft_v5/shot.wav",
+          0.48,
+          0.82,
+          false,
+          0.6,
+          0
+        ],
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.2,
+          0.8,
+          true,
+          0.15,
+          0.08
+        ]
+      ]
+    },
+    {
+      "cue": "fall",
+      "peak_dbfs": -17,
+      "duration": 0.5,
+      "layers": [
+        [
+          "natural_v2/audition/LeatherArmor_Rustle_03.wav",
+          0.5,
+          0.7,
+          false,
+          0.6,
+          0
+        ],
+        [
+          "natural_v2/audition/Chainmail_Impact_Hard_03.wav",
+          0.35,
+          0.6,
+          false,
+          0.3,
+          0.13
+        ]
+      ]
+    }
+  ],
+  "passed": true
+}

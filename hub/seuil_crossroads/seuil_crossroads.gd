@@ -147,6 +147,10 @@ func show_landmark(index: int) -> void:
 				if is_inside_tree():
 					show_landmark(index),
 		)
+	elif not session.advancement_step.is_empty():
+		_text("Votre montée de niveau attend une décision. Retrouvez vos caractéristiques, vos sorts, puis votre butin avant de partir.")
+		var resume := _button(_content, "Reprendre ma progression", func(): GameManager.open_expedition_progression())
+		resume.name = "ResumeSeuilProgression"
 	elif session.character.champion_progression.unspent_attribute_points > 0:
 		_text("Répartissez vos nouveaux points avant de partir.")
 		var attributes := Attributes.new()

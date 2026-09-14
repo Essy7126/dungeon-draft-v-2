@@ -35,7 +35,7 @@ func before_each() -> void:
 func test_catalog_exposes_real_run_stats_and_resolved_spell_kits() -> void:
 	var entries := screen.get_entries()
 	assert_eq(entries.map(func(entry): return entry["id"]), [
-		&"achilles", &"achilles_painted_g", &"elf", &"mage", &"warrior", &"achilles",
+		&"achilles", &"achilles_painted_g", &"achilles_passe_rive", &"elf", &"mage", &"warrior", &"achilles",
 	])
 	for entry in entries:
 		var unit := entry["unit"] as UnitData
@@ -65,7 +65,7 @@ func test_character_selection_refreshes_stats_kit_and_preview_together() -> void
 	_assert_visible_stats(screen.get_selected_entry()["unit"] as UnitData)
 	assert_true(screen.select_spell(3))
 	assert_eq(screen.selected_spell_index, 3)
-	assert_true(screen.select_character(3))
+	assert_true(screen.select_character(_entry_index(&"mage")))
 	assert_eq(screen.get_selected_entry()["id"], &"mage")
 	assert_eq(screen.selected_spell_index, 0)
 	var mage := screen.get_selected_entry()["unit"] as UnitData
@@ -133,7 +133,7 @@ func test_preparing_achilles_configures_the_solo_run_at_room_zero() -> void:
 
 
 func test_browsing_a_trio_member_preserves_the_complete_playable_party() -> void:
-	assert_true(screen.select_character(3))
+	assert_true(screen.select_character(_entry_index(&"mage")))
 	var selected := screen.get_selected_entry()
 	assert_eq(selected["id"], &"mage")
 	assert_eq(selected["run"], TRIO_RUN)
@@ -244,7 +244,7 @@ func test_spell_tree_modal_prevents_duplicate_opening_and_underlying_navigation(
 	assert_eq(screen.selected_spell_index, 2)
 	spell_tree.close_screen()
 	await wait_process_frames(2)
-	assert_true(screen.select_character(2))
+	assert_true(screen.select_character(_entry_index(&"elf")))
 	assert_true(screen.open_spell_tree())
 	assert_eq(screen.get_spell_tree().character_id, &"elf")
 
@@ -305,3 +305,11 @@ func _assert_visible_stats(unit: UnitData) -> void:
 	assert_eq((screen.stats_labels["ap"] as Label).text, str(unit.max_ap))
 	assert_eq((screen.stats_labels["mp"] as Label).text, str(unit.max_mp))
 	assert_eq((screen.stats_labels["initiative"] as Label).text, str(unit.initiative))
+
+
+func _entry_index(id: StringName) -> int:
+	var entries := screen.get_entries()
+	for index in entries.size():
+		if entries[index].id == id:
+			return index
+	return -1

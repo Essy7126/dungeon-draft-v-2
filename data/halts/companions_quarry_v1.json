@@ -1,0 +1,514 @@
+{
+  "schema_version": 1,
+  "id": "companions_quarry_v1",
+  "title": "Le camp des compagnons",
+  "kind": "hub",
+  "stage": "playable_study",
+  "style": "res://data/halts/styles/roots_bronze_v1.json",
+  "source": {
+    "image": "res://asset/map/painted/halts/companions_quarry_v1/source-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "sha256": "5622136e23ae6a2b559b39f79d5f2edee212111b55540fea6bcc087af2d4ac14",
+    "prompt": "res://art/source/halts/companions_quarry_v1/generation_prompt.txt",
+    "spatial_plan": "res://art/source/halts/companions_quarry_v1/spatial_plan.json",
+    "references": [
+      "res://art/source/halts/companions_quarry_v1/spatial_plan_reference.png",
+      "res://asset/map/painted/merchant/hall_v1/hall.png",
+      "res://assets/catabase/combat/puits_sources_v1/land.png"
+    ],
+    "provider": "image_gen built-in",
+    "generated_on": "2026-09-12",
+    "provider_source_basename": "exec-0cd01de4-b87a-41bc-89df-9b812c7339af.png",
+    "revision_prompts": [
+      "res://art/source/halts/companions_quarry_v1/PROMPT-v2.md",
+      "res://art/source/halts/companions_quarry_v1/PROMPT-v3.md"
+    ]
+  },
+  "build_dir": "res://asset/map/painted/halts/companions_quarry_v1",
+  "world": {
+    "width": 2200,
+    "player_height_ratio": 0.18,
+    "speed": 210,
+    "foot_clearance": 16,
+    "spawn": [
+      0.2631579,
+      0.607864
+    ]
+  },
+  "navigation": {
+    "outline": [
+      [
+        0.0927033,
+        0.5079702
+      ],
+      [
+        0.1854067,
+        0.4782147
+      ],
+      [
+        0.2392344,
+        0.455898
+      ],
+      [
+        0.2631579,
+        0.4144527
+      ],
+      [
+        0.3169856,
+        0.3963868
+      ],
+      [
+        0.4037081,
+        0.3868225
+      ],
+      [
+        0.4844498,
+        0.3963868
+      ],
+      [
+        0.5741627,
+        0.4250797
+      ],
+      [
+        0.6519139,
+        0.4654623
+      ],
+      [
+        0.7236842,
+        0.4888417
+      ],
+      [
+        0.8253589,
+        0.5100956
+      ],
+      [
+        0.8911483,
+        0.5387885
+      ],
+      [
+        0.9300239,
+        0.5494155
+      ],
+      [
+        0.9270335,
+        0.5887354
+      ],
+      [
+        0.8851675,
+        0.6163656
+      ],
+      [
+        0.8552632,
+        0.6461211
+      ],
+      [
+        0.8133971,
+        0.7013815
+      ],
+      [
+        0.7894737,
+        0.7545165
+      ],
+      [
+        0.7595694,
+        0.7821467
+      ],
+      [
+        0.6818182,
+        0.8087141
+      ],
+      [
+        0.6549043,
+        0.8501594
+      ],
+      [
+        0.5950957,
+        0.8894793
+      ],
+      [
+        0.5083732,
+        0.8916047
+      ],
+      [
+        0.4150718,
+        0.8522848
+      ],
+      [
+        0.3803828,
+        0.8076514
+      ],
+      [
+        0.3558612,
+        0.7672689
+      ],
+      [
+        0.3145933,
+        0.7364506
+      ],
+      [
+        0.2948565,
+        0.6907545
+      ],
+      [
+        0.2446172,
+        0.6408077
+      ],
+      [
+        0.1961722,
+        0.6174283
+      ],
+      [
+        0.145933,
+        0.6014878
+      ],
+      [
+        0.1034689,
+        0.5621679
+      ]
+    ],
+    "obstacles": [
+      [
+        [
+          0.2978469,
+          0.4325186
+        ],
+        [
+          0.3259569,
+          0.4080765
+        ],
+        [
+          0.3977273,
+          0.424017
+        ],
+        [
+          0.4258373,
+          0.4548353
+        ],
+        [
+          0.4736842,
+          0.4463337
+        ],
+        [
+          0.4850478,
+          0.5217853
+        ],
+        [
+          0.4264354,
+          0.5642933
+        ],
+        [
+          0.3421053,
+          0.5802338
+        ],
+        [
+          0.2697368,
+          0.5504782
+        ],
+        [
+          0.2559809,
+          0.5079702
+        ],
+        [
+          0.2595694,
+          0.4527099
+        ]
+      ]
+    ]
+  },
+  "landmarks": [
+    {
+      "id": "quarry_hearth",
+      "title": "Le feu des compagnons",
+      "action": "rest",
+      "point": [
+        0.4210526,
+        0.6333688
+      ],
+      "focus": [
+        0.3660287,
+        0.4835282
+      ],
+      "radius": 0.075,
+      "description": "La toile tient encore sur des manches de pioche. Autour du foyer, trois couchettes, des paniers de déblais et des coins fichés dans la pierre racontent le camp de ceux qui ont ouvert ces galeries. Ils travaillaient par relais, loin du jour.\n\nDans la niche, Hadès tient son sceptre ; Cerbère veille à ses pieds. Quelques oboles et des grenades ont été déposées avant la dernière descente. Les tailleurs demandaient au maître des profondeurs de laisser leurs compagnons revenir.\n\nUne braise subsiste. Achille peut se reposer ici avant de reprendre le chemin."
+    },
+    {
+      "id": "deeper_gallery",
+      "title": "Reprendre la descente",
+      "action": "exit",
+      "point": [
+        0.8492823,
+        0.5844846
+      ],
+      "focus": [
+        0.9162679,
+        0.4697131
+      ],
+      "radius": 0.065,
+      "description": "Les coups de pic se prolongent sous cette arcade. La lueur du magma indique la suite du chemin."
+    }
+  ],
+  "water": {
+    "tint": "#48d896",
+    "polygons": [],
+    "regions": [],
+    "exclusions": []
+  },
+  "cascades": [],
+  "torches": [
+    {
+      "id": "hearth",
+      "point": [
+        0.3648325,
+        0.445271
+      ],
+      "radius": [
+        0.0161483,
+        0.0456961
+      ],
+      "flame_strength": 0.5,
+      "light_strength": 0.55,
+      "steady_light": 0.15,
+      "smoke_strength": 0.18,
+      "ember_count": 12
+    },
+    {
+      "id": "arrival_outer",
+      "point": [
+        0.0257177,
+        0.3761955
+      ],
+      "radius": [
+        0.007177,
+        0.0180659
+      ],
+      "enclosed": true,
+      "flame_strength": 0.65,
+      "light_strength": 0.6,
+      "steady_light": 0.2,
+      "smoke_strength": 0,
+      "ember_count": 0
+    },
+    {
+      "id": "arrival_inner",
+      "point": [
+        0.1315789,
+        0.325186
+      ],
+      "radius": [
+        0.007177,
+        0.0180659
+      ],
+      "enclosed": true,
+      "flame_strength": 0.65,
+      "light_strength": 0.6,
+      "steady_light": 0.2,
+      "smoke_strength": 0,
+      "ember_count": 0
+    },
+    {
+      "id": "shelter_lamp",
+      "point": [
+        0.3875598,
+        0.2380446
+      ],
+      "radius": [
+        0.0065789,
+        0.0170032
+      ],
+      "enclosed": true,
+      "flame_strength": 0.65,
+      "light_strength": 0.6,
+      "steady_light": 0.2,
+      "smoke_strength": 0,
+      "ember_count": 0
+    },
+    {
+      "id": "hades_lamp",
+      "point": [
+        0.6883971,
+        0.1817216
+      ],
+      "radius": [
+        0.007177,
+        0.0180659
+      ],
+      "enclosed": true,
+      "flame_strength": 0.65,
+      "light_strength": 0.6,
+      "steady_light": 0.2,
+      "smoke_strength": 0,
+      "ember_count": 0
+    },
+    {
+      "id": "exit_lamp",
+      "point": [
+        0.9019139,
+        0.360255
+      ],
+      "radius": [
+        0.007177,
+        0.0180659
+      ],
+      "enclosed": true,
+      "flame_strength": 0.65,
+      "light_strength": 0.6,
+      "steady_light": 0.2,
+      "smoke_strength": 0,
+      "ember_count": 0
+    },
+    {
+      "id": "offering_left",
+      "point": [
+        0.6997608,
+        0.3177471
+      ],
+      "radius": [
+        0.0035885,
+        0.010627
+      ],
+      "flame_strength": 0.3,
+      "light_strength": 0.3,
+      "smoke_strength": 0.01,
+      "ember_count": 0
+    },
+    {
+      "id": "offering_right",
+      "point": [
+        0.7906699,
+        0.3549416
+      ],
+      "radius": [
+        0.0035885,
+        0.010627
+      ],
+      "flame_strength": 0.3,
+      "light_strength": 0.3,
+      "smoke_strength": 0.01,
+      "ember_count": 0
+    }
+  ],
+  "foliage": [],
+  "bounce": [],
+  "mist": [
+    {
+      "rect": [
+        0.935,
+        0.25,
+        0.06,
+        0.22
+      ],
+      "color": "#97775e",
+      "alpha": 0.025
+    }
+  ],
+  "foreground": [],
+  "review": {
+    "forbidden_points": [
+      [
+        0.3648325,
+        0.4994687
+      ],
+      [
+        0.2834928,
+        0.3188098
+      ],
+      [
+        0.5801435,
+        0.2337938
+      ],
+      [
+        0.7595694,
+        0.3400638
+      ],
+      [
+        0.9150718,
+        0.8289054
+      ],
+      [
+        0.1495215,
+        0.770457
+      ]
+    ],
+    "stable_pixel": [
+      0.6220096,
+      0.7013815
+    ],
+    "fire_pixel": [
+      0.3642344,
+      0.4420829
+    ],
+    "loop_waypoints": [
+      [
+        0.2063397,
+        0.5313496
+      ],
+      [
+        0.2517943,
+        0.5929862
+      ],
+      [
+        0.3229665,
+        0.6269926
+      ],
+      [
+        0.4246411,
+        0.6312434
+      ],
+      [
+        0.5502392,
+        0.5727949
+      ],
+      [
+        0.6698565,
+        0.565356
+      ],
+      [
+        0.7894737,
+        0.5727949
+      ],
+      [
+        0.8492823,
+        0.5844846
+      ],
+      [
+        0.7535885,
+        0.6886291
+      ],
+      [
+        0.6578947,
+        0.7502657
+      ],
+      [
+        0.5245215,
+        0.7747078
+      ],
+      [
+        0.388756,
+        0.6939426
+      ],
+      [
+        0.2631579,
+        0.607864
+      ]
+    ]
+  },
+  "subtitle": "LES TAILLEURS DE L’OMBRE · UNE BRAISE DEMEURE",
+  "ambience": {
+    "footsteps": "stone",
+    "sources": [
+      {
+        "id": "campfire",
+        "kind": "fire",
+        "point": [
+          0.3648325,
+          0.4643996
+        ],
+        "radius": 0.42,
+        "gain_db": -22
+      }
+    ]
+  }
+}

@@ -2,6 +2,7 @@ class_name CatabaseMonsterEncounterCatalog
 extends RefCounted
 ## Authored packs budget numbers, access and spell economy independently.
 const Evolution = preload("res://core/expedition/catabase_monster_evolution_catalog.gd")
+const EarlyEncounters = preload("res://core/expedition/catabase_early_encounters.gd")
 const UNIT_PATHS := {
 	&"sentinelle": "res://data/units/enemies/catabase_sentinelle_airain.tres",
 	&"rejeton": "res://data/units/enemies/catabase_rejeton_braise.tres",
@@ -35,6 +36,7 @@ static func configure_encounter(encounter: EncounterDefinition, node: Dictionary
 		counts[role] = int(counts.get(role, 0)) + 1
 	for role: StringName in counts:
 		var unit := Evolution.build_unit(role, node)
+		EarlyEncounters.tune(unit, role, node)
 		# Five colosses deliberately trade access for numbers.
 		if int(pack.get("mp_cap", 0)) > 0:
 			unit.max_mp = mini(unit.max_mp, int(pack.mp_cap))
@@ -71,6 +73,9 @@ static func attack_factor(node: Dictionary) -> float:
 static func encounter_preview(node: Dictionary) -> Dictionary:
 	if not uses_monsters(node):
 		return {}
+	var early := EarlyEncounters.preview(node)
+	if not early.is_empty():
+		return early
 	var reward := str(node.get("reward", "melee"))
 	match int(node.get("depth", 2)):
 		2:

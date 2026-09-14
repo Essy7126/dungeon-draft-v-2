@@ -1,0 +1,83 @@
+{
+  "source_sha256": "51756d700e78ae1df06ba9befd8c8ee65434adcb1230061173f71ec2a1f0ad8b",
+  "native_alpha": false,
+  "keying": {
+    "transparent": 1464810,
+    "partial": 1906,
+    "method": "painted-G chroma dominance + unmix + edge despill; no component deletion"
+  },
+  "source_dimensions": [
+    1536,
+    1024
+  ],
+  "crop": {
+    "left": 473,
+    "top": 258,
+    "width": 831,
+    "height": 483
+  },
+  "source_contact_point": [
+    1195,
+    518
+  ],
+  "preview_effect_width": 72,
+  "layers": [
+    {
+      "id": "empreinte_contact",
+      "bounds": [
+        473,
+        258,
+        1199,
+        741
+      ],
+      "pixels": 100703,
+      "sha256": "e7a80b8ba9eea1e42aa1682736d252bd8444aecea4a2633cc05f639e145d8a4b"
+    },
+    {
+      "id": "eclat_haut",
+      "bounds": [
+        1147,
+        352,
+        1268,
+        443
+      ],
+      "pixels": 2747,
+      "sha256": "e5331beedde4372d809d4e16723c06269ca19eb454b72d9c753a0972bc3e2dc4"
+    },
+    {
+      "id": "eclat_milieu",
+      "bounds": [
+        1242,
+        487,
+        1304,
+        522
+      ],
+      "pixels": 968,
+      "sha256": "c1a6de76472bc20e843684602fcf13ad4bee80447871219240591f3d181cb0f7"
+    },
+    {
+      "id": "eclat_bas",
+      "bounds": [
+        1128,
+        613,
+        1258,
+        718
+      ],
+      "pixels": 3636,
+      "sha256": "30f9cf2766e3f161cfa7c18191bba0f6856d306dd9e1c2f0b778a2f58d1fd2c1"
+    }
+  ],
+  "layer_reconstruction": "RGBA byte-exact after chroma extraction",
+  "ora": {
+    "mimetype_first": true,
+    "mimetype_stored": true,
+    "archive_reopened": true,
+    "mergedimage_exact": true,
+    "editor_open": "NOT_TESTED"
+  },
+  "references": [
+    "asset/map/painted/halts/emerald_sanctuary_v1/sanctuary.png",
+    "art/source/characters/catabase_monsters/rejeton_braise/base_frame_E.png"
+  ],
+  "status": "CONCEPT_REVIEW_ONLY"
+}

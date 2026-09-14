@@ -1,0 +1,23 @@
+[
+  {
+    "asset": "pose_3_v2",
+    "source_mode": "RGB",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      328,
+      39,
+      938,
+      1215
+    ],
+    "cutout_size": [
+      610,
+      1176
+    ],
+    "method": "rembg birefnet-general-lite, CPU, decontaminate; detached background removed",
+    "raw_sha256": "c787f72632d285d8443c4676d552329813c9111a9db7c0c520a673273886db39",
+    "alpha_sha256": "186db8f7ad383ceea3d2157371c2ea5f7e46d8d51f92215a981463cadae4ecf2"
+  }
+]

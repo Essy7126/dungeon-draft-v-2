@@ -35,6 +35,89 @@ L’image originale `underworld_gate_v1.png` est conservée. La scène change un
 
 Validation : import Godot 4.7.1 sans erreur, 37 contrôles de navigation/résolutions/gel des animations et 101 contrôles de la revue d’atmosphère (dont 96 captures), tous réussis. Rapport : `artifacts/dev/menu-emerald/summary.json`. Rendu Forward+/D3D12 inspecté, environ 6,06 ms/frame à 1920×1080 sur ce poste. Aperçu animé réel de quatre secondes : `artifacts/dev/menu-emerald/catabase_emerald.webp`. Aucun changement de gameplay et aucune modification de shader pendant cette variante.
 
+## Mythologie et vent — 11 septembre 2026
+
+L’image active est `assets/catabase/title/underworld_gate_mythology_v2.png`.
+Retouche avec l’outil intégré imagegen, à partir de la peinture émeraude : les
+bannières portent des symboles infernaux dorés, des grenades et des méandres grecs ;
+les deux panneaux de porte représentent Hadès barbu et casqué, puis Cerbère avec
+trois têtes distinctes, en bas-reliefs de bronze. Composition et foyers conservés.
+Prompt exact : `assets/catabase/title/underworld_gate_mythology_v2.prompt.txt`.
+
+L’original `underworld_gate_emerald_v1.png` reste intact et versionné, SHA-256
+`3836aa58187ea7b533c994039a1d907f4b08a4a74f44ddbdef6d1747a687040d`.
+Copie supplémentaire et shader V2 conservés dans `artifacts/dev/title-mythology-v3/`.
+Pour revenir à l’ancienne peinture, réaffecter cette texture au fond du menu ;
+mettre `wind_strength` à zéro si l’ancien rendu sans tissu animé est souhaité.
+
+Le shader anime les tissus avec deux ondes lentes, une amplitude croissante vers
+leur extrémité libre et une très légère variation de lumière dans les plis.
+La sélection combine des régions en UV et la couleur du tissu pour préserver
+la pierre. C’est une déformation locale de la peinture, pas une simulation de
+tissu 3D. La brume proche superpose volumes et filaments transportés sur le sol,
+avec une couche basse jusqu’au bord de l’écran et une teinte chaude près des feux.
+L’horloge `elapsed` fige tous les nouveaux effets avec la réduction des animations.
+`wind_strength` permet de régler le vent ; `camera_strength` sert notamment à
+isoler les mouvements locaux lors de la revue.
+
+La revue d’atmosphère vérifie désormais chaque bannière caméra immobile, la
+stabilité de la colonne, l’arrêt de tous les effets et le déplacement de la
+brume au premier plan. Les exports V3 vont dans `artifacts/dev/title-mythology-v3/`
+pour conserver les preuves et captures des itérations antérieures.
+
+Validation V3 finale : import recovery et GUT de sélection réussis (2 tests,
+82 assertions), puis 37 contrôles de menu et 108 contrôles d’atmosphère dans
+chacun des deux moteurs OpenGL/Compatibility et D3D12/Forward+, sans erreur ni
+fuite à la fermeture. Rapport :
+`artifacts/dev/title-mythology-v3/run-20260911-210311/summary.json`.
+GUT : `artifacts/dev/20260911-205846-test-test_unit_test_catabase_selection_launch.gd-6900c542/gut-strict-report.json`.
+Captures inspectées : menu 1920×1080, brume isolée à deux instants et illustration.
+96 images exportées sur quatre secondes ; aperçu `artifacts/dev/title-mythology-v3/catabase_mythology.webp`.
+Environ 6,06 ms/frame à 1920×1080 sur cette machine ; pas une garantie de budget
+GPU pour d’autres configurations. Les validations CI sont conservées ; la suite
+globale et les smokes d’éditeurs sans rapport avec ce changement ne sont pas relancés.
+
+Les premiers essais restent archivés : un import restreint a rencontré des
+erreurs d’accès Windows, puis le banc titre a signalé une libération tardive du
+MP3. L’import avec accès nécessaires et l’arrêt explicite du lecteur suivi de
+quelques frames avant la fermeture des bancs ont permis les passages finaux propres.
+
+## Corrections V4 — Cerbère, drapeau droit et brume gauche
+
+Suite à la revue utilisateur du 11 septembre, l’image active devient
+`assets/catabase/title/underworld_gate_mythology_v3.png` : retouche locale avec
+l’outil intégré imagegen pour retirer une oreille surnuméraire de Cerbère.
+La V2 reste intacte, avec une copie supplémentaire dans
+`artifacts/dev/title-mythology-v4/`. Prompt :
+`assets/catabase/title/underworld_gate_mythology_v3.prompt.txt`.
+
+Le drapeau droit ne sélectionne plus seulement les pixels rouges : le tissu
+et ses broderies dorées utilisent la même déformation continue, plus lente et
+moins ample. La déformation décroît avant le bord intérieur du tissu, faute de
+peinture du décor caché derrière lui ; la modulation de luminosité est supprimée
+à droite. Le drapeau gauche conserve son réglage précédent.
+
+La brume proche entre les rochers gauches reçoit une couche propre, composée
+de volumes et de filaments en déplacement ascendant. Les zones de brume déjà
+peintes et la luminosité servent de masque pour garder les rochers sombres
+immobiles. `rock_fog_strength` règle cette contribution ; `fog_strength` et
+la réduction des animations continuent de contrôler toute la brume.
+
+La revue exporte les états de vent et de brume gauche séparément, vérifie
+le mouvement de la broderie, la contribution dans les poches gauches et la
+préservation des rochers sombres. Les captures V4 restent séparées des V3.
+
+Validation finale V4 : import et GUT sélection réussis (2 tests, 82 assertions),
+37 contrôles titre et 117 contrôles atmosphère réussis dans chacun des moteurs
+OpenGL et D3D12, sans erreur ni fuite. Rapport final :
+`artifacts/dev/title-mythology-v4/run-20260911-211705/summary.json`.
+GUT : `artifacts/dev/20260911-211414-test-test_unit_test_catabase_selection_launch.gd-9ade8bb3/gut-strict-report.json`.
+Gros plans inspectés : six oreilles de Cerbère, broderie et bord du drapeau droit,
+brume gauche isolée. Aperçu de 96 frames / 4 secondes :
+`artifacts/dev/title-mythology-v4/catabase_corrected.webp`.
+Le premier passage a détecté un voile sur certaines pierres bleues ; le masque
+final combine couleur et limite de profondeur devant les rochers.
+
 ## Vérifications et reprise
 
 Import Godot 4.7.1 et test `test/unit/test_catabase_selection_launch.gd` : PASS, 2 tests, 82 assertions. Rapport : `artifacts/dev/20260910-160253-test-test_unit_test_catabase_selection_launch.gd-55909610/gut-strict-report.json`.

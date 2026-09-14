@@ -46,7 +46,12 @@
         }
       ],
       "atlas": "strike_atlas.png",
-      "total_ms": 400
+      "total_ms": 400,
+      "frame_count": 4,
+      "atlas_size": [
+        1536,
+        1536
+      ]
     },
     {
       "id": "dash",
@@ -83,7 +88,12 @@
         }
       ],
       "atlas": "dash_atlas.png",
-      "total_ms": 430
+      "total_ms": 430,
+      "frame_count": 4,
+      "atlas_size": [
+        1536,
+        1536
+      ]
     },
     {
       "id": "shot",
@@ -120,7 +130,12 @@
         }
       ],
       "atlas": "shot_atlas.png",
-      "total_ms": 510
+      "total_ms": 510,
+      "frame_count": 4,
+      "atlas_size": [
+        1536,
+        1536
+      ]
     },
     {
       "id": "guard",
@@ -157,7 +172,12 @@
         }
       ],
       "atlas": "guard_atlas.png",
-      "total_ms": 600
+      "total_ms": 600,
+      "frame_count": 4,
+      "atlas_size": [
+        1536,
+        1536
+      ]
     },
     {
       "id": "sweep",
@@ -195,7 +215,12 @@
         }
       ],
       "atlas": "sweep_atlas.png",
-      "total_ms": 515
+      "total_ms": 515,
+      "frame_count": 4,
+      "atlas_size": [
+        1536,
+        1536
+      ]
     },
     {
       "id": "bash",
@@ -232,7 +257,473 @@
         }
       ],
       "atlas": "bash_atlas.png",
-      "total_ms": 455
+      "total_ms": 455,
+      "frame_count": 4,
+      "atlas_size": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "id": "sky_bow",
+      "name": "Tir céleste",
+      "subtitle": "L’arc tendu, le buste ouvert vers le ciel.",
+      "color": "#e8d4a0",
+      "event_ms": 550,
+      "cooldown_ms": 1150,
+      "damage": 28,
+      "range": 760,
+      "mode": "lob",
+      "hitstop_ms": 40,
+      "source_dir": "art/source/characters/achilles/passe_rive_bow_v1",
+      "source_file": "bow_rgb.png",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "idle_file": "frames/sky_bow_05.png",
+      "idle_animation": "sky_bow_idle",
+      "release_offset": [
+        92,
+        -269
+      ],
+      "proposal": true,
+      "frames": [
+        {
+          "file": "frames/sky_bow_00.png",
+          "duration_ms": 120,
+          "phase": "Encocher"
+        },
+        {
+          "file": "frames/sky_bow_01.png",
+          "duration_ms": 130,
+          "phase": "Lever l’arc"
+        },
+        {
+          "file": "frames/sky_bow_02.png",
+          "duration_ms": 300,
+          "phase": "Pleine tension"
+        },
+        {
+          "file": "frames/sky_bow_03.png",
+          "duration_ms": 70,
+          "phase": "Décocher"
+        },
+        {
+          "file": "frames/sky_bow_04.png",
+          "duration_ms": 140,
+          "phase": "Accompagner"
+        },
+        {
+          "file": "frames/sky_bow_05.png",
+          "duration_ms": 150,
+          "phase": "Abaisser l’arc"
+        }
+      ],
+      "atlas": "sky_bow_atlas.png",
+      "total_ms": 910,
+      "frame_count": 6,
+      "atlas_size": [
+        1536,
+        2304
+      ]
+    },
+    {
+      "id": "ivory_bow",
+      "name": "Trait d’ivoire",
+      "subtitle": "S’ancrer, tendre l’ivoire, libérer la puissance.",
+      "color": "#efe4c1",
+      "event_ms": 1620,
+      "cooldown_ms": 2400,
+      "damage": 52,
+      "range": 850,
+      "mode": "charged",
+      "hitstop_ms": 65,
+      "source_dir": "art/source/characters/achilles/passe_rive_ivory_bow_v1",
+      "source_file": "ivory_rgb.png",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "idle_file": "frames/ivory_bow_05.png",
+      "idle_animation": "ivory_bow_idle",
+      "release_offset": [
+        125,
+        -171
+      ],
+      "release_angle_degrees": -5,
+      "projectile_speed": 1450,
+      "tremor": {
+        "frame": 3,
+        "start_ms": 620,
+        "end_ms": 1620,
+        "center": [
+          155,
+          391
+        ],
+        "radius": [
+          91,
+          43
+        ],
+        "max_pixels": 1.7
+      },
+      "proposal": true,
+      "frames": [
+        {
+          "file": "frames/ivory_bow_00.png",
+          "duration_ms": 140,
+          "phase": "Encocher"
+        },
+        {
+          "file": "frames/ivory_bow_01.png",
+          "duration_ms": 180,
+          "phase": "Descendre sur l’appui"
+        },
+        {
+          "file": "frames/ivory_bow_02.png",
+          "duration_ms": 300,
+          "phase": "Transformer l’arc"
+        },
+        {
+          "file": "frames/ivory_bow_03.png",
+          "duration_ms": 1000,
+          "phase": "Tenir la puissance"
+        },
+        {
+          "file": "frames/ivory_bow_04.png",
+          "duration_ms": 65,
+          "phase": "Décocher"
+        },
+        {
+          "file": "frames/ivory_bow_05.png",
+          "duration_ms": 240,
+          "phase": "Relâcher"
+        }
+      ],
+      "atlas": "ivory_bow_atlas.png",
+      "total_ms": 1925,
+      "frame_count": 6,
+      "atlas_size": [
+        1536,
+        2304
+      ]
+    },
+    {
+      "id": "vital_harvest",
+      "name": "Moisson vitale",
+      "subtitle": "S’élever, ouvrir le torse, libérer l’impulsion.",
+      "color": "#e9676a",
+      "event_ms": 620,
+      "cooldown_ms": 1750,
+      "damage": 34,
+      "range": 740,
+      "mode": "vital",
+      "hitstop_ms": 45,
+      "source_dir": "art/source/characters/achilles/passe_rive_vital_harvest_v1",
+      "source_file": "vital_rgb.png",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "idle_file": "frames/vital_harvest_05.png",
+      "idle_animation": "vital_harvest_idle",
+      "levitation": [
+        [
+          0,
+          0
+        ],
+        [
+          140,
+          0
+        ],
+        [
+          320,
+          18
+        ],
+        [
+          620,
+          34
+        ],
+        [
+          780,
+          36
+        ],
+        [
+          975,
+          16
+        ],
+        [
+          1200,
+          0
+        ]
+      ],
+      "vfx": {
+        "palms": [
+          [
+            [
+              259,
+              449
+            ],
+            [
+              401,
+              452
+            ]
+          ],
+          [
+            [
+              251,
+              447
+            ],
+            [
+              416,
+              446
+            ]
+          ],
+          [
+            [
+              253,
+              435
+            ],
+            [
+              440,
+              433
+            ]
+          ],
+          [
+            [
+              253,
+              427
+            ],
+            [
+              427,
+              424
+            ]
+          ],
+          [
+            [
+              250,
+              445
+            ],
+            [
+              426,
+              441
+            ]
+          ],
+          [
+            [
+              259,
+              448
+            ],
+            [
+              403,
+              448
+            ]
+          ]
+        ],
+        "chest": [
+          [
+            345,
+            328
+          ],
+          [
+            345,
+            334
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            353,
+            319
+          ],
+          [
+            347,
+            334
+          ]
+        ],
+        "palm_strength": [
+          0,
+          0.25,
+          0.85,
+          1,
+          0.75,
+          0
+        ],
+        "release_frame": 3
+      },
+      "proposal": true,
+      "frames": [
+        {
+          "file": "frames/vital_harvest_00.png",
+          "duration_ms": 140,
+          "phase": "Se recueillir"
+        },
+        {
+          "file": "frames/vital_harvest_01.png",
+          "duration_ms": 180,
+          "phase": "Éveiller les paumes"
+        },
+        {
+          "file": "frames/vital_harvest_02.png",
+          "duration_ms": 300,
+          "phase": "S’élever"
+        },
+        {
+          "file": "frames/vital_harvest_03.png",
+          "duration_ms": 95,
+          "phase": "Libérer la vie"
+        },
+        {
+          "file": "frames/vital_harvest_04.png",
+          "duration_ms": 260,
+          "phase": "Rester suspendu"
+        },
+        {
+          "file": "frames/vital_harvest_05.png",
+          "duration_ms": 225,
+          "phase": "Se poser"
+        }
+      ],
+      "atlas": "vital_harvest_atlas.png",
+      "total_ms": 1200,
+      "frame_count": 6,
+      "atlas_size": [
+        1536,
+        2304
+      ]
+    },
+    {
+      "id": "fauche",
+      "key": "0",
+      "name": "Fauche",
+      "subtitle": "Le bassin entraîne la lance, la lame fait le tour du corps.",
+      "color": "#b8efdb",
+      "event_ms": 300,
+      "cooldown_ms": 1000,
+      "damage": 26,
+      "range": 260,
+      "mode": "sweep",
+      "hitstop_ms": 42,
+      "frame_size": [
+        1152,
+        768
+      ],
+      "pivot": [
+        576,
+        662
+      ],
+      "source_dir": "art/source/characters/achilles/passe_rive_fauche_v1",
+      "source_file": "fauche_rgb.png",
+      "source_size": [
+        1086,
+        1448
+      ],
+      "idle_file": "frames/fauche_07.png",
+      "idle_animation": "fauche_idle",
+      "sweep_trail": {
+        "depth": [
+          -1,
+          -1,
+          -0.4,
+          0,
+          1,
+          0.4,
+          -1,
+          -1
+        ],
+        "tail_ms": 150,
+        "start_ms": 140,
+        "end_ms": 535,
+        "tips": [
+          [
+            40,
+            405
+          ],
+          [
+            907,
+            384
+          ],
+          [
+            995,
+            337
+          ],
+          [
+            1011,
+            375
+          ],
+          [
+            673,
+            531
+          ],
+          [
+            157,
+            337
+          ],
+          [
+            938,
+            144
+          ],
+          [
+            889,
+            165
+          ]
+        ]
+      },
+      "proposal": true,
+      "frames": [
+        {
+          "file": "frames/fauche_00.png",
+          "duration_ms": 140,
+          "phase": "Charger l’appui arrière"
+        },
+        {
+          "file": "frames/fauche_01.png",
+          "duration_ms": 95,
+          "phase": "Passer derrière le corps"
+        },
+        {
+          "file": "frames/fauche_02.png",
+          "duration_ms": 65,
+          "phase": "Engager le bassin"
+        },
+        {
+          "file": "frames/fauche_03.png",
+          "duration_ms": 65,
+          "phase": "Faucher"
+        },
+        {
+          "file": "frames/fauche_04.png",
+          "duration_ms": 70,
+          "phase": "Traverser devant"
+        },
+        {
+          "file": "frames/fauche_05.png",
+          "duration_ms": 100,
+          "phase": "Amortir sur l’autre jambe"
+        },
+        {
+          "file": "frames/fauche_06.png",
+          "duration_ms": 110,
+          "phase": "Freiner la lance"
+        },
+        {
+          "file": "frames/fauche_07.png",
+          "duration_ms": 155,
+          "phase": "Revenir en garde"
+        }
+      ],
+      "atlas": "fauche_atlas.png",
+      "total_ms": 800,
+      "frame_count": 8,
+      "atlas_size": [
+        2304,
+        3072
+      ]
     }
   ],
   "idle": "frames/idle.png",
@@ -291,7 +782,7 @@
     68.32
   ],
   "status": "playable_art_trial",
-  "generation": "Built-in ImageGen: six sheets plus targeted guard correction",
+  "generation": "Built-in ImageGen: initial six sheets and guard correction, celestial bow and framing correction, charged ivory bow and rear-leg stance correction, unarmed vital harvest six-pose sheet. Fauche: eight painted poses and one targeted sweep/weight-transfer correction.",
   "cutout": "Authorized rembg birefnet-general-lite, decontaminate=True; detached neighboring fragments removed. Neutral-white color key was rejected after visual inspection.",
   "native_sheet_size": [
     1254,
@@ -300,10 +791,13 @@
   "input_buffer_ms": 160,
   "limitations": [
     "Une direction seulement ; le laboratoire ne remplace pas le combat de la campagne.",
-    "Quatre poses clés par action, timing tenu ; aucun faux intermédiaire ajouté.",
+    "Quatre poses pour les six gestes initiaux ; six poses pour chacun des deux tirs à l’arc. Durées variables ; tremblement local du bras calculé pendant la pleine charge du Trait d’ivoire.",
     "Tir : proposition visuelle de projection de lance, à valider pour le Tir du Pélion.",
     "Moisson et Heurt : propositions de palette, chiffres de laboratoire uniquement.",
     "Idle : pose de garde issue de la récupération ; marche V3 réutilisée.",
-    "Dessin génératif : volumes, prise de lance et raccords restent à juger au ralenti."
+    "Dessin génératif : volumes, prise de lance et raccords restent à juger au ralenti.",
+    "Les deux tirs conservent un arc au repos ; changement d’équipement instantané vers les autres gestes dans le laboratoire. Le tremblement nécessite le script navigateur ou le shader Godot fourni ; les PNG et APNG sont les poses peintes.",
+    "Moisson vitale : six poses sans arme, paumes peintes vertes ; lévitation et effets verts/rouges calculés dans les laboratoires. Les PNG et APNG seuls ne contiennent pas les effets animés ni la montée au-dessus du pivot.",
+    "Fauche : huit poses, cellules élargies à 1152×768, pivot (576,662) pour conserver toute la lance à la même échelle du corps. Traînée séparée en deux profondeurs, raccordée aux pointes peintes. La garde finale conserve le bouclier dans le dos."
   ]
 }

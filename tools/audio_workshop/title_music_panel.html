@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catabase — huit musiques pour l’écran titre</title>
+<link rel="stylesheet" href="title_music_panel.css">
+<body>
+<header><a class="brand" href="#top">CATABASE <span>ATELIER MUSICAL</span></a><span class="edition">Sélection du 12 septembre 2026 · 0 € avec crédits</span></header>
+<main id="top">
+  <section class="intro">
+    <p class="eyebrow">UNE MÉLODIE AVANT LE PREMIER PAS</p>
+    <h1>Aux portes des Enfers.</h1>
+    <p class="lead">Huit directions pour l’écran titre : du temple oublié au grand voyage.<br>À comparer avec ton goût pour Divinity et Baldur’s Gate.</p>
+  </section>
+  <section class="audition" aria-label="Écouter avec le décor du titre">
+    <div class="stage">
+      <div class="stage-title">CATABASE<small>La descente d’Achille</small></div>
+      <div class="stage-bottom"><span>Décor de l’écran titre</span><button id="fullscreen" type="button">Agrandir le décor</button></div>
+    </div>
+    <div class="deck">
+      <p class="eyebrow">À L’ÉCOUTE <span id="position">01 / 08</span></p>
+      <h2 id="now-title">Passage of Time</h2><p id="now-author">Scott Buckley</p>
+      <p id="now-fit"></p>
+      <audio id="player" controls preload="none" aria-label="Lecteur musical"></audio>
+      <div class="transport"><button id="previous" aria-label="Morceau précédent">←</button><button id="start">Écouter depuis le début</button><button id="next" aria-label="Morceau suivant">→</button></div>
+      <div class="options"><button id="moment">À 2:45</button><button id="stop">Arrêter</button><label><input id="loop" type="checkbox"> Boucler ce titre</label></div>
+      <label class="volume">Volume <input id="volume" type="range" min="0" max="100" value="25"><output id="volume-value">25 %</output></label>
+      <label class="tour"><input id="tour" type="checkbox"> Parcours rapide : 40 secondes par titre</label>
+      <p id="status" role="status">Clique sur Écouter. Une seule musique joue à la fois.</p>
+      <p class="small">Versions originales en ligne, volume initial réduit. Le niveau n’est pas normalisé entre les morceaux. La lecture complète reste disponible.</p>
+    </div>
+  </section>
+  <section class="selection" aria-labelledby="selection-title">
+    <div class="selection-top"><div><p class="eyebrow">LE PANEL COMPLET</p><h2 id="selection-title">Choisir la couleur du voyage.</h2></div><button id="copy">Copier mes favoris</button></div>
+    <nav id="filters" aria-label="Filtrer la sélection"><button data-filter="Tous" aria-pressed="true">Tous · 8</button><button data-filter="Antique" aria-pressed="false">Antique</button><button data-filter="Intime" aria-pressed="false">Intime</button><button data-filter="Aventure" aria-pressed="false">Aventure</button><button data-filter="Rituel" aria-pressed="false">Rituel / chœurs</button><button data-filter="Favoris" aria-pressed="false">Mes favoris</button></nav>
+    <p id="empty" hidden>Aucun favori pour le moment. Utilise les étoiles des morceaux que tu aimes.</p>
+    <div id="cards" class="cards"></div>
+    <p id="copy-status" role="status"></p><textarea id="copy-fallback" hidden readonly aria-label="Liste des favoris à copier"></textarea>
+  </section>
+  <section class="notes">
+    <article><p class="eyebrow">MA DIRECTION POUR CATABASE</p><h2>Une présence, puis de l’espace.</h2><p>Je commencerais par <strong>Passage of Time</strong>, puis <strong>Memories Of Stone</strong> et <strong>Nomadic Dawn</strong>. Le premier pour le poids du mythe, le deuxième pour l’émotion, le troisième pour l’appel de l’aventure.</p><p>Pour la version retenue : une arrivée progressive, une section assez longue pour laisser respirer le menu, un raccord travaillé et un fondu quand la partie commence. Les passages aigus et les grandes montées seront ajustés à l’écoute.</p></article>
+    <article><p class="eyebrow">LES REPÈRES</p><h2>Mélodie, cordes, mystère.</h2><p>J’ai pris surtout <a href="https://orcd.co/divinity" target="_blank" rel="noopener">Divinity: Original Sin 2</a> et <a href="https://music.apple.com/us/album/baldurs-gate-3-original-game-soundtrack/1705382522" target="_blank" rel="noopener">Baldur’s Gate 3</a> comme références d’écoute. Pour notre titre : un thème qui reste en tête, une émotion humaine et une ouverture sur le sacré.</p><p>Les rapprochements et le classement ci-dessus sont des propositions artistiques basées sur les fiches des compositeurs. Ton écoute permettra de trancher. Les bandes originales des jeux servent de références et ne sont pas incluses dans le panel utilisable.</p></article>
+  </section>
+  <footer><p>Les huit morceaux sont proposés par leurs auteurs sous <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> : utilisation gratuite avec attribution, y compris dans un jeu commercial. Chaque carte renvoie à la fiche de l’auteur et à ses conditions.</p><p>Les favoris restent dans ce navigateur. Ce panneau sert à choisir ; il ne remplace pas la musique du jeu.</p></footer>
+</main>
+<script src="title_music_catalog.js"></script><script src="title_music_panel.js"></script>
+</body></html>
