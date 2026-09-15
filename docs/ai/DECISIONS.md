@@ -1,5 +1,22 @@
 # Décisions d’architecture
 
+## Mort Catabase — 2026-09-15
+
+Contexte : `main@40ea393dcd539c63f2aa7f024271524f65ade399`, modifications
+WORKTREE_CANDIDATE. Ce bloc ne déclare pas les documents historiques CURRENT.
+
+- DÉCISION VALIDÉE : corriger en priorité le retour au trio après la mort ;
+  réaliser un écran de mort soigné, sans décider maintenant de nouvelles
+  mécaniques de mort. Le brainstorming est différé.
+- CHOIX D'IMPLÉMENTATION DÉDUIT : « Nouvelle tentative » retourne à la sélection
+  publique Catabase, pour Achille ou Passe-rive ; « Menu principal » ouvre le
+  titre. Aucun retour automatique à l'Archiviste historique.
+- PÉRIMÈTRE CONSERVÉ : aucune résurrection, pénalité, récompense de défaite,
+  méta-progression ou modification d'équilibrage. Le bilan affiche uniquement
+  les faits disponibles de la tentative terminée.
+
+Preuves et limites : [correctif mort](CATABASE_DEATH_FLOW_2026-09-15.md).
+
 ## Catabase r6 — run courte exigeante, 2026-09-14
 
 Statut : DÉCISION VALIDÉE pour l'intention utilisateur ; implémentation

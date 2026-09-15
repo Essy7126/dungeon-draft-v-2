@@ -1734,7 +1734,7 @@ func _complete_battle_outcome_after_delay(
 	else:
 		on_battle_lost()
 
-# Appelé par battle quand le joueur GAGNE le combat.
+# Fige le dernier plateau avant les écrans de victoire ou de défaite.
 func capture_battle_outcome_background() -> bool:
 	if _post_combat_background_captured_for_outcome:
 		return _post_combat_background_texture != null
@@ -1868,7 +1868,36 @@ func _record_run_result(victory: bool) -> void:
 		run_seed,
 		_active_run_data != null or run_seed != 0,
 		hero_states,
+		_expedition_result_facts(),
 	)
+
+
+func _expedition_result_facts() -> Dictionary:
+	if expedition == null:
+		return {}
+	var route := expedition.route
+	var current := route.get_current_node()
+	var depth_total := 0
+	var combats_won := 0
+	for node: Dictionary in route.nodes:
+		depth_total = maxi(depth_total, int(node.get("depth", 0)))
+		if str(node.id) in route.completed_node_ids \
+				and ExpeditionRouteCatalog.is_combat(str(node.kind)):
+			combats_won += 1
+	var hero_name := expedition.character.unit.unit_name
+	if _active_run_data != null \
+			and str(_active_run_data.hero_visual_variants.get("achilles", "")) == "passe_rive":
+		hero_name = "Passe-rive"
+	return {
+		"depth_reached": int(current.get("depth", 0)),
+		"depth_total": depth_total,
+		"depths_cleared": route.completed_node_ids.size(),
+		"combats_won": combats_won,
+		"hero_level": expedition.character.champion_progression.current_level,
+		"difficulty_id": route.difficulty_id,
+		"featured_hero_name": hero_name,
+		"reached_room_name": str(current.get("title", "")),
+	}
 
 func get_last_run_result() -> Dictionary:
 	return _last_run_result.duplicate(true)
@@ -1878,7 +1907,23 @@ func return_to_title() -> void:
 
 
 func return_to_hub() -> void:
+	# Old result screens/signals must never reopen the archived trio after Catabase.
+	if not run_active and bool(_last_run_result.get("is_catabase", false)):
+		request_new_catabase_attempt()
+		return
 	_request_saved_exit("return_to_hub")
+
+
+## A new attempt starts at the public Catabase selection, never at a legacy hub
+## or by reusing a dead hero/build. A finished result is consumed once.
+func request_new_catabase_attempt() -> bool:
+	if run_active or not bool(_last_run_result.get("is_catabase", false)) \
+			or bool(_expedition_save_status.get("pending", false)):
+		return false
+	cancel_expedition_replacement()
+	cleanup_run_state()
+	_request_scene_change(CHARACTER_SELECTION_SCREEN_PATH)
+	return true
 
 
 func request_return_to_title() -> bool:
@@ -1886,6 +1931,8 @@ func request_return_to_title() -> bool:
 
 
 func request_abandon_run() -> bool:
+	if _pending_expedition_action.begins_with("finish_"):
+		return false
 	if expedition != null and not ExpeditionSaveService.remove_snapshot(expedition_save_path):
 		_pending_expedition_action = "abandon"
 		_set_expedition_save_status(false, "abandon")
@@ -1897,6 +1944,9 @@ func request_abandon_run() -> bool:
 
 
 func _request_saved_exit(operation: String) -> bool:
+	# A terminal deletion failure cannot be turned into a save of a dead run.
+	if _pending_expedition_action.begins_with("finish_"):
+		return false
 	if expedition != null and run_active:
 		_pending_expedition_action = operation
 		if not save_expedition():

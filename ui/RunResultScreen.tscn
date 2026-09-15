@@ -1,12 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/run_result_screen.gd" id="1_script"]
-[ext_resource type="Shader" path="res://ui/theme/premium_backdrop.gdshader" id="2_backdrop"]
+[ext_resource type="Texture2D" path="res://assets/catabase/painted/ui/background.png" id="2_background"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/victory_laurel.svg" id="3_laurel"]
 [ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="4_ornament"]
-
-[sub_resource type="ShaderMaterial" id="BackdropMaterial"]
-shader = ExtResource("2_backdrop")
 
 [node name="RunResultScreen" type="Control"]
 layout_mode = 3
@@ -17,31 +14,51 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
-material = SubResource("BackdropMaterial")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 1, 1, 1)
-
-[node name="Center" type="CenterContainer" parent="Background"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Panel" type="PanelContainer" parent="Background/Center"]
+[node name="Background" type="TextureRect" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(720, 650)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackgroundDim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.012, 0.022, 0.025, 0.76)
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Center" type="CenterContainer" parent="SafeMargin"]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="SafeMargin/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(960, 684)
 layout_mode = 2
 theme_type_variation = &"PremiumScreen"
 
-[node name="Ornament" type="Control" parent="Background/Center/Panel"]
+[node name="Ornament" type="Control" parent="SafeMargin/Center/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,78 +69,292 @@ mouse_filter = 2
 script = ExtResource("4_ornament")
 variant = "screen"
 
-[node name="Content" type="VBoxContainer" parent="Background/Center/Panel"]
+[node name="MainMargin" type="MarginContainer" parent="SafeMargin/Center/Panel"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 11
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 7
 alignment = 1
 
-[node name="Crest" type="TextureRect" parent="Background/Center/Panel/Content"]
-custom_minimum_size = Vector2(0, 124)
+[node name="Crest" type="TextureRect" parent="SafeMargin/Center/Panel/MainMargin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 68)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("3_laurel")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Register" type="Label" parent="Background/Center/Panel/Content"]
+[node name="Register" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumEyebrow"
-text = "REGISTRE DE L’ARCHIVISTE · CATABASE"
+text = "CATABASE · DÉFAITE"
 horizontal_alignment = 1
 
-[node name="Result" type="Label" parent="Background/Center/Panel/Content"]
+[node name="Result" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumDisplay"
-text = "VICTOIRE"
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.82)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 38
+text = "LE FIL SE ROMPT"
 horizontal_alignment = 1
 
-[node name="RunName" type="Label" parent="Background/Center/Panel/Content"]
+[node name="RunName" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumSubtitle"
-text = "Catabase d’Achille"
+text = "ACHILLE DANS LA CATABASE"
 horizontal_alignment = 1
 
-[node name="Rule" type="HSeparator" parent="Background/Center/Panel/Content"]
+[node name="Rule" type="HSeparator" parent="SafeMargin/Center/Panel/MainMargin/Content"]
 layout_mode = 2
 theme_type_variation = &"PremiumSeparator"
 
-[node name="Progression" type="Label" parent="Background/Center/Panel/Content"]
+[node name="LocationPanel" type="PanelContainer" parent="SafeMargin/Center/Panel/MainMargin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 66)
 layout_mode = 2
-theme_type_variation = &"PremiumBody"
-text = "Salles franchies : 3/3\nSalle atteinte : 3/3 — Le Jugement de Paris"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_type_variation = &"PremiumInset"
 
-[node name="Seed" type="Label" parent="Background/Center/Panel/Content"]
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/LocationPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 7
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/LocationPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="LocationEyebrow" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/LocationPanel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumEyebrow"
-text = "GRAINE DU DESTIN · 1337"
+text = "DERNIER LIEU"
 horizontal_alignment = 1
 
-[node name="EpitaphPanel" type="PanelContainer" parent="Background/Center/Panel/Content"]
-custom_minimum_size = Vector2(620, 112)
+[node name="Location" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/LocationPanel/Margin/Content"]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
+theme_type_variation = &"PremiumTitle"
+text = "Catabase II — La Porte des Cendres"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+
+[node name="Progression" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/LocationPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "Profondeur atteinte · 2 / 20 · 1 étape franchie"
+horizontal_alignment = 1
+
+[node name="Stats" type="HBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="DepthCard" type="PanelContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PremiumCard"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/DepthCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 7
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/DepthCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/DepthCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "PROFONDEUR"
+horizontal_alignment = 1
+
+[node name="DepthValue" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/DepthCard/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumTitle"
+text = "2 / 20"
+horizontal_alignment = 1
+
+[node name="ClearedCard" type="PanelContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PremiumCard"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/ClearedCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 7
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/ClearedCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/ClearedCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "ÉTAPES FRANCHIES"
+horizontal_alignment = 1
+
+[node name="ClearedValue" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/ClearedCard/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumTitle"
+text = "1"
+horizontal_alignment = 1
+
+[node name="CombatsCard" type="PanelContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PremiumCard"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/CombatsCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 7
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/CombatsCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/CombatsCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "COMBATS REMPORTÉS"
+horizontal_alignment = 1
+
+[node name="CombatsValue" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/CombatsCard/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumTitle"
+text = "1"
+horizontal_alignment = 1
+
+[node name="LevelCard" type="PanelContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PremiumCard"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/LevelCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 7
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/LevelCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/LevelCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "NIVEAU"
+horizontal_alignment = 1
+
+[node name="LevelValue" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/Stats/LevelCard/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumTitle"
+text = "2"
+horizontal_alignment = 1
+
+[node name="NarrativePanel" type="PanelContainer" parent="SafeMargin/Center/Panel/MainMargin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 78)
+layout_mode = 2
 theme_type_variation = &"PremiumPanel"
 
-[node name="Epitaph" type="Label" parent="Background/Center/Panel/Content/EpitaphPanel"]
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/NarrativePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 9
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content/NarrativePanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="HeroStatus" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/NarrativePanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumEyebrow"
+text = "ACHILLE · 0 / 110 PV"
+horizontal_alignment = 1
+
+[node name="Epitaph" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content/NarrativePanel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PremiumBody"
-text = "L’Archiviste consigne : la Catabase est achevée — 3/3 salles franchies. Achille : 58/110 PV."
+text = "La traversée s’arrête ici. Une nouvelle tentative commence depuis le départ."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ReturnButton" type="Button" parent="Background/Center/Panel/Content"]
+[node name="Seed" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(320, 54)
 layout_mode = 2
-size_flags_horizontal = 4
+theme_type_variation = &"PremiumMuted"
+text = "DIFFICULTÉ · NORMAL     ◆     GRAINE DU DESTIN · 1337"
+horizontal_alignment = 1
+
+[node name="Actions" type="HBoxContainer" parent="SafeMargin/Center/Panel/MainMargin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="NewAttemptButton" type="Button" parent="SafeMargin/Center/Panel/MainMargin/Content/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 50)
+layout_mode = 2
 theme_type_variation = &"PremiumPrimaryButton"
-text = "REFERMER LE REGISTRE"
+text = "Nouvelle tentative"
+tooltip_text = "Revenir à la sélection Catabase pour commencer depuis le départ."
+
+[node name="MenuButton" type="Button" parent="SafeMargin/Center/Panel/MainMargin/Content/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 50)
+layout_mode = 2
+theme_type_variation = &"PremiumButton"
+text = "Menu principal"
+tooltip_text = "Quitter cet écran et revenir au menu principal."
+
+[node name="NavigationFeedback" type="Label" parent="SafeMargin/Center/Panel/MainMargin/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"PremiumDanger"
+text = "La destination n’a pas pu être ouverte. Réessayez."
+horizontal_alignment = 1
+autowrap_mode = 2

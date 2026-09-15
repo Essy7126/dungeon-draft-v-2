@@ -1,5 +1,27 @@
 # Problèmes connus et suivis
 
+## Mort Catabase — candidat du 2026-09-15
+
+Base `main@40ea393dcd539c63f2aa7f024271524f65ade399`, modifications locales.
+
+- CORRIGÉ DANS LE CANDIDAT : le résultat Catabase ouvrait l'Archiviste,
+  dont le catalogue historique sélectionne l'ancienne aventure à trois héros.
+  La nouvelle tentative passe désormais par la sélection publique solo.
+- CORRIGÉ DANS LE CANDIDAT : le bilan utilisait les compteurs génériques de
+  salles ; il expose maintenant les faits de la route et le nom Passe-rive.
+- PROTECTION AJOUTÉE : après une suppression terminale impossible, les sorties
+  titre/hub/abandon ne remplacent plus l'opération de fin par une autre action.
+- HORS PÉRIMÈTRE : les contenus Archiviste/trio restent dans le dépôt et ses
+  laboratoires. Ce correctif n'en effectue pas une purge générale.
+- OBSERVÉ HORS CORRECTIF : la sélection publique affiche encore « Incarner
+  Achille » pour Passe-rive. La configuration obtenue est bien Passe-rive dans
+  Catabase (probe GPU), mais ce libellé mérite une harmonisation ultérieure.
+- NON DÉCIDÉ : conséquences supplémentaires de la mort, résurrection ou
+  méta-progression ; brainstorming utilisateur ultérieur.
+
+Résultats réellement exécutés et limites :
+[rapport du correctif](CATABASE_DEATH_FLOW_2026-09-15.md).
+
 ## Catabase r6 — suivi du candidat 2026-09-14
 
 Base `main@055584c37f60d99b2f87bdbb4d670895bf8ef2b2`, worktree non commité.

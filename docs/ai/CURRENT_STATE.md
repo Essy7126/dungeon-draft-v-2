@@ -1,5 +1,22 @@
 # État courant vérifié du projet
 
+## Mort Catabase — WORKTREE_CANDIDATE, 2026-09-15
+
+Base vérifiée : `main@40ea393dcd539c63f2aa7f024271524f65ade399` ; modifications
+locales non commitées. Ce point ne revalide pas les anciens audits ci-dessous.
+
+Le bilan de fin Catabase ne renvoie plus au refuge historique et au trio.
+« Nouvelle tentative » ouvre la sélection publique Catabase ; « Menu principal »
+ouvre le titre. La reprise de la tentative morte est supprimée avant le bilan.
+En cas d'échec de cette suppression, titre/hub/abandon ne peuvent pas contourner
+la finalisation. L'écran utilise le dernier plateau et les faits de la route :
+lieu, profondeur, étapes franchies, combats remportés, niveau et difficulté.
+L'identité de Passe-rive est conservée. Les animations réduites sont respectées.
+Aucune valeur d'équilibrage ni mécanique de mort nouvelle n'est introduite.
+
+Preuves et limites des tests et captures :
+[correctif et écran de mort](CATABASE_DEATH_FLOW_2026-09-15.md).
+
 ## Catabase r6 — WORKTREE_CANDIDATE, vérification du 2026-09-14
 
 Base Git : `main@055584c37f60d99b2f87bdbb4d670895bf8ef2b2` ; modifications

@@ -2947,8 +2947,7 @@ func _queue_local_battle_outcome_presentation(victory: bool) -> void:
 func _on_final_battle_frame_drawn(victory: bool) -> void:
 	if not is_inside_tree() or not _battle_over:
 		return
-	if victory:
-		GameManager.capture_battle_outcome_background()
+	GameManager.capture_battle_outcome_background()
 	_show_end_screen(victory)
 
 
