@@ -24,24 +24,34 @@ var _entry_tween: Tween
 var _elapsed := 0.0
 var _pointer := Vector2.ZERO
 var _music_controls: PanelContainer
+var _run_selector: OptionButton
 
 
 func _ready() -> void:
 	# Keep the existing project/user-data identity so saved games stay discoverable.
 	DisplayServer.window_set_title("Catabase")
-	if FileAccess.file_exists(GameManager.expedition_save_path):
-		_resume_button = Button.new()
-		_resume_button.name = "BoutonReprendreCatabase"
-		_resume_button.text = "Continuer"
-		boutons.add_child(_resume_button)
-		boutons.move_child(_resume_button, 1)
-		_resume_button.pressed.connect(
-			func():
-				if not GameManager.resume_expedition():
-					_notice.text = "Cette partie ne peut pas être reprise. Sa sauvegarde a été conservée."
-					_notice.show()
-					_apply_responsive_layout.call_deferred(),
-		)
+	_run_selector = OptionButton.new()
+	_run_selector.name = "RunVariantSelector"
+	_run_selector.add_item("Catabase · Classique")
+	_run_selector.add_item("Catabase · Cartes")
+	_run_selector.tooltip_text = "Deux traversées indépendantes, chacune avec sa propre sauvegarde."
+	_run_selector.select(1 if GameManager.selected_run_variant == "cards" else 0)
+	boutons.add_child(_run_selector)
+	boutons.move_child(_run_selector, 1)
+	_run_selector.item_selected.connect(func(index):
+		if GameManager.select_run_variant("cards" if index == 1 else "classic"):
+			_refresh_run_choice()
+	)
+	_resume_button = Button.new()
+	_resume_button.name = "BoutonReprendreCatabase"
+	boutons.add_child(_resume_button)
+	boutons.move_child(_resume_button, 2)
+	_resume_button.pressed.connect(func():
+		if not GameManager.resume_expedition():
+			_notice.text = "Cette partie ne peut pas être reprise. Sa sauvegarde a été conservée."
+			_notice.show()
+			_apply_responsive_layout.call_deferred()
+	)
 	bouton_nouvelle_partie.tooltip_text = "Préparer la descente d’Achille. Votre sauvegarde reste disponible."
 	_sanctuary_button = Button.new()
 	_sanctuary_button.name = "BoutonSanctuaire"
@@ -91,6 +101,7 @@ func _ready() -> void:
 	_sync_motion(GameManager.is_reduced_motion_enabled())
 	_apply_responsive_layout()
 	_configure_focus_navigation()
+	_refresh_run_choice()
 	_focus_first_action.call_deferred()
 	if not GameManager.is_reduced_motion_enabled():
 		# Immediate interaction; the short fade never gates the player's buttons.
@@ -128,7 +139,7 @@ func _finish_intro() -> void:
 func _focus_first_action() -> void:
 	if not is_inside_tree():
 		return
-	var first: Button = _resume_button if is_instance_valid(_resume_button) else bouton_nouvelle_partie
+	var first: Button = _resume_button if is_instance_valid(_resume_button) and _resume_button.visible else bouton_nouvelle_partie
 	first.grab_focus()
 
 
@@ -136,6 +147,16 @@ func _on_nouvelle_partie() -> void:
 	GameManager.cancel_expedition_replacement()
 	GameManager.cleanup_run_state()
 	get_tree().change_scene_to_file(CHARACTER_SELECTION_SCENE_PATH)
+
+
+func _refresh_run_choice() -> void:
+	var cards := GameManager.selected_run_variant == "cards"
+	bouton_nouvelle_partie.text = "Nouvelle run · Cartes" if cards else "Nouvelle run · Classique"
+	_resume_button.text = "Continuer · Cartes" if cards else "Continuer · Classique"
+	_resume_button.visible = FileAccess.file_exists(GameManager.expedition_save_path)
+	$UI/Boutons/MenuEyebrow.text = "DECK · BUTIN · REVENTE" if cards else "SORTS · MAÎTRISES · ÉQUIPEMENT"
+	_configure_focus_navigation()
+	_apply_responsive_layout.call_deferred()
 
 
 func _open_sanctuary() -> void:
@@ -154,7 +175,7 @@ func _on_quitter() -> void:
 func _configure_focus_navigation() -> void:
 	var actions: Array[Control] = []
 	for child in boutons.get_children():
-		if child is Button:
+		if child is Button and child.visible:
 			actions.append(child)
 	actions.append(_motion_toggle)
 	actions.append_array(_music_controls.focus_controls())

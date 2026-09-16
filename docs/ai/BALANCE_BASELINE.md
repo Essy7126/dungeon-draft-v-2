@@ -1,5 +1,39 @@
 # Baseline d’équilibrage structurelle
 
+## Variante Cartes — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+Courbes héros/ennemis, PA/PM, armes, route et XP classiques inchangées.
+
+- Deck 12–18 ; 6 Gestes maximum, 3 copies par autre famille ; 2 Gestes et
+  2 techniques minimum. Départ 6 + 3 + 3, toutes liées et non revendables.
+- Main 4, puis 5 au niveau 5 ; choix XII de capacité : 6. Ouverture 2 + 2,
+  maintien d'une copie, recomposition 1 PA une fois par activation.
+- Drop normale 1 + Bernoulli(0,25) ; élite 2 + Bernoulli(0,25), dont une
+  Héroïque+ ; zéro après XX. 14–25 drops utiles possibles sur 11 victoires.
+- Achat Usuelle/Gravée/Héroïque/Mythique/Légendaire : 50/75/110/160/230 ;
+  revente 8/12/20/32/50. Stock 3 par marchand/refuge VII/XI/XVI, pas XIX.
+- Mode Cartes : or de victoire 35/65 conservé ; le choix complémentaire
+  « Provisions du voyage » soigne 5 % et donne **20 oboles** depuis l'itération
+  après audit du 16 septembre. Auparavant : 0 obole. En Classique : toujours 40.
+  Ce n'est pas un bonus automatique ajouté aux équipements/reliques choisis.
+  Les reçus déjà réclamés ne sont pas compensés lors d'une reprise de sauvegarde.
+- Rareté et niveau indépendants ; pas de multiplication des dégâts par rareté.
+  Quotas de sort et réserves de soin communs à toutes les copies de la famille.
+
+Poids exacts, filtrage des pools, limites et preuves :
+[rapport Cartes](CARDS_RUN_IMPLEMENTATION_NOTES.md). Pas de taux de victoire
+humain ni de budget de puissance neutre démontré.
+
+Motif du réglage : dans la fixture historique à pool initial figé, la revente
+moyenne de tous les drops vaut 212,53 oboles. Onze provisions à 20 ajoutent 220,
+soit 432,53 contre 440 pour les anciennes onze provisions. Cette comparaison
+ne représente ni une stratégie recommandée (elle revend tout), ni un budget
+réel constant : garder les cartes et choisir les autres récompenses coûte
+toujours cette liquidité. Prix de cartes/services et courbes de stats inchangés.
+Le contre-test de protection mixte sur Disque/Hampe a des résultats contrastés ;
+**aucun preset de départ n'a été changé**. Voir [preuves](CARDS_ITERATION_2026-09-16.md).
+
 ## Catabase r6 — candidat 2026-09-14, non certifié humainement
 
 Branche `main`, base `055584c37f60d99b2f87bdbb4d670895bf8ef2b2` + worktree.

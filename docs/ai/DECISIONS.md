@@ -1,5 +1,56 @@
 # Décisions d’architecture
 
+## Intégration esthétique Cartes — 2026-09-16
+
+Base vérifiée : `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- DÉCISION VALIDÉE : intégrer les cartes à la barre des sorts, harmoniser
+  l'interface, optimiser l'espace et produire les assets nécessaires dans la DA dessinée.
+- CHOIX D'IMPLÉMENTATION : une vue montée/démontée dans le HUD persistant,
+  plutôt que le dock autonome de l'itération précédente ; règles et commandes
+  communes conservées. Cadre et paquet dessinés, icônes de sorts existantes.
+- PÉRIMÈTRE : présentation de la variante Cartes ; aucune modification de
+  PA/PM, PV, dégâts, prix, drops ou progression. Pas de commit/push/changement de branche.
+- Les réglages graphiques restent des choix d'implémentation testés, pas une
+  validation subjective finale du joueur. [Preuves et limites](CARDS_VISUAL_ITERATION_2026-09-16.md).
+
+## Itération Cartes autorisée — 2026-09-16
+
+Base technique `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- DÉCISION VALIDÉE : l'utilisateur autorise à poursuivre les essais, adapter
+  et corriger les défauts d'équilibrage et de construction rencontrés.
+- CHOIX D'IMPLÉMENTATION : prérequis communs interface/résolveur, refus atomique
+  de recomposition hors activation, regroupement des copies par famille,
+  remplacement local explicite, dock Cartes à la place de la barre vide.
+- RÉGLAGE DE PROTOTYPE DÉDUIT : provisions Cartes 20 oboles + soin 5 %, au lieu
+  de soin seul. Classique inchangé. Aucun changement de PV, PA/PM, dégâts, XP,
+  ennemis ou distribution de rareté. Aucune garantie de taux de victoire humain.
+- EXPÉRIENCE NON RETENUE : remplacer automatiquement les protections initiales
+  Disque/Hampe par Lin gravé ; résultats appariés insuffisants et contradictoires.
+- AUTORISATIONS GIT : aucun changement de branche, reset, stash, commit ou push.
+
+Voir [périmètre, résultats et limites](CARDS_ITERATION_2026-09-16.md).
+
+## Run Cartes parallèle — 2026-09-16
+
+Base technique `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- DÉCISION VALIDÉE : mettre en place une run deckbuilding parallèle,
+  sélectionnable au titre, avec drops acquis, réserve, liberté de composer
+  le deck et revente. Catabase classique reste disponible séparément.
+- CHOIX D'IMPLÉMENTATION : checkpoints distincts ; même SpellCaster et
+  statistiques de référence ; niveau effectif suivant le héros ; rareté
+  sans multiplicateur global. Aucun transfert de puissance entre runs.
+- RÉGLAGE DE PROTOTYPE : 12–18 cartes, ouverture préparée, 1 carte retenue,
+  recomposition 1 PA ; taux et prix détaillés dans le rapport. Ces chiffres
+  sont testables et ajustables, pas une preuve de plaisir ou de difficulté.
+- NON-OBJECTIFS : nouveau moteur de combat, contenu MMO, crafting de cartes,
+  méta-économie ou nouvelles conséquences de mort. Les anciennes hypothèses
+  de trio ne s'appliquent pas à l'une ou l'autre de ces deux variantes solo.
+
+Voir [contrat et vérifications](CARDS_RUN_IMPLEMENTATION_NOTES.md).
+
 ## Mort Catabase — 2026-09-15
 
 Contexte : `main@40ea393dcd539c63f2aa7f024271524f65ade399`, modifications

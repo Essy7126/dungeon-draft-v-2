@@ -18,6 +18,13 @@ var _dragging: bool = false
 var _drag_offset: Vector2 = Vector2.ZERO
 var _current_round: int = -1
 var _max_entries: int = 90
+var _bottom_inset_override := -1.0
+
+
+func set_bottom_inset(value: float) -> void:
+	if is_equal_approx(value, _bottom_inset_override): return
+	_bottom_inset_override = value
+	_apply_responsive_layout()
 
 func _ready() -> void:
 	layer = 35
@@ -126,6 +133,7 @@ func _apply_responsive_layout() -> void:
 	_panel.custom_minimum_size = Vector2(panel_width, panel_height)
 	_panel.size = Vector2(panel_width, panel_height)
 	var reserved_bottom := 124.0 if compact else 160.0
+	if _bottom_inset_override >= 0: reserved_bottom = _bottom_inset_override
 	_panel.position = Vector2(
 		12.0,
 		maxf(12.0, viewport_size.y - reserved_bottom - panel_height - 12.0),

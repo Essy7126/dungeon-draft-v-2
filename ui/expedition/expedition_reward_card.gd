@@ -160,6 +160,10 @@ func _fit_content() -> void:
 
 
 func _summary(definition: ItemDefinition) -> String:
+	if reward_id == "supplies" and _offer.has("gold_amount"):
+		return "+%d oboles et 5 %% des PV maximum. Vos cartes obtenues restent acquises." % int(_offer.gold_amount) if GameManager.expedition != null and GameManager.expedition.cards != null else "+%d oboles et 5 %% des PV maximum." % int(_offer.gold_amount)
+	if reward_id == "supplies" and bool(_offer.get("heal_only", false)):
+		return "Récupérez 5 % de vos PV maximum. Aucun gain d’oboles supplémentaire ; vos cartes restent acquises."
 	if is_known_technique_compensation():
 		return "Vous connaissez déjà cette technique. Recevez 40 oboles pour vos prochains achats."
 	if _offer.has("beginner_summary"):
@@ -178,6 +182,7 @@ func _summary(definition: ItemDefinition) -> String:
 
 
 func _category(definition: ItemDefinition) -> String:
+	if reward_id == "supplies" and bool(_offer.get("heal_only", false)): return "SOIN"
 	if is_known_technique_compensation():
 		return "COMPENSATION · OBOLES"
 	if definition != null:
@@ -216,6 +221,8 @@ func _destination(definition: ItemDefinition) -> String:
 
 
 func _fallback_icon() -> Texture2D:
+	if reward_id == "supplies" and bool(_offer.get("heal_only", false)):
+		return ART_THEME.icon("resources", "health")
 	if is_known_technique_compensation():
 		return ART_THEME.icon("resources", "oboles")
 	if _offer.has("spell_id") and GameManager.expedition != null:

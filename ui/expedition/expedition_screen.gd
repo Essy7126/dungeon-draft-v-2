@@ -134,6 +134,10 @@ func _ready() -> void:
 			tab.add_theme_constant_override("icon_max_width", 24)
 		_navigation_buttons[entry[0]] = tab
 		tab.pressed.connect(func(): _open_inventory() if entry[0] == "gear" else _navigate(entry[0]))
+	if GameManager.expedition != null and GameManager.expedition.cards != null:
+		var deck_tab := _button(_navigation, "Cartes")
+		deck_tab.name = "CatabaseTab_cards"
+		deck_tab.pressed.connect(func(): _navigate("cards"))
 	_close_button = _button(heading, "Menu")
 	_close_button.name = "CloseExpeditionScreen"
 	_close_button.custom_minimum_size.x = 100
@@ -216,7 +220,7 @@ func _render() -> void:
 	_hero_banner.show()
 	_status.visible = false
 	_navigation.visible = session != null
-	var auxiliary := _page in ["build", "gear", "attributes", "journal"]
+	var auxiliary := _page in ["build", "gear", "attributes", "journal", "cards"]
 	_close_button.text = "Fermer  ×" if inspection_only or auxiliary else "Retour" if _page == "map" else "Menu"
 	_close_button.tooltip_text = "Fermer cet écran et retrouver la run · Échap" if inspection_only else "Revenir à votre écran précédent · Échap" if auxiliary else "Revenir à la préparation · Échap" if _page == "map" else "Pause et options de la run · Échap"
 	if is_instance_valid(_flow_rail):
@@ -242,6 +246,7 @@ func _render() -> void:
 		"rewards": _render_choice_screen()
 		"preparation": _render_preparation()
 		"build": _render_build()
+		"cards": _render_cards()
 		"gear": _render_gear()
 		"journal": _render_journal()
 		"hub": _render_hub()
@@ -285,6 +290,13 @@ func _create_decision_window() -> void:
 	style.shadow_color = Color(0, 0, 0, 0.55)
 	style.shadow_size = 14
 	_decision_panel.add_theme_stylebox_override("panel", style)
+	if GameManager.expedition != null and GameManager.expedition.cards != null:
+		var drawn := ART_THEME.style("panel").duplicate() as StyleBox
+		drawn.content_margin_left = 24
+		drawn.content_margin_right = 24
+		drawn.content_margin_top = 20
+		drawn.content_margin_bottom = 20
+		_decision_panel.add_theme_stylebox_override("panel", drawn)
 	center.add_child(_decision_panel)
 	_body = VBoxContainer.new()
 	_body.add_theme_constant_override("separation", 12)
@@ -387,6 +399,8 @@ func _render_loot_received() -> void:
 
 func _focus_page_action() -> void:
 	var target := str({"progression": "Attribute_vitality", "rewards": "RewardOption_0", "capacity": "Capacity_slot", "attributes": "Attribute_vitality", "preparation": "OpenRouteMap", "map": "RecenterRoute"}.get(_page, ""))
+	if _page == "rewards" and GameManager.expedition.cards != null:
+		target = "CardReplacementTarget"
 	if _page == "progression" and GameManager.expedition.character.champion_progression.unspent_attribute_points == 0:
 		target = "ContinueExpeditionFlow"
 	if _page == "progression" and GameManager.expedition.character.champion_progression.unspent_attribute_points > 0:
@@ -395,6 +409,18 @@ func _focus_page_action() -> void:
 		_close_button.grab_focus()
 	elif not target.is_empty():
 		_restore_body_focus(target)
+	if target == "CardReplacementTarget":
+		# Container sizes settle after focus; start on acquired loot, not the
+		# complementary reward cards further down the same scroll.
+		await get_tree().process_frame
+		await get_tree().process_frame
+		if is_inside_tree() and _page == "rewards":
+			var picker := _body.find_child(target, true, false)
+			if picker != null:
+				var ancestor := picker.get_parent()
+				while ancestor != null and not ancestor is ScrollContainer:
+					ancestor = ancestor.get_parent()
+				if ancestor is ScrollContainer: ancestor.scroll_vertical = 0
 
 
 func _render_landing() -> void:
@@ -405,7 +431,7 @@ func _render_landing() -> void:
 	_label(intro, "Lancez Catabase depuis la sélection habituelle. Achille entre dans le premier combat avec Frappe du Péléide, Ruée fulminante, Tir du Pélion et Garde de bronze. Ses choix viennent ensuite.", 20)
 	var return_button := _button(intro, "Revenir à l'accueil", true)
 	return_button.pressed.connect(func(): GameManager.return_to_title())
-	if FileAccess.file_exists(ExpeditionSaveService.SAVE_PATH):
+	if FileAccess.file_exists(GameManager.expedition_save_path):
 		var resume := _button(intro, "Reprendre Catabase")
 		resume.name = "ResumeExpedition"
 		ART_THEME.apply_button(resume, false, false, "save")
@@ -491,7 +517,7 @@ func _refresh_resources() -> void:
 func _navigate(page: String) -> void:
 	if page != _page:
 		AudioManager.play_feedback(&"select")
-	if page in ["build", "gear", "attributes", "journal"] and _page not in ["build", "gear", "attributes", "journal"]:
+	if page in ["build", "gear", "attributes", "journal", "cards"] and _page not in ["build", "gear", "attributes", "journal", "cards"]:
 		_return_page = _page
 	_page = page
 	_render()
@@ -500,7 +526,7 @@ func _navigate(page: String) -> void:
 func _close_current_view() -> void:
 	if inspection_only:
 		_close()
-	elif _page in ["build", "gear", "attributes", "journal"]:
+	elif _page in ["build", "gear", "attributes", "journal", "cards"]:
 		if _return_page.is_empty():
 			_continue_flow()
 		else:
@@ -594,16 +620,25 @@ func _spend_attribute(attribute_id: StringName) -> void:
 
 
 func _render_choice_screen(capacity_only := false) -> void:
+	var cards_mode: bool = GameManager.expedition.cards != null
 	if not capacity_only:
-		var heading := _label(_body, "Votre butin · équipement et reliques", 28, TEXT, true)
+		var heading := _label(_body, "Combat terminé · votre butin" if cards_mode else "Votre butin · équipement et reliques", 28, TEXT, true)
 		heading.name = "RewardHeading"
-		_label(_body, "Choisissez un seul objet ou une autre récompense. Les équipements vont dans l'inventaire : vous pourrez les équiper avant de reprendre la carte.", 16, MUTED)
+		_label(_body, "Toutes les cartes ci-dessous sont acquises. Gardez-les, composez votre deck ou vendez-les ; puis choisissez une récompense complémentaire." if cards_mode else "Choisissez un seul objet ou une autre récompense. Les équipements vont dans l'inventaire : vous pourrez les équiper avant de reprendre la carte.", 16, MUTED)
 	var column := _scroll_column(_body)
+	if not capacity_only and GameManager.expedition.cards != null and int(GameManager.expedition.route.get_current_node().depth) != 20:
+		_label(column, GameManager.expedition.last_message, 18, GOLD)
+		var loot := preload("res://ui/expedition/catabase_card_collection.gd").new()
+		loot.loot_only = true
+		loot.read_only = inspection_only
+		loot.transaction_completed.connect(_refresh_resources)
+		column.add_child(loot)
+		_label(column, "Récompense complémentaire · choisissez-en une", 23, TEXT, true)
 	_render_rewards(column, capacity_only)
 	if not capacity_only:
 		_reward_summary = _label(_body, "", 15, TEAL)
 		_reward_summary.name = "RewardSelectionSummary"
-		_confirm_reward = _button(_body, "Confirmer cette carte  →", true)
+		_confirm_reward = _button(_body, "Confirmer la récompense complémentaire  →" if cards_mode else "Confirmer cette carte  →", true)
 		_confirm_reward.name = "ConfirmExpeditionReward"
 		_confirm_reward.disabled = _selected_reward.is_empty() or inspection_only
 		_confirm_reward.pressed.connect(_confirm_reward_selection)
@@ -616,7 +651,7 @@ func _render_rewards(parent: Control, capacity_only := false) -> void:
 	if capacity_only:
 		_label(parent, "L'ampleur ou l'intensité", 30, TEXT, true)
 		_label(parent, "Un choix exclusif : élargir votre kit ou transformer Frappe. La récompense de cette étape vient ensuite.", 18, MUTED)
-		for choice in [["slot", "Un sixième emplacement", "Équipez une technique supplémentaire parmi celles que vous connaissez."], ["mutation", "Tempête du Péléide", session.build.catalog.get_spell("exp_tempest").description]]:
+		for choice in [["slot", "Une main de six cartes" if session.cards != null else "Un sixième emplacement", "Piochez jusqu’à six cartes à chaque activation, sans PA supplémentaires." if session.cards != null else "Équipez une technique supplémentaire parmi celles que vous connaissez."], ["mutation", "Tempête du Péléide", session.build.catalog.get_spell("exp_tempest").description]]:
 			var fork := _card(parent, GOLD)
 			_label(fork, choice[1], 24, TEXT, true)
 			_label(fork, choice[2], 17, MUTED)
@@ -675,7 +710,7 @@ func _update_reward_selection() -> void:
 		_confirm_reward.disabled = _selected_reward.is_empty() or inspection_only
 	if is_instance_valid(_reward_summary) and _reward_summary.is_inside_tree():
 		var offer: Dictionary = _reward_offers.get(_selected_reward, {})
-		_reward_summary.text = "Aucune carte sélectionnée." if offer.is_empty() else "Votre choix : " + str(offer.title)
+		_reward_summary.text = ("Choisissez une récompense complémentaire plus bas." if GameManager.expedition.cards != null else "Aucune carte sélectionnée.") if offer.is_empty() else "Votre choix : " + str(offer.title)
 		if not offer.is_empty():
 			_reward_summary.text += " · " + _reward_choices[_selected_reward].get_destination_summary()
 			ART_THEME.reveal(_reward_summary)
@@ -730,6 +765,8 @@ func _render_preparation() -> void:
 
 
 func _render_departure() -> void:
+	if GameManager.expedition.cards != null:
+		_label(_body, "RUN CARTES · 12 cartes au départ : 6 Gestes d’arme et 3 copies de chacune de vos deux techniques. La main se renouvelle à chaque tour ; déplacements en PM inchangés.", 16, GOLD)
 	var view := preload("res://ui/expedition/catabase_departure_view.gd").new()
 	_body.add_child(view)
 	view.configure(GameManager.expedition, GameManager.confirm_catabase_preparation)
@@ -755,6 +792,13 @@ func _render_build() -> void:
 
 
 func _render_equipped_skills() -> void:
+	if GameManager.expedition.cards != null:
+		_label(_body, "Vos actions viennent du deck et de la main piochée. Les maîtrises améliorent les familles de cartes ; les emplacements classiques ne limitent pas le deck.", 17, MUTED)
+		var deck := preload("res://ui/expedition/catabase_card_collection.gd").new()
+		deck.read_only = inspection_only
+		deck.transaction_completed.connect(_refresh_resources)
+		_scroll_column(_body).add_child(deck)
+		return
 	_label(_body, "Les PA sont vos points d'action : chaque compétence en dépense. Les PM servent à vous déplacer.", 16, MUTED)
 	var column := _scroll_column(_body)
 	if _show_loadout:
@@ -896,6 +940,9 @@ func _is_hub() -> bool:
 
 
 func _render_hub() -> void:
+	if GameManager.expedition != null and GameManager.expedition.cards != null:
+		var deck_access := _button(_body, "Cartes · réserve, revente et étal de cette halte", true)
+		deck_access.pressed.connect(func(): _navigate("cards"))
 	if not _is_hub():
 		var card := _card(_body, GOLD)
 		_label(card, "La prochaine halte vous attend", 26, TEXT, true)
@@ -1200,6 +1247,14 @@ func _label(parent: Control, value: String, font_size: int = 18, color: Color = 
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(label)
 	return label
+
+
+func _render_cards() -> void:
+	var column := _scroll_column(_body)
+	var collection := preload("res://ui/expedition/catabase_card_collection.gd").new()
+	collection.read_only = inspection_only
+	collection.transaction_completed.connect(_refresh_resources)
+	column.add_child(collection)
 
 
 func _button(parent: Control, value: String, primary: bool = false) -> Button:

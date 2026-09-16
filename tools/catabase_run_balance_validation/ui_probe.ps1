@@ -3,7 +3,9 @@
 param(
     [string]$GodotPath = '',
     [string]$Label = 'r6_ui',
-    [int]$TimeoutSeconds = 180
+    [int]$TimeoutSeconds = 180,
+    [switch]$Cards,
+    [switch]$StudioAudit
 )
 
 Set-StrictMode -Version Latest
@@ -63,7 +65,7 @@ try {
         '--audio-driver', 'Dummy', '--position', '-3000,-3000',
         '--resolution', '1280x720',
         '--log-file', (Join-Path $output 'engine.log'),
-        'res://tools/catabase_run_balance_validation/ui_probe.tscn', '--',
+        $(if ($StudioAudit) { 'res://tools/catabase_run_balance_validation/studio_ui_audit.tscn' } elseif ($Cards) { 'res://tools/catabase_run_balance_validation/cards_ui_probe.tscn' } else { 'res://tools/catabase_run_balance_validation/ui_probe.tscn' }), '--',
         ('output=' + $output.Replace('\', '/'))
     )
     foreach ($argument in $arguments) { $startInfo.ArgumentList.Add($argument) }

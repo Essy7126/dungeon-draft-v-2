@@ -1,5 +1,44 @@
 # État courant vérifié du projet
 
+## Cartes intégrées au HUD dessiné — WORKTREE_CANDIDATE, 2026-09-16
+
+Base vérifiée `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + travaux locaux conservés.
+La main est maintenant montée dans `SpellSection` du HUD persistant : portrait,
+PV, PA/PM, Déplacer, Fin de tour, objets et navigation restent les contrôles communs.
+Le dock séparé de l'itération précédente est remplacé par cette présentation.
+Hauteur 202 px au lieu de 252 px ; cadres dessinés bronze/émeraude communs à
+la main et à la collection/butin. Les actions et l'inspection ne recouvrent plus
+la barre dans les fixtures 720p/1080p. Aucune valeur d'équilibrage changée.
+Dernière passe : 26 captures, 332 contrôles UI réussis, zéro erreur moteur,
+avec cycle réel joueur/IA/joueur. Régressions ciblées, fichiers, assets et limites :
+[rapport visuel](CARDS_VISUAL_ITERATION_2026-09-16.md).
+
+## Itération Cartes après audit — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02`, travaux locaux conservés.
+Les provisions Cartes donnent maintenant 20 oboles et 5 % de soin ; les
+provisions Classiques restent à 40. La recomposition refuse les appels hors
+activation. La main consulte les prérequis du même résolveur que le lancer.
+Elle remplace le HUD de sorts vide, réserve l'espace du plateau et conserve
+l'accès aux objets/navigation/fin de tour. La réserve regroupe les copies par
+famille ; chaque nouvelle famille possède son remplacement local et un aperçu
+des effets. Le butin s'ouvre sur les cartes reçues, pas sur les choix du bas.
+
+Résultats, fichiers, expériences rejetées et limites :
+[itération et régressions](CARDS_ITERATION_2026-09-16.md).
+Les taux des bots ne certifient toujours ni difficulté ni durée humaines.
+
+## Catabase Cartes parallèle — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02`, modifications locales.
+Le titre propose Classique/Cartes, avec deux checkpoints indépendants.
+Le mode Cartes utilise les règles de combat existantes avec deck/main,
+réserve, drops acquis, revente et stocks marchands ; le classique conserve
+ses règles de récompense. Mort et nouvelle tentative restent dans la variante.
+Ni difficulté humaine ni durée cible certifiées par les tests automatiques.
+Contrat, fichiers, preuves et limites : [run cartes](CARDS_RUN_IMPLEMENTATION_NOTES.md).
+Ce bloc ne déclare pas les audits historiques CURRENT au HEAD ci-dessus.
+
 ## Mort Catabase — WORKTREE_CANDIDATE, 2026-09-15
 
 Base vérifiée : `main@40ea393dcd539c63f2aa7f024271524f65ade399` ; modifications

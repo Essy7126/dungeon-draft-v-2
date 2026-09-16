@@ -15,6 +15,13 @@ var _presentation_camera_enabled := true
 var _presentation_unit_scale_enabled := true
 var _presentation_readability_enabled := true
 var arena_assembly := {}
+var _card_hand_top := -1.0
+
+
+func set_card_hand_top(screen_y: float) -> void:
+	if is_equal_approx(_card_hand_top, screen_y): return
+	_card_hand_top = screen_y
+	_fit_camera_to_battle()
 
 
 func _ready() -> void:
@@ -134,6 +141,26 @@ func _fit_camera_to_battle() -> void:
 		return
 	camera.position = framing.position
 	camera.zoom = framing.zoom
+	if _card_hand_top > 0 and grid != null and grid_view != null:
+		# Cards only. Keep authored tile geometry/proportions, fit playable cells
+		# inside the space above the dock instead of covering tactical targets.
+		var bounds := Rect2()
+		var initialized := false
+		for x in grid.cols:
+			for y in grid.rows:
+				var cell := Vector2i(x, y)
+				if not grid.is_terrain_interactable(cell): continue
+				for point in grid_view.get_cell_polygon(cell):
+					var world: Vector2 = grid_view.to_global(point)
+					if not initialized: bounds = Rect2(world, Vector2.ONE); initialized = true
+					else: bounds = bounds.expand(world)
+		if initialized:
+			bounds = bounds.grow(28)
+			var viewport_size := get_viewport_rect().size
+			var safe := Rect2(24, 110, viewport_size.x - 48, maxf(120, _card_hand_top - 110))
+			var fit := minf(camera.zoom.x, minf(safe.size.x / bounds.size.x, safe.size.y / bounds.size.y))
+			camera.zoom = Vector2.ONE * fit
+			camera.global_position = bounds.get_center() + (viewport_size * 0.5 - safe.get_center()) / fit
 
 
 ## Crochet deterministe pour les captures avant/apres. Le mode normal utilise

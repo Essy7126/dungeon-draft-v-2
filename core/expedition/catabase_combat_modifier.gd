@@ -132,7 +132,7 @@ static func cleanse(hero: Unit) -> bool:
 			changed = true
 	return changed
 
-func get_target_cell_failure_reason(caster, spell, cell: Vector2i, grid) -> StringName:
+func get_preparation_failure_reason(caster, spell, grid) -> StringName:
 	if caster == null: return &"caster"
 	if mode == "passives":
 		var session = session_for(caster)
@@ -158,6 +158,13 @@ func get_target_cell_failure_reason(caster, spell, cell: Vector2i, grid) -> Stri
 			if int(caster.get_meta("ct_toll_turn", -1)) == caster.activation_index: return &"Un péage attend déjà votre prochain impact."
 		"bronze":
 			if int(caster.get_meta("ct_bronze", 0)) <= 0: return &"L'urne ne contient pas de bronze."
+	return &""
+
+
+func get_target_cell_failure_reason(caster, spell, cell: Vector2i, grid) -> StringName:
+	var preparation := get_preparation_failure_reason(caster, spell, grid)
+	if preparation != &"": return preparation
+	match mode:
 		"flux":
 			var effect: Variant = grid.get_effect(cell)
 			if not effect is Dictionary or String(effect.get("name", "")) != "Braise": return &"Ciblez une braise encore active."

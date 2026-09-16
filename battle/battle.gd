@@ -1094,6 +1094,11 @@ func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
+	if GameManager.expedition != null and GameManager.expedition.cards != null:
+		GameManager.expedition.cards.begin_combat()
+		var hand_view := preload("res://ui/expedition/catabase_card_hand.gd").new()
+		hand_view.battle = self
+		add_child(hand_view)
 	if GameManager.expedition != null and not GameManager.expedition.build.starting_selection.is_empty():
 		var marks := preload("res://battle/catabase_build_marks.gd").new()
 		marks.battle = self
@@ -1379,6 +1384,8 @@ func _on_turn_started(unit: Unit) -> void:
 		return
 
 	# 6. Déroulement normal.
+	var cards = CatabaseCards.for_actor(unit)
+	if cards != null: cards.start_turn()
 	if is_instance_valid(_challenge_battle):
 		_challenge_battle.start_turn(unit)
 	_update_active_highlight(unit)
@@ -1532,6 +1539,8 @@ func _finish_active_turn(reason: StringName) -> bool:
 	if unit == null:
 		return false
 	_turn_end_committed = true
+	var cards = CatabaseCards.for_actor(unit)
+	if cards != null: cards.end_turn()
 	_begin_outcome_deferral()
 	ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 	EventBus.turn_ended.emit(unit, reason)
@@ -2297,6 +2306,8 @@ func _spell_cast_rejection_reason(
 		reason: StringName
 	) -> String:
 	match reason:
+		&"card_not_in_hand":
+			return "Cette technique demande une carte présente dans votre main."
 		&"pa":
 			return "PA insuffisants pour utiliser cette capacité."
 		&"cooldown":

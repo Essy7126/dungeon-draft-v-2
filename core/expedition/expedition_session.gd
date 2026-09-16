@@ -18,6 +18,8 @@ var branch_receipts: Dictionary = {}
 var needs_preparation := false
 var advancement_step := ""
 var advancement_from_level := 0
+var cards: CatabaseCards = null
+var card_inventory: RunInventory = null
 
 
 func initialize(state: CharacterRunState, seed_value: int, selected_difficulty: String = "normal", catalog_revision: int = ExpeditionRouteCatalog.REVISION) -> void:
@@ -74,6 +76,8 @@ func prepare_start(raw_selection: Dictionary, inventory: RunInventory, item_cata
 	if route.get_balance_revision() >= 1:
 		route.initialize(route.seed, route.get_catalog_revision(), selected_difficulty)
 	gold = 60
+	card_inventory = inventory
+	if cards != null: cards.initialize_deck(selection)
 	needs_preparation = false
 	last_message = "Départ : %s · %s · 60 oboles" % [CatabasePreparationCatalog.WEAPONS[selection.weapon][0], CatabasePreparationCatalog.ARMORS[selection.armor][0]]
 	journal.append(last_message)
@@ -82,6 +86,7 @@ func prepare_start(raw_selection: Dictionary, inventory: RunInventory, item_cata
 
 func enter(node_id: String) -> bool:
 	if needs_preparation or not advancement_step.is_empty(): return false
+	if cards != null and not cards.valid_deck(cards.active): return false
 	if not route.choose_node(node_id):
 		return false
 	character.begin_encounter()
@@ -91,8 +96,11 @@ func enter(node_id: String) -> bool:
 	build.is_editable = route.phase != "combat"
 	if route.phase == "combat":
 		build.begin_encounter("catabase:%d:%s" % [route.seed, node_id])
+		if cards != null: cards.prepare_entry()
 	else:
+		if cards != null: cards.sale_undo.clear()
 		award_destination()
+		if cards != null: cards.shop()
 	return true
 
 
@@ -142,6 +150,9 @@ func award_destination() -> void:
 	else:
 		gained_gold = 0
 	awarded_node_ids.append(str(node.id))
+	if cards != null:
+		cards.grant_loot(node)
+		cards.sync_learned()
 	last_message = "%s franchi · +%d XP · +%d oboles" % [node.title, int(result.get("gained_xp", 0)), gained_gold]
 	journal.append(last_message)
 	if challenges.enabled and xp > 0 and (route.get_balance_revision() == 0 or not challenges.contract.is_empty()):
@@ -164,7 +175,7 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 	if technique_window:
 		if str(node.reward) == "elemental" and not build.is_axis_discovered("elements"):
 			result.append({"id": "discover:elements", "branch_id": "elements", "title": "Découvrir les braises du Styx", "description": "Ouvrir la branche élémentaire de l'arbre. Vos points de maîtrise permettent ensuite d'apprendre ses techniques."})
-		else:
+		elif cards == null:
 			var card := _spell_card(str(node.reward))
 			if not card.is_empty():
 				result.append(card)
@@ -186,7 +197,8 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 			result.append({"id": "wager", "title": "Le prix du sang", "description": "Sacrifier 15 % des PV maximum (non létal) pour 100 oboles. Un pari pour les prochains refuges."})
 			result.append({"id": "scout", "title": "Suivre les cendres", "description": "Révéler un passage secret à venir et gagner 25 oboles."})
 		_:
-			result.append({"id": "supplies", "title": "Conserver le butin", "description": "Gagner 40 oboles pour le prochain marchand et récupérer 5 % des PV maximum."})
+			var provisions_gold: int = CatabaseCards.PROVISIONS_GOLD if cards != null else 40
+			result.append({"id": "supplies", "gold_amount": provisions_gold, "title": "Provisions du voyage" if cards != null else "Conserver le butin", "description": "Gagner %d oboles et récupérer 5 %% des PV maximum.%s" % [provisions_gold, " Les cartes obtenues restent à vous." if cards != null else ""]})
 	return result
 
 
@@ -225,7 +237,7 @@ func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog
 		match option_id:
 			"rest": _heal_fraction(refuge_heal_fraction())
 			"supplies":
-				gold += 40
+				gold += CatabaseCards.PROVISIONS_GOLD if cards != null else 40
 				_heal_fraction(0.05)
 			"scout":
 				route.reveal_next_hidden_node()
@@ -459,6 +471,7 @@ func to_snapshot() -> Dictionary:
 	result["needs_preparation"] = needs_preparation
 	result["advancement_step"] = advancement_step
 	result["advancement_from_level"] = advancement_from_level
+	if cards != null: result["cards_run"] = cards.snapshot()
 	return result
 
 
@@ -576,4 +589,9 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	advancement_step = pending_step
 	advancement_from_level = from_level
 	build.is_editable = needs_preparation or is_editable()
+	if snapshot.has("cards_run"):
+		if not snapshot.cards_run is Dictionary: return false
+		cards = CatabaseCards.new()
+		cards.bind(self)
+		if not cards.restore(snapshot.cards_run, needs_preparation): return false
 	return true

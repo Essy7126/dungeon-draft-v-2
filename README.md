@@ -58,11 +58,18 @@ sont personnalisables et évoluent par mutations pendant la run. Voir le
 [lot jouable et ses règles](docs/design/catabase_first_six_2026-09-13.md).
 La reprise rejoint directement la sauvegarde existante.
 
-Le prototype de deck a été retiré : Achille utilise ses sorts équipés, leur
-progression et son équipement. Les **défis facultatifs** avant les combats restent
-présents et modifient le combat suivant. Les sauvegardes de l'essai reprennent
-automatiquement avec le système de sorts. Le parcours à embranchements comprend
-environ quinze combats et cinq haltes. Voir les [défis conservés et la direction retenue](docs/design/catabase_challenges_without_deck_2026-09-12.md).
+Le titre propose désormais **Catabase classique** et une **variante Cartes**
+parallèle, avec deux sauvegardes indépendantes. Classique conserve les sorts
+équipés ; Cartes ajoute main, deck, réserve, butin acquis et revente sur les mêmes
+règles de combat. La route actuelle comporte vingt profondeurs, douze combats
+et trois refuges. Le retrait de l'ancien prototype du 12 septembre est un état
+historique, pas la description de cette nouvelle variante. Voir le
+[contrat Cartes](docs/ai/CARDS_RUN_IMPLEMENTATION_NOTES.md) et
+[l'itération après audit](docs/ai/CARDS_ITERATION_2026-09-16.md).
+
+La main Cartes est intégrée à la barre de combat commune, avec cadres dessinés
+bronze/émeraude et bascule Cartes/Objets. La collection et le butin reprennent
+ce traitement. [Présentation, tests et captures](docs/ai/CARDS_VISUAL_ITERATION_2026-09-16.md).
 
 Les combats peints intègrent les effets doux des quatre techniques de départ,
 les pas, impacts ennemis, soins, boucliers et esquives, avec une harpe discrète.

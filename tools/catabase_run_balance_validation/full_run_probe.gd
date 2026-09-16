@@ -25,6 +25,7 @@ var _active_metrics: Dictionary = { }
 var _planned_routes: Dictionary = { }
 var _fallback_objective_enemy_id := ""
 var _last_offensive_turn := 0
+var _cards_mode := false
 
 
 class HarnessManager:
@@ -75,7 +76,9 @@ func _run() -> void:
 
 func _parse_arguments() -> void:
 	for argument: String in OS.get_cmdline_user_args():
-		if argument.begins_with("label="):
+		if argument == "cards=true":
+			_cards_mode = true
+		elif argument.begins_with("label="):
 			label = argument.trim_prefix("label=").validate_filename()
 		elif argument.begins_with("seeds="):
 			seeds.clear()
@@ -168,7 +171,7 @@ func _simulate_run(
 		output.path_join("resume_%d_%s_%s_%s.json" % [seed_value, difficulty, weapon, policy])
 	)
 	add_child(manager)
-	var start_ok := manager.start_expedition(seed_value, { }, false, true, difficulty)
+	var start_ok := manager.start_expedition(seed_value, { }, false, true, difficulty, _cards_mode)
 	if not start_ok:
 		var message := "Run setup failed: %d/%s/%s/%s" % [seed_value, difficulty, weapon, policy]
 		errors.append(message)
@@ -176,7 +179,7 @@ func _simulate_run(
 		await get_tree().process_frame
 		return _failed_run(seed_value, difficulty, weapon, policy, message)
 	var session: ExpeditionSession = manager.expedition
-	var selection := CatabasePreparationCatalog.preset(weapon)
+	var selection := _run_preparation(weapon)
 	selection["difficulty_id"] = difficulty
 	var preparation := session.prepare_start(selection, manager.run_inventory, manager.item_catalog)
 	if not bool(preparation.get("success", false)) or not session.enter("d01_0"):
@@ -187,6 +190,8 @@ func _simulate_run(
 		await get_tree().process_frame
 		return _failed_run(seed_value, difficulty, weapon, policy, message)
 	var run_result := {
+		"variant": "cards" if _cards_mode else "classic",
+		"deck_policy": "starter deck, no retain/recompose or card transactions" if _cards_mode else "not applicable",
 		"seed": seed_value,
 		"difficulty": difficulty,
 		"weapon": weapon,
@@ -315,6 +320,10 @@ func _simulate_run(
 	manager.queue_free()
 	await get_tree().process_frame
 	return run_result
+
+
+func _run_preparation(weapon: String) -> Dictionary:
+	return CatabasePreparationCatalog.preset(weapon)
 
 
 func _fight_continuous(
@@ -469,6 +478,8 @@ func _fight_continuous(
 		var actions := 0
 		if actor == hero and actor.is_alive and not skip \
 				and not bool(pending.get("consume_activation", false)):
+			if manager.expedition.cards != null:
+				manager.expedition.cards.start_turn()
 			_maybe_use_manual_item(manager, hero, metrics)
 		if actor.is_alive and not skip and not bool(pending.get("consume_activation", false)):
 			for attempt in 24:
@@ -476,6 +487,12 @@ func _fight_continuous(
 					break
 				var action: Dictionary = { }
 				if actor == hero:
+					if manager.expedition.cards != null:
+						var available_cards: Array[Spell] = []
+						for card_id in manager.expedition.cards.hand:
+							for card_spell in manager.expedition.cards.spells_for(card_id):
+								if card_spell not in available_cards: available_cards.append(card_spell)
+						hero.spells = available_cards
 					action = _hero_action(hero, units, grid, pathfinder, caster)
 				else:
 					var decisions: Array = ai.decide(actor, units)
@@ -568,6 +585,8 @@ func _fight_continuous(
 			else:
 				consecutive_idle = 0
 		ArenaTerrainStatusTimingService.resolve_activation_end(actor)
+		if actor == hero and manager.expedition.cards != null:
+			manager.expedition.cards.end_turn()
 		EventBus.turn_ended.emit(actor, &"harness_policy")
 		if not hero.is_alive:
 			metrics.termination = "hero_dead"

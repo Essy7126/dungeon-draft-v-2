@@ -58,6 +58,41 @@ func after_each() -> void:
 	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
 
+
+func test_card_hand_mount_tabs_and_unbind_restore_the_same_hud() -> void:
+	var run_ui := RUN_UI_SCENE.instantiate() as PersistentRunUI
+	var context := FakeCombatContext.new()
+	add_child_autofree(run_ui)
+	add_child_autofree(context)
+	await get_tree().process_frame
+	var hud = run_ui.bind_combat_context(context)
+	var band: Control = hud.find_child("HudBand", true, false)
+	var original_rect := band.get_rect()
+	var hand := VBoxContainer.new()
+	hud.mount_card_hand(hand)
+	await get_tree().process_frame
+	assert_eq(hand.get_parent().name, &"SpellSection")
+	assert_true(band.visible)
+	assert_eq(band.size.y, hud.CARD_HUD_HEIGHT)
+	assert_eq(hud.find_child("ShowSpellsButton", true, false).text, "CARTES")
+	hud._configure_bar_tabs()
+	assert_eq(hud.find_child("ShowSpellsButton", true, false).text, "CARTES", "Skin refresh preserves the active variant")
+	assert_eq(hud.find_child("ShowSpellsButton", true, false).tooltip_text, "Afficher la main de cartes.")
+	hud.find_child("ShowItemsButton", true, false).pressed.emit()
+	assert_false(hand.visible)
+	assert_true(hud.find_child("ItemSlotsCenter", true, false).visible)
+	hud.find_child("ShowSpellsButton", true, false).pressed.emit()
+	assert_true(hand.visible)
+	assert_false(hud.find_child("SpellSlotsCenter", true, false).visible)
+	hud.unbind_combat_context()
+	await get_tree().process_frame
+	assert_null(hud.get("_card_hand_view"))
+	assert_false(is_instance_valid(hand))
+	assert_eq(band.get_rect(), original_rect, "Classic geometry restored on the same persistent HUD")
+	assert_ne(hud.find_child("ShowSpellsButton", true, false).text, "CARTES")
+	hud.clear_card_hand()
+	assert_null(hud.get("_card_hand_view"), "Idempotent teardown")
+
 func test_bind_is_idempotent_and_context_replacement_disconnects_old_room() -> void:
 	var run_ui := RUN_UI_SCENE.instantiate() as PersistentRunUI
 	var first := FakeCombatContext.new()

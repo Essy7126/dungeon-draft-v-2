@@ -7,7 +7,10 @@ param(
     [object[]]$Difficulties = @('normal', 'easy'),
     [object[]]$Weapons = @('arc', 'disque', 'hampe', 'lame', 'marteau', 'xiphos'),
     [object[]]$Policies = @('balanced'),
-    [int]$TimeoutSeconds = 1200
+    [int]$TimeoutSeconds = 1200,
+    [switch]$Cards,
+    [ValidateSet('', 'starter', 'pilot', 'adaptive', 'liquidate', 'swarm', 'speed', 'mobility', 'curated', 'informed', 'armor_control', 'armor_mixte')]
+    [string]$AuditMode = ''
 )
 
 Set-StrictMode -Version Latest
@@ -105,16 +108,19 @@ try {
     $startInfo.RedirectStandardError = $true
     $startInfo.Environment['APPDATA'] = $validationAppData
     $startInfo.Environment['LOCALAPPDATA'] = $validationAppData
+    $probeScene = if ($AuditMode) { 'res://tools/catabase_run_balance_validation/studio_audit_probe.tscn' } else { 'res://tools/catabase_run_balance_validation/full_run_probe.tscn' }
     $arguments = @(
         '--headless', '--path', $validationRoot, '--audio-driver', 'Dummy',
         '--log-file', (Join-Path $validationOutput 'engine.log'),
-        'res://tools/catabase_run_balance_validation/full_run_probe.tscn', '--',
+        $probeScene, '--',
         ('label=' + $safeLabel),
         ('seeds=' + ($Seeds -join ',')),
         ('difficulties=' + ($Difficulties -join ',')),
         ('weapons=' + ($Weapons -join ',')),
         ('policies=' + ($Policies -join ','))
     )
+    if ($Cards) { $arguments += 'cards=true' }
+    if ($AuditMode) { $arguments += ('audit=' + $AuditMode) }
     foreach ($argument in $arguments) { $startInfo.ArgumentList.Add($argument) }
     $process = [Diagnostics.Process]::new()
     $process.StartInfo = $startInfo

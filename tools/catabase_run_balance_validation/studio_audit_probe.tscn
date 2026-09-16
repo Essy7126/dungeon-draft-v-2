@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://tools/catabase_run_balance_validation/studio_audit_probe.gd" id="1"]
+[node name="CatabaseStudioAuditProbe" type="Node"]
+script = ExtResource("1")
