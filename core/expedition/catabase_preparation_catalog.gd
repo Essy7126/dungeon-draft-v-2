@@ -143,6 +143,14 @@ static func preset(weapon: String) -> Dictionary:
 
 
 static func valid(selection: Dictionary) -> bool:
+	if selection.has("card_families"):
+		var families: Variant = selection.card_families
+		if not families is Array or families.size() != 5: return false
+		var seen := {}
+		for family in families:
+			if not family is String or family not in TECHNIQUES or seen.has(family): return false
+			if family == "exp_ct_repercussion" and selection.get("relic") != "urne": return false
+			seen[family] = true
 	if (
 		not WEAPONS.has(selection.get("weapon")) or not ARMORS.has(selection.get("armor")) \
 				or not RELICS.has(selection.get("relic"))

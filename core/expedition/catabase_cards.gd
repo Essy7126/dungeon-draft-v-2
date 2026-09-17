@@ -4,6 +4,18 @@ extends RefCounted
 signal changed
 
 const GESTURE := "weapon_gesture"
+const MIN_DECK := 8
+const HAND_SIZE := 4
+const STARTERS := {
+	"marteau": ["exp_crochet", "exp_feinte", "exp_heurt", "exp_posture", "exp_marche"],
+	"xiphos": ["exp_ct_repercussion", "exp_souffle", "exp_heurt", "exp_posture", "exp_marche"],
+	"disque": ["exp_feinte", "exp_marque", "exp_crochet", "exp_posture", "exp_marche"],
+	"hampe": ["exp_crochet", "exp_ct_sceau", "exp_heurt", "exp_posture", "exp_marche"],
+	"lame": ["exp_posture", "exp_marche", "exp_crochet", "exp_feinte", "exp_souffle"],
+	"arc": ["exp_marque", "exp_feinte", "exp_heurt", "exp_posture", "exp_marche"],
+}
+var rules_revision := 2
+var progression_drafts: Dictionary = {}
 const NAMES := ["Usuelle", "Gravée", "Héroïque", "Mythique", "Légendaire"]
 const BUY := [50, 75, 110, 160, 230]
 const SELL := [8, 12, 20, 32, 50]
@@ -66,11 +78,122 @@ static func for_actor(actor):
 
 func initialize_deck(selection: Dictionary) -> void:
 	if not copies.is_empty(): return
-	for index in 6: active.append(add_copy(GESTURE, true))
-	for family in selection.techniques:
-		for index in 3: active.append(add_copy(str(family), true))
-	opening.assign([active[0], active[1], active[6], active[9]])
+	for family in starter_families(selection):
+		for index in 2: active.append(add_copy(str(family), true))
 	changed.emit()
+
+
+static func starter_families(selection: Dictionary) -> Array:
+	var source: Variant = selection.get("card_families", STARTERS.get(selection.get("weapon", "marteau"), STARTERS.marteau))
+	if not source is Array: return []
+	var result: Array = source.duplicate()
+	if not selection.has("card_families") and selection.get("relic") != "urne" and "exp_ct_repercussion" in result:
+		result[result.find("exp_ct_repercussion")] = "exp_ct_sceau"
+	return result
+
+
+func migrate_legacy(pending_start: bool) -> void:
+	if rules_revision >= 2: return
+	rules_revision = 2
+	opening.clear()
+	entry_pool.erase(GESTURE)
+	for node_id in stocks:
+		for offer in stocks[node_id]:
+			if offer.family == GESTURE and not offer.sold: offer.family = "exp_heurt"
+	# Keep purchased and bound copies, including old Gestures, as an archive.
+	# Only the playable deck changes. No reroll, sale, gold or reward receipt.
+	if pending_start: return
+	var session = owner()
+	var families := starter_families(session.build.starting_selection)
+	session.build.starting_selection["card_families"] = families
+	for family in families:
+		session.character.loadout.learn_spell(session.build.catalog.get_spell(str(family)))
+	var kept: Array[String] = []
+	var counts := {}
+	for id in active:
+		var family := str(copy_for(id).family)
+		if family == GESTURE or int(counts.get(family, 0)) >= 2: continue
+		kept.append(id)
+		counts[family] = int(counts.get(family, 0)) + 1
+	for family in families:
+		while kept.size() < 10 and int(counts.get(family, 0)) < 2:
+			var reserves := copies.filter(func(card): return card.family == family and card.id not in kept)
+			kept.append(str(reserves[0].id) if not reserves.is_empty() else add_copy(str(family), true))
+			counts[family] = int(counts.get(family, 0)) + 1
+	active.assign(kept)
+	changed.emit()
+
+
+func permanent_offer(offer: Dictionary) -> bool:
+	var id := str(offer.get("spell_id", ""))
+	return id.is_empty() or owner().build.catalog.get_spell_family(id) in weapon_families()
+
+
+func upgrade_offers() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for offer in owner().build.get_offers():
+		if not offer.available or offer.owned or str(offer.kind) == "apprentissage": continue
+		var family: String = owner().build.catalog.get_spell_family(str(offer.spell_id))
+		if copies.any(func(card): return card.family == family): result.append(offer)
+	return result
+
+
+func progression_offers() -> Array[String]:
+	var node_id: String = owner().route.current_node_id
+	if progression_drafts.has(node_id):
+		var saved: Array[String] = []
+		saved.assign(progression_drafts[node_id])
+		return saved
+	var pool := eligible_pool()
+	pool = pool.filter(func(family): return active.filter(func(id): return copy_for(id).family == family).size() < 2)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash("cards:progression:%d:%s" % [owner().route.seed, owner().route.current_node_id])
+	var result: Array[String] = []
+	while result.size() < 3 and not pool.is_empty():
+		var index := rng.randi_range(0, pool.size() - 1)
+		result.append(pool[index])
+		pool.remove_at(index)
+	if node_id in owner().awarded_node_ids:
+		progression_drafts[node_id] = result.duplicate()
+	return result
+
+
+func resolve_progression(action: String, value := "", replace_id := "") -> bool:
+	var session = owner()
+	if not session.is_editable() or session.advancement_step != "advancement": return false
+	if action == "upgrade":
+		if not upgrade_offers().any(func(offer): return offer.id == value): return false
+		if not session.build.purchase(value).success: return false
+	elif action == "add":
+		if value not in progression_offers(): return false
+		if not replace_id.is_empty() and replace_id not in active: return false
+		var candidate := active.duplicate()
+		candidate.erase(replace_id)
+		var count := 0
+		for id in candidate:
+			if copy_for(id).family == value: count += 1
+		if count >= 2: return false
+		_teach(value)
+		candidate.append(add_copy(value, true))
+		active.assign(candidate)
+	elif action != "skip": return false
+	session.advancement_step = ""
+	session.journal.append("Deck : " + action + (" · " + value if not value.is_empty() else ""))
+	changed.emit()
+	return true
+
+
+func weapon_spells() -> Array[Spell]:
+	var result: Array[Spell] = []
+	for family in weapon_families():
+		var spell := family_spell(family)
+		if spell != null: result.append(spell)
+	return result
+
+
+func is_weapon_spell(spell: Spell) -> bool:
+	if rules_revision < 2: return false
+	return weapon_spells().any(func(available): return available.get_effective_spell_id() == spell.get_effective_spell_id())
 
 
 func add_copy(family: String, bound := false) -> String:
@@ -158,16 +281,17 @@ func title_for(id: String) -> String:
 
 
 func valid_deck(ids: Array) -> bool:
-	if ids.size() < 12 or ids.size() > 18: return false
+	if ids.size() < (MIN_DECK if rules_revision >= 2 else 12) or (rules_revision < 2 and ids.size() > 18): return false
 	var seen := {}
 	var counts := {}
 	for id in ids:
 		var card := copy_for(str(id))
 		if card.is_empty() or seen.has(id): return false
+		if rules_revision >= 2 and card.family == GESTURE: return false
 		seen[id] = true
 		counts[card.family] = int(counts.get(card.family, 0)) + 1
-		if counts[card.family] > (6 if card.family == GESTURE else 3): return false
-	return int(counts.get(GESTURE, 0)) >= 2 and ids.size() - int(counts.get(GESTURE, 0)) >= 2
+		if counts[card.family] > (2 if rules_revision >= 2 else (6 if card.family == GESTURE else 3)): return false
+	return rules_revision >= 2 or (int(counts.get(GESTURE, 0)) >= 2 and ids.size() - int(counts.get(GESTURE, 0)) >= 2)
 
 
 func move_card(id: String, replace_id := "") -> bool:
@@ -187,6 +311,9 @@ func move_card(id: String, replace_id := "") -> bool:
 
 
 func _repair_opening() -> void:
+	if rules_revision >= 2:
+		opening.clear()
+		return
 	var weapons: Array[String] = []
 	var techniques: Array[String] = []
 	for id in opening + active:
@@ -197,6 +324,7 @@ func _repair_opening() -> void:
 
 
 func set_opening(id: String, slot: int) -> bool:
+	if rules_revision >= 2: return false
 	if owner().route.phase == "combat" or id not in active or slot < 0 or slot > 3: return false
 	if (copy_for(id).family == GESTURE) != (slot < 2): return false
 	var other := opening.find(id)
@@ -206,6 +334,7 @@ func set_opening(id: String, slot: int) -> bool:
 
 
 func sync_learned() -> void:
+	if rules_revision >= 2: return
 	if copies.is_empty(): return
 	var session = owner()
 	var known := {}
@@ -220,7 +349,8 @@ func sync_learned() -> void:
 
 
 func eligible_pool() -> Array[String]:
-	var result: Array[String] = [GESTURE]
+	var result: Array[String] = []
+	if rules_revision < 2: result.append(GESTURE)
 	var session = owner()
 	var has_urn: bool = false
 	if session.card_inventory != null:
@@ -426,7 +556,7 @@ func start_turn() -> void:
 	_activation_open = true
 	recomposed = false
 	_prune_exhausted()
-	var capacity: int = owner().character.loadout.get_active_slot_count()
+	var capacity: int = HAND_SIZE if rules_revision >= 2 else owner().character.loadout.get_active_slot_count()
 	while hand.size() < capacity:
 		var id := _draw()
 		if id.is_empty(): break
@@ -470,6 +600,7 @@ func card_for_spell(spell: Spell) -> String:
 
 
 func consume(spell: Spell) -> bool:
+	if is_weapon_spell(spell): return true
 	var id := card_for_spell(spell)
 	if id.is_empty(): return false
 	hand.erase(id)
@@ -501,12 +632,23 @@ func recompose(id: String) -> bool:
 
 
 func snapshot() -> Dictionary:
-	return {"version": 1, "copies": copies.duplicate(true), "active": active.duplicate(), "opening": opening.duplicate(), "serial": serial, "preferred_forms": preferred_forms.duplicate(),
+	return {"version": 1, "rules_revision": rules_revision, "progression_drafts": progression_drafts.duplicate(true), "copies": copies.duplicate(true), "active": active.duplicate(), "opening": opening.duplicate(), "serial": serial, "preferred_forms": preferred_forms.duplicate(),
 		"receipts": receipts.duplicate(true), "stocks": stocks.duplicate(true), "entry_pool": entry_pool.duplicate(), "last_drops": last_drops.duplicate(), "sale_undo": {}, "learned_receipts": learned_receipts.duplicate()}
 
 
 func restore(data: Dictionary, pending_start: bool) -> bool:
 	if int(data.get("version", 0)) != 1: return false
+	rules_revision = int(data.get("rules_revision", 1))
+	if rules_revision not in [1, 2]: return false
+	var drafts: Variant = data.get("progression_drafts", {})
+	if not drafts is Dictionary: return false
+	for node_id in drafts:
+		if node_id not in owner().awarded_node_ids or not drafts[node_id] is Array or drafts[node_id].size() > 3: return false
+		var unique := {}
+		for family in drafts[node_id]:
+			if not family is String or family == GESTURE or not RARITIES.has(family) or unique.has(family): return false
+			unique[family] = true
+	progression_drafts = drafts.duplicate(true)
 	for key in ["copies", "active", "opening", "entry_pool", "last_drops", "learned_receipts"]:
 		if not data.get(key) is Array: return false
 	for key in ["receipts", "stocks", "sale_undo"]:
@@ -535,7 +677,8 @@ func restore(data: Dictionary, pending_start: bool) -> bool:
 	for id in data.opening:
 		if not id is String or id not in active or id in opening: return false
 		opening.append(id)
-	if not pending_start and (opening.size() != 4 or copy_for(opening[0]).family != GESTURE or copy_for(opening[1]).family != GESTURE or copy_for(opening[2]).family == GESTURE or copy_for(opening[3]).family == GESTURE): return false
+	if rules_revision >= 2 and not opening.is_empty(): return false
+	if rules_revision == 1 and not pending_start and (opening.size() != 4 or copy_for(opening[0]).family != GESTURE or copy_for(opening[1]).family != GESTURE or copy_for(opening[2]).family == GESTURE or copy_for(opening[3]).family == GESTURE): return false
 	for family in data.entry_pool:
 		if not family is String or not RARITIES.has(family): return false
 	entry_pool.assign(data.entry_pool)

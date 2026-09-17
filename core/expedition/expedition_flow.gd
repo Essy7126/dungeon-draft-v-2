@@ -17,7 +17,7 @@ static func required_step(session: ExpeditionSession) -> String:
 		return "map"
 	var node := session.route.get_current_node()
 	if (
-		int(node.get("depth", 0)) == ExpeditionBuildState.CAPACITY_DEPTH
+		session.cards == null and int(node.get("depth", 0)) == ExpeditionBuildState.CAPACITY_DEPTH
 		and session.build.depth_eight_choice.is_empty()
 	):
 		return "capacity"

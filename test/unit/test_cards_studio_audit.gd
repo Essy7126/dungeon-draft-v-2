@@ -121,7 +121,8 @@ func test_starting_hands_and_cycle_30000_turns() -> void:
 				for id in cards.hand: families[cards.copy_for(id).family] = true
 				if turn == 0:
 					if opening_families.is_empty(): opening_families = families.keys()
-					assert_eq(families.keys(), opening_families, "prepared opening seed invariant")
+					assert_false(families.has(CatabaseCards.GESTURE), "weapon gestures stay outside the random deck")
+					assert_eq(cards.weapon_spells().size(), 2, "weapon stays available for every seed")
 				else:
 					if not families.has(CatabaseCards.GESTURE): zero_weapon += 1
 					unique_sum += families.size()

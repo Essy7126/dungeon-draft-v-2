@@ -65,6 +65,8 @@ func configure_start(selection: Dictionary) -> bool:
 	starting_selection = selection.duplicate(true)
 	weapon_unlocks.assign([String(selection.weapon)])
 	character_state.loadout.initialize(_starting_spells(starting_selection), 4)
+	for family in starting_selection.get("card_families", []):
+		character_state.loadout.learn_spell(catalog.get_spell(str(family)))
 	changed.emit()
 	return true
 
@@ -191,6 +193,8 @@ func undo_last_purchase() -> Dictionary:
 	var allowed: Array[String] = []
 	for spell in _starting_spells(starting_selection):
 		allowed.append(String(spell.spell_id))
+	for family in starting_selection.get("card_families", []):
+		if str(family) not in allowed: allowed.append(str(family))
 	for weapon in weapon_unlocks:
 		for index in [2, 3]:
 			var id: String = CatabasePreparationCatalog.WEAPONS[weapon][index]
@@ -374,6 +378,8 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	var expected_known: Array[String] = []
 	for spell in _starting_spells(selection):
 		expected_known.append(String(spell.spell_id))
+	for family in selection.get("card_families", []):
+		if str(family) not in expected_known: expected_known.append(str(family))
 	for weapon in restored_weapons:
 		for index in [2, 3]:
 			var id: String = CatabasePreparationCatalog.WEAPONS[weapon][index]

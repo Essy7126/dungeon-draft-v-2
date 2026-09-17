@@ -49,11 +49,12 @@ func test_six_decks_and_boundary_restores() -> void:
 	for weapon in CatabasePreparationCatalog.WEAPONS:
 		var manager = make_manager(str(weapon))
 		var cards: CatabaseCards = manager.expedition.cards
-		assert_eq(cards.active.size(), 12)
+		assert_eq(cards.active.size(), 10)
 		assert_true(cards.valid_deck(cards.active))
 		cards.start_turn()
 		assert_eq(cards.hand.size(), 4)
-		assert_eq(cards.spells_for(cards.hand[0]).size(), 2)
+		assert_eq(cards.spells_for(cards.hand[0]).size(), 1)
+		assert_eq(cards.weapon_spells().size(), 2)
 		var state: Dictionary = JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))
 		assert_true(manager.restore_expedition_snapshot(state), weapon)
 		manager.expedition.cards.start_turn()
@@ -75,7 +76,7 @@ func test_loot_owned_idempotent_and_twenty_obole_provisions() -> void:
 	assert_true(session.combat_won())
 	var cards: CatabaseCards = session.cards
 	assert_between(cards.last_drops.size(), 1, 2)
-	assert_eq(cards.active.size(), 12, "loot goes to reserve")
+	assert_eq(cards.active.size(), 10, "loot goes to reserve")
 	var count := cards.copies.size()
 	cards.grant_loot(session.route.get_current_node())
 	session.award_destination()
@@ -104,7 +105,9 @@ func test_sell_undo_and_bound_copy_protection() -> void:
 	assert_true(cards.undo_sale(id))
 	assert_eq(session.gold, before)
 	assert_false(cards.undo_sale(id))
-	assert_false(cards.move_card(cards.active[0]), "cannot shrink below twelve")
+	assert_true(cards.move_card(cards.active[0]))
+	assert_true(cards.move_card(cards.active[0]))
+	assert_false(cards.move_card(cards.active[0]), "cannot shrink below eight")
 	assert_true(cards.move_card(id, cards.active[0]))
 	assert_false(cards.sell(id), "active cards are protected")
 
@@ -121,20 +124,20 @@ func test_card_gate_commit_and_weapon_shared_opportunity() -> void:
 	field.grid.place_unit(hero, Vector2i(2, 2))
 	var target := Factory.make_unit("Target", 1)
 	field.grid.place_unit(target, Vector2i(3, 2))
-	var spell := cards.spells_for(cards.hand[0])[0]
-	var other := cards.spells_for(cards.hand[0])[1]
+	var spell := cards.weapon_spells()[0]
+	var other := cards.weapon_spells()[1]
 	var before := cards.hand.size()
 	var rejected: CastContext = field.caster.begin_cast(hero, spell, Vector2i(9, 5))
 	assert_true(rejected.failed)
 	assert_eq(cards.hand.size(), before, "invalid target keeps the card")
 	var context: CastContext = field.caster.begin_cast(hero, spell, target.grid_pos)
 	assert_false(context.failed)
-	assert_eq(cards.hand.size(), before - 1, "consumed when committed")
+	assert_eq(cards.hand.size(), before, "fixed weapon does not consume a card")
 	assert_eq(hero.current_ap, 2)
-	assert_false(cards.card_for_spell(other).is_empty(), "second Gesture still exists")
+	assert_true(cards.is_weapon_spell(other), "second weapon gesture remains fixed")
 	assert_true(cards.consume(other))
 	assert_true(cards.card_for_spell(spell).is_empty())
-	assert_eq(field.caster.get_cast_failure_reason(hero, spell, target.grid_pos), &"card_not_in_hand")
+	assert_ne(field.caster.get_cast_failure_reason(hero, spell, target.grid_pos), &"card_not_in_hand")
 	var hand_before := cards.hand.duplicate()
 	var uses_before := hero.get_spell_uses(spell)
 	field.caster.cast_automatic(hero, spell, target.grid_pos, 0.1, &"card_test_reaction")
@@ -164,7 +167,7 @@ func test_retention_recomposition_and_recycling() -> void:
 		for id in cards.hand + cards.draw_pile + cards.discard:
 			assert_false(seen.has(id), "one physical copy per zone")
 			seen[id] = true
-		assert_eq(seen.size(), 12)
+		assert_eq(seen.size(), 10)
 		cards.end_turn()
 
 
@@ -177,7 +180,7 @@ func test_shared_heal_limit_exhausts_all_copies() -> void:
 	hero.mark_spell_used(heal)
 	hero.mark_spell_used(heal)
 	cards._prune_exhausted()
-	assert_eq(cards.exhausted.size(), 3)
+	assert_eq(cards.exhausted.size(), 2)
 	assert_true(cards.card_for_spell(heal).is_empty())
 	assert_eq(hero.get_spell_uses(heal), 2)
 
@@ -232,6 +235,11 @@ func test_action_prerequisites_share_actual_cast_guards() -> void:
 	urn_hero.start_turn()
 	urn_manager.expedition.cards.start_turn()
 	var bronze: Spell = urn_manager.expedition.cards.family_spell("exp_ct_repercussion")
+	var urn_cards: CatabaseCards = urn_manager.expedition.cards
+	var bronze_id: String = urn_cards.active.filter(func(id): return urn_cards.copy_for(id).family == "exp_ct_repercussion")[0]
+	if bronze_id not in urn_cards.hand:
+		urn_cards.draw_pile.erase(bronze_id)
+		urn_cards.hand.append(bronze_id)
 	assert_eq(field.caster.get_spell_preparation_failure_reason(urn_hero, bronze), &"L'urne ne contient pas de bronze.")
 	urn_hero.set_meta("ct_bronze", 20)
 	assert_eq(field.caster.get_spell_preparation_failure_reason(urn_hero, bronze), &"")
@@ -332,7 +340,7 @@ func test_two_canonical_saves_resume_and_death_are_isolated() -> void:
 	assert_true(manager.select_run_variant("cards"))
 	assert_true(manager.resume_expedition())
 	assert_not_null(manager.expedition.cards)
-	assert_eq(manager.expedition.cards.active.size(), 12)
+	assert_eq(manager.expedition.cards.active.size(), 10)
 	assert_false(manager.select_run_variant("classic"), "cannot switch a live run")
 	manager.begin_combat_report()
 	manager.expedition.character.unit.current_hp = 0
@@ -347,7 +355,7 @@ func test_two_canonical_saves_resume_and_death_are_isolated() -> void:
 	ExpeditionSaveService.remove_snapshot(temporary_path)
 
 
-func test_refunded_mastery_cannot_leave_a_free_card() -> void:
+func test_classic_mastery_cannot_generate_a_free_maneuver() -> void:
 	var manager = make_manager("marteau")
 	var session = manager.expedition
 	assert_true(session.combat_won())
@@ -364,21 +372,10 @@ func test_refunded_mastery_cannot_leave_a_free_card() -> void:
 			break
 	assert_false(candidate.is_empty(), "fixture finds a newly taught family")
 	if candidate.is_empty(): return
-	assert_true(manager.purchase_expedition_technique(candidate).success)
-	var copy_id := ""
-	for card in session.cards.copies:
-		if card.family == family: copy_id = str(card.id)
-	assert_false(copy_id.is_empty())
-	assert_true(session.cards.move_card(copy_id, session.cards.active[0]))
-	assert_false(manager.undo_expedition_technique().success)
-	assert_true(session.cards.known_family(family))
-	assert_false(build.correction_used)
-	var gesture := ""
-	for card in session.cards.copies:
-		if card.family == CatabaseCards.GESTURE and card.id not in session.cards.active: gesture = str(card.id)
-	assert_true(session.cards.move_card(gesture, copy_id))
-	assert_true(manager.undo_expedition_technique().success)
-	assert_true(session.cards.copy_for(copy_id).is_empty())
+	var before: Array = session.cards.copies.duplicate(true)
+	assert_false(manager.purchase_expedition_technique(candidate).success)
+	session.cards.sync_learned()
+	assert_eq(session.cards.copies, before)
 	assert_false(session.cards.known_family(family))
 
 
@@ -404,6 +401,146 @@ func test_family_form_choice_is_shared_frozen_and_persisted() -> void:
 		if card.family != "exp_crochet": continue
 		count += 1
 		assert_eq(cards.spells_for(str(card.id))[0], variant)
-	assert_eq(count, 3)
+	assert_eq(count, 2)
 	assert_false(cards.choose_form("exp_crochet", "exp_crochet"), "form is locked during combat")
 	assert_eq(cards.family_spell("exp_crochet"), variant)
+
+
+func test_random_opening_fixed_capacity_and_maneuver_commit() -> void:
+	var manager = make_manager()
+	var cards: CatabaseCards = manager.expedition.cards
+	var hero: Unit = manager.expedition.character.unit
+	hero.start_turn()
+	manager.expedition.character.loadout.resize_slots(6)
+	cards.start_turn()
+	assert_eq(cards.hand.size(), 4, "classical slots must not grow the hand")
+	assert_false(cards.hand.any(func(id): return cards.copy_for(id).family == CatabaseCards.GESTURE))
+	var field = Factory.make_battlefield(10, 6)
+	fields.append(field)
+	field.grid.place_unit(hero, Vector2i(2, 2))
+	var target := Factory.make_unit("Target", 1)
+	field.grid.place_unit(target, Vector2i(3, 2))
+	var id: String = cards.active.filter(func(copy_id): return cards.copy_for(copy_id).family == "exp_crochet")[0]
+	# Pin a known maneuver for a target-validation fixture, not an opening rule.
+	cards.hand.assign([id])
+	cards.draw_pile.assign(cards.active.filter(func(copy_id): return copy_id != id))
+	var spell := cards.spells_for(id)[0]
+	assert_true(field.caster.begin_cast(hero, spell, Vector2i(9, 5)).failed)
+	assert_eq(cards.hand, [id])
+	assert_false(field.caster.begin_cast(hero, spell, target.grid_pos).failed)
+	assert_true(cards.hand.is_empty())
+	assert_eq(field.caster.get_spell_preparation_failure_reason(hero, spell), &"card_not_in_hand")
+	assert_ne(field.caster.get_spell_preparation_failure_reason(hero, cards.weapon_spells()[1]), &"card_not_in_hand")
+
+
+func test_progression_is_one_explicit_deck_decision_and_survives_reload() -> void:
+	var manager = make_manager()
+	var session: ExpeditionSession = manager.expedition
+	assert_false(session.cards.resolve_progression("add", "exp_crochet"))
+	assert_true(session.combat_won())
+	while session.character.champion_progression.unspent_attribute_points > 0:
+		session.character.champion_progression.spend_attribute(&"vitality")
+	while session.advancement_step != "advancement":
+		assert_true(session.advance_level_step().success)
+	var offers := session.cards.progression_offers()
+	var before := session.cards.active.duplicate()
+	assert_true(manager.restore_expedition_snapshot(JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))))
+	session = manager.expedition
+	assert_eq(session.cards.progression_offers(), offers)
+	var chosen := ""
+	for family in offers:
+		if session.cards.active.filter(func(id): return session.cards.copy_for(id).family == family).size() < 2:
+			chosen = family
+			break
+	assert_false(chosen.is_empty())
+	assert_true(manager.resolve_cards_progression("add", chosen, before[0]).success)
+	assert_eq(session.cards.active.size(), before.size())
+	assert_false(before[0] in session.cards.active)
+	assert_false(session.cards.copy_for(before[0]).is_empty(), "replaced copy remains owned")
+	assert_false(manager.resolve_cards_progression("add", chosen).success)
+	assert_true(manager.restore_expedition_snapshot(JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))))
+	assert_eq(manager.expedition.advancement_step, "")
+
+
+func test_legacy_cards_migrate_without_losing_owned_copies_or_gold() -> void:
+	var manager = make_manager()
+	var session: ExpeditionSession = manager.expedition
+	# Reconstruct the actual v1 boundary contract, then load via the public API.
+	session.build.starting_selection.erase("card_families")
+	session.character.loadout.initialize(session.build._starting_spells(session.build.starting_selection), 4)
+	var old := CatabaseCards.new()
+	old.bind(session)
+	old.rules_revision = 1
+	for index in 6: old.active.append(old.add_copy(CatabaseCards.GESTURE, true))
+	for family in session.build.starting_selection.techniques:
+		for index in 3: old.active.append(old.add_copy(family, true))
+	old._repair_opening()
+	session.cards = old
+	var original := old.copies.duplicate(true)
+	var gold := session.gold
+	var snapshot: Dictionary = JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))
+	snapshot.session.cards_run.erase("rules_revision")
+	assert_true(manager.restore_expedition_snapshot(snapshot))
+	var cards: CatabaseCards = manager.expedition.cards
+	assert_eq(cards.rules_revision, 2)
+	assert_eq(manager.expedition.gold, gold)
+	assert_true(cards.valid_deck(cards.active))
+	assert_eq(cards.active.size(), 10)
+	for card in original: assert_eq(cards.copy_for(str(card.id)), card)
+	assert_true(cards.opening.is_empty())
+	var migrated: Dictionary = JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))
+	assert_true(manager.restore_expedition_snapshot(migrated), "migration remains valid after another save/load")
+	assert_eq(manager.expedition.cards.snapshot(), cards.snapshot())
+
+
+func test_card_upgrade_is_one_paid_decision_without_extra_copies() -> void:
+	var manager = make_manager()
+	var session: ExpeditionSession = manager.expedition
+	assert_true(session.combat_won())
+	finish_reward(manager)
+	assert_true(manager.choose_expedition_node(str(session.route.get_available_nodes()[0].id)))
+	assert_true(session.combat_won())
+	while session.character.champion_progression.unspent_attribute_points > 0:
+		session.character.champion_progression.spend_attribute(&"vitality")
+	while session.advancement_step != "advancement":
+		assert_true(session.advance_level_step().success)
+	var offers := session.cards.upgrade_offers()
+	assert_false(offers.is_empty())
+	if offers.is_empty(): return
+	var chosen: Dictionary = offers[0]
+	var copies := session.cards.copies.duplicate(true)
+	var points := session.build.points
+	assert_true(manager.resolve_cards_progression("upgrade", str(chosen.id)).success)
+	assert_eq(session.build.points, points - int(chosen.cost))
+	assert_eq(session.cards.copies, copies)
+	assert_false(manager.resolve_cards_progression("upgrade", str(chosen.id)).success)
+	assert_true(session.character.loadout.knows_spell_id(StringName(chosen.spell_id)))
+	assert_true(manager.restore_expedition_snapshot(JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))))
+
+
+func test_progression_offer_does_not_reroll_when_recomposing_deck() -> void:
+	var manager = make_manager()
+	var session: ExpeditionSession = manager.expedition
+	assert_true(session.combat_won())
+	var offers := session.cards.progression_offers()
+	assert_eq(offers.size(), 3)
+	assert_true(session.cards.move_card(session.cards.active[0]))
+	assert_eq(session.cards.progression_offers(), offers)
+	assert_true(manager.restore_expedition_snapshot(JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))))
+	assert_eq(manager.expedition.cards.progression_offers(), offers)
+
+
+func test_invalid_starting_maneuvers_are_rejected_without_equipment_or_save_changes() -> void:
+	var manager := Manager.new()
+	manager.expedition_save_path = "user://cards_invalid_start_%d.json" % Time.get_ticks_usec()
+	add_child(manager)
+	managers.append(manager)
+	assert_true(manager.start_expedition(2401, {}, false, true, "normal", true))
+	var before := manager.get_expedition_snapshot()
+	var saved := FileAccess.get_sha256(manager.expedition_save_path)
+	for invalid in ["not_an_array", [], ["exp_crochet", "exp_crochet", "exp_feinte", "exp_heurt", "exp_marche"], ["unknown", "exp_souffle", "exp_feinte", "exp_heurt", "exp_marche"]]:
+		var selection := CatabasePreparationCatalog.preset("marteau")
+		selection.card_families = invalid
+		assert_false(manager.confirm_catabase_preparation(selection).success)
+		assert_eq(manager.get_expedition_snapshot(), before)
+		assert_eq(FileAccess.get_sha256(manager.expedition_save_path), saved)

@@ -488,7 +488,7 @@ func _fight_continuous(
 				var action: Dictionary = { }
 				if actor == hero:
 					if manager.expedition.cards != null:
-						var available_cards: Array[Spell] = []
+						var available_cards: Array[Spell] = manager.expedition.cards.weapon_spells()
 						for card_id in manager.expedition.cards.hand:
 							for card_spell in manager.expedition.cards.spells_for(card_id):
 								if card_spell not in available_cards: available_cards.append(card_spell)
@@ -949,6 +949,7 @@ func _spend_build_points(session: ExpeditionSession, weapon: String) -> Dictiona
 	for iteration in 64:
 		var available: Array[String] = []
 		for offer: Dictionary in session.build.get_offers():
+			if session.cards != null and not session.cards.permanent_offer(offer): continue
 			if bool(offer.get("available", false)):
 				available.append(str(offer.id))
 		if available.is_empty():
@@ -1016,7 +1017,7 @@ func _claim_combat_reward(
 	policy: String,
 ) -> Dictionary:
 	var capacity_equips: Array[Dictionary] = []
-	if session.build.completed_depth >= ExpeditionBuildState.CAPACITY_DEPTH \
+	if session.cards == null and session.build.completed_depth >= ExpeditionBuildState.CAPACITY_DEPTH \
 			and str(session.build.to_snapshot().get("depth_eight_choice", "")).is_empty():
 		var capacity := session.build.choose_depth_eight("slot")
 		if not bool(capacity.get("success", false)):

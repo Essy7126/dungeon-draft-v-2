@@ -60,8 +60,14 @@ La reprise rejoint directement la sauvegarde existante.
 
 Le titre propose désormais **Catabase classique** et une **variante Cartes**
 parallèle, avec deux sauvegardes indépendantes. Classique conserve les sorts
-équipés ; Cartes ajoute main, deck, réserve, butin acquis et revente sur les mêmes
-règles de combat. La route actuelle comporte vingt profondeurs, douze combats
+équipés ; Cartes conserve deux gestes d'arme fixes et propose un deck de dix
+manœuvres, avec quatre cartes piochées par tour. Sa préparation permet de composer
+cinq familles en deux copies ; les montées de niveau proposent d'ajouter,
+remplacer ou améliorer une famille, ou de passer. Réserve, butin acquis et revente
+restent disponibles ; les maîtrises ne créent plus de copies gratuites.
+Les anciennes sauvegardes Cartes sont converties à la reprise en conservant leurs
+copies acquises. Voir la [reprise des intentions](docs/ai/CARDS_INTENT_REPAIR_2026-09-17.md).
+La route actuelle comporte vingt profondeurs, douze combats
 et trois refuges. Le retrait de l'ancien prototype du 12 septembre est un état
 historique, pas la description de cette nouvelle variante. Voir le
 [contrat Cartes](docs/ai/CARDS_RUN_IMPLEMENTATION_NOTES.md) et

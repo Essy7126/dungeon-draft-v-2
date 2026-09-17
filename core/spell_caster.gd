@@ -498,7 +498,7 @@ func get_spell_preparation_failure_reason(caster: Unit, spell: Spell) -> StringN
 	if caster == null or spell == null:
 		return &"arguments"
 	var cards = CatabaseCards.for_actor(caster)
-	if cards != null and cards.card_for_spell(spell).is_empty(): return &"card_not_in_hand"
+	if cards != null and not cards.is_weapon_spell(spell) and cards.card_for_spell(spell).is_empty(): return &"card_not_in_hand"
 	var availability_reason := caster.get_spell_availability_reason(spell)
 	if availability_reason != &"":
 		return availability_reason

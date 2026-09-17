@@ -125,6 +125,8 @@ func _ready() -> void:
 	heading.add_child(_navigation)
 	for entry in [["gear", "Inventaire", "equipment", "Vos objets, leur équipement et leurs effets."], ["build", "Compétences", "tree", "Vos actions en combat et les nouvelles techniques à apprendre."], ["attributes", "Caractéristiques", "", "Vos points de vie, vos dégâts et votre protection."]]:
 		var tab := _button(_navigation, entry[1])
+		if entry[0] == "build" and GameManager.expedition != null and GameManager.expedition.cards != null:
+			tab.text = "Arme & maîtrises"
 		tab.name = "CatabaseTab_" + entry[0]
 		tab.set_meta("catabase_icon", entry[2])
 		tab.tooltip_text = entry[3]
@@ -227,6 +229,7 @@ func _render() -> void:
 		_flow_rail.visible = session != null and not inspection_only and not auxiliary and _page != "map"
 		var step_index := 0 if _page in ["progression", "level_up"] else 1 if _page == "advancement" else 3 if _page == "map" else 2
 		for index in _flow_labels.size():
+			if index == 1 and session != null and session.cards != null: _flow_labels[index].text = "2 · Deck"
 			_flow_labels[index].add_theme_color_override("font_color", GOLD if index == step_index else TEAL if index < step_index else MUTED)
 	for page_id in _navigation_buttons:
 		var tab: Button = _navigation_buttons[page_id]
@@ -312,7 +315,7 @@ func _render_level_up() -> void:
 	var column := _scroll_column(_body)
 	for row in [
 		["level", "%d point%s de caractéristiques" % [session.character.champion_progression.unspent_attribute_points, "s" if session.character.champion_progression.unspent_attribute_points > 1 else ""], "Renforcez votre vie, vos dégâts ou vos défenses. Les valeurs avant et après sont affichées dans la fenêtre suivante."],
-		["destiny", "%d points de destin disponibles" % session.build.points, "Apprenez une technique ou faites évoluer vos sorts. Vous pouvez conserver ces points pour un achat plus coûteux."],
+		["destiny", "%d points de destin disponibles" % session.build.points, "Choisissez une manœuvre à ajouter ou remplacer, ou dépensez vos points pour améliorer une famille du deck. Vous pouvez passer." if session.cards != null else "Apprenez une technique ou faites évoluer vos sorts. Vous pouvez conserver ces points pour un achat plus coûteux."],
 		["oboles", "Puis, votre butin", "Choisissez un équipement, une relique ou une autre récompense. Vous retrouverez la carte seulement après ces décisions."],
 	]:
 		var card := _card(column, GOLD)
@@ -332,6 +335,9 @@ func _advance_level_window() -> void:
 
 func _render_advancement() -> void:
 	var session := GameManager.expedition
+	if session.cards != null:
+		_render_cards_advancement()
+		return
 	_label(_body, "Faites évoluer vos sorts", 28, TEXT, true)
 	_label(_body, "%d points de destin · Les propositions ci-dessous sont accessibles à votre niveau. Une technique apprise doit ensuite être équipée dans « Mes actions ». Vous pouvez aussi économiser." % session.build.points, 17, MUTED)
 	var column := _scroll_column(_body)
@@ -374,6 +380,50 @@ func _render_learning_choice() -> void:
 	var back := _button(_body, "Revenir à mes choix de sorts  →")
 	back.name = "BackToLevelSpells"
 	back.pressed.connect(func(): _page = "advancement"; _render())
+
+
+func _render_cards_advancement() -> void:
+	var cards: CatabaseCards = GameManager.expedition.cards
+	_label(_body, "Faire évoluer mon deck", 28, GOLD, true)
+	_label(_body, "Une décision : ajouter une manœuvre, remplacer une copie, améliorer une famille, ou passer. Les cartes non choisies ne sont pas ajoutées.", 17, MUTED)
+	var column := _scroll_column(_body)
+	for family in cards.progression_offers():
+		var spell := cards.family_spell(family)
+		var panel := _card(column)
+		_illustrated_title(panel, spell.spell_name, spell.icon, 40)
+		_label(panel, spell.description, 16, TEXT)
+		var replacement := OptionButton.new()
+		replacement.name = "ProgressionReplacement_" + family
+		replacement.add_item("Ajouter au deck")
+		var ids: Array[String] = [""]
+		for id in cards.active:
+			ids.append(id)
+			replacement.add_item("Remplacer : " + cards.title_for(id))
+		panel.add_child(replacement)
+		var accept := _button(panel, "Choisir cette manœuvre")
+		accept.name = "ProgressionAdd_" + family
+		var refresh := func():
+			var count := 0
+			for id in cards.active:
+				if id != ids[replacement.selected] and cards.copy_for(id).family == family: count += 1
+			accept.disabled = count >= 2
+		replacement.item_selected.connect(func(_index): refresh.call())
+		refresh.call()
+		accept.pressed.connect(func(): _resolve_cards_progression("add", family, ids[replacement.selected]))
+	for offer in cards.upgrade_offers():
+		var upgrade := _button(column, "Améliorer : %s · %d points de destin" % [offer.title, offer.cost])
+		upgrade.name = "ProgressionUpgrade_" + str(offer.id)
+		upgrade.tooltip_text = str(offer.description)
+		upgrade.pressed.connect(func(): _resolve_cards_progression("upgrade", str(offer.id)))
+	var skip := _button(_body, "Garder mon deck et continuer  →", true)
+	skip.name = "FinishLevelSpells"
+	skip.pressed.connect(func(): _resolve_cards_progression("skip"))
+
+
+func _resolve_cards_progression(action: String, value := "", replace_id := "") -> void:
+	var result := GameManager.resolve_cards_progression(action, value, replace_id)
+	if result.get("success", false): _continue_flow()
+	else: _action_result(result)
 
 
 func _render_loot_received() -> void:
@@ -654,10 +704,10 @@ func _render_choice_screen(capacity_only := false) -> void:
 func _render_rewards(parent: Control, capacity_only := false) -> void:
 	var session := GameManager.expedition
 	var node := session.route.get_current_node()
-	if capacity_only:
+	if capacity_only and session.cards == null:
 		_label(parent, "L'ampleur ou l'intensité", 30, TEXT, true)
 		_label(parent, "Un choix exclusif : élargir votre kit ou transformer Frappe. La récompense de cette étape vient ensuite.", 18, MUTED)
-		for choice in [["slot", "Une main de six cartes" if session.cards != null else "Un sixième emplacement", "Piochez jusqu’à six cartes à chaque activation, sans PA supplémentaires." if session.cards != null else "Équipez une technique supplémentaire parmi celles que vous connaissez."], ["mutation", "Tempête du Péléide", session.build.catalog.get_spell("exp_tempest").description]]:
+		for choice in [["slot", "Un sixième emplacement", "Équipez une technique supplémentaire parmi celles que vous connaissez."], ["mutation", "Tempête du Péléide", session.build.catalog.get_spell("exp_tempest").description]]:
 			var fork := _card(parent, GOLD)
 			_label(fork, choice[1], 24, TEXT, true)
 			_label(fork, choice[2], 17, MUTED)
@@ -772,7 +822,12 @@ func _render_preparation() -> void:
 
 func _render_departure() -> void:
 	if GameManager.expedition.cards != null:
-		_label(_body, "RUN CARTES · 12 cartes au départ : 6 Gestes d’arme et 3 copies de chacune de vos deux techniques. La main se renouvelle à chaque tour ; déplacements en PM inchangés.", 16, GOLD)
+		var cards_view := preload("res://ui/expedition/catabase_cards_departure.gd").new()
+		_body.add_child(cards_view)
+		cards_view.configure(GameManager.expedition, GameManager.confirm_catabase_preparation)
+		_navigation.hide()
+		_flow_rail.hide()
+		return
 	var view := preload("res://ui/expedition/catabase_departure_view.gd").new()
 	_body.add_child(view)
 	view.configure(GameManager.expedition, GameManager.confirm_catabase_preparation)
@@ -788,6 +843,7 @@ func _render_build() -> void:
 	_body.add_child(tabs)
 	for entry in [["equipped", "Mes actions en combat"], ["learn", "Apprendre · %d points de destin" % session.build.points]]:
 		var tab := _button(tabs, entry[1])
+		if session.cards != null: tab.text = "Mon deck" if entry[0] == "equipped" else "Arme & spécialisations · %d points" % session.build.points
 		tab.name = "SkillsTab_" + entry[0]
 		ART_THEME.apply_tab(tab, _skills_tab == entry[0])
 		tab.pressed.connect(func(): _skills_tab = entry[0]; _show_loadout = false; _render())
@@ -799,7 +855,7 @@ func _render_build() -> void:
 
 func _render_equipped_skills() -> void:
 	if GameManager.expedition.cards != null:
-		_label(_body, "Vos actions viennent du deck et de la main piochée. Les maîtrises améliorent les familles de cartes ; les emplacements classiques ne limitent pas le deck.", 17, MUTED)
+		_label(_body, "Deux gestes d'arme fixes et quatre manœuvres piochées. Ajoutez ou remplacez les cartes de votre deck ; les objets restent accessibles séparément.", 17, MUTED)
 		var deck := preload("res://ui/expedition/catabase_card_collection.gd").new()
 		deck.read_only = inspection_only
 		deck.transaction_completed.connect(_refresh_resources)
@@ -876,6 +932,7 @@ func _render_learning_tree() -> void:
 		_label(_body, "Une branche découverte pendant la descente. Ses choix engagent le même budget que vos doctrines.", 16, MUTED)
 	var offers: Array[Dictionary] = []
 	for offer in session.build.get_offers():
+		if session.cards != null and not session.cards.permanent_offer(offer): continue
 		if str(offer.axis) in selected_axes or str(offer.id) == _doctrine + ".root":
 			offers.append(offer)
 	var selected: Dictionary = {}

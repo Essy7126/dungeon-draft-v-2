@@ -44,6 +44,8 @@ func is_editable() -> bool:
 
 func prepare_start(raw_selection: Dictionary, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
 	var selection := raw_selection.duplicate(true)
+	if cards != null and cards.rules_revision >= 2:
+		selection["card_families"] = CatabaseCards.starter_families(selection)
 	var selected_difficulty := str(selection.get("difficulty_id", route.difficulty_id))
 	selection.erase("difficulty_id")
 	if selected_difficulty not in ["normal", "easy"] or (route.get_balance_revision() == 0 and selected_difficulty != "normal"):
@@ -153,6 +155,7 @@ func award_destination() -> void:
 	if cards != null:
 		cards.grant_loot(node)
 		cards.sync_learned()
+		if not advancement_step.is_empty(): cards.progression_offers()
 	last_message = "%s franchi · +%d XP · +%d oboles" % [node.title, int(result.get("gained_xp", 0)), gained_gold]
 	journal.append(last_message)
 	if challenges.enabled and xp > 0 and (route.get_balance_revision() == 0 or not challenges.contract.is_empty()):
@@ -213,7 +216,7 @@ func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog
 			selected = option
 	if selected.is_empty():
 		return _failure("Cette proposition n'est pas disponible.")
-	if int(route.get_current_node().depth) == ExpeditionBuildState.CAPACITY_DEPTH and build.to_snapshot().get("depth_eight_choice", "") == "":
+	if cards == null and int(route.get_current_node().depth) == ExpeditionBuildState.CAPACITY_DEPTH and build.to_snapshot().get("depth_eight_choice", "") == "":
 		return _failure("Choisissez d'abord le sixième emplacement ou sa mutation exclusive.")
 	if selected.has("branch_id"):
 		var learned: Dictionary = build.unlock_branch(str(selected.branch_id))
@@ -272,7 +275,7 @@ func advance_level_step() -> Dictionary:
 
 
 func wants_build_review() -> bool:
-	return route.get_balance_revision() == 0 or bool(route.get_current_node().get("highlight_build_reward", false))
+	return cards != null or route.get_balance_revision() == 0 or bool(route.get_current_node().get("highlight_build_reward", false))
 
 
 func refuge_heal_fraction() -> float:
@@ -594,4 +597,5 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		cards = CatabaseCards.new()
 		cards.bind(self)
 		if not cards.restore(snapshot.cards_run, needs_preparation): return false
+		cards.migrate_legacy(needs_preparation)
 	return true

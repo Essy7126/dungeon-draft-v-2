@@ -1,5 +1,9 @@
 # Catabase Cartes — variante parallèle
 
+> État historique du 16 septembre. Le modèle hybride décrit ci-dessous est
+> remplacé par la [correction du 17 septembre](CARDS_INTENT_REPAIR_2026-09-17.md) :
+> gestes fixes, deck de manœuvres, préparation et progression dédiées.
+
 Statut : WORKTREE_CANDIDATE, 2026-09-16. Dépôt
 `https://github.com/Essy7126/dungeon-draft-v-2.git`, branche `main`, base
 `8d5e7b9c8e68a9699ff74f813f8630f001db4a02`. Arbre initial propre ; aucun

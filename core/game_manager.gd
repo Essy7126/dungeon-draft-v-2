@@ -2413,11 +2413,22 @@ func use_catabase_hub_service(service_id: String) -> Dictionary:
 func purchase_expedition_technique(node_id: String) -> Dictionary:
 	if expedition == null or not expedition.is_editable():
 		return {"success": false, "reason": "Le kit est engagé pour ce combat."}
+	if expedition.cards != null and not expedition.cards.permanent_offer(expedition.build.catalog.get_node(node_id)):
+		return {"success": false, "reason": "Les manœuvres se construisent dans le deck et ses choix de progression."}
 	var result: Dictionary = expedition.build.purchase(node_id)
 	if bool(result.get("success", false)):
 		if expedition.cards != null: expedition.cards.sync_learned()
 		champion_build_changed.emit(&"achilles")
 		_save_expedition_transaction(result)
+	return result
+
+
+func resolve_cards_progression(action: String, value := "", replace_id := "") -> Dictionary:
+	if expedition == null or expedition.cards == null or not expedition.cards.resolve_progression(action, value, replace_id):
+		return {"success": false, "message": "Ce choix de deck n'est pas disponible."}
+	var result := {"success": true, "message": "Choix de deck enregistré."}
+	champion_build_changed.emit(&"achilles")
+	_save_expedition_transaction(result)
 	return result
 
 
@@ -2446,6 +2457,8 @@ func equip_expedition_spell(spell_id: StringName, slot: int) -> bool:
 func choose_expedition_capacity(option: String) -> Dictionary:
 	if expedition == null or not expedition.is_editable():
 		return {"success": false, "reason": "Choix indisponible."}
+	if expedition.cards != null:
+		return {"success": false, "reason": "La main reste à quatre cartes ; sa progression passe par le deck."}
 	var result: Dictionary = expedition.build.choose_depth_eight(option)
 	if bool(result.get("success", false)):
 		if expedition.cards != null: expedition.cards.sync_learned()

@@ -41,7 +41,7 @@ func _button(parent: Node, value: String, action: Callable, locked := false) -> 
 func _commit(ok: bool) -> void:
 	if ok:
 		_notice = "Enregistré." if GameManager.save_expedition() else "Action appliquée ; sauvegarde impossible. Réessayez avant de quitter."
-	else: _notice = "Action impossible : vérifiez le solde, les limites de copies et les 12–18 cartes du deck."
+	else: _notice = "Action impossible : vérifiez le solde, les deux copies par famille et les huit cartes minimum."
 	transaction_completed.emit()
 	_render()
 
@@ -58,7 +58,9 @@ func _render() -> void:
 	# The reward screen already explains acquisition; avoid repeating its header.
 	if not loot_only:
 		_label(self, "DECK & RÉSERVE · %d cartes actives · %d oboles" % [cards.active.size(), session.gold], Color("e6ba62")).add_theme_font_size_override("font_size", 22)
-		_label(self, "12–18 cartes · 3 copies par technique · 6 Gestes maximum. Deux Gestes et deux techniques minimum.")
+		_label(self, "8 cartes minimum · 2 copies par famille · main de 4. Les deux gestes d'arme sont toujours disponibles, hors pioche.")
+		if cards.copies.any(func(card): return card.family == CatabaseCards.GESTURE):
+			_label(self, "Ancienne run convertie : vos Gestes sont archivés, vos manœuvres supplémentaires restent en réserve. Aucun butin acquis n'a été supprimé.")
 	if not _notice.is_empty(): _label(self, _notice, Color("7bd3c0"))
 	if not loot_only: _render_shop(cards)
 	var grid := GridContainer.new()
@@ -82,7 +84,7 @@ func _render() -> void:
 	var displayed := {}
 	for id in ids:
 		var card := cards.copy_for(id)
-		if card.is_empty() or displayed.has(card.family): continue
+		if card.is_empty() or card.family == CatabaseCards.GESTURE or displayed.has(card.family): continue
 		displayed[card.family] = true
 		var owned: Array = cards.copies.filter(func(copy): return copy.family == card.family)
 		var in_deck: Array = owned.filter(func(copy): return copy.id in cards.active)
@@ -134,18 +136,11 @@ func _render() -> void:
 			_label(column, spell.spell_name + " · " + CardText.effect(spell, session.character.unit))
 		if not reserve.is_empty():
 			_render_replacement(column, cards, str(reserve[0].id))
+			_button(column, "Vendre 1 · %d oboles" % CatabaseCards.SELL[rank] if not sellable.is_empty() else "Copies liées ou protégées", func(): _commit(cards.sell(str(sellable[0].id))), sellable.is_empty())
 		var details := _button(column, "Lire les effets et conditions", func(): _show_details(cards.title_for(id), text))
 		details.disabled = false
 		if not in_deck.is_empty():
-			_button(column, "Retirer 1 du deck", func(): _commit(cards.move_card(str(in_deck[-1].id))), cards.active.size() <= 12)
-			var positions := HBoxContainer.new()
-			column.add_child(positions)
-			for slot in ([0, 1] if card.family == CatabaseCards.GESTURE else [2, 3]):
-				var same_slot: bool = cards.copy_for(cards.opening[slot]).get("family", "") == card.family
-				var available: Array = in_deck.filter(func(copy): return copy.id != cards.opening[slot ^ 1])
-				_button(positions, "Ouverture %d%s" % [slot + 1, " ◆" if same_slot else ""], func(): _commit(cards.set_opening(str(available[0].id), slot)), same_slot or available.is_empty())
-		if not reserve.is_empty():
-			_button(column, "Vendre 1 · %d oboles" % CatabaseCards.SELL[rank] if not sellable.is_empty() else "Copies liées ou protégées", func(): _commit(cards.sell(str(sellable[0].id))), sellable.is_empty())
+			_button(column, "Retirer 1 du deck", func(): _commit(cards.move_card(str(in_deck[-1].id))), cards.active.size() <= CatabaseCards.MIN_DECK)
 		if not loot_only:
 			var all_protected := owned.all(func(copy): return copy.favorite)
 			_button(column, "★ Déprotéger la famille" if all_protected else "☆ Protéger la famille", func():

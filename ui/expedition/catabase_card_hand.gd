@@ -33,6 +33,7 @@ func _process(_delta: float) -> void:
 	var selected: String = cards.selected if battle.turn_state.selected_spell != null else ""
 	var interactive: bool = battle._can_accept_player_intent() and battle.turn_queue.get_current_unit() == actor
 	var reasons := []
+	for spell in cards.weapon_spells(): reasons.append(battle.spell_caster.get_spell_preparation_failure_reason(actor, spell))
 	for id in cards.hand:
 		for spell in cards.spells_for(id): reasons.append(battle.spell_caster.get_spell_preparation_failure_reason(actor, spell))
 	var stamp := str([cards.hand, cards.retained, selected, battle.turn_state.selected_spell, cards.recomposed, cards.draw_pile.size(), cards.discard.size(), cards.exhausted.size(), actor.current_ap, actor.current_mp, actor.activation_index, actor.grid_pos, actor.get_meta("ct_bronze", 0), reasons, interactive])
@@ -62,6 +63,25 @@ func _process(_delta: float) -> void:
 	heading.add_theme_font_size_override("font_size", 13)
 	heading.add_theme_color_override("font_color", Color("dac8a4"))
 	top.add_child(heading)
+	var piles := Button.new()
+	piles.name = "InspectCardPiles"
+	piles.text = "Piles"
+	CardSkin.action(piles, true)
+	top.add_child(piles)
+	piles.pressed.connect(func():
+		var dialog := AcceptDialog.new()
+		dialog.title = "Pioche, défausse et cartes épuisées"
+		var text := ""
+		for entry in [["Pioche · ordre masqué", cards.draw_pile], ["Défausse", cards.discard], ["Épuisées", cards.exhausted]]:
+			var names: Array = entry[1].map(func(id): return cards.title_for(id))
+			names.sort()
+			text += str(entry[0]) + "\n" + (", ".join(names) if not names.is_empty() else "Vide") + "\n\n"
+		dialog.dialog_text = text
+		dialog.get_label().autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		add_child(dialog)
+		dialog.confirmed.connect(dialog.queue_free)
+		dialog.canceled.connect(dialog.queue_free)
+		dialog.popup_centered(Vector2i(mini(680, int(get_viewport().get_visible_rect().size.x) - 40), 360)))
 	var journal := Button.new()
 	journal.name = "CardCombatJournal"
 	journal.text = "Journal"
@@ -73,13 +93,34 @@ func _process(_delta: float) -> void:
 	var help := Button.new()
 	help.text = "?"
 	help.custom_minimum_size.x = 26
-	help.tooltip_text = "Un Geste propose deux actions : jouer l’une consomme la carte.\nGarder : conserver une carte au prochain tour.\n↻ 1 PA : recomposer une fois par tour.\nSurvolez un sort pour lire ses effets et conditions."
+	help.tooltip_text = "Deux gestes d'arme fixes, hors pioche. Quatre manœuvres en main.\nGarder : conserver une carte au prochain tour.\n↻ 1 PA : recomposer une fois par tour.\nSurvolez un sort pour lire ses effets et conditions."
 	CardSkin.action(help, true)
 	top.add_child(help)
 	var row := HBoxContainer.new()
 	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 6)
 	_panel.add_child(row)
+	var weapons := VBoxContainer.new()
+	weapons.name = "FixedWeaponActions"
+	weapons.custom_minimum_size.x = 130
+	weapons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(weapons)
+	var fixed_label := Label.new()
+	fixed_label.text = "ARME · hors pioche"
+	fixed_label.add_theme_font_size_override("font_size", 13)
+	weapons.add_child(fixed_label)
+	for spell in cards.weapon_spells():
+		var play := Button.new()
+		play.name = "FixedWeapon_" + str(spell.spell_id)
+		play.custom_minimum_size.y = 48
+		play.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		CardSkin.action(play)
+		var reason: StringName = battle.spell_caster.get_spell_preparation_failure_reason(actor, spell)
+		play.disabled = not interactive or reason != &""
+		play.tooltip_text = CardText.reason_text(reason, actor, spell) + "\n" + CardText.details(spell, actor)
+		play.pressed.connect(func(): cards.selected = ""; battle._on_spell_pressed(spell))
+		weapons.add_child(play)
+		_spell_face(play, spell, actor.get_spell_ap_cost(spell))
 	for id in cards.hand:
 		var card := cards.copy_for(id)
 		var frame := PanelContainer.new()

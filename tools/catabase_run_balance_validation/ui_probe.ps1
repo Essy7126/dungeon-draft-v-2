@@ -33,6 +33,7 @@ $output = Join-Path $projectRoot ('artifacts/catabase_run_balance_validation/' +
 $appData = Join-Path $output 'appdata'
 [IO.Directory]::CreateDirectory($output) | Out-Null
 [IO.Directory]::CreateDirectory($appData) | Out-Null
+[IO.File]::WriteAllText((Join-Path $appData '.gdignore'), '')
 $engineLock = $null
 $process = $null
 try {
