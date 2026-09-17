@@ -3,19 +3,84 @@ extends RefCounted
 ## Runtime authority for canonical Catabase; authored assets remain immutable.
 const PROFILE_ID: StringName = &"catabase"
 const BASE_RUN := "res://data/runs/odyssey.tres"
-const MonsterEncounterCatalog = preload("res://core/expedition/catabase_monster_encounter_catalog.gd")
+const MonsterEncounterCatalog = preload(
+	"res://core/expedition/catabase_monster_encounter_catalog.gd"
+)
 # Hubs do not manufacture character XP. Rank follows victories.
-const XP_BY_DEPTH := [100, 110, 120, 0, 130, 140, 160, 0, 180, 200, 210, 0, 230, 250, 270, 0, 280, 300, 0, 340]
+const XP_BY_DEPTH := [
+	100,
+	110,
+	120,
+	0,
+	130,
+	140,
+	160,
+	0,
+	180,
+	200,
+	210,
+	0,
+	230,
+	250,
+	270,
+	0,
+	280,
+	300,
+	0,
+	340,
+]
 # Fixed depth curves independent of the hero's build, inventory or current HP.
 # Each authored pack also budgets its numbers, mobility and spell economy.
 # Noncombat entries hold the previous value; protected fights use legacy stats.
-const MONSTER_HP_BY_DEPTH := [1.0, 0.45, 0.55, 0.55, 0.68, 0.82, 1.0, 1.0, 1.05, 1.30, 1.50, 1.50, 1.65, 1.95, 2.15, 2.30, 2.45, 2.90, 2.90, 2.90]
-const MONSTER_ATTACK_BY_DEPTH := [1.0, 0.70, 0.85, 0.85, 0.95, 1.10, 1.0, 1.0, 1.35, 1.60, 1.85, 1.85, 2.05, 2.45, 2.80, 3.00, 3.20, 3.80, 3.80, 3.80]
+const MONSTER_HP_BY_DEPTH := [
+	1.0,
+	0.45,
+	0.55,
+	0.55,
+	0.68,
+	0.82,
+	1.0,
+	1.0,
+	1.05,
+	1.30,
+	1.50,
+	1.50,
+	1.65,
+	1.95,
+	2.15,
+	2.30,
+	2.45,
+	2.90,
+	2.90,
+	2.90,
+]
+const MONSTER_ATTACK_BY_DEPTH := [
+	1.0,
+	0.70,
+	0.85,
+	0.85,
+	0.95,
+	1.10,
+	1.0,
+	1.0,
+	1.35,
+	1.60,
+	1.85,
+	1.85,
+	2.05,
+	2.45,
+	2.80,
+	3.00,
+	3.20,
+	3.80,
+	3.80,
+	3.80,
+]
 const MONSTER_ELITE_HP := 1.15
 const MONSTER_ELITE_ATTACK := 1.12
 
 
-static func create(seed_value: int, hero_visual_variants: Dictionary = {}) -> RunData:
+static func create(seed_value: int, hero_visual_variants: Dictionary = { }) -> RunData:
 	var source := load(BASE_RUN) as RunData
 	var result := source.duplicate(false) as RunData
 	result.hero_visual_variants = hero_visual_variants.duplicate()
@@ -37,26 +102,47 @@ static func create(seed_value: int, hero_visual_variants: Dictionary = {}) -> Ru
 		var hero := source_hero.duplicate(false) as RunHeroProfile
 		hero.progression_profile = source_hero.progression_profile.duplicate(false)
 		hero.progression_profile.combat_action_classification_catalog = classifications
-		var progression := source_hero.progression_profile.champion_progression_profile.duplicate(false) as ChampionProgressionProfile
+		var progression := source_hero.progression_profile.champion_progression_profile.duplicate(
+			false
+		) as ChampionProgressionProfile
 		# Only the new tree owns mastery currency. Starting stats and attributes stay canonical.
 		progression.mastery_point_levels = PackedInt32Array()
 		progression.purchased_mastery_cap = 0
 		hero.progression_profile.champion_progression_profile = progression
 		result.content_profile.hero_profiles.append(hero)
 	result.economy_profile = source.economy_profile.duplicate(false)
-	result.economy_profile.item_catalog = ExpeditionEquipmentCatalog.merge_into(source.economy_profile.item_catalog)
+	result.economy_profile.item_catalog = ExpeditionEquipmentCatalog.merge_into(
+		source.economy_profile.item_catalog
+	)
 	result.economy_profile.equipment_rewards_enabled = false
 	result.economy_profile.starting_currency = 0
 	result.economy_profile.victory_currency_reward = 0
 	result.rooms = []
 	for depth in range(1, ExpeditionRouteCatalog.DEPTH_COUNT + 1):
 		var room_index := int(ExpeditionRouteCatalog.MAP_BY_DEPTH.get(depth, 0))
-		result.rooms.append(make_room({"depth": depth, "room_index": room_index, "title": "Étape %d" % depth, "id": "pending_%d" % depth, "kind": "normal"}, seed_value))
+		result.rooms.append(
+			make_room(
+				{
+					"depth": depth,
+					"room_index": room_index,
+					"title": "Étape %d" % depth,
+					"id": "pending_%d" % depth,
+					"kind": "normal",
+				},
+				seed_value,
+			)
+		)
 	return result
 
 
 static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 	var template := ExpeditionMapCatalog.get_room_for_node(node)
+	if template == null:
+		push_error(
+			"Catabase : salle introuvable pour %s"
+			% node.get("encounter_profile_id", node.get("id", ""))
+		)
+		return null
 	var room := template.duplicate(false) as RoomData
 	room.room_name = str(node.get("title", template.room_name))
 	room.waves = []
@@ -66,12 +152,19 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 	encounter.base_xp = 0
 	encounter.optional_xp_budget = 0
 	encounter.glory_challenge = null
-	MonsterEncounterCatalog.configure_encounter(encounter, node)
-	if MonsterEncounterCatalog.uses_monsters(node) and (
-			template.resource_path.begins_with("res://data/rooms/catabase_expansion/")
-			or template.resource_path.begins_with("res://data/rooms/catabase_routes/")
+	if not MonsterEncounterCatalog.configure_encounter(encounter, node):
+		room.encounter_definition = encounter
+		room.enemies = []
+		return room
+	if (
+		MonsterEncounterCatalog.uses_monsters(node)
+		and (
+			template.resource_path.begins_with("res://data/rooms/catabase_expansion/") or template
+			.resource_path
+			.begins_with("res://data/rooms/catabase_routes/")
 			or room.enemy_spawn_zone.size() < MonsterEncounterCatalog.composition_for(node).size()
-		):
+		)
+	):
 		# Some historical rooms were authored for two enemies and the expansion
 		# rooms for three or four. Evolved packs can be larger, so rebuild the
 		# runtime candidate zone from actual floor cells when the old marker list
@@ -83,17 +176,26 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 	var attack_multiplier := enemy_attack_multiplier(node)
 	for data in source_roster:
 		var enemy := data.duplicate(false) as UnitData
-		enemy.max_hp = maxi(1, roundi(float(data.max_hp) * hp_multiplier))
-		enemy.attack_power = maxi(1, roundi(float(data.attack_power) * attack_multiplier))
-		if MonsterEncounterCatalog.uses_monsters(node):
-			MonsterEncounterCatalog.Evolution.scale_secondary_effects(enemy, hp_multiplier, attack_multiplier)
+		if not MonsterEncounterCatalog.uses_fixed_balance(node):
+			enemy.max_hp = maxi(1, roundi(float(data.max_hp) * hp_multiplier))
+			enemy.attack_power = maxi(1, roundi(float(data.attack_power) * attack_multiplier))
+			if MonsterEncounterCatalog.uses_monsters(node):
+				MonsterEncounterCatalog.Evolution.scale_secondary_effects(
+					enemy,
+					hp_multiplier,
+					attack_multiplier,
+				)
 		encounter.roster_units.append(enemy)
 	room.encounter_definition = encounter
 	room.enemies = encounter.expanded_roster()
 	return room
 
 
-static func _rebuild_runtime_enemy_spawn_zone(room: RoomData, template: RoomData, encounter: EncounterDefinition) -> void:
+static func _rebuild_runtime_enemy_spawn_zone(
+	room: RoomData,
+	template: RoomData,
+	encounter: EncounterDefinition,
+) -> void:
 	var grid := EncounterGridFactory.build_from_room(template)
 	if grid == null:
 		return
@@ -102,8 +204,11 @@ static func _rebuild_runtime_enemy_spawn_zone(room: RoomData, template: RoomData
 	for y in grid.rows:
 		for x in grid.cols:
 			var cell := Vector2i(x, y)
-			if not grid.is_walkable(cell) or grid.get_type(cell) != GridData.CellType.NORMAL \
-					or room.hero_spawn_zone.has(cell) or _initial_cell_is_occluded(template, cell):
+			if (
+					not grid.is_walkable(cell) or grid.get_type(cell) != GridData.CellType.NORMAL \
+						or room.hero_spawn_zone.has(cell)
+				or _initial_cell_is_occluded(template, cell)
+			):
 				encounter.forbidden_initial_spawn_cells.append(cell)
 			else:
 				room.enemy_spawn_zone.append(cell)
@@ -117,54 +222,81 @@ static func _initial_cell_is_occluded(template: RoomData, cell: Vector2i) -> boo
 		var native_position := visual.cell_to_image(cell)
 		if visual.foreground_occluder_polygon.size() >= 3 \
 				and native_position.y <= visual.foreground_occluder_sort_y \
-				and Geometry2D.is_point_in_polygon(native_position, visual.foreground_occluder_polygon):
+				and Geometry2D.is_point_in_polygon(
+			native_position,
+			visual.foreground_occluder_polygon,
+		):
 			return true
 		# A standalone alpha mask has no polygon to inspect here. Preserve the
 		# author’s forbidden cells rather than infer visibility from its pixels.
 		if visual.foreground_texture != null or not visual.foreground_texture_path.is_empty() \
 				or not visual.occlusion_mask_path.is_empty():
 			var authored_encounter := template.get_encounter_for_wave(0)
-			if authored_encounter != null and authored_encounter.forbidden_initial_spawn_cells.has(cell):
+			if authored_encounter != null and authored_encounter.forbidden_initial_spawn_cells.has(
+					cell
+				):
 				return true
 	if template is ArenaDefinition:
 		var arena := template as ArenaDefinition
-		var native_position := GridTransformService.cell_to_position(cell, arena.grid_origin, arena.axis_x, arena.axis_y)
-		if arena.foreground_full_hide_rect.has_area() and arena.foreground_full_hide_rect.has_point(native_position):
+		var native_position := GridTransformService.cell_to_position(
+			cell,
+			arena.grid_origin,
+			arena.axis_x,
+			arena.axis_y,
+		)
+		if arena.foreground_full_hide_rect.has_area() and arena.foreground_full_hide_rect.has_point(
+				native_position
+			):
 			return true
 		if arena.foreground_occluder_polygon.size() >= 3 \
 				and native_position.y <= arena.foreground_occluder_sort_y \
-				and Geometry2D.is_point_in_polygon(native_position, arena.foreground_occluder_polygon):
+				and Geometry2D.is_point_in_polygon(
+			native_position,
+			arena.foreground_occluder_polygon,
+		):
 			return true
 	return false
 
 
 static func enemy_multiplier(node: Dictionary) -> float:
 	# Preserve authored tutorial/champion/boss behavior and this legacy API.
-	return (1.20 if str(node.get("kind", "")) == "elite" else 1.0) * (1.0 + float(maxi(0, int(node.depth) - 5)) * 0.07)
+	return (1.20 if str(node.get("kind", "")) == "elite" else 1.0) * (1.0
+	+ float(maxi(0, int(node.depth) - 5)) * 0.07)
 
 
 static func enemy_hp_multiplier(node: Dictionary) -> float:
+	if MonsterEncounterCatalog.uses_fixed_balance(node):
+		return 1.0
 	if not MonsterEncounterCatalog.uses_monsters(node):
 		return enemy_multiplier(node)
 	var depth_index := clampi(int(node.depth) - 1, 0, MONSTER_HP_BY_DEPTH.size() - 1)
 	return MONSTER_HP_BY_DEPTH[depth_index] * MonsterEncounterCatalog.hp_factor(node) \
-		* (MONSTER_ELITE_HP if str(node.get("kind", "normal")) == "elite" else 1.0)
+			* (MONSTER_ELITE_HP if str(node.get("kind", "normal")) == "elite" else 1.0)
 
 
 static func enemy_attack_multiplier(node: Dictionary) -> float:
+	if MonsterEncounterCatalog.uses_fixed_balance(node):
+		return 1.0
 	if not MonsterEncounterCatalog.uses_monsters(node):
 		return enemy_multiplier(node)
 	var depth_index := clampi(int(node.depth) - 1, 0, MONSTER_ATTACK_BY_DEPTH.size() - 1)
 	return MONSTER_ATTACK_BY_DEPTH[depth_index] * MonsterEncounterCatalog.attack_factor(node) \
-		* (MONSTER_ELITE_ATTACK if str(node.get("kind", "normal")) == "elite" else 1.0)
+			* (MONSTER_ELITE_ATTACK if str(node.get("kind", "normal")) == "elite" else 1.0)
 
 
 static func xp_for(node: Dictionary) -> int:
 	if not ExpeditionRouteCatalog.is_combat(str(node.kind)):
 		return 0
+	if int(node.get("balance_revision", 0)) == MonsterEncounterCatalog.BALANCE_REVISION:
+		if not node.has("xp_reward"):
+			push_error(
+				"Catabase r6 : xp_reward absent pour %s" % node.get("encounter_profile_id", "")
+			)
+			return 0
+		return maxi(0, int(node.xp_reward))
 	return 240 if int(node.depth) == 16 else XP_BY_DEPTH[int(node.depth) - 1]
 
 
 static func is_expedition(run_data: RunData) -> bool:
 	return run_data != null and run_data.content_profile != null \
-		and run_data.content_profile.profile_id == PROFILE_ID
+			and run_data.content_profile.profile_id == PROFILE_ID

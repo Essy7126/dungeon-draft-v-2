@@ -120,6 +120,9 @@ const HINTS := {
 
 
 static func preview(node: Dictionary) -> Dictionary:
+	# Revision 6 owns stable encounter profiles; display titles remain presentation only.
+	if int(node.get("balance_revision", 0)) == 1:
+		return { }
 	var title := str(node.get("title", ""))
 	if int(node.get("depth", 0)) not in [2, 3, 5, 6] or not PACKS.has(title):
 		return { }
@@ -143,6 +146,8 @@ static func preview(node: Dictionary) -> Dictionary:
 
 
 static func tune(unit: UnitData, role: StringName, node: Dictionary) -> void:
+	if int(node.get("balance_revision", 0)) == 1:
+		return
 	var pack := preview(node)
 	if pack.is_empty():
 		return

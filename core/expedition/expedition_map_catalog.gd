@@ -37,6 +37,13 @@ static func all_rooms() -> Array[RoomData]:
 
 
 static func get_room_for_node(node: Dictionary) -> RoomData:
+	# R6 binds an authored resource explicitly; renaming a destination cannot change its geometry.
+	if int(node.get("balance_revision", 0)) >= 1 and ExpeditionRouteCatalog.is_combat(str(node.get("kind", ""))):
+		var path := str(node.get("room_resource", ""))
+		if not path.begins_with("res://data/rooms/") or not ResourceLoader.exists(path):
+			push_error("Catabase r6 : ressource de salle invalide pour %s" % node.get("encounter_profile_id", ""))
+			return null
+		return load(path) as RoomData
 	# Destination identity survives the visual mirroring of the route.
 	var catalog: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(
 		"res://data/rooms/catabase_routes/catalog.json"

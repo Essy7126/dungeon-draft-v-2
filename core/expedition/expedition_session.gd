@@ -18,12 +18,15 @@ var branch_receipts: Dictionary = {}
 var needs_preparation := false
 var advancement_step := ""
 var advancement_from_level := 0
+var cards: CatabaseCards = null
+var card_inventory: RunInventory = null
 
 
-func initialize(state: CharacterRunState, seed_value: int) -> void:
+func initialize(state: CharacterRunState, seed_value: int, selected_difficulty: String = "normal", catalog_revision: int = ExpeditionRouteCatalog.REVISION) -> void:
 	character = state
 	character.unit.set_meta("ct_session", weakref(self))
-	route.initialize(seed_value)
+	route.initialize(seed_value, catalog_revision, selected_difficulty)
+	character.unit.set_meta("ct_balance_revision", route.get_balance_revision())
 	build.initialize(state)
 	gold = 0
 	advancement_step = ""
@@ -39,7 +42,12 @@ func is_editable() -> bool:
 	return not awarded_node_ids.is_empty() and route.phase in ["map", "reward"]
 
 
-func prepare_start(selection: Dictionary, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+func prepare_start(raw_selection: Dictionary, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+	var selection := raw_selection.duplicate(true)
+	var selected_difficulty := str(selection.get("difficulty_id", route.difficulty_id))
+	selection.erase("difficulty_id")
+	if selected_difficulty not in ["normal", "easy"] or (route.get_balance_revision() == 0 and selected_difficulty != "normal"):
+		return _failure("Ce mode de difficulté n'est pas disponible pour cette traversée.")
 	if not needs_preparation or not route.current_node_id.is_empty() or not CatabasePreparationCatalog.valid(selection):
 		return _failure("Cette préparation n'est pas disponible.")
 	var ids: Array[String] = ["catabase_ct_" + String(selection.weapon), "catabase_ct_" + String(selection.armor), "ct_relic_" + String(selection.relic), "ct_supply_" + String(selection.supply)]
@@ -65,7 +73,11 @@ func prepare_start(selection: Dictionary, inventory: RunInventory, item_catalog:
 		character.equipment_loadout.restore_snapshot(before_equipment, item_catalog)
 		service.rebuild_state(character)
 		return _failure("Le choix de techniques n'est pas valide.")
+	if route.get_balance_revision() >= 1:
+		route.initialize(route.seed, route.get_catalog_revision(), selected_difficulty)
 	gold = 60
+	card_inventory = inventory
+	if cards != null: cards.initialize_deck(selection)
 	needs_preparation = false
 	last_message = "Départ : %s · %s · 60 oboles" % [CatabasePreparationCatalog.WEAPONS[selection.weapon][0], CatabasePreparationCatalog.ARMORS[selection.armor][0]]
 	journal.append(last_message)
@@ -74,6 +86,7 @@ func prepare_start(selection: Dictionary, inventory: RunInventory, item_catalog:
 
 func enter(node_id: String) -> bool:
 	if needs_preparation or not advancement_step.is_empty(): return false
+	if cards != null and not cards.valid_deck(cards.active): return false
 	if not route.choose_node(node_id):
 		return false
 	character.begin_encounter()
@@ -83,8 +96,11 @@ func enter(node_id: String) -> bool:
 	build.is_editable = route.phase != "combat"
 	if route.phase == "combat":
 		build.begin_encounter("catabase:%d:%s" % [route.seed, node_id])
+		if cards != null: cards.prepare_entry()
 	else:
+		if cards != null: cards.sale_undo.clear()
 		award_destination()
+		if cards != null: cards.shop()
 	return true
 
 
@@ -123,7 +139,7 @@ func award_destination() -> void:
 	var previous_level := character.champion_progression.current_level
 	if xp > 0:
 		result = character.award_encounter_xp(StringName("catabase:%d:%s" % [route.seed, node.id]), xp, true)
-	if not build.starting_selection.is_empty() and character.champion_progression.current_level > previous_level:
+	if not build.starting_selection.is_empty() and character.champion_progression.current_level > previous_level and not (route.get_balance_revision() >= 1 and depth == 20):
 		advancement_from_level = previous_level
 		advancement_step = "level_up"
 	build.grant_depth_reward(depth)
@@ -134,9 +150,12 @@ func award_destination() -> void:
 	else:
 		gained_gold = 0
 	awarded_node_ids.append(str(node.id))
+	if cards != null:
+		cards.grant_loot(node)
+		cards.sync_learned()
 	last_message = "%s franchi · +%d XP · +%d oboles" % [node.title, int(result.get("gained_xp", 0)), gained_gold]
 	journal.append(last_message)
-	if challenges.enabled and xp > 0:
+	if challenges.enabled and xp > 0 and (route.get_balance_revision() == 0 or not challenges.contract.is_empty()):
 		journal.append(challenges.result_text)
 
 
@@ -147,13 +166,16 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 	var node := route.get_current_node()
 	if int(node.depth) == ExpeditionRouteCatalog.DEPTH_COUNT:
 		return [{"id": "finish", "title": "Achever la Catabase", "description": "Votre chemin. Votre Achille."}]
+	if bool(node.get("preparation_only", false)):
+		return [{"id": "leave_hub", "title": "Affronter Pâris", "description": "Vérifiez vos techniques, votre équipement et vos fournitures. Aucun soin n'est offert ici."}]
 	if ExpeditionRouteCatalog.is_halt(str(node.kind)):
 		hub_services(item_catalog)
 		return [{"id": "leave_hub", "title": "Reprendre le chemin", "description": "Terminer les interactions de cette halte et rejoindre la carte."}]
-	if int(node.depth) in [3, 6, 10, 14, 18] or str(node.kind) == "elite":
+	var technique_window := bool(node.get("highlight_build_reward", false)) if route.get_balance_revision() >= 1 else (int(node.depth) in [3, 6, 10, 14, 18] or str(node.kind) == "elite")
+	if technique_window:
 		if str(node.reward) == "elemental" and not build.is_axis_discovered("elements"):
 			result.append({"id": "discover:elements", "branch_id": "elements", "title": "Découvrir les braises du Styx", "description": "Ouvrir la branche élémentaire de l'arbre. Vos points de maîtrise permettent ensuite d'apprendre ses techniques."})
-		else:
+		elif cards == null:
 			var card := _spell_card(str(node.reward))
 			if not card.is_empty():
 				result.append(card)
@@ -175,7 +197,8 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 			result.append({"id": "wager", "title": "Le prix du sang", "description": "Sacrifier 15 % des PV maximum (non létal) pour 100 oboles. Un pari pour les prochains refuges."})
 			result.append({"id": "scout", "title": "Suivre les cendres", "description": "Révéler un passage secret à venir et gagner 25 oboles."})
 		_:
-			result.append({"id": "supplies", "title": "Conserver le butin", "description": "Gagner 40 oboles pour le prochain marchand et récupérer 5 % des PV maximum."})
+			var provisions_gold: int = CatabaseCards.PROVISIONS_GOLD if cards != null else 40
+			result.append({"id": "supplies", "gold_amount": provisions_gold, "title": "Provisions du voyage" if cards != null else "Conserver le butin", "description": "Gagner %d oboles et récupérer 5 %% des PV maximum.%s" % [provisions_gold, " Les cartes obtenues restent à vous." if cards != null else ""]})
 	return result
 
 
@@ -212,9 +235,9 @@ func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog
 		gold -= cost
 	else:
 		match option_id:
-			"rest": _heal_fraction(0.30)
+			"rest": _heal_fraction(refuge_heal_fraction())
 			"supplies":
-				gold += 40
+				gold += CatabaseCards.PROVISIONS_GOLD if cards != null else 40
 				_heal_fraction(0.05)
 			"scout":
 				route.reveal_next_hidden_node()
@@ -235,14 +258,25 @@ func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog
 
 func advance_level_step() -> Dictionary:
 	match advancement_step:
-		"level_up": advancement_step = "progression"
+		"level_up":
+			advancement_step = "progression"
+			if route.get_balance_revision() >= 1 and character.champion_progression.unspent_attribute_points == 0:
+				advancement_step = "advancement" if wants_build_review() else ""
 		"progression":
 			if character.champion_progression.unspent_attribute_points > 0:
 				return _failure("Répartissez vos points de caractéristiques avant de continuer.")
-			advancement_step = "advancement"
+			advancement_step = "advancement" if wants_build_review() else ""
 		"advancement": advancement_step = ""
 		_: return _failure("Aucune montée de niveau en attente.")
 	return {"success": true, "message": "Progression enregistrée."}
+
+
+func wants_build_review() -> bool:
+	return route.get_balance_revision() == 0 or bool(route.get_current_node().get("highlight_build_reward", false))
+
+
+func refuge_heal_fraction() -> float:
+	return 0.40 if route.get_balance_revision() >= 1 and route.difficulty_id == "easy" else 0.30
 
 
 func _heal_fraction(fraction: float) -> void:
@@ -255,6 +289,12 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 	var node := route.get_current_node()
 	if route.phase != "reward" or node.is_empty() or not ExpeditionRouteCatalog.is_halt(str(node.kind)):
 		return result
+	if bool(node.get("preparation_only", false)):
+		return result
+	if route.get_balance_revision() >= 1 and str(node.kind) == "lore" and not route.has_future_hidden_node():
+		# A late memory cannot reveal a passage the player has already passed.
+		# Trade its obsolete gold/reveal reward for one existing tactical supply.
+		return _late_memory_services(item_catalog, node)
 	var merchant := str(node.kind) == "merchant"
 	if hub_stock_ids.is_empty():
 		var ids := ExpeditionEquipmentCatalog.item_ids()
@@ -270,7 +310,7 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 			result.append({"id": "buy:" + str(item.item_id), "kind": "merchant", "item_id": str(item.item_id),
 				"title": item.display_name, "cost": price, "description": item.description})
 	result.append({"id": "rest", "kind": "hub", "title": "Le feu des compagnons", "cost": 45,
-		"description": "Retrouver 30 % des PV maximum. Une récupération par halte."})
+		"description": "Retrouver %d %% des PV maximum. Une récupération par halte." % roundi(refuge_heal_fraction() * 100.0)})
 	result.append({"id": "lore", "kind": "lore", "title": "Écouter les noms oubliés", "cost": 0,
 		"description": _lore_text(int(node.depth)) + "\nDécouvrir un passage secret encore à venir et recevoir 20 oboles."})
 	if not merchant:
@@ -290,7 +330,7 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 		if profile == "hub":
 			for service in result:
 				service.cost = 0
-				service.description = "Repos offert · retrouver 30 % des PV maximum, une fois."
+				service.description = "Repos offert · retrouver %d %% des PV maximum, une fois." % roundi(refuge_heal_fraction() * 100.0)
 	var used: Array = hub_used_ids.get(str(node.id), [])
 	for service in result:
 		service["used"] = str(service.id) in used
@@ -312,7 +352,7 @@ func use_hub_service(service_id: String, inventory: RunInventory, item_catalog: 
 	if selected.has("item_id"):
 		var granted := inventory.try_add(StringName(selected.item_id), 1)
 		if not bool(granted.get("success", false)):
-			return _failure("Libérez une place dans l'inventaire.")
+			return _failure(str(granted.get("error", "Cet objet ne peut pas être ajouté à l'inventaire.")))
 	elif selected.has("branch_id"):
 		var unlocked: Dictionary = build.unlock_branch(str(selected.branch_id))
 		if not bool(unlocked.get("success", false)):
@@ -323,7 +363,7 @@ func use_hub_service(service_id: String, inventory: RunInventory, item_catalog: 
 			"rest":
 				if character.unit.current_hp >= character.unit.max_hp.get_int():
 					return _failure("Vos PV sont déjà au maximum.")
-				_heal_fraction(0.30)
+				_heal_fraction(refuge_heal_fraction())
 			"lore":
 				var secret := route.reveal_next_hidden_node()
 				gold += 20
@@ -342,9 +382,24 @@ func use_hub_service(service_id: String, inventory: RunInventory, item_catalog: 
 	if not hub_used_ids.has(node_id):
 		hub_used_ids[node_id] = []
 	hub_used_ids[node_id].append(service_id)
+	if selected.has("choice_group"):
+		hub_used_ids[node_id].append(str(selected.choice_group))
 	last_message = str(selected.title)
 	journal.append("%s · %d oboles" % [last_message, int(selected.cost)])
 	return {"success": true, "message": last_message}
+
+
+func _late_memory_services(item_catalog: ItemCatalog, node: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var used: bool = "memory_supply" in hub_used_ids.get(str(node.id), [])
+	for supply in ["plaque", "souffle"]:
+		var item := item_catalog.get_definition(StringName("ct_supply_" + supply))
+		if item == null: continue
+		result.append({"id": "memory:" + supply, "choice_group": "memory_supply", "kind": "lore", "item_id": str(item.item_id), "cost": 0,
+			"title": "Leçon de Chiron · " + item.display_name,
+			"description": _lore_text(int(node.depth)) + "\nChoisissez un seul secours pour la suite, à la place des oboles et d'un secret dépassé. " + item.description,
+			"used": used, "available": not used})
+	return result
 
 
 func _lore_text(depth: int) -> String:
@@ -386,8 +441,15 @@ func _spell_card(reward_axis: String) -> Dictionary:
 
 func _equipment_offer(item_catalog: ItemCatalog) -> Dictionary:
 	var candidates: Array[ItemDefinition] = []
+	var alternative_weapon := route.get_balance_revision() >= 1 and int(route.get_current_node().depth) == 2 and not build.starting_selection.is_empty()
+	var excluded_weapon := "catabase_ct_" + str(build.starting_selection.get("weapon", ""))
+	var equipped_weapon := character.equipment_loadout.get_item(ItemDefinition.EquipmentSlot.WEAPON)
 	for item in item_catalog.get_definitions():
 		if item.is_equippable() and item.is_compatible_with(&"achilles"):
+			if alternative_weapon and (not str(item.item_id).trim_prefix("catabase_ct_") in CatabasePreparationCatalog.WEAPONS or str(item.item_id) == excluded_weapon):
+				continue
+			if alternative_weapon and equipped_weapon != null and item.item_id == equipped_weapon.definition_id:
+				continue
 			candidates.append(item)
 	if candidates.is_empty():
 		return {}
@@ -409,6 +471,7 @@ func to_snapshot() -> Dictionary:
 	result["needs_preparation"] = needs_preparation
 	result["advancement_step"] = advancement_step
 	result["advancement_from_level"] = advancement_from_level
+	if cards != null: result["cards_run"] = cards.snapshot()
 	return result
 
 
@@ -504,7 +567,10 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	var saved_axis := build.catalog.get_spell_axis(saved_spell)
 	if build.catalog.DISCOVERY_DEPTHS.has(saved_axis) and saved_axis not in discoveries and not build._starting_axis_available(saved_axis, snapshot.build.get("starting_selection", {})):
 		return false
+	var previous_balance := int(character.unit.get_meta("ct_balance_revision", 0))
+	character.unit.set_meta("ct_balance_revision", candidate_route.get_balance_revision())
 	if not build.restore_snapshot(snapshot.build):
+		character.unit.set_meta("ct_balance_revision", previous_balance)
 		return false
 	route = candidate_route
 	gold = int(snapshot.gold)
@@ -523,4 +589,9 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	advancement_step = pending_step
 	advancement_from_level = from_level
 	build.is_editable = needs_preparation or is_editable()
+	if snapshot.has("cards_run"):
+		if not snapshot.cards_run is Dictionary: return false
+		cards = CatabaseCards.new()
+		cards.bind(self)
+		if not cards.restore(snapshot.cards_run, needs_preparation): return false
 	return true

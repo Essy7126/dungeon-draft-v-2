@@ -127,23 +127,25 @@ func test_result_screen_renders_chronicle_and_hides_missing_seed() -> void:
 	}
 	screen._apply_result(result)
 
-	assert_eq(screen.result_label.text, "Défaite")
-	assert_eq(screen.register_label.text, "REGISTRE DE L’ARCHIVISTE · CATABASE")
-	assert_eq(screen.run_name_label.text, "Catabase — Achille")
+	assert_eq(screen.result_label.text, "LE FIL SE ROMPT")
+	assert_eq(screen.register_label.text, "CATABASE · DÉFAITE")
+	assert_eq(screen.run_name_label.text, "ACHILLE DANS LA CATABASE")
 	assert_string_contains(screen.progression_label.text, "Salles franchies : 1/3")
 	assert_string_contains(screen.progression_label.text, "Salle atteinte : 2/3")
-	assert_string_contains(screen.progression_label.text, "La Porte des Cendres")
+	assert_string_contains(screen.location_label.text, "La Porte des Cendres")
 	assert_false(screen.seed_label.visible)
-	assert_eq(screen.epitaph_label.text, "L’Archiviste consigne un fait vérifié.")
-	assert_eq(screen.return_button.text, "Retourner auprès de l’Archiviste")
+	assert_false(screen.epitaph_label.text.contains("Archiviste"))
+	assert_true(screen.new_attempt_button.visible)
+	assert_eq(screen.new_attempt_button.text, "Nouvelle tentative")
+	assert_eq(screen.menu_button.text, "Menu principal")
 	result["seed_available"] = true
 	result["seed"] = 987654
 	screen._apply_result(result)
 	assert_true(screen.seed_label.visible)
-	assert_eq(screen.seed_label.text, "Graine du destin : 987654")
+	assert_eq(screen.seed_label.text, "GRAINE DU DESTIN · 987654")
 
 
-func test_catabase_result_can_return_directly_to_the_archivist_hub() -> void:
+func test_explicit_legacy_hub_without_catabase_result_remains_available() -> void:
 	var manager = GameManagerScript.new()
 	var requested_paths: Array[String] = []
 	manager.scene_change_requested.connect(func(path): requested_paths.append(path))
@@ -151,3 +153,65 @@ func test_catabase_result_can_return_directly_to_the_archivist_hub() -> void:
 	assert_eq(requested_paths, ["res://hub/StartHub.tscn"])
 	assert_true(manager.get_last_run_result().is_empty())
 	manager.free()
+
+
+func test_expedition_result_displays_route_facts_and_preserves_victory_identity() -> void:
+	var screen := ResultScene.instantiate()
+	add_child_autofree(screen)
+	var result := {
+		"victory": false, "is_catabase": true, "is_expedition": true,
+		"featured_hero_name": "Passe-rive", "depth_reached": 7, "depth_total": 20,
+		"depths_cleared": 6, "combats_won": 4, "hero_level": 5,
+		"difficulty_id": "easy", "reached_room_name": "Un seuil vérifié",
+		"hero_states": [{"name": "Passe-rive", "current_hp": 0, "max_hp": 126}],
+		"epitaph": "La traversée s’arrête ici.",
+	}
+	screen._apply_result(result)
+	assert_true(screen.stats.visible)
+	assert_eq(screen.depth_value.text, "7 / 20")
+	assert_eq(screen.cleared_value.text, "6")
+	assert_eq(screen.combats_value.text, "4")
+	assert_eq(screen.level_value.text, "5")
+	assert_eq(screen.location_label.text, "Un seuil vérifié")
+	assert_eq(screen.hero_status_label.text, "PASSE-RIVE  ·  0 / 126 PV")
+	assert_eq(screen.seed_label.text, "DIFFICULTÉ · FACILE")
+	assert_eq(screen.epitaph_label.text, "La traversée s’arrête ici.")
+	result.victory = true
+	screen._apply_result(result)
+	assert_eq(screen.result_label.text, "LA TRAVERSÉE EST ACCOMPLIE")
+	assert_eq(screen.register_label.text, "CATABASE · VICTOIRE")
+	assert_true(screen.new_attempt_button.visible)
+
+
+func test_result_navigation_locks_both_actions_and_recovers_with_feedback() -> void:
+	var screen := ResultScene.instantiate()
+	add_child_autofree(screen)
+	screen._apply_result({"is_catabase": true})
+	assert_true(screen._begin_navigation())
+	assert_true(screen.is_navigation_pending())
+	assert_true(screen.new_attempt_button.disabled)
+	assert_true(screen.menu_button.disabled)
+	assert_false(screen._begin_navigation(), "Double-click cannot schedule another transition")
+	screen._recover_navigation("Réessayez.")
+	assert_false(screen.is_navigation_pending())
+	assert_false(screen.new_attempt_button.disabled)
+	assert_false(screen.menu_button.disabled)
+	assert_true(screen.navigation_feedback.visible)
+	assert_eq(screen.navigation_feedback.text, "Réessayez.")
+	screen._focus_primary_action()
+	assert_eq(screen.get_viewport().gui_get_focus_owner(), screen.new_attempt_button)
+
+
+func test_legacy_screen_has_only_menu_and_reduced_motion_stops_entry_fade() -> void:
+	var screen := ResultScene.instantiate()
+	add_child_autofree(screen)
+	screen._apply_result({"victory": false, "run_name": "Laboratoire"})
+	assert_false(screen.new_attempt_button.visible)
+	assert_false(screen.stats.visible)
+	assert_eq(screen.result_label.text, "Défaite")
+	assert_eq(screen.menu_button.text, "Retour au menu principal")
+	screen._focus_primary_action()
+	assert_eq(screen.get_viewport().gui_get_focus_owner(), screen.menu_button)
+	screen._on_reduced_motion_changed(true)
+	assert_eq(screen.panel.modulate.a, 1.0)
+	assert_true(screen._entry_tween == null or not screen._entry_tween.is_running())

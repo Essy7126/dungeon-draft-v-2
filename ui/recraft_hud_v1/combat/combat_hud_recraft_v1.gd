@@ -58,6 +58,8 @@ const SPELL_SHORTCUT_KEYS := [
 const ITEM_SLOT_COUNT := 4
 const BAR_MODE_SPELL := "spell"
 const BAR_MODE_ITEM := "item"
+const CARD_HUD_HEIGHT := 202.0
+var _card_hand_view: Control
 
 enum RunUIMode {
 	COMBAT,
@@ -346,9 +348,9 @@ func _configure_bar_tabs() -> void:
 				tab_style.content_margin_left = 8.0
 				tab_style.content_margin_right = 8.0
 				tab_button.add_theme_stylebox_override(style_name, tab_style)
-	_show_spells_button.text = "SORTS" if premium else "▲"
+	_show_spells_button.text = "CARTES" if is_instance_valid(_card_hand_view) else "SORTS" if premium else "▲"
 	_show_items_button.text = "OBJETS" if premium else "▼"
-	_show_spells_button.tooltip_text = "Afficher les sorts — raccourcis indiqués sur chaque icône."
+	_show_spells_button.tooltip_text = "Afficher la main de cartes." if is_instance_valid(_card_hand_view) else "Afficher les sorts — raccourcis indiqués sur chaque icône."
 	_show_items_button.tooltip_text = "Afficher les objets — raccourcis 1 à 4."
 	_apply_bar_mode()
 
@@ -451,6 +453,7 @@ func bind_combat_context(context: Node) -> void:
 
 
 func unbind_combat_context() -> void:
+	clear_card_hand()
 	_disconnect_context_actions()
 	if (
 		is_instance_valid(_combat_context)
@@ -749,11 +752,39 @@ func get_active_bar_mode() -> String:
 	return _active_bar_mode
 
 
+func mount_card_hand(view: Control) -> void:
+	clear_card_hand()
+	_card_hand_view = view
+	_spell_section.add_child(view)
+	_show_spells_button.text = "CARTES"
+	_show_spells_button.tooltip_text = "Afficher la main de cartes."
+	_set_active_bar_mode(BAR_MODE_SPELL)
+	_apply_layout_metrics()
+
+
+func clear_card_hand() -> void:
+	if not is_instance_valid(_card_hand_view):
+		_card_hand_view = null
+		return
+	_card_hand_view.get_parent().remove_child(_card_hand_view)
+	_card_hand_view.queue_free()
+	_card_hand_view = null
+	if is_node_ready():
+		_show_spells_button.text = "SORTS" if _premium_skin_active() else "▲"
+		_show_spells_button.tooltip_text = "Afficher les sorts — raccourcis indiqués sur chaque icône."
+		_basic_attack_host.visible = _attack_grouped_with_spells
+		_apply_bar_mode()
+		_apply_layout_metrics()
+
+
 func _apply_bar_mode() -> void:
 	if not is_node_ready():
 		return
 	var items_visible := _active_bar_mode == BAR_MODE_ITEM
-	_spell_slots_center.visible = not items_visible
+	_spell_slots_center.visible = not items_visible and not is_instance_valid(_card_hand_view)
+	if is_instance_valid(_card_hand_view):
+		_card_hand_view.visible = not items_visible
+		_basic_attack_host.visible = false
 	_item_slots_center.visible = items_visible
 	# Une sélection n'est pas une indisponibilité : les onglets premium gardent
 	# leur focus et un état enfoncé explicite, sans aspect désactivé.
@@ -2525,6 +2556,53 @@ func _apply_layout_metrics() -> void:
 	_apply_bar_toggle_layout(viewport_width)
 	_update_spell_section_geometry()
 	_layout_debug_overlay.set_debug_enabled(show_layout_debug)
+	if is_instance_valid(_card_hand_view):
+		_apply_card_hand_layout(viewport_width)
+
+
+func _apply_card_hand_layout(viewport_width: float) -> void:
+	# A variant of the real action bar, not another HUD layered on top of it.
+	var width := minf(1720.0, viewport_width - 24.0)
+	var left := (viewport_width - width) * 0.5
+	var identity := 226.0
+	var commands := 174.0
+	var center := width - identity - commands - 24.0
+	_hud_band.offset_top = -CARD_HUD_HEIGHT - 8.0
+	_hud_band.offset_bottom = -8.0
+	_set_control_rect(_material_surface, Rect2(left, 0, width, CARD_HUD_HEIGHT))
+	var modules: Array[Rect2] = [Rect2(0, 0, identity, CARD_HUD_HEIGHT), Rect2(identity + 8, 0, center + 8, CARD_HUD_HEIGHT), Rect2(width - commands, 0, commands, CARD_HUD_HEIGHT)]
+	_material_surface.configure(visual_skin, modules)
+	_portrait_view.apply_layout(64.0 / METRICS.PORTRAIT_SIZE)
+	_hp_bar.apply_calibrated_layout(Vector2(124, 24), 1.0)
+	_character_info.custom_minimum_size.x = 124
+	_character_row.add_theme_constant_override("separation", 6)
+	_info_label.add_theme_font_size_override("font_size", 15)
+	_set_control_rect(_character_anchor, Rect2(left + 8, 10, identity - 16, 90))
+	_ap_badge.apply_tactical_layout(true, 0.85)
+	_mp_badge.apply_tactical_layout(true, 0.85)
+	_set_control_rect(_action_resources_anchor, Rect2(left + 12, 106, identity - 24, 32))
+	_move_btn.set_compact_icon_mode(false)
+	_move_btn.apply_layout(Vector2(identity - 32, 36), 14)
+	_set_control_rect(_move_action_host, Rect2(left + 16, 150, identity - 32, 36))
+	_set_control_rect(_spell_anchor, Rect2(left + identity + 12, 10, center, 182))
+	_set_control_rect(_card_hand_view, Rect2(0, 0, center, 182))
+	_basic_attack_host.visible = false
+	_spell_slots_center.visible = false
+	_set_control_rect(_item_slots_center, Rect2(0, 34, center, 134))
+	_turn_content.custom_minimum_size = Vector2(commands - 12, 140)
+	_end_btn.apply_layout(Vector2(156, 56), 16)
+	_set_control_rect(_end_btn, Rect2(3, 6, 156, 56))
+	_utility_dock.add_theme_constant_override("separation", 4)
+	for button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
+		button.custom_minimum_size = Vector2(34, 34)
+		button.add_theme_constant_override("icon_max_width", 30)
+	_set_control_rect(_utility_dock, Rect2(7, 83, 148, 34))
+	_set_control_rect(_turn_anchor, Rect2(left + width - commands + 6, 50, commands - 12, 140))
+	for button in [_show_spells_button, _show_items_button]:
+		button.custom_minimum_size = Vector2(78, 30)
+		button.add_theme_font_size_override("font_size", 13)
+	_set_control_rect(_bar_toggle_anchor, Rect2(left + width - commands + 6, 12, commands - 12, 30))
+	_apply_context_feedback_layout(viewport_width, CARD_HUD_HEIGHT + 8)
 
 
 func _apply_bar_toggle_layout(viewport_width: float) -> void:

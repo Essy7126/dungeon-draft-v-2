@@ -83,7 +83,7 @@ func _build_ui() -> void:
 
 func build_spell_buttons(unit) -> void:
 	_clear_spell_buttons()
-	if unit != null:
+	if unit != null and CatabaseCards.for_actor(unit) == null:
 		for spell in unit.spells:
 			if spell != null:
 				_add_spell_button(unit, spell)

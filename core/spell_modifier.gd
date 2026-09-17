@@ -65,6 +65,11 @@ func moves_caster_during_cast(_caster, _spell) -> bool:
 ## Contrainte de ciblage propre à un modificateur. Elle est évaluée avant le
 ## lancement visuel et avant toute dépense, puis réutilisée pour les cases
 ## ciblables afin que gameplay et interface restent alignés.
+## Target-independent prerequisite, shared by action buttons and actual casts.
+func get_preparation_failure_reason(_caster, _spell, _grid) -> StringName:
+	return &""
+
+
 func get_target_cell_failure_reason(
 		_caster,
 		_spell,

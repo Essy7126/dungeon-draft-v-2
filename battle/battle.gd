@@ -16,6 +16,9 @@ signal _mastery_choice_finished
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
+const TacticalTelegraphLayerScript = preload(
+	"res://battle/tactical_telegraph_layer.gd"
+)
 const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
 const ArenaFeatureRendererScript = preload(
 	"res://battle/arena_feature_renderer.gd"
@@ -146,6 +149,7 @@ var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
 var _movement_path_preview = null
+var _tactical_telegraphs: TacticalTelegraphLayer = null
 var _arena_tile_parent: Node2D = null
 var arena_dynamic_surface_layer: Node2D = null
 var terrain_surface_visual_adapter: DynamicSurfaceVisualAdapter = null
@@ -404,6 +408,7 @@ func _setup_view() -> void:
 	grid_view.cell_hovered.connect(_on_cell_hovered)
 	_unit_view_parent = _find_unit_view_parent()
 	_setup_movement_path_preview()
+	_setup_tactical_telegraphs()
 
 
 func _setup_movement_path_preview() -> void:
@@ -429,6 +434,22 @@ func _setup_movement_path_preview() -> void:
 func _clear_movement_path_preview() -> void:
 	if is_instance_valid(_movement_path_preview):
 		_movement_path_preview.clear_path()
+
+
+func _setup_tactical_telegraphs() -> void:
+	if grid_view == null:
+		return
+	if is_instance_valid(_tactical_telegraphs):
+		_tactical_telegraphs.setup(grid_view, grid)
+		return
+	_tactical_telegraphs = TacticalTelegraphLayerScript.new() as TacticalTelegraphLayer
+	_tactical_telegraphs.name = "TacticalTelegraphs"
+	# A child of the grid view inherits every painted/isometric transform. The
+	# positive Z keeps warnings above terrain and units while CanvasLayer HUDs
+	# remain on top.
+	_tactical_telegraphs.z_index = 20
+	grid_view.add_child(_tactical_telegraphs)
+	_tactical_telegraphs.setup(grid_view, grid)
 
 
 func _setup_arena_visuals() -> void:
@@ -1073,6 +1094,11 @@ func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
+	if GameManager.expedition != null and GameManager.expedition.cards != null:
+		GameManager.expedition.cards.begin_combat()
+		var hand_view := preload("res://ui/expedition/catabase_card_hand.gd").new()
+		hand_view.battle = self
+		add_child(hand_view)
 	if GameManager.expedition != null and not GameManager.expedition.build.starting_selection.is_empty():
 		var marks := preload("res://battle/catabase_build_marks.gd").new()
 		marks.battle = self
@@ -1358,6 +1384,8 @@ func _on_turn_started(unit: Unit) -> void:
 		return
 
 	# 6. Déroulement normal.
+	var cards = CatabaseCards.for_actor(unit)
+	if cards != null: cards.start_turn()
 	if is_instance_valid(_challenge_battle):
 		_challenge_battle.start_turn(unit)
 	_update_active_highlight(unit)
@@ -1511,6 +1539,8 @@ func _finish_active_turn(reason: StringName) -> bool:
 	if unit == null:
 		return false
 	_turn_end_committed = true
+	var cards = CatabaseCards.for_actor(unit)
+	if cards != null: cards.end_turn()
 	_begin_outcome_deferral()
 	ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 	EventBus.turn_ended.emit(unit, reason)
@@ -2276,6 +2306,8 @@ func _spell_cast_rejection_reason(
 		reason: StringName
 	) -> String:
 	match reason:
+		&"card_not_in_hand":
+			return "Cette technique demande une carte présente dans votre main."
 		&"pa":
 			return "PA insuffisants pour utiliser cette capacité."
 		&"cooldown":
@@ -2733,10 +2765,14 @@ func _exit_tree() -> void:
 	_evolution_queue.clear()
 	if is_instance_valid(_spell_impact_scheduler):
 		_spell_impact_scheduler.cancel_all()
+	if is_instance_valid(_tactical_telegraphs):
+		_tactical_telegraphs.dispose()
 
 
 func _begin_battle_shutdown() -> void:
 	_deferred_spell_reaction_context = null
+	if is_instance_valid(_tactical_telegraphs):
+		_tactical_telegraphs.dispose()
 	if _mastery_adapter != null:
 		_mastery_adapter.dispose()
 		_mastery_adapter = null
@@ -2922,8 +2958,7 @@ func _queue_local_battle_outcome_presentation(victory: bool) -> void:
 func _on_final_battle_frame_drawn(victory: bool) -> void:
 	if not is_inside_tree() or not _battle_over:
 		return
-	if victory:
-		GameManager.capture_battle_outcome_background()
+	GameManager.capture_battle_outcome_background()
 	_show_end_screen(victory)
 
 

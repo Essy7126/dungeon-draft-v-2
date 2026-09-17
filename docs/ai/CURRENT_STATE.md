@@ -1,5 +1,85 @@
 # État courant vérifié du projet
 
+## Cartes intégrées au HUD dessiné — WORKTREE_CANDIDATE, 2026-09-16
+
+Base vérifiée `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + travaux locaux conservés.
+La main est maintenant montée dans `SpellSection` du HUD persistant : portrait,
+PV, PA/PM, Déplacer, Fin de tour, objets et navigation restent les contrôles communs.
+Le dock séparé de l'itération précédente est remplacé par cette présentation.
+Hauteur 202 px au lieu de 252 px ; cadres dessinés bronze/émeraude communs à
+la main et à la collection/butin. Les actions et l'inspection ne recouvrent plus
+la barre dans les fixtures 720p/1080p. Aucune valeur d'équilibrage changée.
+Dernière passe : 26 captures, 332 contrôles UI réussis, zéro erreur moteur,
+avec cycle réel joueur/IA/joueur. Régressions ciblées, fichiers, assets et limites :
+[rapport visuel](CARDS_VISUAL_ITERATION_2026-09-16.md).
+
+## Itération Cartes après audit — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02`, travaux locaux conservés.
+Les provisions Cartes donnent maintenant 20 oboles et 5 % de soin ; les
+provisions Classiques restent à 40. La recomposition refuse les appels hors
+activation. La main consulte les prérequis du même résolveur que le lancer.
+Elle remplace le HUD de sorts vide, réserve l'espace du plateau et conserve
+l'accès aux objets/navigation/fin de tour. La réserve regroupe les copies par
+famille ; chaque nouvelle famille possède son remplacement local et un aperçu
+des effets. Le butin s'ouvre sur les cartes reçues, pas sur les choix du bas.
+
+Résultats, fichiers, expériences rejetées et limites :
+[itération et régressions](CARDS_ITERATION_2026-09-16.md).
+Les taux des bots ne certifient toujours ni difficulté ni durée humaines.
+
+## Catabase Cartes parallèle — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02`, modifications locales.
+Le titre propose Classique/Cartes, avec deux checkpoints indépendants.
+Le mode Cartes utilise les règles de combat existantes avec deck/main,
+réserve, drops acquis, revente et stocks marchands ; le classique conserve
+ses règles de récompense. Mort et nouvelle tentative restent dans la variante.
+Ni difficulté humaine ni durée cible certifiées par les tests automatiques.
+Contrat, fichiers, preuves et limites : [run cartes](CARDS_RUN_IMPLEMENTATION_NOTES.md).
+Ce bloc ne déclare pas les audits historiques CURRENT au HEAD ci-dessus.
+
+## Mort Catabase — WORKTREE_CANDIDATE, 2026-09-15
+
+Base vérifiée : `main@40ea393dcd539c63f2aa7f024271524f65ade399` ; modifications
+locales non commitées. Ce point ne revalide pas les anciens audits ci-dessous.
+
+Le bilan de fin Catabase ne renvoie plus au refuge historique et au trio.
+« Nouvelle tentative » ouvre la sélection publique Catabase ; « Menu principal »
+ouvre le titre. La reprise de la tentative morte est supprimée avant le bilan.
+En cas d'échec de cette suppression, titre/hub/abandon ne peuvent pas contourner
+la finalisation. L'écran utilise le dernier plateau et les faits de la route :
+lieu, profondeur, étapes franchies, combats remportés, niveau et difficulté.
+L'identité de Passe-rive est conservée. Les animations réduites sont respectées.
+Aucune valeur d'équilibrage ni mécanique de mort nouvelle n'est introduite.
+
+Preuves et limites des tests et captures :
+[correctif et écran de mort](CATABASE_DEATH_FLOW_2026-09-15.md).
+
+## Catabase r6 — WORKTREE_CANDIDATE, vérification du 2026-09-14
+
+Base Git : `main@055584c37f60d99b2f87bdbb4d670895bf8ef2b2` ; modifications
+locales non commitées. Ce point n'actualise pas les preuves historiques ci-dessous.
+
+La nouvelle route est la valeur par défaut : 12 combats sur 20 profondeurs,
+trois élites et trois refuges. Normal/Facile est sélectionnable au départ et
+sauvegardé. Les anciennes routes r2–r5 restent restaurables. Les rencontres
+utilisent des profils fixes indépendants du héros et les effets des six armes
+progressent avec le build. Les transactions de halte sont uniques ; XIX ne
+donne aucun soin. La durée humaine 30–45 min n'est pas encore certifiée.
+
+Les attaques préparées ont maintenant un indicateur raccordé au plateau,
+avec un contre-jeu affiché sur deux lignes et contrôlé à 720p/1080p. Les quatre
+haltes interactives existantes suivent leur identité dans la nouvelle route ;
+l'étal IV conserve sa salle propre. Douze runs automatisées et trois
+contre-tests ont été exécutés, sans en déduire un taux de victoire humain.
+
+État des tests et limites actualisés dans le
+[suivi d'intégration](CATABASE_R6_WORKLOG_2026-09-14.md), qui distingue
+contrats simulés et combats réellement exécutés. Le
+[rapport d'audit et rééquilibrage](CATABASE_R6_AUDIT_RUNS_2026-09-14.md)
+expose les résultats, les régressions historiques et les critères encore ouverts.
+
 > Cinquième carte intégrée le 6 septembre 2026 : [Le Temple du Serment Noir](../maps/black_oath_temple_v1.md) prolonge Catabase après le Gué du Léthé. Temple grec noir dessiné : 152 dalles, nef libre de six cases sur quatorze, huit bases de colonnes et deux fosses ; 144 cases praticables connectées. Cadrage local borné à la peinture pour garder le plateau visible avec l'inspecteur compact, zoom et proportions conservés. Tests ciblés : 38/38, 10 614 assertions. Deux parcours GPU finaux 1920 × 1080 et 1200 × 896 : cinq salles/actions, quatre transitions et dix captures par format ; proportions comparées et captures inspectées. Les salles I–IV, leurs rencontres et les profils économie/progression conservent leurs SHA-256. Le catalogue Studio passe désormais ; l'échec de portrait signalé dans le bilan IV ci-dessous est historique. [Pipeline actualisée](../maps/registered_terrain_pipeline.md), preuves et limites dans la fiche V.
 
 

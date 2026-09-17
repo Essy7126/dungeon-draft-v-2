@@ -1,5 +1,11 @@
 # Léthé II — adaptation de la map existante
 
+- Dernier retour utilisateur (11 septembre 2026) : eau insatisfaisante et effets
+  torche/lampe imperceptibles. Le PASS GPU ci-dessous reste uniquement technique.
+  Recherche primaire Valve/Godot consignée dans
+  `docs/maps/lethe_shader_research_2026-09-11.md`. Reprise visuelle à faire, une
+  composante à la fois ; aucune nouvelle implémentation dans cette recherche.
+
 - Cible confirmée par l'utilisateur : Les traces du Léthé, étape II,
   `data/rooms/catabase_routes/route_f51a86b714b9/room.tres`.
 - Une seule map adaptée. Le tronçon exclusif de cinq escales reste à construire
@@ -30,3 +36,20 @@
 - Vérification finale PASS : artifacts/dev/20260911-161538-lethe-traces-review-759df23c, deux résolutions, géométrie/support/matériaux/clics/déplacement/garde/cadrage et comparaison inter-résolutions. Captures 1080p après garde et 1200x896 inspectées : barque entière, pas d'aplat noir. Test après préparation PASS 3/15940 : artifacts/dev/20260911-162029-test-test_unit_test_catabase_route_layouts.gd-6eafd9c6. Aperçu jouable ouvert via open.ps1, rapport 20260911-162332-lethe-traces-play-4a79ad61. Métadonnées d'import hors périmètre sauvegardées et retirées.
 
 - Shaders eau/torche/lanterne : PASS, rapport 20260911-165646-lethe-traces-review-ccb4bc95. 8 images GPU, eau 1932/1935 échantillons modifiés, torche 543/570, lanterne 509/510, sol 0/84. Horloge et gel en mouvement réduit validés. Oracles de combat et comparaison des proportions PASS aux deux résolutions. Capture motion-04 inspectée. Room et manifeste géométrique restent inchangés. Premier essai échoué car contrôleur placé dans YSortedWorld ; corrigé par layer=foreground conformément au contrat de décor.
+
+- Reprise implémentée : water_flow.json décrit le contour aquatique et dix
+  exclusions ; courant RG et masque B construits au chargement. Deux phases
+  déplacent la peinture, sans nouvelles caustiques. Pied de flamme fixe,
+  verre/halo/reflet de lanterne modulés séparément.
+- Premier contrôle 20260911-174220-lethe-traces-review-e00b1f45 échoué : témoin
+  de mur hors écran (zéro échantillon). Témoin replacé dans une zone visible.
+- QA GPU finale PASS : 20260911-175102-lethe-traces-review-063c4286,
+  1920x1080 et 1200x896. 48 états ; sol/coque/mur témoins stables,
+  horloge et mouvement réduit valides. Captures fixes inspectées.
+- Processus, limites et réutilisation documentés dans
+  docs/maps/painted_combat_effects_pipeline.md. Pas de validation artistique
+  utilisateur déclarée, pas de benchmark ni de test d'export.
+- Import et test de parcours final PASS : 3 tests, 15940 assertions,
+  20260911-175909-test-test_unit_test_catabase_route_layouts.gd-ea2f8f47.
+  Métadonnées produites par l'import sauvegardées sous
+  artifacts/dev/lethe-shader-import-backup, exclues de la livraison.

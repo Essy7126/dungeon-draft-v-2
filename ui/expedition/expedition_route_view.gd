@@ -261,9 +261,15 @@ func _update_destination() -> void:
 	_destination_icon.visible = _destination_icon.texture != null
 	_destination_title.text = str(selected.get("title", "Destination inconnue"))
 	_destination_meta.text = "SEUIL %02d  ·  %s" % [int(selected.get("depth", 0)), str(TYPE_NAMES.get(kind, "Destination inconnue")).to_upper()]
+	if bool(selected.get("preparation_only", false)):
+		_destination_meta.text = "SEUIL %02d  ·  PRÉPARATION" % int(selected.depth)
 	_destination_hint.text = str(selected.get("hint", "Une part du chemin reste à découvrir."))
 	var reward := str(selected.get("reward", ""))
 	_destination_promise.text = "Promesse : " + str(REWARD_NAMES.get(reward, "À découvrir")) if not reward.is_empty() else ""
+	if bool(selected.get("preparation_only", false)):
+		_destination_promise.text = "Dernier réglage du kit · aucun soin ni objet offert."
+	elif int(selected.get("balance_revision", 0)) >= 1 and kind == "lore" and int(selected.get("depth", 0)) >= 14:
+		_destination_promise.text = "Promesse : une fourniture de garde ou de mobilité, au choix."
 	if _session != null:
 		var consequence := str(_session.route.get_choice_preview(_selected_node_id).get("summary", ""))
 		if not consequence.is_empty():

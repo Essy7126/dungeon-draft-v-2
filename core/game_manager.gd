@@ -107,6 +107,7 @@ var _cleared_room_emitted := false
 var _reduced_motion_enabled := false
 var expedition: ExpeditionSession = null
 var expedition_save_path: String = ExpeditionSaveService.SAVE_PATH
+var selected_run_variant := "classic"
 const EXPEDITION_SCREEN_PATH := "res://ui/expedition/ExpeditionScreen.tscn"
 const PAINTED_HALT_SCREEN_PATH := "res://hub/painted_halt/ExpeditionHalt.tscn"
 const PAINTED_HALT_CATALOG := preload("res://core/expedition/painted_halt_catalog.gd")
@@ -285,7 +286,7 @@ func start_configured_run() -> bool:
 	_threshold_entry_pending = false
 	if selected_run.catabase_route_enabled:
 		_next_run_start_room_index = 0
-		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants, true, true)
+		return start_expedition(_resolve_run_seed(selected_run) & 0x7fffffff, selected_run.hero_visual_variants, true, true, "normal", selected_run_variant == "cards")
 	start_run(selected_run)
 	return run_active
 
@@ -1734,7 +1735,7 @@ func _complete_battle_outcome_after_delay(
 	else:
 		on_battle_lost()
 
-# Appelé par battle quand le joueur GAGNE le combat.
+# Fige le dernier plateau avant les écrans de victoire ou de défaite.
 func capture_battle_outcome_background() -> bool:
 	if _post_combat_background_captured_for_outcome:
 		return _post_combat_background_texture != null
@@ -1868,7 +1869,36 @@ func _record_run_result(victory: bool) -> void:
 		run_seed,
 		_active_run_data != null or run_seed != 0,
 		hero_states,
+		_expedition_result_facts(),
 	)
+
+
+func _expedition_result_facts() -> Dictionary:
+	if expedition == null:
+		return {}
+	var route := expedition.route
+	var current := route.get_current_node()
+	var depth_total := 0
+	var combats_won := 0
+	for node: Dictionary in route.nodes:
+		depth_total = maxi(depth_total, int(node.get("depth", 0)))
+		if str(node.id) in route.completed_node_ids \
+				and ExpeditionRouteCatalog.is_combat(str(node.kind)):
+			combats_won += 1
+	var hero_name := expedition.character.unit.unit_name
+	if _active_run_data != null \
+			and str(_active_run_data.hero_visual_variants.get("achilles", "")) == "passe_rive":
+		hero_name = "Passe-rive"
+	return {
+		"depth_reached": int(current.get("depth", 0)),
+		"depth_total": depth_total,
+		"depths_cleared": route.completed_node_ids.size(),
+		"combats_won": combats_won,
+		"hero_level": expedition.character.champion_progression.current_level,
+		"difficulty_id": route.difficulty_id,
+		"featured_hero_name": hero_name,
+		"reached_room_name": str(current.get("title", "")),
+	}
 
 func get_last_run_result() -> Dictionary:
 	return _last_run_result.duplicate(true)
@@ -1878,7 +1908,23 @@ func return_to_title() -> void:
 
 
 func return_to_hub() -> void:
+	# Old result screens/signals must never reopen the archived trio after Catabase.
+	if not run_active and bool(_last_run_result.get("is_catabase", false)):
+		request_new_catabase_attempt()
+		return
 	_request_saved_exit("return_to_hub")
+
+
+## A new attempt starts at the public Catabase selection, never at a legacy hub
+## or by reusing a dead hero/build. A finished result is consumed once.
+func request_new_catabase_attempt() -> bool:
+	if run_active or not bool(_last_run_result.get("is_catabase", false)) \
+			or bool(_expedition_save_status.get("pending", false)):
+		return false
+	cancel_expedition_replacement()
+	cleanup_run_state()
+	_request_scene_change(CHARACTER_SELECTION_SCREEN_PATH)
+	return true
 
 
 func request_return_to_title() -> bool:
@@ -1886,6 +1932,8 @@ func request_return_to_title() -> bool:
 
 
 func request_abandon_run() -> bool:
+	if _pending_expedition_action.begins_with("finish_"):
+		return false
 	if expedition != null and not ExpeditionSaveService.remove_snapshot(expedition_save_path):
 		_pending_expedition_action = "abandon"
 		_set_expedition_save_status(false, "abandon")
@@ -1897,6 +1945,9 @@ func request_abandon_run() -> bool:
 
 
 func _request_saved_exit(operation: String) -> bool:
+	# A terminal deletion failure cannot be turned into a save of a dead run.
+	if _pending_expedition_action.begins_with("finish_"):
+		return false
 	if expedition != null and run_active:
 		_pending_expedition_action = operation
 		if not save_expedition():
@@ -2241,9 +2292,22 @@ func set_champion_reaction_priority(group: StringName, ordered_effect_ids: Array
 
 
 # Catabase orchestration stays at destination boundaries, outside combat.
-func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false) -> bool:
-	if not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
+func select_run_variant(variant: String) -> bool:
+	if run_active or variant not in ["classic", "cards"]: return false
+	cancel_expedition_replacement()
+	selected_run_variant = variant
+	expedition_save_path = ExpeditionSaveService.CARDS_SAVE_PATH if variant == "cards" else ExpeditionSaveService.SAVE_PATH
+	return true
+
+
+func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false, difficulty_id: String = "normal", cards_mode := false) -> bool:
+	if cards_mode and not prepare_loadout: return false
+	if difficulty_id not in ["normal", "easy"] or not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
+	var variant := "cards" if cards_mode else "classic"
+	var variant_path := ExpeditionSaveService.CARDS_SAVE_PATH if cards_mode else ExpeditionSaveService.SAVE_PATH
+	if expedition_save_path in [ExpeditionSaveService.SAVE_PATH, ExpeditionSaveService.CARDS_SAVE_PATH] and expedition_save_path != variant_path:
+		if not select_run_variant(variant): return false
 	var fingerprint := _current_replacement_fingerprint()
 	if _has_expedition_to_replace() and _replacement_consent != fingerprint:
 		last_restore_error = &"EXPEDITION_REPLACEMENT_CONFIRMATION_REQUIRED"
@@ -2258,7 +2322,13 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 		return false
 	cancel_expedition_replacement()
 	expedition = ExpeditionSession.new()
-	expedition.initialize(get_character_state(&"achilles"), run_seed)
+	expedition.initialize(get_character_state(&"achilles"), run_seed, difficulty_id)
+	selected_run_variant = variant
+	if cards_mode:
+		expedition.cards = CatabaseCards.new()
+		expedition.cards.bind(expedition)
+		expedition.card_inventory = run_inventory
+	CatabasePreparationCatalog.contextualize_item_descriptions(item_catalog, expedition.route.get_balance_revision())
 	expedition.challenges.enabled = challenges_enabled
 	last_restore_error = &""
 	if prepare_loadout:
@@ -2345,6 +2415,7 @@ func purchase_expedition_technique(node_id: String) -> Dictionary:
 		return {"success": false, "reason": "Le kit est engagé pour ce combat."}
 	var result: Dictionary = expedition.build.purchase(node_id)
 	if bool(result.get("success", false)):
+		if expedition.cards != null: expedition.cards.sync_learned()
 		champion_build_changed.emit(&"achilles")
 		_save_expedition_transaction(result)
 	return result
@@ -2353,8 +2424,12 @@ func purchase_expedition_technique(node_id: String) -> Dictionary:
 func undo_expedition_technique() -> Dictionary:
 	if expedition == null or not expedition.is_editable():
 		return {"success": false, "reason": "Le kit est engagé pour ce combat."}
+	var previous := expedition.build.to_snapshot()
 	var result: Dictionary = expedition.build.undo_last_purchase()
 	if bool(result.get("success", false)):
+		if expedition.cards != null and not expedition.cards.reconcile_learned():
+			expedition.build.restore_snapshot(previous)
+			return {"success": false, "reason": "Retirez d’abord du deck la carte issue de cette maîtrise."}
 		champion_build_changed.emit(&"achilles")
 		_save_expedition_transaction(result)
 	return result
@@ -2373,6 +2448,7 @@ func choose_expedition_capacity(option: String) -> Dictionary:
 		return {"success": false, "reason": "Choix indisponible."}
 	var result: Dictionary = expedition.build.choose_depth_eight(option)
 	if bool(result.get("success", false)):
+		if expedition.cards != null: expedition.cards.sync_learned()
 		_save_expedition_transaction(result)
 	return result
 
@@ -2419,6 +2495,10 @@ func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
 	_connect_inventory_signal()
 	_relic_runtime_service.initialize(run_inventory, item_catalog, heroes, _active_run_data.action_classification_catalog)
 	expedition = prepared.session
+	selected_run_variant = "cards" if expedition.cards != null else "classic"
+	if expedition_save_path in [ExpeditionSaveService.SAVE_PATH, ExpeditionSaveService.CARDS_SAVE_PATH]:
+		expedition_save_path = ExpeditionSaveService.CARDS_SAVE_PATH if expedition.cards != null else ExpeditionSaveService.SAVE_PATH
+	CatabasePreparationCatalog.contextualize_item_descriptions(item_catalog, expedition.route.get_balance_revision())
 	_expedition_boundary_snapshot = snapshot.duplicate(true)
 	for node_id in expedition.route.completed_node_ids:
 		for node in expedition.route.nodes:
@@ -2435,8 +2515,20 @@ func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
 func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 	if path == ExpeditionSaveService.SAVE_PATH:
 		path = expedition_save_path
-	if not restore_expedition_snapshot(ExpeditionSaveService.read_snapshot(path)):
+	var snapshot := ExpeditionSaveService.read_snapshot(path)
+	if path in [ExpeditionSaveService.SAVE_PATH, ExpeditionSaveService.CARDS_SAVE_PATH]:
+		var session_data: Variant = snapshot.get("session", {})
+		if not session_data is Dictionary:
+			last_restore_error = &"INVALID_EXPEDITION_SAVE"
+			return false
+		var is_cards: bool = session_data.has("cards_run")
+		if is_cards != (path == ExpeditionSaveService.CARDS_SAVE_PATH):
+			last_restore_error = &"INVALID_EXPEDITION_SAVE"
+			return false
+	if not restore_expedition_snapshot(snapshot):
 		return false
+	expedition_save_path = path
+	selected_run_variant = "cards" if expedition.cards != null else "classic"
 	if expedition.route.phase == "combat":
 		expedition.build.begin_encounter("catabase:%d:%s" % [run_seed, expedition.route.current_node_id])
 		start_next_battle()
@@ -2446,17 +2538,22 @@ func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 
 
 ## Presentation replacement only: keep the authored route identity/fingerprint.
-## The central merchant of depth IV is d04_1 for every seeded lane inversion.
+## Historical routes use d04_1; r6 keeps the place across seeded lane inversions.
 func is_merchant_hall_active() -> bool:
 	if expedition == null or not run_active or expedition.route.phase != "reward":
 		return false
 	var node := expedition.route.get_current_node()
+	if expedition.route.get_balance_revision() >= 1:
+		return str(node.get("halt_art_key", "")) == "etal_passeur" \
+			and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
 	return str(node.get("id", "")) == "d04_1" \
 		and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
 
 
 func get_painted_halt_manifest() -> String:
 	if expedition == null or not run_active or expedition.route.phase != "reward":
+		return ""
+	if bool(expedition.route.get_current_node().get("preparation_only", false)):
 		return ""
 	# Mandatory progression/capacity choices remain on the expedition screen.
 	if HALT_FLOW.required_step(expedition) != "hub":

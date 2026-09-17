@@ -178,7 +178,9 @@ func test_starting_kit_can_clear_packs_and_initial_volley_is_bounded() -> void:
 
 func test_tutorial_bronze_champion_and_boss_keep_authored_cast_stats_and_spawn_rules() -> void:
 	for seed_value: int in SEEDS:
-		for node: Dictionary in ExpeditionRouteCatalog.create_nodes(seed_value):
+		# The bronze champion at depth 7 belongs to revision 5. Revision 6 moves
+		# its first elite to depth 6 and has dedicated fixed-balance contracts.
+		for node: Dictionary in ExpeditionRouteCatalog.create_nodes(seed_value, 5):
 			if int(node.depth) not in [1, 7, 20]: continue
 			var source := ExpeditionMapCatalog.get_room(int(node.room_index)).get_encounter_for_wave(0)
 			var actual := ExpeditionRunFactory.make_room(node, seed_value).encounter_definition

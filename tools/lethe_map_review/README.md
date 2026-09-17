@@ -48,6 +48,17 @@ contrôles de mouvement/garde ne constituent pas un playtest d'équilibrage ni u
 bataille complète gagnée. Les propositions v1/v2 sous `docs/maps/concepts/`
 restent des archives artistiques, pas la peinture intégrée.
 
-## Eau et lumières
-Le shader local living.gdshader anime le courant et les reflets turquoise, avec une réserve conservatrice pour la zone de combat et la coque. La torche et la lanterne reçoivent une lueur chaude modulée lentement, sans déformation UV. Living.tscn pilote une horloge qui respecte la réduction des animations. verify.ps1 mesure huit images GPU : eau, torche et lanterne mobiles, sol témoin stable, gel de l'horloge vérifié.
+## Reprise des effets du 11 septembre 2026
+
+L'eau utilise désormais `water_flow.json` (contour, exclusions et courant),
+un déplacement des touches peintes en deux phases et une protection des berges.
+La torche anime sa flamme avec un pied fixe. La lanterne module son verre,
+son halo et son reflet sans déplacer son cadre. L'horloge respecte toujours
+la réduction des animations. Le reviewer capture maintenant 48 états sur
+9,4 secondes et contrôle aussi des points fixes sur la coque et le mur.
+
+Voir la [pipeline détaillée](../../docs/maps/painted_combat_effects_pipeline.md).
+La reprise passe la QA GPU aux deux résolutions (rapport
+`20260911-175102-lethe-traces-review-063c4286`). Captures fixes inspectées ;
+acceptation artistique de l'animation par l'utilisateur encore distincte.
 

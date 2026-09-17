@@ -1,5 +1,151 @@
 # Problèmes connus et suivis
 
+## Présentation Cartes — WORKTREE_CANDIDATE, 2026-09-16
+
+Base vérifiée : `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- CORRIGÉ : dock séparé et commandes répétées ; la main utilise le vrai HUD.
+- CORRIGÉ : noms longs faisant dépasser une main de six cartes à 720p.
+- CORRIGÉ : états de sélection persistants après annulation, libellé CARTES
+  perdu au rafraîchissement de thème, glissement des commandes après un tour.
+- CORRIGÉ : panneau d'inspection recouvrant le haut de la nouvelle barre.
+- CORRIGÉ DANS LA SONDE : arbre du HUD persistant non collecté ; compteur
+  TIME_PROCESS contaminé par la capture, impropre à un percentile de performance.
+- VÉRIFIÉ : 26 captures / 332 contrôles UI, cycle joueur/IA/joueur, 720p/1080p.
+- OUVERT : marges sombres de la peinture à 720p ; confort humain sur une run,
+  manette, autres ratios et trois drops longs non certifiés. Pas de nouvelle
+  illustration propre à chaque sort ; deux assets communs créés seulement.
+- Les 16 échecs de la suite Catabase élargie de la précédente itération ne sont
+  pas déclarés résolus ; cette passe exécute des régressions ciblées de présentation.
+
+[Résultats et preuves](CARDS_VISUAL_ITERATION_2026-09-16.md).
+
+## Itération Cartes — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + travaux locaux.
+
+- CORRIGÉ : recomposition hors activation au niveau du modèle ; les refus
+  ne dépensent ni PA ni carte. Départ/reprise remettent la porte d'activation à zéro.
+- CORRIGÉ : disque/bronze/PA indisponibles explicités avant ciblage par le
+  résolveur partagé ; conditions liées à la case toujours vérifiées au ciblage.
+- CORRIGÉ : main empilée sur le HUD vide, actions tronquées dans les fixtures
+  testées, copies de Geste répétées dans la réserve et remplacement global.
+- CORRIGÉ : écran de butin ouvert trop bas par le focus ; ajout au deck visible
+  à 720p/1080p pour les drops de la fixture. Trois familles longues restent à
+  vérifier visuellement ; tous les formats et toutes les salles ne sont pas certifiés.
+- AJUSTÉ : provisions Cartes 20 oboles, pas 40 ni 0. Le budget humain et la
+  valeur relative des choix restent à mesurer. L'Arc bénéficie aussi de ces oboles.
+- OUVERT : Disque/Hampe fragiles avec les pilotes testés, adaptation automatique
+  du deck souvent moins bonne que le deck initial. Ce n'est pas une preuve que
+  leurs cartes doivent être renforcées ; pilotage, ordre et composition interagissent.
+- LIMITE VISUELLE : cadrage Cartes protège les dalles mais réduit la peinture ;
+  des marges sombres subsistent en 720p. Pas de nouvelle illustration de cartes.
+- RÉGRESSION ÉLARGIE NON VERTE : 463/479 tests passent. Les 16 cas en échec,
+  les textes d'erreurs et les fuites de fin sont identiques au lot du même HEAD
+  exécuté le matin avant cette itération. Assets/icônes, ancien lancement/seuil,
+  vertical slice et inventaire restent ouverts ; aucun nouvel identifiant
+  d'échec constaté. Rapport `artifacts/dev/20260916-160717-test-catabase-ad18eb93/`.
+- INCONNU : plaisir, durée 30–45 min, progression d'apprentissage humaine,
+  confort manette et performances GPU en plein combat. Pas de certification studio.
+
+Preuves et résultats de régression : [itération](CARDS_ITERATION_2026-09-16.md).
+
+## Audit Cartes initial — HISTORIQUE après l'itération du 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + variante Cartes locale.
+180 runs de bots / 1 493 combats, 7 tests / 71 689 assertions, 90 contrôles UI /
+12 captures. Aucun changement de règles de production dans cette mission.
+
+- OBSERVÉ, UX P1 : à six cartes, main sur 16,96 % du viewport 720p, masque
+  une partie d'ennemi ; noms d'actions tronqués aussi en 1080p. Réserve dominée
+  par les copies de Geste et remplacement via sélecteur global.
+- OBSERVÉ, feedback P1 : disponibilité du bouton ne reflète pas tous les
+  prérequis métier (disque lancé, bronze). Le cast effectif reste validé.
+- OBSERVÉ, défense en profondeur P2 : API `recompose()` accepte un appel
+  hors activation si les PA restent présents ; l'UI bloque ce cas. Pas
+  d'exploitation par le joueur démontrée.
+- OBSERVÉ, outillage : ancien pilote sous-évalue Répercussion, dont le vrai
+  dégât dépend du bronze. Contre-pilote et test du résolveur ajoutés ; ne pas
+  utiliser le classement historique seul pour augmenter les dégâts du xiphos.
+- RISQUE À ÉVALUER : revente moyenne 212,53 oboles sur 1 000 séquences avec pool
+  initial figé, contre jusqu'à 440 via onze choix des anciennes fournitures.
+  Ce n'est pas une comparaison de valeur totale ; prix des services à réexaminer.
+- INCONNU : taux de victoire, plaisir, durée humaine, performance FPS fiable,
+  animations Passe-rive et combinaisons non parcourues. Les bots ne les valident pas.
+
+Preuves, limites, priorités et sources :
+[audit expérimental complet](CARDS_STUDIO_AUDIT_2026-09-16.md).
+
+## Catabase Cartes — WORKTREE_CANDIDATE, 2026-09-16
+
+Base `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- INCONNU : difficulté, durée et choix économiques humains du mode Cartes.
+  Le catalogue et les stats existants sont réutilisés ; la nouvelle contrainte
+  de pioche et la souplesse des drops nécessitent des essais comparatifs.
+- LIMITE DE CONTENU : les raretés Mythique/Légendaire peuvent être absentes
+  du pool légal. Poids nominaux renormalisés, pas de taux effectif mensonger.
+- LIMITE DE PRÉSENTATION : réserve longue à faire défiler ; pas de filtre
+  avancé ni nouvelle illustration de chaque carte. Depuis l'itération, copies
+  regroupées et effets accessibles aussi par bouton ; défilement encore nécessaire.
+- HORS PÉRIMÈTRE : pas de nouvelles cartes consommées définitivement pendant
+  la run ou de permanents inédits, ni marché entre joueurs.
+- NON VÉRIFIÉ : difficulté humaine 30–45 min, manette exhaustive, autres OS
+  et CI globale. Le rapport donne les vérifications ciblées réellement faites.
+
+Preuves : [rapport Cartes](CARDS_RUN_IMPLEMENTATION_NOTES.md).
+
+## Mort Catabase — candidat du 2026-09-15
+
+Base `main@40ea393dcd539c63f2aa7f024271524f65ade399`, modifications locales.
+
+- CORRIGÉ DANS LE CANDIDAT : le résultat Catabase ouvrait l'Archiviste,
+  dont le catalogue historique sélectionne l'ancienne aventure à trois héros.
+  La nouvelle tentative passe désormais par la sélection publique solo.
+- CORRIGÉ DANS LE CANDIDAT : le bilan utilisait les compteurs génériques de
+  salles ; il expose maintenant les faits de la route et le nom Passe-rive.
+- PROTECTION AJOUTÉE : après une suppression terminale impossible, les sorties
+  titre/hub/abandon ne remplacent plus l'opération de fin par une autre action.
+- HORS PÉRIMÈTRE : les contenus Archiviste/trio restent dans le dépôt et ses
+  laboratoires. Ce correctif n'en effectue pas une purge générale.
+- OBSERVÉ HORS CORRECTIF : la sélection publique affiche encore « Incarner
+  Achille » pour Passe-rive. La configuration obtenue est bien Passe-rive dans
+  Catabase (probe GPU), mais ce libellé mérite une harmonisation ultérieure.
+- NON DÉCIDÉ : conséquences supplémentaires de la mort, résurrection ou
+  méta-progression ; brainstorming utilisateur ultérieur.
+
+Résultats réellement exécutés et limites :
+[rapport du correctif](CATABASE_DEATH_FLOW_2026-09-15.md).
+
+## Catabase r6 — suivi du candidat 2026-09-14
+
+Base `main@055584c37f60d99b2f87bdbb4d670895bf8ef2b2`, worktree non commité.
+
+- INCONNU : durée et difficulté humaines de la run 30–45 min. Une victoire ou
+  une défaite de bot ne constitue pas un taux de victoire humain.
+- À SURVEILLER : poids des premiers points de Sagesse, récupération issue des
+  montées de niveau, intérêt relatif des six armes et lenteur des phases IA.
+- CORRIGÉ DANS LE CANDIDAT : Salve/réserves/Braise qui devenaient des valeurs
+  plates tardives ; Conduction globale malgré sa vocation élémentaire ;
+  préparation finale pouvant être confondue avec un quatrième refuge.
+- CORRIGÉ DANS LE CANDIDAT : découverte d'un secret à la profondeur déjà
+  engagée ; les mémoires devenues sans débouché offrent désormais un choix
+  unique entre deux fournitures tactiques existantes.
+- CORRIGÉ DANS LE CANDIDAT : indicateurs des attaques préparées non raccordés
+  au plateau ; nom/contre-jeu désormais entiers et lisibles à 720p/1080p.
+  Sentence/Visée conservent un libellé générique, amélioration P2 documentée.
+- CORRIGÉ DANS LE CANDIDAT : accès aux haltes interactives encore indexés sur
+  les anciennes profondeurs. Les quatre lieux disponibles suivent leur identité
+  r6 ; l'étal de IV conserve sa salle propre malgré les inversions de colonnes.
+- RÉGRESSION ÉLARGIE NON VERTE : 438/454 tests réussis, 16 échecs historiques
+  classés dans le rapport r6 (assets, ancien lancement, vertical slice,
+  inventaire). L'ancien test de lancement accède à une salle nulle ; le lot
+  rapporte aussi des ressources non libérées à sa fermeture, dont l'origine
+  totale reste non attribuée. Aucun échec n'est masqué. Les sept suites liées
+  à l'intégration passent à 50/50 ; runs et GPU ne rapportent pas d'erreur moteur.
+- Les points ci-dessus ne sont pas une déclaration CURRENT générale :
+  [preuves et tâches restantes](CATABASE_R6_WORKLOG_2026-09-14.md).
+
 ## Studio Terrain — suites du test humain 2026-08-24
 
 - **PROUVÉ** — les champs de données `random_destination` et

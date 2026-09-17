@@ -494,16 +494,23 @@ func can_cast(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 ## Autorite unique pour la validation d'un cast. L'interface et begin_cast()
 ## consultent exactement les memes gardes afin qu'un sort indisponible ne
 ## demarre jamais une animation qui devra ensuite etre annulee.
-func get_cast_failure_reason(
-		caster: Unit,
-		spell: Spell,
-		cell: Vector2i
-	) -> StringName:
+func get_spell_preparation_failure_reason(caster: Unit, spell: Spell) -> StringName:
 	if caster == null or spell == null:
 		return &"arguments"
+	var cards = CatabaseCards.for_actor(caster)
+	if cards != null and cards.card_for_spell(spell).is_empty(): return &"card_not_in_hand"
 	var availability_reason := caster.get_spell_availability_reason(spell)
 	if availability_reason != &"":
 		return availability_reason
+	for modifier in _gather_modifiers(caster, spell):
+		var reason: StringName = modifier.get_preparation_failure_reason(caster, spell, _grid)
+		if reason != &"": return reason
+	return &""
+
+
+func get_cast_failure_reason(caster: Unit, spell: Spell, cell: Vector2i) -> StringName:
+	var preparation := get_spell_preparation_failure_reason(caster, spell)
+	if preparation != &"": return preparation
 	if not _is_base_valid_target(caster, spell, cell):
 		return &"target"
 	var modifier_failure := _modifier_target_failure(caster, spell, cell)
@@ -790,6 +797,8 @@ func begin_cast(
 	if not _resolve_costs(ctx):
 		return ctx
 	caster.mark_spell_used(spell)
+	var cards = CatabaseCards.for_actor(caster)
+	if cards != null: cards.consume(spell)
 	_run_hook(ctx, "on_costs_resolved")
 	ctx.costs_committed = true
 	return ctx

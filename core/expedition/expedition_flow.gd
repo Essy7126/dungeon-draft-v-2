@@ -7,6 +7,8 @@ static func required_step(session: ExpeditionSession) -> String:
 		return "map"
 	if session.needs_preparation:
 		return "departure"
+	if session.route.get_balance_revision() >= 1 and session.route.phase == "reward" and int(session.route.get_current_node().get("depth", 0)) == 20:
+		return "rewards"
 	if not session.advancement_step.is_empty():
 		return session.advancement_step
 	if session.is_editable() and session.character.champion_progression.unspent_attribute_points > 0:

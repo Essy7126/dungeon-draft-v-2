@@ -18,12 +18,13 @@ const HELP := [
 	"Quatre actions au départ : deux liées à l'arme, deux libres. Choisissez une technique différente de la première. Vos PA sont partagés entre toutes vos actions.",
 	"Une relique permanente agit depuis l'inventaire. Vérifiez son déclencheur : une urne sans garde ni Répercussion ne vous aidera pas.",
 	"Les reliques éphémères s'activent depuis l'inventaire en combat. Elles coûtent 1 PA et disparaissent après usage : gardez-les pour un tour décisif.",
-	"Première salle : placez Achille, observez la portée des ennemis, puis essayez vos deux actions d'arme ensemble. Les défis sont facultatifs et influencent le combat suivant. Après une montée de niveau : caractéristiques, sorts, puis butin.",
+	"Première salle : placez Achille, observez la portée des ennemis, puis essayez vos deux actions d'arme ensemble. Les défis des trois élites sont facultatifs. Répartissez vos caractéristiques à la montée de niveau ; les grands choix de techniques ponctuent la descente.",
 ]
 var selection := CatabasePreparationCatalog.preset("marteau")
 var session: ExpeditionSession
 var commit: Callable
 var step := 0
+var selected_difficulty := "normal"
 var status: Label
 var confirm: Button
 var _content: VBoxContainer
@@ -32,6 +33,7 @@ var _next: Button
 
 func configure(value: ExpeditionSession, action: Callable) -> void:
 	session = value
+	selected_difficulty = session.route.difficulty_id
 	commit = action
 	add_theme_constant_override("separation", 12)
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -53,6 +55,17 @@ func _render() -> void:
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_content.add_theme_constant_override("separation", 12)
 	scroll.add_child(_content)
+	if step == 6 and session.route.get_balance_revision() >= 1:
+		_label(_content, "Difficulté de cette traversée", 19)
+		var difficulty := OptionButton.new()
+		difficulty.name = "CatabaseDifficulty"
+		difficulty.add_item("Normal · une descente exigeante", 0)
+		difficulty.add_item("Facile · apprendre la descente", 1)
+		difficulty.select(1 if selected_difficulty == "easy" else 0)
+		difficulty.custom_minimum_size.y = 44
+		_content.add_child(difficulty)
+		_label(_content, "Normal : placement, priorités et ressources comptent. Facile : ennemis moins résistants, coups moins sévères et refuges plus généreux. Les règles et les récompenses restent identiques.", 16)
+		difficulty.item_selected.connect(func(index: int): selected_difficulty = "easy" if index == 1 else "normal")
 	var entries := _entries()
 	var grid := GridContainer.new()
 	grid.columns = 3 if get_viewport_rect().size.x >= 1000 else 2
@@ -180,6 +193,9 @@ func _sync() -> void:
 	)
 	if not duplicate and step < 6:
 		status.text += " · " + str(_entries()[_selected_id()][1])
+	if not duplicate:
+		for warning in CatabasePreparationCatalog.compatibility_warnings(selection):
+			status.text += "\nAttention : " + warning
 	if step == 0:
 		var weapon: Array = CatabasePreparationCatalog.WEAPONS[selection.weapon]
 		status.text += "\nActions : %s + %s." % [
@@ -199,7 +215,10 @@ func _confirm() -> void:
 	if step != 6 or not CatabasePreparationCatalog.valid(selection):
 		return
 	confirm.disabled = true
-	var result: Dictionary = commit.call(selection.duplicate(true))
+	var payload := selection.duplicate(true)
+	if session.route.get_balance_revision() >= 1:
+		payload["difficulty_id"] = selected_difficulty
+	var result: Dictionary = commit.call(payload)
 	status.text = String(result.get("message", result.get("reason", "")))
 	confirm.disabled = bool(result.get("success", false))
 

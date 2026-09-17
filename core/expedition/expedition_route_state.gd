@@ -13,6 +13,7 @@ var completed_node_ids: Array[String] = []
 var revealed_node_ids: Array[String] = []
 var phase: String = "map"
 var last_restore_error: String = ""
+var difficulty_id: String = "normal"
 
 var _canonical_nodes: Array[Dictionary] = []
 var _nodes_by_id: Dictionary = {}
@@ -20,11 +21,12 @@ var _graph_fingerprint: String = ""
 var _catalog_revision: int = Catalog.REVISION
 
 
-func initialize(seed_value: int, catalog_revision: int = Catalog.REVISION) -> void:
+func initialize(seed_value: int, catalog_revision: int = Catalog.REVISION, selected_difficulty: String = "normal") -> void:
 	# A 31-bit seed survives JSON number round trips without precision loss.
 	seed = seed_value & 0x7fffffff
 	_catalog_revision = catalog_revision
-	_canonical_nodes = Catalog.create_nodes(seed, _catalog_revision)
+	difficulty_id = selected_difficulty if catalog_revision >= 6 and selected_difficulty in ["normal", "easy"] else "normal"
+	_canonical_nodes = Catalog.create_nodes(seed, _catalog_revision, difficulty_id)
 	nodes = _canonical_nodes.duplicate(true)
 	_nodes_by_id.clear()
 	for node in _canonical_nodes:
@@ -35,6 +37,14 @@ func initialize(seed_value: int, catalog_revision: int = Catalog.REVISION) -> vo
 	revealed_node_ids.clear()
 	phase = "map"
 	last_restore_error = ""
+
+
+func get_catalog_revision() -> int:
+	return _catalog_revision
+
+
+func get_balance_revision() -> int:
+	return 1 if _catalog_revision >= 6 else 0
 
 
 ## These are safe previews, not resolved unknown content.
@@ -163,16 +173,33 @@ func reveal_hidden_node(node_id: String) -> bool:
 ## Returns an identifier so an event can name the passage it actually discovered.
 func reveal_next_hidden_node() -> String:
 	for node in _canonical_nodes:
+		if get_balance_revision() >= 1 and int(node.depth) <= maxi(completed_node_ids.size(), int(get_current_node().get("depth", 0))):
+			continue
 		if bool(node["hidden"]) and reveal_hidden_node(String(node["id"])):
+			var group := str(node.get("secret_group", ""))
+			if not group.is_empty():
+				for entrance in _canonical_nodes:
+					if str(entrance.get("secret_group", "")) == group:
+						reveal_hidden_node(str(entrance.id))
 			return String(node["id"])
 	return ""
 
 
+func has_future_hidden_node() -> bool:
+	var current_depth := maxi(completed_node_ids.size(), int(get_current_node().get("depth", 0)))
+	for node in _canonical_nodes:
+		if bool(node.hidden) and int(node.depth) > current_depth and str(node.id) not in revealed_node_ids:
+			return true
+	return false
+
+
 func to_snapshot() -> Dictionary:
-	return {"version": SNAPSHOT_VERSION, "catalog_revision": _catalog_revision,
+	var result := {"version": SNAPSHOT_VERSION, "catalog_revision": _catalog_revision,
 		"seed": seed, "graph_fingerprint": _graph_fingerprint, "phase": phase,
 		"current_node_id": current_node_id, "completed_node_ids": completed_node_ids.duplicate(),
 		"revealed_node_ids": revealed_node_ids.duplicate()}
+	if _catalog_revision >= 6: result["difficulty_id"] = difficulty_id
+	return result
 
 
 ## No mutation is committed before the regenerated graph and whole path validate.
@@ -180,8 +207,11 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	last_restore_error = ""
 	if not _is_integer(snapshot.get("version")) or int(snapshot["version"]) != SNAPSHOT_VERSION:
 		return _reject("Version de sauvegarde d'expédition inconnue.")
-	if not _is_integer(snapshot.get("catalog_revision")) or int(snapshot["catalog_revision"]) not in [2, 3, 4, Catalog.REVISION]:
+	if not _is_integer(snapshot.get("catalog_revision")) or int(snapshot["catalog_revision"]) not in [2, 3, 4, 5, Catalog.REVISION]:
 		return _reject("Le catalogue de cette expédition n'est plus compatible.")
+	var restored_difficulty: Variant = snapshot.get("difficulty_id", "normal")
+	if int(snapshot["catalog_revision"]) >= 6 and (not snapshot.has("difficulty_id") or not restored_difficulty is String or restored_difficulty not in ["normal", "easy"]):
+		return _reject("Difficulté de l'expédition invalide.")
 	if not _is_integer(snapshot.get("seed")) or int(snapshot["seed"]) < 0 or int(snapshot["seed"]) > 0x7fffffff:
 		return _reject("Graine d'expédition invalide.")
 	if not snapshot.get("phase") is String or String(snapshot["phase"]) not in VALID_PHASES:
@@ -191,7 +221,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	if not _is_string_array(snapshot.get("completed_node_ids")) or not _is_string_array(snapshot.get("revealed_node_ids")):
 		return _reject("Historique ou révélations invalides.")
 	var candidate := ExpeditionRouteState.new()
-	candidate.initialize(int(snapshot["seed"]), int(snapshot["catalog_revision"]))
+	candidate.initialize(int(snapshot["seed"]), int(snapshot["catalog_revision"]), str(restored_difficulty))
 	if snapshot.get("graph_fingerprint", "") != candidate._graph_fingerprint:
 		return _reject("Le graphe ne correspond pas à sa graine.")
 	for revealed_id in snapshot["revealed_node_ids"]:
@@ -215,6 +245,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		return _reject("La phase et la destination ne correspondent pas au parcours.")
 	seed = candidate.seed
 	_catalog_revision = candidate._catalog_revision
+	difficulty_id = candidate.difficulty_id
 	_canonical_nodes = candidate._canonical_nodes
 	_nodes_by_id = candidate._nodes_by_id
 	_graph_fingerprint = candidate._graph_fingerprint
@@ -246,7 +277,10 @@ func _preview(node: Dictionary) -> Dictionary:
 	var node_id := String(node["id"])
 	var visited := node_id == current_node_id or node_id in completed_node_ids
 	var in_horizon := int(node["depth"]) <= completed_node_ids.size() + 2
-	var landmark := int(node["depth"]) in [7, 15, 20] or Catalog.is_halt(String(node["kind"]))
+	if get_balance_revision() >= 1:
+		var horizon := 7 if completed_node_ids.size() < 7 else (11 if completed_node_ids.size() < 11 else (16 if completed_node_ids.size() < 16 else 20))
+		in_horizon = int(node.depth) <= horizon
+	var landmark := int(node["depth"]) in ([6, 7, 10, 11, 15, 16, 20] if get_balance_revision() >= 1 else [7, 15, 20]) or Catalog.is_halt(String(node["kind"]))
 	var uncertain := bool(node["uncertain"]) and not visited
 	result["visited"] = visited
 	result["completed"] = node_id in completed_node_ids
@@ -261,6 +295,8 @@ func _preview(node: Dictionary) -> Dictionary:
 	if not visited:
 		# Source map choice is never useful player information before engagement.
 		result["room_index"] = -1
+		if not in_horizon or uncertain:
+			result.erase("room_resource")
 		if uncertain:
 			result["kind"] = "unknown"
 			result["presentation_kind"] = "unknown"

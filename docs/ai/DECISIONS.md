@@ -1,5 +1,104 @@
 # Décisions d’architecture
 
+## Intégration esthétique Cartes — 2026-09-16
+
+Base vérifiée : `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- DÉCISION VALIDÉE : intégrer les cartes à la barre des sorts, harmoniser
+  l'interface, optimiser l'espace et produire les assets nécessaires dans la DA dessinée.
+- CHOIX D'IMPLÉMENTATION : une vue montée/démontée dans le HUD persistant,
+  plutôt que le dock autonome de l'itération précédente ; règles et commandes
+  communes conservées. Cadre et paquet dessinés, icônes de sorts existantes.
+- PÉRIMÈTRE : présentation de la variante Cartes ; aucune modification de
+  PA/PM, PV, dégâts, prix, drops ou progression. Pas de commit/push/changement de branche.
+- Les réglages graphiques restent des choix d'implémentation testés, pas une
+  validation subjective finale du joueur. [Preuves et limites](CARDS_VISUAL_ITERATION_2026-09-16.md).
+
+## Itération Cartes autorisée — 2026-09-16
+
+Base technique `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- DÉCISION VALIDÉE : l'utilisateur autorise à poursuivre les essais, adapter
+  et corriger les défauts d'équilibrage et de construction rencontrés.
+- CHOIX D'IMPLÉMENTATION : prérequis communs interface/résolveur, refus atomique
+  de recomposition hors activation, regroupement des copies par famille,
+  remplacement local explicite, dock Cartes à la place de la barre vide.
+- RÉGLAGE DE PROTOTYPE DÉDUIT : provisions Cartes 20 oboles + soin 5 %, au lieu
+  de soin seul. Classique inchangé. Aucun changement de PV, PA/PM, dégâts, XP,
+  ennemis ou distribution de rareté. Aucune garantie de taux de victoire humain.
+- EXPÉRIENCE NON RETENUE : remplacer automatiquement les protections initiales
+  Disque/Hampe par Lin gravé ; résultats appariés insuffisants et contradictoires.
+- AUTORISATIONS GIT : aucun changement de branche, reset, stash, commit ou push.
+
+Voir [périmètre, résultats et limites](CARDS_ITERATION_2026-09-16.md).
+
+## Run Cartes parallèle — 2026-09-16
+
+Base technique `main@8d5e7b9c8e68a9699ff74f813f8630f001db4a02` + worktree.
+
+- DÉCISION VALIDÉE : mettre en place une run deckbuilding parallèle,
+  sélectionnable au titre, avec drops acquis, réserve, liberté de composer
+  le deck et revente. Catabase classique reste disponible séparément.
+- CHOIX D'IMPLÉMENTATION : checkpoints distincts ; même SpellCaster et
+  statistiques de référence ; niveau effectif suivant le héros ; rareté
+  sans multiplicateur global. Aucun transfert de puissance entre runs.
+- RÉGLAGE DE PROTOTYPE : 12–18 cartes, ouverture préparée, 1 carte retenue,
+  recomposition 1 PA ; taux et prix détaillés dans le rapport. Ces chiffres
+  sont testables et ajustables, pas une preuve de plaisir ou de difficulté.
+- NON-OBJECTIFS : nouveau moteur de combat, contenu MMO, crafting de cartes,
+  méta-économie ou nouvelles conséquences de mort. Les anciennes hypothèses
+  de trio ne s'appliquent pas à l'une ou l'autre de ces deux variantes solo.
+
+Voir [contrat et vérifications](CARDS_RUN_IMPLEMENTATION_NOTES.md).
+
+## Mort Catabase — 2026-09-15
+
+Contexte : `main@40ea393dcd539c63f2aa7f024271524f65ade399`, modifications
+WORKTREE_CANDIDATE. Ce bloc ne déclare pas les documents historiques CURRENT.
+
+- DÉCISION VALIDÉE : corriger en priorité le retour au trio après la mort ;
+  réaliser un écran de mort soigné, sans décider maintenant de nouvelles
+  mécaniques de mort. Le brainstorming est différé.
+- CHOIX D'IMPLÉMENTATION DÉDUIT : « Nouvelle tentative » retourne à la sélection
+  publique Catabase, pour Achille ou Passe-rive ; « Menu principal » ouvre le
+  titre. Aucun retour automatique à l'Archiviste historique.
+- PÉRIMÈTRE CONSERVÉ : aucune résurrection, pénalité, récompense de défaite,
+  méta-progression ou modification d'équilibrage. Le bilan affiche uniquement
+  les faits disponibles de la tentative terminée.
+
+Preuves et limites : [correctif mort](CATABASE_DEATH_FLOW_2026-09-15.md).
+
+## Catabase r6 — run courte exigeante, 2026-09-14
+
+Statut : DÉCISION VALIDÉE pour l'intention utilisateur ; implémentation
+WORKTREE_CANDIDATE sur `main`, base `055584c37f60d99b2f87bdbb4d670895bf8ef2b2`.
+Ce bloc ne déclare pas l'ensemble du dépôt CURRENT.
+
+- Catabase solo ; Achille ou Passe-rive, même profil mécanique. Les autres
+  personnages ne participent pas à cette run. Cette décision remplace les
+  anciennes hypothèses de trio dans les audits historiques.
+- Une victoire en Normal vise 30–45 minutes. Normal doit rester exigeant,
+  dynamique et tactique ; Facile doit permettre de gagner après quelques
+  essais. Ce sont des objectifs humains, pas des taux prouvés par un bot.
+- Autorisation explicite d'implémenter, tester, auditer et rééquilibrer la
+  proposition : 20 profondeurs, 12 combats, trois élites, trois refuges ;
+  aucun quota d'échecs imposé, farm obligatoire ou adaptation cachée au build.
+- Les armes, techniques, déplacements PA/PM et ressources existants portent
+  la profondeur. Six grandes fenêtres de comparaison ponctuent la run ; les
+  points peuvent être conservés. Le combat final ne force pas une allocation
+  de caractéristiques sans utilité avant la victoire.
+- Léthé conserve ses cinq escales II–VI. Les engagements de branche restent
+  lisibles jusqu'aux jonctions VII/XI/XVI/XIX ; les secrets ne téléportent pas
+  vers une autre branche.
+- Réglage déduit pendant l'audit : une mémoire sans secret futur accessible
+  offre un choix unique entre deux fournitures déjà existantes, à la place
+  des 20 oboles/révélation. XIX reste une préparation sans soin ni objet offert.
+- Le choix Normal/Facile appartient à la préparation, persiste dans la
+  sauvegarde, ne modifie ni XP ni règles IA. Les routes sauvegardées r2–r5
+  gardent leurs contrats historiques. Aucun commit/push autorisé.
+
+Preuves, fichiers et limites : [suivi r6](CATABASE_R6_WORKLOG_2026-09-14.md).
+
 ## Studio Terrain — création depuis une illustration 2026-08-24
 
 - **DÉCISION VALIDÉE** — l'illustration doit être visible avant de demander la

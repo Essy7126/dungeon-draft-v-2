@@ -13,7 +13,8 @@ static func build_snapshot(
 		room_names: PackedStringArray,
 		seed: int,
 		seed_available: bool,
-		hero_states: Array[Dictionary]
+		hero_states: Array[Dictionary],
+		expedition_facts: Dictionary = {},
 	) -> Dictionary:
 	var normalized_name := run_name.strip_edges()
 	var room_total := room_names.size()
@@ -45,6 +46,16 @@ static func build_snapshot(
 		"featured_hero_name": featured_hero_name,
 		"is_catabase": is_catabase,
 	}
+	if is_catabase and not expedition_facts.is_empty():
+		snapshot["is_expedition"] = true
+		for key in ["depth_reached", "depth_total", "depths_cleared", "combats_won", "hero_level"]:
+			snapshot[key] = maxi(0, int(expedition_facts.get(key, 0)))
+		snapshot["depth_reached"] = mini(int(snapshot.depth_reached), int(snapshot.depth_total))
+		snapshot["difficulty_id"] = str(expedition_facts.get("difficulty_id", "normal"))
+		snapshot["featured_hero_name"] = str(expedition_facts.get("featured_hero_name", featured_hero_name))
+		snapshot["reached_room_name"] = str(expedition_facts.get("reached_room_name", reached_room_name))
+		if normalized_heroes.size() == 1:
+			normalized_heroes[0]["name"] = snapshot.featured_hero_name
 	snapshot["epitaph"] = _build_epitaph(snapshot)
 	return snapshot
 
@@ -102,6 +113,14 @@ static func _normalize_hero_states(
 
 
 static func _build_epitaph(snapshot: Dictionary) -> String:
+	if bool(snapshot.get("is_expedition", false)):
+		var name := str(snapshot.get("reached_room_name", "")).strip_edges()
+		if bool(snapshot.get("victory", false)):
+			return "La traversée est accomplie. %d combats remportés au fil des Enfers." % int(snapshot.get("combats_won", 0))
+		return (
+			"La traversée s’arrête ici, dans « %s ». Une nouvelle tentative commence depuis le départ."
+			% name
+		) if not name.is_empty() else "Cette traversée s’arrête ici. Une nouvelle tentative commence depuis le départ."
 	var run_name := str(snapshot.get("run_name", "")).strip_edges()
 	var room_total := int(snapshot.get("room_total", 0))
 	var rooms_cleared := int(snapshot.get("rooms_cleared", 0))
@@ -110,7 +129,7 @@ static func _build_epitaph(snapshot: Dictionary) -> String:
 	).strip_edges()
 	var is_catabase := bool(snapshot.get("is_catabase", false))
 	var victory := bool(snapshot.get("victory", false))
-	var sentence := "L’Archiviste consigne : "
+	var sentence := "" if is_catabase else "L’Archiviste consigne : "
 	if victory:
 		if is_catabase:
 			sentence += "la Catabase est achevée — %d/%d salles franchies." % [

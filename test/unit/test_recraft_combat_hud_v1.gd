@@ -25,6 +25,20 @@ func after_each() -> void:
 	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
 
+
+func test_inspector_reserves_card_hud_space_and_restores_classic_inset() -> void:
+	var inspector = load("res://ui/inspect_panel.gd").new()
+	add_child_autofree(inspector)
+	await get_tree().process_frame
+	var original_bottom: float = inspector._panel.offset_bottom
+	inspector.set_bottom_inset(222.0)
+	await get_tree().process_frame
+	assert_eq(inspector._panel.offset_bottom, -222.0)
+	inspector.set_bottom_inset(222.0)
+	assert_eq(inspector._panel.offset_bottom, -222.0, "Repeated layout updates are idempotent")
+	inspector.set_bottom_inset(-1.0)
+	assert_eq(inspector._panel.offset_bottom, original_bottom, "Classic inset is preserved by default")
+
 func test_recraft_components_and_processed_assets_load() -> void:
 	for path in [
 		"%s/spell_slot_base.png" % PROCESSED_DIR,

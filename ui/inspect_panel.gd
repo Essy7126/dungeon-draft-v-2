@@ -18,6 +18,13 @@ var _grid: GridData = null
 var _last_subject_key := ""
 var _last_subject_fingerprint := ""
 var _paris_form_subject: Unit
+var _bottom_inset_override := -1.0
+
+
+func set_bottom_inset(value: float) -> void:
+	if is_equal_approx(value, _bottom_inset_override): return
+	_bottom_inset_override = value
+	_apply_responsive_layout()
 
 func _ready() -> void:
 	layer = 30
@@ -108,6 +115,8 @@ func _apply_responsive_layout() -> void:
 	_panel.offset_right = -10.0
 	_panel.offset_top = 12.0 if compact else 18.0
 	_panel.offset_bottom = -124.0 if compact else -150.0
+	if _bottom_inset_override >= 0.0:
+		_panel.offset_bottom = -_bottom_inset_override
 
 
 func get_layout_snapshot() -> Dictionary:

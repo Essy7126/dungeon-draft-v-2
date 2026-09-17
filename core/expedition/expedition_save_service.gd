@@ -3,6 +3,7 @@ extends RefCounted
 ## Boundary saves; an interrupted fight restarts at its committed entry state.
 
 const SAVE_PATH := "user://catabase_route_v2.json"
+const CARDS_SAVE_PATH := "user://catabase_cards_v1.json"
 
 
 static func write_snapshot(snapshot: Dictionary, path: String = SAVE_PATH) -> bool:
@@ -106,6 +107,7 @@ static func prepare(snapshot: Dictionary) -> Dictionary:
 		return {}
 	var session := ExpeditionSession.new()
 	session.initialize(state, route.seed)
+	session.card_inventory = inventory
 	if not session.restore_snapshot(snapshot.session):
 		state.dispose()
 		return {}
