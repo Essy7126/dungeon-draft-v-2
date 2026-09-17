@@ -9,12 +9,6 @@ func _ready() -> void:
 	EventBus.attack_dodged.connect(_on_attack_dodged)
 
 
-func _initialize_sprite_backend() -> void:
-	super._initialize_sprite_backend()
-	if sprite_backend is PasseRiveAutoSpriteBackend:
-		(sprite_backend as PasseRiveAutoSpriteBackend).set_combat_mode(true)
-
-
 func _exit_tree() -> void:
 	if EventBus.attack_dodged.is_connected(_on_attack_dodged):
 		EventBus.attack_dodged.disconnect(_on_attack_dodged)

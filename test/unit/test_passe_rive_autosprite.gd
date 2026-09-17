@@ -163,15 +163,12 @@ func test_native_dash_lands_only_on_arrival_and_cancels_cleanly() -> void:
 	assert_signal_emit_count(backend, "action_finished", 0)
 
 
-func test_combat_idle_and_shot_returns_keep_bow_exploration_keeps_native_idle() -> void:
+func test_shot_returns_restore_original_idle_in_all_directions() -> void:
 	var backend := _backend()
 	var frames := backend.animated_sprite.sprite_frames
 	for direction: String in PasseRiveAutoSpriteProfile.DIRECTIONS:
-		backend.set_combat_mode(false)
 		backend.play_idle(direction)
 		assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
-		backend.set_combat_mode(true)
-		assert_eq(backend.animated_sprite.animation, StringName("combat_idle_" + direction))
 		var ready := frames.get_frame_texture(StringName("combat_idle_" + direction), 0)
 		for stem: String in ["bow_quick", "bow_charged", "bow_air"]:
 			var clip := StringName(stem + "_" + direction)
@@ -179,10 +176,60 @@ func test_combat_idle_and_shot_returns_keep_bow_exploration_keeps_native_idle() 
 			assert_eq(frames.get_frame_texture(clip, frames.get_frame_count(clip) - 1), ready)
 			assert_true(backend.play_action(direction, StringName("preview:" + stem)))
 			backend.advance_simulation(2.0)
-			assert_eq(backend.animated_sprite.animation, StringName("combat_idle_" + direction))
+			assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
 			assert_eq(backend.get_node("ContactShadow").position, Vector2.ZERO)
-	backend.set_combat_mode(false)
 	assert_eq(backend.animated_sprite.animation, &"idle_NE")
+
+
+func test_production_view_rests_unarmed_and_keeps_original_idle_alive_after_transitions() -> void:
+	var parent := Node2D.new()
+	add_child_autofree(parent)
+	var visual := VIEW.instantiate() as PasseRiveAutoSpriteView
+	parent.add_child(visual)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	visual.set_process(false)
+	var backend := visual.sprite_backend as PasseRiveAutoSpriteBackend
+	backend.set_process(false)
+	assert_true(String(backend.animated_sprite.animation).begins_with("idle_"))
+	for direction: String in PasseRiveAutoSpriteProfile.DIRECTIONS:
+		visual._facing = direction
+		assert_true(visual.play_idle())
+		var seen: Dictionary = { }
+		for tick in 50:
+			# Repeated requests (turn changes, UI refreshes) must not rewind breathing.
+			visual.play_idle()
+			backend.advance_simulation(0.05)
+			seen[backend.animated_sprite.frame] = true
+		assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
+		assert_eq(seen.size(), 25, "All original idle frames must remain reachable: " + direction)
+		for stem: String in ["bow", "bow_piercing", "volley", "guard", "sweep", "dash"]:
+			assert_true(visual._begin_action(&"cast", { "animation_stem": stem }))
+			assert_eq(
+				backend.animated_sprite.animation,
+				StringName(
+					Backend.action_for(&"cast", { "animation_stem": stem }) + "_" + direction
+				),
+			)
+			backend.advance_simulation(2.0)
+			assert_false(visual._action_pending)
+			assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
+		for running in [false, true]:
+			assert_true(backend.play_move(direction, running))
+			backend.advance_ground_distance(100.0)
+			assert_true(visual.play_idle())
+			assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
+		assert_true(backend.play_hit(direction))
+		backend.advance_simulation(0.6)
+		assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
+		assert_true(backend.play_dodge(direction))
+		backend.advance_simulation(0.6)
+		assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
+		assert_true(visual._begin_action(&"cast", { "animation_stem": "volley" }))
+		backend.advance_simulation(0.1)
+		visual.cancel_pending_visual_actions()
+		assert_eq(backend.animated_sprite.animation, StringName("idle_" + direction))
+		assert_false(visual._action_pending)
 
 
 func test_combat_atlases_have_real_alpha_full_airborne_poses_and_keep_native_clips() -> void:
@@ -215,7 +262,6 @@ func test_combat_atlases_have_real_alpha_full_airborne_poses_and_keep_native_cli
 
 func test_charged_and_air_cancel_do_not_leak_release_or_completion() -> void:
 	var backend := _backend()
-	backend.set_combat_mode(true)
 	watch_signals(backend)
 	for stem: String in ["bow_charged", "bow_air"]:
 		backend.play_action("SE", StringName("preview:" + stem))
@@ -233,7 +279,7 @@ func test_charged_and_air_cancel_do_not_leak_release_or_completion() -> void:
 	assert_signal_emit_count(backend, "action_finished", 0)
 	backend.action_release_reached.disconnect(cancel_at_release)
 	backend.play_idle("S")
-	assert_eq(backend.animated_sprite.animation, &"combat_idle_S")
+	assert_eq(backend.animated_sprite.animation, &"idle_S")
 
 
 func test_damage_dodge_and_death_have_distinct_sheets_and_finish_once() -> void:
@@ -264,7 +310,7 @@ func test_combat_walk_run_uses_distance_and_keeps_phase_at_turns() -> void:
 	await get_tree().process_frame
 	visual.set_process(false)
 	visual.sprite_backend.set_process(false)
-	assert_true(String(visual.sprite_backend.animated_sprite.animation).begins_with("combat_idle_"))
+	assert_true(String(visual.sprite_backend.animated_sprite.animation).begins_with("idle_"))
 	visual._last_action_presentation = { "animation_stem": "volley" }
 	assert_eq(visual.get_action_presentation().projectile_arc_ratio, 0.65)
 	assert_false(visual._last_action_presentation.has("projectile_arc_ratio"), "Keep the shared snapshot intact.")

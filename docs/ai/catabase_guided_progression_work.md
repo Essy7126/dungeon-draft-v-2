@@ -31,3 +31,17 @@ Vérifications supplémentaires :
 - `artifacts/dev/character_menu_regression/` : 21 tests du menu réussis, 26 207 assertions, sortie moteur 0.
 - Captures `artifacts/dev/guided_progression_capture/08b_character_details.png` et rapport du parcours : détails visibles, bouton de reprise fonctionnel ; journal de `character_sheet_capture` sans erreur.
 - Le premier passage des 19 tests de fiche avait des assertions réussies mais un verdict strict FAIL dû à un playback audio encore actif à l'arrêt. Nettoyage des sons émis ajouté au teardown du scénario, suivant le précédent de `test_context_audio.gd`. Passage final `artifacts/dev/20260913-183028-test-test_unit_test_expedition_guided_flow.gd-4e1a653a/summary.json` : PASS strict, 19 tests, 542 assertions, sans erreur moteur.
+
+## Retour des menus au Seuil — second correctif du 13 septembre
+
+Cause : la fin du parcours utilisait seulement `_page = "map"`. Le bon choix de scène existait dans GameManager, mais les boutons de réception et de préparation ne le consommaient pas.
+
+Correction : les deux sorties suivent le même flux ; quand le lieu attendu est physique, `return_to_expedition_route()` sauvegarde et demande cette scène. Les décisions obligatoires restent prioritaires. L'inspection et les cartes des routes historiques conservent leur navigation locale. Aucune modification du format de sauvegarde.
+
+Preuves :
+- `artifacts/dev/20260913-185825-test-test_unit_test_seuil_crossroads.gd-eae0b4fd/summary.json` : PASS strict, 3 tests / 137 assertions ; retour réellement demandé après les choix, refus pendant le niveau, trois destinations.
+- `artifacts/dev/20260913-185939-test-test_unit_test_expedition_guided_flow.gd-6a8f016f/summary.json` : PASS strict, 19 tests / 543 assertions. Les deux tests de carte abstraite utilisent explicitement une route historique ; le parcours actuel est validé par la capture ci-dessous.
+- `artifacts/dev/guided_crossroads_return_capture/report.json` : réussite à 1280×800, journal d'erreur vide. Préparation → victoire injectée → caractéristiques → sorts → butin → inventaire → vraie transition Seuil ; les trois boutons de passage sont disponibles. Nouvelle visite de la préparation puis second retour à la scène physique. Images 14, 15 et 16 inspectées. La victoire reste injectée : aucune nouvelle conclusion d'équilibrage des combats.
+- Formatage structurel vérifié sur les deux scripts de validation modifiés ; diff revu. Pas de reformatage global ni de nouvelle exécution de la suite historique complète.
+
+Recherche demandée : `docs/design/catabase_deckbuilder_options_2026-09-13.md`. Trois options comparées, proposition d'arme fixe + manœuvres piochées, douze orientations, seize cartes candidates, reliques, budgets entre carrefours et protocole de comparaison. Probabilités calculées par combinaisons exactes, pas par un simulateur de victoire. Aucun mode deck ajouté. Le dépôt était propre au début de ce correctif ; les changements précédents restent conservés.

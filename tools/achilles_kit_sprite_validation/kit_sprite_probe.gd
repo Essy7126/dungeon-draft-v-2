@@ -68,8 +68,7 @@ func _expected_sprite_direction() -> String:
 
 
 func _expected_idle_clip() -> String:
-	var stem := "combat_idle" if _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile else "idle"
-	return "%s_%s" % [stem, _expected_sprite_direction()]
+	return "idle_%s" % _expected_sprite_direction()
 
 
 func _ready() -> void:
@@ -754,8 +753,7 @@ func _run_damage_death_turns() -> Dictionary:
 			leaked_markers += 1
 	var completed_hits := 0
 	for span: Dictionary in _hit_spans:
-		var idle_prefix := "combat_idle_" if _observed_visual.get("sprite_profile") is PasseRiveAutoSpriteProfile else "idle_"
-		if str(span.get("next_clip", "")).begins_with(idle_prefix):
+		if str(span.get("next_clip", "")).begins_with("idle_"):
 			completed_hits += 1
 	if incoming_hits < 2 or enemy_casts < 2 or incoming_damage != int(before.hp) - _hero.current_hp:
 		_errors.append("hit_death_incoming_damage_evidence_mismatch")

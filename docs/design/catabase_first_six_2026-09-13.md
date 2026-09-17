@@ -4,7 +4,7 @@ Ce lot implémente les six moteurs prioritaires du dossier du 12 septembre. Le c
 
 ## Jouer
 
-Nouvelle partie → Achille → cinématique → Seuil des Ombres → franchir la porte. La préparation s'ouvre avant le premier combat commun. Après celui-ci, choisir le puits, la porte ou la barque sur la carte habituelle. Une sauvegarde plus ancienne conserve son départ historique ; commencer une nouvelle run pour choisir une préparation.
+Nouvelle partie → Achille → cinématique → Seuil des Ombres → franchir la porte. La préparation s'ouvre avant le premier combat commun. Après celui-ci, terminer les fenêtres de progression et de butin, puis revenir au Seuil pour rejoindre physiquement le puits, la porte ou la barque. Une sauvegarde plus ancienne conserve son départ historique ; commencer une nouvelle run pour choisir une préparation.
 
 Choisir une arme (deux actions), une protection, deux techniques libres parmi treize, une relique permanente et une éphémère. Les six boutons sont des préparations modifiables. Départ : 110 PV, 6 PA, 3 PM, 18 Prouesse, 60 oboles ; la tenue légère ajoute 1 PM.
 

@@ -373,6 +373,7 @@ func _verify_stable_rest(visual: Node2D, unit_view: Node2D, phase: String) -> Di
 	var maximum_drift := 0.0
 	var maximum_anchor_error := 0.0
 	var unexpected_pose_samples := 0
+	var idle_frames: Dictionary = {}
 	var samples := 0
 	var start := Time.get_ticks_usec()
 	while Time.get_ticks_usec() - start < 650000:
@@ -381,7 +382,8 @@ func _verify_stable_rest(visual: Node2D, unit_view: Node2D, phase: String) -> Di
 		maximum_drift = maxf(maximum_drift, first_foot.distance_to(current_foot))
 		maximum_anchor_error = maxf(maximum_anchor_error,
 			current_foot.distance_to(unit_view.get_global_transform_with_canvas().origin))
-		var resting := String(_sprite.animation).begins_with("idle_") or (profile is PasseRiveAutoSpriteProfile and String(_sprite.animation).begins_with("combat_idle_"))
+		var resting := String(_sprite.animation).begins_with("idle_")
+		idle_frames[_sprite.frame] = true
 		if not resting or (not animated_idle and _sprite.frame != 0) \
 				or _sprite.is_playing() or _sprite.transform != initial_pose or unit_view.transform != initial_unit:
 			unexpected_pose_samples += 1
@@ -390,7 +392,10 @@ func _verify_stable_rest(visual: Node2D, unit_view: Node2D, phase: String) -> Di
 		"observed_seconds": float(Time.get_ticks_usec() - start) / 1000000.0,
 		"unexpected_pose_samples": unexpected_pose_samples, "maximum_screen_foot_drift_px": maximum_drift,
 		"maximum_screen_anchor_error_px": maximum_anchor_error,
-		"animation": str(_sprite.animation), "frame": _sprite.frame, "playing": _sprite.is_playing()}
+		"animation": str(_sprite.animation), "frame": _sprite.frame, "playing": _sprite.is_playing(),
+		"idle_distinct_frames": idle_frames.size()}
+	if profile is PasseRiveAutoSpriteProfile and idle_frames.size() < 2:
+		_errors.append("frozen_passe_rive_idle_%s" % phase)
 	if samples == 0 or unexpected_pose_samples != 0 or maximum_drift > 0.01 or maximum_anchor_error > 0.01:
 		_errors.append("unstable_rest_%s" % phase)
 	return result

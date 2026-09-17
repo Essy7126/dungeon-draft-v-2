@@ -538,6 +538,12 @@ func _on_inventory_closed() -> void:
 
 func _continue_flow() -> void:
 	var required := FLOW.required_step(GameManager.expedition)
+	if required == "map" and not inspection_only and GameManager.get_expedition_destination_scene() != GameManager.EXPEDITION_SCREEN_PATH:
+		# Returning to a physical location must leave the workshop, not draw its map tab.
+		if not GameManager.return_to_expedition_route():
+			_status.text = str(GameManager.get_expedition_save_status().get("message", "Retour impossible pour le moment."))
+			_status.show()
+		return
 	_page = required
 	_return_page = ""
 	_render()
@@ -726,7 +732,7 @@ func _render_preparation() -> void:
 	journal.pressed.connect(func(): _navigate("journal"))
 	var open_map := _button(_body, "Choisir mon prochain chemin  →", true)
 	open_map.name = "OpenRouteMap"
-	open_map.pressed.connect(func(): _navigate("map"))
+	open_map.pressed.connect(_continue_flow)
 
 
 func _render_departure() -> void:

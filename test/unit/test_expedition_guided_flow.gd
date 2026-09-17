@@ -101,6 +101,9 @@ func test_new_build_level_windows_resume_and_finish_before_loot_and_route() -> v
 	var session := GameManager.expedition
 	# Use the real preparation transaction before starting the isolated fight.
 	session.initialize(GameManager.get_character_state(&"achilles"), 2401)
+	# This UI fixture covers the abstract map used by legacy routes. The current
+	# physical crossroads is exercised by the rendered guided progression capture.
+	session.route.initialize(2401, 3)
 	session.needs_preparation = true
 	assert_true(session.prepare_start(CatabasePreparationCatalog.preset("hampe"), GameManager.run_inventory, GameManager.item_catalog).success)
 	assert_true(session.enter("d01_0"))
@@ -244,6 +247,8 @@ func test_progression_has_its_own_screen_and_explicit_continue() -> void:
 
 
 func test_reward_selection_requires_confirmation_then_leads_to_receipt_and_map() -> void:
+	GameManager.expedition.route.initialize(2401, 3)
+	assert_true(GameManager.expedition.enter("d01_0"))
 	assert_true(GameManager.expedition.combat_won())
 	_spend_attributes()
 	var screen := _open_screen()

@@ -7,7 +7,6 @@ const LANDING_SECONDS := 0.30
 var _geometry: Dictionary = { }
 var _dodging := false
 var _ground_phase := 0.0
-var _combat_mode := false
 
 
 func configure(profile: AchillesSpriteVisualProfile) -> bool:
@@ -22,19 +21,6 @@ func configure(profile: AchillesSpriteVisualProfile) -> bool:
 		return false
 	_geometry.merge(combat.geometry, true)
 	return super.configure(profile)
-
-
-func set_combat_mode(enabled: bool) -> void:
-	_combat_mode = enabled
-	if _active and _can_play_loop() and _stem == "idle":
-		_sample_idle()
-
-
-func _sample_idle() -> void:
-	if _combat_mode:
-		_sample_weighted_clip(StringName("combat_idle_" + _facing), 0.0)
-	else:
-		super._sample_idle()
 
 
 func _select_clip(stem: String) -> void:

@@ -2489,6 +2489,14 @@ func open_expedition_progression() -> bool:
 	return _request_saved_exit("open_expedition_workshop")
 
 
+func return_to_expedition_route() -> bool:
+	if expedition == null or not run_active or not expedition.is_editable():
+		return false
+	if HALT_FLOW.required_step(expedition) != "map":
+		return false
+	return _request_saved_exit("open_destination")
+
+
 func open_merchant_hall() -> bool:
 	return is_merchant_hall_active() and _request_saved_exit("open_destination")
 

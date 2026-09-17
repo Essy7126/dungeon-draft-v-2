@@ -1,5 +1,10 @@
 # Passe-rive — nouvelles poses de combat
 
+> Rectification du 13 septembre : l’attente armée forcée de ce lot a été retirée
+> après le signalement utilisateur. Le repos retrouve sa boucle native dans tous
+> les contextes. Voir l’[audit et ses nouvelles preuves](passe_rive_animation_audit_2026-09-13.md).
+> Les décisions et résultats ci-dessous décrivent la livraison antérieure.
+
 Début : 2026-09-13 ; référence Git initiale 744f179460553f2a4d92200a16291ee2357e2bcd.
 
 Demande : créer les assets nécessaires après comparaison avec les animations de Crâ (vidéo YouTube 7zgOw8emVwA). Conserver le personnage et le gameplay ; distinguer attente armée, tir rapide, tir chargé et tir aérien.
