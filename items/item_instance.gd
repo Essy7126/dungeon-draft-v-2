@@ -5,6 +5,7 @@ var instance_id: StringName = &""
 var definition_id: StringName = &""
 var quantity := 1
 var forge_level := 0
+var rune_id: StringName = &""
 
 static var _next_sequence := 0
 
@@ -26,6 +27,7 @@ func duplicate_instance() -> ItemInstance:
 	var copy := ItemInstance.new()
 	copy.initialize(definition_id, quantity, instance_id)
 	copy.forge_level = forge_level
+	copy.rune_id = rune_id
 	return copy
 
 
@@ -35,6 +37,7 @@ func to_snapshot() -> Dictionary:
 		"definition_id": str(definition_id),
 		"quantity": quantity,
 		"forge_level": forge_level,
+		"rune_id": str(rune_id),
 	}
 
 
@@ -55,8 +58,15 @@ static func from_snapshot(snapshot: Dictionary, catalog: ItemCatalog) -> ItemIns
 		return null
 	if saved_forge > 0 and not definition.is_equippable():
 		return null
+	var raw_rune: Variant = snapshot.get("rune_id", "")
+	if not (raw_rune is String or raw_rune is StringName): return null
+	var rune := StringName(raw_rune)
+	if rune != &"":
+		var rune_definition := catalog.get_definition(rune)
+		if not definition.is_equippable() or rune_definition == null or rune_definition.category != ItemDefinition.Category.RUNE or not preload("res://core/expedition/class_rune_catalog.gd").ROWS.has(str(rune)): return null
 	var instance := ItemInstance.new()
 	instance.forge_level = saved_forge
+	instance.rune_id = rune
 	return instance if instance.initialize(
 		definition_id,
 		saved_quantity,

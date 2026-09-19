@@ -127,6 +127,7 @@ func _build() -> void:
 	_attribute_grid.add_theme_constant_override("v_separation", 12)
 	content.add_child(_attribute_grid)
 	for spec in ATTRIBUTES:
+		if spec[0] == "wisdom" and _session.build.class_mode: continue
 		_make_attribute(spec)
 	var note := _label(content, "Les valeurs incluent votre équipement. Chaque point est conservé pour toute cette expédition.\nSurvolez une caractéristique pour consulter tous ses effets.", 14, MUTED)
 	note.name = "AttributeRunExplanation"

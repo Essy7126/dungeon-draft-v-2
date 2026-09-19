@@ -52,6 +52,13 @@ func _render() -> void:
 		child.queue_free()
 	var session = GameManager.expedition
 	if session == null or session.cards == null: return
+	if session.cards.rules_revision == 3:
+		var view := preload("res://ui/expedition/class_workshop.gd").new()
+		view.mode = "loot" if loot_only else "deck"
+		view.read_only = read_only
+		view.transaction_completed.connect(func(): transaction_completed.emit())
+		add_child(view)
+		return
 	var cards: CatabaseCards = session.cards
 	_cards = cards
 	read_only = read_only or session.route.phase == "combat"

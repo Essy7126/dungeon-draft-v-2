@@ -259,7 +259,7 @@ func test_painted_achilles_has_its_own_preview_and_queues_the_same_catabase_game
 	assert_eq(unit.preview_sprite_frames_path, RunHeroVisualVariants.PAINTED_FRAMES_PATH)
 	assert_eq(screen.get_preview().get_sprite_instance().sprite_frames, unit.preview_sprite_frames)
 	_assert_visible_stats(unit)
-	assert_eq(screen.start_button.text, "INCARNER ACHILLE   ›")
+	assert_eq(screen.start_button.text, "INCARNER ACHILLE PEINT   ›")
 	for direction in [&"S", &"W", &"N", &"E"]:
 		screen.rotate_preview(1)
 		assert_eq(screen.get_preview().get_sprite_instance().animation, StringName("idle_%s" % direction))
@@ -313,3 +313,8 @@ func _entry_index(id: StringName) -> int:
 		if entries[index].id == id:
 			return index
 	return -1
+
+func test_passe_rive_is_named_in_the_departure_action() -> void:
+	assert_true(screen.select_character(_entry_index(&"achilles_passe_rive")))
+	assert_eq(screen.start_button.text, "INCARNER PASSE-RIVE   ›")
+	assert_eq(screen.get_selected_entry().party_note, "Aventure solo · Passe-rive")

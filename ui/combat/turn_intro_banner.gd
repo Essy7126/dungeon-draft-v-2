@@ -101,6 +101,9 @@ func _present_unit(
 	elif not theme.discipline_name.is_empty():
 		discipline_parts.append(theme.discipline_name)
 	discipline_label.text = " · ".join(discipline_parts)
+	var cards = CatabaseCards.for_actor(unit) if not enemy else null
+	if cards != null and cards.rules_revision == 3:
+		discipline_label.text = preload("res://core/expedition/class_card_catalog.gd").CLASSES[cards.primary_class][0]
 	var text_color := (
 		visual_skin.text_primary
 		if visual_skin != null and visual_skin.neutral_grayscale

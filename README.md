@@ -36,7 +36,7 @@ Pour le voir directement, ouvrir `ui/selection/CharacterSelectionScreen.tscn` et
 
 ## Catabase : chemin et build recomposable
 
-Le départ se prépare dans sept fenêtres illustrées : arme, protection, deux techniques,
+Dans **Catabase classique**, le départ se prépare dans sept fenêtres illustrées : arme, protection, deux techniques,
 relique permanente, relique éphémère, puis récapitulatif. Les vingt objets possèdent
 leur propre icône dessinée. À chaque montée de niveau des nouvelles constructions,
 une annonce ouvre les caractéristiques, les apprentissages de sorts, puis le butin.
@@ -49,7 +49,7 @@ Caractéristiques** reste accessible après le combat : fiche détaillée (base,
 total, résistances, équipement et effets), répartition des points et bouton pour
 reprendre les décisions en attente. La consultation en combat reste en lecture seule.
 
-Le parcours public suit **Nouvelle partie → sélection d’Achille → cinématique →
+En Classique, le parcours public suit **Nouvelle partie → sélection d’Achille → cinématique →
 [Seuil des Ombres](docs/maps/underworld_threshold_2026-09-10.md) → run**. Dans cette
 entrée jouable, on peut marcher entre les trois statues et lire leurs souvenirs ;
 franchir la porte ouvre désormais la **préparation des six constructions** : arme,
@@ -58,15 +58,32 @@ sont personnalisables et évoluent par mutations pendant la run. Voir le
 [lot jouable et ses règles](docs/design/catabase_first_six_2026-09-13.md).
 La reprise rejoint directement la sauvegarde existante.
 
-Le titre propose désormais **Catabase classique** et une **variante Cartes**
-parallèle, avec deux sauvegardes indépendantes. Classique conserve les sorts
-équipés ; Cartes conserve deux gestes d'arme fixes et propose un deck de dix
-manœuvres, avec quatre cartes piochées par tour. Sa préparation permet de composer
-cinq familles en deux copies ; les montées de niveau proposent d'ajouter,
-remplacer ou améliorer une famille, ou de passer. Réserve, butin acquis et revente
-restent disponibles ; les maîtrises ne créent plus de copies gratuites.
-Les anciennes sauvegardes Cartes sont converties à la reprise en conservant leurs
-copies acquises. Voir la [reprise des intentions](docs/ai/CARDS_INTENT_REPAIR_2026-09-17.md).
+Le titre propose **Catabase classique** et une **variante Cartes**, avec deux
+sauvegardes indépendantes. Une nouvelle partie Cartes utilise maintenant les
+**quatre classes : Assassin, Gardien, Arpenteur et Thaumaturge**. L'apparence,
+dont Passe-rive, reste indépendante. La préparation choisit cinq techniques
+parmi quinze de la classe, en deux copies chacune : dix cartes au deck,
+quatre en main et deux gestes de secours hors pioche. Aucun équipement au départ.
+
+Après les victoires, les fenêtres de niveau présentent caractéristiques,
+maîtrises et spécialisation, puis un bilan de victoire : personnage, niveau,
+XP gagnée, oboles et icônes du butin avec quantités et fiches au survol.
+Le reçu reste identique après vente, équipement et rechargement. **Mon deck**
+ouvre les cartes, leurs coûts, portées et effets, y compris en consultation
+pendant le combat. La liste défile indépendamment de la fiche sélectionnée.
+La main affiche ces informations et réserve une hauteur adaptée à leur lecture.
+La collection
+réunit deck, réserve et six emplacements d'équipement ; les objets ont leurs
+icônes, détails, actions d'équipement, vente et sertissage. Les cartes étrangères
+reçues pendant la run permettent l'hybridation, avec une maîtrise plafonnée à 2
+contre 4 pour la classe principale. Le lot comprend 60 techniques, 12
+spécialisations, 24 modèles d'équipement en trois paliers et quatre runes.
+
+Les anciennes parties Cartes conservent leurs règles ; cette révision s'essaie
+avec **Nouvelle partie → Cartes**. Voir les [règles jouables, budgets et extension
+du système](docs/design/class_run_rules_v3.md) et la [validation de l'intégration](docs/ai/CLASS_RUN_IMPLEMENTATION_2026-09-19.md).
+Un [contrôle de puissance sur 18 runs automatiques](docs/design/class_balance_readability_audit_2026-09-19.md)
+documente l'avantage observé de la distance et les limites de cette mesure.
 La route actuelle comporte vingt profondeurs, douze combats
 et trois refuges. Le retrait de l'ancien prototype du 12 septembre est un état
 historique, pas la description de cette nouvelle variante. Voir le

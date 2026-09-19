@@ -423,7 +423,9 @@ func _capture(
 		critical_controls: Array,
 	) -> void:
 	await _settle()
-	await RenderingServer.frame_post_draw
+	# Static previews with reduced motion need not schedule another redraw.
+	# Request the frame explicitly before reading its texture.
+	RenderingServer.force_draw(false)
 	var suffix: String = "%dx%d" % [viewport_size.x, viewport_size.y]
 	var path: String = _output_root.path_join("%s_%s.png" % [label, suffix])
 	var image: Image = get_tree().root.get_texture().get_image()

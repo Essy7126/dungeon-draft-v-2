@@ -1,102 +1,115 @@
 extends VBoxContainer
-## One preparation screen: equipment remains outside the ten-card deck.
+## Five deliberate card choices, persisted at every confirmed step.
+const Catalog := preload("res://core/expedition/class_card_catalog.gd")
+const PAGE := preload("res://ui/selection/cards_choice_page.gd")
 var session: ExpeditionSession
 var commit: Callable
-var selection := CatabasePreparationCatalog.preset("marteau")
-var difficulty := "normal"
-var _scroll: ScrollContainer
-
+var selection: Dictionary
+var step := 0
+var _status: Label
 
 func configure(value: ExpeditionSession, action: Callable) -> void:
 	session = value
 	commit = action
+	selection = session.preparation_draft.get("selection", CatabasePreparationCatalog.preset("marteau")).duplicate(true)
 	selection["card_families"] = CatabaseCards.starter_families(selection)
+	step = int(session.preparation_draft.get("step", 0))
 	_render()
 
-
-func _label(parent: Node, text: String, size := 17) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", size)
-	parent.add_child(label)
-	return label
-
-
-func _choice(parent: Node, title: String, values: Array, names: Array, current: String, action: Callable) -> void:
-	var row := HBoxContainer.new()
-	parent.add_child(row)
-	var label := _label(row, title)
-	label.custom_minimum_size.x = 165
-	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var select := OptionButton.new()
-	select.name = title.validate_node_name()
-	select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	select.custom_minimum_size.y = 40
-	for text in names: select.add_item(str(text))
-	select.select(maxi(0, values.find(current)))
-	select.item_selected.connect(func(index): action.call(values[index]))
-	row.add_child(select)
-
-
 func _render() -> void:
-	var scroll_position := _scroll.scroll_vertical if is_instance_valid(_scroll) else 0
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_label(self, "RUN CARTES · Construire mon deck", 27)
-	_label(self, "Deux gestes d'arme toujours disponibles. Dix manœuvres, quatre cartes piochées par tour. Les PM et les objets restent hors du deck.")
-	var scroll := ScrollContainer.new()
-	_scroll = scroll
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	add_child(scroll)
-	scroll.set_deferred("scroll_vertical", scroll_position)
-	var body := VBoxContainer.new()
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 8)
-	scroll.add_child(body)
-	_choice(body, "Arme", CatabasePreparationCatalog.WEAPONS.keys(), CatabasePreparationCatalog.WEAPONS.values().map(func(row): return row[0]), selection.weapon, func(value):
-		selection = CatabasePreparationCatalog.preset(value)
-		selection["card_families"] = CatabaseCards.starter_families(selection)
-		_render())
-	var weapon: Array = CatabasePreparationCatalog.WEAPONS[selection.weapon]
-	for id in [weapon[2], weapon[3]]:
-		var spell := session.build.catalog.get_spell(str(id))
-		_label(body, "Geste fixe · %s — %s" % [spell.spell_name, spell.description], 15)
-	_label(body, "MON DECK · 5 familles × 2 copies", 20)
-	var names := CatabasePreparationCatalog.TECHNIQUES.map(func(id): return session.build.catalog.get_spell(id).spell_name)
+	add_theme_constant_override("separation", 12)
+	PAGE.text(self, "AU-DELÀ DU SEUIL · Votre deck", 27)
+	var trail := HBoxContainer.new()
+	trail.add_theme_constant_override("separation", 8)
+	add_child(trail)
 	for index in 5:
+		var marker := Button.new()
+		marker.text = "✓ %d" % (index + 1) if index < step else str(index + 1)
+		marker.custom_minimum_size = Vector2(48, 38)
+		marker.disabled = index >= step
+		marker.pressed.connect(func(): step = index; _render())
+		trail.add_child(marker)
+	PAGE.text(self, "%s · 10 cartes · main de 4 · 2 gestes de secours hors pioche" % (Catalog.CLASSES[selection.class_id][0] if selection.has("class_id") else CatabasePreparationCatalog.WEAPONS[selection.weapon][0]), 16)
+	if step < 5:
+		var options: Array = []
+		var earlier: Array = selection.card_families.slice(0, step)
+		for id in _pool():
+			if id in earlier or (id == "exp_ct_repercussion" and selection.relic != "urne"): continue
+			var spell := _spell(id)
+			options.append({"id": id, "title": spell.spell_name, "icon": spell.icon,
+				"impact": preload("res://ui/expedition/catabase_card_text.gd").effect(spell, session.character.unit) + "\n\n" + spell.description,
+				"details": "Ajoute 2 copies à votre deck : %d → %d cartes choisies sur 10.\nCette manœuvre sera jouable quand elle sera piochée dans votre main de 4 cartes." % [step * 2, (step + 1) * 2]})
+		var family: String = selection.card_families[step]
+		if not options.any(func(option): return option.id == family):
+			family = str(options[0].id)
+			selection.card_families[step] = family
+		var page := PAGE.new()
+		page.name = "CardsSingleChoice"
+		page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		add_child(page)
+		page.configure("Manœuvre %d / 5" % (step + 1), "Choisissez une manœuvre. Confirmez ses deux copies avant de découvrir le choix suivant.", options, family)
+		page.chosen.connect(func(id): selection.card_families[step] = id; _render())
+	else:
+		PAGE.text(self, "Votre deck est prêt · 10 cartes", 25)
+		PAGE.text(self, "Quatre cartes seront piochées à chaque tour. Vos deux gestes d’arme resteront toujours disponibles.", 18)
+		var scroll := ScrollContainer.new()
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		add_child(scroll)
+		var summary := VBoxContainer.new()
+		summary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.add_child(summary)
+		for family in selection.card_families:
+			PAGE.text(summary, "2 × " + _spell(family).spell_name, 22)
+	_status = PAGE.text(self, "", 16)
+	_status.name = "CardsDepartureStatus"
+	var navigation := HBoxContainer.new()
+	add_child(navigation)
+	var back := Button.new()
+	back.text = "← Choix précédent"
+	back.name = "CardsPreviousChoice"
+	back.disabled = step == 0
+	back.custom_minimum_size = Vector2(210, 46)
+	back.pressed.connect(func(): step -= 1; _render())
+	navigation.add_child(back)
+	var next := Button.new()
+	next.name = "CardsConfirmChoice" if step < 5 else "ConfirmCatabaseDeparture"
+	next.text = "Confirmer ces 2 cartes · Suivant →" if step < 5 else "Entrer dans la run · 10 cartes →"
+	next.custom_minimum_size.y = 46
+	next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	navigation.add_child(next)
+	next.pressed.connect(func():
+		if step < 5:
+			_repair_remaining()
+			if not GameManager.save_cards_preparation_draft(selection, step + 1):
+				_status.text = "La sauvegarde n’a pas abouti. Réessayez pour conserver ce choix."
+				return
+			step += 1
+			_render()
+		else:
+			next.disabled = true
+			var result: Dictionary = commit.call(selection.duplicate(true))
+			_status.text = str(result.get("message", ""))
+			if not result.get("success", false): next.disabled = false)
+
+func _repair_remaining() -> void:
+	var used: Array = selection.card_families.slice(0, step + 1)
+	for index in range(step + 1, 5):
 		var family: String = selection.card_families[index]
-		_choice(body, "Manœuvre %d ×2" % (index + 1), CatabasePreparationCatalog.TECHNIQUES, names, family, func(value):
-			selection.card_families[index] = value
-			_render())
-		_label(body, session.build.catalog.get_spell(family).description, 15)
-	_label(body, "ÉQUIPEMENT · hors du deck", 20)
-	for key in ["armor", "relic", "supply"]:
-		var catalog: Dictionary = {"armor": CatabasePreparationCatalog.ARMORS, "relic": CatabasePreparationCatalog.RELICS, "supply": CatabasePreparationCatalog.SUPPLIES}[key]
-		_choice(body, {"armor": "Protection", "relic": "Relique", "supply": "Objet"}[key], catalog.keys(), catalog.values().map(func(row): return row[0]), selection[key], func(value):
-			selection[key] = value
-			_render())
-		_label(body, str(catalog[selection[key]][4 if key == "armor" else 1]), 15)
-	_choice(body, "Difficulté", ["normal", "easy"], ["Normal", "Facile"], difficulty, func(value): difficulty = value)
-	var valid := CatabasePreparationCatalog.valid(selection)
-	var status := Label.new()
-	status.name = "CardsDepartureStatus"
-	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.text = "Vous pourrez ajouter, remplacer ou améliorer des manœuvres pendant la descente." if valid else "Choisissez cinq familles différentes. Répercussion nécessite l'Urne de bronze."
-	add_child(status)
-	var start := Button.new()
-	start.name = "ConfirmCatabaseDeparture"
-	start.text = "Partir avec ce deck · 10 cartes  →"
-	start.custom_minimum_size.y = 46
-	start.disabled = not valid
-	add_child(start)
-	start.pressed.connect(func():
-		start.disabled = true
-		var payload := selection.duplicate(true)
-		payload.difficulty_id = difficulty
-		var result: Dictionary = commit.call(payload)
-		status.text = str(result.get("message", ""))
-		if not result.get("success", false): start.disabled = false)
+		if family in used or (family == "exp_ct_repercussion" and selection.relic != "urne"):
+			for candidate in _pool():
+				if candidate not in used and (candidate != "exp_ct_repercussion" or selection.relic == "urne"):
+					family = candidate
+					break
+		selection.card_families[index] = family
+		used.append(family)
+
+func _pool() -> Array:
+	return Catalog.pool(selection.class_id) if selection.has("class_id") else CatabasePreparationCatalog.TECHNIQUES
+
+func _spell(id: String) -> Spell:
+	return Catalog.make_spell(id, 2) if selection.has("class_id") else session.build.catalog.get_spell(id)

@@ -98,6 +98,7 @@ var _item_use_service := ItemUseService.new()
 var _relic_runtime_service := RelicRuntimeService.new()
 var _next_run_data: RunData = null
 var _threshold_entry_pending := false
+var _cards_departure_selection: Dictionary = {}
 var _next_run_start_room_index := 0
 var _active_room_flow_mode: int = RunData.RoomFlowMode.SINGLE_ENCOUNTER
 var _maximum_waves_per_room := 1
@@ -199,8 +200,16 @@ func configure_next_run(run_data: RunData, room_index: int) -> bool:
 	if effective_room_index < 0 or effective_room_index >= run_data.rooms.size():
 		return false
 	_threshold_entry_pending = false
+	_cards_departure_selection.clear()
 	_next_run_data = run_data
 	_next_run_start_room_index = effective_room_index
+	return true
+
+
+func configure_cards_departure(selection: Dictionary) -> bool:
+	if selected_run_variant != "cards" or _next_run_data == null: return false
+	if not (preload("res://core/expedition/class_card_catalog.gd").valid(selection) if selection.has("class_id") else CatabasePreparationCatalog.valid(selection)) or selection.get("difficulty_id", "normal") not in ["normal", "easy"]: return false
+	_cards_departure_selection = selection.duplicate(true)
 	return true
 
 
@@ -257,10 +266,12 @@ func finish_catabase_threshold() -> Dictionary:
 			"message": "Votre sauvegarde a changé. Revenez à la sélection pour confirmer le départ ; elle a été conservée.",
 		}
 	var selected_run: RunData = _next_run_data
+	var selected_preparation := _cards_departure_selection.duplicate(true)
 	var started := start_configured_run()
 	var pending := bool(get_expedition_save_status().get("pending", false))
 	if not started and not pending:
 		_next_run_data = selected_run
+		_cards_departure_selection = selected_preparation
 		_threshold_entry_pending = true
 	return {
 		"success": started,
@@ -292,6 +303,7 @@ func start_configured_run() -> bool:
 
 
 func clear_next_run_configuration() -> void:
+	_cards_departure_selection.clear()
 	_threshold_entry_pending = false
 	_next_run_data = null
 	_next_run_start_room_index = 0
@@ -1776,6 +1788,8 @@ func on_battle_won() -> void:
 	_last_combat_report = _finalize_current_combat_report(true)
 	if expedition != null:
 		expedition.combat_won()
+		if expedition.cards != null and expedition.cards.rules_revision == 3:
+			expedition.cards.record_combat(_last_combat_report)
 		expedition.reward_options(item_catalog)
 		_room_exit_selected = true
 		_emit_current_room_cleared_once()
@@ -2301,6 +2315,7 @@ func select_run_variant(variant: String) -> bool:
 
 
 func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false, difficulty_id: String = "normal", cards_mode := false) -> bool:
+	var departure_selection := _cards_departure_selection.duplicate(true)
 	if cards_mode and not prepare_loadout: return false
 	if difficulty_id not in ["normal", "easy"] or not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
@@ -2325,7 +2340,8 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	expedition.initialize(get_character_state(&"achilles"), run_seed, difficulty_id)
 	selected_run_variant = variant
 	if cards_mode:
-		expedition.cards = CatabaseCards.new()
+		expedition.cards = preload("res://core/expedition/class_cards.gd").new() if departure_selection.has("class_id") else CatabaseCards.new()
+		expedition.build.class_mode = expedition.cards.rules_revision == 3
 		expedition.cards.bind(expedition)
 		expedition.card_inventory = run_inventory
 	CatabasePreparationCatalog.contextualize_item_descriptions(item_catalog, expedition.route.get_balance_revision())
@@ -2333,6 +2349,9 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	last_restore_error = &""
 	if prepare_loadout:
 		expedition.needs_preparation = true
+		if cards_mode and not departure_selection.is_empty():
+			expedition.preparation_draft = {"selection": departure_selection, "step": 0}
+		_cards_departure_selection.clear()
 		_pending_expedition_action = "open_destination"
 		if not save_expedition(): return false
 		_pending_expedition_action = ""
@@ -2351,6 +2370,14 @@ func confirm_catabase_preparation(selection: Dictionary) -> Dictionary:
 	result["saved"] = entered
 	if not entered: result["message"] = str(get_expedition_save_status().get("message", "Reprenez la sauvegarde du départ."))
 	return result
+
+
+func save_cards_preparation_draft(selection: Dictionary, step: int) -> bool:
+	if expedition == null or not expedition.needs_preparation or expedition.cards == null: return false
+	var draft := {"selection": selection.duplicate(true), "step": step}
+	if not ExpeditionSession.valid_preparation_draft(draft): return false
+	expedition.preparation_draft = draft
+	return save_expedition()
 
 
 func choose_expedition_node(node_id: String) -> bool:

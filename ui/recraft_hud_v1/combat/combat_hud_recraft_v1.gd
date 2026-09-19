@@ -2560,6 +2560,10 @@ func _apply_layout_metrics() -> void:
 		_apply_card_hand_layout(viewport_width)
 
 
+func get_card_hud_height() -> float:
+	return 258.0 if is_instance_valid(_card_hand_view) and _card_hand_view.get_meta("expanded_card_faces", false) else CARD_HUD_HEIGHT
+
+
 func _apply_card_hand_layout(viewport_width: float) -> void:
 	# A variant of the real action bar, not another HUD layered on top of it.
 	var width := minf(1720.0, viewport_width - 24.0)
@@ -2567,10 +2571,11 @@ func _apply_card_hand_layout(viewport_width: float) -> void:
 	var identity := 226.0
 	var commands := 174.0
 	var center := width - identity - commands - 24.0
-	_hud_band.offset_top = -CARD_HUD_HEIGHT - 8.0
+	var height := get_card_hud_height()
+	_hud_band.offset_top = -height - 8.0
 	_hud_band.offset_bottom = -8.0
-	_set_control_rect(_material_surface, Rect2(left, 0, width, CARD_HUD_HEIGHT))
-	var modules: Array[Rect2] = [Rect2(0, 0, identity, CARD_HUD_HEIGHT), Rect2(identity + 8, 0, center + 8, CARD_HUD_HEIGHT), Rect2(width - commands, 0, commands, CARD_HUD_HEIGHT)]
+	_set_control_rect(_material_surface, Rect2(left, 0, width, height))
+	var modules: Array[Rect2] = [Rect2(0, 0, identity, height), Rect2(identity + 8, 0, center + 8, height), Rect2(width - commands, 0, commands, height)]
 	_material_surface.configure(visual_skin, modules)
 	_portrait_view.apply_layout(64.0 / METRICS.PORTRAIT_SIZE)
 	_hp_bar.apply_calibrated_layout(Vector2(124, 24), 1.0)
@@ -2584,8 +2589,8 @@ func _apply_card_hand_layout(viewport_width: float) -> void:
 	_move_btn.set_compact_icon_mode(false)
 	_move_btn.apply_layout(Vector2(identity - 32, 36), 14)
 	_set_control_rect(_move_action_host, Rect2(left + 16, 150, identity - 32, 36))
-	_set_control_rect(_spell_anchor, Rect2(left + identity + 12, 10, center, 182))
-	_set_control_rect(_card_hand_view, Rect2(0, 0, center, 182))
+	_set_control_rect(_spell_anchor, Rect2(left + identity + 12, 10, center, height - 20))
+	_set_control_rect(_card_hand_view, Rect2(0, 0, center, height - 20))
 	_basic_attack_host.visible = false
 	_spell_slots_center.visible = false
 	_set_control_rect(_item_slots_center, Rect2(0, 34, center, 134))
@@ -2602,7 +2607,7 @@ func _apply_card_hand_layout(viewport_width: float) -> void:
 		button.custom_minimum_size = Vector2(78, 30)
 		button.add_theme_font_size_override("font_size", 13)
 	_set_control_rect(_bar_toggle_anchor, Rect2(left + width - commands + 6, 12, commands - 12, 30))
-	_apply_context_feedback_layout(viewport_width, CARD_HUD_HEIGHT + 8)
+	_apply_context_feedback_layout(viewport_width, height + 8)
 
 
 func _apply_bar_toggle_layout(viewport_width: float) -> void:

@@ -16,6 +16,7 @@ const STAT_NAMES := ["max_hp", "attack_power", "initiative", "max_mp", "armure",
 
 var catalog := ExpeditionBuildCatalog.new()
 var character_state: CharacterRunState = null
+var class_mode := false
 var points: int = STARTING_POINTS
 var unlocked_node_ids: Array[String] = []
 var is_editable: bool = true
@@ -39,6 +40,7 @@ func initialize(state: CharacterRunState) -> bool:
 	character_state = state
 	_apply_balance_presentation()
 	starting_selection.clear()
+	class_mode = false
 	weapon_unlocks.clear()
 	points = STARTING_POINTS
 	unlocked_node_ids.clear()
@@ -110,7 +112,7 @@ func grant_depth_reward(depth: int) -> Dictionary:
 		return _failure("Les jalons doivent être résolus dans l'ordre.")
 	_granted_depths.append(depth)
 	completed_depth = depth
-	var amount := int(DEPTH_POINTS.get(depth, 0))
+	var amount := 0 if class_mode else int(DEPTH_POINTS.get(depth, 0))
 	points += amount
 	changed.emit()
 	return {"success": true, "reason": "", "points": amount}
@@ -134,6 +136,7 @@ func get_offers() -> Array[Dictionary]:
 
 
 func purchase(id: String) -> Dictionary:
+	if class_mode: return _failure("Les classes progressent par maîtrise et par exemplaire de carte.")
 	var node := catalog.get_node(id)
 	var reason := _purchase_failure(node)
 	if not reason.is_empty():
@@ -320,7 +323,7 @@ func get_healing_reserve() -> int:
 
 
 func to_snapshot() -> Dictionary:
-	return {"version": VERSION, "points": points, "unlocked_node_ids": unlocked_node_ids.duplicate(),
+	return {"version": VERSION, "class_mode": class_mode, "points": points, "unlocked_node_ids": unlocked_node_ids.duplicate(),
 		"granted_depths": _granted_depths.duplicate(), "card_spell_ids": _card_spell_ids.duplicate(),
 		"completed_depth": completed_depth, "current_level": current_level,
 		"correction_used": correction_used,
@@ -331,6 +334,11 @@ func to_snapshot() -> Dictionary:
 
 
 func restore_snapshot(snapshot: Dictionary) -> bool:
+	if not snapshot.get("class_mode", false) is bool: return false
+	if bool(snapshot.get("class_mode", false)):
+		for key in ["starting_selection", "weapon_unlocks", "unlocked_node_ids", "discovered_branches", "card_spell_ids"]:
+			var value: Variant = snapshot.get(key, [])
+			if not (value is Array or value is Dictionary) or not value.is_empty(): return false
 	if character_state == null or int(snapshot.get("version", 0)) != VERSION:
 		return false
 	var selection: Variant = snapshot.get("starting_selection", {})
@@ -373,7 +381,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		if not _integer_value(grants_value[index]) or int(grants_value[index]) != index + 1:
 			return false
 		grants.append(index + 1)
-		earned += int(DEPTH_POINTS.get(index + 1, 0))
+		earned += 0 if bool(snapshot.get("class_mode", false)) else int(DEPTH_POINTS.get(index + 1, 0))
 	var restored_nodes: Array[String] = []
 	var expected_known: Array[String] = []
 	for spell in _starting_spells(selection):
@@ -456,6 +464,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		if candidate.get_spell_slot_ids() != starter_ids:
 			return false
 	# Commit only after every invariant, including loadout rights, has passed.
+	class_mode = bool(snapshot.get("class_mode", false))
 	points = int(snapshot.points)
 	starting_selection = selection.duplicate(true)
 	weapon_unlocks = restored_weapons

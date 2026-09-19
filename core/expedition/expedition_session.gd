@@ -16,6 +16,7 @@ var hub_used_ids: Dictionary = {}
 var hub_stock_ids: Array[String] = []
 var branch_receipts: Dictionary = {}
 var needs_preparation := false
+var preparation_draft: Dictionary = {}
 var advancement_step := ""
 var advancement_from_level := 0
 var cards: CatabaseCards = null
@@ -43,6 +44,8 @@ func is_editable() -> bool:
 
 
 func prepare_start(raw_selection: Dictionary, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+	if cards != null and cards.rules_revision == 3:
+		return _prepare_class_start(raw_selection, inventory)
 	var selection := raw_selection.duplicate(true)
 	if cards != null and cards.rules_revision >= 2:
 		selection["card_families"] = CatabaseCards.starter_families(selection)
@@ -111,9 +114,13 @@ func combat_won() -> bool:
 		return false
 	if challenges.enabled:
 		challenges.finish_combat(6 if int(route.get_current_node().depth) >= 3 else 5)
+	var completed_turns := character.unit.activation_index
 	_clear_encounter_effects()
 	build.is_editable = true
 	award_destination()
+	if cards != null and cards.rules_revision == 3 and cards.battle_results.has(route.current_node_id):
+		# Resource reset clears activation_index; preserve the actual battle count.
+		cards.battle_results[route.current_node_id].turns = completed_turns
 	return true
 
 
@@ -141,7 +148,7 @@ func award_destination() -> void:
 	var previous_level := character.champion_progression.current_level
 	if xp > 0:
 		result = character.award_encounter_xp(StringName("catabase:%d:%s" % [route.seed, node.id]), xp, true)
-	if not build.starting_selection.is_empty() and character.champion_progression.current_level > previous_level and not (route.get_balance_revision() >= 1 and depth == 20):
+	if (build.class_mode or not build.starting_selection.is_empty()) and character.champion_progression.current_level > previous_level and not (route.get_balance_revision() >= 1 and depth == 20):
 		advancement_from_level = previous_level
 		advancement_step = "level_up"
 	build.grant_depth_reward(depth)
@@ -154,6 +161,8 @@ func award_destination() -> void:
 	awarded_node_ids.append(str(node.id))
 	if cards != null:
 		cards.grant_loot(node)
+		if cards.rules_revision == 3 and str(node.kind) in ["normal", "elite", "boss"]:
+			cards.record_reward(node, result, gained_gold)
 		cards.sync_learned()
 		if not advancement_step.is_empty(): cards.progression_offers()
 	last_message = "%s franchi · +%d XP · +%d oboles" % [node.title, int(result.get("gained_xp", 0)), gained_gold]
@@ -174,6 +183,8 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 	if ExpeditionRouteCatalog.is_halt(str(node.kind)):
 		hub_services(item_catalog)
 		return [{"id": "leave_hub", "title": "Reprendre le chemin", "description": "Terminer les interactions de cette halte et rejoindre la carte."}]
+	if build.class_mode:
+		return [{"id": "class_continue", "title": "Reprendre le chemin", "description": "Le butin est acquis. Organisez votre inventaire et votre deck avant le prochain combat."}]
 	var technique_window := bool(node.get("highlight_build_reward", false)) if route.get_balance_revision() >= 1 else (int(node.depth) in [3, 6, 10, 14, 18] or str(node.kind) == "elite")
 	if technique_window:
 		if str(node.reward) == "elemental" and not build.is_axis_discovered("elements"):
@@ -301,6 +312,11 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 	var merchant := str(node.kind) == "merchant"
 	if hub_stock_ids.is_empty():
 		var ids := ExpeditionEquipmentCatalog.item_ids()
+		if build.class_mode:
+			ids.clear()
+			var tier := mini(3, 1 + int(node.depth) / 7)
+			for item in preload("res://core/expedition/class_equipment_catalog.gd").definitions():
+				if str(item.item_id).begins_with("class_gear_%d_" % tier): ids.append(item.item_id)
 		ids.sort()
 		var offset := posmod(hash("%d:%s:stock" % [route.seed, node.id]), ids.size())
 		for index in 3:
@@ -318,7 +334,7 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 		"description": _lore_text(int(node.depth)) + "\nDécouvrir un passage secret encore à venir et recevoir 20 oboles."})
 	if not merchant:
 		var branch := "elements" if not build.is_axis_discovered("elements") else "serment"
-		if not build.is_axis_discovered(branch) and int(node.depth) >= (4 if branch == "elements" else 8):
+		if not build.class_mode and not build.is_axis_discovered(branch) and int(node.depth) >= (4 if branch == "elements" else 8):
 			result.append({"id": "branch:" + branch, "kind": "sanctuary", "branch_id": branch,
 				"title": "Lire les braises du Styx" if branch == "elements" else "Prêter le serment du revenant",
 				"cost": 70 if branch == "elements" else 110,
@@ -448,6 +464,7 @@ func _equipment_offer(item_catalog: ItemCatalog) -> Dictionary:
 	var excluded_weapon := "catabase_ct_" + str(build.starting_selection.get("weapon", ""))
 	var equipped_weapon := character.equipment_loadout.get_item(ItemDefinition.EquipmentSlot.WEAPON)
 	for item in item_catalog.get_definitions():
+		if &"class_loot" in item.tags and not build.class_mode: continue
 		if item.is_equippable() and item.is_compatible_with(&"achilles"):
 			if alternative_weapon and (not str(item.item_id).trim_prefix("catabase_ct_") in CatabasePreparationCatalog.WEAPONS or str(item.item_id) == excluded_weapon):
 				continue
@@ -472,6 +489,7 @@ func to_snapshot() -> Dictionary:
 	var result := {"version": 2, "route": route.to_snapshot(), "build": build.to_snapshot(), "gold": gold, "awarded_node_ids": awarded_node_ids.duplicate(), "journal": journal.duplicate(), "last_message": last_message, "reward_spell_id": reward_spell_id, "reward_item_id": reward_item_id, "hub_used_ids": hub_used_ids.duplicate(true), "hub_stock_ids": hub_stock_ids.duplicate(), "branch_receipts": branch_receipts.duplicate()}
 	if challenges.enabled: result["challenges"] = challenges.snapshot()
 	result["needs_preparation"] = needs_preparation
+	if needs_preparation and not preparation_draft.is_empty(): result["preparation_draft"] = preparation_draft.duplicate(true)
 	result["advancement_step"] = advancement_step
 	result["advancement_from_level"] = advancement_from_level
 	if cards != null: result["cards_run"] = cards.snapshot()
@@ -479,6 +497,9 @@ func to_snapshot() -> Dictionary:
 
 
 func restore_snapshot(snapshot: Dictionary) -> bool:
+	var draft: Variant = snapshot.get("preparation_draft", {})
+	if not draft is Dictionary or not valid_preparation_draft(draft): return false
+	if not draft.is_empty() and (not snapshot.get("needs_preparation", false) or not snapshot.has("cards_run")): return false
 	var pending_step: Variant = snapshot.get("advancement_step", "")
 	if not pending_step is String or pending_step not in ["", "level_up", "progression", "advancement"]: return false
 	var from_level := int(snapshot.get("advancement_from_level", 0))
@@ -541,7 +562,8 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		return false
 	var seen_stock := {}
 	for id in snapshot.hub_stock_ids:
-		if not id is String or id not in ExpeditionEquipmentCatalog.item_ids() or seen_stock.has(id):
+		var new_gear := bool(snapshot.build.get("class_mode", false)) and preload("res://core/expedition/class_equipment_catalog.gd").has_id(str(id))
+		if not id is String or (id not in ExpeditionEquipmentCatalog.item_ids() and not new_gear) or seen_stock.has(id):
 			return false
 		seen_stock[id] = true
 	if not snapshot.get("branch_receipts") is Dictionary:
@@ -589,13 +611,44 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	branch_receipts = snapshot.branch_receipts.duplicate()
 	challenges = candidate_challenges
 	needs_preparation = pending_start
+	preparation_draft = draft.duplicate(true)
 	advancement_step = pending_step
 	advancement_from_level = from_level
 	build.is_editable = needs_preparation or is_editable()
+	if build.class_mode and not snapshot.has("cards_run"): return false
 	if snapshot.has("cards_run"):
 		if not snapshot.cards_run is Dictionary: return false
-		cards = CatabaseCards.new()
+		cards = preload("res://core/expedition/class_cards.gd").new() if int(snapshot.cards_run.get("rules_revision", 0)) == 3 else CatabaseCards.new()
+		if build.class_mode != (cards.rules_revision == 3): return false
 		cards.bind(self)
 		if not cards.restore(snapshot.cards_run, needs_preparation): return false
 		cards.migrate_legacy(needs_preparation)
 	return true
+
+
+static func valid_preparation_draft(draft: Dictionary) -> bool:
+	if draft.is_empty(): return true
+	var selection: Variant = draft.get("selection")
+	var step: Variant = draft.get("step")
+	if not selection is Dictionary or not (step is int or step is float): return false
+	if float(step) != float(int(step)) or int(step) < 0 or int(step) > 5: return false
+	if selection.has("class_id"): return preload("res://core/expedition/class_card_catalog.gd").valid(selection)
+	return CatabasePreparationCatalog.valid(selection) and selection.get("difficulty_id", "normal") in ["normal", "easy"]
+
+
+func _prepare_class_start(selection: Dictionary, inventory: RunInventory) -> Dictionary:
+	if not needs_preparation or not route.current_node_id.is_empty() or not preload("res://core/expedition/class_card_catalog.gd").valid(selection) or inventory == null:
+		return _failure("Choisissez cinq cartes distinctes de votre classe.")
+	build.class_mode = true
+	card_inventory = inventory
+	# The inherited run profile includes supplies; class runs start with loot only.
+	for item in inventory.get_slots():
+		if item != null: inventory.take_instance(item.instance_id)
+	cards.initialize_deck(selection)
+	if not cards.valid_deck(cards.active): return _failure("Le deck est incomplet.")
+	route.initialize(route.seed, route.get_catalog_revision(), str(selection.get("difficulty_id", "normal")))
+	needs_preparation = false
+	gold = 60
+	last_message = "Départ sans équipement · 10 cartes · 60 oboles. Vos premiers objets seront trouvés en combat."
+	journal.append(last_message)
+	return {"success": true, "message": last_message}

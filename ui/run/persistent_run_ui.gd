@@ -533,6 +533,10 @@ func _on_attributes_requested() -> void:
 	_open_expedition_inspection("attributes")
 
 
+func open_card_collection() -> void:
+	_open_expedition_inspection("cards")
+
+
 func _open_expedition_inspection(page: String) -> void:
 	if GameManager.expedition == null or _ui_mode == RunUIMode.TRANSITION \
 			or is_instance_valid(_expedition_inspection):

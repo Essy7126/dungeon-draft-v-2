@@ -6,6 +6,9 @@ const EQUIPMENT_SLOTS: Array[int] = [
 	ItemDefinition.EquipmentSlot.WEAPON,
 	ItemDefinition.EquipmentSlot.ARMOR,
 	ItemDefinition.EquipmentSlot.ACCESSORY,
+	ItemDefinition.EquipmentSlot.HEAD,
+	ItemDefinition.EquipmentSlot.BELT,
+	ItemDefinition.EquipmentSlot.FEET,
 ]
 
 signal changed(slot: int, old_instance_id: StringName, new_instance_id: StringName)
@@ -128,6 +131,9 @@ static func get_slot_display_name(slot: int) -> String:
 			return "Armure"
 		ItemDefinition.EquipmentSlot.ACCESSORY:
 			return "Accessoire"
+		ItemDefinition.EquipmentSlot.HEAD: return "Tête"
+		ItemDefinition.EquipmentSlot.BELT: return "Ceinture"
+		ItemDefinition.EquipmentSlot.FEET: return "Pieds"
 		_:
 			return "Inconnu"
 
@@ -140,5 +146,8 @@ static func _slot_key(slot: int) -> String:
 			return "armor"
 		ItemDefinition.EquipmentSlot.ACCESSORY:
 			return "accessory"
+		ItemDefinition.EquipmentSlot.HEAD: return "head"
+		ItemDefinition.EquipmentSlot.BELT: return "belt"
+		ItemDefinition.EquipmentSlot.FEET: return "feet"
 		_:
 			return "unknown"

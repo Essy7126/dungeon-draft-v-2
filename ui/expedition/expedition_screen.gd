@@ -126,7 +126,7 @@ func _ready() -> void:
 	for entry in [["gear", "Inventaire", "equipment", "Vos objets, leur équipement et leurs effets."], ["build", "Compétences", "tree", "Vos actions en combat et les nouvelles techniques à apprendre."], ["attributes", "Caractéristiques", "", "Vos points de vie, vos dégâts et votre protection."]]:
 		var tab := _button(_navigation, entry[1])
 		if entry[0] == "build" and GameManager.expedition != null and GameManager.expedition.cards != null:
-			tab.text = "Arme & maîtrises"
+			tab.text = "Classe & maîtrises" if GameManager.expedition.cards.rules_revision == 3 else "Arme & maîtrises"
 		tab.name = "CatabaseTab_" + entry[0]
 		tab.set_meta("catabase_icon", entry[2])
 		tab.tooltip_text = entry[3]
@@ -137,7 +137,7 @@ func _ready() -> void:
 		_navigation_buttons[entry[0]] = tab
 		tab.pressed.connect(func(): _open_inventory() if entry[0] == "gear" else _navigate(entry[0]))
 	if GameManager.expedition != null and GameManager.expedition.cards != null:
-		var deck_tab := _button(_navigation, "Cartes")
+		var deck_tab := _button(_navigation, "Mon deck")
 		deck_tab.name = "CatabaseTab_cards"
 		deck_tab.pressed.connect(func(): _navigate("cards"))
 	_close_button = _button(heading, "Menu")
@@ -229,7 +229,7 @@ func _render() -> void:
 		_flow_rail.visible = session != null and not inspection_only and not auxiliary and _page != "map"
 		var step_index := 0 if _page in ["progression", "level_up"] else 1 if _page == "advancement" else 3 if _page == "map" else 2
 		for index in _flow_labels.size():
-			if index == 1 and session != null and session.cards != null: _flow_labels[index].text = "2 · Deck"
+			if index == 1 and session != null and session.cards != null: _flow_labels[index].text = "02  Maîtrises" if session.cards.rules_revision == 3 else "2 · Deck"
 			_flow_labels[index].add_theme_color_override("font_color", GOLD if index == step_index else TEAL if index < step_index else MUTED)
 	for page_id in _navigation_buttons:
 		var tab: Button = _navigation_buttons[page_id]
@@ -318,6 +318,11 @@ func _render_level_up() -> void:
 		["destiny", "%d points de destin disponibles" % session.build.points, "Choisissez une manœuvre à ajouter ou remplacer, ou dépensez vos points pour améliorer une famille du deck. Vous pouvez passer." if session.cards != null else "Apprenez une technique ou faites évoluer vos sorts. Vous pouvez conserver ces points pour un achat plus coûteux."],
 		["oboles", "Puis, votre butin", "Choisissez un équipement, une relique ou une autre récompense. Vous retrouverez la carte seulement après ces décisions."],
 	]:
+		if session.build.class_mode:
+			if row[0] == "destiny":
+				row[1] = "%d points de perfection disponibles" % session.cards.points()
+				row[2] = "Montez une maîtrise ou gardez vos points pour améliorer un exemplaire. La spécialisation se choisit au niveau 4."
+			elif row[0] == "oboles": row[2] = "Tout le butin est acquis. Consultez les cartes, objets et reliques, puis choisissez ce que vous voulez équiper."
 		var card := _card(column, GOLD)
 		_illustrated_title(card, row[1], ART_THEME.icon("resources", row[0]), 48)
 		_label(card, row[2], 17, TEXT)
@@ -383,6 +388,9 @@ func _render_learning_choice() -> void:
 
 
 func _render_cards_advancement() -> void:
+	if GameManager.expedition.cards.rules_revision == 3:
+		_render_class_progression(true)
+		return
 	var cards: CatabaseCards = GameManager.expedition.cards
 	_label(_body, "Faire évoluer mon deck", 28, GOLD, true)
 	_label(_body, "Une décision : ajouter une manœuvre, remplacer une copie, améliorer une famille, ou passer. Les cartes non choisies ne sont pas ajoutées.", 17, MUTED)
@@ -550,8 +558,9 @@ func _refresh_resources() -> void:
 	if session == null: return
 	var hero := session.character.unit
 	var champion := session.character.champion_progression
-	_summary.text = "Achille · étape %d / 20" % session.route.completed_node_ids.size()
+	_summary.text = "Achille · étape %d / 20" % int(session.route.get_current_node().get("depth", 0))
 	var values := {"health": "%d / %d PV" % [hero.current_hp, hero.max_hp.get_int()], "level": "Niveau %d" % champion.current_level, "destiny": "%d points de destin" % session.build.points, "oboles": "%d oboles" % session.gold}
+	if session.cards != null and session.cards.rules_revision == 3: values.destiny = "%d points de perfection" % session.cards.points()
 	for key in values:
 		var label: Label = _resource_values[key]
 		var changed := label.text != str(values[key])
@@ -591,6 +600,11 @@ func _close_current_view() -> void:
 
 
 func _open_inventory() -> void:
+	if GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3:
+		_navigate("cards")
+		var workshop := _body.find_child("ClassWorkshop", true, false)
+		if workshop != null: workshop.filter = "gear"; workshop._render()
+		return
 	var persistent := GameManager.get_persistent_run_ui()
 	if persistent == null: return
 	if inspection_only:
@@ -631,7 +645,9 @@ func _render_progression() -> void:
 		var session := GameManager.expedition
 		var pending := FLOW.required_step(session)
 		if session.is_editable() and pending != "map":
-			_label(_body, "Progression en attente · %d point(s) de caractéristiques · %d point(s) de destin. Vos choix restent disponibles ici après le combat." % [session.character.champion_progression.unspent_attribute_points, session.build.points], 17, GOLD)
+			var class_run := session.cards != null and session.cards.rules_revision == 3
+			var budget: int = session.cards.points() if class_run else session.build.points
+			_label(_body, "Progression en attente · %d point(s) de caractéristiques · %d point(s) de %s. Vos choix restent disponibles ici après le combat." % [session.character.champion_progression.unspent_attribute_points, budget, "perfection" if class_run else "destin"], 17, GOLD)
 			var resume := _button(_body, "Reprendre ma progression  →", true)
 			resume.name = "ResumeCharacterProgression"
 			resume.pressed.connect(func():
@@ -658,6 +674,8 @@ func _refresh_progression_action() -> void:
 	if not is_instance_valid(_progression_continue) or not _progression_continue.is_inside_tree(): return
 	var remaining := GameManager.expedition.character.champion_progression.unspent_attribute_points
 	_progression_continue.text = ("Continuer vers les sorts  →" if not GameManager.expedition.advancement_step.is_empty() and GameManager.expedition.wants_build_review() else "Continuer vers le butin  →") if remaining == 0 else "Encore %d point%s à répartir" % [remaining, "s" if remaining > 1 else ""]
+	if remaining == 0 and GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3 and not GameManager.expedition.advancement_step.is_empty():
+		_progression_continue.text = "Continuer vers les maîtrises  →"
 	_progression_continue.disabled = remaining > 0 or inspection_only
 	if remaining == 0: _progression_continue.grab_focus.call_deferred()
 
@@ -676,6 +694,9 @@ func _spend_attribute(attribute_id: StringName) -> void:
 
 
 func _render_choice_screen(capacity_only := false) -> void:
+	if not capacity_only and GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3 and str(GameManager.expedition.route.get_current_node().kind) in ["normal", "elite", "boss"]:
+		_render_class_loot()
+		return
 	var cards_mode: bool = GameManager.expedition.cards != null
 	if not capacity_only:
 		var heading := _label(_body, "Combat terminé · votre butin" if cards_mode else "Votre butin · équipement et reliques", 28, TEXT, true)
@@ -792,9 +813,10 @@ func _confirm_reward_selection() -> void:
 
 func _render_preparation() -> void:
 	var session := GameManager.expedition
+	var class_run := session.cards != null and session.cards.rules_revision == 3
 	var column := _scroll_column(_body)
 	_label(column, "Prêt pour la suite ?", 28, TEXT, true)
-	_label(column, "Préparez votre héros à votre rythme. Vous pouvez conserver vos points de destin pour plus tard.", 17, MUTED)
+	_label(column, "Préparez votre héros à votre rythme. Vous pouvez conserver vos points de %s pour plus tard." % ("perfection" if class_run else "destin"), 17, MUTED)
 	if not _last_reward.is_empty():
 		var receipt := _label(column, "✓ " + str(_last_reward.get("title", "Récompense reçue")) + " · récompense reçue", 16, TEAL)
 		receipt.name = "RewardReceipt"
@@ -803,6 +825,11 @@ func _render_preparation() -> void:
 	options.add_theme_constant_override("h_separation", 16)
 	column.add_child(options)
 	for entry in [["gear", "Inventaire", "equipment", "Quels objets porter ?", "Équipez vos trouvailles pour profiter de leurs effets.", "Ouvrir l'inventaire", "PrepareExpeditionEquipment"], ["build", "Compétences", "tree", "%d points de destin" % session.build.points, "Découvrez vos actions et apprenez de nouvelles techniques.", "Voir mes compétences", "ComposeCatabaseKit"], ["attributes", "Caractéristiques", "", "Niveau %d" % session.character.champion_progression.current_level, "Comprenez votre vie, vos dégâts et votre protection.", "Voir mes caractéristiques", "PrepareExpeditionAttributes"]]:
+		if class_run and entry[0] == "build":
+			entry[1] = "Classe & maîtrises"
+			entry[3] = "%d points de perfection" % session.cards.points()
+			entry[4] = "Renforcez votre classe ou investissez dans les cartes étrangères."
+			entry[5] = "Voir mes maîtrises"
 		var card := _card(options, TEAL if entry[0] == "gear" and _last_reward.has("item_id") else GOLD)
 		_icon(card, ART_THEME.icon("resources", "level") if entry[0] == "attributes" else ART_THEME.icon("nav", entry[2]), 60)
 		_label(card, entry[1], 22, TEXT, true)
@@ -836,6 +863,9 @@ func _render_departure() -> void:
 
 
 func _render_build() -> void:
+	if GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3:
+		_render_class_progression(false)
+		return
 	var session := GameManager.expedition
 	_label(_body, "Compétences", 28, TEXT, true)
 	var tabs := HBoxContainer.new()
@@ -1355,3 +1385,40 @@ func _illustrated_title(parent: Control, title: String, image: Texture2D, extent
 
 func _build_theme() -> void:
 	ART_THEME.apply(self)
+
+
+func _render_class_progression(required: bool) -> void:
+	var view := preload("res://ui/expedition/class_workshop.gd").new()
+	view.mode = "progression"
+	view.read_only = inspection_only
+	view.transaction_completed.connect(_refresh_resources)
+	_scroll_column(_body).add_child(view)
+	if required:
+		var button := _button(_body, "Conserver les points restants · Continuer vers le butin →", true)
+		button.name = "ClassProgressionContinue"
+		button.pressed.connect(func(): _resolve_cards_progression("skip"))
+		var refresh := func():
+			var cards = GameManager.expedition.cards
+			button.disabled = inspection_only or (GameManager.expedition.character.champion_progression.current_level >= 4 and cards.specialization.is_empty())
+			button.text = "Choisissez votre spécialisation pour continuer" if button.disabled else "Conserver les points restants · Continuer vers le butin →"
+		view.transaction_completed.connect(refresh)
+		refresh.call()
+		_label(_body, "Au niveau 4, choisissez votre spécialisation avant de continuer. Les autres points peuvent être conservés.", 16, MUTED)
+
+func _render_class_loot() -> void:
+	if is_instance_valid(_decision_panel):
+		_decision_panel.custom_minimum_size.y = minf(560, maxf(400, size.y - 180))
+		_decision_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var view := preload("res://ui/expedition/class_combat_results.gd").new()
+	view.deck_requested.connect(func(): _navigate("cards"))
+	view.inventory_requested.connect(_open_inventory)
+	_scroll_column(_body).add_child(view)
+	var button := _button(_body, "Butin reçu · Reprendre le chemin →", true)
+	button.name = "ClassLootContinue"
+	button.disabled = inspection_only
+	button.pressed.connect(func():
+		var id := "finish" if int(GameManager.expedition.route.get_current_node().depth) == 20 else "class_continue"
+		var result: Dictionary = GameManager.claim_expedition_reward(id)
+		if result.get("success", false):
+			if GameManager.expedition != null and GameManager.run_active: _continue_flow()
+		else: _action_result(result))

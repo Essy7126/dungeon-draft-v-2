@@ -9,6 +9,7 @@ enum Category {
 	CONSUMABLE,
 	SCROLL,
 	RELIC,
+	RUNE,
 }
 
 enum EquipmentSlot {
@@ -16,6 +17,9 @@ enum EquipmentSlot {
 	WEAPON,
 	ARMOR,
 	ACCESSORY,
+	HEAD,
+	BELT,
+	FEET,
 }
 
 enum UseEffect {
@@ -79,9 +83,9 @@ func is_valid() -> bool:
 		return false
 	if category == Category.WEAPON and equipment_slot != EquipmentSlot.WEAPON:
 		return false
-	if category == Category.ARMOR and equipment_slot != EquipmentSlot.ARMOR:
+	if category == Category.ARMOR and equipment_slot not in [EquipmentSlot.ARMOR, EquipmentSlot.HEAD, EquipmentSlot.FEET]:
 		return false
-	if category == Category.ACCESSORY and equipment_slot != EquipmentSlot.ACCESSORY:
+	if category == Category.ACCESSORY and equipment_slot not in [EquipmentSlot.ACCESSORY, EquipmentSlot.BELT]:
 		return false
 	if is_equippable() and stack_limit != 1:
 		return false

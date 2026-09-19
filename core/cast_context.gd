@@ -34,6 +34,7 @@ var damage_bonus_by_cell: Dictionary = {} # Vector2i -> int, propre au cast
 var damage_result_by_unit: Dictionary = {} # Unit -> DamageResult, interne
 var heal_bonus_by_unit: Dictionary = {} # Unit -> int, propre au cast
 var additional_statuses_by_unit: Dictionary = {} # Unit -> Array[StatusData]
+var additional_status_sources_by_unit: Dictionary = {} # Optional Unit -> source Unit
 var additional_shield_by_unit: Dictionary = {} # Unit -> int
 var additional_push_by_unit: Dictionary = {} # Unit -> int (cases exactes)
 var push_distance_override_by_unit: Dictionary = {} # Unit -> distance totale

@@ -25,6 +25,13 @@ func apply_item(
 			source,
 		)
 	unit.set_equipment_spell_modifiers(instance.instance_id, definition.spell_modifiers)
+	var rune := preload("res://core/expedition/class_rune_catalog.gd").definition(str(instance.rune_id))
+	if rune != null:
+		for modifier in rune.stat_modifiers:
+			var stat := _get_stat(unit, modifier.stat_id)
+			var source := "rune:%s:%s" % [instance.instance_id, modifier.stat_id]
+			stat.remove_modifiers_from(source)
+			stat.add_modifier(modifier.value, Stat.ModType.FLAT, source)
 	unit.set_equipment_guard_effectiveness(
 		instance.instance_id,
 		definition.guard_effectiveness_melee,
@@ -48,6 +55,10 @@ func remove_item(
 		if stat != null:
 			stat.remove_modifiers_from(_source(instance, modifier.stat_id))
 	unit.clear_equipment_spell_modifiers(instance.instance_id)
+	var rune := preload("res://core/expedition/class_rune_catalog.gd").definition(str(instance.rune_id))
+	if rune != null:
+		for modifier in rune.stat_modifiers:
+			_get_stat(unit, modifier.stat_id).remove_modifiers_from("rune:%s:%s" % [instance.instance_id, modifier.stat_id])
 	unit.clear_equipment_guard_effectiveness(instance.instance_id)
 	_clamp_runtime_resources(unit, previous_max_hp)
 	unit.stats_changed.emit(unit)
@@ -93,6 +104,7 @@ func _can_apply(
 		return false
 	if instance.definition_id != definition.item_id or instance.forge_level < 0 or instance.forge_level > 2:
 		return false
+	if instance.rune_id != &"" and (not definition.is_equippable() or not preload("res://core/expedition/class_rune_catalog.gd").ROWS.has(str(instance.rune_id))): return false
 	for modifier in definition.stat_modifiers:
 		if modifier == null \
 				or not modifier.is_valid() \

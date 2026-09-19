@@ -100,7 +100,7 @@ func test_confirm_grants_a_single_launch_for_the_selected_painted_appearance() -
 
 
 func test_trial_and_all_trio_choices_launch_without_replacement_confirmation() -> void:
-	# Historical adventures are opt-in fixtures; public selection keeps both appearances.
+	# Historical adventures are opt-in fixtures; appearance count is independent.
 	_screen.queue_free()
 	await wait_process_frames(2)
 	_screen = SelectionProbe.new()
@@ -108,15 +108,19 @@ func test_trial_and_all_trio_choices_launch_without_replacement_confirmation() -
 	_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_screen)
 	await wait_process_frames(3)
-	for index in [2, 3, 4, 5]:
+	var expected_launches := 0
+	for index in _screen.get_entries().size():
+		if (_screen.get_entries()[index].run as RunData).catabase_route_enabled: continue
 		assert_true(_screen.select_character(index))
 		var run := _screen.get_selected_entry().run as RunData
 		assert_false(run.catabase_route_enabled)
 		_screen.start_button.pressed.emit()
 		await wait_process_frames(2)
 		assert_false(_screen._is_replacement_open())
-		assert_eq(_screen.launch_requests, index - 1)
+		expected_launches += 1
+		assert_eq(_screen.launch_requests, expected_launches)
 		assert_eq(_hash(_fixture_path), _fixture_hash)
+	assert_eq(expected_launches, 4)
 	assert_eq((_screen.get_selected_entry().run as RunData).resource_path, "res://data/runs/philosopher_trial.tres")
 
 

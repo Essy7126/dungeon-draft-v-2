@@ -13,6 +13,7 @@ func _ready() -> void:
 	_hud = battle.action_bar
 	_panel = VBoxContainer.new()
 	_panel.name = "CatabaseCardHand"
+	_panel.set_meta("expanded_card_faces", GameManager.expedition.cards.rules_revision == 3)
 	_panel.add_theme_constant_override("separation", 4)
 	_panel.add_theme_font_override("font", CardSkin.FONT)
 	_hud.mount_card_hand(_panel)
@@ -38,11 +39,11 @@ func _process(_delta: float) -> void:
 		for spell in cards.spells_for(id): reasons.append(battle.spell_caster.get_spell_preparation_failure_reason(actor, spell))
 	var stamp := str([cards.hand, cards.retained, selected, battle.turn_state.selected_spell, cards.recomposed, cards.draw_pile.size(), cards.discard.size(), cards.exhausted.size(), actor.current_ap, actor.current_mp, actor.activation_index, actor.grid_pos, actor.get_meta("ct_bronze", 0), reasons, interactive])
 	if battle.has_method("set_card_hand_top"):
-		battle.set_card_hand_top(get_viewport().get_visible_rect().size.y - _hud.CARD_HUD_HEIGHT - 20)
+		battle.set_card_hand_top(get_viewport().get_visible_rect().size.y - _hud.get_card_hud_height() - 20)
 	if is_instance_valid(battle.player_combat_log) and battle.player_combat_log.has_method("set_bottom_inset"):
-		battle.player_combat_log.set_bottom_inset(_hud.CARD_HUD_HEIGHT + 20)
+		battle.player_combat_log.set_bottom_inset(_hud.get_card_hud_height() + 20)
 	if is_instance_valid(battle.inspect_panel) and battle.inspect_panel.has_method("set_bottom_inset"):
-		battle.inspect_panel.set_bottom_inset(_hud.CARD_HUD_HEIGHT + 20)
+		battle.inspect_panel.set_bottom_inset(_hud.get_card_hud_height() + 20)
 	if stamp == _last_state: return
 	_last_state = stamp
 	for child in _panel.get_children():
@@ -60,12 +61,23 @@ func _process(_delta: float) -> void:
 	var heading := Label.new()
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.text = "MAIN %d   ·   Pioche %d   ·   Défausse %d   ·   Épuisées %d" % [cards.hand.size(), cards.draw_pile.size(), cards.discard.size(), cards.exhausted.size()]
-	heading.add_theme_font_size_override("font_size", 13)
+	heading.add_theme_font_size_override("font_size", 15)
 	heading.add_theme_color_override("font_color", Color("dac8a4"))
 	top.add_child(heading)
+	var deck := Button.new()
+	deck.name = "OpenCombatDeck"
+	deck.text = "Mon deck · 10 cartes"
+	deck.tooltip_text = "Voir toutes vos cartes et leurs effets. Consultation pendant le combat."
+	CardSkin.action(deck)
+	deck.add_theme_font_size_override("font_size", 16)
+	top.add_child(deck)
+	deck.pressed.connect(func():
+		var persistent := GameManager.get_persistent_run_ui()
+		if persistent != null: persistent.open_card_collection())
 	var piles := Button.new()
 	piles.name = "InspectCardPiles"
 	piles.text = "Piles"
+	piles.visible = cards.rules_revision != 3
 	CardSkin.action(piles, true)
 	top.add_child(piles)
 	piles.pressed.connect(func():
@@ -106,7 +118,7 @@ func _process(_delta: float) -> void:
 	weapons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(weapons)
 	var fixed_label := Label.new()
-	fixed_label.text = "ARME · hors pioche"
+	fixed_label.text = "SECOURS · hors pioche" if cards.rules_revision == 3 else "ARME · hors pioche"
 	fixed_label.add_theme_font_size_override("font_size", 13)
 	weapons.add_child(fixed_label)
 	for spell in cards.weapon_spells():
@@ -139,6 +151,7 @@ func _process(_delta: float) -> void:
 		name_label.add_theme_font_size_override("font_size", 13)
 		name_label.add_theme_color_override("font_color", CatabaseCards.COLORS[cards.rarity(str(card.family))])
 		column.add_child(name_label)
+		name_label.visible = cards.rules_revision != 3
 		for spell in cards.spells_for(id):
 			var play := Button.new()
 			play.name = "Play_" + id + "_" + str(spell.spell_id)
@@ -185,6 +198,9 @@ func _process(_delta: float) -> void:
 
 
 func _spell_face(button: Button, spell: Spell, cost: int) -> void:
+	if str(spell.spell_id).begins_with("class_") and not str(spell.spell_id).begins_with("class_basic_"):
+		_class_spell_face(button, spell, cost)
+		return
 	# Bounded two-line names and a separate cost prevent six-card hands from
 	# growing below the chassis when a weapon has a long name.
 	button.accessibility_name = "%s, %d PA" % [spell.spell_name, cost]
@@ -225,3 +241,21 @@ func _spell_face(button: Button, spell: Spell, cost: int) -> void:
 	price.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	face.add_child(price)
 	face.modulate = Color("9aa49e") if button.disabled else Color.WHITE
+
+
+func _class_spell_face(button: Button, spell: Spell, cost: int) -> void:
+	const P := preload("res://ui/expedition/class_card_presentation.gd")
+	button.accessibility_name = CardText.details(spell, GameManager.expedition.character.unit)
+	var box := VBoxContainer.new(); button.add_child(box)
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	box.offset_left = 6; box.offset_right = -6; box.offset_top = 4; box.offset_bottom = -4
+	box.add_theme_constant_override("separation", 3); box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var top := HBoxContainer.new(); box.add_child(top); top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	P.icon(top, spell.icon, 28)
+	var price := P.label(top, "%d PA" % cost, 21); price.size_flags_horizontal = Control.SIZE_EXPAND_FILL; price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	price.modulate = Color("ffe0a0")
+	var title := P.label(box, spell.spell_name, 16); title.max_lines_visible = 2
+	var values := P.numbers(spell, GameManager.expedition.character.unit).replace(" · Portée", "\nPortée").replace(" · Sur soi", "\nSur soi")
+	var numbers := P.label(box, values, 14); numbers.max_lines_visible = 2; numbers.name = "CardNumbers"
+	var effect := P.label(box, P.rule(spell), 14); effect.max_lines_visible = 2; effect.modulate = Color("bce0d4"); effect.name = "CardEffect"
+	box.modulate.a = .6 if button.disabled else 1.

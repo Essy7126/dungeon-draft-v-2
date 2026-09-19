@@ -126,6 +126,10 @@ static func merge_into(source: ItemCatalog) -> ItemCatalog:
 	for definition in CatabasePreparationCatalog.relic_items():
 		if not merged.definitions.any(func(item: ItemDefinition): return item.item_id == definition.item_id):
 			merged.definitions.append(definition)
+	for definition in preload("res://core/expedition/class_equipment_catalog.gd").definitions():
+		if not merged.definitions.any(func(item): return item.item_id == definition.item_id): merged.definitions.append(definition)
+	for definition in preload("res://core/expedition/class_rune_catalog.gd").definitions():
+		if not merged.definitions.any(func(item): return item.item_id == definition.item_id): merged.definitions.append(definition)
 	merged.rebuild_index()
 	return merged
 

@@ -544,3 +544,37 @@ func test_invalid_starting_maneuvers_are_rejected_without_equipment_or_save_chan
 		assert_false(manager.confirm_catabase_preparation(selection).success)
 		assert_eq(manager.get_expedition_snapshot(), before)
 		assert_eq(FileAccess.get_sha256(manager.expedition_save_path), saved)
+
+func test_selection_choices_survive_threshold_and_pending_save() -> void:
+	var manager := Manager.new()
+	manager.expedition_save_path = "user://cards_setup_%d.json" % Time.get_ticks_usec()
+	add_child(manager)
+	managers.append(manager)
+	manager.selected_run_variant = "cards"
+	var run := load("res://data/runs/odyssey.tres") as RunData
+	assert_true(manager.configure_next_run(run, 0))
+	var choice := CatabasePreparationCatalog.preset("arc")
+	choice.armor = "mixte"
+	choice.difficulty_id = "easy"
+	assert_true(manager.configure_cards_departure(choice))
+	assert_true(manager.continue_after_intro())
+	assert_true(manager.finish_catabase_threshold().success)
+	assert_eq(manager.expedition.preparation_draft.selection, choice, "cleanup during launch preserves first decisions")
+	choice.card_families = CatabaseCards.starter_families(choice)
+	assert_true(manager.save_cards_preparation_draft(choice, 3))
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))
+	assert_true(manager.restore_expedition_snapshot(saved))
+	assert_eq(manager.expedition.preparation_draft.step, 3.0)
+	assert_eq(manager.expedition.preparation_draft.selection, choice)
+	assert_true(manager.confirm_catabase_preparation(choice).success)
+	assert_eq(manager.expedition.build.starting_selection.weapon, "arc")
+	assert_eq(manager.expedition.route.difficulty_id, "easy")
+	assert_eq(manager.expedition.cards.active.size(), 10)
+	assert_false(manager.expedition.to_snapshot().has("preparation_draft"))
+
+func test_pending_card_draft_rejects_invalid_and_fractional_steps() -> void:
+	var choice := CatabasePreparationCatalog.preset("marteau")
+	for invalid in [-1, 6, 2.5, "3", null]:
+		assert_false(ExpeditionSession.valid_preparation_draft({"selection": choice, "step": invalid}))
+	assert_false(ExpeditionSession.valid_preparation_draft({"selection": {}, "step": 0}))
+	assert_true(ExpeditionSession.valid_preparation_draft({}))

@@ -54,8 +54,8 @@ static func _append_run_entries(entries: Array[Dictionary], run_path: String, va
 			"unit": hero,
 			"run": run,
 			"chapter": run.run_name if run_path == PHILOSOPHER_TRIAL_RUN_PATH else ("Catabase" if run_path == CATABASE_RUN_PATH else "L’Odyssée du trio"),
-			"party_note": party_note,
-			"description": "Défiez le mage et son spectre au Gué du Léthé. Utilisez l’eau, la glace, la lave et les vortex pour contrer ses soins et ses protections." if run_path == PHILOSOPHER_TRIAL_RUN_PATH else _description_for(hero),
+			"party_note": "Aventure solo · Passe-rive" if passe_rive else party_note,
+			"description": "Traversez les Enfers avec Passe-rive. Préparez votre équipement, puis découvrez ce qui vous attend au-delà du Seuil des Ombres." if passe_rive else ("Défiez le mage et son spectre au Gué du Léthé. Utilisez l’eau, la glace, la lave et les vortex pour contrer ses soins et ses protections." if run_path == PHILOSOPHER_TRIAL_RUN_PATH else _description_for(hero)),
 			"accent": _accent_for(hero.get_effective_unit_id()),
 		})
 

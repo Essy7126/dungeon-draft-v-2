@@ -65,6 +65,7 @@ var _zoom_label: Label
 var _zoom := 1.0
 var _replacement_dialog: ConfirmationDialog
 var _replacement_token := ""
+var _cards_setup: Control
 
 
 func _ready() -> void:
@@ -72,6 +73,21 @@ func _ready() -> void:
 	theme.default_font = BODY
 	theme.default_font_size = 18
 	_entries = CATALOG.get_entries(include_archived_adventures)
+	if GameManager.selected_run_variant == "cards" and not include_archived_adventures:
+		var backdrop := BACKDROP.new()
+		add_child(backdrop)
+		backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_cards_setup = preload("res://ui/selection/cards_character_setup.gd").new()
+		add_child(_cards_setup)
+		_cards_setup.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_cards_setup.hero_selected.connect(func(index): selected_index = index)
+		_cards_setup.launch_requested.connect(_start_adventure)
+		_cards_setup.back_requested.connect(request_back)
+		_cards_setup.configure(_entries)
+		_preview = _cards_setup._preview
+		start_button = _cards_setup.start_button
+		_status = _cards_setup.status
+		return
 	_build_screen()
 	resized.connect(_layout)
 	_layout()
@@ -369,6 +385,11 @@ func _exit_tree() -> void:
 func select_character(index: int) -> bool:
 	if _transitioning or _is_spell_tree_open() or index < 0 or index >= _entries.size():
 		return false
+	if is_instance_valid(_cards_setup):
+		_cards_setup.hero = index
+		_cards_setup._update_hero()
+		_cards_setup._render()
+		return true
 	selected_index = index
 	selected_spell_index = 0
 	orientation_index = 1
@@ -394,7 +415,7 @@ func select_character(index: int) -> bool:
 	stats_labels["mp"].text = str(unit.max_mp)
 	stats_labels["initiative"].text = str(unit.initiative)
 	stats_labels["armor"].text = str(unit.armure).trim_suffix(".0")
-	start_button.text = "INCARNER ACHILLE   ›" if unit.get_effective_unit_id() == &"achilles" else "JOUER AVEC LE TRIO   ›"
+	start_button.text = "INCARNER %s   ›" % str(entry.get("display_name", unit.unit_name)).to_upper() if unit.get_effective_unit_id() == &"achilles" else "JOUER AVEC LE TRIO   ›"
 	start_button.tooltip_text = "Commencer %s\n%s" % [entry["chapter"], entry["party_note"]]
 	_preview.configure(unit)
 	_preview.set_showcase_zoom(_zoom)
@@ -533,6 +554,8 @@ func prepare_adventure(manager: Node) -> bool:
 	if not manager.configure_next_run(run, 0):
 		_status.text = "L’aventure n’a pas pu être préparée."
 		return false
+	if is_instance_valid(_cards_setup):
+		if not manager.configure_cards_departure(_cards_setup.payload()): return false
 	_transitioning = true
 	start_button.disabled = true
 	return true

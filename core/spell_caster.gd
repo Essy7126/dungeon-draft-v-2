@@ -1067,12 +1067,13 @@ func _resolve_unit_impact(
 	for extra_status_value in ctx.additional_statuses_by_unit.get(target, []):
 		var extra_status := extra_status_value as StatusData
 		if extra_status != null:
+			var extra_source: Unit = ctx.additional_status_sources_by_unit.get(target)
 			var extra_before := _status_state_signature(
 				target,
 				extra_status.get_effective_status_id(),
-				null,
+				extra_source,
 			)
-			target.apply_status(extra_status)
+			target.apply_status(extra_status, extra_source)
 			_register_status_change(
 				report,
 				target,
@@ -1080,7 +1081,7 @@ func _resolve_unit_impact(
 				_status_state_signature(
 					target,
 					extra_status.get_effective_status_id(),
-					null,
+					extra_source,
 				),
 			)
 			affected = true

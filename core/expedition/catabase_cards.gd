@@ -520,7 +520,8 @@ func begin_combat() -> void:
 	forms.clear()
 	for spell in owner().character.loadout.get_known_spells():
 		var family: String = owner().build.catalog.get_spell_family(str(spell.spell_id))
-		if not forms.has(family): forms[family] = str(family_spell(family).spell_id)
+		var resolved := family_spell(family)
+		if resolved != null and not forms.has(family): forms[family] = str(resolved.spell_id)
 	_rng.seed = hash("cards:hand:%d:%s" % [owner().route.seed, owner().route.current_node_id])
 	draw_pile.assign(active)
 	discard.clear()

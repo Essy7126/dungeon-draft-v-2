@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/build_system_lab/class_ui_probe.gd" id="1"]
+
+[node name="ClassUIProbe" type="Node"]
+script = ExtResource("1")
