@@ -1,5 +1,8 @@
 extends CatabaseCards
 const Catalog := preload("res://core/expedition/class_card_catalog.gd")
+var ecosystem_revision := 2
+var _last_discovery: Dictionary = {}
+var card_rewards: Dictionary = {}
 var primary_class := "assassin"
 var specialization := ""
 var masteries: Dictionary = { "assassin": 2, "gardien": 0, "arpenteur": 0, "thaumaturge": 0 }
@@ -42,6 +45,7 @@ func record_reward(node: Dictionary, xp: Dictionary, gold: int) -> void:
 	if battle_results.has(str(node.id)):
 		return
 	battle_results[str(node.id)] = {
+		"card_discovery": _last_discovery.duplicate(true),
 		"xp": maxi(0, int(xp.get("gained_xp", 0))),
 		"gold": gold,
 		"level_before": int(
@@ -77,6 +81,9 @@ func record_combat(report: CombatReport) -> void:
 func initialize_deck(selection: Dictionary) -> void:
 	if not copies.is_empty() or not Catalog.valid(selection):
 		return
+	if ecosystem_revision > 0:
+		for family in selection.card_families:
+			if family not in Catalog.starter_pool(selection.class_id): return
 	primary_class = selection.class_id
 	for key in masteries:
 		masteries[key] = 2 if key == primary_class else 0
@@ -196,9 +203,9 @@ func shop() -> Array:
 	if not stocks.has(id):
 		var rng := RandomNumberGenerator.new()
 		rng.seed = hash("class_shop:%d:%s" % [owner().route.seed, id])
-		var pool := Catalog.pool()
+		var pool := Catalog.reward_pool("", int(node.depth)) if ecosystem_revision > 0 else Catalog.legacy_pool()
 		var stock: Array = []
-		for i in 3:
+		for i in (6 if ecosystem_revision > 0 else 3):
 			var index := rng.randi_range(0, pool.size() - 1)
 			stock.append({ "family": pool[index], "sold": false })
 			pool.remove_at(index)
@@ -267,6 +274,8 @@ func weapon_spells() -> Array[Spell]:
 
 
 func rarity(family: String) -> int:
+	if ecosystem_revision > 0:
+		return maxi(0, Catalog.Ecology.tier(family) - 1)
 	return 0 if Catalog.row(family).is_empty() else (1 if Catalog.row(family)[3] >= 3 else 0)
 
 
@@ -293,14 +302,28 @@ func grant_loot(node: Dictionary) -> void:
 	rng.seed = hash("class_loot:%d:%s" % [owner().route.seed, node.id])
 	var depth := int(node.depth)
 	last_drops.clear()
-	for i in (2 if node.kind == "elite" else 1):
+	for i in (0 if ecosystem_revision > 0 else (2 if node.kind == "elite" else 1)):
 		var foreign := rng.randf() < (.15 if depth <= 3 else .35 if depth <= 12 else .45)
 		var classes := Catalog.CLASSES.keys()
 		classes.erase(primary_class)
 		var chosen: String = classes[rng.randi_range(0, classes.size() - 1)] if foreign else primary_class
-		var pool := Catalog.pool(chosen)
+		var pool := Catalog.legacy_pool(chosen)
 		last_drops.append(add_copy(pool[rng.randi_range(0, pool.size() - 1)]))
+	if ecosystem_revision >= 2:
+		var drop := preload("res://core/expedition/card_drop_catalog.gd").roll(owner().route.seed, node, primary_class, card_drought())
+		_last_discovery = drop.factors
+		for family in drop.families: last_drops.append(add_copy(family))
 	receipts[str(node.id)] = last_drops.duplicate()
+	if ecosystem_revision == 1 and depth < 20:
+		var offers: Array[String] = []
+		for i in 3:
+			var pool := Catalog.reward_pool(primary_class if i < 2 else "", depth)
+			if i == 0:
+				var tier := 3 if depth >= 10 else 2 if depth >= 4 else 1
+				pool = pool.filter(func(family): return Catalog.Ecology.tier(family) == tier)
+			pool = pool.filter(func(family): return family not in offers)
+			offers.append(pool[rng.randi_range(0, pool.size() - 1)])
+		card_rewards[str(node.id)] = {"offers": offers, "resolved": false, "chosen": ""}
 	var items: Array[String] = []
 	var tier := mini(3, 1 + int(depth / 7))
 	var slot := 0 if receipts.size() == 1 else rng.randi_range(0, 5)
@@ -330,8 +353,55 @@ func collect_pending() -> void:
 			pending_items.erase(id)
 
 
+func card_drought() -> int:
+	var drought := 0
+	# Route order is canonical, including receipts whose cards were later sold.
+	var visited: Array = owner().route.completed_node_ids.duplicate()
+	if owner().route.current_node_id not in visited: visited.append(owner().route.current_node_id)
+	visited.reverse()
+	for node_id in visited:
+		if not receipts.has(node_id): continue
+		if not receipts[node_id].is_empty(): break
+		drought += 1
+	return drought
+
+
+func pending_card_reward() -> Dictionary:
+	var reward: Dictionary = card_rewards.get(owner().route.current_node_id, {})
+	return reward if not reward.get("resolved", true) else {}
+
+
+## Empty family skips. Empty replacement keeps the new card in reserve.
+func choose_card_reward(family: String, replace_id := "") -> bool:
+	var reward := pending_card_reward()
+	if not owner().is_editable() or owner().route.phase != "reward" or reward.is_empty():
+		return false
+	if family != "" and family not in reward.offers:
+		return false
+	if replace_id != "":
+		if family == "" or replace_id not in active:
+			return false
+		var count := 0
+		for id in active:
+			if id != replace_id and copy_for(id).family == family: count += 1
+		if count >= 2: return false
+	if family != "":
+		var id := add_copy(family)
+		if replace_id != "": active[active.find(replace_id)] = id
+		last_drops.assign([id])
+		receipts[owner().route.current_node_id] = [id]
+		var report: Dictionary = battle_results.get(owner().route.current_node_id, {})
+		if not report.is_empty(): report.card_families = [family]
+	reward.resolved = true
+	reward.chosen = family
+	changed.emit()
+	return true
+
+
 func snapshot() -> Dictionary:
 	var data := super()
+	data.ecosystem_revision = ecosystem_revision
+	data.card_rewards = card_rewards.duplicate(true)
 	data.primary_class = primary_class
 	data.specialization = specialization
 	data.masteries = masteries.duplicate()
@@ -345,6 +415,27 @@ func snapshot() -> Dictionary:
 
 
 func restore(data: Dictionary, pending_start: bool) -> bool:
+	var revision: Variant = data.get("ecosystem_revision", 0)
+	if not (revision is int or revision is float) or not is_finite(float(revision)) or float(revision) != int(revision) or int(revision) not in [0, 1, 2]:
+		return false
+	var rewards: Variant = data.get("card_rewards", {})
+	if not rewards is Dictionary or (revision == 0 and not rewards.is_empty()):
+		return false
+	for node_id in rewards:
+		var reward: Variant = rewards[node_id]
+		if node_id not in owner().awarded_node_ids or not reward is Dictionary:
+			return false
+		if not reward.get("offers") is Array or reward.offers.size() != 3 or not reward.get("resolved") is bool:
+			return false
+		var seen := {}
+		for family in reward.offers:
+			if not family is String or Catalog.row(family).is_empty() or Catalog.Ecology.tier(family) == 0 or seen.has(family):
+				return false
+			seen[family] = true
+		if not reward.get("chosen") is String or (reward.chosen != "" and reward.chosen not in reward.offers):
+			return false
+		if not reward.resolved and (reward.chosen != "" or node_id != owner().route.current_node_id or owner().route.phase != "reward"):
+			return false
 	var summaries: Variant = data.get("battle_results", { })
 	if not summaries is Dictionary:
 		return false
@@ -352,6 +443,17 @@ func restore(data: Dictionary, pending_start: bool) -> bool:
 		if node_id not in owner().awarded_node_ids or not summaries[node_id] is Dictionary:
 			return false
 		var entry: Dictionary = summaries[node_id]
+		var discovery: Variant = entry.get("card_discovery", {})
+		if not discovery is Dictionary: return false
+		if not discovery.is_empty():
+			for key in ["resonance", "exploration", "danger", "memory", "drought"]:
+				var value: Variant = discovery.get(key)
+				if not (value is int or value is float) or not is_finite(float(value)) or float(value) != int(value) or value < 0 or value > 100: return false
+			if not discovery.get("chances") is Array or discovery.chances.size() < 2 or discovery.chances.size() > 4: return false
+			for chance in discovery.chances:
+				if not (chance is int or chance is float) or not is_finite(float(chance)) or float(chance) != int(chance) or chance < 0 or chance > 100: return false
+		if entry.has("reviewed") and not entry.reviewed is bool:
+			return false
 		for key in ["xp", "gold", "level_before", "level_after", "xp_after", "turns"]:
 			if (
 				not (entry.get(key) is int or entry.get(key) is float)
@@ -483,7 +585,7 @@ func restore(data: Dictionary, pending_start: bool) -> bool:
 	for node_id in saved_stocks:
 		if (
 			node_id not in owner().awarded_node_ids
-			or not saved_stocks[node_id] is Array or saved_stocks[node_id].size() != 3
+			or not saved_stocks[node_id] is Array or saved_stocks[node_id].size() != (6 if revision > 0 else 3)
 		):
 			return false
 		for offer in saved_stocks[node_id]:
@@ -516,6 +618,9 @@ func restore(data: Dictionary, pending_start: bool) -> bool:
 		copies = old
 		return false
 	primary_class = primary
+	# Revision 1 runs adopt actual drops, including an unresolved reward boundary.
+	ecosystem_revision = 2 if int(revision) > 0 else 0
+	card_rewards = rewards.duplicate(true)
 	masteries = ranks.duplicate()
 	specialization = spec
 	spent = int(data.spent)
@@ -529,6 +634,13 @@ func restore(data: Dictionary, pending_start: bool) -> bool:
 	pending_items.assign(data.get("pending_items", []))
 	battle_results = summaries.duplicate(true)
 	for entry: Dictionary in battle_results.values():
+		var discovery: Dictionary = entry.get("card_discovery", {})
+		if not discovery.is_empty():
+			for key in ["resonance", "exploration", "danger", "memory", "drought"]:
+				discovery[key] = int(discovery[key])
+			var chances: Array[int] = []
+			for chance in discovery.chances: chances.append(int(chance))
+			discovery.chances = chances
 		for key in [
 			"xp",
 			"gold",
@@ -550,6 +662,19 @@ func restore(data: Dictionary, pending_start: bool) -> bool:
 	for id in data.get("last_drops", []):
 		if id is String and ids.has(id):
 			last_drops.append(id)
+	if int(revision) == 1 and not pending_card_reward().is_empty():
+		var node: Dictionary = owner().route.get_current_node()
+		receipts.erase(str(node.id))
+		var drop := preload("res://core/expedition/card_drop_catalog.gd").roll(owner().route.seed, node, primary_class, card_drought())
+		last_drops.clear()
+		for family in drop.families: last_drops.append(add_copy(family))
+		receipts[str(node.id)] = last_drops.duplicate()
+		card_rewards[str(node.id)].resolved = true
+		card_rewards[str(node.id)].chosen = ""
+		if battle_results.has(str(node.id)):
+			battle_results[str(node.id)].card_families = drop.families.duplicate()
+			battle_results[str(node.id)].card_discovery = drop.factors.duplicate(true)
+			battle_results[str(node.id)].reviewed = false
 	configure_profile()
 	return true
 

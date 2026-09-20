@@ -37,10 +37,7 @@ func refresh(session: ExpeditionSession) -> void:
 			hero.current_shield,
 		],
 	)
-	_label(
-		self,
-		"Base au niveau actuel + bonus fixes, puis bonus en pourcentage. Le total inclut l'équipement et les effets actifs ; survolez une ligne pour connaître ses modificateurs.",
-	)
+	tooltip_text = "Base au niveau actuel + bonus fixes, puis bonus en pourcentage. Le total inclut l'équipement et les effets actifs ; survolez une ligne pour connaître ses modificateurs."
 	var current_group := ""
 	var grid: GridContainer
 	for row in SHEET.rows(hero):
@@ -64,14 +61,12 @@ func refresh(session: ExpeditionSession) -> void:
 	_label(self, "PROGRESSION ET CONSTRUCTION", true)
 	_label(
 		self,
-		"%d points de caractéristiques disponibles · %d points de destin · %d oboles"
-		% [champion.unspent_attribute_points, session.build.points, session.gold],
+		"%d points de caractéristiques disponibles · %d points de %s · %d oboles"
+		% [champion.unspent_attribute_points, session.cards.points() if session.build.class_mode else session.build.points, "perfection" if session.build.class_mode else "destin", session.gold],
 	)
-	_label(
-		self,
-		"Boucliers créés : ×%.2f · Sagesse : %d / %d"
-		% [hero.shield_creation_multiplier, champion.wisdom_points, champion.profile.wisdom_cap],
-	)
+	_label(self, "Boucliers créés : ×%.2f" % hero.shield_creation_multiplier)
+	if not session.build.class_mode:
+		_label(self, "Sagesse : %d / %d" % [champion.wisdom_points, champion.profile.wisdom_cap])
 	_label(self, "SORTS ÉQUIPÉS", true)
 	for spell in session.character.loadout.get_equipped_spells():
 		_label(

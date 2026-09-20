@@ -51,7 +51,10 @@ func _run() -> void:
 		session.cards.bind(session)
 		session.build.class_mode = true
 		session.card_inventory = GameManager.run_inventory
-		session.preparation_draft = { "selection": Classes.preset("thaumaturge"), "step": 0 }
+		var ui_deck := Classes.preset("thaumaturge")
+		# Exercise a legal mobility choice so the distant opening has a castable card.
+		ui_deck.card_families[4] = "s_t_step"
+		session.preparation_draft = { "selection": ui_deck, "step": 0 }
 		var screen := SCREEN.instantiate()
 		add_child(screen)
 		await _settle()
@@ -91,38 +94,30 @@ func _run() -> void:
 		screen = SCREEN.instantiate()
 		add_child(screen)
 		await _settle()
-		await _capture("class_level_up", viewport, [screen.find_child("BeginLevelUp", true, false)])
-		screen.find_child("BeginLevelUp", true, false).pressed.emit()
-		await _settle()
 		_check(
-			screen.find_child("Attribute_wisdom", true, false) == null,
-			"class progression excludes XP snowball attribute",
+			screen.find_child("BeginLevelUp", true, false) == null,
+			"loot precedes level notification",
 			viewport,
 		)
-		await _capture(
-			"class_attributes",
-			viewport,
-			[screen.find_child("Attribute_power", true, false)],
-		)
-		while session.character.champion_progression.unspent_attribute_points > 0:
-			screen.find_child("Attribute_power", true, false).pressed.emit()
-			await _settle()
-		screen.find_child("ContinueExpeditionFlow", true, false).pressed.emit()
-		await _settle()
-		_check(
-			screen.find_child("ClassProgressionContinue", true, false) != null,
-			"level flow opens class mastery window",
-			viewport,
-		)
-		screen.find_child("ClassProgressionContinue", true, false).pressed.emit()
-		await _settle()
 		await _capture(
 			"class_loot",
 			viewport,
 			[screen.find_child("ClassLootContinue", true, false)],
 		)
 		var loot_icons := screen.find_children("LootReceipt_*", "Button", true, false)
-		_check(loot_icons.size() >= 2, "receipt shows card and equipment as loot icons", viewport)
+		var discovery: Control = screen.find_child("CardDiscoverySummary", true, false)
+		if discovery != null:
+			await _hover_spell(discovery)
+			await get_tree().create_timer(1.2).timeout
+			await _capture("card_discovery_factors", viewport, [discovery])
+			get_viewport().warp_mouse(Vector2(4, 4))
+		_check(screen.find_child("CardDiscoverySummary", true, false) != null, "receipt explains card discovery", viewport)
+		_check(session.cards.pending_card_reward().is_empty(), "cards arrive as loot without draft", viewport)
+		var card_records := preload("res://ui/expedition/class_combat_results.gd").records_for(session).filter(func(record): return record.get("kind", "") == "C")
+		var card_count := 0
+		for record in card_records: card_count += int(record.count)
+		_check(card_count == session.cards.last_drops.size(), "all dropped card copies are displayed alongside objects", viewport)
+		_check(loot_icons.size() >= 1, "receipt shows equipment and any actual card drops", viewport)
 		if not loot_icons.is_empty():
 			get_viewport().warp_mouse(loot_icons[0].get_global_rect().get_center())
 			var motion := InputEventMouseMotion.new()
@@ -155,6 +150,61 @@ func _run() -> void:
 				viewport,
 				[screen.find_child("ClassCombatResults", true, false)._detail],
 			)
+		screen.find_child("CloseDedicatedWindow", true, false).pressed.emit()
+		await _settle()
+		await _capture("class_level_up", viewport, [screen.find_child("BeginLevelUp", true, false)])
+		screen.find_child("CloseDedicatedWindow", true, false).pressed.emit()
+		await _settle()
+		_check(
+			session.advancement_step == "level_up",
+			"closing notification preserves pending level",
+			viewport,
+		)
+		_check(
+			screen.find_child("CatabaseDecisionWindow", true, false) == null,
+			"closing level returns to route overview",
+			viewport,
+		)
+		await _capture(
+			"class_pending_progression",
+			viewport,
+			[screen.find_child("ResumeCharacterProgression", true, false)],
+		)
+		screen._navigate("attributes")
+		await _settle()
+		await _capture(
+			"class_character_details",
+			viewport,
+			[screen.find_child("ResumeCharacterProgression", true, false)],
+		)
+		var stat_scroll: ScrollContainer = screen.find_child("AttributeScroll", true, false)
+		stat_scroll.scroll_vertical = 360
+		await _settle()
+		await _capture("class_character_defenses", viewport, [stat_scroll])
+		screen.find_child("ResumeCharacterProgression", true, false).pressed.emit()
+		await _settle()
+		screen.find_child("BeginLevelUp", true, false).pressed.emit()
+		await _settle()
+		_check(
+			screen.find_child("Attribute_wisdom", true, false) == null,
+			"class progression excludes XP snowball attribute",
+			viewport,
+		)
+		await _capture(
+			"class_attributes",
+			viewport,
+			[screen.find_child("Attribute_power", true, false)],
+		)
+		while session.character.champion_progression.unspent_attribute_points > 0:
+			screen.find_child("Attribute_power", true, false).pressed.emit()
+			await _settle()
+		screen.find_child("ContinueExpeditionFlow", true, false).pressed.emit()
+		await _settle()
+		_check(
+			screen.find_child("ClassProgressionContinue", true, false) != null,
+			"level flow opens class mastery window",
+			viewport,
+		)
 		screen._navigate("build")
 		await _settle()
 		await _capture("class_mastery", viewport, [])
@@ -174,15 +224,47 @@ func _run() -> void:
 			viewport,
 		)
 		await _capture("class_equipment", viewport, [])
-		screen.queue_free()
-		await _settle()
+		var equipped_tile := screen.find_child("EquipmentSlot_0", true, false)
+		var equipped_check: Control = equipped_tile.find_child("EquippedCheck", true, false)
 		_check(
-			session
-			.claim("class_continue", GameManager.run_inventory, GameManager.item_catalog)
-			.success,
-			"received loot can be closed without blocking progression",
+			equipped_check != null and equipped_check.visible,
+			"equipped item has an explicit visible check",
 			viewport,
 		)
+		var empty: Control = screen.find_child("InventoryEmptyState", true, false)
+		_check(
+			empty != null and empty.size.x >= 200 and empty.size.y < 100,
+			"empty bag remains a readable paragraph",
+			viewport,
+		)
+		_check(
+			screen.find_children("EquipmentSlot_*", "Button", true, false).size() == 6,
+			"all six equipment slots surround the character",
+			viewport,
+		)
+		screen._navigate("attributes")
+		await _settle()
+		var power_total: Label = screen.find_child("Detailed_attack_power_total", true, false)
+		_check(
+			power_total != null
+			and int(power_total.text) == session.character.unit.attack_power.get_int(),
+			"character details reflect newly equipped weapon",
+			viewport,
+		)
+		screen._close_current_view()
+		await _settle()
+		# Keep the probe scene alive; the final route state and destination are asserted below.
+		screen.inspection_only = true
+		screen.find_child("ClassProgressionContinue", true, false).pressed.emit()
+		await _settle()
+		_check(session.cards.pending_card_reward().is_empty(), "cards are actual drops, no draft step", viewport)
+		_check(
+			session.route.phase == "map",
+			"level completion closes the receipt without showing it twice",
+			viewport,
+		)
+		screen.queue_free()
+		await _settle()
 		_check(
 			GameManager.get_expedition_destination_scene()
 			== "res://hub/seuil_crossroads/SeuilCrossroads.tscn",
@@ -197,6 +279,7 @@ func _run() -> void:
 				viewport,
 			)
 		await _elite_loot(viewport)
+		await _card_shop(viewport)
 	GameManager.cleanup_run_state()
 	await _settle()
 	var passed := _checks.all(
@@ -209,6 +292,47 @@ func _run() -> void:
 	)
 	file.close()
 	get_tree().quit(0 if passed else 1)
+
+
+func _card_shop(viewport: Vector2i) -> void:
+	var session: ExpeditionSession = GameManager.expedition
+	for transition in 12:
+		if session.route.phase == "reward":
+			if not session.cards.shop().is_empty():
+				session.gold = 1000 # Fixture budget; actual debit is asserted below.
+				var screen := SCREEN.instantiate()
+				add_child(screen)
+				await _settle()
+				screen._navigate("cards")
+				await _settle()
+				var offers := screen.find_children("ShopCard_*", "Button", true, false)
+				_check(offers.size() == 6, "six illustrated shop offers", viewport)
+				await _capture("class_card_shop", viewport, offers.slice(0, 3))
+				if offers.size() == 6:
+					var stock: Array = session.cards.shop()
+					var price: int = session.cards.BUY[session.cards.rarity(stock[0].family)]
+					var gold := session.gold
+					var copies: int = session.cards.copies.size()
+					offers[0].pressed.emit()
+					await _settle()
+					_check(session.gold == gold - price and session.cards.copies.size() == copies + 1, "shop click buys exactly one reserve copy", viewport)
+					_check(session.cards.shop()[0].sold, "purchased offer is exhausted", viewport)
+				screen.queue_free()
+				await _settle()
+				return
+			while session.character.champion_progression.unspent_attribute_points > 0:
+				session.character.spend_champion_attribute(&"power")
+			if session.character.champion_progression.current_level >= 4 and session.cards.specialization.is_empty():
+				session.cards.specialize(Classes.SPECS[session.cards.primary_class][0][0])
+			while not session.advancement_step.is_empty():
+				if session.advancement_step == "advancement": session.cards.resolve_progression("skip")
+				else: session.advance_level_step()
+			if not session.cards.pending_card_reward().is_empty(): session.cards.choose_card_reward("")
+			if not session.claim("class_continue", GameManager.run_inventory, GameManager.item_catalog).success: break
+		var next := session.route.get_available_nodes()
+		if next.is_empty() or not session.enter(str(next[0].id)): break
+		if session.route.phase == "combat": session.combat_won()
+	_check(false, "card shop is reachable", viewport)
 
 
 func _elite_loot(viewport: Vector2i) -> void:
@@ -297,6 +421,7 @@ func _elite_loot(viewport: Vector2i) -> void:
 			screen.queue_free()
 			await _settle()
 			return
+		if not session.cards.pending_card_reward().is_empty(): session.cards.choose_card_reward("")
 		var reward := "leave_hub" if ExpeditionRouteCatalog.is_halt(str(next.kind)) else "class_continue"
 		if not session.claim(reward, GameManager.run_inventory, GameManager.item_catalog).success:
 			break
@@ -382,6 +507,29 @@ func _class_combat(viewport: Vector2i) -> void:
 				viewport,
 			)
 			await _capture("class_deck_last_card", viewport, [last_card, workshop.detail])
+			_check(
+				last_card.button_pressed,
+				"selected deck card remains visibly selected",
+				viewport,
+			)
+			await _hover_spell(last_card)
+			await get_tree().create_timer(.7).timeout
+			_check(
+				get_tree().root.find_children("CardTooltip", "", true, false).is_empty(),
+				"only the passive explanation appears after a sustained hover",
+				viewport,
+			)
+			var deck_hover = last_card.find_child("SpellHoverController", true, false)
+			var explanation: Control = deck_hover._panel
+			var grid_clear := not explanation.get_global_rect().intersects(
+				list_scroll.get_global_rect()
+			)
+			_check(
+				explanation.visible and grid_clear,
+				"deck explanation leaves the card grid visible",
+				viewport,
+			)
+			await _capture("class_deck_hover", viewport, [explanation, last_card])
 			persistent._close_expedition_inspection()
 			await _settle()
 			_check(
@@ -389,20 +537,91 @@ func _class_combat(viewport: Vector2i) -> void:
 				"closing deck restores combat inputs",
 				viewport,
 			)
+			_check(
+				persistent.open_inventory_screen(&"achilles"),
+				"HUD opens dedicated class inventory",
+				viewport,
+			)
+			await _settle()
+			inspection = persistent._expedition_inspection
+			_check(persistent.is_inventory_open(), "inventory API tracks the new window", viewport)
+			_check(
+				inspection.find_child("ClassInventoryView", true, false).read_only,
+				"equipment is locked during combat",
+				viewport,
+			)
+			_check(
+				not battle._can_accept_player_intent(),
+				"inventory blocks battle input",
+				viewport,
+			)
+			await _capture(
+				"class_combat_inventory",
+				viewport,
+				[inspection.find_child("InventoryCharacterPreview", true, false)],
+			)
+			_check(
+				persistent.close_inventory_screen(),
+				"inventory API closes the new window",
+				viewport,
+			)
+			await _settle()
+			_check(
+				not persistent.is_inventory_open() and battle._can_accept_player_intent(),
+				"closing inventory restores combat inputs",
+				viewport,
+			)
 	var playable: Array = hand.find_children("Play_*", "Button", true, false).filter(
 		func(button):
 			return not button.disabled,
 	)
 	_check(not playable.is_empty(), "a class card accepts input", viewport)
-	for effect: Label in hand.find_children("CardEffect", "Label", true, false):
-		var button: Button = effect.get_parent().get_parent()
-		_check(
-			button.get_global_rect().encloses(effect.get_global_rect()),
-			"card effect fits above its action buttons",
-			viewport,
-		)
+	var range_badges := hand.find_children("CardRange", "Label", true, false)
+	_check(range_badges.size() == 4, "every hand card displays its range", viewport)
+	for badge: Label in range_badges:
+		var button: Control = badge.get_parent().get_parent().get_parent()
+		_check(button.get_global_rect().encloses(badge.get_global_rect()), "range badge fits its clickable icon", viewport)
 	if not playable.is_empty():
-		playable[0].pressed.emit()
+		var source: Button = playable[0]
+		await _hover_spell(source)
+		var hover = source.find_child("SpellHoverController", true, false)
+		var popup: Control = hover._panel
+		_check(popup != null and popup.visible, "pointer opens the spell explanation", viewport)
+		if popup != null:
+			_check(
+				not popup.get_global_rect().intersects(hand.get_global_rect()),
+				"explanation stays above the entire hand",
+				viewport,
+			)
+			_check(
+				Rect2(Vector2.ZERO, viewport).encloses(popup.get_global_rect()),
+				"spell explanation stays in viewport",
+				viewport,
+			)
+			_check(
+				get_viewport().gui_get_hovered_control() == source,
+				"tooltip does not intercept card selection",
+				viewport,
+			)
+			_check(
+				battle._can_accept_player_intent(),
+				"hover does not lock combat controls",
+				viewport,
+			)
+			await _capture("class_spell_hover", viewport, [popup, source])
+		if playable.size() > 1:
+			await _hover_spell(playable[1])
+			_check(not popup.visible, "moving to another card hides the old explanation", viewport)
+			await _hover_spell(source)
+	if not playable.is_empty():
+		var click := InputEventMouseButton.new()
+		click.position = playable[0].get_global_rect().get_center()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = true
+		get_viewport().push_input(click)
+		click = click.duplicate()
+		click.pressed = false
+		get_viewport().push_input(click)
 		await _settle()
 		_check(
 			battle.turn_state.selected_spell != null
@@ -477,3 +696,13 @@ func _cast_one_card(battle: Node, hand: Control, viewport: Vector2i) -> void:
 				await _capture("class_combat_card_played", viewport, [hand])
 				return
 	_check(false, "a useful card has a reachable target in the opening hand", viewport)
+
+
+func _hover_spell(button: Control) -> void:
+	get_viewport().warp_mouse(button.get_global_rect().get_center())
+	var motion := InputEventMouseMotion.new()
+	motion.position = button.get_global_rect().get_center()
+	motion.global_position = motion.position
+	get_viewport().push_input(motion)
+	await get_tree().create_timer(.4).timeout
+	await _settle()

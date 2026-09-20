@@ -2385,7 +2385,7 @@ func choose_expedition_node(node_id: String) -> bool:
 		return false
 	var node := expedition.route.get_current_node()
 	current_room_index = int(node.depth) - 1
-	rooms[current_room_index] = ExpeditionRunFactory.make_room(node, run_seed)
+	rooms[current_room_index] = ExpeditionRunFactory.make_room(node, run_seed, _uses_card_ecosystem())
 	current_wave_index = 0
 	_room_combat_report = null
 	_last_combat_report = null
@@ -2403,6 +2403,15 @@ func choose_expedition_node(node_id: String) -> bool:
 	elif is_merchant_hall_active() or is_painted_halt_active():
 		_request_scene_change(get_expedition_destination_scene())
 	return true
+
+
+func acknowledge_expedition_combat_receipt() -> Dictionary:
+	if expedition == null or not run_active:
+		return {"success": false, "message": "Aucune expédition en cours."}
+	var result := expedition.acknowledge_combat_receipt()
+	if bool(result.get("success", false)):
+		_save_expedition_transaction(result)
+	return result
 
 
 func advance_expedition_level_step() -> Dictionary:
@@ -2500,6 +2509,10 @@ func get_expedition_snapshot() -> Dictionary:
 	return {"version": 2, "mode": "catabase_route", "hero_visual_variants": _active_run_data.hero_visual_variants.duplicate(), "session": expedition.to_snapshot(), "inventory": run_inventory.to_snapshot(), "equipment": state.equipment_loadout.to_snapshot(), "progression": state.get_progression_snapshot(), "current_hp": state.unit.current_hp}
 
 
+func _uses_card_ecosystem() -> bool:
+	return expedition != null and expedition.cards != null and expedition.cards.rules_revision == 3 and expedition.cards.ecosystem_revision > 0
+
+
 func save_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 	if path == ExpeditionSaveService.SAVE_PATH:
 		path = expedition_save_path
@@ -2543,11 +2556,11 @@ func restore_expedition_snapshot(snapshot: Dictionary) -> bool:
 	for node_id in expedition.route.completed_node_ids:
 		for node in expedition.route.nodes:
 			if str(node.id) == node_id:
-				rooms[int(node.depth) - 1] = ExpeditionRunFactory.make_room(node, run_seed)
+				rooms[int(node.depth) - 1] = ExpeditionRunFactory.make_room(node, run_seed, _uses_card_ecosystem())
 	var current := expedition.route.get_current_node()
 	current_room_index = int(current.depth) - 1 if not current.is_empty() else -1
 	if current_room_index >= 0:
-		rooms[current_room_index] = ExpeditionRunFactory.make_room(current, run_seed)
+		rooms[current_room_index] = ExpeditionRunFactory.make_room(current, run_seed, _uses_card_ecosystem())
 	last_restore_error = &""
 	return true
 

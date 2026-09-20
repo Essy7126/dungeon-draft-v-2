@@ -1,0 +1,18 @@
+; Standalone VFX review. No Catabase autoloads or gameplay mutations.
+config_version=5
+
+[application]
+config/name="Catabase · Souffle du laurier"
+run/main_scene="res://Study.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=800
+window/stretch/mode="canvas_items"
+
+[rendering]
+renderer/rendering_method="forward_plus"
+rendering_device/driver.windows="d3d12"
+shader_compiler/shader_cache/enabled=false
+environment/defaults/default_clear_color=Color(0.047, 0.071, 0.078, 1)

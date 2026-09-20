@@ -3,6 +3,8 @@ extends RefCounted
 
 static func reason_text(reason: StringName, actor: Unit, spell: Spell) -> String:
 	match reason:
+		&"requires_marked_target": return "La stase demande une cible marquée."
+		&"stasis_immunity": return "Cette cible est encore protégée contre la stase."
 		&"": return ""
 		&"pa": return "PA insuffisants : %d / %d." % [actor.current_ap, actor.get_spell_ap_cost(spell)]
 		&"cooldown": return "Recharge : %d activation(s)." % actor.get_spell_cooldown_remaining(spell)
@@ -24,8 +26,14 @@ static func effect(spell: Spell, actor: Unit) -> String:
 	if shield > 0: parts.append("%d garde" % shield)
 	var heal := spell.get_scaled_heal(actor)
 	if heal > 0: parts.append("%d soin de base" % heal)
-	parts.append("sur soi" if spell.spell_range == 0 else "portée de base %d" % spell.spell_range)
+	parts.append("Portée : " + range_text(spell, actor))
 	return " · ".join(parts)
+
+
+static func range_text(spell: Spell, actor: Unit) -> String:
+	if spell.is_self_only(): return "sur soi"
+	var resolver := SpellCaster.new(null, null, null)
+	return "%d–%d" % [resolver.get_effective_spell_minimum_range(actor, spell), resolver.get_effective_spell_range(actor, spell)]
 
 
 static func details(spell: Spell, actor: Unit) -> String:

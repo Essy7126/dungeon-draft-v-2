@@ -135,7 +135,7 @@ static func create(seed_value: int, hero_visual_variants: Dictionary = { }) -> R
 	return result
 
 
-static func make_room(node: Dictionary, seed_value: int) -> RoomData:
+static func make_room(node: Dictionary, seed_value: int, card_ecosystem := false) -> RoomData:
 	var template := ExpeditionMapCatalog.get_room_for_node(node)
 	if template == null:
 		push_error(
@@ -185,6 +185,8 @@ static func make_room(node: Dictionary, seed_value: int) -> RoomData:
 					hp_multiplier,
 					attack_multiplier,
 				)
+		if card_ecosystem:
+			preload("res://core/expedition/card_enemy_ecosystem.gd").apply(enemy, node)
 		encounter.roster_units.append(enemy)
 	room.encounter_definition = encounter
 	room.enemies = encounter.expanded_roster()

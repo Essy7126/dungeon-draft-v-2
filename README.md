@@ -62,25 +62,50 @@ Le titre propose **Catabase classique** et une **variante Cartes**, avec deux
 sauvegardes indépendantes. Une nouvelle partie Cartes utilise maintenant les
 **quatre classes : Assassin, Gardien, Arpenteur et Thaumaturge**. L'apparence,
 dont Passe-rive, reste indépendante. La préparation choisit cinq techniques
-parmi quinze de la classe, en deux copies chacune : dix cartes au deck,
+parmi sept cartes d'initiation de la classe, en deux copies chacune : dix cartes au deck,
 quatre en main et deux gestes de secours hors pioche. Aucun équipement au départ.
 
-Après les victoires, les fenêtres de niveau présentent caractéristiques,
-maîtrises et spécialisation, puis un bilan de victoire : personnage, niveau,
-XP gagnée, oboles et icônes du butin avec quantités et fiches au survol.
+Après les victoires de la variante Classes, le bilan arrive en premier : personnage,
+niveau, XP gagnée, oboles et icônes du butin avec quantités et fiches au survol.
+Sa fermeture déclenche ensuite l’annonce du niveau gagné, puis les caractéristiques,
+maîtrises et spécialisation. Fermer l’annonce laisse un rappel sur la carte ; la
+sauvegarde reprend à la décision restante sans répéter les gains ni le bilan fermé.
+Les cartes sont des drops aléatoires, affichés avec les objets dans ce bilan et
+ajoutés à la réserve : 0–2 sur un combat normal, 0–3 sur un élite, 0–4 sur le boss.
+La **Résonance des échos** dépend de la profondeur, du danger et des combats
+précédents sans carte ; elle améliore quantité et rareté, sans gain garanti.
+Ses facteurs et les chances sont détaillés au survol dans le bilan. Le joueur
+modifie ensuite son deck librement. Les cartes d'initiation ne tombent jamais et
+ne gagnent pas de puissance avec les maîtrises. Les rares deviennent possibles
+au palier 4, les épiques au palier 10 ; les haltes vendent six cartes différentes.
+
+Inventaire, caractéristiques et sorts/deck disposent de fenêtres avec fermeture
+par bouton ou Échap. L’inventaire présente Achille, ses six emplacements d’équipement,
+le sac filtrable et la fiche d’objet (équiper, retirer, vendre, sertir). Les fenêtres
+ouvertes en combat laissent l’arène visible et verrouillent les modifications.
 Le reçu reste identique après vente, équipement et rechargement. **Mon deck**
 ouvre les cartes, leurs coûts, portées et effets, y compris en consultation
 pendant le combat. La liste défile indépendamment de la fiche sélectionnée.
-La main affiche ces informations et réserve une hauteur adaptée à leur lecture.
+La main affiche des cartes avec titre, illustration, PA, portée, valeur et effet.
+Cadre de classe, bandeau de rareté et couleur de rôle distinguent les techniques.
+Une fiche apparaît après un court survol (ou au focus clavier),
+avec les effets particuliers mis en évidence. Elle laisse la barre de cartes
+dégagée et ne capture pas les clics. Le deck reprend cette fiche en dehors de sa grille.
 La collection
 réunit deck, réserve et six emplacements d'équipement ; les objets ont leurs
 icônes, détails, actions d'équipement, vente et sertissage. Les cartes étrangères
 reçues pendant la run permettent l'hybridation, avec une maîtrise plafonnée à 2
-contre 4 pour la classe principale. Le lot comprend 60 techniques, 12
+contre 4 pour la classe principale. Le lot comprend 28 cartes d'initiation et 84 techniques à acquérir, 12
 spécialisations, 24 modèles d'équipement en trois paliers et quatre runes.
+À partir du palier 5, les rôles ennemis gagnent entraves, attraction, braises,
+givre ou invocation annoncée selon leur spécialité. Les nouveaux contrôles ont
+des recharges ; la stase nécessite une marque et protège ensuite la cible contre
+les répétitions. [Règles et vérifications de cet écosystème](docs/ai/CARDS_ECOSYSTEM_2026-09-20.md).
 
-Les anciennes parties Cartes conservent leurs règles ; cette révision s'essaie
-avec **Nouvelle partie → Cartes**. Voir les [règles jouables, budgets et extension
+Les parties de l'itération à trois propositions adoptent les drops à la reprise,
+y compris une récompense encore en attente, sans toucher aux objets déjà acquis.
+Les sauvegardes antérieures à cet écosystème gardent leur économie historique.
+Voir les [règles de Résonance et de drop](docs/ai/CARD_DROPS_2026-09-20.md), les [règles jouables, budgets et extension
 du système](docs/design/class_run_rules_v3.md) et la [validation de l'intégration](docs/ai/CLASS_RUN_IMPLEMENTATION_2026-09-19.md).
 Un [contrôle de puissance sur 18 runs automatiques](docs/design/class_balance_readability_audit_2026-09-19.md)
 documente l'avantage observé de la distance et les limites de cette mesure.
@@ -93,6 +118,13 @@ historique, pas la description de cette nouvelle variante. Voir le
 La main Cartes est intégrée à la barre de combat commune, avec cadres dessinés
 bronze/émeraude et bascule Cartes/Objets. La collection et le butin reprennent
 ce traitement. [Présentation, tests et captures](docs/ai/CARDS_VISUAL_ITERATION_2026-09-16.md).
+
+Les cartes de classes, équipements, runes et reliques utilisent désormais une
+[série de 112 illustrations peintes](assets/catabase/class_icons_painted_v1/README.md),
+partagée entre préparation, combat, butin et inventaire. Les cases vides ont des
+silhouettes neutres ; la sélection, l'état équipé et le palier restent indiqués
+par l'interface. Le deck agrandit les illustrations, et l'inventaire sépare
+personnage, sac et fiche d'objet. [Audit et vérifications](docs/ai/PAINTED_INTERFACE_AUDIT_2026-09-20.md).
 
 Les combats peints intègrent les effets doux des quatre techniques de départ,
 les pas, impacts ennemis, soins, boucliers et esquives, avec une harpe discrète.

@@ -87,7 +87,6 @@ func _render() -> void:
 		for entry in [
 			["deck", "Deck · 10"],
 			["reserve", "Réserve · %d" % (cards.copies.size() - 10)],
-			["gear", "Équipement & objets"],
 		]:
 			var b := _button(
 				tabs,
@@ -128,24 +127,27 @@ func _render() -> void:
 		var stock: Array = cards.shop()
 		if not stock.is_empty():
 			_label(self, "Marchand de cartes · stock conservé à cette halte", 20)
+			var offers := GridContainer.new()
+			offers.columns = 3
+			offers.add_theme_constant_override("h_separation", 8)
+			offers.add_theme_constant_override("v_separation", 8)
+			add_child(offers)
 			for i in stock.size():
 				var offer: Dictionary = stock[i]
 				var price: int = cards.BUY[cards.rarity(offer.family)]
-				_button(
-					self,
-					"%s · %d oboles%s"
-					% [
-						cards.family_spell(offer.family).spell_name,
-						price,
-						" · acheté" if offer.sold else "",
-					],
-					func():
-						_commit(cards.buy(i)),
-					read_only or offer.sold or session.gold < price,
-				)
+				var box := VBoxContainer.new()
+				box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				offers.add_child(box)
+				var tile := preload("res://ui/expedition/class_card_tile.gd").new()
+				tile.name = "ShopCard_%d" % i
+				box.add_child(tile)
+				tile.configure(cards.family_spell(offer.family), session.character.unit, "Achat : %d oboles · carte ajoutée à la réserve" % price)
+				tile.disabled = read_only or offer.sold or session.gold < price
+				tile.pressed.connect(func(): _commit(cards.buy(i)))
+				_label(box, "Acheté" if offer.sold else "Acheter · %d oboles" % price, 16)
 	var columns := HBoxContainer.new()
 	columns.add_theme_constant_override("separation", 18)
-	columns.custom_minimum_size.y = clampf(get_viewport_rect().size.y - 290, 300, 680)
+	columns.custom_minimum_size.y = clampf(get_viewport_rect().size.y - 390, 280, 480)
 	add_child(columns)
 	var list_scroll := ScrollContainer.new()
 	list_scroll.name = "CardListScroll"
@@ -155,7 +157,9 @@ func _render() -> void:
 	list_scroll.size_flags_stretch_ratio = 1.5
 	columns.add_child(list_scroll)
 	var grid := GridContainer.new()
-	grid.columns = 3 if get_viewport_rect().size.x >= 1500 or filter == "gear" else 2
+	grid.columns = 4 if get_viewport_rect().size.x >= 1500 else 3
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.size_flags_stretch_ratio = 1.5
 	list_scroll.add_child(grid)
@@ -169,7 +173,7 @@ func _render() -> void:
 	pane.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	pane.size_flags_stretch_ratio = 1.0
 	pane.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	pane.add_theme_stylebox_override("panel", CardSkin.frame(true))
+	pane.add_theme_stylebox_override("panel", CardSkin.surface(Color("cfba88"), false, 12))
 	detail_scroll.add_child(pane)
 	detail = VBoxContainer.new()
 	detail.add_theme_constant_override("separation", 10)
@@ -292,6 +296,9 @@ func _tile(
 
 
 func _show_detail() -> void:
+	for tile in find_children("ClassChoice_*", "Button", true, false):
+		if tile.toggle_mode:
+			tile.set_pressed_no_signal(tile.name == "ClassChoice_" + selected_id)
 	for child in detail.get_children():
 		detail.remove_child(child)
 		child.queue_free()
@@ -403,7 +410,13 @@ func _show_detail() -> void:
 
 func _card_detail(card: Dictionary) -> void:
 	var spell: Spell = cards.spells_for(card.id)[0]
-	_label(detail, spell.spell_name, 23)
+	const P := preload("res://ui/expedition/class_card_presentation.gd")
+	var heading := HBoxContainer.new()
+	detail.add_child(heading)
+	P.icon(heading, spell.icon, 76)
+	var title := _label(heading, spell.spell_name, 23)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.custom_minimum_size.x = 170
 	var native: bool = Catalog.row(card.family)[1] == cards.primary_class
 	_label(
 		detail,
@@ -411,7 +424,10 @@ func _card_detail(card: Dictionary) -> void:
 		+ (" · au deck" if card.id in cards.active else " · en réserve"),
 		16,
 	)
-	_label(detail, Text.details(spell, cards.owner().character.unit), 17)
+	_label(detail, Text.effect(spell, cards.owner().character.unit), 18)
+	_label(detail, P.rule(spell), 18).modulate = Color("a8ebd5")
+	_label(detail, spell.description, 17)
+	_label(detail, "Dégâts avant défenses et bonus conditionnels. Usages partagés entre les copies d'une même technique.", 15)
 	if card.id not in cards.active:
 		var replacement := OptionButton.new()
 		replacement.name = "ClassReplacement"

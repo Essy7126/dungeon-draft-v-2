@@ -1,6 +1,7 @@
 extends Node
 const CardText = preload("res://ui/expedition/catabase_card_text.gd")
 const CardSkin = preload("res://ui/expedition/catabase_card_skin.gd")
+const HoverCard = preload("res://ui/expedition/spell_hover_card.gd")
 ## Presentation adapter mounted inside the persistent action bar.
 ## All casts still go through Battle and SpellCaster.
 var battle: Node
@@ -34,9 +35,9 @@ func _process(_delta: float) -> void:
 	var selected: String = cards.selected if battle.turn_state.selected_spell != null else ""
 	var interactive: bool = battle._can_accept_player_intent() and battle.turn_queue.get_current_unit() == actor
 	var reasons := []
-	for spell in cards.weapon_spells(): reasons.append(battle.spell_caster.get_spell_preparation_failure_reason(actor, spell))
+	for spell in cards.weapon_spells(): reasons.append(_spell_stamp(actor, spell))
 	for id in cards.hand:
-		for spell in cards.spells_for(id): reasons.append(battle.spell_caster.get_spell_preparation_failure_reason(actor, spell))
+		for spell in cards.spells_for(id): reasons.append(_spell_stamp(actor, spell))
 	var stamp := str([cards.hand, cards.retained, selected, battle.turn_state.selected_spell, cards.recomposed, cards.draw_pile.size(), cards.discard.size(), cards.exhausted.size(), actor.current_ap, actor.current_mp, actor.activation_index, actor.grid_pos, actor.get_meta("ct_bronze", 0), reasons, interactive])
 	if battle.has_method("set_card_hand_top"):
 		battle.set_card_hand_top(get_viewport().get_visible_rect().size.y - _hud.get_card_hud_height() - 20)
@@ -133,12 +134,13 @@ func _process(_delta: float) -> void:
 		play.pressed.connect(func(): cards.selected = ""; battle._on_spell_pressed(spell))
 		weapons.add_child(play)
 		_spell_face(play, spell, actor.get_spell_ap_cost(spell))
+		HoverCard.attach(play, spell, actor, _panel, CardText.reason_text(reason, actor, spell))
 	for id in cards.hand:
 		var card := cards.copy_for(id)
 		var frame := PanelContainer.new()
 		frame.name = "HandCard_" + id
 		frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		frame.add_theme_stylebox_override("panel", CardSkin.frame(cards.retained == id or selected == id))
+		frame.add_theme_stylebox_override("panel", CardSkin.surface(Color("b9caa5"), cards.retained == id or selected == id, 5))
 		row.add_child(frame)
 		var column := VBoxContainer.new()
 		column.add_theme_constant_override("separation", 3)
@@ -167,6 +169,7 @@ func _process(_delta: float) -> void:
 			play.pressed.connect(func(): cards.selected = id; battle._on_spell_pressed(spell))
 			column.add_child(play)
 			_spell_face(play, spell, actor.get_spell_ap_cost(spell))
+			HoverCard.attach(play, spell, actor, _panel, explanation)
 		var choices := HBoxContainer.new()
 		choices.add_theme_constant_override("separation", 3)
 		column.add_child(choices)
@@ -221,10 +224,10 @@ func _spell_face(button: Button, spell: Spell, cost: int) -> void:
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	face.add_child(icon)
 	var title := Label.new()
-	title.text = spell.spell_name
+	title.text = spell.spell_name + "\nPO " + CardText.range_text(spell, GameManager.expedition.character.unit)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title.max_lines_visible = 2
+	title.max_lines_visible = 3
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -245,17 +248,47 @@ func _spell_face(button: Button, spell: Spell, cost: int) -> void:
 
 func _class_spell_face(button: Button, spell: Spell, cost: int) -> void:
 	const P := preload("res://ui/expedition/class_card_presentation.gd")
-	button.accessibility_name = CardText.details(spell, GameManager.expedition.character.unit)
-	var box := VBoxContainer.new(); button.add_child(box)
-	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	box.offset_left = 6; box.offset_right = -6; box.offset_top = 4; box.offset_bottom = -4
-	box.add_theme_constant_override("separation", 3); box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var top := HBoxContainer.new(); box.add_child(top); top.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	P.icon(top, spell.icon, 28)
-	var price := P.label(top, "%d PA" % cost, 21); price.size_flags_horizontal = Control.SIZE_EXPAND_FILL; price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var definition := preload("res://core/expedition/class_card_catalog.gd").row(str(spell.spell_id).trim_prefix("class_"))
+	CardSkin.icon_button(button, preload("res://core/expedition/card_ecosystem_catalog.gd").CLASS_COLORS[str(definition[1])])
+	var actor := GameManager.expedition.character.unit
+	button.accessibility_name = CardText.details(spell, actor)
+	var face := VBoxContainer.new()
+	button.add_child(face)
+	face.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	face.offset_left = 5
+	face.offset_right = -5
+	face.offset_top = 4
+	face.offset_bottom = -4
+	face.add_theme_constant_override("separation", 2)
+	const Ecology := preload("res://core/expedition/card_ecosystem_catalog.gd")
+	var tier := Ecology.tier(str(definition[0]))
+	P.label(face, Ecology.TIER_NAMES[tier] + " · " + str(definition[9]), 12).modulate = Ecology.TIER_COLORS[tier]
+	var title := P.label(face, spell.spell_name, 15)
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.max_lines_visible = 2
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var artwork := P.icon(face, spell.icon, 52)
+	artwork.name = "CardArtwork"
+	artwork.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var badges := HBoxContainer.new()
+	face.add_child(badges)
+	var price := P.label(badges, "%d PA" % cost, 15)
 	price.modulate = Color("ffe0a0")
-	var title := P.label(box, spell.spell_name, 16); title.max_lines_visible = 2
-	var values := P.numbers(spell, GameManager.expedition.character.unit).replace(" · Portée", "\nPortée").replace(" · Sur soi", "\nSur soi")
-	var numbers := P.label(box, values, 14); numbers.max_lines_visible = 2; numbers.name = "CardNumbers"
-	var effect := P.label(box, P.rule(spell), 14); effect.max_lines_visible = 2; effect.modulate = Color("bce0d4"); effect.name = "CardEffect"
-	box.modulate.a = .6 if button.disabled else 1.
+	var reach := P.label(badges, "PO " + CardText.range_text(spell, actor), 14)
+	reach.name = "CardRange"
+	reach.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	reach.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	reach.tooltip_text = "Portée minimale–maximale en cases."
+	var amount := "%d dégâts · " % spell.get_scaled_damage(actor) if spell.get_scaled_damage(actor) > 0 else "%d garde · " % spell.get_scaled_shield(actor) if spell.get_scaled_shield(actor) > 0 else ""
+	var effect := P.label(face, amount + P.rule(spell), 12)
+	effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	effect.max_lines_visible = 2
+	effect.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	effect.modulate = Ecology.role_color(str(definition[9]))
+	HoverCard._ignore_pointer(face)
+	face.modulate.a = .55 if button.disabled else 1.0
+
+
+func _spell_stamp(actor: Unit, spell: Spell) -> Array:
+	return [battle.spell_caster.get_spell_preparation_failure_reason(actor, spell), actor.get_spell_ap_cost(spell), CardText.range_text(spell, actor), spell.get_scaled_damage(actor), spell.get_scaled_shield(actor)]

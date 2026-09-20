@@ -109,7 +109,7 @@ func _repair_remaining() -> void:
 		used.append(family)
 
 func _pool() -> Array:
-	return Catalog.pool(selection.class_id) if selection.has("class_id") else CatabasePreparationCatalog.TECHNIQUES
+	return Catalog.starter_pool(selection.class_id) if selection.has("class_id") else CatabasePreparationCatalog.TECHNIQUES
 
 func _spell(id: String) -> Spell:
 	return Catalog.make_spell(id, 2) if selection.has("class_id") else session.build.catalog.get_spell(id)

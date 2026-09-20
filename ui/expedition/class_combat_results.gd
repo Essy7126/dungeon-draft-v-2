@@ -34,6 +34,15 @@ func _ready() -> void:
 		18,
 	)
 	P.label(self, str(node.title) + " · Gains conservés pour cette run", 18)
+	var discovery: Dictionary = receipt.get("card_discovery", {})
+	if not discovery.is_empty():
+		var found: int = receipt.get("card_families", []).size()
+		var echo := P.label(self, "Résonance des échos : %d · %d carte%s trouvée%s · ajout en réserve" % [int(discovery.resonance), found, "s" if found != 1 else "", "s" if found != 1 else ""], 16)
+		echo.name = "CardDiscoverySummary"
+		echo.mouse_filter = Control.MOUSE_FILTER_STOP
+		var chances: Array[String] = []
+		for chance in discovery.chances: chances.append("%d %%" % int(chance))
+		echo.tooltip_text = "Résonance = 10 + profondeur (%d) + danger (%d) + mémoire des combats sans carte (%d).\nJets indépendants : %s. Chaque jet réussi donne une carte. Aucun gain garanti.\nUne victoire sans carte ajoute 15 de mémoire (maximum 45) ; trouver une carte remet cette mémoire à zéro.\nLa Résonance favorise aussi les raretés débloquées : rare dès le palier 4, épique dès le palier 10.\nLes objets gardent leurs propres règles de butin." % [int(discovery.exploration), int(discovery.danger), int(discovery.memory), " / ".join(chances)]
 	var headings := HBoxContainer.new()
 	add_child(headings)
 	for entry in [
@@ -98,7 +107,14 @@ func _ready() -> void:
 	for record in records:
 		var tile := LootIcon.new()
 		tile.name = "LootReceipt_" + str(record.id)
-		tile.configure(record.title, record.icon, record.body, record.count)
+		tile.configure(
+			record.title,
+			record.icon,
+			record.body,
+			record.count,
+			record.get("rarity", "common"),
+			record.get("kind", ""),
+		)
 		loot.add_child(tile)
 		tile.pressed.connect(
 			func():
@@ -110,7 +126,7 @@ func _ready() -> void:
 		)
 	P.label(
 		self,
-		"Survolez un objet pour sa fiche. Cliquez pour garder ses détails ouverts. Le butin n'est jamais équipé automatiquement.",
+		"Survolez pour lire les effets ; cliquez pour garder la fiche ouverte. C : carte · R : rune · I–III : palier d'équipement. Le butin n'est jamais équipé automatiquement.",
 		16,
 	)
 	var defeated := HFlowContainer.new()
@@ -173,6 +189,8 @@ func _action(parent: Node, text: String, callback: Callable) -> void:
 
 
 func _inspect(record: Dictionary) -> void:
+	for tile in find_children("LootReceipt_*", "Button", true, false):
+		tile.set_marked(tile.name == "LootReceipt_" + str(record.id))
 	_detail.get_parent().show()
 	for child in _detail.get_children():
 		_detail.remove_child(child)
@@ -222,6 +240,8 @@ static func records_for(s: ExpeditionSession) -> Array[Dictionary]:
 					"title": spell.spell_name,
 					"icon": spell.icon,
 					"count": counts[id],
+					"kind": "C",
+					"rarity": ["common", "common", "rare", "epic"][Catalog.Ecology.tier(id)],
 					"body": (
 						"CARTE DE VOTRE CLASSE" if Catalog.row(id)[1] == s.cards.primary_class else "CARTE ÉTRANGÈRE · Utilisable dès maintenant"
 					)
@@ -241,6 +261,8 @@ static func records_for(s: ExpeditionSession) -> Array[Dictionary]:
 						"title": item.display_name,
 						"icon": item.icon,
 						"count": counts[id],
+						"rarity": str(item.rarity),
+						"kind": P.item_badge(item),
 						"body": "OBJET · Butin acquis\n" + P.item_description(item),
 					}
 				)

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "asset_id": "class_cards_lightning_front",
+  "source_tool": "BLENDER_SCRIPTED_GEOMETRY",
+  "columns": 6,
+  "rows": 4,
+  "frame_count": 24,
+  "frames_per_second": 30,
+  "loop": false,
+  "playback_mode": "FIT_MODULE_DURATION",
+  "blend_mode": "MIX",
+  "alpha_mode": "STRAIGHT",
+  "pivot_normalized": [
+    0.5,
+    0.7405628859996796
+  ],
+  "nominal_size_in_cells": [
+    1.5,
+    3
+  ],
+  "art_status": "READY_FOR_HUMAN_REVIEW",
+  "license_status": "COMMERCIAL_CLEARED",
+  "variants": [
+    {
+      "variant_id": "default",
+      "texture_low": "res://assets/vfx/class_cards/lightning_front.png",
+      "frame_size_low": 256
+    }
+  ],
+  "generator_checksum": "3f4bab06cba4c78e29ff87bd220fdfb2fc62bc5347826e3aee4158e44f0c4b37",
+  "texture_checksums": {
+    "res://assets/vfx/class_cards/lightning_front.png": "ad41687540aba34775362a9aa0e83f96c6f3a7676b34e4e3f199bf37c0cf09fe"
+  }
+}

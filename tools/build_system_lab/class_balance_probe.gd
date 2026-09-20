@@ -1,12 +1,18 @@
 extends "res://tools/catabase_run_balance_validation/full_run_probe.gd"
 ## Real shared-grid combats. Fixed greedy policy; these are not human win rates.
 const Classes := preload("res://core/expedition/class_card_catalog.gd")
+var _class_policy := "balanced"
+var _include_legacy := true
 
 
 func _run() -> void:
 	label = "class_before"
 	var selected_seeds := [2401]
 	for arg in OS.get_cmdline_user_args():
+		if arg == "class_policy=survival":
+			_class_policy = "survival"
+		if arg == "legacy=false":
+			_include_legacy = false
 		if arg.begins_with("label="):
 			label = arg.trim_prefix("label=").validate_filename()
 		if arg.begins_with("seeds="):
@@ -21,13 +27,51 @@ func _run() -> void:
 			var result := await _class_run(id, seed_value)
 			results.append(result)
 			_store_class_report()
-		for weapon in ["marteau", "arc"]:
+		for weapon in (["marteau", "arc"] if _include_legacy else []):
 			_cards_mode = true
 			results.append(await _simulate_run(seed_value, "normal", weapon, "balanced"))
 			_store_class_report()
 	_disconnect_metric_signals()
 	_store_class_report()
 	get_tree().quit(0 if errors.is_empty() else 1)
+
+
+func _adapt_class_deck(manager) -> void:
+	var cards = manager.expedition.cards
+	var actor: Unit = manager.expedition.character.unit
+	var rank_card := func(family):
+		var spell: Spell = cards.family_spell(family)
+		return (spell.get_scaled_damage(actor) + spell.get_scaled_shield(actor) * .2) / maxi(1, spell.ap_cost)
+	var active: Array = cards.active.duplicate()
+	active.sort_custom(func(a, b): return rank_card.call(cards.copy_for(a).family) < rank_card.call(cards.copy_for(b).family))
+	var reward: Dictionary = cards.pending_card_reward()
+	if not reward.is_empty():
+		var offers: Array = reward.offers.duplicate()
+		offers.sort_custom(func(a, b): return rank_card.call(a) > rank_card.call(b))
+		var chosen: String = offers[0]
+		var resolved := false
+		for old in active:
+			if cards.choose_card_reward(chosen, old):
+				resolved = true
+				break
+		if not resolved: cards.choose_card_reward(chosen)
+	for card in cards.copies.duplicate():
+		if card.id in cards.active: continue
+		active = cards.active.duplicate()
+		active.sort_custom(func(a, b): return rank_card.call(cards.copy_for(a).family) < rank_card.call(cards.copy_for(b).family))
+		for old in active:
+			if rank_card.call(card.family) > rank_card.call(cards.copy_for(old).family) and cards.move_card(card.id, old): break
+	var stock: Array = cards.shop()
+	if stock.is_empty(): return
+	var indices: Array = range(stock.size())
+	indices.sort_custom(func(a, b): return rank_card.call(stock[a].family) > rank_card.call(stock[b].family))
+	for index in indices:
+		if manager.expedition.gold < cards.BUY[cards.rarity(stock[index].family)] + 50: continue
+		if cards.buy(index):
+			var bought: String = cards.copies.back().id
+			for old in active:
+				if rank_card.call(stock[index].family) > rank_card.call(cards.copy_for(old).family) and cards.move_card(bought, old): break
+			break
 
 
 func _store_class_report() -> void:
@@ -37,7 +81,7 @@ func _store_class_report() -> void:
 			{
 				"cases": results,
 				"errors": errors,
-				"policy": "shared greedy balanced; power, native mastery, first specialization; auto-equip loot; no deck adaptation",
+				"policy": "class combat: %s; legacy combat: balanced; power, native mastery, first specialization; auto-equip loot; equip strongest immediate value/AP cards from reserve; replace lowest value card; buy and equip one affordable card per halt" % _class_policy,
 				"human_win_rate_claim": false,
 			},
 			"\t",
@@ -67,11 +111,13 @@ func _class_run(id: String, seed_value: int) -> Dictionary:
 		manager.queue_free()
 		return { "class": id, "outcome": "setup_error" }
 	var result := { "class": id, "seed": seed_value, "combats": [], "outcome": "incomplete" }
-	_active_policy = "balanced"
+	_active_policy = _class_policy
 	for transition in 80:
 		var node := session.route.get_current_node()
 		if session.route.phase == "combat":
-			var combat := await _fight_continuous(node, manager, seed_value, id, "balanced")
+			var deck_before := _audit_deck(session.cards)
+			var combat := await _fight_continuous(node, manager, seed_value, id, _class_policy)
+			combat["deck_entry"] = deck_before
 			result.combats.append(combat)
 			print(
 				"CLASS_BALANCE ",
@@ -111,6 +157,9 @@ func _class_run(id: String, seed_value: int) -> Dictionary:
 				else:
 					session.advance_level_step()
 			_equip_class_loot(manager)
+			_adapt_class_deck(manager)
+			if not result.combats.is_empty():
+				result.combats.back()["deck_after_reward"] = _audit_deck(session.cards)
 			var halt := ExpeditionRouteCatalog.is_halt(str(node.kind))
 			if halt and session.character.unit.get_hp_ratio() < 1.:
 				session.use_hub_service("rest", manager.run_inventory, manager.item_catalog)
@@ -133,6 +182,13 @@ func _class_run(id: String, seed_value: int) -> Dictionary:
 	manager.queue_free()
 	await get_tree().process_frame
 	return result
+
+
+func _audit_deck(cards) -> Dictionary:
+	var active_families: Array[String] = []
+	for copy_id in cards.active:
+		active_families.append(str(cards.copy_for(copy_id).family))
+	return { "active_families": active_families, "owned_copies": cards.copies.size() }
 
 
 func _equip_class_loot(manager: HarnessManager) -> void:

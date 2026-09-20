@@ -310,5 +310,8 @@ static func _effect(id: StringName, value: int, trigger: StringName) -> ItemReac
 
 
 static func choice_icon(group: String, id: String) -> Texture2D:
+	var painted := preload("res://core/expedition/class_icon_catalog.gd").icon(group + "_" + id)
+	if painted != null:
+		return painted
 	var path := "res://assets/catabase/preparation/%s_%s.svg" % [group, id]
 	return load(path) as Texture2D if ResourceLoader.exists(path) else null

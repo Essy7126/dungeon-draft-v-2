@@ -338,10 +338,16 @@ func _combat_context_allows_run_modal() -> bool:
 
 
 func is_inventory_open() -> bool:
+	if is_instance_valid(_expedition_inspection) and _expedition_inspection.get("_page") == "gear":
+		return true
 	return is_instance_valid(inventory_screen) and inventory_screen.is_open()
 
 
 func open_inventory_screen(character_id: StringName = &"") -> bool:
+	if GameManager.run_active and GameManager.expedition != null and GameManager.expedition.build.class_mode:
+		if is_instance_valid(_expedition_inspection): return false
+		_open_expedition_inspection("gear")
+		return is_instance_valid(_expedition_inspection)
 	if not GameManager.run_active \
 			or _ui_mode == RunUIMode.TRANSITION \
 			or is_inventory_open() \
@@ -381,6 +387,8 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 
 func close_inventory_screen() -> bool:
 	var was_open := is_inventory_open()
+	if is_instance_valid(_expedition_inspection) and _expedition_inspection.get("_page") == "gear":
+		_close_expedition_inspection()
 	if is_instance_valid(inventory_screen):
 		inventory_screen.close_screen()
 	return was_open

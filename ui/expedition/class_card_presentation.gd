@@ -3,6 +3,19 @@ const Catalog := preload("res://core/expedition/class_card_catalog.gd")
 const CardSkin := preload("res://ui/expedition/catabase_card_skin.gd")
 
 
+static func section(parent: Node, width := 0) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size.x = width
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", CardSkin.surface())
+	parent.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 10)
+	panel.add_child(box)
+	return box
+
+
 static func numbers(spell: Spell, actor: Unit) -> String:
 	var parts: Array[String] = []
 	if spell.get_scaled_damage(actor) > 0:
@@ -10,11 +23,7 @@ static func numbers(spell: Spell, actor: Unit) -> String:
 	if spell.get_scaled_shield(actor) > 0:
 		parts.append("%d garde" % spell.get_scaled_shield(actor))
 	parts.append(
-		(
-			"Sur soi"
-			if spell.spell_range == 0
-			else "Portée %d–%d" % [spell.minimum_range, spell.spell_range]
-		)
+		"Portée " + preload("res://ui/expedition/catabase_card_text.gd").range_text(spell, actor)
 	)
 	return " · ".join(parts)
 
@@ -24,6 +33,13 @@ static func rule(spell: Spell) -> String:
 	if row.is_empty():
 		return "Toujours disponible · hors pioche"
 	var rules := {
+		"blink": "Traverse les obstacles",
+		"root": "−%d PM · prochaine activation" % int(row[8]),
+		"disrupt": "−%d PA · prochaine activation" % int(row[8]),
+		"lure": "Attire de 2 cases · −1 PA",
+		"stasis": "Cible marquée : passe son tour · immunité ensuite",
+		"fire_field": "Braises · 2 tours · affecte les deux camps",
+		"ice_field": "Dalles gelées · 2 tours · ralentissent à l'entrée",
 		"mark": "Marque la cible · 1 tour",
 		"marked": "Bonus contre une cible marquée",
 		"bleed": "Saignement · 2 tours",
@@ -69,6 +85,7 @@ static func label(parent: Node, value: String, size := 17) -> Label:
 
 static func icon(parent: Node, texture: Texture2D, extent := 56) -> TextureRect:
 	var result := TextureRect.new()
+	result.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	result.texture = texture
 	result.custom_minimum_size = Vector2(extent, extent)
 	result.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -80,6 +97,14 @@ static func icon(parent: Node, texture: Texture2D, extent := 56) -> TextureRect:
 
 static func item_sale_price(item: ItemDefinition) -> int:
 	return 24 if item.rarity == &"rare" else 12
+
+
+static func item_badge(item: ItemDefinition) -> String:
+	if item.category == ItemDefinition.Category.RUNE:
+		return "R"
+	if str(item.item_id).begins_with("class_gear_"):
+		return { "common": "I", "uncommon": "II", "rare": "III" }.get(str(item.rarity), "")
+	return ""
 
 
 static func item_description(item: ItemDefinition) -> String:

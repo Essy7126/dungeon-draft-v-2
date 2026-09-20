@@ -216,9 +216,36 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 	return result
 
 
+func has_class_combat_receipt() -> bool:
+	return cards != null and cards.rules_revision == 3 and route.phase == "reward" and str(route.get_current_node().get("kind", "")) in ["normal", "elite", "boss"]
+
+
+func class_combat_receipt_reviewed() -> bool:
+	return has_class_combat_receipt() and bool(cards.battle_results.get(route.current_node_id, {}).get("reviewed", false))
+
+
+func acknowledge_combat_receipt() -> Dictionary:
+	if not has_class_combat_receipt():
+		return _failure("Aucun bilan de combat à fermer.")
+	# Old saves may not contain receipts. Reconstruct only the display record,
+	# never the rewards, which are already protected by awarded_node_ids.
+	if not cards.battle_results.has(route.current_node_id):
+		cards.battle_results[route.current_node_id] = {
+			"xp": 0, "gold": 0,
+			"level_before": character.champion_progression.current_level,
+			"level_after": character.champion_progression.current_level,
+			"xp_after": character.champion_progression.current_xp,
+			"card_families": [], "enemies": {}, "turns": 0,
+		}
+	cards.battle_results[route.current_node_id]["reviewed"] = true
+	return {"success": true, "message": "Bilan fermé. Votre butin reste acquis."}
+
+
 func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+	if cards != null and cards.rules_revision == 3 and not cards.pending_card_reward().is_empty():
+		return _failure("Choisissez une carte ou passez cette récompense avant de continuer.")
 	if not advancement_step.is_empty():
-		return _failure("Terminez votre montée de niveau avant de choisir le butin.")
+		return _failure("Terminez votre montée de niveau avant de reprendre le chemin." if build.class_mode else "Terminez votre montée de niveau avant de choisir le butin.")
 	if route.phase != "reward":
 		return _failure("La récompense a déjà été choisie.")
 	var selected: Dictionary = {}

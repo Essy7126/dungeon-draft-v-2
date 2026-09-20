@@ -433,6 +433,41 @@ func _field() -> Factory.Battlefield:
 	return f
 
 
+func test_card_officiant_plans_and_resolves_a_bounded_summon() -> void:
+	var f := _field()
+	var data := Evolution.build_unit(&"officiant", {"depth": 7})
+	preload("res://core/expedition/card_enemy_ecosystem.gd").apply(data, {"depth": 7})
+	var enemy := Unit.from_data(data)
+	var summon: Spell = data.spells.back()
+	enemy.spells.assign([summon])
+	enemy.current_mp = 0
+	f.grid.place_unit(enemy, Vector2i(1, 1))
+	var hero := _hero(f, Vector2i(5, 1))
+	var plan := _action(f, enemy, [enemy, hero])
+	assert_same(plan.get("spell"), summon)
+	assert_null(f.grid.get_unit(plan.cell), "invocation targets a free cell")
+	assert_false(f.caster.cast(enemy, summon, plan.cell).get("failed", false))
+	assert_false(enemy.pending_ability.is_empty(), "summon is announced before it resolves")
+	var units: Array = [enemy, hero]
+	var result := f.caster.resolve_pending_activation(enemy, units)
+	assert_false(result.get("blocked", false))
+	assert_eq(units.size(), 3)
+	assert_eq(units.back().team, enemy.team)
+	assert_eq(summon.summon_max_living_team, 6)
+	assert_false(units.back().spells.any(func(spell): return spell.is_summon()), "servants cannot summon recursively")
+
+
+func test_card_enemy_kits_keep_distinct_roles_and_authored_stats() -> void:
+	for role in Evolution.roles():
+		var data := Evolution.build_unit(role, {"depth": 10})
+		var original_hp := data.max_hp
+		var original_spells := data.spells.size()
+		preload("res://core/expedition/card_enemy_ecosystem.gd").apply(data, {"depth": 10})
+		assert_gt(data.max_hp, original_hp, role)
+		if role not in [&"serviteur", &"porteur"]: assert_gt(data.spells.size(), original_spells, role)
+		assert_eq(data.active_spell_slots, data.spells.size())
+
+
 func _monster(f, cell: Vector2i) -> Unit:
 	var enemy := Factory.make_unit("Monstre", 1)
 	enemy.ai_profile = EnemyAIProfile.new()

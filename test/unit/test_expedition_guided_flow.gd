@@ -371,13 +371,13 @@ func test_characteristics_can_be_consulted_without_points_and_close_back_to_map(
 		if button != null:
 			assert_true(button.disabled, "Consultation cannot spend absent points")
 	assert_null(screen.find_child("ContinueExpeditionFlow", true, false))
-	var close := screen.find_child("CloseExpeditionScreen", true, false) as Button
+	var close := screen.find_child("CloseDedicatedWindow", true, false) as Button
 	assert_not_null(close)
 	if close != null:
-		assert_true(close.has_focus(), "Keyboard users can leave a completed character sheet")
+		assert_true(close.is_visible_in_tree() and close.has_focus(), "Keyboard users can leave a completed character sheet")
 		var view := screen.find_child("ExpeditionAttributesView", true, false) as Control
-		assert_lt(close.get_global_rect().position.y, view.get_global_rect().position.y, "Closing is in the persistent header")
-	_press(screen, "CloseExpeditionScreen")
+		assert_lt(close.get_global_rect().position.y, view.get_global_rect().position.y, "Closing is in the window header")
+	_press(screen, "CloseDedicatedWindow")
 	await _settle()
 	assert_eq(screen.get("_page"), "map", "Closing returns to the page that opened the sheet")
 	assert_eq(GameManager.expedition.to_snapshot(), before)

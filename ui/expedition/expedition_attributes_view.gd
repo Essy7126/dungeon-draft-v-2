@@ -272,6 +272,7 @@ func refresh() -> void:
 func _refresh_tabs() -> void:
 	if _details == null: return
 	_details.visible = _show_details
+	_stat_grid.visible = not _show_details
 	_attribute_grid.visible = not _show_details
 	_note.visible = not _show_details
 	for index in _tabs.size(): ART.apply_tab(_tabs[index], _show_details == (index == 1))

@@ -1,4 +1,5 @@
 extends RefCounted
+const Ecology := preload("res://core/expedition/card_ecosystem_catalog.gd")
 ## Immutable definitions. Every request creates fresh combat resources.
 const CLASSES := {
 	"assassin": [
@@ -126,7 +127,7 @@ const ROWS := [
 
 
 static func row(id: String) -> Array:
-	for entry in ROWS:
+	for entry in ROWS + Ecology.rows():
 		if entry[0] == id:
 			return entry
 	return []
@@ -134,16 +135,17 @@ static func row(id: String) -> Array:
 
 static func pool(class_id := "") -> Array[String]:
 	var result: Array[String] = []
-	for entry in ROWS:
+	for entry in ROWS + Ecology.rows():
 		if class_id.is_empty() or entry[1] == class_id:
 			result.append(entry[0])
 	return result
 
 
 static func preset(class_id := "assassin") -> Dictionary:
+	var starters := starter_pool(class_id)
 	return {
 		"class_id": class_id,
-		"card_families": pool(class_id).slice(0, 5),
+		"card_families": [starters[0], starters[1], starters[2], starters[5], starters[6]],
 		"difficulty_id": "normal",
 	}
 
@@ -163,6 +165,11 @@ static func valid(selection: Dictionary) -> bool:
 
 
 static func icon(id: String) -> Texture2D:
+	var definition := row(id)
+	if not definition.is_empty(): id = Ecology.icon_alias(id, definition[1], definition[7])
+	var painted := preload("res://core/expedition/class_icon_catalog.gd").icon(id)
+	if painted != null:
+		return painted
 	var path := "res://asset/ui/class_cards/" + id + ".svg"
 	return load(path) as Texture2D if ResourceLoader.exists(path) else null
 
@@ -179,7 +186,7 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 	s.minimum_range = r[4]
 	s.spell_range = r[5]
 	s.damage_type = Spell.DamageType.MAGICAL if r[1] == "thaumaturge" else Spell.DamageType.PHYSICAL
-	var mult := 1.0 + .1 * rank
+	var mult := 1.0 if Ecology.tier(id) == 0 else 1.0 + .1 * rank
 	s.damage_scaling = scaling(float(r[6]) * mult)
 	var effect: String = r[7]
 	s.once_per_activation = effect in [
@@ -216,6 +223,35 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 			s.caster_movement = Spell.CasterMovement.TARGET_CELL
 			s.movement_requires_clear_path = true
 			detail = "Déplacement vers une case libre, chemin dégagé. Ne consomme pas de PM."
+		"blink":
+			s.can_target_enemy = false
+			s.can_target_free_cell = true
+			s.caster_movement = Spell.CasterMovement.TARGET_CELL
+			s.needs_line_of_sight = false
+			s.once_per_activation = true
+			detail = "Traverse les obstacles vers une dalle libre, sans consommer de PM."
+		"root", "disrupt", "lure":
+			s.applied_status = status(effect, {"root": "Entravé", "disrupt": "Désorienté", "lure": "Envoûté"}[effect], 1)
+			if effect == "root": s.applied_status.mp_reduction = int(r[8])
+			else: s.applied_status.ap_reduction = 1 if effect == "lure" else int(r[8])
+			if effect == "lure": s.pull_distance = int(r[8])
+			s.cooldown_activations = 2
+			s.once_per_activation = true
+			detail = {"root": "Retire %d PM à la prochaine activation." % int(r[8]), "disrupt": "Retire %d PA à la prochaine activation." % int(r[8]), "lure": "Attire de 2 cases et retire 1 PA au prochain tour ; ne change pas l'équipe."}[effect] + " Recharge : 2 activations."
+		"stasis":
+			s.once_per_activation = true
+			s.cooldown_activations = 4
+			detail = "Sur cible marquée : fait passer sa prochaine activation. La cible est ensuite protégée contre la stase pendant 3 activations. Paris perd seulement 1 PA. Recharge : 4 activations."
+		"fire_field", "ice_field":
+			s.terrain_effect = preload("res://core/expedition/card_ecosystem_effects.gd").surface(effect, float(r[8]))
+			s.can_target_free_cell = true
+			s.aoe_shape = Spell.AoeShape.CROSS
+			s.aoe_size = 1
+			s.exclude_allies_from_area_effects = true
+			s.cooldown_activations = 2
+			s.once_per_activation = true
+			detail = s.terrain_effect.description + " Les dalles affectent les deux camps. Recharge : 2 activations."
+			if effect == "fire_field": s.terrain_effect = null
 		"push":
 			s.push_distance = int(r[8])
 			detail = "Repousse de %d case(s)." % r[8]
@@ -289,16 +325,44 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 	if effect in ["bleed", "burn", "weaken"]:
 		s.applied_status = null
 	s.modifiers.append(mod)
+	if effect in ["stasis", "fire_field"]:
+		var ecosystem := preload("res://core/expedition/card_ecosystem_effects.gd").new()
+		ecosystem.effect = effect
+		ecosystem.value = float(r[8]) * mult
+		s.modifiers.append(ecosystem)
 	s.modifiers.append(CatabaseCombatModifier.new())
 	s.description = "%s · %s · maîtrise %d (+%d %% dégâts et garde).\n%s%s" % [
 		CLASSES[r[1]][0],
 		r[9],
 		rank,
-		rank * 10,
+		0 if Ecology.tier(id) == 0 else rank * 10,
 		detail,
 		" Une fois par tour, copies confondues." if s.once_per_activation else "",
 	]
+	if Ecology.tier(id) == 0: s.description += " Carte d'initiation : aucun bonus de maîtrise."
 	return s
+
+
+static func starter_pool(class_id: String) -> Array[String]:
+	var result: Array[String] = []
+	for entry in Ecology.initiation_rows():
+		if entry[1] == class_id: result.append(entry[0])
+	return result
+
+
+static func legacy_pool(class_id := "") -> Array[String]:
+	var result: Array[String] = []
+	for entry in ROWS:
+		if class_id.is_empty() or entry[1] == class_id: result.append(entry[0])
+	return result
+
+
+static func reward_pool(class_id: String, depth: int) -> Array[String]:
+	var result: Array[String] = []
+	for id in pool(class_id):
+		var tier := Ecology.tier(id)
+		if tier > 0 and tier <= (3 if depth >= 10 else 2 if depth >= 4 else 1): result.append(id)
+	return result
 
 
 static func scaling(p: float) -> SpellScalingData:

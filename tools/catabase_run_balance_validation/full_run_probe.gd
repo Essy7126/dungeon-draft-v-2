@@ -336,7 +336,7 @@ func _fight_continuous(
 	var combat_rng_seed := seed_value * 1000 + int(node.depth) * 37 + 11
 	seed(combat_rng_seed)
 	var started_usec := Time.get_ticks_usec()
-	var room := ExpeditionRunFactory.make_room(node, seed_value)
+	var room := ExpeditionRunFactory.make_room(node, seed_value, manager.expedition.cards != null and manager.expedition.cards.rules_revision == 3 and manager.expedition.cards.ecosystem_revision > 0)
 	if room == null:
 		return _combat_failure(node, combat_rng_seed, "room_missing")
 	var grid := EncounterGridFactory.build_from_room(room)

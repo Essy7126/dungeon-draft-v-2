@@ -37,6 +37,16 @@ static func _best_cast(ai, enemy: Unit, units: Array, origin: Vector2i) -> Dicti
 		if spell == null or not enemy.can_use_spell(spell) \
 				or enemy.get_spell_ap_cost(spell) > enemy.current_ap:
 			continue
+		if spell.is_summon() and origin == enemy.grid_pos:
+			var grid: GridData = ai.get_grid()
+			for y in range(maxi(0, origin.y - spell.spell_range), mini(grid.rows, origin.y + spell.spell_range + 1)):
+				for x in range(maxi(0, origin.x - spell.spell_range), mini(grid.cols, origin.x + spell.spell_range + 1)):
+					var cell := Vector2i(x, y)
+					if not ai.get_spell_caster().can_cast(enemy, spell, cell): continue
+					var score := 85.0 - _nearest_distance(ai, enemy.team, cell, units) * 3.0 - Terrain.cell_risk(ai, cell) * 15.0
+					if best.is_empty() or score > float(best.score):
+						best = {"spell": spell, "target": enemy, "cell": cell, "score": score}
+			continue
 		for target_value in ai._stable_units(units):
 			var target := target_value as Unit
 			if target == null or not target.is_alive:
@@ -123,6 +133,8 @@ static func _score_cast(ai, enemy: Unit, spell: Spell, target: Unit, origin: Vec
 			var status := spell.applied_status
 			if status.mp_reduction > 0:
 				score += 22.0 if affected.max_mp.get_int() > 0 else 0.0
+			elif status.ap_reduction > 0:
+				score += 20.0 + status.ap_reduction * 9.0
 			elif status.get_effective_status_id() == &"catabase_chasse":
 				score += 12.0 + _mark_followers(enemy, affected, units) * 18.0
 			else:

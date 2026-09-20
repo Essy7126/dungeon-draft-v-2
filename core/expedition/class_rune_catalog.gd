@@ -16,7 +16,7 @@ static func definition(id: String) -> ItemDefinition:
 	item.display_name = row[0]
 	item.category = ItemDefinition.Category.RUNE
 	item.stack_limit = 1
-	item.icon = preload("res://core/expedition/class_card_catalog.gd").icon(row[4])
+	item.icon = preload("res://core/expedition/class_card_catalog.gd").icon(id)
 	item.tags.assign([&"class_loot", &"rune"])
 	item.description = "+%d %s sur un équipement. Une rune par objet ; sertissage permanent, hors combat. La rune est consommée. Le bonus ne s'applique que si l'objet est équipé." % [
 		int(row[2]),

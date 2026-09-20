@@ -6,6 +6,29 @@ const FONT = preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/
 static var _frame_texture: Texture2D
 
 
+static func surface(accent := Color("78684a"), active := false, padding := 10) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("182c28") if active else Color("101e1b")
+	style.border_color = accent if active else accent.darkened(.45)
+	style.set_border_width_all(2 if active else 1)
+	style.set_corner_radius_all(7)
+	style.set_content_margin_all(padding)
+	style.shadow_color = Color(0, 0, 0, .3)
+	style.shadow_size = 3
+	style.shadow_offset = Vector2(0, 2)
+	return style
+
+
+static func icon_button(button: Button, accent := Color("c9b582")) -> void:
+	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled", "focus"]:
+		var style := surface(accent, state in ["hover", "pressed", "hover_pressed", "focus"], 5)
+		if state == "focus":
+			style.bg_color = Color.TRANSPARENT
+		if state == "disabled":
+			style.border_color = Color("47524d")
+		button.add_theme_stylebox_override(state, style)
+
+
 static func frame(selected := false) -> StyleBoxTexture:
 	var style := StyleBoxTexture.new()
 	if _frame_texture == null:

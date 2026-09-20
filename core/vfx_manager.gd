@@ -4,6 +4,7 @@ extends Node
 const ACHILLES_EFFECTS_PATH := "res://assets/vfx/achilles_polish_v3/effects.tres"
 const AchillesFX := preload("res://vfx/achilles_kit/achilles_spell_sprite_vfx.gd")
 const ParisRouter := preload("res://vfx/paris/paris_spell_vfx_router.gd")
+const ClassCardRouter := preload("res://vfx/class_cards/class_card_vfx_router.gd")
 const PHILOSOPHER_EFFECTS_PATH := "res://assets/vfx/philosopher_mage/sprites_v1/effects.tres"
 const PhilosopherFX := preload("res://vfx/philosopher_mage/philosopher_spell_sprite_vfx.gd")
 const ACHILLES_ADDITIONAL_EFFECTS_PATHS := {
@@ -16,6 +17,7 @@ const PHILOSOPHER_SPELLS := [&"philosopher_axiom", &"philosopher_refutation",
 
 var _battle_view : Node = null
 var _paris_router: ParisSpellVFXRouter
+var _class_card_router: Node
 var _achilles_frames: SpriteFrames
 var _achilles_source_frames: Dictionary = {}
 var _achilles_flights: Dictionary = {}
@@ -30,10 +32,17 @@ var _philosopher_resolved_actions: Array[String] = []
 
 func register_battle_view(view: Node) -> void:
 	if _battle_view != view:
+		_clear_class_card_effects()
 		_clear_achilles_effects()
 		_clear_philosopher_effects()
 		_clear_paris_effects()
 	_battle_view = view
+	_get_class_card_router()
+	_class_card_router.activate()
+	if is_instance_valid(view) and view.get_parent() != null:
+		var terrain: Variant = view.get_parent().get("terrain_effects")
+		if terrain is TerrainEffects:
+			_class_card_router.bind_terrain(terrain)
 	_get_paris_router().load_frames()
 	# Load outside the release frame so a first disk read cannot consume most
 	# of the short projectile delay before the player sees frame zero.
@@ -46,6 +55,7 @@ func register_battle_view(view: Node) -> void:
 
 func unregister_battle_view(view: Node = null) -> void:
 	if view == null or _battle_view == view:
+		_clear_class_card_effects()
 		_clear_achilles_effects()
 		_clear_philosopher_effects()
 		_clear_paris_effects()
@@ -60,6 +70,9 @@ func _ready() -> void:
 	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
+	if _get_class_card_router().accepts(caster, spell):
+		_get_class_card_router().resolve(caster, spell, report)
+		return
 	if ParisRouter.is_spell(caster, spell):
 		_get_paris_router().resolve(caster, spell, report)
 		return
@@ -90,6 +103,8 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 
 
 func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
+	if _get_class_card_router().accepts(caster, spell):
+		return _get_class_card_router().launch(caster, spell, cell)
 	if ParisRouter.is_spell(caster, spell):
 		return _get_paris_router().launch(caster, spell, cell)
 	if caster == null or spell == null:
@@ -179,6 +194,9 @@ func _caster_effect_origin(caster: Unit) -> Vector2:
 	return _grid_cell_global(caster.grid_pos)
 
 func _on_status_applied(unit: Unit, status_data: StatusData) -> void:
+	if _get_class_card_router().is_card_battle() and unit in _class_card_router._units() \
+			and not ClassCardRouter.Catalog.status_family(status_data).is_empty():
+		return # Card-run state feedback is owned by its scoped ethereal router.
 	if status_data.vfx_scene == null:
 		return
 	if not is_instance_valid(_battle_view) or not _battle_view.is_inside_tree():
@@ -316,6 +334,10 @@ func _resolve_achilles_vfx(caster: Unit, spell: Spell, report: Dictionary,
 
 func _on_spell_visual_resolved(caster: Unit, spell: Spell, report: Dictionary,
 		presentation: Dictionary) -> void:
+	if _get_class_card_router().accepts(caster, spell):
+		if not bool(presentation.get("movement_arrival_only", false)):
+			_get_class_card_router().resolve(caster, spell, report)
+		return
 	if caster == null or spell == null or not _is_achilles_presentation(presentation) \
 			or bool(report.get("failed", false)) or not _has_battle_view():
 		return
@@ -542,6 +564,7 @@ func _has_battle_view() -> bool:
 
 
 func _on_combat_ended(_victory: bool) -> void:
+	_clear_class_card_effects()
 	_clear_achilles_effects()
 	_clear_philosopher_effects()
 	_clear_paris_effects()
@@ -559,6 +582,19 @@ func _clear_achilles_effects() -> void:
 	_achilles_effects.clear()
 	_achilles_flights.clear()
 	_achilles_arrivals.clear()
+
+
+func _get_class_card_router() -> Node:
+	if not is_instance_valid(_class_card_router):
+		_class_card_router = ClassCardRouter.new()
+		_class_card_router.manager = self
+		add_child(_class_card_router)
+	return _class_card_router
+
+
+func _clear_class_card_effects() -> void:
+	if is_instance_valid(_class_card_router):
+		_class_card_router.clear(true)
 
 
 func _is_philosopher_spell(caster: Unit, spell: Spell) -> bool:
