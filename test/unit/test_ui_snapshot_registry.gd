@@ -19,9 +19,9 @@ func test_registry_has_stable_unique_ids_and_explicit_blockers() -> void:
 		else:
 			documented += 1
 			assert_false(scenario.blocker.is_empty())
-	assert_eq(scenarios.size(), 23)
-	assert_eq(automated, 6)
-	assert_eq(documented, 17)
+	assert_eq(scenarios.size(), 18)
+	assert_eq(automated, 4)
+	assert_eq(documented, 14)
 
 
 func test_required_resolutions_and_main_scene_are_stable() -> void:
@@ -47,5 +47,5 @@ func test_before_after_scope_is_intentionally_limited_to_impacted_states() -> vo
 	assert_has(automated_ids, "battle__deployment")
 	assert_has(automated_ids, "combat_feedback__gallery")
 	assert_has(automated_ids, "title__default")
-	assert_has(automated_ids, "start_hub__idle")
+	assert_does_not_have(automated_ids, "start_hub__idle")
 	assert_has(automated_ids, "intro_cinematic__plan_05")

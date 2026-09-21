@@ -8,9 +8,7 @@ const DirectTestProbe = preload(
 	"res://addons/dungeon_draft_arena_studio/test/arena_direct_test_probe.gd"
 )
 const DEFAULT_HEROES := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://data/units/allies/achilles.tres",
 ]
 
 
@@ -122,6 +120,7 @@ func _ready() -> void:
 		return value is String and not ResourceLoader.exists(str(value))
 	):
 		heroes = DEFAULT_HEROES
+	heroes = StudioPreviewParty.resolve_sources(heroes)
 
 	var game_manager := get_node_or_null("/root/GameManager")
 	if game_manager == null:

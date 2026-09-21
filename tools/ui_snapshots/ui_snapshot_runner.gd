@@ -116,8 +116,6 @@ func _instantiate_scenario(scenario: UISnapshotScenario) -> Node:
 			scene.legacy_preset = _phase == "current"
 		&"title":
 			scene = _load_scene(scenario.scene_path)
-		&"hub", &"hub_archivist":
-			scene = _load_scene(scenario.scene_path)
 		&"intro":
 			scene = _load_scene(scenario.scene_path)
 			if scene != null:
@@ -125,7 +123,7 @@ func _instantiate_scenario(scenario: UISnapshotScenario) -> Node:
 		&"battle":
 			GameManager.cleanup_run_state()
 			if not GameManager._prepare_preconfigured_run(
-				RUN, GameManager.PRODUCTION_HERO_DATA_PATHS
+				RUN, PartyRulesFixtures.HERO_PATHS
 			):
 				return null
 			GameManager.current_room_index = 0
@@ -144,11 +142,6 @@ func _instantiate_scenario(scenario: UISnapshotScenario) -> Node:
 				animation.play(&"intro")
 				animation.seek(animation.get_animation(&"intro").length, true)
 				animation.play(&"idle")
-		&"hub_archivist":
-			var panel := scene.get_node_or_null("HubUI/ArchivistPanel")
-			var archivist := scene.get_node_or_null("WorldRoot/SortableWorld/Archivist")
-			if panel != null and archivist != null:
-				panel.open_panel(archivist.data)
 		&"intro":
 			scene.synchronize_to_time(42.5)
 		&"battle":

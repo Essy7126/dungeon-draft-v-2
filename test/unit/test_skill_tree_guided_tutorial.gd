@@ -1,6 +1,6 @@
 extends GutTest
 
-const PRODUCTION_HERO_PATH := "res://data/units/alliés/elfe.tres"
+const PRODUCTION_HERO_PATH := "res://test/fixtures/party_rules/elf.tres"
 const PROFILE_SAVE_ROOT := "user://skill_tree_tutorial_profile_save"
 
 

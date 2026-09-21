@@ -3,9 +3,9 @@ extends GutTest
 const GameManagerScript = preload("res://core/game_manager.gd")
 const ActionBarScript = preload("res://ui/action_bar.gd")
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
+const MAGE_PATH := "res://test/fixtures/party_rules/mage.tres"
+const WARRIOR_PATH := "res://test/fixtures/party_rules/warrior.tres"
 const RUN_PATH := "res://data/runs/first_run.tres"
 const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 const EXPECTED_ROOMS := [

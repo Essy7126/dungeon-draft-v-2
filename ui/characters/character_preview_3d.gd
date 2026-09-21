@@ -6,7 +6,7 @@
 # « Animations » du Studio des personnages.
 #
 # Le script est @tool pour fonctionner aussi dans l'éditeur. Attention :
-# dans l'éditeur, les scripts des personnages (MageVisual3D...) ne
+# dans l'éditeur, les scripts des personnages (CharacterVisual3D...) ne
 # tournent PAS — Godot leur substitue une coquille sans méthodes. Le
 # widget reprend donc la main sur le lecteur d'animations dans ce seul
 # cas, et laisse strictement le comportement d'origine en jeu.

@@ -3,10 +3,10 @@ extends GutTest
 const GameManagerScript = preload("res://core/game_manager.gd")
 const ActionBarScript = preload("res://ui/action_bar.gd")
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 const LEGACY_FIREBALL_PATH := "res://data/spells/Mage/boule_de_feu.tres"
-const LEGACY_MAGE_PATH := "res://data/units/alliés/mage.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const LEGACY_MAGE_PATH := "res://test/fixtures/party_rules/mage.tres"
+const WARRIOR_PATH := "res://test/fixtures/party_rules/warrior.tres"
 const ELF_SPELL_IDS := [
 	&"elf_precise_shot",
 	&"elf_sneak_strike",

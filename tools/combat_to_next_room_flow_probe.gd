@@ -34,7 +34,7 @@ func _run() -> void:
 	run.economy_profile = economy
 	if not GameManager.start_direct_encounter_test(
 		run,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	):
 		_fail("initialisation directe de la First Run impossible")
 		return

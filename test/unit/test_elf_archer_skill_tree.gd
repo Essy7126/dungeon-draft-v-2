@@ -3,7 +3,7 @@ extends GutTest
 const Factory = preload("res://test/support/factory.gd")
 const GameManagerScript = preload("res://core/game_manager.gd")
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 const ARCHER_ID := &"archer"
 const PRECISE_SHOT_ID := &"elf_precise_shot"
 

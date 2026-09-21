@@ -217,17 +217,17 @@ func test_trio_visuals_unchanged() -> void:
 	# le Studio des personnages écrit légitimement dans ces mêmes fichiers :
 	# une empreinte figée échouerait au premier réglage fait par un designer.
 	var expected := {
-		"res://data/units/alliés/elfe.tres": [
-			"res://characters/elf/ElfIsoUnitView.tscn",
-			"res://characters/elf/ElfVisual3D.tscn",
+		"res://test/fixtures/party_rules/elf.tres": [
+			"res://test/fixtures/party_rules/iso_view.tscn",
+			"res://test/fixtures/party_rules/visual.tscn",
 		],
-		"res://data/units/alliés/mage.tres": [
-			"res://characters/mage/MageIsoUnitView.tscn",
-			"res://characters/mage/MageVisual3D.tscn",
+		"res://test/fixtures/party_rules/mage.tres": [
+			"res://test/fixtures/party_rules/iso_view.tscn",
+			"res://test/fixtures/party_rules/visual.tscn",
 		],
-		"res://data/units/alliés/Guerrier.tres": [
-			"res://characters/warrior/WarriorIsoUnitView.tscn",
-			"res://characters/warrior/WarriorVisual3D.tscn",
+		"res://test/fixtures/party_rules/warrior.tres": [
+			"res://test/fixtures/party_rules/iso_view.tscn",
+			"res://test/fixtures/party_rules/visual.tscn",
 		],
 	}
 	for path in expected:

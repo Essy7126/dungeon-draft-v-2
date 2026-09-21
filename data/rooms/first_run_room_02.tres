@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://bnguitmin608i"]
 
-[ext_resource type="PackedScene" uid="uid://bbgpl0ncuxpbx" path="res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn" id="1_battle"]
+[ext_resource type="PackedScene" uid="uid://bbgpl0ncuxpbx" path="res://test/fixtures/terrain/battle_salle_montagne_iso_v2.tscn" id="1_battle"]
 [ext_resource type="Texture2D" uid="uid://dwq3k425mn4d1" path="res://asset/Background/montagne 2.webp" id="1_bg"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]

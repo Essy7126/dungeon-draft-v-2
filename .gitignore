@@ -1,5 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
+/debug.log
 /android/
 artifacts/*
 !artifacts/arena_studio/
@@ -18,7 +19,6 @@ tests/characters/**/screenshots/
 *.tmp[0-9]*
 
 addons/godot_ai_workbench/icon.png.import
-tests/characters/elf/screenshots/*.png.import
 
 # Outils locaux propres au poste de développement
 .claude/settings.local.json

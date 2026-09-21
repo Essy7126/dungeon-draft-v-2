@@ -7,7 +7,7 @@ func before_each() -> void:
 	GameManager.cleanup_run_state()
 	assert_true(GameManager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	GameManager.current_room_index = 0
 

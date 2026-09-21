@@ -32,8 +32,13 @@ func test_encounter_buttons_have_a_visible_local_focus_ring() -> void:
 	assert_eq(style.border_width_left, 2)
 
 
-func test_shell_uses_full_title_at_1280_and_safe_fallback_when_logically_narrow() -> void:
-	assert_false(DungeonDraftStudioMain.uses_compact_title(1280.0))
-	assert_true(DungeonDraftStudioMain.uses_compact_title(1024.0))
-	assert_eq(StudioVersion.display_name(false), "DUNGEON DRAFT STUDIO 2.0.0")
-	assert_eq(StudioVersion.display_name(true), "DD STUDIO 2.0.0")
+func test_shell_title_follows_the_responsive_toolbar() -> void:
+	var ui := DungeonDraftStudioMain.new()
+	ui.arena_auto_load_enabled = false
+	ui.arena_production_planning_enabled = false
+	add_child_autofree(ui)
+	await wait_process_frames(3)
+	for width in [1024.0, 1280.0, 1920.0]:
+		ui.size.x = width
+		ui._apply_toolbar_responsive()
+		assert_eq(ui.studio_title_label.text, StudioVersion.display_name(width < 1500.0))

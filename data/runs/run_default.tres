@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="RunData" format=3 uid="uid://d5thrquc7kyk"]
 
 [ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Resource" path="res://data/runs/profiles/main_content_profile.tres" id="90_profile"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room_type"]
 [ext_resource type="Resource" uid="uid://dr0ykpux3ooaj" path="res://data/rooms/first_run_room_01.tres" id="100_room"]
 [ext_resource type="Resource" path="res://data/rooms/first_run_room_02.tres" id="101_room"]
@@ -12,6 +13,7 @@
 [resource]
 script = ExtResource("1_run")
 run_name = "Premiere run - Legion squelette"
+content_profile = ExtResource("90_profile")
 default_seed = 1337
 target_duration_minutes = 30
 extended_duration_minutes = 45

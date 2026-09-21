@@ -56,7 +56,7 @@ func test_fireball_uses_true_nine_cell_geometry_and_keeps_balance_values() -> vo
 	assert_eq(spell.terrain_effect.duration, 3)
 	assert_eq(spell.terrain_effect.damage, 15)
 	assert_eq(spell.terrain_effect.trigger, TerrainEffectData.Trigger.ON_ENTER)
-	var caster_unit := Unit.from_data(load("res://data/units/alliés/mage.tres"))
+	var caster_unit := Unit.from_data(load("res://test/fixtures/party_rules/mage.tres"))
 	caster_unit.grid_pos = Vector2i(3, 6)
 	var caster := SpellCaster.new(
 		state.grid, Pathfinder.new(state.grid), state.terrain_effects
@@ -275,7 +275,7 @@ func test_exact_preview_simulates_true_spell_not_surface_config_values() -> void
 	assert_not_null(preview.dynamic_surface_visuals)
 	var report := preview.simulate_terrain_spell(
 		load(FIREBALL_PATH), Vector2i(3, 3),
-		load("res://data/units/alliés/mage.tres")
+		load("res://test/fixtures/party_rules/mage.tres")
 	)
 	assert_true(report.handled)
 	assert_eq(report.spell_id, &"mage_fireball")

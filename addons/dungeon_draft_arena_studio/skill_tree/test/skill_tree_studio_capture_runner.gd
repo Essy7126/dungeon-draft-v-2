@@ -32,7 +32,7 @@ const CHARACTER_SCREEN_CASES := ["01_ouverture"]
 ## Personnage capturé : l'Elfe possède un arbre complet et sert de référence
 ## visuelle. Le héros par défaut du Studio ne convient pas ici, sa copie de
 ## travail arrivant sans sort dans ce runner autonome.
-const CAPTURE_CHARACTER := "res://data/units/alliés/elfe.tres"
+const CAPTURE_CHARACTER := "res://test/fixtures/party_rules/elf.tres"
 
 
 func _ready() -> void:

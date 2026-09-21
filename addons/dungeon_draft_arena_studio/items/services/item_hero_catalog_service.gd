@@ -2,10 +2,9 @@
 class_name ItemHeroCatalogService
 extends RefCounted
 
-# Les deux orthographes existent dans le dépôt. Le catalogue parcourt les deux
-# racines au lieu de maintenir une liste de personnages dans chaque écran.
+# Le catalogue découvre les héros courants ; les tests peuvent fournir leur
+# propre racine sans remettre les personnages retirés dans le catalogue.
 const HERO_ROOTS: Array[String] = [
-	"res://data/units/alliés",
 	"res://data/units/allies",
 ]
 const PLAYER_TEAM := 0
@@ -13,13 +12,18 @@ const PLAYER_TEAM := 0
 var _entries: Array[Dictionary] = []
 var _warnings: Array[String] = []
 var _built := false
+var _source_roots: Array[String] = []
+
+
+func _init(source_roots: Array[String] = HERO_ROOTS) -> void:
+	_source_roots.assign(source_roots)
 
 
 func rebuild() -> Dictionary:
 	_entries.clear()
 	_warnings.clear()
 	var paths := PackedStringArray()
-	for root in HERO_ROOTS:
+	for root in _source_roots:
 		_append_resource_files(root, paths)
 	paths.sort()
 	var seen_ids := {}
@@ -44,14 +48,9 @@ func rebuild() -> Dictionary:
 		seen_ids[hero_id] = path
 		var editorial_resource := hero
 		var authorities := RunContentCatalogService.progression_authorities_for_unit(hero)
-		if authorities.size() == 1:
-			var progression := (authorities[0] as Dictionary).get(
-				"progression_profile"
-			) as CharacterProgressionProfile
-			if progression != null:
-				editorial_resource = RunContentCatalogService.as_editable_unit_view(
-					hero, progression
-				)
+		var progression := RunContentCatalogService.shared_progression_profile(authorities)
+		if progression != null:
+			editorial_resource = RunContentCatalogService.as_editable_unit_view(hero, progression)
 		_entries.append({
 			"id": hero_id,
 			"display_name": hero.unit_name if not hero.unit_name.strip_edges().is_empty() else str(hero_id),

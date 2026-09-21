@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[sub_resource type="Animation" id="Animation_Idle"]
+resource_name = "Fixture_Idle"
+length = 1.0
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_Walk"]
+resource_name = "Fixture_Walk"
+length = 1.0
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_Run"]
+resource_name = "Fixture_Run"
+length = 1.0
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_Cast"]
+resource_name = "Fixture_Cast"
+length = 1.0
+loop_mode = 0
+
+[sub_resource type="Animation" id="Animation_Hit"]
+resource_name = "Fixture_Hit"
+length = 1.0
+loop_mode = 0
+
+[sub_resource type="Animation" id="Animation_Death"]
+resource_name = "Fixture_Death"
+length = 1.0
+loop_mode = 0
+
+[sub_resource type="AnimationLibrary" id="Library"]
+_data = {
+&"Fixture_Idle": SubResource("Animation_Idle"),
+&"Fixture_Walk": SubResource("Animation_Walk"),
+&"Fixture_Run": SubResource("Animation_Run"),
+&"Fixture_Cast": SubResource("Animation_Cast"),
+&"Fixture_Hit": SubResource("Animation_Hit"),
+&"Fixture_Death": SubResource("Animation_Death")
+}
+
+[sub_resource type="CapsuleMesh" id="Mesh"]
+radius = 0.25
+height = 1.5
+
+[node name="FixtureModel" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.75, 0)
+mesh = SubResource("Mesh")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {&"": SubResource("Library")}

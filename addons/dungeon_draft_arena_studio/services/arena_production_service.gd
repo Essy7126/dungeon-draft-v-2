@@ -460,9 +460,7 @@ static func _write_compatibility_reports(
 		"battle_scene": arena.battle_scene.resource_path,
 		"configuration": "full_run",
 		"heroes": [
-			"res://data/units/alliés/elfe.tres",
-			"res://data/units/alliés/mage.tres",
-			"res://data/units/alliés/Guerrier.tres",
+			"res://data/units/allies/achilles.tres",
 		],
 	})
 

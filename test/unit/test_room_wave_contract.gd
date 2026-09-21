@@ -47,7 +47,7 @@ func test_victory_waits_for_the_player_before_clearing_a_multi_wave_room() -> vo
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	manager.current_wave_index = 0
@@ -74,11 +74,11 @@ func test_same_seed_produces_the_same_hidden_wave_counts() -> void:
 	var second_manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(first_manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	assert_true(second_manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	for room_index in range(FIRST_RUN.rooms.size()):
 		first_manager.current_room_index = room_index
@@ -99,11 +99,11 @@ func test_ultimate_reward_chance_is_seeded_and_gains_two_to_five_per_wave() -> v
 	var second_manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(first_manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	assert_true(second_manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	first_manager.current_room_index = 0
 	second_manager.current_room_index = 0
@@ -144,7 +144,7 @@ func test_room_report_accumulates_combat_stats_and_xp_across_waves() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	var state := manager.get_ordered_character_states()[0] as CharacterRunState
@@ -189,7 +189,7 @@ func test_early_exit_loses_room_chest_but_unlocks_secured_equipment() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	manager.current_wave_index = 0
@@ -242,7 +242,7 @@ func test_pushing_multiple_waves_keeps_deck_offers_and_discards_unchanged() -> v
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	var deck_before := manager.get_equipment_reward_deck_snapshot()
@@ -275,7 +275,7 @@ func test_hidden_last_wave_completes_the_room_and_unlocks_its_reward() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	manager.current_wave_index = manager.get_current_room_wave_count() - 1
@@ -294,7 +294,7 @@ func test_current_wave_selects_its_data_driven_encounter() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	manager.current_wave_index = 2

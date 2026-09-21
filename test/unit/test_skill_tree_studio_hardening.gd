@@ -598,7 +598,7 @@ func test_injected_failure_restores_every_written_file() -> void:
 
 func test_preview_matches_runtime_for_current_production_modifier_types() -> void:
 	var hero := ResourceLoader.load(
-		"res://data/units/alliés/elfe.tres", "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+		"res://test/fixtures/party_rules/elf.tres", "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as UnitData
 	assert_not_null(hero)
 	var checked := 0

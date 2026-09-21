@@ -3,9 +3,9 @@ extends Node
 const OUTPUT_DIR := "res://artifacts/first_run_v2/captures/turn_order"
 const RUN := preload("res://data/runs/first_run.tres")
 const HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://test/fixtures/party_rules/elf.tres",
+	"res://test/fixtures/party_rules/mage.tres",
+	"res://test/fixtures/party_rules/warrior.tres",
 ]
 
 var _output_dir := OUTPUT_DIR

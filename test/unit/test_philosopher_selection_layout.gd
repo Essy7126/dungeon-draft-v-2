@@ -15,13 +15,13 @@ class AdventureManager:
 		return true
 
 
-func test_roster_clips_cards_away_from_note_and_focus_reveals_sixth_hero() -> void:
+func test_roster_clips_cards_away_from_note_and_focus_reveals_last_adventure() -> void:
 	var screen := SCREEN_SCENE.instantiate() as CharacterSelectionScreen
 	# Exercise archived content explicitly without exposing it in the public menu.
 	screen.include_archived_adventures = true
 	add_child_autofree(screen)
 	await wait_process_frames(3)
-	assert_eq(screen._roster_buttons.size(), 6)
+	assert_eq(screen._roster_buttons.size(), 4)
 	var note := screen.find_child("RosterNote", true, false) as Control
 	var scroll := screen.find_child("HeroRosterScroll", true, false) as ScrollContainer
 	assert_not_null(note)
@@ -46,11 +46,10 @@ func test_roster_clips_cards_away_from_note_and_focus_reveals_sixth_hero() -> vo
 			for previous in rectangles:
 				assert_false(rect.intersects(previous), str(viewport_size))
 			rectangles.append(rect)
-		var trial := screen._roster_buttons[5]
+		var trial := screen._roster_buttons[3]
 		trial.grab_focus()
 		await wait_process_frames(3)
 		assert_true(trial.has_focus())
-		assert_gt(scroll.scroll_vertical, 0, "Keyboard focus scrolls to the sixth hero")
 		assert_true(scroll.get_global_rect().grow(1.0).encloses(trial.get_global_rect()), str(viewport_size))
 		assert_true(screen.get_global_rect().encloses(trial.get_global_rect()), str(viewport_size))
 		assert_false(trial.get_global_rect().intersects(note.get_global_rect()), str(viewport_size))

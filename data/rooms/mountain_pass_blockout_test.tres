@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dirxcs2klbgtb" path="res://data/rooms/mountain_pass_blockout_room_data.gd" id="1_room"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="2_unit"]
-[ext_resource type="PackedScene" path="res://data/rooms/maps/mountain_pass_blockout_battle.tscn" id="3_battle"]
+[ext_resource type="PackedScene" path="res://test/fixtures/terrain/mountain_pass_blockout_battle.tscn" id="3_battle"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="4_melee"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="5_ranged"]
 

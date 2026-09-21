@@ -6,15 +6,15 @@ const SCREEN_SCENE := preload(
 const OUTPUT_DIR := "res://artifacts/skill_trees/captures"
 const HEROES := [
 	{
-		"path": "res://data/units/alliés/elfe.tres",
+		"path": "res://test/fixtures/party_rules/elf.tres",
 		"slug": "elf",
 	},
 	{
-		"path": "res://data/units/alliés/mage.tres",
+		"path": "res://test/fixtures/party_rules/mage.tres",
 		"slug": "mage",
 	},
 	{
-		"path": "res://data/units/alliés/Guerrier.tres",
+		"path": "res://test/fixtures/party_rules/warrior.tres",
 		"slug": "warrior",
 	},
 ]

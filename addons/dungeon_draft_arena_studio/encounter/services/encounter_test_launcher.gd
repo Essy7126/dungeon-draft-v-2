@@ -7,14 +7,12 @@ const REQUEST_PATH := ROOT + "/active_request.json"
 const LAST_RESULT_PATH := ROOT + "/last_result.json"
 const BOOTSTRAP_SCENE := "res://addons/dungeon_draft_arena_studio/encounter/runtime/EncounterStudioTestBootstrap.tscn"
 const DEFAULT_HEROES := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://data/units/allies/achilles.tres",
 ]
 
 
 ## Héros du test : ceux de la partie de contexte quand elle en fournit,
-## sinon le trio de secours historique.
+## sinon Achille pour le test rapide.
 static func _heroes_for(session: EncounterEditSession) -> Array:
 	var context: RunData = session.context_run if session.context_run != null \
 		else session.working_run

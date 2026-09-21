@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bf8f5v5jh1yr4"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/frappe_lourde.tres" id="10_heavy"]
+[ext_resource type="Resource" uid="uid://d2gmr88ea1t1q" path="res://data/spells/Guerrier/charge.tres" id="16_charge"]
+[ext_resource type="Resource" uid="uid://4cpddbesqcxb" path="res://data/spells/Guerrier/tourbillon.tres" id="17_whirlwind"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/garde.tres" id="18_guard"]
+[ext_resource type="PackedScene" path="res://test/fixtures/party_rules/iso_view.tscn" id="20_combat_visual"]
+[ext_resource type="PackedScene" path="res://test/fixtures/party_rules/visual.tscn" id="21_preview_visual"]
+[ext_resource type="Resource" path="res://test/fixtures/party_rules/animations.tres" id="90_animations"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"warrior"
+unit_name = "Guerrier"
+description = "Combattant de mêlée qui alterne brutalité, assaut, furie et protection."
+attack_power = 18
+visual_scene = ExtResource("20_combat_visual")
+preview_visual_scene = ExtResource("21_preview_visual")
+animation_set = ExtResource("90_animations")
+role = "Combattant de mêlée"
+presentation_summary = "Frappe, charge, contrôle les groupes et protège ses alliés."
+progression_summary = "Quatre disciplines : Brutalité, Assaut, Furie et Rempart."
+presentation_badge = "Troisième héros de la première run"
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_heavy"), ExtResource("16_charge"), ExtResource("17_whirlwind"), ExtResource("18_guard")])

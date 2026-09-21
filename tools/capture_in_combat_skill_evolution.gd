@@ -17,7 +17,7 @@ func _ready() -> void:
 	run.rooms = [RoomData.new(), RoomData.new()]
 	if not GameManager._prepare_preconfigured_run(
 		run,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	):
 		push_error("Impossible de préparer le trio pour les captures.")
 		get_tree().quit(1)

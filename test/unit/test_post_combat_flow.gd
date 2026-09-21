@@ -5,7 +5,7 @@ const GAME_MANAGER_SCRIPT := preload("res://core/game_manager.gd")
 const TEAM_HEAL := preload("res://data/post_combat/rewards/team_heal_percent.tres")
 const HERO_MAX_HP := preload("res://data/post_combat/rewards/hero_max_hp.tres")
 const NEXT_SHIELD := preload("res://data/post_combat/rewards/next_combat_shield.tres")
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 
 
 func before_each() -> void:
@@ -338,7 +338,7 @@ func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -
 	]
 	assert_true(GameManager._prepare_preconfigured_run(
 		run,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	GameManager.current_room_index = 0
 	var states := GameManager.get_ordered_character_states()
@@ -397,7 +397,7 @@ func test_push_more_button_never_builds_or_consumes_equipment_offer() -> void:
 	]
 	assert_true(GameManager._prepare_preconfigured_run(
 		run,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	GameManager.current_room_index = 0
 	var tracker := CombatReportTracker.new()
@@ -626,7 +626,7 @@ func test_reward_layout_is_full_screen_without_legacy_panel_at_supported_resolut
 func test_victory_routes_to_post_combat_only_after_report_finalization() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	var run := _run_data(2)
-	assert_true(manager._prepare_preconfigured_run(run, GameManager.PRODUCTION_HERO_DATA_PATHS))
+	assert_true(manager._prepare_preconfigured_run(run, PartyRulesFixtures.HERO_PATHS))
 	manager.current_room_index = 0
 	manager.begin_combat_report()
 	var requested: Array[String] = []
@@ -661,7 +661,7 @@ func test_last_room_keeps_existing_no_equipment_rule_and_run_result() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		_run_data(1),
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	manager.begin_combat_report()
@@ -687,7 +687,7 @@ func test_unsecured_room_reward_error_uses_neutral_reward_wording() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		_run_data(2),
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	manager.current_room_index = 0
 	manager.begin_combat_report()
@@ -742,7 +742,7 @@ func test_post_combat_reduced_motion_skips_spatial_reveal_sequences() -> void:
 func _prepare_global_run(room_count: int) -> void:
 	assert_true(GameManager._prepare_preconfigured_run(
 		_run_data(room_count),
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	GameManager.current_room_index = 0
 

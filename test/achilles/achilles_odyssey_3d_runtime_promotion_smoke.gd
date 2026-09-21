@@ -1,7 +1,6 @@
 extends Node
 
 const RUN: RunData = preload("res://data/runs/odyssey.tres")
-const HUB_SCENE: PackedScene = preload("res://hub/StartHub.tscn")
 const RUN_RESULT_SCENE: PackedScene = preload("res://ui/RunResultScreen.tscn")
 const GAME_MANAGER_SCRIPT = preload("res://core/game_manager.gd")
 const WINDOW_SIZE := Vector2i(1600, 1000)
@@ -56,7 +55,7 @@ var _report := {
 		"transitions": "FORCED_MANAGER_STATE_ADVANCE_WITHOUT_ENEMY_DEFEAT_SIMULATION",
 		"physical_manual_input": false,
 	},
-	"hub": {},
+	"run_configuration": {},
 	"runtime_contract": {},
 	"rooms": [],
 	"player_action_probe": {},
@@ -130,7 +129,7 @@ func _run() -> void:
 	get_window().size = WINDOW_SIZE
 	RenderingServer.set_default_clear_color(Color(0.018, 0.023, 0.034, 1.0))
 	GameManager.cleanup_run_state()
-	var selected_run: RunData = await _exercise_real_hub_selection()
+	var selected_run: RunData = await _configure_run_fixture()
 	if selected_run == null:
 		GameManager.cleanup_run_state()
 		_finish()
@@ -214,64 +213,18 @@ func _run() -> void:
 	_finish()
 
 
-func _exercise_real_hub_selection() -> RunData:
-	var hub := HUB_SCENE.instantiate()
-	add_child(hub)
-	await _settle(8)
-	var controller := hub.get_node_or_null("HubController") as StartHubController
-	if controller == null or controller.archivist_panel == null:
-		_fail("The production hub controller or archivist panel is missing.")
-		hub.queue_free()
-		await _settle(3)
-		return null
-	var panel := controller.archivist_panel
-	controller.transition_fade_duration = 0.0
-	var cinematic_probe := {"calls": 0, "path": ""}
-	controller.cinematic_open_callable = func(path: String) -> bool:
-		cinematic_probe.calls += 1
-		cinematic_probe.path = path
-		return true
-	panel.open_panel(controller.archivist.data)
-	controller._set_state(StartHubController.HubState.UI_LOCKED)
-	panel._show_room_selection()
-	await _settle(3)
-	var odyssey_item_index := -1
-	for item_index in range(panel.run_selector.item_count):
-		if panel.run_selector.get_item_text(item_index) == RUN.run_name:
-			odyssey_item_index = item_index
-			break
-	if odyssey_item_index < 0:
-		_fail("L'Odyssée is not present in the real hub run selector.")
-		hub.queue_free()
-		await _settle(3)
-		return null
-	panel.run_selector.select(odyssey_item_index)
-	panel._on_run_selected(odyssey_item_index)
-	await _settle(3)
-	await _capture("hub_odyssey_selected.png")
-	var selector_room_count: int = panel.room_selector.item_count
-	panel._confirm_run()
-	await _settle(3)
-	var selected := GameManager.take_next_run_data(RUN)
-	var hub_ref: WeakRef = weakref(hub)
-	_report.hub = {
-		"run_item_count": panel.run_selector.item_count,
-		"odyssey_item_index": odyssey_item_index,
-		"room_item_count": selector_room_count,
+func _configure_run_fixture() -> RunData:
+	# Explicit configuration fixture; public selection is covered by its own runner.
+	var configured := GameManager.configure_next_run(RUN, 0)
+	var selected := GameManager.take_next_run_data(null) if configured else null
+	_report.run_configuration = {
+		"method": "configure_next_run",
 		"selected_path": selected.resource_path if selected != null else "",
-		"cinematic_calls": cinematic_probe.calls,
-		"cinematic_path": cinematic_probe.path,
-		"passed": (
-			selected == RUN
-			and selector_room_count == RUN.rooms.size()
-			and cinematic_probe.calls == 1
-		),
+		"passed": configured and selected == RUN,
 	}
-	hub.queue_free()
-	await _settle(5)
-	_report.hub["cleanup_released"] = hub_ref.get_ref() == null
-	if not _report.hub.passed or not _report.hub.cleanup_released:
-		_fail("The production hub did not preserve the Odyssey selection cleanly.")
+	if selected != RUN:
+		_fail("Catabase run configuration failed.")
+	await _settle(2)
 	return selected
 
 
@@ -287,7 +240,7 @@ func _exercise_three_real_rooms(run_data: RunData) -> void:
 				room.battle_scene.resource_path
 				if room.battle_scene != null else ""
 			),
-			"scene_traversal": "INDEX_SET_BY_GRAPHICAL_SMOKE_AFTER_REAL_HUB_PREPARATION",
+			"scene_traversal": "INDEX_SET_BY_GRAPHICAL_SMOKE_AFTER_EXPLICIT_RUN_CONFIGURATION",
 			"checks": {},
 			"initiative_portrait": {},
 			"cleanup": {},

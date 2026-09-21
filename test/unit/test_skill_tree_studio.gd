@@ -1,6 +1,6 @@
 extends GutTest
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 
 
 func _handle_known_production_uid_warning() -> void:
@@ -15,8 +15,11 @@ func test_catalog_discovers_playable_characters_without_a_hard_coded_list() -> v
 	var heroes := SkillTreeCatalogService.discover_heroes()
 	_handle_known_production_uid_warning()
 	var ids := heroes.map(func(entry: Dictionary): return str(entry.get("id", "")))
-	for expected in ["achilles", "elf", "mage", "warrior"]:
-		assert_has(ids, expected)
+	assert_has(ids, "achilles")
+	for retired in ["elf", "mage", "warrior"]:
+		assert_does_not_have(ids, retired)
+	var fixtures := SkillTreeCatalogService.discover_heroes("res://test/fixtures/party_rules")
+	assert_eq(fixtures.size(), 3, "Les règles restent éditables par un chemin explicite.")
 	assert_eq(ids.size(), heroes.size())
 	for entry in heroes:
 		assert_eq((entry.get("resource") as UnitData).team, 0, str(entry.get("id", "")))
@@ -64,10 +67,13 @@ func test_working_copy_is_isolated_dirty_and_undoable() -> void:
 
 func test_production_tree_validation_paths_and_simulation_match_runtime() -> void:
 	var hero := load(ELF_PATH) as UnitData
-	var heroes := SkillTreeCatalogService.discover_heroes()
+	var heroes := SkillTreeCatalogService.discover_heroes("res://test/fixtures/party_rules")
 	_handle_known_production_uid_warning()
 	var discipline := hero.disciplines[0] as DisciplineData
-	var messages := SkillTreeEditorValidator.validate_unit(hero, true, heroes)
+	var messages := SkillTreeEditorValidator.validate_unit(
+		hero, true, heroes,
+		PackedStringArray(["res://data/", "res://test/fixtures/party_rules/"])
+	)
 	var errors: Array[SkillTreeValidationMessage] = []
 	for message in messages:
 		if message.severity == SkillTreeValidationMessage.Severity.ERROR:
@@ -341,7 +347,7 @@ func test_character_sheet_emits_edits_without_mutating_the_working_copy() -> voi
 
 # --- Écran « Sorts » commun héros/ennemis et création autonome de sorts ---
 
-const MAGE_PATH := "res://data/units/alliés/mage.tres"
+const MAGE_PATH := "res://test/fixtures/party_rules/mage.tres"
 const SHARED_ENEMY_SPELL_PATH := "res://data/spells/enemies/frost_lance.tres"
 
 

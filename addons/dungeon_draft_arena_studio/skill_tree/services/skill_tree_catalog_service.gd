@@ -5,16 +5,15 @@ extends RefCounted
 # Les personnages jouables ne sont plus une liste écrite en dur : tout UnitData
 # d'équipe Joueur trouvé sous l'un de ces dossiers apparaît dans le Studio.
 # Déposer un .tres suffit donc à ajouter un personnage, sans toucher au code.
-# Les deux orthographes du dossier existent réellement dans le dépôt.
+# Les anciennes équipes de régression se chargent par une racine explicite.
 const HERO_ROOTS: Array[String] = [
-	"res://data/units/alliés",
 	"res://data/units/allies",
 ]
 const ENEMY_ROOTS: Array[String] = [
 	"res://data/units/ennemie",
 	"res://data/units/enemies",
 ]
-const HERO_ROOT := "res://data/units/alliés"
+const HERO_ROOT := "res://data/units/allies"
 # Les deux emplacements légitimes d'un sort : le dossier partagé du projet et
 # le sous-dossier spells/ d'un personnage. Aucun des deux n'est un brouillon.
 const SHARED_SPELL_ROOT := "res://data/spells"
@@ -86,12 +85,12 @@ static func _discover(
 			var selected_authority := RunContentCatalogService.global_unit_authority(
 				resource
 			)
-			if authorities.size() == 1:
+			var progression := RunContentCatalogService.shared_progression_profile(authorities)
+			if progression != null:
 				selected_authority = authorities[0]
 				editorial_resource = RunContentCatalogService.as_editable_unit_view(
 					resource,
-					selected_authority.get("progression_profile") \
-						as CharacterProgressionProfile
+					progression
 				)
 			var entry := {
 				"id": unit_id,

@@ -5,7 +5,7 @@ const ProgressionScreenScript = preload(
 	"res://ui/progression/progression_choice_screen.gd"
 )
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
 const EMBERS_ID := &"elf_mage_braises_persistantes"
 const NEW_UPGRADES := [

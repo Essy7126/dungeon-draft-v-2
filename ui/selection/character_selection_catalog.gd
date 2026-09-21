@@ -4,7 +4,6 @@ extends RefCounted
 ## Loading happens when the selection screen opens, not during script import.
 
 const CATABASE_RUN_PATH := "res://data/runs/odyssey.tres"
-const TRIO_RUN_PATH := "res://data/runs/first_run.tres"
 const PHILOSOPHER_TRIAL_RUN_PATH := "res://data/runs/philosopher_trial.tres"
 
 
@@ -15,7 +14,6 @@ static func get_entries(include_archived_adventures: bool = false) -> Array[Dict
 	_append_run_entries(entries, CATABASE_RUN_PATH, {"achilles": "passe_rive"})
 	# Historical content remains available to explicit lab/test callers only.
 	if include_archived_adventures:
-		_append_run_entries(entries, TRIO_RUN_PATH)
 		_append_run_entries(entries, PHILOSOPHER_TRIAL_RUN_PATH)
 	return entries
 
@@ -53,7 +51,7 @@ static func _append_run_entries(entries: Array[Dictionary], run_path: String, va
 			"use_preview_portrait": painted or passe_rive,
 			"unit": hero,
 			"run": run,
-			"chapter": run.run_name if run_path == PHILOSOPHER_TRIAL_RUN_PATH else ("Catabase" if run_path == CATABASE_RUN_PATH else "L’Odyssée du trio"),
+			"chapter": run.run_name if run_path == PHILOSOPHER_TRIAL_RUN_PATH else "Catabase",
 			"party_note": "Aventure solo · Passe-rive" if passe_rive else party_note,
 			"description": "Traversez les Enfers avec Passe-rive. Préparez votre équipement, puis découvrez ce qui vous attend au-delà du Seuil des Ombres." if passe_rive else ("Défiez le mage et son spectre au Gué du Léthé. Utilisez l’eau, la glace, la lave et les vortex pour contrer ses soins et ses protections." if run_path == PHILOSOPHER_TRIAL_RUN_PATH else _description_for(hero)),
 			"accent": _accent_for(hero.get_effective_unit_id()),
@@ -64,12 +62,6 @@ static func _description_for(hero: UnitData) -> String:
 	match hero.get_effective_unit_id():
 		&"achilles":
 			return "Traversez les Enfers avec Achille. Prenez l’initiative, maîtrisez la distance et opposez votre garde aux ombres de Catabase."
-		&"elf":
-			return "Précision, magie et soin : l’Elfe adapte ses quatre voies aux besoins du groupe et soutient ses compagnons."
-		&"mage":
-			return "Combinez le feu, la glace, la foudre et la terre pour contrôler le champ de bataille aux côtés de l’Elfe et du Guerrier."
-		&"warrior":
-			return "Ouvrez la voie à vos compagnons. Frappez, chargez et protégez le groupe au cœur de la mêlée."
 	return hero.presentation_summary if not hero.presentation_summary.is_empty() else hero.description
 
 
@@ -77,10 +69,4 @@ static func _accent_for(character_id: StringName) -> Color:
 	match character_id:
 		&"achilles":
 			return Color("d6af68")
-		&"elf":
-			return Color("8fbf9a")
-		&"mage":
-			return Color("9ea7db")
-		&"warrior":
-			return Color("d59578")
 	return Color("d6af68")

@@ -19,11 +19,6 @@ enum Fidelity {
 const UNIT_VIEW_SCENE := preload("res://battle/unit_view.tscn")
 ## Fixtures exclusivement reservees a l'apercu rapide. Elles ne sont jamais
 ## consultees lorsqu'une RunData active a ete resolue.
-const QUICK_FIXTURE_HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
-]
 const QUICK_FIXTURE_ENEMY := "res://data/units/ennemie/skeleton_melee.tres"
 const ArenaCameraFramingServiceScript = preload(
 	"res://addons/dungeon_draft_arena_studio/services/arena_camera_framing_service.gd"
@@ -190,10 +185,7 @@ func _refresh_fidelity_contract() -> void:
 func _set_quick_fixture_contract() -> void:
 	fidelity = Fidelity.QUICK
 	fidelity_label = "APERÇU RAPIDE — FIXTURES EXPLICITES"
-	for path in QUICK_FIXTURE_HERO_PATHS:
-		var hero := load(path) as UnitData
-		if hero != null:
-			resolved_heroes.append(hero)
+	resolved_heroes.assign(StudioPreviewParty.resolve())
 	if ResourceLoader.exists(QUICK_FIXTURE_ENEMY):
 		var enemy := load(QUICK_FIXTURE_ENEMY) as UnitData
 		if enemy != null:

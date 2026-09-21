@@ -145,7 +145,7 @@ func test_thirty_two_room_rebind_cycles_keep_exactly_one_context_owner() -> void
 func test_unbind_clears_context_slots_and_combat_visibility() -> void:
 	var run_ui := RUN_UI_SCENE.instantiate() as PersistentRunUI
 	var context := FakeCombatContext.new()
-	context.active_unit = Unit.from_data(load("res://data/units/alliés/elfe.tres") as UnitData)
+	context.active_unit = Unit.from_data(load("res://test/fixtures/party_rules/elf.tres") as UnitData)
 	add_child_autofree(run_ui)
 	add_child_autofree(context)
 	await get_tree().process_frame
@@ -178,9 +178,9 @@ func test_ui_cancel_cancels_targeting_before_opening_pause() -> void:
 	assert_true(GameManager._prepare_preconfigured_run(
 		run,
 		[
-			"res://data/units/alliés/elfe.tres",
-			"res://data/units/alliés/mage.tres",
-			"res://data/units/alliés/Guerrier.tres",
+			"res://test/fixtures/party_rules/elf.tres",
+			"res://test/fixtures/party_rules/mage.tres",
+			"res://test/fixtures/party_rules/warrior.tres",
 		]
 	))
 	var run_ui := GameManager.get_persistent_run_ui()

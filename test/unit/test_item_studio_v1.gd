@@ -582,7 +582,7 @@ func test_equipment_preview_uses_runtime_services_and_restores_state() -> void:
 	var catalog := ItemStudioCatalogService.new()
 	assert_true(catalog.rebuild().get("ok", false))
 	var sword := catalog.production_catalog.get_definition(&"warrior_training_sword")
-	var warrior := load("res://data/units/alliés/Guerrier.tres") as UnitData
+	var warrior := load("res://test/fixtures/party_rules/warrior.tres") as UnitData
 	var report := ItemRuntimePreviewService.new().preview_equipment(warrior, sword)
 	assert_true(report.get("ok", false), str(report))
 	assert_true(report.get("restoration_exact", false))
@@ -594,7 +594,7 @@ func test_consumable_preview_uses_item_use_service_without_canonical_mutation() 
 	var catalog := ItemStudioCatalogService.new()
 	assert_true(catalog.rebuild().get("ok", false))
 	var potion := catalog.production_catalog.get_definition(&"minor_healing_potion")
-	var elf := load("res://data/units/alliés/elfe.tres") as UnitData
+	var elf := load("res://test/fixtures/party_rules/elf.tres") as UnitData
 	var report := ItemRuntimePreviewService.new().preview_consumable(elf, potion)
 	assert_true(report.get("ok", false), str(report))
 	assert_true(report.get("canonical_unchanged", false))
@@ -626,6 +626,7 @@ func test_spell_analysis_uses_real_hero_loadout_and_target_profile() -> void:
 	var definition := catalog.production_catalog.get_definition(&"hache_executeur")
 	assert_not_null(definition)
 	var service := ItemBalanceAnalysisService.new()
+	service.hero_catalog = ItemHeroCatalogService.new(["res://test/fixtures/party_rules"])
 	var choices := service.spell_choices(definition)
 	assert_eq(choices.size(), 1)
 	assert_eq((choices[0] as Dictionary).get("character_id"), &"warrior")

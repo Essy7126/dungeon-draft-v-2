@@ -8,10 +8,6 @@ const CATABASE_SEQUENCE: CinematicSequenceData = preload(
 const LEGACY_SEQUENCE: CinematicSequenceData = preload(
 	"res://cinematics/intro/sequences/legacy_intro_sequence.tres"
 )
-const ARCHIVIST_PANEL := preload("res://hub/ui/ArchivistPanel.tscn")
-const ARCHIVIST_DATA: LanternboundArchivistData = preload(
-	"res://hub/data/lanternbound_archivist.tres"
-)
 const RunManagerSpyScript := preload("res://test/unit/helpers/intro_run_manager_spy.gd")
 
 
@@ -138,30 +134,6 @@ func test_catabase_hub_start_is_forced_to_room_zero() -> void:
 	assert_eq(GameManager._next_run_start_room_index, 0)
 
 
-func test_catabase_room_selector_is_hidden_or_disabled() -> void:
-	var panel := ARCHIVIST_PANEL.instantiate() as ArchivistPanel
-	add_child_autofree(panel)
-	await wait_process_frames(2)
-	panel.open_panel(ARCHIVIST_DATA)
-	panel.get_node("%RunButton").pressed.emit()
-	var run_selector: OptionButton = panel.get_node("%RunSelector")
-	run_selector.select(2)
-	run_selector.item_selected.emit(2)
-	var room_selector: OptionButton = panel.get_node("%RoomSelector")
-	assert_false(room_selector.visible)
-	assert_false(panel.get_node("%RoomSelectionLabel").visible)
-	assert_eq(room_selector.item_count, 1)
-	assert_eq(room_selector.get_selected_id(), 0)
-
-
-func test_other_runs_do_not_use_catabase_intro() -> void:
-	var runs := ARCHIVIST_DATA.get_available_runs()
-	assert_eq(runs.size(), 3)
-	assert_eq(runs[0].intro_sequence, LEGACY_SEQUENCE)
-	assert_eq(runs[1].intro_sequence, LEGACY_SEQUENCE)
-	assert_eq(runs[2].intro_sequence, CATABASE_SEQUENCE)
-	for run_index in [0, 1]:
-		assert_ne(runs[run_index].intro_sequence.sequence_id, &"catabase_intro_v4")
 
 
 func test_legacy_intro_still_plays_for_expected_runs() -> void:

@@ -99,7 +99,7 @@ func test_confirm_grants_a_single_launch_for_the_selected_painted_appearance() -
 	assert_false(GameManager.confirm_expedition_replacement(token), "The same confirmation cannot be replayed")
 
 
-func test_trial_and_all_trio_choices_launch_without_replacement_confirmation() -> void:
+func test_trial_launches_without_replacement_confirmation() -> void:
 	# Historical adventures are opt-in fixtures; appearance count is independent.
 	_screen.queue_free()
 	await wait_process_frames(2)
@@ -120,7 +120,7 @@ func test_trial_and_all_trio_choices_launch_without_replacement_confirmation() -
 		expected_launches += 1
 		assert_eq(_screen.launch_requests, expected_launches)
 		assert_eq(_hash(_fixture_path), _fixture_hash)
-	assert_eq(expected_launches, 4)
+	assert_eq(expected_launches, 1)
 	assert_eq((_screen.get_selected_entry().run as RunData).resource_path, "res://data/runs/philosopher_trial.tres")
 
 

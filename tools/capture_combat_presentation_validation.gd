@@ -30,7 +30,7 @@ func _run() -> void:
 	GameManager.cleanup_run_state()
 	if not GameManager._prepare_preconfigured_run(
 		RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	):
 		push_error("COMBAT PRESENTATION: initialisation First Run impossible")
 		get_tree().quit(1)

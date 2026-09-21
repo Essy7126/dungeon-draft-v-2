@@ -87,6 +87,21 @@ static func progression_authorities_for_unit(
 	return authorities
 
 
+## Multiple runs may share one progression document (for example a hero in
+## the public run and a laboratory). This is not an ambiguous spell loadout.
+static func shared_progression_profile(authorities: Array) -> CharacterProgressionProfile:
+	var selected: CharacterProgressionProfile = null
+	for authority in authorities:
+		var profile := (authority as Dictionary).get("progression_profile") as CharacterProgressionProfile
+		if profile == null:
+			return null
+		if selected != null and selected != profile:
+			if selected.resource_path.is_empty() or selected.resource_path != profile.resource_path:
+				return null
+		selected = profile
+	return selected
+
+
 static func global_unit_authority(base_unit_data: UnitData) -> Dictionary:
 	return {
 		"authority": AUTHORITY_GLOBAL_UNIT,

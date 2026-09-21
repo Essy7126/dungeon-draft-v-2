@@ -14,7 +14,7 @@ func _ready() -> void:
 		return
 	if not GameManager._prepare_preconfigured_run(
 		debug_run,
-		GameManager.PRODUCTION_HERO_DATA_PATHS
+		PartyRulesFixtures.HERO_PATHS
 	):
 		return
 	GameManager.current_room_index = 0

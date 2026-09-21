@@ -39,7 +39,7 @@ func _run() -> void:
 	current_scene = screen
 	await _settle()
 	var entries: Array = screen.get_entries()
-	_check(entries.size() >= 5, "All five current hero/adventure entries remain available")
+	_check(entries.size() == 4, "Three Catabase appearances and the lab trial remain available")
 	if entries.is_empty():
 		_finish()
 		return
@@ -53,14 +53,14 @@ func _run() -> void:
 		await _capture("achille_%dx%d" % [target_size.x, target_size.y])
 	root.size = Vector2i(1440, 900)
 	await _settle()
-	var mage_index := _entry_index(entries, "mage")
-	_check(mage_index >= 0, "Mage remains browsable")
-	if mage_index >= 0:
-		await _click(screen._roster_buttons[mage_index])
-		_check(screen.selected_index == mage_index, "Injected click selects Mage")
-		_check(str(screen.get_selected_entry().get("run").resource_path) == "res://data/runs/first_run.tres", "Mage keeps the complete trio adventure")
-		_check_layout("mage_1440x900")
-		await _capture("mage_1440x900")
+	var painted_index := _entry_index(entries, "achilles_painted_g")
+	_check(painted_index >= 0, "Painted Achille remains browsable")
+	if painted_index >= 0:
+		await _click(screen._roster_buttons[painted_index])
+		_check(screen.selected_index == painted_index, "Injected click selects painted Achille")
+		_check(screen.get_selected_entry().get("run").content_profile == entries[0].get("run").content_profile, "Painted Achille keeps Catabase")
+		_check_layout("painted_1440x900")
+		await _capture("painted_1440x900")
 	var trial_index := entries.size() - 1
 	await _click(screen._roster_buttons[trial_index])
 	_check(screen.selected_index == trial_index, "Injected click selects the last adventure")
@@ -90,7 +90,7 @@ func _run() -> void:
 		_check(is_instance_valid(codex), "Injected click opens the consultative codex")
 		if is_instance_valid(codex):
 			_check(codex.is_consultative(), "Selection codex is consultative")
-			_check(not screen.select_character(mage_index), "Codex blocks underlying hero changes")
+			_check(not screen.select_character(painted_index), "Codex blocks underlying hero changes")
 			_check(not screen.open_spell_tree(), "Codex blocks duplicate opening")
 			_check(_manager_snapshot() == _manager_before, "Codex exploration does not mutate GameManager")
 			await _capture("codex_1440x900")

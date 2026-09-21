@@ -31,7 +31,7 @@ func test_tools_use_full_french_names_and_permanent_contract() -> void:
 	assert_eq(ArenaStudioMain.TOOL_LABELS, [
 		"Sélection", "Déplacer la vue", "Ajouter des cases", "Retirer des cases",
 		"Bordure", "Murs et obstacles", "Sols", "Points de départ", "Vérification",
-		"Transformer la grille", "Ancres",
+		"Transformer la grille", "Calibration multipoint",
 	])
 	assert_eq(ArenaStudioMain.TOOL_HELP.size(), ArenaStudioMain.TOOL_LABELS.size())
 	assert_eq(ArenaStudioMain.TOOL_SHORTCUT_KEYS.size(), ArenaStudioMain.TOOL_LABELS.size())
@@ -40,7 +40,6 @@ func test_tools_use_full_french_names_and_permanent_contract() -> void:
 	var source := FileAccess.get_file_as_string(
 		"res://addons/dungeon_draft_arena_studio/ui/arena_studio_main.gd"
 	)
-	assert_true("OUTIL ACTIF" in source)
 	assert_true("Clic gauche" in source)
 	assert_true("Clic droit" in source)
 
@@ -54,7 +53,7 @@ func test_context_bar_is_human_first_and_technical_details_are_collapsed() -> vo
 	assert_not_null(bar.details_button)
 	assert_false(bar.details_button.visible)
 	assert_false(bar.details_label.visible)
-	assert_eq(bar.custom_minimum_size.y, 56.0)
+	assert_eq(bar.custom_minimum_size.y, 30.0)
 	assert_string_contains(bar.human_summary_label.tooltip_text, "Contexte actif")
 
 

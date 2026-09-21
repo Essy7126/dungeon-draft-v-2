@@ -54,7 +54,7 @@ func _run() -> void:
 		await _frames(3)
 	var run := load(RUN_PATH) as RunData
 	if run == null or not GameManager._prepare_preconfigured_run(
-			run, GameManager.PRODUCTION_HERO_DATA_PATHS
+			run, PartyRulesFixtures.HERO_PATHS
 		):
 		push_error("UnitPresenceAudit: configuration de run indisponible.")
 		get_tree().quit(2)

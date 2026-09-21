@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://characters/character_visual_3d.gd" id="1"]
+[ext_resource type="PackedScene" path="res://test/fixtures/party_rules/model.tscn" id="2"]
+[ext_resource type="Resource" path="res://test/fixtures/party_rules/animations.tres" id="3"]
+
+[node name="FixtureVisual" type="Node3D"]
+script = ExtResource("1")
+model_root_path = NodePath("Model")
+default_animation_set = ExtResource("3")
+
+[node name="Model" parent="." instance=ExtResource("2")]

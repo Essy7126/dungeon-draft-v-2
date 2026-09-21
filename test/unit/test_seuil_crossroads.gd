@@ -101,8 +101,10 @@ func test_new_build_victory_and_resume_route_to_each_pending_level_window() -> v
 		"Recovery still works after all attribute points were spent",
 	)
 	assert_eq(manager.requested, "res://ui/expedition/ExpeditionScreen.tscn")
-	assert_false(manager.claim_expedition_reward("supplies").success)
-	assert_true(manager.advance_expedition_level_step().success)
+	# Le premier combat classique n'impose plus de revue du build après
+	# les attributs ; la fenêtre optionnelle reste accessible sans bloquer le butin.
+	assert_false(manager.expedition.wants_build_review())
+	assert_eq(manager.expedition.advancement_step, "")
 	assert_true(manager.claim_expedition_reward("supplies").success)
 	assert_true(Routes.can_depart(manager.expedition))
 	assert_eq(

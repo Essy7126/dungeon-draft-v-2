@@ -201,7 +201,7 @@ func test_tooltip_is_hidden_and_refuses_content_while_modal_is_active() -> void:
 
 func test_end_turn_confirmation_and_outcome_expose_testable_snapshots() -> void:
 	var unit := Unit.from_data(
-		load("res://data/units/alliés/elfe.tres") as UnitData
+		load("res://test/fixtures/party_rules/elf.tres") as UnitData
 	)
 	var confirmation := EndTurnConfirmation.new()
 	add_child_autofree(confirmation)

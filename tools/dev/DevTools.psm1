@@ -86,30 +86,76 @@ function Get-DevStrictSummary([string]$ReportPath, [object]$Process) {
     $passed=(Test-DevProcessSuccess $Process) -and $report.verdict -in @('PASS','PASS_WITH_EXPECTED_FAILURES') -and $report.counts.tests_executed -gt 0
     return [ordered]@{ passed=$passed; verdict=$(if($passed){$report.verdict}else{'FAIL'}); tests=$report.counts.tests_executed; assertions=$report.counts.assertions_passed; failures=@($report.failure_codes); errors=@($report.errors); report=$ReportPath }
 }
+function Test-DevFormatPath([string]$Path) {
+    return $Path -match '\.gd$' -and $Path -notmatch '^(artifacts|output|meshy_output)/' -and ($Path -notmatch '^addons/' -or $Path -match '^addons/dungeon_draft_arena_studio/')
+}
+
+function Get-DevContext {
+    param(
+        [string]$Target,
+        [ValidateSet('all','code','tests','docs','data','art')][string]$Kind='all',
+        [ValidateRange(1,100000)][int]$Page=1,
+        [ValidateRange(1,100)][int]$PageSize=30,
+        [switch]$IncludeArchive,
+        [string[]]$Files
+    )
+    if (-not $Target -or $Target.Length -lt 3) { throw 'Provide a keyword with at least three characters.' }
+    $root=Get-DevRoot
+    $verifyFiles=-not $PSBoundParameters.ContainsKey('Files')
+    if ($verifyFiles) {
+        $Files=@(& git -C $root -c core.quotepath=false ls-files --cached --others --exclude-standard)
+        if ($LASTEXITCODE -ne 0) { throw 'Git file discovery failed.' }
+    }
+    $domains=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'context-domains.json') -Raw | ConvertFrom-Json -AsHashtable
+    $domain=$null
+    foreach ($entry in $domains.Values) { if ($Target -in $entry.aliases) { $domain=$entry; break } }
+    $entries=@(if($null -ne $domain){$domain.entrypoints})
+    $matches=@(foreach ($path in ($Files | Sort-Object -Unique)) {
+        if ($path -notmatch '\.(gd|gdshader|tscn|tres|md|ps1|psm1|py|json|mjs|ts|tsx|cmd)$') { continue }
+        if ($path -match '^(artifacts|output|meshy_output)/' -or $path -match '^addons/(gut|godot_ai_workbench|meshy-godot-plugin)/') { continue }
+        if (-not $IncludeArchive -and $path -match '^docs/(archive|ai|audits)/') { continue }
+        $entryIndex=[Array]::IndexOf($entries,$path)
+        $matched=$path.IndexOf($Target,[StringComparison]::OrdinalIgnoreCase) -ge 0 -or $entryIndex -ge 0
+        if (-not $matched -and $null -ne $domain) {
+            $matched=@($domain.patterns | Where-Object { $path -like $_ }).Count -gt 0
+        }
+        if (-not $matched) { continue }
+        if ($verifyFiles -and -not [IO.File]::Exists([IO.Path]::Combine($root,$path))) { continue }
+        $category=if($path -match '^(test|tests)/' -or $path -match '^addons/.*/test/'){ 'tests' }
+            elseif($path -match '\.md$'){ 'docs' }
+            elseif($path -match '^(art|asset|assets|imported_models)/'){ 'art' }
+            elseif($path -match '^data/'){ 'data' }
+            else { 'code' }
+        if ($Kind -ne 'all' -and $Kind -ne $category) { continue }
+        $rank=if($entryIndex -ge 0){$entryIndex}else{
+            switch($category){'code'{1000};'tests'{2000};'data'{3000};'docs'{4000};'art'{5000}}
+        }
+        [pscustomobject]@{path=$path;rank=$rank}
+    })
+    $ordered=@($matches | Sort-Object rank,path | ForEach-Object path)
+    $offset=($Page-1)*$PageSize
+    $pagePaths=@($ordered | Select-Object -Skip $offset -First $PageSize)
+    return [ordered]@{total=$ordered.Count;shown=$pagePaths.Count;page=$Page;page_size=$PageSize;truncated=($ordered.Count -gt $pagePaths.Count);has_more=($offset+$pagePaths.Count -lt $ordered.Count);include_archive=[bool]$IncludeArchive;paths=$pagePaths}
+}
+
 function Get-DevTestPaths([string]$Target) {
     $root=Get-DevRoot
-    $patterns = @(switch ($Target) {
-        'smoke' { @('test_champion_codex.gd','test_spell_codex_detail.gd') }
-        'catabase' { @('test_catabase*.gd','test_expedition*.gd','test_paris*.gd','test_relic*.gd','test_inventory_equipment_system.gd','test_post_combat_flow.gd','test_painted_halt_catabase.gd') }
-        'monsters' { @('test_catabase_monster*.gd') }
-        'terrain' { @('*terrain*.gd') }
-        'studio' { @('test_dungeon_draft_studio_2_0.gd') }
-        'halts' { @('test_painted_halt*.gd') }
-        'audio' { @('test_cavern_ambience.gd','test_title_music.gd','test_context_audio.gd','test_catabase_battle_audio.gd','test_inventory_equipment_system.gd','test_equipment_reward_presentation.gd','test_skill_evolution_card_presentation.gd','test_post_combat_flow.gd','test_champion_codex.gd','test_painted_halt_audio_lifecycle.gd','test_painted_halt_runtime.gd','test_painted_halt_catabase.gd','test_catabase_threshold.gd','test_battle_grid_lifecycle.gd','test_combat_effect_dedup_lifecycle.gd') }
-        'all' { @('test_*.gd') }
-        default { @() }
-    })
+    $suites=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'test-suites.json') -Raw | ConvertFrom-Json -AsHashtable
+    $patterns=@(if($suites.ContainsKey($Target)){$suites[$Target].patterns})
     if ($patterns.Count -eq 0) {
         $relative=$Target -replace '^res://',''
-        if ($relative -notmatch '^test/unit/[^:]+\.gd$' -or $relative -match '(^|/)\.\.(/|$)') { throw 'Use smoke, catabase, monsters, terrain, studio, halts, all or an exact test/unit/*.gd path.' }
+        if ($relative -notmatch '^test/unit/[^:]+\.gd$' -or $relative -match '(^|/)\.\.(/|$)') { throw 'Use a suite from tools/dev/test-suites.json or an exact test/unit/*.gd path.' }
         if (-not (Test-Path -LiteralPath (Join-Path $root $relative))) { throw "Test missing: $relative" }
         return @('res://' + $relative)
+    }
+    foreach ($pattern in $patterns) {
+        if (-not [System.Management.Automation.WildcardPattern]::ContainsWildcardCharacters($pattern) -and -not (Test-Path -LiteralPath (Join-Path $root "test/unit/$pattern") -PathType Leaf)) { throw "Suite $Target references missing test: $pattern" }
     }
     $found=@(Get-ChildItem -LiteralPath (Join-Path $root 'test/unit') -File -Recurse | Where-Object { $file=$_.Name; @($patterns | Where-Object {$file -like $_}).Count -gt 0 } | ForEach-Object { 'res://' + [IO.Path]::GetRelativePath($root,$_.FullName).Replace('\','/') } | Sort-Object)
     if ($found.Count -eq 0) { throw "No tests matched $Target." }
     return $found
 }
-function Invoke-DevTests([string]$Godot, [string]$Target, [string]$RunRoot) {
+function Invoke-DevTests([string]$Godot, [string]$Target, [string]$RunRoot, [ValidateRange(1,14400)][int]$TimeoutSeconds=900) {
     $root=Get-DevRoot; $chain=Get-DevToolchain; $paths=@(Get-DevTestPaths $Target)
     if([IO.File]::ReadAllText((Join-Path $root 'addons/gut/plugin.cfg')) -notmatch ('version="'+[regex]::Escape($chain.gut_version)+'"')){throw 'Installed GUT version differs from toolchain.json.'}
     $userData=Join-Path $RunRoot 'appdata'; [IO.Directory]::CreateDirectory($userData) | Out-Null
@@ -122,7 +168,7 @@ function Invoke-DevTests([string]$Godot, [string]$Target, [string]$RunRoot) {
     if ((Test-DevProcessSuccess $import) -and @(Get-DevEngineErrors $RunRoot 'import').Count -eq 0) {
         $arguments=@('--headless','--path',$root,'--log-file',(Join-Path $RunRoot 'gut.engine.log'),'--script','res://addons/gut/gut_cmdln.gd','--','-gconfig=','-gexit','-gdisable_colors','-gfailure_error_types','engine,gut,push_error','-gjunit_xml_file',(Join-Path $RunRoot 'gut.junit.xml'))
         foreach ($path in $paths) { $arguments+=@('-gtest',$path) }
-        $gut=Invoke-DevProcess $Godot $arguments $root $RunRoot 'gut' 900 $environment
+        $gut=Invoke-DevProcess $Godot $arguments $root $RunRoot 'gut' $TimeoutSeconds $environment
     }
     $expected=@{minimum_tests=1;failures=@()}
     # The full CI suite owns its historical allowlist; local runs stay strict.

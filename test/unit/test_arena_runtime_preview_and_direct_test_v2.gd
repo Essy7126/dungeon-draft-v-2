@@ -66,6 +66,9 @@ func test_game_preview_labels_fixture_fallback_instead_of_silent_enemy() -> void
 	var fidelity := preview.fidelity_report()
 	assert_eq(fidelity.fidelity, "QUICK")
 	assert_eq(fidelity.hero_source, "explicit_fixture")
+	assert_eq(fidelity.hero_count, 1)
+	assert_eq(preview.resolved_heroes[0].unit_id, &"achilles")
+	assert_gt(preview.resolved_heroes[0].spells.size(), 0)
 	assert_string_contains(fidelity.label, "FIXTURES EXPLICITES")
 	assert_true(fidelity.errors.has("Aucune partie active."))
 

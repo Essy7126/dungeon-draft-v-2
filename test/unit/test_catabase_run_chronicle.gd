@@ -150,7 +150,7 @@ func test_explicit_legacy_hub_without_catabase_result_remains_available() -> voi
 	var requested_paths: Array[String] = []
 	manager.scene_change_requested.connect(func(path): requested_paths.append(path))
 	manager.return_to_hub()
-	assert_eq(requested_paths, ["res://hub/StartHub.tscn"])
+	assert_eq(requested_paths, ["res://ui/TitreEcran.tscn"])
 	assert_true(manager.get_last_run_result().is_empty())
 	manager.free()
 

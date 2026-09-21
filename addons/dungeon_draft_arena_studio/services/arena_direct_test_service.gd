@@ -7,9 +7,7 @@ const WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
 const LAST_RESULT_PATH := WORK_ROOT + "/last_result.json"
 const CONTRACT_VERSION := 5
 const QUICK_FIXTURE_HEROES := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://data/units/allies/achilles.tres",
 ]
 
 

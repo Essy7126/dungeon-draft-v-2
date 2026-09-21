@@ -764,7 +764,7 @@ func _discover_default_run() -> void:
 		return
 	var selected := paths[0]
 	for path in paths:
-		if path.ends_with("/first_run.tres") or path.ends_with("/run_default.tres"):
+		if path == "res://data/runs/odyssey.tres":
 			selected = path
 			break
 	open_run(selected)

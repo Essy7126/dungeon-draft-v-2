@@ -217,9 +217,9 @@ func _verify_game_manager_contract() -> void:
 	manager.scene_change_requested.connect(func(path): requested_paths.append(path))
 	var run_data := load(RUN_PATH) as RunData
 	manager.start_preconfigured_run(run_data, [
-		"res://data/units/alliés/elfe.tres",
-		"res://data/units/alliés/mage.tres",
-		"res://data/units/alliés/Guerrier.tres",
+		"res://test/fixtures/party_rules/elf.tres",
+		"res://test/fixtures/party_rules/mage.tres",
+		"res://test/fixtures/party_rules/warrior.tres",
 	])
 	_check(manager.run_active, "start_preconfigured_run n’active pas la run.")
 	_check(manager.current_room_index == 0, "La première salle n’est pas sélectionnée.")

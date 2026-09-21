@@ -4,7 +4,7 @@ extends GutTest
 ## nom à l'écran, et une comparaison de parties doit nommer le rang et le nœud
 ## qui diffèrent, pas seulement leur discipline.
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 
 
 func _discipline_with_two_ranks() -> DisciplineData:

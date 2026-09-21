@@ -1,9 +1,9 @@
 class_name SkeletonCaptureValidation
 extends Node2D
 
-const ElfScene := preload("res://characters/elf/ElfIsoUnitView.tscn")
-const MageScene := preload("res://characters/mage/MageIsoUnitView.tscn")
-const WarriorScene := preload("res://characters/warrior/WarriorIsoUnitView.tscn")
+const ElfScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const MageScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const WarriorScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
 const MeleeScene := preload(
 	"res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn"
 )

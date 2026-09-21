@@ -123,9 +123,9 @@ func test_zoom_is_bounded_and_changes_the_actual_sprite_scale() -> void:
 
 func test_selecting_another_hero_or_adventure_restores_one_hundred_percent_zoom() -> void:
 	screen._change_zoom(0.1)
-	assert_true(screen.select_character(3))
-	assert_eq(screen.get_selected_entry().get("id"), &"mage")
-	assert_false(screen.get_preview().is_using_sprite_preview())
+	assert_true(screen.select_character(1))
+	assert_eq(screen.get_selected_entry().get("id"), &"achilles_painted_g")
+	assert_true(screen.get_preview().is_using_sprite_preview())
 	assert_almost_eq(screen._zoom, 1.0, 0.0001)
 	assert_almost_eq(screen.get_preview().get_showcase_zoom(), 1.0, 0.0001)
 	assert_eq(screen._zoom_label.text, "100 %")
@@ -139,8 +139,8 @@ func test_selecting_another_hero_or_adventure_restores_one_hundred_percent_zoom(
 
 
 func test_roster_folio_preview_and_primary_action_fit_common_screen_sizes() -> void:
-	assert_eq(screen.get_entries().size(), 6)
-	assert_eq(screen._roster_buttons.size(), 6)
+	assert_eq(screen.get_entries().size(), 4)
+	assert_eq(screen._roster_buttons.size(), 4)
 	var folio := screen.find_child("CharacterFolio", true, false) as Control
 	var note := screen.find_child("RosterNote", true, false) as Control
 	var roster := screen.find_child("HeroRosterScroll", true, false) as ScrollContainer
@@ -207,13 +207,11 @@ func test_all_technique_descriptions_use_readable_glossary_terms_instead_of_toke
 			var displayed := screen._spell_description.text
 			assert_false(displayed.is_empty(), "%s technique %d has a readable effect" % [unit.unit_name, spell_index])
 			assert_false(displayed.contains("[kw:"), "%s technique %d must not expose glossary markup" % [unit.unit_name, spell_index])
-			if entry.get("id") == &"mage" and spell_index == 0:
-				assert_true(displayed.contains("Lave"), "Boule de feu must display the player-facing glossary term Lave")
 
 
 func test_roster_displays_the_painted_preview_and_preserves_classic_illustrated_portraits() -> void:
 	var entries := screen.get_entries()
-	assert_eq(entries.size(), 6)
+	assert_eq(entries.size(), 4)
 	var portraits: Array[Texture2D] = []
 	var unique_portraits: Dictionary = {}
 	var atlas_regions: Dictionary = {}
@@ -239,8 +237,8 @@ func test_roster_displays_the_painted_preview_and_preserves_classic_illustrated_
 				var atlas_key := "%d:%s" % [portrait.atlas.get_instance_id(), portrait.region]
 				assert_false(atlas_regions.has(atlas_key), "Different heroes must not share the same atlas crop")
 				atlas_regions[atlas_key] = true
-	assert_eq(unique_portraits.size(), 5)
-	assert_same(portraits[0], portraits[5], "Classic Achille keeps his portrait across Catabase and the philosopher trial")
+	assert_eq(unique_portraits.size(), 3)
+	assert_same(portraits[0], portraits[3], "Classic Achille keeps his portrait across Catabase and the philosopher trial")
 
 
 func _assert_control_fits(control: Control, context: String) -> void:

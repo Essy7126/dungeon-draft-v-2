@@ -5,7 +5,7 @@ const ProgressionScreenScript = preload(
 	"res://ui/progression/progression_choice_screen.gd"
 )
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 const DISCIPLINE_ORDER := [&"archer", &"assassin", &"mage", &"healer"]
 const FIRST_CHOICE_IDS := [
 	&"elf_archer_eagle_eye",

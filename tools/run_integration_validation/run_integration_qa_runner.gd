@@ -5,7 +5,7 @@ extends Node
 
 const SELECTION := "res://ui/selection/CharacterSelectionScreen.tscn"
 const INTRO := "res://cinematics/intro/intro_cinematic.tscn"
-const HUB := "res://hub/StartHub.tscn"
+const TITLE := "res://ui/TitreEcran.tscn"
 const RUN := "res://data/runs/odyssey.tres"
 const MAGE_SOURCE := "res://data/units/enemies/philosopher_mage.tres"
 const CANONICAL := ["achilles_peleid_strike", "achilles_fulminant_dash", "achilles_pelion_shot", "achilles_bronze_guard"]
@@ -546,16 +546,16 @@ func _verify_result_and_return(victory: bool) -> bool:
 	var screen = get_tree().current_scene
 	if not _press(screen.get_node("Background/Center/Panel/Content/ReturnButton"), label + "_return_button"):
 		return false
-	if not await _wait_for_scene(HUB, 20000):
+	if not await _wait_for_scene(TITLE, 20000):
 		return false
 	await _settle(8)
-	_check(not GameManager.run_active and GameManager.get_ordered_heroes().is_empty(), label + "_hub_has_no_active_run")
+	_check(not GameManager.run_active and GameManager.get_ordered_heroes().is_empty(), label + "_title_has_no_active_run")
 	_check(not GameManager.has_persistent_run_ui() and old_ui.get_ref() == null, label + "_old_persistent_ui_freed")
 	for state_ref in old_states:
 		var state = state_ref.get_ref()
 		_check(state == null or state.loadout == null, label + "_old_character_loadout_disposed")
 	_check(not GameManager.has_next_run_configuration(), label + "_next_run_configuration_cleared")
-	await _capture(label + "_clean_hub")
+	await _capture(label + "_clean_title")
 	return _report.errors.is_empty()
 
 func _force_outcome(battle, victory: bool, reason: String) -> void:

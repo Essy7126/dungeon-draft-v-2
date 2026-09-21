@@ -1,12 +1,12 @@
 extends GutTest
 
 const GameManagerScript = preload("res://core/game_manager.gd")
-const MAGE_ISO_SCENE := preload("res://characters/mage/MageIsoUnitView.tscn")
-const MAGE_VISUAL_SCENE := preload("res://characters/mage/MageVisual3D.tscn")
+const MAGE_ISO_SCENE := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const MAGE_VISUAL_SCENE := preload("res://test/fixtures/party_rules/visual.tscn")
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
+const MAGE_PATH := "res://test/fixtures/party_rules/mage.tres"
+const WARRIOR_PATH := "res://test/fixtures/party_rules/warrior.tres"
 const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 
 var manager
@@ -70,7 +70,7 @@ func test_cleanup_removes_all_three_states_and_pending_continuations() -> void:
 
 func test_freeing_mage_iso_disconnects_unit_and_event_bus_signals() -> void:
 	var mage := Unit.from_data(load(MAGE_PATH) as UnitData)
-	var iso := MAGE_ISO_SCENE.instantiate() as MageIsoUnitView
+	var iso := MAGE_ISO_SCENE.instantiate() as CharacterIsoUnitView
 	add_child(iso)
 	await wait_process_frames(2)
 	iso.bind_unit(mage)
@@ -88,7 +88,7 @@ func test_freeing_mage_iso_disconnects_unit_and_event_bus_signals() -> void:
 
 
 func test_freed_mage_visual_cannot_emit_a_late_release() -> void:
-	var old_visual := MAGE_VISUAL_SCENE.instantiate() as MageVisual3D
+	var old_visual := MAGE_VISUAL_SCENE.instantiate() as CharacterVisual3D
 	add_child(old_visual)
 	await wait_process_frames(2)
 	var releases := {"count": 0}

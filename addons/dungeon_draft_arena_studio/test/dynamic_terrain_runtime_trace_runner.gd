@@ -30,7 +30,7 @@ func _ready() -> void:
 func _run() -> void:
 	GameManager.cleanup_run_state()
 	if not GameManager._prepare_preconfigured_run(
-			RUN, GameManager.PRODUCTION_HERO_DATA_PATHS
+			RUN, PartyRulesFixtures.HERO_PATHS
 		):
 		_finish({"error": "run_prepare_failed"})
 		return

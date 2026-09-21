@@ -14,7 +14,7 @@ func _ready() -> void:
 	studio.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	await get_tree().process_frame
 	await get_tree().process_frame
-	if studio.tabs.get_tab_count() != 4 or studio.tabs.get_child(2).name != StringName("Objets"):
+	if studio.tabs.get_tab_count() != 5 or studio.tabs.get_child(2) != studio.item_studio:
 		_fail("L’onglet OBJETS n’est pas la troisième autorité du Studio.")
 		return
 	studio.tabs.current_tab = 2
@@ -54,7 +54,8 @@ func _ready() -> void:
 	if not state.has("items") or not validation.has("messages") or not analysis.get("ok", false):
 		_fail("Validation, projection runtime ou persistance UI incomplète.")
 		return
-	print("ITEM_STUDIO_SMOKE_PASS|tabs=3|catalog=%d|item=%s|errors=%d|warnings=%d|runtime_heroes=%d|draft=%s" % [
+	print("ITEM_STUDIO_SMOKE_PASS|tabs=%d|catalog=%d|item=%s|errors=%d|warnings=%d|runtime_heroes=%d|draft=%s" % [
+		studio.tabs.get_tab_count(),
 		item_studio.catalog.production_definitions().size(),
 		item_studio.document.working_copy.item_id,
 		validation.get("errors", 0),

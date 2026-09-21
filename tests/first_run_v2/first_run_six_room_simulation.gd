@@ -3,9 +3,9 @@ extends Node
 const RUN := preload("res://data/runs/first_run.tres")
 const ITEM_CATALOG := preload("res://data/items/catalogs/default_item_catalog.tres")
 const HERO_DATA := [
-	preload("res://data/units/alliés/elfe.tres"),
-	preload("res://data/units/alliés/mage.tres"),
-	preload("res://data/units/alliés/Guerrier.tres"),
+	preload("res://test/fixtures/party_rules/elf.tres"),
+	preload("res://test/fixtures/party_rules/mage.tres"),
+	preload("res://test/fixtures/party_rules/warrior.tres"),
 ]
 const PROFILE_SPECIALIZED: StringName = &"specialized"
 const PROFILE_BALANCED: StringName = &"balanced"

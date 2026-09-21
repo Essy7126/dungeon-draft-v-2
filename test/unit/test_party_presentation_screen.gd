@@ -1,7 +1,7 @@
 extends GutTest
 
 const GameManagerScript = preload("res://core/game_manager.gd")
-const SCREEN_SCENE := preload("res://ui/party/PartyPresentationScreen.tscn")
+const SCREEN_SCENE := preload("res://test/fixtures/party_rules/ui/PartyPresentationScreen.tscn")
 
 var screen: PartyPresentationScreen
 
@@ -28,21 +28,21 @@ func test_screen_builds_three_data_driven_cards_in_fixed_order() -> void:
 	])
 
 
-func test_fixed_trio_uses_real_3d_previews_including_warrior() -> void:
+func test_rule_fixtures_use_the_shared_procedural_preview() -> void:
 	var cards := screen.get_cards()
-	assert_true(cards[0].preview.get_visual_instance() is ElfVisual3D)
+	assert_true(cards[0].preview.get_visual_instance() is CharacterVisual3D)
 	assert_false(cards[0].preview.is_using_fallback())
 	assert_eq(cards[0].character_data.disciplines.size(), 4)
 	assert_false(cards[0].badge_label.visible)
 
-	assert_true(cards[1].preview.get_visual_instance() is MageVisual3D)
+	assert_true(cards[1].preview.get_visual_instance() is CharacterVisual3D)
 	assert_false(cards[1].preview.is_using_fallback())
 	assert_eq(
-		(cards[1].preview.get_visual_instance() as MageVisual3D).scale,
-		Vector3(1.2, 1.2, 1.2),
+		(cards[1].preview.get_visual_instance() as CharacterVisual3D).scale,
+		Vector3.ONE,
 	)
 	assert_eq(
-		(cards[0].preview.get_visual_instance() as ElfVisual3D).scale,
+		(cards[0].preview.get_visual_instance() as CharacterVisual3D).scale,
 		Vector3.ONE,
 	)
 	assert_eq(
@@ -52,7 +52,7 @@ func test_fixed_trio_uses_real_3d_previews_including_warrior() -> void:
 	assert_eq(cards[1].role_label.text, "Mage de combat élémentaire")
 	assert_false(cards[1].badge_label.visible)
 
-	assert_true(cards[2].preview.get_visual_instance() is WarriorVisual3D)
+	assert_true(cards[2].preview.get_visual_instance() is CharacterVisual3D)
 	assert_false(cards[2].preview.is_using_fallback())
 	assert_eq(cards[2].badge_label.text, "Troisième héros de la première run")
 	assert_true(cards[2].badge_label.visible)
@@ -63,10 +63,9 @@ func test_preview_replacement_frees_the_previous_true_visual() -> void:
 	var old_visual := preview.get_visual_instance()
 	preview.configure(screen.party_members[1])
 	assert_false(is_instance_valid(old_visual))
-	assert_true(preview.get_visual_instance() is MageVisual3D)
+	assert_true(preview.get_visual_instance() is CharacterVisual3D)
 	preview.configure(screen.party_members[2])
-	assert_false(preview.get_visual_instance() is MageVisual3D)
-	assert_true(preview.get_visual_instance() is WarriorVisual3D)
+	assert_true(preview.get_visual_instance() is CharacterVisual3D)
 	assert_false(preview.is_using_fallback())
 
 

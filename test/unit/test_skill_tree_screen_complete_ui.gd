@@ -10,9 +10,9 @@ const DEFAULT_SKILL_TREE_SKIN := preload(
 	"res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres"
 )
 const HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://test/fixtures/party_rules/elf.tres",
+	"res://test/fixtures/party_rules/mage.tres",
+	"res://test/fixtures/party_rules/warrior.tres",
 ]
 
 

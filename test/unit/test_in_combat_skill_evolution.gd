@@ -5,9 +5,9 @@ const SCREEN_SCENE := preload(
 	"res://ui/progression/screens/skill_tree_screen.tscn"
 )
 const HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://test/fixtures/party_rules/elf.tres",
+	"res://test/fixtures/party_rules/mage.tres",
+	"res://test/fixtures/party_rules/warrior.tres",
 ]
 
 
@@ -108,7 +108,7 @@ func _prepare_global_run() -> CharacterRunState:
 	run.rooms = [RoomData.new(), RoomData.new()]
 	assert_true(GameManager._prepare_preconfigured_run(
 		run,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	))
 	return GameManager.get_ordered_character_states()[0]
 

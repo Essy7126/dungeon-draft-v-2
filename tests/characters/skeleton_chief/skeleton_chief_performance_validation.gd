@@ -1,9 +1,9 @@
 extends Node2D
 
 const REPORT_PATH := "C:/Blender_AI_Test/Output/skeleton_chief_performance_report.json"
-const ElfScene := preload("res://characters/elf/ElfIsoUnitView.tscn")
-const MageScene := preload("res://characters/mage/MageIsoUnitView.tscn")
-const WarriorScene := preload("res://characters/warrior/WarriorIsoUnitView.tscn")
+const ElfScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const MageScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const WarriorScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
 const ChiefScene := preload("res://characters/enemies/skeleton_chief/SkeletonChiefIsoUnitView.tscn")
 const MeleeScene := preload("res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn")
 const RangedScene := preload("res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn")

@@ -8,9 +8,9 @@ const ROOM_PATHS := [
 	"res://data/rooms/room_06_space.tres",
 ]
 const HERO_PATHS := {
-	&"elf": "res://data/units/alliés/elfe.tres",
-	&"mage": "res://data/units/alliés/mage.tres",
-	&"warrior": "res://data/units/alliés/Guerrier.tres",
+	&"elf": "res://test/fixtures/party_rules/elf.tres",
+	&"mage": "res://test/fixtures/party_rules/mage.tres",
+	&"warrior": "res://test/fixtures/party_rules/warrior.tres",
 }
 
 

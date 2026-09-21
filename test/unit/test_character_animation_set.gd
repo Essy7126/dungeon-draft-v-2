@@ -4,16 +4,16 @@ extends GutTest
 # événement -> clip. Les scripts visuels ne font que la référencer et gardent
 # leurs constantes de clips pour leurs comportements spécialisés.
 
-const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const MAGE_PATH := "res://test/fixtures/party_rules/mage.tres"
+const WARRIOR_PATH := "res://test/fixtures/party_rules/warrior.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 const PREVIEW_SCENE := preload("res://ui/characters/CharacterPreview3D.tscn")
-const RAW_MAGE_MODEL := preload("res://assets/characters/mage/mage_godot_baseline.glb")
+const RAW_MAGE_MODEL := preload("res://test/fixtures/party_rules/model.tscn")
 
 const HEROES := {
-	MAGE_PATH: "res://characters/mage/MageVisual3D.tscn",
-	WARRIOR_PATH: "res://characters/warrior/WarriorVisual3D.tscn",
-	ELF_PATH: "res://characters/elf/ElfVisual3D.tscn",
+	MAGE_PATH: "res://test/fixtures/party_rules/visual.tscn",
+	WARRIOR_PATH: "res://test/fixtures/party_rules/visual.tscn",
+	ELF_PATH: "res://test/fixtures/party_rules/visual.tscn",
 }
 
 
@@ -92,10 +92,10 @@ func test_missing_override_or_entry_keeps_the_resource_backed_default() -> void:
 	assert_false(visual.apply_animation_set(null))
 	assert_eq(visual.animation_idle, before)
 	var partial := CharacterAnimationSetData.new()
-	partial.set_animation_name(&"walk", &"DD_Mage_Run")
+	partial.set_animation_name(&"walk", &"Fixture_Run")
 	visual.apply_animation_set(partial)
 	assert_eq(visual.animation_idle, before, "un événement absent garde son clip")
-	assert_eq(visual.animation_walk, &"DD_Mage_Run", "un événement réglé est appliqué")
+	assert_eq(visual.animation_walk, &"Fixture_Run", "un événement réglé est appliqué")
 
 
 func test_every_declared_event_can_be_read_and_written_by_id() -> void:
@@ -115,7 +115,7 @@ func test_every_declared_event_can_be_read_and_written_by_id() -> void:
 # La migration des trois héros : aucun changement visible en jeu
 # ============================================================
 
-func test_the_three_heroes_share_their_set_with_the_visual_default() -> void:
+func test_rule_fixtures_share_their_set_with_the_visual_default() -> void:
 	for unit_path in HEROES:
 		var unit := load(unit_path) as UnitData
 		assert_not_null(unit.animation_set, "fiche présente : %s" % unit_path)
@@ -174,10 +174,10 @@ func test_preview_plays_a_named_clip_on_a_model_without_a_driving_script() -> vo
 	preview.configure(RAW_MAGE_MODEL)
 	var clips := preview.get_available_clips()
 	assert_eq(clips.size(), 6)
-	assert_true(clips.has(&"DD_Mage_Run"))
-	assert_true(preview.has_clip(&"DD_Mage_Run"))
+	assert_true(clips.has(&"Fixture_Run"))
+	assert_true(preview.has_clip(&"Fixture_Run"))
 	assert_false(preview.has_clip(&"Inexistant"))
-	assert_true(preview.play_clip(&"DD_Mage_Run"))
+	assert_true(preview.play_clip(&"Fixture_Run"))
 	assert_false(preview.play_clip(&"Inexistant"))
 	assert_false(preview.is_using_fallback())
 
@@ -189,13 +189,13 @@ func test_preview_still_falls_back_when_no_visual_scene_is_available() -> void:
 	preview.configure(null)
 	assert_true(preview.is_using_fallback())
 	assert_null(preview.get_visual_instance())
-	assert_false(preview.play_clip(&"DD_Mage_Run"))
+	assert_false(preview.play_clip(&"Fixture_Run"))
 
 
 func test_preview_applies_the_unit_animation_set_to_a_running_visual() -> void:
 	var unit := (load(MAGE_PATH) as UnitData).duplicate() as UnitData
 	var animation_set := CharacterAnimationSetData.new()
-	animation_set.set_animation_name(&"idle", &"DD_Mage_Walk")
+	animation_set.set_animation_name(&"idle", &"Fixture_Walk")
 	unit.animation_set = animation_set
 	var preview := PREVIEW_SCENE.instantiate() as CharacterPreview3D
 	add_child_autofree(preview)
@@ -203,7 +203,7 @@ func test_preview_applies_the_unit_animation_set_to_a_running_visual() -> void:
 	preview.configure(unit)
 	var visual := preview.get_visual_instance() as CharacterVisual3D
 	assert_not_null(visual)
-	assert_eq(visual.animation_idle, &"DD_Mage_Walk")
+	assert_eq(visual.animation_idle, &"Fixture_Walk")
 
 
 # ============================================================
@@ -234,9 +234,9 @@ func test_animation_screen_lists_known_spells_and_orphaned_cast_mappings() -> vo
 	var orphan_zeta := &"cast:ancien_zeta"
 	var animation_set := CharacterAnimationSetData.new()
 	animation_set.animation_names = {
-		guard_action: &"DD_Mage_Run",
-		orphan_zeta: &"DD_Mage_Idle",
-		orphan_alpha: &"DD_Mage_Walk",
+		guard_action: &"Fixture_Run",
+		orphan_zeta: &"Fixture_Idle",
+		orphan_alpha: &"Fixture_Walk",
 	}
 	unit.animation_set = animation_set
 	var screen := SkillTreeAnimationScreen.new()
@@ -272,11 +272,11 @@ func test_animation_screen_lists_known_spells_and_orphaned_cast_mappings() -> vo
 	var orphan_option := orphan_row.get("option") as OptionButton
 	assert_eq(
 		StringName(orphan_option.get_item_metadata(orphan_option.selected)),
-		&"DD_Mage_Walk"
+		&"Fixture_Walk"
 	)
 	var guard_row := screen._rows[guard_action] as Dictionary
 	var guard_option := guard_row.get("option") as OptionButton
-	animation_set.set_animation_name(guard_action, &"DD_Mage_Walk")
+	animation_set.set_animation_name(guard_action, &"Fixture_Walk")
 	screen.set_document(unit, MAGE_PATH)
 	await wait_process_frames(1)
 	assert_same(
@@ -286,7 +286,7 @@ func test_animation_screen_lists_known_spells_and_orphaned_cast_mappings() -> vo
 	)
 	assert_eq(
 		StringName(guard_option.get_item_metadata(guard_option.selected)),
-		&"DD_Mage_Walk"
+		&"Fixture_Walk"
 	)
 
 	animation_set.set_animation_name(orphan_alpha, &"")
@@ -309,12 +309,12 @@ func test_studio_spell_specific_mapping_is_undoable() -> void:
 	assert_eq(session.working_unit.animation_set.get_animation_name(action_id), &"")
 	assert_true(session.set_animation_clip(
 		action_id,
-		&"DD_Mage_Run",
+		&"Fixture_Run",
 		"Sort - Test"
 	))
 	assert_eq(
 		session.working_unit.animation_set.get_animation_name(action_id),
-		&"DD_Mage_Run"
+		&"Fixture_Run"
 	)
 	assert_true(session.is_dirty())
 	assert_true(session.history_undo())
@@ -333,16 +333,16 @@ func test_studio_isolates_the_set_and_records_an_undoable_change() -> void:
 	var working_set := session.working_unit.animation_set
 	assert_not_null(working_set)
 	assert_ne(working_set, source.animation_set, "la copie de travail a sa propre fiche")
-	assert_true(session.set_animation_clip(&"run", &"DD_Mage_Walk", "Course"))
-	assert_eq(working_set.get_animation_name(&"run"), &"DD_Mage_Walk")
+	assert_true(session.set_animation_clip(&"run", &"Fixture_Walk", "Course"))
+	assert_eq(working_set.get_animation_name(&"run"), &"Fixture_Walk")
 	assert_eq(
 		source.animation_set.get_animation_name(&"run"),
-		&"DD_Mage_Run",
+		&"Fixture_Run",
 		"la ressource d’origine reste intacte tant qu’on n’a pas sauvegardé"
 	)
 	assert_true(session.is_dirty())
 	assert_true(session.history_undo())
-	assert_eq(working_set.get_animation_name(&"run"), &"DD_Mage_Run")
+	assert_eq(working_set.get_animation_name(&"run"), &"Fixture_Run")
 	assert_false(session.is_dirty())
 	session.release_document(false)
 
@@ -354,12 +354,12 @@ func test_studio_plans_to_write_the_set_file() -> void:
 	var session := SkillTreeEditSession.new()
 	assert_true(session.open(source))
 	_handle_known_production_uid_warning()
-	assert_true(session.set_animation_clip(&"run", &"DD_Mage_Walk", "Course"))
+	assert_true(session.set_animation_clip(&"run", &"Fixture_Walk", "Course"))
 	var planned := PackedStringArray()
 	for entry in SkillTreeSaveTransactionService.build_plan(session).writable_entries():
 		planned.append(entry.target_path)
 	assert_true(
-		Array(planned).has("res://data/characters/mage/animations.tres"),
+		Array(planned).has("res://test/fixtures/party_rules/animations.tres"),
 		"la fiche figure au plan de sauvegarde : %s" % str(planned)
 	)
 	session.release_document(false)
@@ -456,6 +456,7 @@ func test_studio_creates_a_set_for_a_character_that_has_none() -> void:
 	var source := ResourceLoader.load(
 		ELF_PATH, "", ResourceLoader.CACHE_MODE_IGNORE
 	) as UnitData
+	source.unit_id = &"animation_fixture"
 	var session := SkillTreeEditSession.new()
 	assert_true(session.open(source))
 	_handle_known_production_uid_warning()
@@ -464,16 +465,16 @@ func test_studio_creates_a_set_for_a_character_that_has_none() -> void:
 		session.set_animation_clip(&"idle", &"", "Repos"),
 		"choisir « aucune animation » ne crée pas de fichier inutile"
 	)
-	assert_true(session.set_animation_clip(&"idle", &"Elf_Idle", "Repos"))
+	assert_true(session.set_animation_clip(&"idle", &"Fixture_Idle", "Repos"))
 	var created := session.working_unit.animation_set
 	assert_not_null(created)
-	assert_eq(created.get_animation_name(&"idle"), &"Elf_Idle")
+	assert_eq(created.get_animation_name(&"idle"), &"Fixture_Idle")
 	var creations := PackedStringArray()
 	for entry in SkillTreeSaveTransactionService.build_plan(session).entries:
 		if entry.operation == SkillTreeSavePlanEntry.Operation.CREATE:
 			creations.append(entry.target_path)
 	assert_true(
-		Array(creations).has("res://data/characters/elf/animations.tres"),
+		Array(creations).has("res://data/characters/animation_fixture/animations.tres"),
 		"la nouvelle fiche est écrite dans le dossier du personnage : %s" % str(creations)
 	)
 	session.release_document(false)

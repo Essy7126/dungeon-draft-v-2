@@ -13,9 +13,9 @@
 		"progression_shared_count": 0,
 		"second_run_path": "res://data/runs/fixed_trio_prototype_run.tres",
 		"shared_base_unit_data": [
-			"res://data/units/alliés/Guerrier.tres",
-			"res://data/units/alliés/elfe.tres",
-			"res://data/units/alliés/mage.tres"
+			"res://test/fixtures/party_rules/warrior.tres",
+			"res://test/fixtures/party_rules/elf.tres",
+			"res://test/fixtures/party_rules/mage.tres"
 		],
 		"shared_progression": [],
 		"shared_visual_assets": [
@@ -53,7 +53,7 @@
 		"content_profile_path": "res://data/runs/profiles/main_content_profile.tres",
 		"heroes": [
 			{
-				"base_unit_data_path": "res://data/units/alliés/elfe.tres",
+				"base_unit_data_path": "res://test/fixtures/party_rules/elf.tres",
 				"character_id": "elf",
 				"fingerprint": "b4cacb12744af1a977b8162a437ac9245e4cd97a1254fdebfa2cd0381ef53e83",
 				"progression_profile_path": "res://data/runs/progression/main/elf_progression_profile.tres",
@@ -829,7 +829,7 @@
 				]
 			},
 			{
-				"base_unit_data_path": "res://data/units/alliés/mage.tres",
+				"base_unit_data_path": "res://test/fixtures/party_rules/mage.tres",
 				"character_id": "mage",
 				"fingerprint": "9fee222b7fb15a91d966cf611799f16154987b1c7a6c09b80e3881ab2a0b92e4",
 				"progression_profile_path": "res://data/runs/progression/main/mage_progression_profile.tres",
@@ -1621,7 +1621,7 @@
 				]
 			},
 			{
-				"base_unit_data_path": "res://data/units/alliés/Guerrier.tres",
+				"base_unit_data_path": "res://test/fixtures/party_rules/warrior.tres",
 				"character_id": "warrior",
 				"fingerprint": "33e505bd44cbe23570beb5f9e5cdc2f71f2a198fdbf791338a7434564cea9a69",
 				"progression_profile_path": "res://data/runs/progression/main/warrior_progression_profile.tres",
@@ -2385,7 +2385,7 @@
 		"content_profile_path": "res://data/runs/profiles/test_content_profile.tres",
 		"heroes": [
 			{
-				"base_unit_data_path": "res://data/units/alliés/elfe.tres",
+				"base_unit_data_path": "res://test/fixtures/party_rules/elf.tres",
 				"character_id": "elf",
 				"fingerprint": "b4cacb12744af1a977b8162a437ac9245e4cd97a1254fdebfa2cd0381ef53e83",
 				"progression_profile_path": "res://data/runs/progression/test/elf_progression_profile.tres",
@@ -3161,7 +3161,7 @@
 				]
 			},
 			{
-				"base_unit_data_path": "res://data/units/alliés/mage.tres",
+				"base_unit_data_path": "res://test/fixtures/party_rules/mage.tres",
 				"character_id": "mage",
 				"fingerprint": "9fee222b7fb15a91d966cf611799f16154987b1c7a6c09b80e3881ab2a0b92e4",
 				"progression_profile_path": "res://data/runs/progression/test/mage_progression_profile.tres",
@@ -3953,7 +3953,7 @@
 				]
 			},
 			{
-				"base_unit_data_path": "res://data/units/alliés/Guerrier.tres",
+				"base_unit_data_path": "res://test/fixtures/party_rules/warrior.tres",
 				"character_id": "warrior",
 				"fingerprint": "33e505bd44cbe23570beb5f9e5cdc2f71f2a198fdbf791338a7434564cea9a69",
 				"progression_profile_path": "res://data/runs/progression/test/warrior_progression_profile.tres",

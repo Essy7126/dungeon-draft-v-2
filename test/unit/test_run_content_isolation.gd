@@ -2,7 +2,6 @@ extends GutTest
 
 const MAIN_RUN_PATH := "res://data/runs/first_run.tres"
 const TEST_RUN_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
-const HUB_DATA_PATH := "res://hub/data/lanternbound_archivist.tres"
 const EXPECTED_IDS: Array[StringName] = [&"elf", &"mage", &"warrior"]
 const GameManagerScript = preload("res://core/game_manager.gd")
 const TEMP_ROOT := "user://run_content_isolation_tests"
@@ -13,8 +12,10 @@ var temporary_files := PackedStringArray()
 
 
 func before_all() -> void:
-	main_run = load(MAIN_RUN_PATH) as RunData
-	test_run = load(TEST_RUN_PATH) as RunData
+	# Restore the canonical shared cache after editor tests that load isolated
+	# resource copies; pointer-identity checks below require one cache authority.
+	main_run = ResourceLoader.load(MAIN_RUN_PATH, "", ResourceLoader.CACHE_MODE_REPLACE_DEEP) as RunData
+	test_run = ResourceLoader.load(TEST_RUN_PATH, "", ResourceLoader.CACHE_MODE_REPLACE_DEEP) as RunData
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(TEMP_ROOT))
 
 
@@ -223,20 +224,15 @@ func test_profile_driven_fixture_reaches_test_runtime_only() -> void:
 	assert_false(main_result.heroes[0].spells[0].description.contains(marker))
 
 
-func test_hub_runs_resolve_their_own_profiles() -> void:
-	var hub_data := load(HUB_DATA_PATH) as LanternboundArchivistData
-	assert_not_null(hub_data)
-	assert_eq(hub_data.available_runs.size(), 3)
-	for available_run in hub_data.available_runs:
+func test_public_runs_resolve_their_own_profiles() -> void:
+	for entry in CharacterSelectionCatalog.get_entries():
+		var available_run := entry.run as RunData
 		var result := RunHeroResolver.resolve_runtime_hero_data(available_run, false)
 		assert_true(result.is_valid())
 		assert_same(result.hero_profiles[0].progression_profile, available_run.content_profile.hero_profiles[0].progression_profile)
-	assert_not_same(
-		hub_data.available_runs[0].content_profile,
-		hub_data.available_runs[1].content_profile,
-	)
-	assert_eq(hub_data.available_runs[2].run_name, "Catabase")
-	assert_eq(hub_data.available_runs[2].content_profile.hero_profiles.size(), 1)
+		assert_eq(available_run.run_name, "Catabase")
+		assert_eq(result.heroes.size(), 1)
+		assert_eq(result.heroes[0].get_effective_unit_id(), &"achilles")
 
 
 func test_explicit_game_manager_injection_remains_prioritary() -> void:
@@ -262,17 +258,31 @@ func test_explicit_game_manager_injection_remains_prioritary() -> void:
 	manager.free()
 
 
-func test_legacy_run_fallback_is_explicit_and_official_runs_do_not_use_it() -> void:
+func test_shared_progression_is_resolved_without_merging_distinct_profiles() -> void:
+	var profile := CharacterProgressionProfile.new()
+	var other := CharacterProgressionProfile.new()
+	assert_null(RunContentCatalogService.shared_progression_profile([]))
+	assert_same(RunContentCatalogService.shared_progression_profile([
+		{"progression_profile": profile}, {"progression_profile": profile},
+	]), profile)
+	assert_null(RunContentCatalogService.shared_progression_profile([
+		{"progression_profile": profile}, {"progression_profile": other},
+	]))
+	assert_null(RunContentCatalogService.shared_progression_profile([
+		{"progression_profile": profile}, {"progression_profile": null},
+	]))
+
+
+func test_runs_without_a_profile_cannot_restore_the_retired_trio() -> void:
 	var legacy := RunData.new()
 	legacy.run_name = "Legacy"
-	var legacy_result := RunHeroResolver.resolve_runtime_hero_data(legacy, true)
-	assert_true(legacy_result.is_valid())
-	assert_true(legacy_result.used_legacy_fallback)
-	assert_eq(legacy_result.heroes.size(), 3)
-	assert_eq(legacy_result.warnings.size(), 1)
-	assert_false(RunHeroResolver.resolve_runtime_hero_data(legacy, false).is_valid())
-	assert_false(RunHeroResolver.resolve_runtime_hero_data(main_run, false).used_legacy_fallback)
-	assert_false(RunHeroResolver.resolve_runtime_hero_data(test_run, false).used_legacy_fallback)
+	for old_fallback_flag in [false, true]:
+		var result := RunHeroResolver.resolve_runtime_hero_data(legacy, old_fallback_flag)
+		assert_false(result.is_valid())
+		assert_true(result.heroes.is_empty())
+		assert_false(result.used_legacy_fallback)
+	assert_true(RunHeroResolver.resolve_runtime_hero_data(main_run, false).is_valid())
+	assert_true(RunHeroResolver.resolve_runtime_hero_data(test_run, false).is_valid())
 
 
 func test_skill_tree_session_can_edit_a_profile_view_without_touching_source() -> void:
@@ -300,8 +310,11 @@ func test_catalog_discovers_usage_and_manifest_is_deterministic() -> void:
 		profile,
 	)
 	assert_eq(RunContentCatalogService.heroes_for_run(main_run).size(), 3)
-	assert_false(RunContentCatalogService.is_shared_between_runs(profile))
-	assert_eq(RunContentCatalogService.usages_for_progression_profile(profile).size(), 1)
+	assert_true(RunContentCatalogService.is_shared_between_runs(profile))
+	var usages := RunContentCatalogService.usages_for_progression_profile(profile)
+	assert_eq(usages.size(), 3)
+	for path in [MAIN_RUN_PATH, "res://data/runs/run_default.tres", "res://data/runs/mountain_pass_blockout_debug_run.tres"]:
+		assert_true(usages.any(func(usage): return usage.run_path == path), path)
 	var first := RunContentIsolationAuditService.deterministic_manifest(main_run)
 	var second := RunContentIsolationAuditService.deterministic_manifest(main_run)
 	assert_eq(JSON.stringify(first), JSON.stringify(second))

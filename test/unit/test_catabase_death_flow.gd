@@ -50,7 +50,7 @@ func test_defeat_deletes_checkpoint_and_new_attempt_opens_only_catabase_selectio
 	assert_true(manager.get_last_run_result().is_catabase)
 	assert_true(manager.request_new_catabase_attempt())
 	assert_eq(manager.paths.back(), manager.CHARACTER_SELECTION_SCREEN_PATH)
-	assert_false(manager.paths.has(manager.START_HUB_SCREEN_PATH))
+	assert_false(manager.paths.has("res://hub/StartHub.tscn"))
 	assert_null(manager.expedition)
 	assert_true(manager.heroes.is_empty())
 	assert_null(manager.peek_next_run_data())
@@ -68,18 +68,18 @@ func test_defeat_deletes_checkpoint_and_new_attempt_opens_only_catabase_selectio
 		assert_eq((entry.unit as UnitData).get_effective_unit_id(), &"achilles")
 
 
-func test_old_archivist_callback_after_catabase_is_redirected_but_explicit_legacy_hub_remains() -> void:
+func test_legacy_return_callback_routes_catabase_to_selection_and_other_runs_to_title() -> void:
 	var manager := _manager()
 	_lose(manager)
 	manager.return_to_hub()
 	assert_eq(manager.paths.back(), manager.CHARACTER_SELECTION_SCREEN_PATH)
-	assert_false(manager.paths.has(manager.START_HUB_SCREEN_PATH))
+	assert_false(manager.paths.has("res://hub/StartHub.tscn"))
 	var legacy := DeathManager.new()
 	_managers.append(legacy)
 	legacy.expedition_save_path = "user://death_legacy_unused.json"
 	add_child(legacy)
 	legacy.return_to_hub()
-	assert_eq(legacy.paths, [legacy.START_HUB_SCREEN_PATH])
+	assert_eq(legacy.paths, [legacy.TITLE_SCREEN_PATH])
 
 
 func test_terminal_deletion_failure_cannot_be_bypassed_by_menu_or_new_attempt() -> void:
@@ -147,4 +147,4 @@ func test_victory_result_also_returns_to_catabase_without_archived_party() -> vo
 	assert_true(manager.get_last_run_result().victory)
 	assert_true(manager.request_new_catabase_attempt())
 	assert_eq(manager.paths.back(), manager.CHARACTER_SELECTION_SCREEN_PATH)
-	assert_false(manager.paths.has(manager.START_HUB_SCREEN_PATH))
+	assert_false(manager.paths.has("res://hub/StartHub.tscn"))

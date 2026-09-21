@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/character_animation_set_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+animation_names = {
+&"idle": &"Fixture_Idle",
+&"walk": &"Fixture_Walk",
+&"run": &"Fixture_Run",
+&"cast": &"Fixture_Cast",
+&"hit": &"Fixture_Hit",
+&"death": &"Fixture_Death"
+}

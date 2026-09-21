@@ -2,9 +2,9 @@ extends GutTest
 
 const CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
 const HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://test/fixtures/party_rules/elf.tres",
+	"res://test/fixtures/party_rules/mage.tres",
+	"res://test/fixtures/party_rules/warrior.tres",
 ]
 const EXPECTED_ROSTERS := [
 	{&"skeleton_normal": 4},

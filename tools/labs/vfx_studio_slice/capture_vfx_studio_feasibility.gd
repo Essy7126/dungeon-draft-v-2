@@ -95,7 +95,7 @@ func _capture_composer() -> void:
 
 func _capture_true_battle() -> void:
 	GameManager.cleanup_run_state()
-	if not GameManager._prepare_preconfigured_run(RUN, GameManager.PRODUCTION_HERO_DATA_PATHS):
+	if not GameManager._prepare_preconfigured_run(RUN, PartyRulesFixtures.HERO_PATHS):
 		_fail("Initialisation de la vraie run impossible.")
 		return
 	GameManager.current_room_index = 0

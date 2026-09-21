@@ -266,7 +266,7 @@ func _exercise_exits() -> void:
 	await _key(KEY_ESCAPE)
 	for frame in 16: await get_tree().process_frame
 	_check("sanctuary_escape_returns_title", get_tree().current_scene != null and get_tree().current_scene.scene_file_path == "res://ui/TitreEcran.tscn")
-	get_tree().change_scene_to_file("res://hub/StartHub.tscn")
+	get_tree().change_scene_to_file("res://ui/TitreEcran.tscn")
 	for frame in 24: await get_tree().process_frame
 	var menu := get_tree().current_scene.find_child("HubMenuButton", true, false) as Button
 	_check("legacy_hub_has_menu", menu != null and menu.is_visible_in_tree())

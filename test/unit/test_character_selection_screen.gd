@@ -2,7 +2,6 @@ extends GutTest
 
 const SCREEN_SCENE := preload("res://ui/selection/CharacterSelectionScreen.tscn")
 const CATABASE_RUN: RunData = preload("res://data/runs/odyssey.tres")
-const TRIO_RUN: RunData = preload("res://data/runs/first_run.tres")
 
 
 class AdventureManager:
@@ -35,7 +34,7 @@ func before_each() -> void:
 func test_catalog_exposes_real_run_stats_and_resolved_spell_kits() -> void:
 	var entries := screen.get_entries()
 	assert_eq(entries.map(func(entry): return entry["id"]), [
-		&"achilles", &"achilles_painted_g", &"achilles_passe_rive", &"elf", &"mage", &"warrior", &"achilles",
+		&"achilles", &"achilles_painted_g", &"achilles_passe_rive", &"achilles",
 	])
 	for entry in entries:
 		var unit := entry["unit"] as UnitData
@@ -65,16 +64,16 @@ func test_character_selection_refreshes_stats_kit_and_preview_together() -> void
 	_assert_visible_stats(screen.get_selected_entry()["unit"] as UnitData)
 	assert_true(screen.select_spell(3))
 	assert_eq(screen.selected_spell_index, 3)
-	assert_true(screen.select_character(_entry_index(&"mage")))
-	assert_eq(screen.get_selected_entry()["id"], &"mage")
+	assert_true(screen.select_character(_entry_index(&"achilles_painted_g")))
+	assert_eq(screen.get_selected_entry()["id"], &"achilles_painted_g")
 	assert_eq(screen.selected_spell_index, 0)
-	var mage := screen.get_selected_entry()["unit"] as UnitData
-	_assert_visible_stats(mage)
-	assert_eq(screen.get_preview().unit_data.get_effective_unit_id(), &"mage")
+	var selected_unit := screen.get_selected_entry()["unit"] as UnitData
+	_assert_visible_stats(selected_unit)
+	assert_eq(screen.get_preview().unit_data.get_effective_unit_id(), &"achilles")
 	assert_false(screen.get_preview().is_using_fallback())
-	assert_true(screen.get_preview().get_visual_instance() is MageVisual3D)
-	assert_true(screen.select_spell(mage.spells.size() - 1))
-	assert_eq(screen.selected_spell_index, mage.spells.size() - 1)
+	assert_true(screen.get_preview().is_using_sprite_preview())
+	assert_true(screen.select_spell(selected_unit.spells.size() - 1))
+	assert_eq(screen.selected_spell_index, selected_unit.spells.size() - 1)
 
 
 func test_invalid_character_or_spell_indices_preserve_the_current_selection() -> void:
@@ -132,23 +131,10 @@ func test_preparing_achilles_configures_the_solo_run_at_room_zero() -> void:
 	])
 
 
-func test_browsing_a_trio_member_preserves_the_complete_playable_party() -> void:
-	assert_true(screen.select_character(_entry_index(&"mage")))
-	var selected := screen.get_selected_entry()
-	assert_eq(selected["id"], &"mage")
-	assert_eq(selected["run"], TRIO_RUN)
-	for name_value in ["Elfe", "Mage", "Guerrier"]:
-		assert_true(str(selected["party_note"]).contains(name_value))
-	assert_true(str(selected["party_note"]).contains("fixe"))
-	var manager := AdventureManager.new()
-	add_child_autofree(manager)
-	assert_true(screen.prepare_adventure(manager))
-	assert_eq(manager.configured_run, TRIO_RUN)
-	assert_eq(manager.configured_room, 0)
-	var resolution := RunHeroResolver.resolve_runtime_hero_data(manager.configured_run, false)
-	assert_eq(resolution.heroes.map(func(hero): return hero.get_effective_unit_id()), [
-		&"elf", &"mage", &"warrior",
-	])
+func test_retired_party_is_absent_even_from_the_lab_catalog() -> void:
+	for entry in screen.get_entries():
+		assert_eq((entry["unit"] as UnitData).get_effective_unit_id(), &"achilles")
+		assert_ne((entry["run"] as RunData).resource_path, "res://data/runs/first_run.tres")
 
 
 func test_rejected_configuration_leaves_selection_available_for_retry() -> void:
@@ -244,9 +230,9 @@ func test_spell_tree_modal_prevents_duplicate_opening_and_underlying_navigation(
 	assert_eq(screen.selected_spell_index, 2)
 	spell_tree.close_screen()
 	await wait_process_frames(2)
-	assert_true(screen.select_character(_entry_index(&"elf")))
+	assert_true(screen.select_character(_entry_index(&"achilles_passe_rive")))
 	assert_true(screen.open_spell_tree())
-	assert_eq(screen.get_spell_tree().character_id, &"elf")
+	assert_eq(screen.get_spell_tree().character_id, &"achilles")
 
 
 func test_painted_achilles_has_its_own_preview_and_queues_the_same_catabase_gameplay() -> void:

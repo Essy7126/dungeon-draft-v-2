@@ -1,9 +1,9 @@
 extends GutTest
 
 const HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://test/fixtures/party_rules/elf.tres",
+	"res://test/fixtures/party_rules/mage.tres",
+	"res://test/fixtures/party_rules/warrior.tres",
 ]
 const LEGACY_WARRIOR_PATHS := [
 	"res://data/spells/Guerrier/bourrade.tres",
@@ -16,9 +16,9 @@ const EXPECTED_THRESHOLDS := {1: 0, 2: 5, 3: 12, 4: 21, 5: 30}
 
 
 func test_fixed_production_trio_owns_twelve_complete_trees() -> void:
-	assert_eq(GameManager.ELF_DATA_PATH, HERO_PATHS[0])
-	assert_eq(GameManager.MAGE_DATA_PATH, HERO_PATHS[1])
-	assert_eq(GameManager.WARRIOR_DATA_PATH, HERO_PATHS[2])
+	assert_eq(PartyRulesFixtures.ELF_DATA_PATH, HERO_PATHS[0])
+	assert_eq(PartyRulesFixtures.MAGE_DATA_PATH, HERO_PATHS[1])
+	assert_eq(PartyRulesFixtures.WARRIOR_DATA_PATH, HERO_PATHS[2])
 	var character_ids: Array[StringName] = []
 	var discipline_ids: Array[StringName] = []
 	var spell_ids: Array[StringName] = []

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://dyr45spqln4bn"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="Resource" uid="uid://b87ak8kotokmw" path="res://data/spells/Mage/boule_de_feu.tres" id="3_fireball"]
+[ext_resource type="Resource" uid="uid://bpl7jcy8ix86j" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
+[ext_resource type="Resource" uid="uid://3fmmstnb6uhl" path="res://data/spells/Mage/tempete_orageuse.tres" id="5_thunderstorm"]
+[ext_resource type="PackedScene" path="res://test/fixtures/party_rules/iso_view.tscn" id="6_combat_visual"]
+[ext_resource type="Resource" uid="uid://cbi1rlct0akbn" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
+[ext_resource type="PackedScene" path="res://test/fixtures/party_rules/visual.tscn" id="7_preview_visual"]
+[ext_resource type="Resource" path="res://test/fixtures/party_rules/animations.tres" id="90_animations"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"mage"
+unit_name = "Mage"
+description = "Lanceur de sorts pur projete en 3D dans la salle isometrique."
+visual_scene = ExtResource("6_combat_visual")
+preview_visual_scene = ExtResource("7_preview_visual")
+animation_set = ExtResource("90_animations")
+role = "Mage de combat élémentaire"
+presentation_summary = "Combine feu, glace, foudre et terre pour contrôler le champ de bataille."
+progression_summary = "Quatre disciplines élémentaires au rang 1"
+basic_attack_enabled = false
+spells = Array[ExtResource("2_spell")]([ExtResource("3_fireball"), ExtResource("4_ice_wall"), ExtResource("5_thunderstorm"), ExtResource("6_seismic_wave")])

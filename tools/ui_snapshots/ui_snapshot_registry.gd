@@ -7,11 +7,6 @@ const Scenario := preload("res://tools/ui_snapshots/ui_snapshot_scenario.gd")
 static func production_scenarios() -> Array[UISnapshotScenario]:
 	return [
 		Scenario.new(&"title", &"default", "res://ui/TitreEcran.tscn", &"no_save", &"title"),
-		Scenario.new(&"start_hub", &"idle", "res://hub/StartHub.tscn", &"hub_default", &"hub"),
-		Scenario.new(&"start_hub", &"archivist_menu", "res://hub/StartHub.tscn", &"hub_archivist", &"hub_archivist"),
-		Scenario.new(&"start_hub", &"archivist_dialogue", "res://hub/StartHub.tscn", &"hub_archivist", &"documented", &"production", "Le dialogue exige une intention d'interaction arrivée à destination ; fixture d'entrée non exposée."),
-		Scenario.new(&"start_hub", &"run_room_selection", "res://hub/StartHub.tscn", &"hub_archivist", &"documented", &"production", "L'état est inventorié mais son API de test est privée au panneau."),
-		Scenario.new(&"start_hub", &"trade", "res://hub/StartHub.tscn", &"hub_trade", &"documented", &"production", "Le contenu marchand dépend du catalogue runtime et ne possède pas encore de fixture publique."),
 		Scenario.new(&"intro_cinematic", &"plan_05", "res://cinematics/intro/intro_cinematic.tscn", &"intro_t_42_5", &"intro"),
 		Scenario.new(&"room_transition", &"default", "res://ui/Transitionsalle.tscn", &"first_run_room_01", &"documented", &"production", "L'écran lit un run actif et ne propose pas d'injection de snapshot sans muter GameManager."),
 		Scenario.new(&"battle", &"deployment", "res://data/rooms/maps/painted_battle.tscn", &"first_run_room_01_seed_1337", &"battle"),

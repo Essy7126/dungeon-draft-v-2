@@ -1,0 +1,32 @@
+{
+  "catabase": {
+    "aliases": ["catabase", "expedition", "run"],
+    "entrypoints": ["core/expedition/expedition_session.gd", "core/expedition/expedition_route_state.gd", "core/expedition/expedition_save_service.gd", "core/expedition/expedition_destination.gd", "core/game_manager.gd", "ui/expedition/expedition_screen.gd", "test/unit/test_catabase_class_run.gd", "docs/current/product.md", "docs/current/architecture.md", "docs/current/validation.md"],
+    "patterns": ["core/expedition/*", "ui/expedition/*", "test/unit/test_catabase*.gd", "test/unit/test_expedition*.gd"]
+  },
+  "cards": {
+    "aliases": ["cards", "cartes", "deck"],
+    "entrypoints": ["core/expedition/class_cards.gd", "core/expedition/catabase_cards.gd", "core/expedition/class_card_catalog.gd", "ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd", "test/unit/test_catabase_class_run.gd", "test/unit/test_class_card_vfx.gd", "docs/current/product.md", "docs/current/validation.md"],
+    "patterns": ["core/expedition/class_card*", "ui/selection/cards_*", "vfx/class_cards/*", "test/unit/test_class_*.gd", "test/unit/test_cards*.gd", "test/unit/test_catabase_cards.gd"]
+  },
+  "combat": {
+    "aliases": ["combat", "battle"],
+    "entrypoints": ["battle/battle.gd", "core/spell_caster.gd", "units/unit.gd", "core/enemy_ai.gd", "docs/current/architecture.md", "docs/current/validation.md"],
+    "patterns": ["battle/*.gd", "core/ai/*.gd", "test/unit/test_battle*.gd", "test/unit/test_combat*.gd"]
+  },
+  "studio": {
+    "aliases": ["studio", "edition"],
+    "entrypoints": ["addons/dungeon_draft_arena_studio/ui/arena_studio_main.gd", "test/unit/test_dungeon_draft_studio_2_0.gd", "docs/current/validation.md"],
+    "patterns": ["addons/dungeon_draft_arena_studio/*.gd", "test/unit/test_*studio*.gd"]
+  },
+  "terrain": {
+    "aliases": ["terrain", "maps", "map"],
+    "entrypoints": ["core/grid_data.gd", "core/pathfinder.gd", "battle/painted/painted_battle.gd", "core/expedition/expedition_route_catalog.gd", "tools/run_explorer/README.md", "docs/current/content.md"],
+    "patterns": ["battle/*terrain/*.gd", "data/rooms/*.tres", "test/unit/*terrain*.gd"]
+  },
+  "personnages": {
+    "aliases": ["personnages", "characters", "heroes"],
+    "entrypoints": ["ui/selection/character_selection_catalog.gd", "core/run_content/run_hero_resolver.gd", "core/run_content/run_hero_visual_variants.gd", "docs/current/content.md"],
+    "patterns": ["characters/*.gd", "data/units/*.tres", "test/unit/test_character*.gd"]
+  }
+}

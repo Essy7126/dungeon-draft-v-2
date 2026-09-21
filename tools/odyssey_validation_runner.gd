@@ -1,7 +1,6 @@
 extends Node
 
 const RUN: RunData = preload("res://data/runs/odyssey.tres")
-const HUB_SCENE: PackedScene = preload("res://hub/StartHub.tscn")
 const POST_COMBAT_SCENE: PackedScene = preload(
 	"res://ui/post_combat/PostCombatScreen.tscn"
 )
@@ -14,7 +13,7 @@ const VIEWPORT_SIZES := [Vector2i(1920, 1080), Vector2i(1280, 720)]
 var _report := {
 	"passed": true,
 	"seed": 0,
-	"hub_path": {},
+	"run_configuration": {},
 	"run_contract": {},
 	"battle_rooms": [],
 	"post_combat_and_result": {},
@@ -33,7 +32,7 @@ func _run() -> void:
 		ProjectSettings.globalize_path(OUTPUT_DIR)
 	)
 	GameManager.cleanup_run_state()
-	var selected_run := await _exercise_real_hub_selection()
+	var selected_run := await _configure_run_fixture()
 	if selected_run == null:
 		_finish()
 		return
@@ -76,65 +75,18 @@ func _run() -> void:
 	_finish()
 
 
-func _exercise_real_hub_selection() -> RunData:
-	var hub := HUB_SCENE.instantiate()
-	add_child(hub)
-	await _settle(8)
-	var controller := hub.get_node("HubController") as StartHubController
-	var panel := controller.archivist_panel
-	controller.transition_fade_duration = 0.0
-	var cinematic_probe := {"calls": 0, "path": ""}
-	controller.cinematic_open_callable = func(path: String) -> bool:
-		cinematic_probe.calls += 1
-		cinematic_probe.path = path
-		return true
-	panel.open_panel(controller.archivist.data)
-	controller._set_state(StartHubController.HubState.UI_LOCKED)
-	panel._show_room_selection()
-	if panel.run_selector.item_count != 3:
-		_fail("Le hub n'affiche pas exactement les trois runs officiels.")
-	for viewport_size in VIEWPORT_SIZES:
-		get_window().size = viewport_size
-		await _settle(3)
-		panel.run_selector.show_popup()
-		await _settle(2)
-		await _capture(
-			"hub_three_runs_%dx%d.png" % [
-				viewport_size.x, viewport_size.y,
-			]
-		)
-		panel.run_selector.get_popup().hide()
-		await _settle(2)
-	panel.run_selector.select(2)
-	panel._on_run_selected(2)
-	if panel.run_selector.get_item_text(2) != RUN.run_name \
-			or panel.room_selector.item_count != 1 \
-			or panel.room_selector.get_selected_id() != RUN.hub_forced_start_room_index:
-		_fail("La sélection Catabase ou son départ imposé en salle I est invalide.")
-	for viewport_size in VIEWPORT_SIZES:
-		get_window().size = viewport_size
-		await _settle(3)
-		await _capture(
-			"hub_odyssey_selected_%dx%d.png" % [
-				viewport_size.x, viewport_size.y,
-			]
-		)
-	panel._confirm_run()
-	await _settle(2)
-	var selected := GameManager.take_next_run_data(RUN)
-	_report.hub_path = {
-		"run_count": panel.run_selector.item_count,
-		"selected_run": selected.run_name if selected != null else "",
-		"run_data_path": selected.resource_path if selected != null else "",
-		"room_count": panel.room_selector.item_count,
-		"cinematic_calls": cinematic_probe.calls,
-		"cinematic_path": cinematic_probe.path,
-		"passed": selected == RUN and cinematic_probe.calls == 1,
+func _configure_run_fixture() -> RunData:
+	# Explicit configuration fixture; public selection is covered by its own runner.
+	var configured := GameManager.configure_next_run(RUN, 0)
+	var selected := GameManager.take_next_run_data(null) if configured else null
+	_report.run_configuration = {
+		"method": "configure_next_run",
+		"selected_path": selected.resource_path if selected != null else "",
+		"passed": configured and selected == RUN,
 	}
-	if not _report.hub_path.passed:
-		_fail("Le chemin hub -> cinématique ne conserve pas L'Odyssée.")
-	hub.queue_free()
-	await _settle(3)
+	if selected != RUN:
+		_fail("Catabase run configuration failed.")
+	await _settle(2)
 	return selected
 
 

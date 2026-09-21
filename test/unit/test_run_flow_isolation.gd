@@ -234,7 +234,7 @@ func _manager_for(run: RunData):
 
 func _prepare_manager_run(manager, run: RunData) -> bool:
 	var prepared: bool = manager._prepare_preconfigured_run(
-		run, GameManager.PRODUCTION_HERO_DATA_PATHS
+		run, PartyRulesFixtures.HERO_PATHS
 	)
 	_consume_known_warrior_uid_warning()
 	return prepared

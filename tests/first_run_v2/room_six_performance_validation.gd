@@ -22,7 +22,7 @@ func _ready() -> void:
 	GameManager.cleanup_run_state()
 	if not GameManager._prepare_preconfigured_run(
 		RUN,
-		GameManager.PRODUCTION_HERO_DATA_PATHS,
+		PartyRulesFixtures.HERO_PATHS,
 	):
 		_fail("initialisation de la run impossible")
 		return

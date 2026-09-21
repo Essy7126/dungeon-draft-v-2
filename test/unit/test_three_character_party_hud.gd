@@ -4,9 +4,9 @@ const GameManagerScript = preload("res://core/game_manager.gd")
 const ActionBarScript = preload("res://ui/action_bar.gd")
 
 const PARTY := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	"res://test/fixtures/party_rules/elf.tres",
+	"res://test/fixtures/party_rules/mage.tres",
+	"res://test/fixtures/party_rules/warrior.tres",
 ]
 
 var manager

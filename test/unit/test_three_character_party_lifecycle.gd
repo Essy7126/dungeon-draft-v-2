@@ -2,9 +2,9 @@ extends GutTest
 
 const GameManagerScript = preload("res://core/game_manager.gd")
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
+const MAGE_PATH := "res://test/fixtures/party_rules/mage.tres"
+const WARRIOR_PATH := "res://test/fixtures/party_rules/warrior.tres"
 const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
 const PARTY_SOURCES := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 

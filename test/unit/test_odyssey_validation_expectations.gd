@@ -28,11 +28,11 @@ func test_live_campaign_validation_uses_the_canonical_profile_loadout() -> void:
 	assert_true(RUNNER.runtime_hero_contract_is_valid(RUN, hero), "checking a stale copy does not change production")
 
 
-func test_current_five_room_run_requires_four_claims_and_eight_reward_options() -> void:
+func test_current_fifteen_room_run_requires_fourteen_claims_and_twenty_eight_options() -> void:
 	assert_eq(RUNNER.expected_transition_counts(RUN), {
-		"completed_rooms": 5, "reward_options_seen": 8, "relics_claimed": 4,
+		"completed_rooms": 15, "reward_options_seen": 28, "relics_claimed": 14,
 	})
-	assert_string_contains(RUN.content_profile.description, "cinq rencontres")
+	assert_string_contains(RUN.content_profile.description, "quinze rencontres")
 
 
 func test_transition_expectations_follow_room_count_instead_of_a_three_room_constant() -> void:

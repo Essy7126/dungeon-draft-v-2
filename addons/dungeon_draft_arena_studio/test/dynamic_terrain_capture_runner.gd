@@ -177,7 +177,7 @@ func _create_integrated_battle() -> Dictionary:
 	print("DYNAMIC_TERRAIN_CAPTURE_PROGRESS=create_battle_prepare_run")
 	GameManager.cleanup_run_state()
 	if not GameManager._prepare_preconfigured_run(
-		RUN, GameManager.PRODUCTION_HERO_DATA_PATHS
+		RUN, PartyRulesFixtures.HERO_PATHS
 	):
 		return {"ok": false, "error": "run_prepare_failed"}
 	GameManager.current_room_index = 0
@@ -229,7 +229,7 @@ func _capture_studio_preview(
 	studio.set_preview_view(ArenaRuntimePreview.ViewMode.GAME)
 	studio.runtime_preview.rebuild_now()
 	studio.runtime_preview.simulate_terrain_spell(
-		FIREBALL, target, load("res://data/units/alliés/mage.tres")
+		FIREBALL, target, load("res://test/fixtures/party_rules/mage.tres")
 	)
 	await _wait_frames(8)
 	var cells := studio.runtime_preview.runtime_state.terrain_effects.active_surface_cells()

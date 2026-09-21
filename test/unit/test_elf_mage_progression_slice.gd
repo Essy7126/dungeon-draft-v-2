@@ -4,7 +4,7 @@ const Factory = preload("res://test/support/factory.gd")
 const GameManagerScript = preload("res://core/game_manager.gd")
 const ProgressionScreenScript = preload("res://ui/progression/progression_choice_screen.gd")
 
-const ELF_PATH := "res://data/units/alliés/elfe.tres"
+const ELF_PATH := "res://test/fixtures/party_rules/elf.tres"
 const MAGE_DISCIPLINE_PATH := "res://data/characters/elf/disciplines/mage.tres"
 const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
 const EMBERS_ID := &"elf_mage_braises_persistantes"

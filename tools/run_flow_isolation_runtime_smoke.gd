@@ -131,7 +131,7 @@ func _run_wave_flow() -> bool:
 func _verify_mode_switch_back_to_main() -> bool:
 	GameManager.cleanup_run_state()
 	if not GameManager._prepare_preconfigured_run(
-		MAIN_RUN, GameManager.PRODUCTION_HERO_DATA_PATHS
+		MAIN_RUN, PartyRulesFixtures.HERO_PATHS
 	):
 		return _fail("mode_switch_main_prepare_failed")
 	GameManager.current_room_index = 0
@@ -151,7 +151,7 @@ func _verify_mode_switch_back_to_main() -> bool:
 func _prepare_victory(run: RunData, room_index: int, wave_index: int) -> bool:
 	GameManager.cleanup_run_state()
 	if not GameManager._prepare_preconfigured_run(
-		run, GameManager.PRODUCTION_HERO_DATA_PATHS
+		run, PartyRulesFixtures.HERO_PATHS
 	):
 		return false
 	GameManager.current_room_index = room_index

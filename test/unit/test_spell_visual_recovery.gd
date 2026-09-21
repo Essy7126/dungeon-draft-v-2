@@ -140,8 +140,11 @@ func test_missing_attack_release_and_recovery_timeout_both_cancel_backend() -> v
 	await wait_process_frames(1)
 
 
-func test_looping_charge_finishes_one_cycle_and_returns_warrior_to_idle() -> void:
-	var visual := WarriorVisual3D.new()
+func test_looping_action_finishes_one_cycle_and_returns_to_idle() -> void:
+	var visual := CharacterVisual3D.new()
+	visual.model_root_path = NodePath("ModelPivot/WarriorModel")
+	visual.animation_idle = &"Fixture_Idle"
+	visual.animation_cast = &"Fixture_Run"
 	var pivot := Node3D.new()
 	pivot.name = "ModelPivot"
 	var model := Node3D.new()
@@ -154,8 +157,8 @@ func test_looping_charge_finishes_one_cycle_and_returns_warrior_to_idle() -> voi
 	var run := Animation.new()
 	run.length = 0.5
 	run.loop_mode = Animation.LOOP_LINEAR
-	library.add_animation(WarriorVisual3D.ANIM_IDLE, idle)
-	library.add_animation(WarriorVisual3D.ANIM_RUN, run)
+	library.add_animation(&"Fixture_Idle", idle)
+	library.add_animation(&"Fixture_Run", run)
 	player.add_animation_library(&"", library)
 	model.add_child(player)
 	pivot.add_child(model)
@@ -170,17 +173,15 @@ func test_looping_charge_finishes_one_cycle_and_returns_warrior_to_idle() -> voi
 	visual.animation_finished.connect(func(animation_name: StringName) -> void:
 		(events["finished"] as Array).append(animation_name)
 	)
-	var charge := Spell.new()
-	charge.spell_id = &"warrior_charge"
-	assert_true(visual.play_spell_action(charge))
+	assert_true(visual.play_cast_full())
 	var action_duration := float(visual.get("_release_action_finish_seconds"))
 	assert_gt(action_duration, 0.0)
 
 	visual._process(action_duration + 0.01)
 
 	assert_eq(events["release"], 1)
-	assert_eq(events["finished"], [WarriorVisual3D.ANIM_RUN])
-	assert_eq(visual.get_current_animation(), WarriorVisual3D.ANIM_IDLE)
+	assert_eq(events["finished"], [&"Fixture_Run"])
+	assert_eq(visual.get_current_animation(), &"Fixture_Idle")
 	assert_true(player.is_playing())
 
 

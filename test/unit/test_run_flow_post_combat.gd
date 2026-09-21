@@ -67,7 +67,7 @@ func test_public_phase_entry_cannot_force_wave_decision_for_main_run() -> void:
 
 func _prepare_victory(run: RunData) -> void:
 	assert_true(GameManager._prepare_preconfigured_run(
-		run, GameManager.PRODUCTION_HERO_DATA_PATHS
+		run, PartyRulesFixtures.HERO_PATHS
 	))
 	_consume_known_warrior_uid_warning()
 	GameManager.current_room_index = 0

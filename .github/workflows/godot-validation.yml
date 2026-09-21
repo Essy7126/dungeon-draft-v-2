@@ -19,6 +19,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4.2.2
+      - name: Contrats de l'audit de contenu
+        run: python3 -m unittest discover -s tools/content_audit -p 'test_*.py'
+      - name: Références des scènes et ressources
+        run: python3 tools/content_audit/audit.py . --check-resources --output artifacts/content_audit/resources.json
       - uses: actions/cache@v4.2.3
         with:
           path: ~/godot-bin
@@ -70,44 +74,8 @@ jobs:
           set -euo pipefail
           # Des chemins exacts évitent qu'un préfixe large (par exemple
           # test_skill_tree_studio) rejoue aussi ses suites de hardening.
-          test_scripts=(
-            res://test/unit/test_dungeon_draft_studio_2_0.gd
-            res://test/unit/test_painted_halt_manifest_service.gd
-            res://test/unit/test_painted_halt_studio_interactions.gd
-            res://test/unit/test_painted_halt_studio_preview.gd
-            res://test/unit/test_painted_halt_runtime.gd
-            res://test/unit/test_painted_halt_audio_lifecycle.gd
-            res://test/unit/test_painted_halt_catabase.gd
-            res://test/unit/test_terrain_studio_refonte.gd
-            res://test/unit/test_terrain_studio_novice_scenario.gd
-            res://test/unit/test_terrain_test_integration_path.gd
-            res://test/unit/test_validated_audit_corrections.gd
-            res://test/unit/test_encounter_studio_v1.gd
-            res://test/unit/test_encounter_document_safety.gd
-            res://test/unit/test_room_draft_encounters.gd
-            res://test/unit/test_item_studio_v1.gd
-            res://test/unit/test_vfx_studio_slice.gd
-            res://test/unit/test_vfx_flipbook_foundation.gd
-            res://test/unit/test_meshy_bridge_security.gd
-            res://test/unit/test_arena_production_hardening_phase1.gd
-            res://test/unit/test_arena_art_pipeline_v3.gd
-            res://test/unit/test_arena_atomic_production_v2.gd
-            res://test/unit/test_room_integration_guided_pipeline.gd
-            res://test/unit/test_arena_direct_test_runtime_parity.gd
-            res://test/unit/test_arena_runtime_preview_and_direct_test_v2.gd
-            res://test/unit/test_arena_stone_floor_visibility.gd
-            res://test/unit/test_arena_studio_phase10_11_hardening.gd
-            res://test/unit/test_run_content_isolation.gd
-            res://test/unit/test_skill_tree_complete_contract.gd
-            res://test/unit/test_skill_tree_generic_effects.gd
-            res://test/unit/test_skill_tree_resolver.gd
-            res://test/unit/test_skill_tree_screen_complete_ui.gd
-            res://test/unit/test_skill_tree_studio.gd
-            res://test/unit/test_skill_tree_studio_hardening.gd
-            res://test/unit/test_fixed_trio_mage_lifecycle.gd
-            res://test/unit/test_progression_lifecycle.gd
-            res://test/unit/test_three_character_party_lifecycle.gd
-          )
+          mapfile -t test_scripts < <(python3 -c 'import json; s=json.load(open("tools/dev/test-suites.json")); print("\n".join("res://test/unit/"+p for p in s["studio"]["patterns"]))')
+          test "${#test_scripts[@]}" -gt 0
           gut_args=()
           for test_script in "${test_scripts[@]}"; do
             test -f "${test_script#res://}"

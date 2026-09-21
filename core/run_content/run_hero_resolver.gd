@@ -1,16 +1,11 @@
 class_name RunHeroResolver
 extends RefCounted
 
-const LEGACY_HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
-]
-
-
+## The second argument preserves older callers; an implicit roster is no
+## longer supported. Every run must supply its own content profile.
 static func resolve_runtime_hero_data(
 		run_data: RunData,
-		allow_legacy_fallback := true
+		_allow_legacy_fallback := false
 	) -> RunHeroResolution:
 	var result := RunHeroResolution.new()
 	if run_data == null:
@@ -23,19 +18,7 @@ static func resolve_runtime_hero_data(
 		if not run_data.hero_visual_variants.is_empty():
 			result.errors.append("Une apparence de héros exige un content_profile explicite.")
 			return result
-		if not allow_legacy_fallback:
-			result.errors.append("La RunData %s ne possede aucun content_profile." % run_data.run_name)
-			return result
-		result.used_legacy_fallback = true
-		result.warnings.append(
-			"RunData legacy sans content_profile : utilisation temporaire du trio historique."
-		)
-		for path in LEGACY_HERO_PATHS:
-			var legacy := load(path) as UnitData
-			if legacy == null:
-				result.errors.append("UnitData legacy introuvable : %s" % path)
-				continue
-			result.heroes.append(_runtime_copy(legacy, legacy.spells, legacy.active_spell_slots))
+		result.errors.append("La RunData %s ne possede aucun content_profile." % run_data.run_name)
 		return result
 
 	var content := run_data.content_profile

@@ -17,6 +17,8 @@ func _ready() -> void:
 	bridge.configure(request)
 	get_tree().root.add_child.call_deferred(bridge)
 	var heroes: Array = request.get("heroes", EncounterTestLauncher.DEFAULT_HEROES)
+	var resolution := RunHeroResolver.resolve_runtime_hero_data(run, false)
+	heroes = resolution.heroes if resolution.is_valid() else StudioPreviewParty.resolve_sources(heroes)
 	GameManager.cleanup_run_state()
 	if not GameManager.start_direct_encounter_test(run, heroes):
 		push_error("Encounter Studio : lancement du vrai runtime impossible.")

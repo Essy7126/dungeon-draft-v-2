@@ -4,8 +4,13 @@ param(
     [Parameter(Position=0)][ValidateSet('help','doctor','test','capture','inspect','references','context','format','install','configure','selftest')][string]$Command='help',
     [Parameter(Position=1)][string]$Target='',
     [string]$GodotPath='',
+    [ValidateRange(1,14400)][int]$TimeoutSeconds=900,
     [ValidateSet('1280x720','1200x896','1672x941','1920x1080')][string]$Resolution='1280x720',
-    [switch]$Write
+    [switch]$Write,
+    [ValidateSet('all','code','tests','docs','data','art')][string]$Kind='all',
+    [ValidateRange(1,100000)][int]$Page=1,
+    [ValidateRange(1,100)][int]$PageSize=30,
+    [switch]$IncludeArchive
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -18,11 +23,12 @@ try {
         Write-Output @'
 Dungeon Draft tools (PowerShell 7.2+)
   ./dev.ps1 doctor [-GodotPath PATH]       Environment checks, no import
-  ./dev.ps1 test smoke|catabase|monsters|terrain|studio|halts|audio|all|test/unit/test_name.gd
+  ./dev.ps1 test SUITE|test/unit/test_name.gd [-TimeoutSeconds 1800]
+    Suites: smoke, cards, cards-audit, catabase, monsters, terrain, studio, halts, audio, content, navigation, selection, retirement, all
   ./dev.ps1 capture inventory|hud [-Resolution 1280x720]
   ./dev.ps1 inspect res://data/spells/example.tres
   ./dev.ps1 references res://data/spells/example.tres
-  ./dev.ps1 context keyword               Relevant file paths, no file bodies
+  ./dev.ps1 context keyword [-Kind code|tests|docs|data|art] [-Page 2] [-IncludeArchive]
   ./dev.ps1 format [file.gd] [-Write]      Check changed scripts by default
   ./dev.ps1 install formatter|workbench|all
   ./dev.ps1 configure workbench           Register the local MCP connection
@@ -43,10 +49,7 @@ Logs and reports: artifacts/dev/<unique-run>/ (never reused as fresh evidence).
     }
     if ($Command -eq 'context') {
         if (-not $Target -or $Target.Length -lt 3) { throw 'Provide a keyword with at least three characters.' }
-        $files=@(& git -C $root ls-files --cached --others --exclude-standard)
-        if ($LASTEXITCODE -ne 0) { throw 'Git file discovery failed.' }
-        $matches=@($files | Where-Object { $_ -match '\.(gd|tscn|tres|md|ps1)$' -and $_ -notmatch '^(artifacts|output|meshy_output)/' -and $_.IndexOf($Target,[StringComparison]::OrdinalIgnoreCase) -ge 0 } | Sort-Object -Unique)
-        @{total=$matches.Count;shown=[Math]::Min(30,$matches.Count);truncated=($matches.Count -gt 30);paths=@($matches | Select-Object -First 30)} | ConvertTo-Json -Depth 4
+        Get-DevContext -Target $Target -Kind $Kind -Page $Page -PageSize $PageSize -IncludeArchive:$IncludeArchive | ConvertTo-Json -Depth 4
         exit 0
     }
     $runRoot=New-DevRun "$Command-$Target"
@@ -64,7 +67,7 @@ Logs and reports: artifacts/dev/<unique-run>/ (never reused as fresh evidence).
         $formatter=Join-Path $root ('artifacts/dev-tools/gdscript-formatter' + $(if($IsWindows){'.exe'}else{''}))
         if (-not (Test-Path $formatter)) { throw 'Run ./dev.ps1 install formatter first.' }
         $paths=if($Target){@($Target)}else{@(& git -C $root diff --name-only HEAD -- '*.gd'; & git -C $root ls-files --others --exclude-standard -- '*.gd')}
-        $paths=@($paths | Where-Object {$_ -notmatch '^(addons|artifacts|output|meshy_output)/' -and (Test-Path -LiteralPath (Join-Path $root $_) -PathType Leaf)} | Sort-Object -Unique)
+        $paths=@($paths | Where-Object {(Test-DevFormatPath $_) -and (Test-Path -LiteralPath (Join-Path $root $_) -PathType Leaf)} | Sort-Object -Unique)
         if ($Target -and $paths.Count -eq 0) { throw 'No project GDScript file matched; vendor addons are excluded.' }
         foreach ($path in $paths) {
             $absolute=[IO.Path]::GetFullPath((Join-Path $root $path))
@@ -89,7 +92,7 @@ Logs and reports: artifacts/dev/<unique-run>/ (never reused as fresh evidence).
         $godot=Resolve-DevGodot $GodotPath
         if ($Command -eq 'test') {
             if (-not $Target) {$Target='smoke'}
-            $summary=Invoke-DevTests $godot $Target $runRoot
+            $summary=Invoke-DevTests $godot $Target $runRoot $TimeoutSeconds
             $passed=$summary.passed
         } elseif ($Command -eq 'capture') {
             if ($Target -notin @('inventory','hud')) { throw 'Capture target: inventory or hud.' }

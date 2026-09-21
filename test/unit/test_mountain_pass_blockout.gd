@@ -2,7 +2,7 @@ extends GutTest
 
 const DATA_PATH := "res://data/maps/mountain_pass_blockout.tres"
 const ROOM_PATH := "res://data/rooms/mountain_pass_blockout_test.tres"
-const BATTLE_SCENE := "res://data/rooms/maps/mountain_pass_blockout_battle.tscn"
+const BATTLE_SCENE := "res://test/fixtures/terrain/mountain_pass_blockout_battle.tscn"
 const LAB_SCENE := "res://battle/iso/mountain_pass_blockout_lab.tscn"
 const DEBUG_SCENE := "res://tools/MountainPassBlockoutDebug.tscn"
 const EXPORT_DIR := "user://arena_reliability/mountain_pass_blockout"

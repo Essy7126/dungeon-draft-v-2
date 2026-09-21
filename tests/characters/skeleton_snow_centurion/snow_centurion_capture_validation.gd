@@ -11,9 +11,9 @@ const ChiefScene := preload(
 const RangedScene := preload(
 	"res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn"
 )
-const ElfScene := preload("res://characters/elf/ElfIsoUnitView.tscn")
-const MageScene := preload("res://characters/mage/MageIsoUnitView.tscn")
-const WarriorScene := preload("res://characters/warrior/WarriorIsoUnitView.tscn")
+const ElfScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const MageScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
+const WarriorScene := preload("res://test/fixtures/party_rules/iso_view.tscn")
 
 var _errors: Array[String] = []
 var _captures := {}

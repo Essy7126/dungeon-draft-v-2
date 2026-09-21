@@ -16,20 +16,9 @@
 extends Node
 
 # --- Configuration du run ---
-# Le build de production appartient au run : les batailles reçoivent le trio
-const WARRIOR_DATA_PATH := "res://data/units/alliés/Guerrier.tres"
-const ELF_DATA_PATH := "res://data/units/alliés/elfe.tres"
-const MAGE_DATA_PATH := "res://data/units/alliés/mage.tres"
-
-const PRODUCTION_HERO_DATA_PATHS = [
-	ELF_DATA_PATH,
-	MAGE_DATA_PATH,
-	WARRIOR_DATA_PATH,
-]
-
+# Les héros sont résolus depuis le profil explicite de chaque run.
 const RUN_RESULT_SCREEN_PATH := "res://ui/RunResultScreen.tscn"
 const TITLE_SCREEN_PATH := "res://ui/TitreEcran.tscn"
-const START_HUB_SCREEN_PATH := "res://hub/StartHub.tscn"
 const PROGRESSION_CHOICE_SCREEN_PATH := "res://ui/progression/ProgressionChoiceScreen.tscn"
 const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
 const POST_COMBAT_SCREEN_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
@@ -109,11 +98,11 @@ var _reduced_motion_enabled := false
 var expedition: ExpeditionSession = null
 var expedition_save_path: String = ExpeditionSaveService.SAVE_PATH
 var selected_run_variant := "classic"
-const EXPEDITION_SCREEN_PATH := "res://ui/expedition/ExpeditionScreen.tscn"
-const PAINTED_HALT_SCREEN_PATH := "res://hub/painted_halt/ExpeditionHalt.tscn"
-const PAINTED_HALT_CATALOG := preload("res://core/expedition/painted_halt_catalog.gd")
+const EXPEDITION_DESTINATION := preload("res://core/expedition/expedition_destination.gd")
+const EXPEDITION_SCREEN_PATH := EXPEDITION_DESTINATION.ROUTE_SCENE
+const PAINTED_HALT_SCREEN_PATH := EXPEDITION_DESTINATION.HALT_SCENE
 const HALT_FLOW := preload("res://core/expedition/expedition_flow.gd")
-const MERCHANT_HALL_SCREEN_PATH := "res://hub/merchant_hall/MerchantHall.tscn"
+const MERCHANT_HALL_SCREEN_PATH := EXPEDITION_DESTINATION.MERCHANT_SCENE
 const SANCTUARY_SCREEN_PATH := "res://hub/sanctuary_prototype/SanctuaryPrototype.tscn"
 const CHARACTER_SELECTION_SCREEN_PATH := "res://ui/selection/CharacterSelectionScreen.tscn"
 const CATABASE_THRESHOLD_SCREEN_PATH := "res://hub/catabase_threshold/CatabaseThreshold.tscn"
@@ -187,7 +176,7 @@ func start_run(run_data: RunData) -> void:
 
 func resolve_run_hero_data(
 		run_data: RunData,
-		allow_legacy_fallback := true
+		allow_legacy_fallback := false
 	) -> RunHeroResolution:
 	return RunHeroResolver.resolve_runtime_hero_data(run_data, allow_legacy_fallback)
 
@@ -1975,7 +1964,7 @@ func _complete_saved_action(operation: String) -> void:
 	match operation:
 		"return_to_title", "return_to_hub":
 			cleanup_run_state()
-			_request_scene_change(TITLE_SCREEN_PATH if operation == "return_to_title" else START_HUB_SCREEN_PATH)
+			_request_scene_change(TITLE_SCREEN_PATH)
 		"start_combat":
 			start_next_battle()
 		"open_sanctuary":
@@ -2593,25 +2582,11 @@ func resume_expedition(path: String = ExpeditionSaveService.SAVE_PATH) -> bool:
 ## Presentation replacement only: keep the authored route identity/fingerprint.
 ## Historical routes use d04_1; r6 keeps the place across seeded lane inversions.
 func is_merchant_hall_active() -> bool:
-	if expedition == null or not run_active or expedition.route.phase != "reward":
-		return false
-	var node := expedition.route.get_current_node()
-	if expedition.route.get_balance_revision() >= 1:
-		return str(node.get("halt_art_key", "")) == "etal_passeur" \
-			and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
-	return str(node.get("id", "")) == "d04_1" \
-		and str(node.get("kind", "")) == "merchant" and int(node.get("depth", -1)) == 4
+	return EXPEDITION_DESTINATION.is_merchant_hall_active(expedition, run_active)
 
 
 func get_painted_halt_manifest() -> String:
-	if expedition == null or not run_active or expedition.route.phase != "reward":
-		return ""
-	if bool(expedition.route.get_current_node().get("preparation_only", false)):
-		return ""
-	# Mandatory progression/capacity choices remain on the expedition screen.
-	if HALT_FLOW.required_step(expedition) != "hub":
-		return ""
-	return PAINTED_HALT_CATALOG.manifest_for(expedition.route.get_current_node())
+	return EXPEDITION_DESTINATION.painted_halt_manifest(expedition, run_active)
 
 
 func is_painted_halt_active() -> bool:
@@ -2623,14 +2598,7 @@ func open_painted_halt() -> bool:
 
 
 func get_expedition_destination_scene() -> String:
-	# Progression and loot must be resolved before a location can take over the UI.
-	if expedition != null and HALT_FLOW.required_step(expedition) not in ["map", "hub"]:
-		return EXPEDITION_SCREEN_PATH
-	if preload("res://hub/seuil_crossroads/seuil_route_choices.gd").active(expedition):
-		return "res://hub/seuil_crossroads/SeuilCrossroads.tscn"
-	if is_painted_halt_active():
-		return PAINTED_HALT_SCREEN_PATH
-	return MERCHANT_HALL_SCREEN_PATH if is_merchant_hall_active() else EXPEDITION_SCREEN_PATH
+	return EXPEDITION_DESTINATION.scene_for(expedition, run_active)
 
 
 func open_expedition_progression() -> bool:

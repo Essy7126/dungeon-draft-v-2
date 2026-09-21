@@ -1,0 +1,7 @@
+# Search defaults only: Git tracking and Godot imports are unchanged.
+# Inspect historical evidence with rg --no-ignore <pattern> <specific-directory>.
+/docs/archive/
+/docs/audits/
+/artifacts/
+/output/
+/meshy_output/

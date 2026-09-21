@@ -1,0 +1,166 @@
+{
+  "smoke": {
+    "patterns": [
+      "test_champion_codex.gd",
+      "test_spell_codex_detail.gd"
+    ]
+  },
+  "catabase": {
+    "patterns": [
+      "test_catabase*.gd",
+      "test_expedition*.gd",
+      "test_paris*.gd",
+      "test_relic*.gd",
+      "test_inventory_equipment_system.gd",
+      "test_post_combat_flow.gd",
+      "test_painted_halt_catabase.gd",
+      "test_catabase_cards.gd",
+      "test_catabase_class_run.gd",
+      "test_class_card_vfx.gd",
+      "test_class_painted_icons.gd",
+      "test_persistent_run_combat_hud.gd"
+    ]
+  },
+  "monsters": {
+    "patterns": [
+      "test_catabase_monster*.gd"
+    ]
+  },
+  "terrain": {
+    "patterns": [
+      "*terrain*.gd"
+    ]
+  },
+  "studio": {
+    "patterns": [
+      "test_dungeon_draft_studio_2_0.gd",
+      "test_painted_halt_manifest_service.gd",
+      "test_painted_halt_studio_interactions.gd",
+      "test_painted_halt_studio_preview.gd",
+      "test_painted_halt_runtime.gd",
+      "test_painted_halt_audio_lifecycle.gd",
+      "test_painted_halt_catabase.gd",
+      "test_terrain_studio_refonte.gd",
+      "test_terrain_studio_novice_scenario.gd",
+      "test_terrain_test_integration_path.gd",
+      "test_validated_audit_corrections.gd",
+      "test_encounter_studio_v1.gd",
+      "test_encounter_document_safety.gd",
+      "test_room_draft_encounters.gd",
+      "test_item_studio_v1.gd",
+      "test_vfx_studio_slice.gd",
+      "test_vfx_flipbook_foundation.gd",
+      "test_meshy_bridge_security.gd",
+      "test_arena_production_hardening_phase1.gd",
+      "test_arena_art_pipeline_v3.gd",
+      "test_arena_atomic_production_v2.gd",
+      "test_room_integration_guided_pipeline.gd",
+      "test_arena_direct_test_runtime_parity.gd",
+      "test_arena_runtime_preview_and_direct_test_v2.gd",
+      "test_arena_stone_floor_visibility.gd",
+      "test_arena_studio_phase10_11_hardening.gd",
+      "test_run_content_isolation.gd",
+      "test_skill_tree_complete_contract.gd",
+      "test_skill_tree_generic_effects.gd",
+      "test_skill_tree_resolver.gd",
+      "test_skill_tree_screen_complete_ui.gd",
+      "test_skill_tree_studio.gd",
+      "test_skill_tree_studio_hardening.gd",
+      "test_fixed_trio_mage_lifecycle.gd",
+      "test_progression_lifecycle.gd",
+      "test_three_character_party_lifecycle.gd"
+    ]
+  },
+  "halts": {
+    "patterns": [
+      "test_painted_halt*.gd"
+    ]
+  },
+  "audio": {
+    "patterns": [
+      "test_cavern_ambience.gd",
+      "test_title_music.gd",
+      "test_context_audio.gd",
+      "test_catabase_battle_audio.gd",
+      "test_inventory_equipment_system.gd",
+      "test_equipment_reward_presentation.gd",
+      "test_skill_evolution_card_presentation.gd",
+      "test_post_combat_flow.gd",
+      "test_champion_codex.gd",
+      "test_painted_halt_audio_lifecycle.gd",
+      "test_painted_halt_runtime.gd",
+      "test_painted_halt_catabase.gd",
+      "test_catabase_threshold.gd",
+      "test_battle_grid_lifecycle.gd",
+      "test_combat_effect_dedup_lifecycle.gd"
+    ]
+  },
+  "all": {
+    "patterns": [
+      "test_*.gd"
+    ]
+  },
+  "cards": {
+    "patterns": [
+      "test_catabase_cards.gd",
+      "test_catabase_class_run.gd",
+      "test_class_card_vfx.gd",
+      "test_class_painted_icons.gd",
+      "test_persistent_run_combat_hud.gd"
+    ]
+  },
+  "cards-audit": {
+    "patterns": [
+      "test_cards_studio_audit.gd"
+    ]
+  },
+  "content": {
+    "patterns": [
+      "test_character_selection_screen.gd",
+      "test_run_content_isolation.gd",
+      "test_encounter_g6_closure.gd",
+      "test_selection_quality_v2.gd",
+      "test_philosopher_selection_layout.gd",
+      "test_selection_replacement_guard.gd",
+      "test_philosopher_gameplay.gd",
+      "test_painted_halt_catabase.gd",
+      "test_seuil_crossroads.gd",
+      "test_catabase_cinematic_v4.gd"
+    ]
+  },
+  "navigation": {
+    "patterns": [
+      "test_painted_halt_catabase.gd",
+      "test_seuil_crossroads.gd"
+    ]
+  },
+  "selection": {
+    "patterns": [
+      "test_character_selection_screen.gd",
+      "test_selection_quality_v2.gd",
+      "test_philosopher_selection_layout.gd",
+      "test_selection_replacement_guard.gd",
+      "test_philosopher_gameplay.gd"
+    ]
+  },
+  "retirement": {
+    "patterns": [
+      "test_character_animation_set.gd",
+      "test_fixed_trio_mage_lifecycle.gd",
+      "test_party_presentation_screen.gd",
+      "test_spell_visual_recovery.gd",
+      "test_unit_movement_presentation.gd",
+      "test_run_content_isolation.gd",
+      "test_arena_runtime_preview_and_direct_test_v2.gd",
+      "test_dungeon_draft_studio_2_0.gd",
+      "test_arena_studio_phase10_11_hardening.gd",
+      "test_skill_tree_studio.gd",
+      "test_item_studio_v1.gd",
+      "test_catabase_death_flow.gd",
+      "test_catabase_run_chronicle.gd",
+      "test_catabase_cinematic_v4.gd",
+      "test_ui_snapshot_registry.gd",
+      "test_odyssey_validation_expectations.gd"
+    ]
+  }
+}
