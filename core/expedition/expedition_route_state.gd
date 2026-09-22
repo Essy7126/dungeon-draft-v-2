@@ -13,6 +13,8 @@ var completed_node_ids: Array[String] = []
 var revealed_node_ids: Array[String] = []
 var phase: String = "map"
 var last_restore_error: String = ""
+## Presentation only; canonical graph and save fingerprint stay unchanged.
+var card_tactical_rooms_enabled := false
 var difficulty_id: String = "normal"
 
 var _canonical_nodes: Array[Dictionary] = []
@@ -273,6 +275,12 @@ func _available_ids() -> Array[String]:
 
 func _preview(node: Dictionary) -> Dictionary:
 	var result := node.duplicate(true)
+	if card_tactical_rooms_enabled:
+		var tactical = preload("res://core/expedition/card_tactical_room_catalog.gd")
+		var room_id: String = tactical.id_for(node)
+		if not room_id.is_empty():
+			result.title = tactical.ROOMS[room_id].name
+			result.hint = tactical.ROOMS[room_id].hint
 	result.erase("service_profile")
 	var node_id := String(node["id"])
 	var visited := node_id == current_node_id or node_id in completed_node_ids
