@@ -190,6 +190,11 @@ static func make_room(node: Dictionary, seed_value: int, card_ecosystem := false
 		encounter.roster_units.append(enemy)
 	room.encounter_definition = encounter
 	room.enemies = encounter.expanded_roster()
+	if card_ecosystem:
+		var tactical_rooms = preload("res://core/expedition/card_tactical_room_catalog.gd")
+		var tactical_id: String = tactical_rooms.id_for(node)
+		if not tactical_id.is_empty():
+			return tactical_rooms.replace_room(room, tactical_id)
 	return room
 
 

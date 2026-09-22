@@ -650,6 +650,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		cards.bind(self)
 		if not cards.restore(snapshot.cards_run, needs_preparation): return false
 		cards.migrate_legacy(needs_preparation)
+		route.card_tactical_rooms_enabled = cards.rules_revision == 3 and int(cards.get("ecosystem_revision")) > 0
 	return true
 
 
@@ -674,6 +675,7 @@ func _prepare_class_start(selection: Dictionary, inventory: RunInventory) -> Dic
 	cards.initialize_deck(selection)
 	if not cards.valid_deck(cards.active): return _failure("Le deck est incomplet.")
 	route.initialize(route.seed, route.get_catalog_revision(), str(selection.get("difficulty_id", "normal")))
+	route.card_tactical_rooms_enabled = int(cards.get("ecosystem_revision")) > 0
 	needs_preparation = false
 	gold = 60
 	last_message = "Départ sans équipement · 10 cartes · 60 oboles. Vos premiers objets seront trouvés en combat."

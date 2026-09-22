@@ -15,6 +15,7 @@ Le trio et la salle de l'Archiviste ont été retirés du produit.
 | Salle de l'Archiviste | Supprimée avec son modèle, son décor, ses panneaux et ses outils spécifiques. Les anciens retours de run vont au titre |
 | Refuge des braises, haltes et Seuil | Parcours actuels conservés, distincts de la salle de l'Archiviste |
 | Maps Catabase et branches | Catalogues `core/expedition/`, `data/rooms/catabase_routes/`, `data/rooms/catabase_expansion/` et explorateur |
+| Salles tactiques Cartes | Forge (5/Airain), sablier (6/Léthé), jardin (8/Léthé), convoi (12/Styx), réservoirs (13/Airain), pour la route r6 avec écosystème Cartes actif ; `core/expedition/card_tactical_room_catalog.gd`, `battle/tactical_rooms/`. [Règles et essai](../../tools/tactical_rooms/README.md) |
 | Forêt, montagne, caldeira et station historiques | Sept scènes de terrain isolées dans `test/fixtures/terrain/`, sans leurs fonds ni musiques. Les terrains peints forêt/volcan/station restent des fixtures actives des contrats de grille et du Studio |
 | Laboratoires sous `tools/labs/` | Essais autonomes, pas automatiquement du contenu abandonné |
 | `web/achilles-run-lab/` | Prototype autonome expérimental, isolé de l’import Godot |
