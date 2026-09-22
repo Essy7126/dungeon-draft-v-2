@@ -265,7 +265,7 @@ static func for_spell(spell: Spell) -> Dictionary:
 		},
 		true,
 	)
-	return entry
+	return preload("cel/recipes.gd").apply(entry, id)
 
 
 static func status_family(data: StatusData) -> String:

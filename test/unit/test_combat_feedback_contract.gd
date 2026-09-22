@@ -4,11 +4,25 @@ const Factory = preload("res://test/support/factory.gd")
 const FeedbackSettings = preload(
 	"res://battle/combat_feedback/combat_feedback_settings.tres"
 )
+var fixture_units: Array[Unit] = []
+
+
+func _unit(label: String, team: int) -> Unit:
+	var unit := Factory.make_unit(label, team)
+	fixture_units.append(unit)
+	return unit
+
+
+func after_each() -> void:
+	# Resolved facts retain their target; release the isolated fixtures' history.
+	for unit in fixture_units:
+		unit.clear_combat_effect_history()
+	fixture_units.clear()
 
 
 func test_damage_facts_are_post_mutation_and_never_show_theoretical_damage() -> void:
-	var target := Factory.make_unit("Cible", 1)
-	var attacker := Factory.make_unit("Attaquant", 0)
+	var target := _unit("Cible", 1)
+	var attacker := _unit("Attaquant", 0)
 	target.add_shield(20)
 	var shield_facts: Array[CombatEventFact] = []
 	var hp_facts: Array[CombatEventFact] = []
@@ -49,7 +63,7 @@ func test_damage_facts_are_post_mutation_and_never_show_theoretical_damage() -> 
 
 
 func test_heal_fact_separates_effective_healing_from_overheal() -> void:
-	var target := Factory.make_unit("Cible", 1)
+	var target := _unit("Cible", 1)
 	target.current_hp = 88
 	var facts: Array[CombatEventFact] = []
 	var on_heal := func(fact: CombatEventFact): facts.append(fact)
@@ -68,7 +82,7 @@ func test_heal_fact_separates_effective_healing_from_overheal() -> void:
 
 
 func test_dodge_and_immunity_use_semantic_labels_without_zero_artifacts() -> void:
-	var target := Factory.make_unit("Cible", 1)
+	var target := _unit("Cible", 1)
 	var dodge_result := DamageResolver.DamageResult.new(40)
 	dodge_result.amount = 0
 	dodge_result.dodged = true
@@ -94,8 +108,8 @@ func test_dodge_and_immunity_use_semantic_labels_without_zero_artifacts() -> voi
 
 
 func test_critical_periodic_and_order_metadata_survive_resolution() -> void:
-	var target := Factory.make_unit("Cible", 1)
-	var attacker := Factory.make_unit("Attaquant", 0)
+	var target := _unit("Cible", 1)
+	var attacker := _unit("Attaquant", 0)
 	var facts: Array[CombatEventFact] = []
 	var on_hp := func(fact: CombatEventFact): facts.append(fact)
 	EventBus.hp_damage_taken.connect(on_hp)
@@ -138,7 +152,7 @@ func test_critical_periodic_and_order_metadata_survive_resolution() -> void:
 
 
 func test_explicit_impact_ids_make_damage_heal_and_shield_idempotent() -> void:
-	var target := Factory.make_unit("Cible", 1)
+	var target := _unit("Cible", 1)
 	var damage_options := {
 		"ignore_defense": true,
 		"cannot_be_dodged": true,

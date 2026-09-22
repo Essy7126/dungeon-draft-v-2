@@ -25,7 +25,9 @@ func configure(
 	rect.size = Vector2(maxf(1.0, from.distance_to(to)), 64)
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	mat = ShaderMaterial.new()
-	mat.shader = preload("ethereal/flight.gdshader")
+	mat.shader = preload("cel/flight.gdshader")
+	mat.set_shader_parameter("artwork", preload("cel/recipes.gd").texture("pierce"))
+	mat.set_shader_parameter("span", rect.size.x)
 	var colors: Array = Catalog.PALETTES[entry.family]
 	mat.set_shader_parameter("body_color", Color(colors[0]))
 	mat.set_shader_parameter("core_color", Color(colors[1]))

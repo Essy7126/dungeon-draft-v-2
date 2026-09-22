@@ -2,8 +2,8 @@ extends Node2D
 ## A visual overlay projected onto the actual cell polygon; no terrain mutation.
 const Catalog := preload("class_card_vfx_catalog.gd")
 const Player := preload("class_card_vfx_player.gd")
-const GROUND_SHADER := preload("ethereal/ground.gdshader")
-const PILOT_SHADER := preload("ethereal/pilot_ground.gdshader")
+const GROUND_SHADER := preload("cel/ground.gdshader")
+const Cel := preload("cel/recipes.gd")
 var elapsed := 0.0
 var closed := false
 var fading := false
@@ -36,8 +36,7 @@ func configure(
 		[Vector2.ZERO, Vector2(256, 0), Vector2(256, 256), Vector2(0, 256)]
 	)
 	material_fx = ShaderMaterial.new()
-	material_fx.shader = GROUND_SHADER if motif == "" else PILOT_SHADER
-	material_fx.set_shader_parameter("flow_noise", Player.NOISE)
+	material_fx.shader = GROUND_SHADER
 	material_fx.set_shader_parameter("body_color", Color(Catalog.PALETTES[family][0]))
 	material_fx.set_shader_parameter("core_color", Color(Catalog.PALETTES[family][1]))
 	material_fx.set_shader_parameter("kind", 0 if family == "fire" else 1 if family == "ice" else 2)
@@ -59,14 +58,13 @@ func configure(
 		canopy = Sprite2D.new()
 		canopy.texture = Player.WHITE
 		canopy.position = center
-		canopy.offset = Vector2(0, -87.04)
-		canopy.scale = Vector2.ONE * (right - left) / 256.0
+		canopy.offset = Vector2(0, -107.52)
+		var extent: float = { "fault": .34, "embers": .30, "caltrop": .28 }.get(motif, .58)
+		canopy.scale = Vector2.ONE * (right - left) * extent / 256.0
 		var veil := ShaderMaterial.new()
-		veil.shader = Player.PILOT
-		veil.set_shader_parameter("flow_noise", Player.NOISE)
-		veil.set_shader_parameter("motif", 1 if family == "fire" else 2)
-		veil.set_shader_parameter("holding", true)
-		veil.set_shader_parameter("seed_value", seed_value)
+		veil.shader = Player.CEL
+		veil.set_shader_parameter("artwork", Cel.texture("fire" if family == "fire" else "ice"))
+		veil.set_shader_parameter("frontal", true)
 		veil.set_shader_parameter("layer", 1.0)
 		canopy.material = veil
 		add_child(canopy)
@@ -89,8 +87,12 @@ func sample(seconds: float) -> void:
 		alpha = 1.0 - clampf(fade_elapsed / .45, 0.0, 1.0)
 	material_fx.set_shader_parameter("opacity", alpha)
 	if is_instance_valid(canopy):
-		canopy.material.set_shader_parameter("flow_time", elapsed)
-		canopy.material.set_shader_parameter("opacity", alpha * .85)
+		var pose := mini(2, int(elapsed * 9.0)) if elapsed < .35 else 1 + int(elapsed * 2.0) % 2
+		canopy.material.set_shader_parameter(
+			"frame_index",
+			4 + mini(1, int(fade_elapsed * 4)) if fading else pose,
+		)
+		canopy.material.set_shader_parameter("opacity", alpha * .90)
 
 
 func _process(delta: float) -> void:

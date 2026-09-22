@@ -5,6 +5,14 @@ const Player := preload("res://vfx/class_cards/class_card_vfx_player.gd")
 const Flight := preload("class_card_vfx_flight.gd")
 const Ground := preload("class_card_vfx_ground.gd")
 const Profiles := preload("class_card_vfx_profiles.gd")
+const STATUS_PRIORITY := [
+	"ecosystem_stasis",
+	"class_root",
+	"class_burn",
+	"class_bleed",
+	"class_marked",
+	"shield",
+]
 var manager: Node
 var effects: Array[Node] = []
 var holds := { }
@@ -174,6 +182,17 @@ func _in_scope(fact: CombatEventFact) -> bool:
 	return _available() and is_instance_valid(fact.target) and fact.target in _units()
 
 
+func owns_status_feedback(fact: CombatEventFact) -> bool:
+	return (
+		fact != null and fact.event_type in [&"status_added", &"status_expired"] and _in_scope(fact)
+	)
+
+
+static func _status_priority(id: String) -> int:
+	var rank := STATUS_PRIORITY.find(id)
+	return 99 if rank < 0 else rank
+
+
 func _spawn(entry: Dictionary, point: Vector2, anchor: Node2D = null, hold := false) -> Node:
 	if not _available():
 		return null
@@ -278,6 +297,29 @@ func _ensure_hold(unit: Unit, id: String, entry: Dictionary) -> void:
 	var fx := _at_unit(entry, unit, true)
 	if fx != null:
 		holds[key] = { "unit": unit, "status": id, "fx": fx }
+		_layout_holds()
+
+
+func _layout_holds() -> void:
+	# Stable compact badge rail. Overflow is explicit; the HUD retains all names and turns.
+	var groups := { }
+	for key in holds:
+		var hold: Dictionary = holds[key]
+		if not groups.has(hold.unit):
+			groups[hold.unit] = []
+		groups[hold.unit].append(key)
+	for unit in groups:
+		var keys: Array = groups[unit]
+		keys.sort_custom(
+			func(a, b):
+				var left := _status_priority(holds[a].status)
+				var right := _status_priority(holds[b].status)
+				return str(holds[a].status) < str(holds[b].status) if left == right else left < right,
+		)
+		for i in keys.size():
+			var fx = holds[keys[i]].fx
+			if is_instance_valid(fx) and not fx.closed:
+				fx.set_status_slot(i, keys.size())
 
 
 func _restore_unit_holds() -> void:
@@ -406,13 +448,35 @@ func _remove_hold(key: String, expire: bool) -> void:
 	var hold: Dictionary = holds[key]
 	holds.erase(key)
 	if is_instance_valid(hold.fx):
-		if expire and is_instance_valid(hold.unit):
+		var visible_sign: bool = hold.fx.status_slot < (5 if hold.fx.status_count > 6 else 6)
+		if expire and visible_sign and is_instance_valid(hold.unit):
+			# A simultaneous purge has one compact release, never a pile of outro icons.
+			var emit_release := true
+			for old in effects:
+				if (
+					is_instance_valid(old) and not old.closed and old.badge_mode
+					and not old.persistent and old.recipe.get("status_owner", 0) == hold
+					.unit
+					.get_instance_id()
+				):
+					if _status_priority(old.recipe.get("status_id", "")) < _status_priority(
+						hold.status
+					):
+						emit_release = false
+					else:
+						old.cancel()
 			# Preserve the actual held silhouette (notably Paris' PA-only stasis).
 			var outro: Dictionary = hold.fx.recipe.duplicate(true)
 			outro["feedback_phase"] = "expire"
 			outro["duration"] = .48
-			_at_unit(outro, hold.unit)
+			outro["status_id"] = hold.status
+			outro["status_slot"] = hold.fx.status_slot
+			outro["status_count"] = hold.fx.status_count
+			outro["status_owner"] = hold.unit.get_instance_id()
+			if emit_release:
+				_at_unit(outro, hold.unit)
 		hold.fx.cancel()
+	_layout_holds()
 
 
 func clear(stop_observing := false) -> void:

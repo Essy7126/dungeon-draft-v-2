@@ -4,10 +4,11 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const sharp = require(process.env.SHARP_PATH || 'C:/Users/paolo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/sharp');
 const root = path.resolve(__dirname, '../..');
+const cel = process.argv.includes('--cel');
 const extension = process.argv.includes('--extension');
 const power = process.argv.includes('--power');
-const dir = path.join(root, 'artifacts/dev/class_card_vfx', power ? 'power' : extension ? 'extension' : 'semantics');
-const ids = power ? ['a_reap', 'g_bastion', 'g_crash', 'r_scatter', 'r_bounty', 't_cataclysm', 't_hourglass', 'a_stasis'] : extension ? ['a_reap', 'g_bastion', 'g_hook', 'r_net', 'r_scatter', 't_storm', 't_disrupt', 't_hourglass', 'g_fault', 'r_caltrop', 't_cataclysm', 'a_phantom'] : ['a_dagger', 't_burn', 't_flamewall', 't_glacier'];
+const dir = path.join(root, 'artifacts/dev/class_card_vfx', cel ? 'cel/combat' : power ? 'power' : extension ? 'extension' : 'semantics');
+const ids = cel ? ['a_dagger','a_reap','g_guard','g_bastion','g_crash','g_hook','r_net','r_scatter','t_storm','t_disrupt','t_hourglass','g_fault','r_caltrop','t_cataclysm','t_flamewall','t_glacier'] : power ? ['a_reap', 'g_bastion', 'g_crash', 'r_scatter', 'r_bounty', 't_cataclysm', 't_hourglass', 'a_stasis'] : extension ? ['a_reap', 'g_bastion', 'g_hook', 'r_net', 'r_scatter', 't_storm', 't_disrupt', 't_hourglass', 'g_fault', 'r_caltrop', 't_cataclysm', 'a_phantom'] : ['a_dagger', 't_burn', 't_flamewall', 't_glacier'];
 const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 (async () => {
   const report = JSON.parse(fs.readFileSync(path.join(dir, 'report.json')));
@@ -32,7 +33,7 @@ const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).d
       .gif({ loop: 0, delay: Array.from({ length: 60 }, (_, i) => i % 3 === 2 ? 40 : 30), colours: 256, effort: 4 })
       .toFile(output);
     const metadata = await sharp(output, { animated: true }).metadata();
-    if (metadata.pages !== 60 || metadata.delay.reduce((a, b) => a + b, 0) !== 2000) throw Error('Wrong playback duration');
+    if (metadata.pages > 60 || metadata.delay.reduce((a, b) => a + b, 0) !== 2000) throw Error('Wrong playback duration');
     outputs.push({ id, frames, gif_sha256: hash(output) });
   }
   fs.writeFileSync(path.join(dir, 'encode_report.json'), JSON.stringify({

@@ -4,10 +4,149 @@ const Player := preload("res://vfx/class_cards/class_card_vfx_player.gd")
 const Factory := preload("res://test/support/factory.gd")
 const Cleanup := preload("res://test/support/isolated_battlefield_cleanup.gd")
 const Cards := preload("res://core/expedition/class_cards.gd")
+const Cel := preload("res://vfx/class_cards/cel/recipes.gd")
 var manager: Node
 var view: Node2D
 var host: BattleHost
 var session: ExpeditionSession
+
+
+func test_cel_catalogue_has_authored_compositions_and_six_pose_assets() -> void:
+	assert_eq(Cel.CARDS.size(), Catalog.Cards.pool().size())
+	for id in Catalog.Cards.pool():
+		assert_has(Cel.CARDS, id)
+		var entry := Catalog.recipe(id)
+		assert_eq(entry.art_direction, "cel", id)
+		assert_has(Cel.CLIPS, entry.cel_clip, id)
+		assert_gt(entry.concept.length(), 25, id)
+	for clip in Cel.CLIPS:
+		var atlas := Cel.texture(clip)
+		assert_not_null(atlas, clip)
+		assert_eq(atlas.get_size(), Vector2(1536, 1024), "Six square poses: " + clip)
+	assert_eq(Cel.frame_at(.7, "brace"), 2, "An intact shield does not play its broken pose")
+	assert_eq(Cel.frame_at(.7, "break"), 4, "A broken shield releases separate fragments")
+	assert_ne(
+		Cel.frame_at(.04, "slash"),
+		Cel.frame_at(.5, "slash"),
+		"Real pose changes, not only scaling",
+	)
+
+
+func test_cel_status_rail_groups_orders_overflow_and_compact_expiration() -> void:
+	var hero := _unit()
+	var enemy := _unit("Cible", 1)
+	var router: Node = manager._class_card_router
+	for effect in ["marked", "bleed", "burn", "root", "slow", "weak", "disrupt", "lure"]:
+		enemy.apply_status(Catalog.Cards.status(effect, effect, 2), hero)
+	assert_eq(router.holds.size(), 8)
+	var slots: Array = []
+	for hold in router.holds.values():
+		var fx: Node = hold.fx
+		slots.append(fx.status_slot)
+		assert_eq(fx.status_count, 8)
+		fx.sample(3600.0)
+		assert_eq(fx.sprites[0].visible, fx.status_slot < 6)
+		assert_eq(fx.overflow.visible, fx.status_slot == 5)
+		if fx.status_slot == 5:
+			assert_eq(fx.overflow.text, "+3")
+	slots.sort()
+	assert_eq(slots, [0, 1, 2, 3, 4, 5, 6, 7])
+	var root_key := "%s:class_root" % enemy.get_instance_id()
+	assert_eq(
+		router.holds[root_key].fx.status_slot,
+		0,
+		"Movement restriction has a stable leading slot",
+	)
+	enemy.remove_status(&"class_root", hero, true)
+	router._process(.2)
+	assert_eq(router.holds.size(), 7)
+	var outros: Array = router.effects.filter(
+		func(fx):
+			return fx.recipe.get("feedback_phase", "") == "expire" and fx.recipe.get(
+					"status_id",
+					"",
+				) == "class_root",
+	)
+	assert_eq(outros.size(), 1)
+	if not outros.is_empty():
+		var outro: Node = outros[0]
+		assert_true(outro.badge_mode)
+		assert_false(outro.persistent)
+		assert_eq(outro.status_slot, 0)
+		assert_almost_eq(outro.sprites[0].global_scale.x, outro.badge_size / 256.0, .001)
+		outro._process(.6)
+		assert_true(outro.closed)
+
+
+func test_cel_status_rail_replaces_only_status_text_in_its_bound_cards_battle() -> void:
+	var hero := _unit()
+	var enemy := _unit("Cible", 1)
+	var foreign := Factory.make_unit("Autre combat", 1)
+	var controller := CombatFeedbackController.new()
+	add_child(controller)
+	VFXManager.register_battle_view(view)
+	var status := CombatEventFact.create(
+		&"status_added",
+		enemy,
+		hero,
+		{ "status_id": "class_root" },
+	)
+	assert_false(
+		controller.submit_fact(status),
+		"One status presentation, no generic floating duplicate",
+	)
+	var expired := CombatEventFact.create(
+		&"status_expired",
+		enemy,
+		hero,
+		{ "status_id": "class_root" },
+	)
+	assert_false(controller.submit_fact(expired))
+	assert_true(
+		controller.submit_fact(
+			CombatEventFact.create(&"hp_damage_taken", enemy, hero, { "amount_applied": 9 })
+		),
+		"Keep actual damage numbers",
+	)
+	assert_true(
+		controller.submit_fact(CombatEventFact.create(&"status_added", foreign, hero)),
+		"A different battle retains its normal text",
+	)
+	hero.remove_meta("ct_session")
+	for member in host.units:
+		member.remove_meta("ct_session")
+	assert_true(controller.submit_fact(status), "Classic retains its status text")
+	VFXManager.unregister_battle_view(view)
+	controller.queue_free()
+	await get_tree().process_frame
+
+
+func test_cel_secondary_reactions_stay_small_and_partial_absorption_keeps_shield_intact() -> void:
+	var tick := Player.new()
+	view.add_child(tick)
+	tick.configure(Catalog.feedback("fire", "tick"), Vector2.ZERO, 200)
+	tick.manual = true
+	tick.sample(.12)
+	assert_lt(tick.sprites[0].global_scale.x * 256.0, 120.0, "Tick is a small local reaction")
+	var absorbed := Player.new()
+	view.add_child(absorbed)
+	absorbed.configure(Catalog.feedback("guard", "absorb"), Vector2.ZERO, 200)
+	absorbed.manual = true
+	absorbed.sample(absorbed.duration * .7)
+	assert_eq(
+		absorbed.sprites[1].material.get_shader_parameter("frame_index"),
+		2,
+		"Partial absorption does not draw a broken guard",
+	)
+	var broken := Player.new()
+	view.add_child(broken)
+	broken.configure(Catalog.feedback("guard", "break"), Vector2.ZERO, 200)
+	broken.manual = true
+	broken.sample(broken.duration * .7)
+	assert_eq(broken.sprites[1].material.get_shader_parameter("frame_index"), 4)
+	for fx in [tick, absorbed, broken]:
+		fx.cancel()
+	await get_tree().process_frame
 
 
 class BattleHost:
@@ -199,9 +338,13 @@ func test_state_tracks_actor_and_clock_can_be_sampled_and_replayed() -> void:
 	fx.sample(.2)
 	assert_eq(fx.sprites[0].global_position, anchor.global_position)
 	assert_eq(fx.sprites[0].material.get_shader_parameter("progress"), first_time)
-	assert_almost_eq(fx.sprites[0].global_scale, Vector2.ONE * 192.0 / 256.0, Vector2.ONE * .001)
-	assert_eq(fx.sprites[0].z_index, 0, "Rear sheets remain above the map floor")
-	assert_true(fx.sprites[0].show_behind_parent)
+	assert_almost_eq(
+		fx.sprites[0].global_scale,
+		Vector2.ONE * fx.badge_size / 256.0,
+		Vector2.ONE * .001,
+	)
+	assert_eq(fx.sprites[0].z_index, 3, "Compact badges remain above the actor")
+	assert_false(fx.sprites[0].show_behind_parent)
 	assert_lt(fx.sprites[0].get_index(), fx.sprites[1].get_index())
 	assert_gt(fx.sprites[1].z_index, 0)
 	fx.cancel()
@@ -740,8 +883,8 @@ func test_real_stasis_distinguishes_skip_from_paris_ap_penalty_and_preserves_out
 		)
 		if not power_casts.is_empty():
 			var material: ShaderMaterial = power_casts[0].sprites[0].material
-			assert_eq(material.shader, Player.POWER)
-			assert_eq(material.get_shader_parameter("shape"), 9 if paris else 5)
+			assert_eq(material.shader, Player.CEL)
+			assert_eq(power_casts[0].playback.clip, "seal" if paris else "hourglass")
 		assert_true(router.echoes.is_empty(), "Stasis application is not a projectile")
 		fx.sample(3600.0)
 		assert_true(fx.sprites[1].visible, "Waiting does not consume an activation")
@@ -784,7 +927,9 @@ func test_epic_hierarchy_covers_real_tier_and_does_not_escalate_ticks_or_holds()
 			var fx := Player.new()
 			view.add_child(fx)
 			fx.configure(sample, Vector2.ZERO, 220, null, holding)
-			assert_eq(fx.sprites[0].material.shader == Player.POWER, phase == "", id + ": " + phase)
+			assert_eq(fx.sprites[0].material.shader, Player.CEL)
+			assert_eq(fx.playback.minor, phase != "", id + ": " + phase)
+			assert_eq(fx.playback.copies, 1 if phase != "" else entry.cel_copies)
 			fx.sample(3.0)
 			assert_eq(fx.sprites[0].visible, holding, "Only actual holds outlive the visual tail")
 			fx.cancel()

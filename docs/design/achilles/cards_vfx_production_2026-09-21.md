@@ -1,5 +1,9 @@
 # VFX Cartes — sens, direction artistique et production
 
+**DA historique : le choix utilisateur du 22 septembre 2026 retient désormais
+[Animation cel](cards_vfx_cel_2026-09-22.md).** Cette fiche conserve la description
+de la passe éthérée du 21 septembre et de ses branchements existants.
+
 Périmètre validé : **recherche, règles visuelles et premiers sorts retravaillés**. Direction C : transparence, lumière, volutes. Cette passe traite quatre cartes et leurs états/sols associés ; les autres cartes et sorts adverses conservent la bibliothèque précédente. Un catalogue entièrement couvert par des familles n'est pas un catalogue entièrement dirigé artistiquement.
 
 ## Ce que montrent les sources de production

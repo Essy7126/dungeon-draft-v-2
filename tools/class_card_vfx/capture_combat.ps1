@@ -1,8 +1,8 @@
-param([switch]$Semantic, [switch]$Extension, [switch]$Power)
+param([switch]$Semantic, [switch]$Extension, [switch]$Power, [switch]$Cel)
 $ErrorActionPreference = 'Stop'
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-$scenario = if ($Power) { 'power' } elseif ($Extension) { 'extension' } elseif ($Semantic) { 'semantics' } else { 'persistence' }
-$scene = if ($Power) { 'power_probe' } elseif ($Extension) { 'extension_probe' } elseif ($Semantic) { 'semantic_probe' } else { 'combat_probe' }
+$scenario = if ($Cel) { 'cel/combat' } elseif ($Power) { 'power' } elseif ($Extension) { 'extension' } elseif ($Semantic) { 'semantics' } else { 'persistence' }
+$scene = if ($Cel) { 'cel_probe' } elseif ($Power) { 'power_probe' } elseif ($Extension) { 'extension_probe' } elseif ($Semantic) { 'semantic_probe' } else { 'combat_probe' }
 $outputRoot = Join-Path $projectRoot "artifacts/dev/class_card_vfx/$scenario"
 [IO.Directory]::CreateDirectory($outputRoot) | Out-Null
 $godotPath = (Get-Content (Join-Path $projectRoot 'artifacts/dev-tools/local.json') -Raw | ConvertFrom-Json).godot_path
@@ -14,10 +14,10 @@ try {
     $env:APPDATA = Join-Path $outputRoot 'appdata'
     $env:LOCALAPPDATA = $env:APPDATA
     [IO.Directory]::CreateDirectory($env:APPDATA) | Out-Null
-    $inputs = @(Get-ChildItem (Join-Path $projectRoot 'vfx/class_cards') -Recurse -File | Where-Object { $_.Extension -in '.gd','.gdshader','.tres' } | ForEach-Object {
+    $inputs = @(Get-ChildItem (Join-Path $projectRoot 'vfx/class_cards') -Recurse -File | Where-Object { $_.Extension -in '.gd','.gdshader','.tres','.png','.json' } | ForEach-Object {
         @{ path = [IO.Path]::GetRelativePath($projectRoot, $_.FullName); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash }
     })
-    foreach ($sourcePath in @('tools/class_card_vfx/combat_probe.gd','tools/class_card_vfx/semantic_probe.gd','tools/class_card_vfx/extension_probe.gd',"tools/class_card_vfx/$scene.gd")) {
+    foreach ($sourcePath in @('battle/floating_text_spawner.gd','tools/class_card_vfx/combat_probe.gd','tools/class_card_vfx/semantic_probe.gd','tools/class_card_vfx/extension_probe.gd',"tools/class_card_vfx/$scene.gd")) {
         $inputs += @{ path = $sourcePath; sha256 = (Get-FileHash -LiteralPath (Join-Path $projectRoot $sourcePath) -Algorithm SHA256).Hash }
     }
     $contextInputs = @('core/expedition/class_card_catalog.gd','core/expedition/card_ecosystem_catalog.gd','core/expedition/card_ecosystem_effects.gd') | ForEach-Object {
@@ -40,7 +40,7 @@ try {
     # Other work may update unrelated cards during capture. Record that context;
     # report.casts contains the actual loaded spell contracts used by this run.
     @{ stable_sources = $true; captured_utc = $captureStarted; inputs = $inputs; context_inputs = $contextInputs; scenario = $scenario } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $outputRoot 'capture_manifest.json') -Encoding utf8
-    $report | ConvertTo-Json -Depth 6
+    @{ passed = $report.passed; checks = $report.checks.Count; casts = $report.casts.Count; frames = $report.frames; report = $reportPath } | ConvertTo-Json
 } finally {
     $env:APPDATA = $previousAppData
     $env:LOCALAPPDATA = $previousLocalAppData

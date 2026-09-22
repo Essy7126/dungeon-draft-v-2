@@ -1,5 +1,9 @@
 # VFX Catabase — direction artistique Éthéré
 
+**Historique : remplacé le 22 septembre 2026 par le choix utilisateur
+[Animation cel](cards_vfx_cel_2026-09-22.md).** Les prescriptions éthérées
+ci-dessous décrivent la décision du 20 septembre et ne sont plus la DA à suivre.
+
 **Suivi de production :** après le pilote Éclat de braise, l’utilisateur a demandé explicitement la reprise de toutes les cartes et des sorts adverses, uniquement en run Cartes. Cette déclinaison est documentée dans la [fiche de reprise éthérée](../../ai/CARDS_ETHEREAL_VFX_2026-09-20.md). Le présent document conserve la recherche et la charte ; son programme initial de trois pilotes décrit l’étape précédente.
 
 Statut : **DIRECTION C CHOISIE PAR L'UTILISATEUR — ÉTHÉRÉ : TRANSPARENCE, LUMIÈRE ET VOLUTES**, le 20 septembre 2026. Le choix porte sur la direction de la planche, pas sur une animation déjà produite. L'utilisateur juge les idées intéressantes mais rejette la réalisation graphique de la première bibliothèque. La couverture technique des 112 cartes reste acquise ; elle ne constitue pas un accord sur leur apparence. Aucun remplacement des effets en jeu dans cette passe.

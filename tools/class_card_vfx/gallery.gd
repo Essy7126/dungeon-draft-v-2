@@ -14,7 +14,7 @@ const SELECTION := [
 	"a_stasis",
 ]
 const PAGE_SIZE := 8
-const OUT := "res://artifacts/dev/class_card_vfx/ethereal/gallery/"
+const OUT := "res://artifacts/dev/class_card_vfx/cel/gallery/"
 const EnemyInventory := preload("res://tools/class_card_vfx/enemy_inventory.gd")
 const LOOP := 2.2
 var enemy_spells: Dictionary = { }
@@ -68,7 +68,7 @@ func _ready() -> void:
 	get_tree().root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
 	capturing = "--capture" in OS.get_cmdline_user_args()
 	_label("CATABASE  /  ATELIER DES SORTS", Vector2(38, 25), 13, Color("92b9a8"))
-	_label("Les arts éthérés", Vector2(36, 46), 33, Color("e8ddbd"), true)
+	_label("Les arts dessinés", Vector2(36, 46), 33, Color("e8ddbd"), true)
 	_label(
 		"%d cartes · %d sorts adversaires · %d familles"
 		% [Catalog.Cards.pool().size(), enemy_spells.size(), Catalog.FAMILIES.size()],
@@ -148,7 +148,7 @@ func _ready() -> void:
 	add_child(timeline)
 	clock_label = _label("", Vector2(1140, 874), 17)
 	_label(
-		"Run Cartes uniquement · Transparence, lumière et volutes · Même rendu que le combat · Personnage fixe dans l'atelier",
+		"Run Cartes · Animation cel, 102 poses · Même rendu que le combat · Personnage fixe dans l'atelier",
 		Vector2(38, 924),
 		13,
 		Color("8ca79a"),
@@ -360,10 +360,9 @@ func _process(delta: float) -> void:
 func _capture() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT + "frames"))
 	preload("res://tools/class_card_vfx/export_contracts.gd").write(OUT)
-	# Warm the shared noise texture and shader pipelines before recording.
+	# Warm texture uploads and shader pipelines before recording.
 	await get_tree().process_frame
-	if Player.NOISE.get_image() == null:
-		await Player.NOISE.changed
+	await RenderingServer.frame_post_draw
 	for frame in 66:
 		elapsed = frame / 30.0
 		_sample()

@@ -4,7 +4,7 @@ $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 if (-not $GodotPath) {
     $GodotPath = (Get-Content (Join-Path $projectRoot 'artifacts/dev-tools/local.json') -Raw | ConvertFrom-Json).godot_path
 }
-$outputPath = Join-Path $projectRoot 'artifacts/dev/class_card_vfx/ethereal/gallery'
+$outputPath = Join-Path $projectRoot 'artifacts/dev/class_card_vfx/cel/gallery'
 [IO.Directory]::CreateDirectory($outputPath) | Out-Null
 $arguments = @('--path', $projectRoot, '--resolution', '1440x950', '--log-file', (Join-Path $outputPath 'godot.log'), 'res://tools/class_card_vfx/gallery.tscn')
 if ($Capture) {
@@ -12,7 +12,7 @@ if ($Capture) {
     try {
         try { $engineLock = [IO.File]::Open((Join-Path $projectRoot 'artifacts/dev/engine.lock'), [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None) }
         catch { throw 'Another dev command is using Godot. Retry after it finishes.' }
-        $inputs = @(Get-ChildItem (Join-Path $projectRoot 'vfx/class_cards') -Recurse -File | Where-Object { $_.Extension -in '.gd','.gdshader','.tres' } | ForEach-Object {
+        $inputs = @(Get-ChildItem (Join-Path $projectRoot 'vfx/class_cards') -Recurse -File | Where-Object { $_.Extension -in '.gd','.gdshader','.tres','.png','.json' } | ForEach-Object {
             @{ path = [IO.Path]::GetRelativePath($projectRoot, $_.FullName); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash }
         })
         foreach ($sourcePath in @('tools/class_card_vfx/gallery.gd','tools/class_card_vfx/enemy_inventory.gd','tools/class_card_vfx/export_contracts.gd')) {

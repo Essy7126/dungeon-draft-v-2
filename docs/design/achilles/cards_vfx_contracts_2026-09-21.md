@@ -1,5 +1,8 @@
 # Contrats visuels des cartes — 21 septembre 2026
 
+**Instantané historique du rendu éthéré.** La DA choisie le 22 septembre est
+[Animation cel](cards_vfx_cel_2026-09-22.md) ; sa migration en combat reste à réaliser.
+
 Instantané reproductible du catalogue chargé par la galerie native. DA : lumière éthérée, matière transparente, volutes ; noyau contrasté, silhouette lisible, personnage préservé.
 
 112 fiches explicites ; 20 motifs de matière partagés, avec construction, largeur et rythme propres aux cartes. Ce ne sont pas 112 simulations Blender indépendantes. Les 28 anciennes cartes `s_` restent sur leur rendu de compatibilité ; les 28 initiations `i_` actuelles sont incluses.

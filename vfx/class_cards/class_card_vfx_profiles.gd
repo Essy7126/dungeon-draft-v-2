@@ -77,10 +77,11 @@ static func apply(entry: Dictionary, id: String) -> Dictionary:
 		entry["ground_motif"] = GROUNDS[id][1]
 		entry["ranged"] = false
 	Power.apply(entry, id)
-	return entry
+	return preload("cel/recipes.gd").apply(entry, id)
 
 
 static func state(entry: Dictionary, id: String, data: StatusData = null) -> Dictionary:
+	entry["status_id"] = id
 	entry.merge(STATES.get(id, { }), true)
 	# Paris receives an AP penalty, never the visual assertion of a skipped turn.
 	if id == "ecosystem_stasis" and data != null and not data.skips_turn:

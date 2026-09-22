@@ -1,0 +1,176 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-09-22",
+  "assets": [
+    {
+      "id": "cut",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-1a8c0f3c-2cf4-41ce-b923-0b9295df8bff.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A single sweeping steel-white blade crescent with a dark navy edge and cool cyan underside, travelling diagonally up-right. Frame 1 a sharp narrow contact streak, 2 a broad beautifully curved slash, 3 the arc opens wide, 4 tip separates into two curved slivers, 5 slender travelling fragments, 6 three tiny fading chips. No weapon handle, no rings.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "pierce",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-c5e1e3a2-a898-4664-94ef-569777f849c4.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A steel-white spearpoint directed HORIZONTALLY RIGHT, with a dark teal shaft streak. Frame 1 a sharp point pierces the center, 2 short ivory impact star at its right tip, 3 a broad pointed thrust and blue broken trailing speed lines, 4 the point splits into elongated chips, 5 dispersing thin shards, 6 tiny remnants. Horizontal composition; clearly a thrust, not a sword standing upright.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "fire",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-97ace1f7-52b5-4f06-9a18-1c3d05bf9a88.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. An orange and red cartoon fire eruption rising from the ground, with a pale yellow inner flame. Frame 1 a tight jagged ignition near the bottom, 2 three powerful curved rising tongues, 3 a full broad eruption curling at its tips, 4 flame tongues tearing into burning lobes, 5 separate rising embers and small smoke lobes, 6 just a few cinders. Confident organic flame drawings; no continuous glow, no black smoke wall.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "ice",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-72ec4fac-1f14-4eac-b7e5-d884c6f1b9e8.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. An ice crystal eruption from the ground. Frame 1 three sharp tiny pale cyan shards, 2 a growing fan of irregular transparent-looking-but-painted-solid blue crystals, 3 five broad faceted ice spikes and a white contact star at the roots, 4 the spikes shatter into angular slabs, 5 falling small shards, 6 only tiny blue chips. Distinct hard faceted shapes.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "lightning",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-c7da7d56-6899-49e7-b390-4b7b5bb508fc.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A forceful white lightning bolt with a thick blue edge plunging vertically from the top into the ground. Frame 1 a narrow crooked bolt with three bends already contacting the ground, 2 broad branched white thunderstroke and a little impact star at base, 3 branching spread and blue forks, 4 branches disconnected into sharp zigzags, 5 short fading electric sparks, 6 three tiny electric flecks. No clouds, no giant glow.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "guard",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-79d4b196-2488-4e02-9fe6-5f97865fe43f.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A broad gold and bronze shield with an ivory rim facing the camera in a slight three-quarter view. Frame 1 a small diamond of metal at center, 2 two curved shield plates unfolding outward, 3 a complete broad heraldic shield with a dark bronze central face and a thick ivory rim, 4 shield catches a sharp ivory glint and splits along its center, 5 plates dissolve into small golden polygon chips, 6 last gold chips. No writing, no emblem text, no circular bubble.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "wind",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-d8f61d9b-c325-42a7-b6ec-f176f00e36e2.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A horizontal gust of ivory and desaturated teal air with ground dust, flowing LEFT TO RIGHT near the bottom. Frame 1 two tight low contact slivers, 2 a strong tapered swept air wedge, 3 long separated aerodynamic streaks and two curling dust puffs, 4 streaks stretch and break, 5 tiny curved wind strips, 6 two dust flecks. No enclosing circle or magic rune.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "chain",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-76f49ee7-f1e9-4500-b75e-1da109513a81.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A hooked bronze chain striking then retracting HORIZONTALLY LEFT. Frame 1 a clear curved hook contacting at right, 2 strong visible interlocking chain links pulled taut across the middle, 3 the hook and chain curl toward left with a sharp tension streak, 4 shortened chain snaps back left, 5 just speed slivers and link fragments, 6 three small orange chips. Actual large readable chain links, not a glowing tentacle.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "seal",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-f4acbbe7-02f9-4859-87e0-5257cfd9801f.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A small magical TARGET MARK in gold and ivory. Frame 1 two approaching hooked brackets, 2 four brackets closing around a dark central diamond, 3 a complete compact diamond target with four notched corners and a white center, 4 the seal cracks outward into four pieces, 5 pieces separate, 6 a few fading flecks. Graphic confident shapes. No letters, no complex occult writing, no large glow.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "shadow",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-99dda3be-2687-4c0d-ba0b-c0e2fe43edd3.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. Two dark violet and purple spectral claws biting toward each other, with ivory sharp edges. Frame 1 one short curved claw slash, 2 two opposing broad jagged claws closing, 3 a strong compact dark bite silhouette with a brief white central cut, 4 claws break apart into torn violet curved shapes, 5 small purple wisps separate, 6 tiny dark fragments. Solid painted cel masses, not a blurry cloud.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "hourglass",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-e2564038-8e8a-4bf5-88ca-293c1fcf75a1.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A clearly recognizable magical HOURGLASS with an indigo frame and pale violet sand. Frame 1 a small central suspended diamond, 2 the upper and lower triangular glass chambers form, 3 complete large hourglass with two wide horizontal frame caps and pale sand held in its waist, 4 glass cracks and sand scatters, 5 frame separates into curved indigo pieces with falling grains, 6 a few violet chips. No letters, no clock face, no transparent glow.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "heal",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-751211ef-2165-4b7f-b6d9-3e8e19d18fad.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A green LAUREL sprig and three soft ivory droplets rising in a healing gesture. Frame 1 a tight ivory seed at the bottom, 2 two green leaves unfurl upward, 3 a beautiful open laurel branch with five broad green leaves and three pale healing droplets, 4 leaves lift and separate, 5 detached small leaves drift upward, 6 two pale specks. No plus signs, no text, no neon aura.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "water",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-e510709d-c8fa-49fe-a29a-9328a95f3fae.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A rich blue WATER SPLASH. Frame 1 a squat blue impact at bottom, 2 a crown of water rises with curving white highlights, 3 two thick water lobes curl outward and shed droplets, 4 the lobes fold down and spread, 5 a low puddle with three scattered drops, 6 two tiny droplets. Organic flat cel water, no ice crystals.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "reaper",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-12132938-dfc4-449e-b817-7677dbbe0e0c.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A spectacular PURPLE SCYTHE slash. Frame 1 a broad ivory contact crescent sweeps diagonally down, 2 two immense opposing hooked scythe blades made of purple energy with ivory cutting edges, 3 the blades cross into a sharp X and fling dark purple chips, 4 the scythes unravel into long curved ribbons, 5 torn purple slivers fly outward, 6 just three sharp flecks. Strong elegant curved reaping blades, no skull, no humanoid, no death figure.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "bastion",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-37067277-351e-4299-8ede-6a3563b56c6e.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A BRONZE BASTION rising, three substantial golden battlements, a wide low central wall and two taller crenellated side shields, with an OPEN CENTER for a game character. Frame 1 small bronze foot plates at bottom, 2 the two side walls erupt upward, 3 fully raised broad battlement crown surrounding an empty central space, 4 edges break into gold chips, 5 the side plates crumble downward, 6 a few falling bronze fragments. Solid stone-metal volume in cel art, no fog, no transparent dome.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "hammer",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-e6c7c301-61ea-49b9-82c9-98814d0acbb0.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A monumental BRONZE HAMMER hitting the ground vertically. Frame 1 ivory contact star and a large blocky hammer head at the bottom, 2 a huge beveled bronze hammerhead on a dark short vertical handle with orange metal rims hits solidly, 3 wide jagged ivory shock at ground and dark rocks fly sideways as hammer starts dissolving, 4 broken bronze plates and thrown stones, 5 small falling dark chunks, 6 a few tiny ground chips. No humanoid, no cloud of light.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    },
+    {
+      "id": "corona",
+      "source": "C:\\Users\\paolo\\.codex\\generated_images\\01a0bee7-b476-7853-b592-4723cee39252\\exec-6a6532a2-6f91-431b-af5b-ac40297fb2e2.png",
+      "prompt": "Use case: stylized-concept. Create a production VFX ANIMATION SPRITE SHEET with SIX DIFFERENT SEQUENTIAL HAND-DRAWN POSES. Wide 3:2 canvas, exact regular grid of THREE COLUMNS and TWO ROWS, six equal SQUARE cells. Read frame order left to right top row then bottom row. TRUE TRANSPARENT alpha background throughout all empty space. No background color, no ground plane, no labels, no numbers, no dividers, no text. Each drawing strictly inside its own cell, 12% empty margin on every side. Consistent anchor: action center at cell horizontal center and 72% down the cell; ground effects share a baseline at 82% down. Keep the same world scale between frames: later fragments get smaller, DO NOT zoom each frame to fill the cell. This is a real animation breakdown with evolving shapes, not six identical icons. Style: polished French tactical RPG traditional CEL ANIMATION, broad opaque flat color masses, limited four-tone shading, crisp tapered navy outline, clean ivory leading edges, strong silhouette and negative space. NO 3D render, NO painterly grain, NO bloom, NO blurry transparency, NO excessive tiny particles. Sprite will be displayed roughly 160 pixels wide. A spectacular CROWN OF FIRE erupts from a wide ground base. Frame 1 white-orange jagged contact star at bottom, 2 five huge curved flames rise in an open semicircle like a royal crown, 3 broad mature crown of red-orange flame with thick ivory inner tongues and dramatic negative spaces, 4 the five tips peel away into separate flame sheets, 5 burning cinders rise from a low crown-shaped base, 6 only tiny cinders. Beautiful bold cel fire, no literal metal crown, no figure.",
+      "grid": [
+        3,
+        2
+      ],
+      "frames": 6
+    }
+  ]
+}

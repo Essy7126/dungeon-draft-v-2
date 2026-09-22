@@ -137,6 +137,11 @@ func _on_status_expired(fact: CombatEventFact) -> void:
 func submit_fact(fact: CombatEventFact) -> bool:
 	if fact == null or fact.target == null or not is_inside_tree():
 		return false
+	# The Cards rail owns status presentation. Keep damage/heal/shield numbers,
+	# and preserve normal status text in Classic or outside the bound battle.
+	var cards_router = VFXManager.get("_class_card_router")
+	if is_instance_valid(cards_router) and cards_router.owns_status_feedback(fact):
+		return false
 	if fact.event_id != &"" and _seen_event_ids.has(fact.event_id):
 		return false
 	if fact.event_id != &"":

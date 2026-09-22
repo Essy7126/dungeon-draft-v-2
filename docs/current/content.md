@@ -18,6 +18,7 @@ Le trio et la salle de l'Archiviste ont été retirés du produit.
 | Salles tactiques Cartes | Forge (5/Airain), sablier (6/Léthé), jardin (8/Léthé), convoi (12/Styx), réservoirs (13/Airain), pour la route r6 avec écosystème Cartes actif ; `core/expedition/card_tactical_room_catalog.gd`, `battle/tactical_rooms/`. [Règles et essai](../../tools/tactical_rooms/README.md) |
 | Forêt, montagne, caldeira et station historiques | Sept scènes de terrain isolées dans `test/fixtures/terrain/`, sans leurs fonds ni musiques. Les terrains peints forêt/volcan/station restent des fixtures actives des contrats de grille et du Studio |
 | Laboratoires sous `tools/labs/` | Essais autonomes, pas automatiquement du contenu abandonné |
+| VFX run Cartes | DA **Animation cel**, production du 22/09/2026 : 112 compositions, 17 séquences de six poses, lecteur/vol/sol et états compacts dans `vfx/class_cards/cel/`. Atelier natif et captures : `tools/class_card_vfx/`. [Décision et références](../design/achilles/cards_vfx_cel_2026-09-22.md) |
 | `web/achilles-run-lab/` | Prototype autonome expérimental, isolé de l’import Godot |
 | `art/source/` et `meshy_output/` | Sources, provenance et variantes artistiques ; ne pas supprimer sur le seul nom `v1` ou faute de chargement runtime |
 
