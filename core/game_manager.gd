@@ -197,6 +197,7 @@ func configure_next_run(run_data: RunData, room_index: int) -> bool:
 
 func configure_cards_departure(selection: Dictionary) -> bool:
 	if selected_run_variant != "cards" or _next_run_data == null: return false
+	if selection.get("deck_selected", false) and not preload("res://core/expedition/class_card_catalog.gd").valid_departure(selection): return false
 	if not (preload("res://core/expedition/class_card_catalog.gd").valid(selection) if selection.has("class_id") else CatabasePreparationCatalog.valid(selection)) or selection.get("difficulty_id", "normal") not in ["normal", "easy"]: return false
 	_cards_departure_selection = selection.duplicate(true)
 	return true
@@ -2306,6 +2307,7 @@ func select_run_variant(variant: String) -> bool:
 func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false, difficulty_id: String = "normal", cards_mode := false) -> bool:
 	var departure_selection := _cards_departure_selection.duplicate(true)
 	if cards_mode and not prepare_loadout: return false
+	if cards_mode and departure_selection.get("deck_selected", false) and not preload("res://core/expedition/class_card_catalog.gd").valid_departure(departure_selection): return false
 	if difficulty_id not in ["normal", "easy"] or not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
 	var variant := "cards" if cards_mode else "classic"
@@ -2338,6 +2340,11 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	last_restore_error = &""
 	if prepare_loadout:
 		expedition.needs_preparation = true
+		if cards_mode and departure_selection.get("deck_selected", false):
+			var prepared := expedition.prepare_start(departure_selection, run_inventory, item_catalog)
+			if not prepared.get("success", false): return false
+			_cards_departure_selection.clear()
+			return choose_expedition_node("d01_0")
 		if cards_mode and not departure_selection.is_empty():
 			expedition.preparation_draft = {"selection": departure_selection, "step": 0}
 		_cards_departure_selection.clear()

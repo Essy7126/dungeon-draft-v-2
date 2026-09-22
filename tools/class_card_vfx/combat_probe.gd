@@ -2,6 +2,9 @@ extends Node
 ## Captures real card casts and durable states inside the production battle scene.
 const Cards := preload("res://core/expedition/class_card_catalog.gd")
 const OUT := "res://artifacts/dev/class_card_vfx/persistence/"
+var output_path := OUT
+var pair_distance := 1
+var captured_frames := 60
 var checks: Array[Dictionary] = []
 var battle: Node
 var session: ExpeditionSession
@@ -9,6 +12,7 @@ var hero: Unit
 var target: Unit
 var router: Node
 var ground_layers: Array[Dictionary] = []
+var casts: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -22,7 +26,7 @@ func _check(ok: bool, label: String) -> void:
 
 
 func _run() -> void:
-	DirAccess.make_dir_recursive_absolute(OUT + "frames")
+	DirAccess.make_dir_recursive_absolute(output_path + "frames")
 	get_window().size = Vector2i(1440, 950)
 	get_tree().root.content_scale_size = Vector2i(1440, 950)
 	GameManager.cleanup_run_state()
@@ -86,7 +90,7 @@ func _run() -> void:
 	for cell in _central_cells():
 		if found:
 			break
-		var other: Vector2i = cell + Vector2i.RIGHT
+		var other: Vector2i = cell + Vector2i.RIGHT * pair_distance
 		if (
 			battle.grid.is_walkable(cell) and battle.grid.is_walkable(other)
 			and not battle.grid.has_unit(cell) and not battle.grid.has_unit(other)
@@ -103,6 +107,10 @@ func _run() -> void:
 		battle._unit_views[hero].global_position + battle._unit_views[target].global_position
 	) * .5 + Vector2(0, -35)
 	await get_tree().process_frame
+	await _exercise()
+
+
+func _exercise() -> void:
 	for id in ["g_guard", "a_open", "a_cut", "t_burn", "g_prison", "t_disrupt"]:
 		_cast(id, hero.grid_pos if id == "g_guard" else target.grid_pos)
 	await get_tree().create_timer(1.8).timeout
@@ -114,7 +122,7 @@ func _run() -> void:
 			hold.fx.sample(3.0 + frame / 30.0)
 		await get_tree().process_frame
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png(OUT + "frames/%03d.png" % frame)
+		get_viewport().get_texture().get_image().save_png(output_path + "frames/%03d.png" % frame)
 	_check(
 		_state() == frozen_state,
 		"Two seconds of VFX playback do not change HP or state durations",
@@ -170,7 +178,18 @@ func _cast(id: String, cell: Vector2i) -> void:
 	hero.current_ap = hero.max_ap.get_int()
 	target.current_hp = target.max_hp.get_int()
 	session.cards.hand.assign([session.cards.add_copy(id)])
-	var report: Dictionary = battle.spell_caster.cast(hero, Cards.make_spell(id), cell)
+	var spell := Cards.make_spell(id)
+	var report: Dictionary = battle.spell_caster.cast(hero, spell, cell)
+	casts.append(
+		{
+			"id": id,
+			"row": Cards.row(id).duplicate(true),
+			"impact_delay": spell.impact_delay_seconds,
+			"failed": report.get("failed", false),
+			"terrain_changed": report.get("terrain_changed", []),
+			"visual_impact_cells": report.get("visual_impact_cells", []),
+		}
+	)
 	_check(
 		not report.get("failed", false),
 		"Real cast " + id + ": " + str(report.get("reason", "ok")),
@@ -215,7 +234,7 @@ func _ground_order_correct() -> bool:
 func _capture(label: String) -> void:
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
-	_check(get_viewport().get_texture().get_image().save_png(OUT + label + ".png") == OK, "Captured "
+	_check(get_viewport().get_texture().get_image().save_png(output_path + label + ".png") == OK, "Captured "
 		+ label)
 
 
@@ -231,11 +250,13 @@ func _finish() -> void:
 		),
 		"checks": checks,
 		"renderer": RenderingServer.get_current_rendering_method(),
-		"frames": 60,
+		"frames": captured_frames,
+		"card_count": Cards.pool().size(),
+		"casts": casts,
 		"ground_layers": ground_layers,
 		"note": "Production arena and SpellCaster; AI paused by Studio direct-test configuration. Actors positioned, hand prepared, native camera enlarged 2.4x for the visual scenario.",
 	}
-	FileAccess.open(OUT + "report.json", FileAccess.WRITE).store_string(
+	FileAccess.open(output_path + "report.json", FileAccess.WRITE).store_string(
 		JSON.stringify(report, "\t")
 	)
 	await get_tree().process_frame

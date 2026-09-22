@@ -1,20 +1,19 @@
 extends Node2D
 const Catalog := preload("res://vfx/class_cards/class_card_vfx_catalog.gd")
 const Player := preload("res://vfx/class_cards/class_card_vfx_player.gd")
+const Profiles := preload("res://vfx/class_cards/class_card_vfx_profiles.gd")
+const Ground := preload("res://vfx/class_cards/class_card_vfx_ground.gd")
 const SELECTION := [
-	"a_cut",
-	"a_execute",
-	"g_guard",
-	"g_push",
-	"r_shot",
-	"r_net",
-	"t_fire",
-	"t_frost",
-	"t_bolt",
+	"a_reap",
+	"g_bastion",
+	"g_crash",
+	"r_scatter",
+	"r_bounty",
+	"t_cataclysm",
 	"t_hourglass",
-	"t_charm",
-	"heal",
+	"a_stasis",
 ]
+const PAGE_SIZE := 8
 const OUT := "res://artifacts/dev/class_card_vfx/ethereal/gallery/"
 const EnemyInventory := preload("res://tools/class_card_vfx/enemy_inventory.gd")
 const LOOP := 2.2
@@ -90,6 +89,7 @@ func _ready() -> void:
 		"Sorts adversaires",
 		"Toutes les familles",
 		"États durables",
+		"Puissance : courant / épique",
 	]:
 		selector.add_item(title)
 	selector.item_selected.connect(_select)
@@ -218,10 +218,21 @@ func _select(index: int) -> void:
 	elif index == 9:
 		ids = Catalog.STATUSES.keys()
 		ids.sort()
+	elif index == 10:
+		ids = [
+			"a_dagger",
+			"a_reap",
+			"g_guard",
+			"g_bastion",
+			"r_shot",
+			"r_bounty",
+			"t_burn",
+			"t_cataclysm",
+		]
 	for id in ids:
 		var entry := Catalog.for_spell(enemy_spells[id]) if index == 7 else Catalog.recipe(id)
 		if index == 9:
-			entry = Catalog.feedback(Catalog.STATUSES[id])
+			entry = Profiles.state(Catalog.feedback(Catalog.STATUSES[id]), id)
 			entry["name"] = STATUS_TITLES.get(entry.family, entry.family)
 			entry["class_id"] = "État durable"
 			entry["effect"] = id
@@ -236,7 +247,7 @@ func _select(index: int) -> void:
 
 
 func _turn_page(direction: int) -> void:
-	page = posmod(page + direction, ceili(entries.size() / 12.0))
+	page = posmod(page + direction, ceili(entries.size() / float(PAGE_SIZE)))
 	_show_page()
 
 
@@ -249,11 +260,14 @@ func _show_page() -> void:
 		if is_instance_valid(tile):
 			tile.queue_free()
 	tiles.clear()
-	for index in mini(12, entries.size() - page * 12):
-		var entry: Dictionary = entries[page * 12 + index]
-		var at := Vector2(38 + (index % 4) * 345, 147 + (index / 4) * 236)
-		var root := Node2D.new()
+	for index in mini(PAGE_SIZE, entries.size() - page * PAGE_SIZE):
+		var entry: Dictionary = entries[page * PAGE_SIZE + index]
+		var at := Vector2(38 + (index % 4) * 345, 147 + (index / 4) * 352)
+		var root := Control.new()
 		root.position = at
+		root.size = Vector2(330, 336)
+		root.clip_contents = true
+		root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		root.z_index = 10
 		add_child(root)
 		tiles.append(root)
@@ -268,7 +282,7 @@ func _show_page() -> void:
 		tiles.append(caption)
 		var anchor := Node2D.new()
 		root.add_child(anchor)
-		anchor.position = Vector2(170, 196)
+		anchor.position = Vector2(170, 312)
 		var sprite := Sprite2D.new()
 		sprite.texture = actor
 		sprite.region_enabled = true
@@ -277,18 +291,39 @@ func _show_page() -> void:
 		sprite.offset = Vector2(-194, -434)
 		sprite.scale = Vector2.ONE * .245
 		anchor.add_child(sprite)
+		if entry.has("ground_motif"):
+			var floor_fx := Ground.new()
+			root.add_child(floor_fx)
+			var center := anchor.global_position - Vector2(0, 16)
+			floor_fx.configure(
+				entry.family,
+				PackedVector2Array(
+					[
+						center + Vector2(0, -35),
+						center + Vector2(82, 0),
+						center + Vector2(0, 35),
+						center + Vector2(-82, 0),
+					]
+				),
+				2,
+				float(entry.seed % 97),
+				entry.ground_motif,
+			)
+			floor_fx.manual = true
+			effects.append(floor_fx)
+			continue
 		var fx := Player.new()
 		root.add_child(fx)
 		fx.configure(
 			entry,
 			anchor.global_position,
-			132 * float(entry.get("width", 1.5)),
+			92 * float(entry.get("width", 1.5)),
 			anchor,
 			entry.get("hold_preview", false),
 		)
 		fx.manual = true
 		effects.append(fx)
-	page_label.text = "%02d / %02d" % [page + 1, ceili(entries.size() / 12.0)]
+	page_label.text = "%02d / %02d" % [page + 1, ceili(entries.size() / float(PAGE_SIZE))]
 	elapsed = 0
 	_sample()
 	queue_redraw()
@@ -297,16 +332,16 @@ func _show_page() -> void:
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1440, 950), Color("111e1b"))
 	draw_line(Vector2(38, 128), Vector2(1400, 128), Color("687356"), 1)
-	for index in mini(12, entries.size() - page * 12):
-		var at := Vector2(38 + (index % 4) * 345, 147 + (index / 4) * 236)
-		draw_rect(Rect2(at, Vector2(330, 220)), Color("20372f"))
+	for index in mini(PAGE_SIZE, entries.size() - page * PAGE_SIZE):
+		var at := Vector2(38 + (index % 4) * 345, 147 + (index / 4) * 352)
+		draw_rect(Rect2(at, Vector2(330, 336)), Color("20372f"))
 		draw_texture_rect_region(
 			scenery,
-			Rect2(at + Vector2(1, 66), Vector2(328, 152)),
+			Rect2(at + Vector2(1, 66), Vector2(328, 268)),
 			Rect2(340, 320, 1150, 530),
 			Color(.5, .58, .47, 1),
 		)
-		draw_rect(Rect2(at, Vector2(330, 220)), Color("4c6554"), false, 1)
+		draw_rect(Rect2(at, Vector2(330, 336)), Color("4c6554"), false, 1)
 
 
 func _sample() -> void:
@@ -324,6 +359,7 @@ func _process(delta: float) -> void:
 
 func _capture() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT + "frames"))
+	preload("res://tools/class_card_vfx/export_contracts.gd").write(OUT)
 	# Warm the shared noise texture and shader pipelines before recording.
 	await get_tree().process_frame
 	if Player.NOISE.get_image() == null:
@@ -337,9 +373,15 @@ func _capture() -> void:
 		image.save_png(OUT + "frames/%03d.png" % frame)
 		if frame == 8:
 			image.save_png(OUT + "poster.png")
+	_select(10)
+	elapsed = .24
+	_sample()
+	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(OUT + "power_comparison.png")
 	var reviewed: Array[String] = []
 	_select(1)
-	for p in ceili(entries.size() / 12.0):
+	for p in ceili(entries.size() / float(PAGE_SIZE)):
 		page = p
 		_show_page()
 		elapsed = .24
@@ -347,11 +389,11 @@ func _capture() -> void:
 		await get_tree().process_frame
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(OUT + "cards_%02d.png" % p)
-		for index in mini(12, entries.size() - page * 12):
-			reviewed.append(entries[page * 12 + index].id)
+		for index in mini(PAGE_SIZE, entries.size() - page * PAGE_SIZE):
+			reviewed.append(entries[page * PAGE_SIZE + index].id)
 	var enemies_reviewed: Array[String] = []
 	_select(7)
-	for p in ceili(entries.size() / 12.0):
+	for p in ceili(entries.size() / float(PAGE_SIZE)):
 		page = p
 		_show_page()
 		elapsed = .28
@@ -359,10 +401,10 @@ func _capture() -> void:
 		await get_tree().process_frame
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(OUT + "enemies_%02d.png" % p)
-		for index in mini(12, entries.size() - page * 12):
-			enemies_reviewed.append(entries[page * 12 + index].id)
+		for index in mini(PAGE_SIZE, entries.size() - page * PAGE_SIZE):
+			enemies_reviewed.append(entries[page * PAGE_SIZE + index].id)
 	_select(8)
-	for p in ceili(entries.size() / 12.0):
+	for p in ceili(entries.size() / float(PAGE_SIZE)):
 		page = p
 		_show_page()
 		elapsed = .28
@@ -377,7 +419,7 @@ func _capture() -> void:
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(OUT + "effects.png")
 	_select(9)
-	for p in ceili(entries.size() / 12.0):
+	for p in ceili(entries.size() / float(PAGE_SIZE)):
 		page = p
 		_show_page()
 		elapsed = 2.0
@@ -392,6 +434,7 @@ func _capture() -> void:
 				"cards_captured": reviewed,
 				"count": reviewed.size(),
 				"frames": 66,
+				"showcase": SELECTION,
 				"enemies_captured": enemies_reviewed,
 				"enemy_count": enemy_spells.size(),
 				"families": Catalog.FAMILIES,

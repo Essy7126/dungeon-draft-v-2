@@ -4,6 +4,7 @@ const Catalog := preload("res://vfx/class_cards/class_card_vfx_catalog.gd")
 const Player := preload("res://vfx/class_cards/class_card_vfx_player.gd")
 const Flight := preload("class_card_vfx_flight.gd")
 const Ground := preload("class_card_vfx_ground.gd")
+const Profiles := preload("class_card_vfx_profiles.gd")
 var manager: Node
 var effects: Array[Node] = []
 var holds := { }
@@ -88,8 +89,14 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 	if entry.movement:
 		if report.has("caster_movement_from") and report.has("caster_movement_to") \
 				and report.caster_movement_from != report.caster_movement_to:
-			_spawn(entry, manager._grid_cell_global(report.caster_movement_from))
-			arrivals[caster] = { "entry": entry, "cell": report.caster_movement_to }
+			var start: Vector2 = manager._grid_cell_global(report.caster_movement_from)
+			var finish: Vector2 = manager._grid_cell_global(report.caster_movement_to)
+			entry["direction"] = (finish - start).normalized()
+			entry["travel_phase"] = "departure"
+			_spawn(entry, start)
+			var arrival := entry.duplicate(true)
+			arrival["travel_phase"] = "arrival"
+			arrivals[caster] = { "entry": arrival, "cell": report.caster_movement_to }
 			if not is_instance_valid(manager._find_unit_view(caster)):
 				_arrived(caster)
 		return
@@ -112,14 +119,32 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 				var cell: Vector2i = report.get("cell", target.grid_pos) if not entry.area else target.grid_pos
 				if cell not in cells:
 					cells.append(cell)
+	# Stasis applies no damage. Its changed-status report, not a hit or a
+	# pre-existing hold, confirms the distinct epic application silhouette.
+	if entry.effect == "stasis":
+		for target in report.get("status_changed_units", []):
+			if (
+				is_instance_valid(target) and target in _units()
+				and target.get_status_remaining(&"ecosystem_stasis", caster) > 0
+				and target.grid_pos not in cells
+			):
+				cells.append(target.grid_pos)
 	for cell in report.get("terrain_changed", []):
 		_sync_surface(cell)
-		if cell not in cells:
+		if not entry.has("ground_motif") and cell not in cells:
 			cells.append(cell)
 	if cells.is_empty() and bool(report.get("pushed", false)) and report.has("cell"):
 		cells.append(report.cell)
 	for cell in cells:
-		var fx := _spawn(entry, manager._grid_cell_global(cell))
+		var impact_entry := entry.duplicate(true)
+		# Zero-damage stasis is confirmed by an applied status, including the Paris exception.
+		if entry.effect == "stasis":
+			for unit: Unit in _units():
+				if unit.grid_pos == cell:
+					var actual := _status_recipe(unit, "ecosystem_stasis")
+					if not actual.is_empty():
+						impact_entry["motif"] = actual.motif
+		var fx := _spawn(impact_entry, manager._grid_cell_global(cell))
 		if fx != null:
 			fx.origin = manager._caster_effect_origin(caster)
 	if not had_flight and not cells.is_empty() and entry.ranged:
@@ -211,7 +236,10 @@ func _status_apply(fact: CombatEventFact) -> void:
 	var entry := _status_recipe(fact.target, id)
 	if entry.is_empty():
 		return
-	_at_unit(entry, fact.target)
+	# Authored holds animate their own birth. The confirmed hit owns ignition;
+	# layering another generic fire explosion here would count the same action twice.
+	if not Profiles.STATES.has(id):
+		_at_unit(entry, fact.target)
 	_ensure_hold(fact.target, id, entry)
 
 
@@ -235,7 +263,7 @@ func _status_recipe(unit: Unit, id: String) -> Dictionary:
 		if str(data.get_effective_status_id()) == id:
 			var entry := Catalog.feedback(Catalog.status_family(data))
 			entry.seed = absi(id.hash())
-			return entry
+			return Profiles.state(entry, id, data)
 	return { }
 
 
@@ -264,7 +292,7 @@ func _restore_unit_holds() -> void:
 			seen[id] = true
 			_ensure_hold(unit, id, _status_recipe(unit, id))
 		if unit.current_shield > 0:
-			_ensure_hold(unit, "shield", Catalog.feedback("guard"))
+			_ensure_hold(unit, "shield", Profiles.state(Catalog.feedback("guard"), "shield"))
 
 
 func _tick(fact: CombatEventFact) -> void:
@@ -277,6 +305,7 @@ func _tick(fact: CombatEventFact) -> void:
 	var entry := Catalog.feedback(family, "tick")
 	entry.duration = .45
 	entry.width = 1.15
+	Profiles.state(entry, str(fact.status_id))
 	_at_unit(entry, fact.target)
 
 
@@ -288,7 +317,7 @@ func _heal(fact: CombatEventFact) -> void:
 func _shield(fact: CombatEventFact) -> void:
 	if not _in_scope(fact) or fact.amount_applied <= 0:
 		return
-	var entry := Catalog.feedback("guard")
+	var entry := Profiles.state(Catalog.feedback("guard"), "shield")
 	if not str(fact.ability_id).begins_with("class_"):
 		_at_unit(entry, fact.target)
 	_ensure_hold(fact.target, "shield", entry)
@@ -301,6 +330,7 @@ func _absorb(fact: CombatEventFact) -> void:
 			"guard",
 			"break" if not fact.broken_source_ids.is_empty() else "absorb",
 		)
+		Profiles.state(entry, "shield")
 		entry.duration = .4
 		entry.width = 1.1
 		_at_unit(entry, fact.target)
@@ -377,7 +407,11 @@ func _remove_hold(key: String, expire: bool) -> void:
 	holds.erase(key)
 	if is_instance_valid(hold.fx):
 		if expire and is_instance_valid(hold.unit):
-			_at_unit(Catalog.feedback(hold.fx.recipe.family, "expire"), hold.unit)
+			# Preserve the actual held silhouette (notably Paris' PA-only stasis).
+			var outro: Dictionary = hold.fx.recipe.duplicate(true)
+			outro["feedback_phase"] = "expire"
+			outro["duration"] = .48
+			_at_unit(outro, hold.unit)
 		hold.fx.cancel()
 
 
@@ -434,10 +468,12 @@ func bind_terrain(value: TerrainEffects) -> void:
 
 func _surface_cleared(fact: Dictionary) -> void:
 	var cell: Vector2i = fact.get("cell", Vector2i(-1, -1))
+	var has_authored_outro := false
 	if is_instance_valid(surface_holds.get(cell)):
+		has_authored_outro = surface_holds[cell].motif != ""
 		surface_holds[cell].release()
 	surface_holds.erase(cell)
-	if surfaces.has(cell) and _available():
+	if surfaces.has(cell) and _available() and not has_authored_outro:
 		_spawn(Catalog.feedback(surfaces[cell], "expire"), manager._grid_cell_global(cell))
 	surfaces.erase(cell)
 
@@ -469,8 +505,12 @@ func _sync_surface(cell: Vector2i) -> void:
 	}.get(str(state.surface_id), "")
 	if family.is_empty():
 		return
+	var motif := Profiles.ground(state.source_spell, family)
 	var previous: Variant = surface_holds.get(cell)
-	if is_instance_valid(previous) and not previous.closed and previous.family == family:
+	if (
+		is_instance_valid(previous) and not previous.closed
+		and previous.family == family and previous.motif == motif
+	):
 		previous.remaining = state.remaining_duration
 		return
 	if is_instance_valid(previous):
@@ -498,6 +538,7 @@ func _sync_surface(cell: Vector2i) -> void:
 		polygon,
 		state.remaining_duration,
 		float(absi(cell.x * 71 + cell.y * 137) % 997) * .01,
+		motif,
 	)
 	ground_effects = ground_effects.filter(
 		func(value):
@@ -530,7 +571,16 @@ func _terrain_damage(fact: CombatEventFact) -> void:
 		return
 	var data := terrain.get_effect_data(fact.target.grid_pos)
 	if data != null and data.damage > 0 and data.element == fact.element:
-		_at_unit(Catalog.feedback(surfaces[fact.target.grid_pos], "tick"), fact.target)
+		var entry := Catalog.feedback(surfaces[fact.target.grid_pos], "tick")
+		var state := terrain.get_surface_state(fact.target.grid_pos)
+		if (
+			state != null
+			and Profiles.ground(state.source_spell, surfaces[fact.target.grid_pos]) != ""
+		):
+			entry = Catalog.for_spell(state.source_spell)
+			entry["feedback_phase"] = "tick"
+			entry.duration = .45
+		_at_unit(entry, fact.target)
 
 
 func launch(caster: Unit, spell: Spell, cell: Vector2i) -> Node:

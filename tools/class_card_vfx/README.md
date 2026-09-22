@@ -1,5 +1,39 @@
 # VFX éthérés — run Cartes
 
+**Cartes fortes, passe suivante du 21 septembre :** huit épiques avec silhouettes monumentales, dix attaques majeures renforcées et quatre terrains à naissance plus intense. Rémanence jusqu'à 1,75 s, sans changement des règles. Le sélecteur « Puissance : courant / épique » compare les silhouettes à la même échelle. [Conception et références DOFUS/WAVEN](../../docs/design/achilles/cards_vfx_power_2026-09-21.md), [preuves de cette passe](../../docs/ai/CARDS_VFX_POWER_2026-09-21.md).
+
+```powershell
+./tools/class_card_vfx/capture_combat.ps1 -Power
+node tools/class_card_vfx/encode_semantics.cjs --power
+```
+
+Le scénario `power/` produit huit lancers réels, 480 images et huit GIF, avec vues à caméra normale et vérification des expirations. Les formes épiques ne sont pas rejouées par les ticks ou le maintien. La galerie présente maintenant huit vignettes par page pour laisser de l'espace aux silhouettes fortes.
+
+**Extension du 21 septembre : 112 contrats explicites.** Les cartes du catalogue vivant, dont les 28 initiations `i_`, utilisent désormais 20 motifs de matière, des constructions, des tailles et des rémanences choisies par carte. [Fiches de conception et durées](../../docs/design/achilles/cards_vfx_contracts_2026-09-21.md), générées à partir du catalogue réellement chargé. [Suivi des vérifications](../../docs/ai/CARDS_VFX_EXTENSION_2026-09-21.md).
+
+```powershell
+./tools/class_card_vfx/preview.ps1 -Capture
+node tools/class_card_vfx/encode.cjs
+./tools/class_card_vfx/capture_combat.ps1 -Extension
+node tools/class_card_vfx/encode_semantics.cjs --extension
+./dev.ps1 test cards
+```
+
+La galerie exporte aussi `contracts.json` avec la description des règles de chaque sort. Elle montre les vrais matériaux de sol sur une dalle témoin, les états maintenus et les nouvelles silhouettes. Ses captures sont protégées par des empreintes avant/après ; l'encodeur refuse des sources modifiées depuis la capture.
+
+Le scénario `extension/` lance douze cartes dans l'arène réelle, avec 720 images, des vues à la caméra normale, les états maintenus puis expirés. Il vérifie notamment garde, stase et sa protection plus longue, réduction de PA/PM et terrains de deux tours. Les lancers conditionnels ne simulent pas de réussite de bonus non confirmée par le rapport. Paris reçoit le signe d'un malus PA au lieu d'une stase complète. Les paramètres de préparation et les limites de mesure sont conservés dans les rapports. Ce scénario utilise une horloge moteur fixe de 30 Hz et échantillonne séparément les VFX ; il ne mesure pas les performances d'une partie chargée.
+
+**Première passe du 21 septembre : quatre pilotes sémantiques.** Dague lancée, Braise tenace, Bûcher des ombres et Jardin de givre ont introduit les profils explicites, avec direction d'impact, brûlure locale et sols distincts. [Recherche, règles visuelles et pipeline de production](../../docs/design/achilles/cards_vfx_production_2026-09-21.md).
+
+```powershell
+./tools/class_card_vfx/capture_combat.ps1 -Semantic
+node tools/class_card_vfx/encode_semantics.cjs
+```
+
+Sortie `artifacts/dev/class_card_vfx/semantics/` : quatre GIF de 2 secondes issus de 240 images natives, vues à l'échelle normale, ticks réels et nettoyage. Le scénario contrôle aussi les deux échéances réelles des terrains et de la brûlure. `capture_manifest.json` consigne les sources et leur stabilité ; l'encodeur refuse des sources VFX modifiées depuis la capture. [Suivi et résultats de cette passe](../../docs/ai/CARDS_VFX_SEMANTICS_2026-09-21.md).
+
+Les chiffres et rapports du reste de cette page décrivent la livraison du 20 septembre.
+
 Reprise de la bibliothèque dans la direction **C — Éthéré : transparence, lumière et volutes**, demandée le 20 septembre 2026. L’intégration couvre les **112 cartes actuelles, 2 gestes de secours et 48 identifiants de sorts adverses**, formes de boss et invocations comprises. Dix sorts adverses réutilisent des cartes. Les recettes se répartissent en **21 familles**, avec taille, rythme et turbulence propres à chaque recette ; ce ne sont pas 160 animations indépendantes.
 
 ## Voir et rejouer
@@ -15,9 +49,9 @@ La galerie utilise le lecteur de production. Le sélecteur donne accès à toute
 node tools/class_card_vfx/encode.cjs
 ```
 
-Sorties : `artifacts/dev/class_card_vfx/ethereal/gallery/`. Le GIF contient 66 captures réelles du viewport Godot, sur 2,2 secondes. Dix pages montrent les cartes, quatre les ennemis, deux les familles ; une planche montre les états. `report.json` inventorie les cartes/sorts effectivement capturés. `encode_report.json` consigne le moteur et les empreintes des sources du rendu. La seule conversion des images est la quantification de palette GIF.
+Sorties : `artifacts/dev/class_card_vfx/ethereal/gallery/`. Le GIF contient 66 captures réelles du viewport Godot, sur 2,2 secondes. Quatorze pages montrent les cartes, six les ennemis, trois les familles ; une planche montre les effets immédiats et `power_comparison.png` compare les puissances. `report.json` inventorie les cartes/sorts effectivement capturés. `encode_report.json` consigne le moteur et les empreintes des sources du rendu. La seule conversion des images est la quantification de palette GIF.
 
-Deux planches supplémentaires `durable_00.png` et `durable_01.png` montrent les 23 états explicitement associés. Pour vérifier les vrais lancers, états et zones dans la scène de combat :
+Trois planches supplémentaires `durable_00.png` à `durable_02.png` montrent les 23 états explicitement associés. Pour vérifier les vrais lancers, états et zones dans la scène de combat :
 
 ```powershell
 ./tools/class_card_vfx/capture_combat.ps1

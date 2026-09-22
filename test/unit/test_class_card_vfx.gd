@@ -297,6 +297,12 @@ func test_card_surface_ticks_expire_and_disconnect_from_old_battle() -> void:
 	assert_eq(router.effects.size(), before, "Terrain facts from another battle are ignored")
 	field.terrain.on_turn_start(enemy)
 	assert_gt(router.effects.size(), before, "The actual terrain damage emits its own pulse")
+	assert_eq(
+		router.effects.back().recipe.motif,
+		"ember",
+		"Pilot terrain ticks keep the authored material",
+	)
+	assert_eq(router.effects.back().recipe.feedback_phase, "tick")
 	field.terrain.clear_effect(enemy.grid_pos)
 	assert_false(router.surfaces.has(enemy.grid_pos))
 	router.clear()
@@ -589,3 +595,283 @@ func test_equipment_and_reaction_states_get_a_durable_visual() -> void:
 	for state in hero.get_active_statuses().duplicate():
 		hero.remove_status(state.data.get_effective_status_id())
 	assert_true(router.holds.is_empty())
+
+
+func test_pilot_dagger_uses_confirmed_direction_without_adding_a_gameplay_delay() -> void:
+	var hero := _unit()
+	var spell := Catalog.Cards.make_spell("a_dagger")
+	var router: Node = manager._class_card_router
+	assert_eq(spell.impact_delay_seconds, 0.0)
+	manager._on_spell_cast(hero, spell, { "visual_impact_cells": [Vector2i(3, 1)] })
+	assert_eq(router.effects.size(), 1)
+	assert_eq(router.echoes.size(), 1, "An instantaneous hit has an afterimage, not a deferred hit")
+	var fx: Node = router.effects[0]
+	assert_eq(fx.recipe.motif, "dagger")
+	assert_eq(fx.duration, .32)
+	fx.sample(.06)
+	var direction: Vector2 = fx.sprites[0].material.get_shader_parameter("direction")
+	assert_gt(direction.x, 0.0)
+	fx.origin = fx.point + Vector2(180, -fx.width * .24)
+	fx.sample(.06)
+	assert_eq(fx.sprites[0].material.get_shader_parameter("direction"), Vector2.LEFT)
+	fx.sample(.4)
+	assert_false(fx.sprites[0].visible, "Short weapon read ends before a sustained spell")
+	assert_true(router.flights.is_empty())
+
+
+func test_pilot_terrain_on_empty_cells_has_no_character_impact_or_fake_projectile() -> void:
+	var field = Factory.make_battlefield(8, 6)
+	var hero := _unit()
+	field.grid.place_unit(hero, Vector2i(1, 2))
+	var router: Node = manager._class_card_router
+	router.bind_terrain(field.terrain)
+	for id in ["t_flamewall", "t_glacier"]:
+		hero.current_ap = 10
+		session.cards.hand.assign([session.cards.add_copy(id)])
+		var report: Dictionary = field.caster.cast(hero, Catalog.Cards.make_spell(id), Vector2i(
+				3,
+				2,
+			))
+		assert_false(report.get("failed", false), id)
+		assert_eq(router.surface_holds.size(), 5)
+		assert_true(router.effects.is_empty(), "Empty ground is not a damaged actor: " + id)
+		assert_true(router.echoes.is_empty(), "A ground field is not a missile: " + id)
+		for cell in router.surface_holds.keys():
+			var fx: Node = router.surface_holds[cell]
+			assert_eq(fx.motif, "pyre" if id == "t_flamewall" else "frost_garden")
+			assert_not_null(fx.canopy)
+			field.terrain.clear_effect(cell)
+			assert_true(fx.fading)
+		assert_true(router.effects.is_empty(), "Expiry dissolves ground without an actor explosion")
+	var profiles := preload("res://vfx/class_cards/class_card_vfx_profiles.gd")
+	assert_eq(profiles.ground(Catalog.Cards.make_spell("t_flamewall"), "water"), "")
+	assert_eq(profiles.ground(Catalog.Cards.make_spell("t_glacier"), "move"), "")
+	router.clear()
+	field.terrain.dispose()
+	Cleanup.dispose_grid(field.grid)
+
+
+func test_pilot_burn_separates_ignition_tick_hold_and_removal() -> void:
+	var field = Factory.make_battlefield(8, 6)
+	var hero := _unit()
+	var target := _unit("Cible", 1)
+	field.grid.place_unit(hero, Vector2i(1, 2))
+	field.grid.place_unit(target, Vector2i(3, 2))
+	session.cards.hand.assign([session.cards.add_copy("t_burn")])
+	var report: Dictionary = field.caster.cast(hero, Catalog.Cards.make_spell("t_burn"), target.grid_pos)
+	assert_false(report.get("failed", false))
+	var router: Node = manager._class_card_router
+	assert_eq(router.holds.size(), 1)
+	var impacts: Array = router.effects.filter(
+		func(fx):
+			return not fx.persistent,
+	)
+	assert_eq(impacts.size(), 1, "The status callback must not duplicate the confirmed ignition")
+	assert_eq(impacts[0].recipe.motif, "ember")
+	var hold: Node = router.holds.values()[0].fx
+	hold.sample(600.0)
+	assert_true(hold.sprites[0].visible)
+	assert_eq(target.get_status_remaining(&"class_burn", hero), 2)
+	target.remove_status(&"class_burn", hero, true)
+	assert_true(hold.closed)
+	assert_eq(router.effects.back().recipe.motif, "ember")
+	assert_eq(router.effects.back().recipe.feedback_phase, "expire")
+	assert_true(router.holds.is_empty())
+	for unit: Unit in [hero, target]:
+		unit.clear_combat_effect_history()
+	field.terrain.dispose()
+	Cleanup.dispose_grid(field.grid)
+
+
+func test_live_card_contracts_render_and_finish_without_a_gameplay_timer() -> void:
+	var concepts := preload("res://vfx/class_cards/class_card_vfx_concepts.gd")
+	for id in Catalog.Cards.pool():
+		assert_has(concepts.CARDS, id, "Every live card needs an explicit art brief: " + id)
+		var entry := Catalog.recipe(id)
+		assert_false(str(entry.get("concept", "")).is_empty(), id)
+		assert_gte(float(entry.width), 1.5, "Readable screen span: " + id)
+		assert_gt(float(entry.duration), .25, "A readable impact tail: " + id)
+		var tail_budget := 1.8 if int(entry.get("power", 0)) == 2 else 1.4
+		assert_lte(
+			float(entry.duration),
+			tail_budget,
+			"Bounded tail for the authored power tier: " + id,
+		)
+		var fx := Player.new()
+		view.add_child(fx)
+		fx.configure(entry, Vector2.ZERO, 160)
+		fx.sample(fx.duration * .2)
+		assert_true(fx.sprites[1].visible, id)
+		fx._process(fx.duration)
+		assert_true(fx.closed, "Transient presentation must release its sheets: " + id)
+		await get_tree().process_frame
+
+
+func test_real_stasis_distinguishes_skip_from_paris_ap_penalty_and_preserves_outro() -> void:
+	for paris in [false, true]:
+		var field = Factory.make_battlefield(8, 6)
+		var hero := _unit()
+		var enemy := _unit("Paris" if paris else "Cible", 1)
+		enemy.unit_id = &"enemy_paris" if paris else &"enemy_witness"
+		field.grid.place_unit(hero, Vector2i(1, 2))
+		field.grid.place_unit(enemy, Vector2i(3, 2))
+		var spell := Catalog.Cards.make_spell("t_hourglass")
+		session.cards.hand.assign([session.cards.add_copy("t_hourglass")])
+		var router: Node = manager._class_card_router
+		router.clear()
+		var refused: Dictionary = field.caster.cast(hero, spell, enemy.grid_pos)
+		assert_true(refused.get("failed", false), "Stasis requires an actual mark")
+		assert_true(router.effects.is_empty(), "No dream visual for a refused cast")
+		enemy.apply_status(Catalog.Cards.status("marked", "Marqué", 1), hero)
+		var report: Dictionary = field.caster.cast(hero, spell, enemy.grid_pos)
+		assert_false(report.get("failed", false))
+		var key := "%s:ecosystem_stasis" % enemy.get_instance_id()
+		assert_has(router.holds, key)
+		var fx: Node = router.holds[key].fx
+		assert_eq(fx.recipe.motif, "discord" if paris else "dream")
+		var power_casts: Array = router.effects.filter(
+			func(effect):
+				return not effect.persistent and effect.recipe.get("power", 0) == 2,
+		)
+		assert_eq(
+			power_casts.size(),
+			1,
+			"The confirmed stasis owns one epic cast, independent of its hold",
+		)
+		if not power_casts.is_empty():
+			var material: ShaderMaterial = power_casts[0].sprites[0].material
+			assert_eq(material.shader, Player.POWER)
+			assert_eq(material.get_shader_parameter("shape"), 9 if paris else 5)
+		assert_true(router.echoes.is_empty(), "Stasis application is not a projectile")
+		fx.sample(3600.0)
+		assert_true(fx.sprites[1].visible, "Waiting does not consume an activation")
+		enemy.tick_statuses()
+		assert_false(router.holds.has(key))
+		assert_true(router.holds.has("%s:ecosystem_stasis_ward" % enemy.get_instance_id()), "Ward outlives stasis")
+		assert_true(
+			router.effects.any(
+				func(effect):
+					return (
+						effect.recipe.get("feedback_phase", "") == "expire"
+						and effect.recipe.get("motif", "") == ("discord" if paris else "dream")
+					),
+			),
+			"Outro preserves the actual effect on Paris",
+		)
+		router.clear()
+		for unit: Unit in [hero, enemy]:
+			unit.clear_combat_effect_history()
+			host.units.erase(unit)
+		field.terrain.dispose()
+		Cleanup.dispose_grid(field.grid)
+		await get_tree().process_frame
+
+
+func test_epic_hierarchy_covers_real_tier_and_does_not_escalate_ticks_or_holds() -> void:
+	var power := preload("res://vfx/class_cards/class_card_vfx_power.gd")
+	var ecosystem := preload("res://core/expedition/card_ecosystem_catalog.gd")
+	assert_eq(power.EPIC.size(), ecosystem.EPIC.size())
+	for id in ecosystem.EPIC:
+		assert_has(power.EPIC, id)
+		var entry := Catalog.recipe(id)
+		assert_eq(entry.power, 2, id)
+		assert_gt(float(entry.width), 2.70, "A clear silhouette jump above ordinary casts: " + id)
+		assert_false(power.shape(entry, false).is_empty(), id)
+		for phase in ["", "tick", "expire", "break", "hold"]:
+			var sample := entry.duplicate(true)
+			sample["feedback_phase"] = phase
+			var holding: bool = phase == "hold"
+			var fx := Player.new()
+			view.add_child(fx)
+			fx.configure(sample, Vector2.ZERO, 220, null, holding)
+			assert_eq(fx.sprites[0].material.shader == Player.POWER, phase == "", id + ": " + phase)
+			fx.sample(3.0)
+			assert_eq(fx.sprites[0].visible, holding, "Only actual holds outlive the visual tail")
+			fx.cancel()
+			await get_tree().process_frame
+	for pair in [
+		["a_dagger", "a_reap"],
+		["g_guard", "g_bastion"],
+		["r_shot", "r_bounty"],
+		["t_burn", "t_cataclysm"],
+	]:
+		var ordinary := Catalog.recipe(pair[0])
+		var epic := Catalog.recipe(pair[1])
+		assert_eq(ordinary.power, 0)
+		assert_gt(float(epic.width), float(ordinary.width) * 1.35)
+		assert_gt(float(epic.duration), float(ordinary.duration))
+	for id in power.MAJOR:
+		assert_eq(Catalog.recipe(id).power, 1, "Major attacks remain below epic treatment: " + id)
+	for id in Catalog.Cards.pool():
+		if str(id).begins_with("i_"):
+			assert_eq(Catalog.recipe(id).power, 0, "Initiations preserve the contrast: " + id)
+
+
+func test_authored_guard_tracks_one_or_two_actual_owner_activations() -> void:
+	for upgraded in [false, true]:
+		var field = Factory.make_battlefield(8, 6)
+		var hero := _unit()
+		field.grid.place_unit(hero, Vector2i(1, 2))
+		session.cards.hand.assign([session.cards.add_copy("g_bastion")])
+		var spell := Catalog.Cards.make_spell("g_bastion", 3, upgraded)
+		var report: Dictionary = field.caster.cast(hero, spell, hero.grid_pos)
+		assert_false(report.get("failed", false))
+		var router: Node = manager._class_card_router
+		var key := "%s:shield" % hero.get_instance_id()
+		assert_has(router.holds, key)
+		var fx: Node = router.holds[key].fx
+		assert_eq(fx.recipe.motif, "aegis")
+		fx.sample(600.0)
+		assert_gt(hero.current_shield, 0)
+		hero.start_turn()
+		router._process(.2)
+		assert_eq(
+			router.holds.has(key),
+			upgraded,
+			"Use actual shield lifetime, including upgraded cards",
+		)
+		if upgraded:
+			hero.start_turn()
+			router._process(.2)
+		assert_false(router.holds.has(key))
+		assert_true(fx.closed)
+		router.clear()
+		hero.clear_combat_effect_history()
+		host.units.erase(hero)
+		field.terrain.dispose()
+		Cleanup.dispose_grid(field.grid)
+		await get_tree().process_frame
+
+
+func test_all_five_authored_fields_use_real_cells_and_real_two_round_lifetimes() -> void:
+	var profiles := preload("res://vfx/class_cards/class_card_vfx_profiles.gd")
+	for id in profiles.GROUNDS:
+		var field = Factory.make_battlefield(8, 6)
+		var hero := _unit()
+		field.grid.place_unit(hero, Vector2i(1, 2))
+		var router: Node = manager._class_card_router
+		router.bind_terrain(field.terrain)
+		session.cards.hand.assign([session.cards.add_copy(id)])
+		var report: Dictionary = field.caster.cast(hero, Catalog.Cards.make_spell(id), Vector2i(
+				3,
+				2,
+			))
+		assert_false(report.get("failed", false), id)
+		assert_eq(router.surface_holds.size(), 5, id)
+		assert_true(router.effects.is_empty(), "No actor impacts on empty ground: " + id)
+		for fx in router.surface_holds.values():
+			fx.sample(3600.0)
+			assert_eq(fx.remaining, 2)
+			assert_eq(fx.motif, profiles.GROUNDS[id][1])
+		field.terrain.tick_all_effects()
+		assert_eq(router.surface_holds.size(), 5)
+		field.terrain.tick_all_effects()
+		assert_true(router.surface_holds.is_empty())
+		for fx in router.ground_effects:
+			assert_true(fx.fading)
+		router.clear()
+		hero.clear_combat_effect_history()
+		host.units.erase(hero)
+		field.terrain.dispose()
+		Cleanup.dispose_grid(field.grid)
+		await get_tree().process_frame

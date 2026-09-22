@@ -6,6 +6,7 @@ var duration := .2
 var closed := false
 var mat: ShaderMaterial
 var echo := false
+var manual := false
 
 
 func configure(
@@ -29,18 +30,23 @@ func configure(
 	mat.set_shader_parameter("body_color", Color(colors[0]))
 	mat.set_shader_parameter("core_color", Color(colors[1]))
 	mat.set_shader_parameter("echo", echo)
+	mat.set_shader_parameter("dagger", entry.get("flight_motif", "") == "dagger")
 	rect.material = mat
 	add_child(rect)
 	z_index = 3
 
 
 func _process(delta: float) -> void:
-	if closed or mat == null:
+	if closed or mat == null or manual:
 		return
-	elapsed += delta
-	mat.set_shader_parameter("progress", clampf(elapsed / duration, 0.0, 1.0))
+	sample(elapsed + delta)
 	if (echo and elapsed >= duration) or elapsed > duration + 1.0:
 		cancel()
+
+
+func sample(seconds: float) -> void:
+	elapsed = seconds
+	mat.set_shader_parameter("progress", clampf(elapsed / duration, 0.0, 1.0))
 
 
 func cancel() -> void:

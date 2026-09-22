@@ -136,6 +136,8 @@ static func row(id: String) -> Array:
 static func pool(class_id := "") -> Array[String]:
 	var result: Array[String] = []
 	for entry in ROWS + Ecology.rows():
+		if str(entry[0]).begins_with("s_"):
+			continue
 		if class_id.is_empty() or entry[1] == class_id:
 			result.append(entry[0])
 	return result
@@ -145,7 +147,7 @@ static func preset(class_id := "assassin") -> Dictionary:
 	var starters := starter_pool(class_id)
 	return {
 		"class_id": class_id,
-		"card_families": [starters[0], starters[1], starters[2], starters[5], starters[6]],
+		"card_families": starters.slice(0, 5),
 		"difficulty_id": "normal",
 	}
 
@@ -158,15 +160,26 @@ static func valid(selection: Dictionary) -> bool:
 		return false
 	var seen := { }
 	for id in families:
-		if not id is String or id not in pool(str(selection.class_id)) or seen.has(id):
+		if (
+			not id is String or row(id).is_empty()
+			or row(id)[1] != selection.class_id or seen.has(id)
+		):
 			return false
 		seen[id] = true
 	return selection.get("difficulty_id", "normal") in ["normal", "easy"]
 
 
+static func valid_departure(selection: Dictionary) -> bool:
+	return valid(selection) and selection.card_families.all(
+			func(id):
+				return id in starter_pool(selection.class_id),
+		)
+
+
 static func icon(id: String) -> Texture2D:
 	var definition := row(id)
-	if not definition.is_empty(): id = Ecology.icon_alias(id, definition[1], definition[7])
+	if not definition.is_empty():
+		id = Ecology.icon_alias(id, definition[1], definition[7])
 	var painted := preload("res://core/expedition/class_icon_catalog.gd").icon(id)
 	if painted != null:
 		return painted
@@ -231,19 +244,33 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 			s.once_per_activation = true
 			detail = "Traverse les obstacles vers une dalle libre, sans consommer de PM."
 		"root", "disrupt", "lure":
-			s.applied_status = status(effect, {"root": "Entravé", "disrupt": "Désorienté", "lure": "Envoûté"}[effect], 1)
-			if effect == "root": s.applied_status.mp_reduction = int(r[8])
-			else: s.applied_status.ap_reduction = 1 if effect == "lure" else int(r[8])
-			if effect == "lure": s.pull_distance = int(r[8])
+			s.applied_status = status(
+				effect,
+				{ "root": "Entravé", "disrupt": "Désorienté", "lure": "Envoûté" }[effect],
+				1,
+			)
+			if effect == "root":
+				s.applied_status.mp_reduction = int(r[8])
+			else:
+				s.applied_status.ap_reduction = 1 if effect == "lure" else int(r[8])
+			if effect == "lure":
+				s.pull_distance = int(r[8])
 			s.cooldown_activations = 2
 			s.once_per_activation = true
-			detail = {"root": "Retire %d PM à la prochaine activation." % int(r[8]), "disrupt": "Retire %d PA à la prochaine activation." % int(r[8]), "lure": "Attire de 2 cases et retire 1 PA au prochain tour ; ne change pas l'équipe."}[effect] + " Recharge : 2 activations."
+			detail = {
+				"root": "Retire %d PM à la prochaine activation." % int(r[8]),
+				"disrupt": "Retire %d PA à la prochaine activation." % int(r[8]),
+				"lure": "Attire de 2 cases et retire 1 PA au prochain tour ; ne change pas l'équipe.",
+			}[effect] + " Recharge : 2 activations."
 		"stasis":
 			s.once_per_activation = true
 			s.cooldown_activations = 4
 			detail = "Sur cible marquée : fait passer sa prochaine activation. La cible est ensuite protégée contre la stase pendant 3 activations. Paris perd seulement 1 PA. Recharge : 4 activations."
 		"fire_field", "ice_field":
-			s.terrain_effect = preload("res://core/expedition/card_ecosystem_effects.gd").surface(effect, float(r[8]))
+			s.terrain_effect = preload("res://core/expedition/card_ecosystem_effects.gd").surface(
+				effect,
+				float(r[8]),
+			)
 			s.can_target_free_cell = true
 			s.aoe_shape = Spell.AoeShape.CROSS
 			s.aoe_size = 1
@@ -251,7 +278,8 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 			s.cooldown_activations = 2
 			s.once_per_activation = true
 			detail = s.terrain_effect.description + " Les dalles affectent les deux camps. Recharge : 2 activations."
-			if effect == "fire_field": s.terrain_effect = null
+			if effect == "fire_field":
+				s.terrain_effect = null
 		"push":
 			s.push_distance = int(r[8])
 			detail = "Repousse de %d case(s)." % r[8]
@@ -339,21 +367,24 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 		detail,
 		" Une fois par tour, copies confondues." if s.once_per_activation else "",
 	]
-	if Ecology.tier(id) == 0: s.description += " Carte d'initiation : aucun bonus de maîtrise."
+	if Ecology.tier(id) == 0:
+		s.description += " Carte d'initiation : aucun bonus de maîtrise."
 	return s
 
 
 static func starter_pool(class_id: String) -> Array[String]:
 	var result: Array[String] = []
 	for entry in Ecology.initiation_rows():
-		if entry[1] == class_id: result.append(entry[0])
+		if entry[1] == class_id:
+			result.append(entry[0])
 	return result
 
 
 static func legacy_pool(class_id := "") -> Array[String]:
 	var result: Array[String] = []
 	for entry in ROWS:
-		if class_id.is_empty() or entry[1] == class_id: result.append(entry[0])
+		if class_id.is_empty() or entry[1] == class_id:
+			result.append(entry[0])
 	return result
 
 
@@ -361,7 +392,8 @@ static func reward_pool(class_id: String, depth: int) -> Array[String]:
 	var result: Array[String] = []
 	for id in pool(class_id):
 		var tier := Ecology.tier(id)
-		if tier > 0 and tier <= (3 if depth >= 10 else 2 if depth >= 4 else 1): result.append(id)
+		if tier > 0 and tier <= (3 if depth >= 10 else 2 if depth >= 4 else 1):
+			result.append(id)
 	return result
 
 

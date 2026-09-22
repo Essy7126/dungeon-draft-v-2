@@ -1,0 +1,19 @@
+# Cartes fortes — 21 septembre 2026
+
+Demande : rendre les cartes fortes nettement plus marquées, en prenant DOFUS et WAVEN comme références. Périmètre : run Cartes, DA éthérée existante. Modifications concurrentes des règles et de la sélection préservées.
+
+Décisions : huit silhouettes épiques explicites dans `class_card_vfx_power.gd`, matière dédiée `ethereal/power.gdshader`, dix attaques majeures renforcées, naissance plus intense des quatre terrains à 3 PA. Les maintiens, ticks et expirations ne rejouent pas la silhouette épique ; la stase de Paris devient une dislocation PA. Aucun changement des dégâts, coûts, zones ni délais de règles.
+
+Fichiers : lecteur et profils VFX, deux matériaux de matière/sol, nouvelle sonde `power_probe`, galerie de huit vignettes avec comparaison courant/épique, export des contrats, tests VFX. [Brief et sources](../design/achilles/cards_vfx_power_2026-09-21.md).
+
+La première inspection native a révélé que les stases sans dégâts ne déclenchaient que leur maintien. Le routeur utilise désormais `status_changed_units` et le statut réellement présent du lanceur pour jouer une seule apparition épique ; Paris reçoit la dislocation PA. Les tests et la sonde vérifient maintenant explicitement ce lancer distinct du maintien. Une erreur d'inférence dans le nouveau test a également été corrigée ; le premier rapport FAIL n'est pas une validation.
+
+Suite complète `cards` : **PASS strict, 89/89 tests, 8 273/8 273 assertions**, aucune erreur ou suite manquante. Rapport final : `artifacts/dev/20260921-221418-test-cards-cfd50c8d/gut-strict-report.json`. Import inclus. Les sources de production sont figées depuis cette exécution.
+
+Validation native finale : **86/86 contrôles, huit vrais lancers et 480 images**, Godot 4.7.1 / Forward+ / D3D12, aucune erreur moteur ou shader. `artifacts/dev/class_card_vfx/power/report.json` vérifie séparément les huit apparitions épiques et les maintiens, les horloges inchangées pendant la lecture, les expirations réelles et le nettoyage. `capture_manifest.json` conserve les empreintes avant/après. Inspection effectuée : coupe en deux phases, rempart à l'apparition/maintien/fin, volée et couronne à caméra normale, sablier et sommeil corrigés, expiration du sablier.
+
+Galerie finale : 112 cartes, dont **8 épiques et 14 autres renforcées**, 48 sorts adverses, 23 états. Le GIF de 66 images dure 2,2 secondes. Les planches des épiques, de la comparaison, de l'orage et des terrains ont été inspectées. Sources et empreinte du GIF dans `artifacts/dev/class_card_vfx/ethereal/gallery/encode_report.json` ; descriptions et règles réellement chargées dans `contracts.json`. Neuf scripts GDScript passent le formateur, les deux encodeurs passent le contrôle de syntaxe Node et `git diff --check` ne signale pas d'erreur.
+
+Les huit GIF de combat sont encodés et vérifiés : 60 images / 2 secondes chacun, issus des 480 images natives capturées, avec seule quantification de palette. Rapport combiné final : `artifacts/dev/class_card_vfx/power/verification.json`. Les 23 empreintes de sources de la sonde et les 22 de la galerie correspondent aux fichiers actuels ; les neuf GIF correspondent aux empreintes de leurs rapports d'encodage. L'aperçu principal est `artifacts/dev/class_card_vfx/ethereal/gallery/card_vfx_preview.gif`. Les premières captures ont été remplacées et ne servent pas de preuve de la correction. Aucune vérification requise ne reste en cours.
+
+Limites : arène de production préparée via Studio, IA suspendue, horloge VFX échantillonnée et caméra ×2,4 pour les gros plans. Les vues à caméra normale contrôlent la lisibilité. Aucun profilage GPU ni parcours manuel complet n'est revendiqué ; les parcours et reprises sont couverts par les suites Cartes. Les silhouettes sont procédurales, les règles de gameplay inchangées.

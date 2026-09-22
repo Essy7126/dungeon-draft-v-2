@@ -47,6 +47,10 @@ const EPIC := [
 
 
 static func initiation_rows() -> Array:
+	return preload("res://core/expedition/class_starter_catalog.gd").ROWS.duplicate(true)
+
+
+static func legacy_initiation_rows() -> Array:
 	var result: Array = []
 	for pair in [["a", "assassin"], ["g", "gardien"], ["r", "arpenteur"], ["t", "thaumaturge"]]:
 		var p: String = pair[0]
@@ -89,11 +93,11 @@ static func initiation_rows() -> Array:
 
 
 static func rows() -> Array:
-	return initiation_rows() + ADVANCED
+	return initiation_rows() + legacy_initiation_rows() + ADVANCED
 
 
 static func tier(id: String) -> int:
-	if id.begins_with("s_"):
+	if id.begins_with("s_") or id.begins_with("i_"):
 		return 0
 	if id in EPIC:
 		return 3
@@ -108,7 +112,39 @@ static func icon_alias(id: String, class_id: String, effect: String) -> String:
 		class_id,
 		"a",
 	)
-	if id.begins_with("s_") or tier(id) >= 2:
+	if id.begins_with("s_") or id.begins_with("i_") or tier(id) >= 2:
+		if id.begins_with("i_"):
+			var native_icons := {
+				"i_a_open": "a_open",
+				"i_a_strike": "a_finish",
+				"i_a_step": "a_step",
+				"i_a_cut": "a_cut",
+				"i_a_ambush": "a_ambush",
+				"i_a_dagger": "a_dagger",
+				"i_a_escape": "a_escape",
+				"i_g_guard": "g_guard",
+				"i_g_hit": "g_hit",
+				"i_g_push": "g_push",
+				"i_g_pull": "g_pull",
+				"i_g_weaken": "g_weaken",
+				"i_g_step": "g_step",
+				"i_g_punish": "g_punish",
+				"i_r_shot": "r_shot",
+				"i_r_slow": "r_slow",
+				"i_r_push": "r_push",
+				"i_r_step": "r_step",
+				"i_r_move": "r_move",
+				"i_r_mark": "r_mark",
+				"i_r_hunt": "r_hunt",
+				"i_t_frost": "t_frost",
+				"i_t_hex": "t_hex",
+				"i_t_mark": "t_mark",
+				"i_t_fire": "t_fire",
+				"i_t_burn": "t_burn",
+				"i_t_pull": "t_pull",
+				"i_t_guard": "t_guard",
+			}
+			return native_icons.get(id, "a_pierce")
 		var common: Dictionary = {
 			"guard": "a_parry",
 			"move": "a_step",
@@ -136,8 +172,12 @@ static func icon_alias(id: String, class_id: String, effect: String) -> String:
 
 
 static func role_color(role: String) -> Color:
-	return Color("ee8e78") if role in ["Dégâts", "Exécution", "Riposte"] else Color("81cbea") if role in [
-		"Contrôle",
-		"Terrain",
-		"Placement",
-	] else Color("a1d18e")
+	return (
+		Color("ee8e78")
+		if role in ["Dégâts", "Exécution", "Riposte"]
+		else (
+			Color("81cbea")
+			if role in ["Contrôle", "Terrain", "Placement"]
+			else Color("a1d18e")
+		)
+	)

@@ -19,8 +19,9 @@ Les tests de sorts n'exercent pas la propriété des copies de cartes, le tirage
 
 ## Intégration jouable
 
-- `test/unit/test_catabase_class_run.gd` : catalogue de 60 techniques, lancement dans le moteur commun, passifs, copies, maîtrises, runes, sauvegardes et 80 frontières de progression (20 profondeurs × 4 classes). Les victoires de ce dernier scénario sont injectées : il ne mesure pas l'équilibre tactique.
-- `class_ui_probe.tscn` : création, préparation, vrai ciblage/alternance de tours dans le combat de production, puis scénario de victoire pour les fenêtres niveau/caractéristiques/maîtrises/butin/équipement. Captures à 1280×720 et 1920×1080, contrôles géométriques et rapport JSON.
+- `test/unit/test_catabase_class_run.gd` : catalogue de 112 familles publiques, départs distincts, transmission du deck choisi avant le seuil, compatibilité des anciens départs, lancement dans le moteur commun, passifs, copies, maîtrises, runes, sauvegardes et 80 frontières de progression (20 profondeurs × 4 classes). Les victoires de ce dernier scénario sont injectées : il ne mesure pas l'équilibre tactique.
+- `class_ui_probe.tscn` : création et choix des cartes, vrai ciblage/alternance de tours dans le combat de production, puis scénario de victoire pour les fenêtres niveau/caractéristiques/maîtrises/butin/équipement. Captures à 1280×720 et 1920×1080, contrôles géométriques et rapport JSON.
+- `card_catalog_audit.tscn` : export CSV/JSON du catalogue et 7 200 tirages de butin indépendants (pas de combats). Argument `output=<dossier absolu>` ; valeurs normalisées à 20 Prouesse, sans passifs ni armure. Analyse et limites dans l'[audit du 21 septembre](../../docs/design/card_catalog_and_selection_audit_2026-09-21.md).
 - `draw_class_icons.py` : source des 88 SVG historiques, conservés comme repli.
 - `painted_icon_gallery.tscn` : galerie des illustrations peintes consommées par
   les catalogues, à taille d'interface. Source et prompts sous

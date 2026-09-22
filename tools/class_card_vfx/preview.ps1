@@ -12,6 +12,12 @@ if ($Capture) {
     try {
         try { $engineLock = [IO.File]::Open((Join-Path $projectRoot 'artifacts/dev/engine.lock'), [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None) }
         catch { throw 'Another dev command is using Godot. Retry after it finishes.' }
+        $inputs = @(Get-ChildItem (Join-Path $projectRoot 'vfx/class_cards') -Recurse -File | Where-Object { $_.Extension -in '.gd','.gdshader','.tres' } | ForEach-Object {
+            @{ path = [IO.Path]::GetRelativePath($projectRoot, $_.FullName); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash }
+        })
+        foreach ($sourcePath in @('tools/class_card_vfx/gallery.gd','tools/class_card_vfx/enemy_inventory.gd','tools/class_card_vfx/export_contracts.gd')) {
+            $inputs += @{ path = $sourcePath; sha256 = (Get-FileHash -LiteralPath (Join-Path $projectRoot $sourcePath) -Algorithm SHA256).Hash }
+        }
         $captureStarted = [DateTime]::UtcNow
         $arguments += @('--', '--capture')
         & $GodotPath @arguments
@@ -20,6 +26,10 @@ if ($Capture) {
         if (-not (Test-Path -LiteralPath $reportPath) -or (Get-Item -LiteralPath $reportPath).LastWriteTimeUtc -lt $captureStarted) { throw 'Missing or stale capture report.' }
         $report = Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json
         if ($report.count -ne $report.coverage.cards -or $report.coverage.missing.Count -ne 0 -or $report.enemies_captured.Count -ne $report.enemy_count -or $report.frames -ne 66) { throw 'Incomplete VFX capture.' }
+        foreach ($inputFile in $inputs) {
+            if ((Get-FileHash -LiteralPath (Join-Path $projectRoot $inputFile.path) -Algorithm SHA256).Hash -ne $inputFile.sha256) { throw "VFX sources changed during capture: $($inputFile.path)" }
+        }
+        @{ stable_sources = $true; captured_utc = $captureStarted; inputs = $inputs } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $outputPath 'capture_manifest.json') -Encoding utf8
     } finally { if ($null -ne $engineLock) { $engineLock.Dispose() } }
 } else {
     # A visible window is the requested interactive preview.

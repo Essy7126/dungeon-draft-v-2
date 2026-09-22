@@ -34,6 +34,23 @@ func _run() -> void:
 			"class choice is carried by departure payload",
 			viewport,
 		)
+		creation.start_button.pressed.emit()
+		await _settle()
+		creation.find_child("Starter_i_t_frost", true, false).pressed.emit()
+		creation.find_child("ToggleStarter", true, false).pressed.emit()
+		await _settle()
+		_check(creation.start_button.disabled, "four techniques cannot launch", viewport)
+		creation.find_child("Starter_i_t_guard", true, false).pressed.emit()
+		creation.find_child("ToggleStarter", true, false).pressed.emit()
+		await _settle()
+		_check(not creation.start_button.disabled, "five selected techniques unlock continuation", viewport)
+		await _capture("class_starter_selection", viewport, [creation.start_button, creation.find_child("StarterCatalogue", true, false), creation.find_child("ChoiceImpact", true, false)])
+		var ui_deck: Dictionary = creation._cards_setup.payload()
+		_check("i_t_guard" in ui_deck.card_families and "i_t_frost" not in ui_deck.card_families, "custom deck contains chosen cards", viewport)
+		creation.start_button.pressed.emit()
+		creation.start_button.pressed.emit()
+		await _settle()
+		await _capture("class_departure_review", viewport, [creation.start_button, creation.find_child("ChoiceImpact", true, false)])
 		_check(
 			creation.prepare_adventure(GameManager),
 			"public character selection accepts the class departure",
@@ -51,39 +68,9 @@ func _run() -> void:
 		session.cards.bind(session)
 		session.build.class_mode = true
 		session.card_inventory = GameManager.run_inventory
-		var ui_deck := Classes.preset("thaumaturge")
-		# Exercise a legal mobility choice so the distant opening has a castable card.
-		ui_deck.card_families[4] = "s_t_step"
-		session.preparation_draft = { "selection": ui_deck, "step": 0 }
-		var screen := SCREEN.instantiate()
-		add_child(screen)
-		await _settle()
-		await _capture(
-			"class_cards_departure",
-			viewport,
-			[
-				screen.find_child("CardsConfirmChoice", true, false),
-				screen.find_child("ChoiceImpact", true, false),
-			],
-		)
-		for i in 5:
-			screen.find_child("CardsConfirmChoice", true, false).pressed.emit()
-			await _settle()
-		_check(
-			screen.find_child("ConfirmCatabaseDeparture", true, false) != null,
-			"five choices reach deck review",
-			viewport,
-		)
-		await _capture(
-			"class_deck_review",
-			viewport,
-			[screen.find_child("ConfirmCatabaseDeparture", true, false)],
-		)
-		screen.queue_free()
-		await _settle()
 		_check(
 			session
-			.prepare_start(session.preparation_draft.selection, GameManager.run_inventory, GameManager.item_catalog)
+			.prepare_start(ui_deck, GameManager.run_inventory, GameManager.item_catalog)
 			.success,
 			"class preparation commits",
 			viewport,
@@ -91,7 +78,7 @@ func _run() -> void:
 		_check(session.enter("d01_0"), "first destination enters", viewport)
 		await _class_combat(viewport)
 		_check(session.combat_won(), "reward fixture reaches victory boundary", viewport)
-		screen = SCREEN.instantiate()
+		var screen := SCREEN.instantiate()
 		add_child(screen)
 		await _settle()
 		_check(

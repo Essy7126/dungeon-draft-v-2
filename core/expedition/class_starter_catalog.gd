@@ -1,0 +1,38 @@
+extends RefCounted
+## Current initiation. Historic s_* definitions remain readable in saves.
+const ROWS := [
+	["i_a_open", "assassin", "Faille furtive", 1, 1, 3, .15, "mark", 1, "Préparation"],
+	["i_a_strike", "assassin", "Lame opportuniste", 2, 1, 1, .45, "marked", .35, "Exécution"],
+	["i_a_step", "assassin", "Approche oblique", 1, 1, 2, 0., "move", 2, "Mobilité"],
+	["i_a_cut", "assassin", "Entaille discrète", 2, 1, 1, .35, "bleed", .18, "Usure"],
+	["i_a_ambush", "assassin", "Premier guet-apens", 2, 1, 1, .5, "moved", .3, "Placement"],
+	["i_a_dagger", "assassin", "Dague de diversion", 1, 2, 3, .4, "hit", 0, "Distance"],
+	["i_a_escape", "assassin", "Repli dans l'ombre", 2, 1, 3, 0., "move", 3, "Mobilité"],
+	["i_g_guard", "gardien", "Rempart d'apprenti", 2, 0, 0, 0., "guard", .75, "Défense"],
+	["i_g_hit", "gardien", "Heurt sous couvert", 2, 1, 1, .5, "guarded", .35, "Riposte"],
+	["i_g_push", "gardien", "Écarter la menace", 2, 1, 1, .4, "push", 1, "Placement"],
+	["i_g_pull", "gardien", "Crochet du rempart", 2, 2, 3, .25, "pull", 2, "Placement"],
+	["i_g_weaken", "gardien", "Désarmer l'élan", 2, 1, 1, .3, "weaken", .2, "Contrôle"],
+	["i_g_step", "gardien", "Prendre position", 1, 1, 1, 0., "move", 1, "Mobilité"],
+	["i_g_punish", "gardien", "Punir le déséquilibre", 2, 1, 2, .45, "displaced", .4, "Riposte"],
+	["i_r_shot", "arpenteur", "Flèche d'éclaireur", 2, 2, 4, .65, "hit", 0, "Distance"],
+	["i_r_slow", "arpenteur", "Entraver la poursuite", 2, 2, 4, .4, "slow", 1, "Contrôle"],
+	["i_r_push", "arpenteur", "Flèche de recul", 2, 1, 3, .3, "push", 1, "Placement"],
+	["i_r_step", "arpenteur", "Pas d'éclaireur", 1, 1, 2, 0., "move", 2, "Mobilité"],
+	["i_r_move", "arpenteur", "Tir d'escarmouche", 2, 1, 3, .45, "moved", .3, "Mobilité"],
+	["i_r_mark", "arpenteur", "Repérer la proie", 1, 2, 5, .15, "mark", 1, "Préparation"],
+	["i_r_hunt", "arpenteur", "Suivre la piste", 2, 2, 4, .4, "marked", .35, "Exécution"],
+	["i_t_frost", "thaumaturge", "Morsure de givre", 2, 1, 3, .4, "frost", 1, "Contrôle"],
+	["i_t_hex", "thaumaturge", "Réveiller le sceau", 2, 1, 3, .45, "marked", .35, "Exécution"],
+	["i_t_mark", "thaumaturge", "Tracer le sceau", 1, 1, 3, .15, "mark", 1, "Préparation"],
+	["i_t_fire", "thaumaturge", "Gerbe de cendres", 3, 1, 3, .5, "fire", 1, "Zone"],
+	["i_t_burn", "thaumaturge", "Braise couvante", 2, 1, 3, .3, "burn", .18, "Usure"],
+	["i_t_pull", "thaumaturge", "Rassembler les ombres", 2, 2, 3, .25, "pull", 2, "Placement"],
+	["i_t_guard", "thaumaturge", "Voile de suie", 2, 0, 0, 0., "guard", .55, "Défense"],
+]
+const LOOPS := {
+	"assassin": "Faille furtive → Lame opportuniste. Approche oblique → Premier guet-apens : préparez votre cible ou votre position avant de frapper.",
+	"gardien": "Rempart d'apprenti → Heurt sous couvert. Écarter la menace → Punir le déséquilibre : protégez-vous, puis exploitez le placement.",
+	"arpenteur": "Entraver la poursuite → Flèche de recul pour garder vos distances. Pas d'éclaireur → Tir d'escarmouche pour attaquer en mouvement.",
+	"thaumaturge": "Tracer le sceau → Réveiller le sceau. Rassembler les ombres → Gerbe de cendres pour toucher plusieurs ennemis.",
+}

@@ -38,7 +38,7 @@ func manager_for(class_id := "assassin", seed_value := 2401):
 func manager_with_one_drop():
 	var drops := preload("res://core/expedition/card_drop_catalog.gd")
 	for seed_value in range(2401, 2501):
-		if drops.roll(seed_value, {"id": "d01_0", "depth": 1, "kind": "normal"}, "assassin", 0).families.size() == 1:
+		if drops.roll(seed_value, { "id": "d01_0", "depth": 1, "kind": "normal" }, "assassin", 0).families.size() == 1:
 			return manager_for("assassin", seed_value)
 	fail_test("No deterministic one-card receipt fixture found")
 	return manager_for()
@@ -72,6 +72,79 @@ func test_catalog_has_four_independent_pools_and_icons() -> void:
 		assert_eq(base.spell_range, expert.spell_range, id)
 		assert_ne(base, expert)
 		assert_gt(base.description.length(), 40)
+
+
+func test_starters_have_distinct_class_loops_and_preserve_historic_definitions() -> void:
+	var signatures: Array[String] = []
+	for class_id in Catalog.CLASSES:
+		var effects: Array[String] = []
+		for family in Catalog.starter_pool(class_id):
+			assert_true(family.begins_with("i_"))
+			assert_eq(Catalog.row(family)[1], class_id)
+			effects.append(Catalog.row(family)[7])
+		var signature := ",".join(effects)
+		assert_false(signature in signatures, "Classes must offer distinct action sets")
+		signatures.append(signature)
+		assert_true(Catalog.valid_departure(Catalog.preset(class_id)))
+	var invalid := Catalog.preset("assassin")
+	invalid.card_families[0] = "a_reap"
+	assert_false(Catalog.valid_departure(invalid), "Loot cannot be selected for departure")
+	for old in Catalog.Ecology.legacy_initiation_rows():
+		assert_eq(Catalog.row(old[0]), old, "Historic cards retain their mechanics")
+		assert_false(old[0] in Catalog.pool())
+
+
+func test_selected_deck_starts_directly_and_survives_reload() -> void:
+	for class_id in Catalog.CLASSES:
+		var m := Manager.new()
+		add_child(m)
+		managers.append(m)
+		m.expedition_save_path = "user://selected_deck_%s.json" % class_id
+		var choice := Catalog.preset(class_id)
+		choice.card_families[4] = Catalog.starter_pool(class_id)[6]
+		choice.deck_selected = true
+		choice.difficulty_id = "easy"
+		m.selected_run_variant = "cards"
+		assert_true(m.configure_next_run(ExpeditionRunFactory.create(2401, { }), 0))
+		assert_true(m.configure_cards_departure(choice))
+		assert_true(m.continue_after_intro())
+		assert_true(m.finish_catabase_threshold().success)
+		assert_false(m.expedition.needs_preparation)
+		assert_eq(m.expedition.route.difficulty_id, "easy")
+		assert_eq(m.expedition.route.phase, "combat")
+		assert_eq(m.expedition.route.current_node_id, "d01_0")
+		var actual: Array = m.expedition.cards.active.map(
+			func(id):
+				return m.expedition.cards.copy_for(id).family,
+		)
+		for family in choice.card_families:
+			assert_eq(actual.count(family), 2)
+		var snapshot: Dictionary = JSON.parse_string(JSON.stringify(m.get_expedition_snapshot()))
+		assert_true(m.restore_expedition_snapshot(snapshot))
+		assert_false(m.expedition.needs_preparation)
+		assert_eq(m.expedition.cards.active.size(), 10)
+
+
+func test_historic_initiation_deck_remains_restorable() -> void:
+	var m := Manager.new()
+	add_child(m)
+	managers.append(m)
+	m.expedition_save_path = "user://historic_starters.json"
+	var choice := Catalog.preset("assassin")
+	choice.card_families = ["s_a_hit", "s_a_mark", "s_a_guard", "s_a_step", "s_a_push"]
+	m._cards_departure_selection = choice.duplicate(true)
+	assert_true(m.start_expedition(2401, { }, false, true, "normal", true))
+	assert_true(m.confirm_catabase_preparation(choice).success)
+	var snapshot: Dictionary = JSON.parse_string(JSON.stringify(m.get_expedition_snapshot()))
+	assert_true(m.restore_expedition_snapshot(snapshot))
+	for family in choice.card_families:
+		assert_eq(
+			m.expedition.cards.copies.filter(
+				func(copy):
+					return copy.family == family,
+			).size(),
+			2,
+		)
 
 
 func test_four_starters_have_no_equipment_and_restore_the_same_hand() -> void:
@@ -229,7 +302,8 @@ func test_improvement_affects_one_copy_and_survives_reload() -> void:
 				s.cards.resolve_progression("skip")
 			else:
 				s.advance_level_step()
-		if not s.cards.pending_card_reward().is_empty(): assert_true(s.cards.choose_card_reward(""))
+		if not s.cards.pending_card_reward().is_empty():
+			assert_true(s.cards.choose_card_reward(""))
 		var halt := ExpeditionRouteCatalog.is_halt(str(s.route.get_current_node().kind))
 		assert_true(
 			s
@@ -240,8 +314,9 @@ func test_improvement_affects_one_copy_and_survives_reload() -> void:
 		if s.route.phase == "combat":
 			assert_true(s.combat_won())
 	var cards = s.cards
-	var first: String = cards.active[2]
-	var second: String = cards.active[3]
+	# The two copies of the ranged mark exercise the line-of-sight upgrade.
+	var first: String = cards.active[0]
+	var second: String = cards.active[1]
 	assert_same(
 		cards.spells_for(first)[0],
 		cards.spells_for(first)[0],
@@ -292,7 +367,8 @@ func test_all_four_routes_progress_and_restore_at_every_reward_boundary() -> voi
 			if depth == 4:
 				var stock: Array = s.cards.shop()
 				assert_eq(stock.size(), 6)
-				for offer in stock: assert_gt(Catalog.Ecology.tier(offer.family), 0)
+				for offer in stock:
+					assert_gt(Catalog.Ecology.tier(offer.family), 0)
 				s.gold = 1000
 				var before_gold := s.gold
 				var price: int = s.cards.BUY[s.cards.rarity(stock[0].family)]
@@ -314,7 +390,11 @@ func test_all_four_routes_progress_and_restore_at_every_reward_boundary() -> voi
 					else "class_continue"
 				)
 			)
-			if not s.cards.pending_card_reward().is_empty(): assert_true(s.cards.choose_card_reward(s.cards.pending_card_reward().offers[0], s.cards.active[0]))
+			if not s.cards.pending_card_reward().is_empty():
+				assert_true(s.cards.choose_card_reward(
+						s.cards.pending_card_reward().offers[0],
+						s.cards.active[0],
+					))
 			assert_true(s.claim(id, m.run_inventory, m.item_catalog).success)
 		assert_eq(m.expedition.route.phase, "complete")
 
@@ -562,7 +642,8 @@ func test_every_card_executes_on_the_shared_grid() -> void:
 			f.grid.place_unit(enemy, Vector2i(9, 3))
 		if spell.can_target_self:
 			target = hero.grid_pos
-		if Catalog.row(id)[7] == "stasis": enemy.apply_status(Catalog.status("marked", "Marqué", 1), hero)
+		if Catalog.row(id)[7] == "stasis":
+			enemy.apply_status(Catalog.status("marked", "Marqué", 1), hero)
 		var report: Dictionary = f.caster.cast(hero, spell, target)
 		assert_false(report.get("failed", false), id)
 		assert_eq(hero.current_ap, 6 - spell.ap_cost, id)
@@ -585,7 +666,10 @@ func test_reward_pools_progress_and_starters_do_not_scale_with_mastery() -> void
 				assert_gt(tier, 0)
 				assert_lte(tier, 1 if depth == 1 else 2 if depth == 4 else 3)
 		for family in Catalog.starter_pool(class_id):
-			assert_eq(Catalog.make_spell(family, 0).damage_scaling.prowess_coefficient, Catalog.make_spell(family, 4).damage_scaling.prowess_coefficient)
+			assert_eq(
+				Catalog.make_spell(family, 0).damage_scaling.prowess_coefficient,
+				Catalog.make_spell(family, 4).damage_scaling.prowess_coefficient,
+			)
 	var m = manager_for()
 	assert_true(m.expedition.combat_won())
 	assert_true(m.expedition.cards.pending_card_reward().is_empty())
@@ -602,7 +686,10 @@ func test_legacy_class_save_retains_automatic_loot_and_three_shop_slots() -> voi
 	assert_true(m.expedition.combat_won())
 	assert_eq(m.expedition.cards.last_drops.size(), 1)
 	assert_true(m.expedition.cards.pending_card_reward().is_empty())
-	assert_true(Catalog.legacy_pool().has(m.expedition.cards.copy_for(m.expedition.cards.last_drops[0]).family))
+	assert_true(Catalog.legacy_pool().has(m.expedition.cards.copy_for(m
+			.expedition
+			.cards
+			.last_drops[0]).family))
 
 
 func test_stasis_requires_mark_and_protects_against_chain_control() -> void:
@@ -620,7 +707,10 @@ func test_stasis_requires_mark_and_protects_against_chain_control() -> void:
 	assert_true(enemy.has_status(&"ecosystem_stasis_ward"))
 	var effects := preload("res://core/expedition/card_ecosystem_effects.gd").new()
 	effects.effect = "stasis"
-	assert_eq(effects.get_target_cell_failure_reason(hero, stasis, enemy.grid_pos, f.grid), &"stasis_immunity")
+	assert_eq(
+		effects.get_target_cell_failure_reason(hero, stasis, enemy.grid_pos, f.grid),
+		&"stasis_immunity",
+	)
 	assert_eq(hero.current_ap, 3)
 
 
@@ -652,14 +742,18 @@ func test_fire_tiles_damage_both_teams_then_expire() -> void:
 
 func test_card_drops_vary_with_danger_and_never_contain_starters() -> void:
 	var drops := preload("res://core/expedition/card_drop_catalog.gd")
-	var totals := {"normal": 0, "elite": 0, "boss": 0}
-	var counts := {}
+	var totals := { "normal": 0, "elite": 0, "boss": 0 }
+	var counts := { }
 	for kind in totals:
-		counts[kind] = {}
+		counts[kind] = { }
 		for seed_value in range(1, 181):
-			var node := {"id": "drop_test", "kind": kind, "depth": 12}
+			var node := { "id": "drop_test", "kind": kind, "depth": 12 }
 			var result := drops.roll(seed_value, node, "assassin", 0)
-			assert_eq(result, drops.roll(seed_value, node, "assassin", 0), "replay cannot reroll loot")
+			assert_eq(
+				result,
+				drops.roll(seed_value, node, "assassin", 0),
+				"replay cannot reroll loot",
+			)
 			var count: int = result.families.size()
 			counts[kind][count] = true
 			totals[kind] += count
@@ -714,7 +808,11 @@ func test_old_pending_draft_migrates_to_actual_loot_once() -> void:
 	assert_eq(s.cards.copies.size(), 10 + s.cards.last_drops.size())
 	assert_false(s.class_combat_receipt_reviewed(), "reopen receipt so converted loot is visible")
 	var copies: Array = s.cards.copies.duplicate(true)
-	assert_true(m.restore_expedition_snapshot(JSON.parse_string(JSON.stringify(m.get_expedition_snapshot()))))
+	assert_true(
+		m.restore_expedition_snapshot(
+			JSON.parse_string(JSON.stringify(m.get_expedition_snapshot()))
+		)
+	)
 	assert_eq(m.expedition.cards.copies, copies)
 
 
@@ -723,7 +821,7 @@ func test_drought_uses_receipts_even_after_cards_are_sold() -> void:
 	var s: ExpeditionSession = m.expedition
 	s.route.completed_node_ids.assign(["old", "dry1", "dry2"])
 	s.route.current_node_id = "dry2"
-	s.cards.receipts = {"old": ["sold_card"], "dry1": [], "dry2": []}
+	s.cards.receipts = { "old": ["sold_card"], "dry1": [], "dry2": [] }
 	assert_eq(s.cards.card_drought(), 2)
 	s.cards.receipts.dry2 = ["also_sold"]
 	assert_eq(s.cards.card_drought(), 0, "selling cannot farm bad-luck compensation")

@@ -5,15 +5,17 @@ comportement public change ; les rapports datés gardent leur rôle de preuve hi
 
 ## Parcours public
 
-`ui/TitreEcran.tscn` → sélection d’Achille → cinématique → Seuil des Ombres →
-préparation → parcours de Catabase. La reprise rejoint la sauvegarde de la variante.
+`ui/TitreEcran.tscn` → sélection du personnage → cinématique → Seuil des Ombres →
+parcours de Catabase. En Classique, la préparation a lieu au seuil ; en Cartes,
+apparence, classe, cinq techniques et difficulté se choisissent dès la sélection.
+Le seuil utilise ce deck sans refaire les choix. La reprise rejoint la sauvegarde de la variante.
 Les apparences originale, peinte et Passe-rive jouent la même aventure solo.
 Le refuge reste accessible depuis la sélection.
 
 - **Classique** : six constructions personnalisables, arme, protection, deux
   techniques, relique permanente et éphémère ; mutations pendant la run.
 - **Cartes** : Assassin, Gardien, Arpenteur et Thaumaturge. Cinq techniques choisies
-  parmi sept cartes d’initiation, deux copies chacune ; dix cartes au départ,
+  parmi sept cartes d’initiation propres à chaque classe, deux copies chacune ; dix cartes au départ,
   quatre en main, deux gestes de secours hors pioche, aucun équipement initial.
 - Les sauvegardes Classique et Cartes sont indépendantes. Les anciennes révisions
   restent restaurables ; ne pas supprimer leur code parce qu’il n’est plus proposé
@@ -35,6 +37,7 @@ Pour les chiffres, lire les catalogues dans `core/expedition/` et le contrat de
 conception concerné, sans recopier tous leurs tableaux ici :
 
 - [Règles de classes](../design/class_run_rules_v3.md).
+- [Sélection et audit des cartes du 21 septembre](../design/card_catalog_and_selection_audit_2026-09-21.md).
 - [Écosystème Cartes, compte rendu du 20 septembre](../ai/CARDS_ECOSYSTEM_2026-09-20.md).
 - [Drops et Résonance, compte rendu du 20 septembre](../ai/CARD_DROPS_2026-09-20.md).
 - [Six constructions Classique](../design/catabase_first_six_2026-09-13.md).

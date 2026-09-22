@@ -179,7 +179,7 @@ static func recipe(id: String) -> Dictionary:
 	var family: String = SIGNATURES.get(id, EFFECTS[effect])
 	var seed_value := absi(id.hash())
 	var strength := clampf(float(row[6]) + (float(row[8]) if effect == "guard" else 0.0), .3, 1.8)
-	return {
+	var entry := {
 		"id": id,
 		"name": "Protection" if id == "basic_guard" else "Frappe simple" if basic else str(row[2]),
 		"class_id": str(row[1]),
@@ -200,6 +200,7 @@ static func recipe(id: String) -> Dictionary:
 		"movement": effect in ["move", "blink"],
 		"basic": basic,
 	}
+	return preload("class_card_vfx_profiles.gd").apply(entry, id)
 
 
 static func feedback(family: String, phase := "apply") -> Dictionary:

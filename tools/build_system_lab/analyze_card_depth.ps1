@@ -23,7 +23,7 @@ $rows = @($data.cases | ForEach-Object {
         outcome = $_.outcome
         final_depth = $last.depth
         starter_copies_at_last_combat = $(if ($_.class) {
-            @($last.deck_entry.active_families | Where-Object { $_ -like 's_*' }).Count
+            @($last.deck_entry.active_families | Where-Object { $_ -like 's_*' -or $_ -like 'i_*' }).Count
         } else { $null })
         owned_copies_at_last_combat = $last.deck_entry.owned_copies
     }
@@ -38,7 +38,7 @@ $summary = [ordered]@{
     class_hero_turns = ($combats | Measure-Object turns -Sum).Sum
     class_hero_casts = ($hero.Values | Measure-Object -Sum).Sum
     basic_casts = $hero.class_basic_strike + $hero.class_basic_guard
-    starter_casts = ($hero.GetEnumerator() | Where-Object Key -Like 'class_s_*' | Measure-Object Value -Sum).Sum
+    starter_casts = ($hero.GetEnumerator() | Where-Object { $_.Key -like 'class_s_*' -or $_.Key -like 'class_i_*' } | Measure-Object Value -Sum).Sum
     enemy_casts = ($enemy.Values | Measure-Object -Sum).Sum
     enemy_card_technique_casts = ($enemy.GetEnumerator() | Where-Object Key -Like 'class_*' | Measure-Object Value -Sum).Sum
     blocked_preparations = ($combats | Measure-Object blocked_preparations -Sum).Sum

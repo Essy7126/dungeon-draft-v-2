@@ -83,7 +83,8 @@ func initialize_deck(selection: Dictionary) -> void:
 		return
 	if ecosystem_revision > 0:
 		for family in selection.card_families:
-			if family not in Catalog.starter_pool(selection.class_id): return
+			if Catalog.Ecology.tier(family) != 0:
+				return
 	primary_class = selection.class_id
 	for key in masteries:
 		masteries[key] = 2 if key == primary_class else 0
