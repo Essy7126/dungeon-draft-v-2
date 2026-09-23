@@ -394,6 +394,14 @@ func _fight_continuous(
 	var ai := EnemyAI.new(grid, pathfinder, caster)
 	var queue := TurnQueue.new()
 	queue.setup(units)
+	var tactical_rules = null
+	if room.has_meta("card_tactical_room_id"):
+		var room_id := str(room.get_meta("card_tactical_room_id"))
+		tactical_rules = preload("res://core/expedition/card_tactical_room_catalog.gd").create_rules(room_id)
+		tactical_rules.bind(room_id, grid, terrain, units, func(): return queue.get_current_unit() == hero and hero.is_alive)
+		var tactical_ai = preload("res://core/ai/tactical_room_enemy_ai.gd").new(grid, pathfinder, caster)
+		tactical_ai.room_rules = tactical_rules
+		ai = tactical_ai
 	var metrics := {
 		"title": str(node.title),
 		"node_id": str(node.id),
@@ -463,7 +471,12 @@ func _fight_continuous(
 		if actor == null:
 			metrics.termination = "empty_queue"
 			break
+		var courier: bool = tactical_rules != null and tactical_rules.room_id == "convoy" and actor in tactical_rules.carriers and not tactical_rules.altar_sealed and tactical_rules.boss.is_alive
+		if tactical_rules != null and actor != hero and not courier:
+			tactical_rules.begin_enemy_turn(actor)
 		var skip := ArenaTerrainStatusTimingService.resolve_activation_start(actor, terrain)
+		if courier and actor.is_alive and not skip:
+			tactical_rules.begin_enemy_turn(actor)
 		if actor == hero:
 			metrics.turns = int(metrics.turns) + 1
 			var position := _cell_array(hero.grid_pos)
@@ -471,7 +484,9 @@ func _fight_continuous(
 				metrics.hero_turn_position_repeats = int(metrics.hero_turn_position_repeats) + 1
 			(metrics.hero_turn_positions as Array).append(position)
 		var pending: Dictionary = { }
-		if actor.is_alive and not skip:
+		if courier:
+			pending = {"consume_activation": true}
+		elif actor.is_alive and not skip:
 			pending = caster.resolve_pending_activation(actor, units, queue, adapter.attach_unit)
 			if bool(pending.get("blocked", false)):
 				metrics.blocked_preparations = int(metrics.blocked_preparations) + 1
@@ -493,14 +508,21 @@ func _fight_continuous(
 							for card_spell in manager.expedition.cards.spells_for(card_id):
 								if card_spell not in available_cards: available_cards.append(card_spell)
 						hero.spells = available_cards
-					action = _hero_action(hero, units, grid, pathfinder, caster)
+					if tactical_rules != null:
+						action = _tactical_hero_action(tactical_rules, hero, grid, pathfinder)
+					if action.is_empty():
+						action = _hero_action(hero, units, grid, pathfinder, caster)
 				else:
 					var decisions: Array = ai.decide(actor, units)
 					if not decisions.is_empty():
 						action = decisions[0]
 				if action.is_empty():
 					break
-				if str(action.type) == "cast":
+				if str(action.type) == "room":
+					if not tactical_rules.use_terminal(str(action.command)):
+						break
+					metrics["room_commands"] = int(metrics.get("room_commands", 0)) + 1
+				elif str(action.type) == "cast":
 					var spell := action.spell as Spell
 					if not caster.can_cast(actor, spell, action.cell):
 						break
@@ -588,6 +610,8 @@ func _fight_continuous(
 		if actor == hero and manager.expedition.cards != null:
 			manager.expedition.cards.end_turn()
 		EventBus.turn_ended.emit(actor, &"harness_policy")
+		if tactical_rules != null and actor == hero and hero.is_alive:
+			tactical_rules.finish_hero_turn()
 		if not hero.is_alive:
 			metrics.termination = "hero_dead"
 			break
@@ -621,6 +645,14 @@ func _fight_continuous(
 	var missing := Contract.missing_metric_keys(metrics)
 	if not missing.is_empty():
 		errors.append(str(node.id) + ": missing metrics " + str(missing))
+	if tactical_rules != null:
+		metrics["tactical_room"] = {"id": tactical_rules.room_id, "hero_turns": metrics.turns, "environmental_hits": tactical_rules.environmental_hits, "deliveries": tactical_rules.deliveries, "altar_sealed": tactical_rules.altar_sealed}
+		if tactical_rules.room_id == "reservoir":
+			metrics.tactical_room["charges"] = tactical_rules.charges.duplicate()
+			metrics.tactical_room["charges_stored"] = tactical_rules.charges_stored
+			metrics.tactical_room["charges_siphoned"] = tactical_rules.charges_siphoned
+			metrics.tactical_room["discharges"] = tactical_rules.discharges
+		tactical_rules.dispose()
 	EventBus.combat_ended.emit(bool(metrics.won))
 	adapter.dispose()
 	_active_hero = null
@@ -637,6 +669,32 @@ func _fight_continuous(
 	terrain.dispose()
 	BattlefieldCleanup.dispose_grid(grid)
 	return metrics
+
+
+func _tactical_hero_action(rules, hero: Unit, grid: GridData, pathfinder: Pathfinder) -> Dictionary:
+	# Explicit bounded policy, not an optimal player: escape, seal, or discharge stored energy.
+	if hero.grid_pos in rules.danger_cells() and hero.current_mp > 0:
+		var best: Array = []
+		var lowest := 999
+		for y in grid.rows:
+			for x in grid.cols:
+				var cell := Vector2i(x, y)
+				if not grid.is_walkable(cell, hero) or cell in rules.danger_cells():
+					continue
+				var path := pathfinder.find_path(hero.grid_pos, cell, hero)
+				var cost := pathfinder.path_movement_cost(path, hero)
+				if path.size() > 1 and cost <= hero.current_mp and cost < lowest:
+					best = path
+					lowest = cost
+		if not best.is_empty():
+			return {"type": "move", "path": best}
+	if rules.room_id == "convoy" and rules.terminal_failure("gate").is_empty():
+		return {"type": "room", "command": "gate"}
+	if rules.room_id == "reservoir":
+		for command in ["left", "right"]:
+			if rules.terminal_failure(command).is_empty():
+				return {"type": "room", "command": command}
+	return {}
 
 
 func _hero_action(

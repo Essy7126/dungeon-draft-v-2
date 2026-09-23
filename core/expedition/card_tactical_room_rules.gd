@@ -15,6 +15,7 @@ var terrain: TerrainEffects
 var hero: Unit
 var boss: Unit
 var carriers: Array[Unit] = []
+var enemies: Array[Unit] = []
 var coins := { }
 var messages: Array[String] = []
 var outcome := ""
@@ -36,10 +37,30 @@ func bind(
 	for actor: Unit in actors:
 		if actor.team == 0:
 			hero = actor
-		elif boss == null or actor.max_hp.get_int() > boss.max_hp.get_int():
+		else:
+			enemies.append(actor)
+	var role: String = preload("res://core/expedition/card_tactical_room_catalog.gd").CHIEF_ROLES[
+		id
+	]
+	for actor in enemies:
+		if str(actor.tactical_role_id) == "catabase_evolution_" + role:
 			boss = actor
+			break
+	# Isolated fixtures may have no authored roles. Production encounters must contain the chief.
+	if boss == null:
+		assert(
+			enemies.all(
+				func(actor):
+					return str(actor.tactical_role_id).is_empty(),
+			),
+			"Missing room chief: " + role,
+		)
+		boss = enemies[0] if not enemies.is_empty() else null
 	for actor: Unit in actors:
-		if actor.team != 0 and actor != boss:
+		if (
+			actor.team != 0 and actor != boss
+			and (id != "convoy" or str(actor.tactical_role_id) in ["", "catabase_evolution_porteur"])
+		):
 			carriers.append(actor)
 			actor.died.connect(_on_carrier_died)
 	grid.occupancy_changed.connect(_on_occupancy)
@@ -47,6 +68,17 @@ func bind(
 
 func _can_play() -> bool:
 	return hero != null and hero.is_alive and outcome.is_empty() and can_play.call()
+
+
+func is_mechanism_active() -> bool:
+	if not outcome.is_empty() or hero == null or not hero.is_alive:
+		return false
+	if room_id in ["forge", "hourglass"]:
+		return grid.get_units().any(
+			func(actor):
+				return actor.is_alive and actor.team != hero.team,
+		)
+	return boss != null and boss.is_alive
 
 
 func log_message(message: String) -> void:
@@ -109,7 +141,7 @@ func actor_initial(actor: Unit) -> String:
 
 func danger_cells() -> Array:
 	var result: Array[Vector2i] = []
-	if not outcome.is_empty() or room_id == "convoy" or boss == null or not boss.is_alive:
+	if room_id == "convoy" or not is_mechanism_active():
 		return result
 	for y in 7:
 		for x in 9:
@@ -133,8 +165,8 @@ func terminal_failure(action: String) -> String:
 		return "Seul le sceau est utilisable dans cette salle."
 	if room_id == "garden" and action == "gate":
 		return "Choisissez le socle haut ou bas."
-	if boss == null or not boss.is_alive:
-		return "Le chef a été vaincu."
+	if not is_mechanism_active():
+		return "Mécanisme désactivé."
 	if mechanism_used or (room_id == "convoy" and altar_sealed):
 		return "Mécanisme déjà actionné."
 	if grid.manhattan(hero.grid_pos, LEVER) > 1:
@@ -182,7 +214,7 @@ func use_terminal(action: String) -> bool:
 		log_message("L'anneau suit immédiatement le nouveau socle.")
 	else:
 		altar_sealed = true
-		log_message("Autel scellé : les porteurs ne peuvent plus alimenter le Collecteur.")
+		log_message("Autel scellé : les porteurs ne peuvent plus alimenter %s." % [boss.unit_name])
 	changed.emit()
 	return true
 
@@ -245,7 +277,7 @@ func intention_text() -> String:
 		boss.max_hp.get_int(),
 		boss.current_shield,
 	]
-	if not boss.is_alive:
+	if not is_mechanism_active():
 		return title + "CHEF VAINCU\nMécanisme désactivé. Éliminez les ennemis restants."
 	if room_id == "forge":
 		return title + "PRESSE À LA FIN DU TOUR\nRail %d · 32 dégâts héros / 60 ennemis.\nProchain rail : %d." % [

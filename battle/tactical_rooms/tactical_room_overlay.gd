@@ -26,7 +26,7 @@ func _draw() -> void:
 						2,
 						4,
 					)
-	if rules.room_id == "hourglass" and rules.skip_blast and rules.boss.is_alive:
+	if rules.room_id == "hourglass" and rules.skip_blast and rules.is_mechanism_active():
 		for cell: Vector2i in rules._cross(rules.mark):
 			var center: Vector2 = view.grid_to_local(cell)
 			draw_arc(center, 13, 0, TAU, 16, Color("eebc6b"), 2)

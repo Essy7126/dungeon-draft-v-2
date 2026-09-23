@@ -60,7 +60,7 @@ func _bind_room(actors: Array, board: GridData) -> void:
 	if board != grid or room_rules != null:
 		return
 	var identity := str(room_data.get_meta("card_tactical_room_id", "forge"))
-	room_rules = ResourceRules.new() if identity in ["hourglass", "reservoir"] else Rules.new()
+	room_rules = Rooms.create_rules(identity)
 	room_rules.bind(
 		str(room_data.get_meta("card_tactical_room_id", "forge")),
 		grid,
@@ -69,6 +69,13 @@ func _bind_room(actors: Array, board: GridData) -> void:
 		_room_input_allowed,
 	)
 	room_rules.changed.connect(_refresh_room)
+	var tactical_ai = preload("res://core/ai/tactical_room_enemy_ai.gd").new(
+		grid,
+		pathfinder,
+		spell_caster,
+	)
+	tactical_ai.room_rules = room_rules
+	enemy_ai = tactical_ai
 	room_overlay = Overlay.new()
 	room_overlay.rules = room_rules
 	room_overlay.view = grid_view

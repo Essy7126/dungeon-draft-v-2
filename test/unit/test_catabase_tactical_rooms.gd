@@ -81,7 +81,110 @@ func after_each() -> void:
 	fields.clear()
 
 
-func test_factory_only_changes_five_card_destinations_and_preserves_roster() -> void:
+func test_all_routes_guarantee_three_special_encounters() -> void:
+	for seed_value in [0, 1, 42, 2401]:
+		var nodes := ExpeditionRouteCatalog.create_nodes(seed_value)
+		nodes.sort_custom(
+			func(a, b):
+				return int(a.depth) > int(b.depth),
+		)
+		var bounds := { }
+		for node in nodes:
+			var low := 99
+			var high := -1
+			for edge in node.edges:
+				low = mini(low, bounds[edge].x)
+				high = maxi(high, bounds[edge].y)
+			var gain := 0 if Rooms.id_for(node).is_empty() else 1
+			bounds[node.id] = Vector2i(gain, gain) + (
+				Vector2i.ZERO if node.edges.is_empty() else Vector2i(low, high)
+			)
+		assert_eq(bounds.d01_0, Vector2i(3, 3))
+
+
+func test_physical_hazards_survive_the_chief_but_stop_after_last_enemy() -> void:
+	for id in ["forge", "hourglass"]:
+		var rules = field(id)
+		rules.boss.take_damage(10000)
+		assert_true(rules.is_mechanism_active())
+		assert_false(rules.danger_cells().is_empty())
+		assert_true(rules.use_terminal("left"), "Physical control remains usable")
+		rules.finish_hero_turn()
+		if id == "hourglass":
+			assert_false(rules.use_terminal("right"), "Cannot recenter on a dead chief")
+		rules.carriers[0].take_damage(10000)
+		assert_false(rules.is_mechanism_active())
+		assert_true(rules.danger_cells().is_empty())
+
+
+func test_authored_chiefs_and_carriers_do_not_depend_on_hp() -> void:
+	for node in ExpeditionRouteCatalog.create_nodes(42):
+		var id := Rooms.id_for(node)
+		if id.is_empty():
+			continue
+		var room := ExpeditionRunFactory.make_room(node, 42, true)
+		var runtime := ArenaRuntimeProjectionService.build(Rooms.build(id))
+		var hero := Unit.new("Hero", 0, 240, 20, 4, 3, 40)
+		var actors: Array = [hero]
+		for data in room.enemies:
+			var enemy := Unit.from_data(data)
+			if str(enemy.tactical_role_id) != "catabase_evolution_" + Rooms.CHIEF_ROLES[id]:
+				enemy.max_hp.add_modifier(10000, Stat.ModType.FLAT, "audit_chief")
+			actors.append(enemy)
+		actors.reverse()
+		var rules = Rooms.create_rules(id)
+		rules.bind(
+			id,
+			runtime.grid,
+			runtime.terrain_effects,
+			actors,
+			func():
+				return true,
+		)
+		fields.append({ "runtime": runtime, "rules": rules, "actors": actors })
+		assert_eq(str(rules.boss.tactical_role_id), "catabase_evolution_" + Rooms.CHIEF_ROLES[id])
+		if id == "convoy":
+			assert_eq(rules.carriers.size(), 2)
+			for carrier in rules.carriers:
+				assert_eq(str(carrier.tactical_role_id), "catabase_evolution_porteur")
+
+
+func test_room_ai_escapes_announced_danger_and_contests_energy() -> void:
+	var rules = field("forge")
+	var caster := SpellCaster.new(rules.grid, rules.pathfinder, rules.terrain)
+	var ai = preload("res://core/ai/tactical_room_enemy_ai.gd").new(
+		rules.grid,
+		rules.pathfinder,
+		caster,
+	)
+	ai.room_rules = rules
+	var actor: Unit = rules.carriers[0]
+	actor.start_turn()
+	rules.grid.relocate_unit(actor, Vector2i(6, 3))
+	var decision: Array = ai.decide(actor, [rules.hero, rules.boss, actor])
+	assert_false(decision.is_empty())
+	assert_eq(decision[0].type, "move")
+	assert_does_not_have(rules.danger_cells(), decision[0].path.back())
+	assert_lte(rules.pathfinder.path_movement_cost(decision[0].path, actor), actor.current_mp)
+	var reserve = field("reservoir")
+	var thief: Unit = reserve.carriers[0]
+	thief.start_turn()
+	reserve.charges[0] = 3
+	var thief_ai = preload("res://core/ai/tactical_room_enemy_ai.gd").new(
+		reserve.grid,
+		reserve.pathfinder,
+		SpellCaster.new(reserve.grid, reserve.pathfinder, reserve.terrain),
+	)
+	thief_ai.room_rules = reserve
+	var approach: Array = thief_ai.decide(thief, [reserve.hero, reserve.boss, thief])
+	assert_false(approach.is_empty())
+	assert_eq(approach[0].type, "move")
+	assert_lt(reserve.grid.manhattan(approach[0].path.back(), reserve.RESERVOIRS[0]), reserve
+		.grid
+		.manhattan(thief.grid_pos, reserve.RESERVOIRS[0]))
+
+
+func test_factory_only_changes_nine_card_destinations_and_preserves_roster() -> void:
 	var count := 0
 	for node in ExpeditionRouteCatalog.create_nodes(42):
 		var id: String = Rooms.id_for(node)
@@ -103,7 +206,7 @@ func test_factory_only_changes_five_card_destinations_and_preserves_roster() -> 
 		for cell in cards.enemy_spawn_zone:
 			assert_true(grid.is_walkable(cell))
 			assert_gt(paths.find_path(cards.hero_spawn_zone[0], cell).size(), 1)
-	assert_eq(count, 5)
+	assert_eq(count, 9)
 
 
 func test_forge_preview_cost_and_environment_hit_both_sides() -> void:
@@ -128,7 +231,11 @@ func test_forge_preview_cost_and_environment_hit_both_sides() -> void:
 func test_pillars_block_sight_and_movement_while_pits_only_block_movement() -> void:
 	for id in Rooms.IDS:
 		var rules = field(id)
-		var pillar := Vector2i(3, 2) if id == "convoy" else Vector2i(2, 2)
+		var pillar := (
+			Vector2i(3, 2)
+			if id in ["convoy", "hourglass", "reservoir"]
+			else Vector2i(2, 2)
+		)
 		assert_eq(rules.grid.get_type(pillar), GridData.CellType.WALL)
 		assert_false(rules.grid.is_walkable(pillar))
 		assert_false(rules.pathfinder.has_line_of_sight(
@@ -136,7 +243,11 @@ func test_pillars_block_sight_and_movement_while_pits_only_block_movement() -> v
 				pillar + Vector2i.RIGHT,
 			))
 		if id != "convoy":
-			var pit := Vector2i(0, 0) if id == "forge" else Vector2i(4, 0)
+			var pit := (
+				Vector2i(0, 0)
+				if id == "forge"
+				else (Vector2i(4, 3) if id == "reservoir" else Vector2i(4, 0))
+			)
 			assert_eq(rules.grid.get_type(pit), GridData.CellType.HOLE)
 
 
@@ -227,8 +338,8 @@ func test_hourglass_retarget_cost_preview_walls_and_escape() -> void:
 	rules.finish_hero_turn()
 	assert_eq(rules.boss.current_hp, 188)
 	assert_eq(rules.hero.current_hp, 240)
-	rules.mark = Vector2i(2, 3)
-	assert_does_not_have(rules.danger_cells(), Vector2i(2, 1), "Pillar stops the cross")
+	rules.mark = Vector2i(3, 3)
+	assert_does_not_have(rules.danger_cells(), Vector2i(3, 1), "Pillar stops the cross")
 	rules.grid.relocate_unit(rules.hero, Vector2i(0, 6))
 	assert_false(rules.use_terminal("left"), "Cannot operate remotely")
 	rules.finish_hero_turn()

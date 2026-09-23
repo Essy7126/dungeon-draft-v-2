@@ -7,7 +7,26 @@ const DESTINATIONS := {
 	"12:styx": "convoy",
 	"6:lethe": "hourglass",
 	"13:airain": "reservoir",
+	"6:styx": "hourglass",
+	"8:airain": "garden",
+	"8:styx": "garden",
+	"13:lethe": "reservoir",
 }
+const CHIEF_ROLES := {
+	"forge": "brute",
+	"hourglass": "brute",
+	"garden": "conducteur",
+	"convoy": "collecteur",
+	"reservoir": "fondeur",
+}
+
+
+static func create_rules(id: String):
+	if id in ["hourglass", "reservoir"]:
+		return load("res://core/expedition/card_tactical_resource_rules.gd").new()
+	return load("res://core/expedition/card_tactical_room_rules.gd").new()
+
+
 const ROOMS := {
 	"hourglass": {
 		"name": "Le sablier des représailles",
@@ -15,26 +34,26 @@ const ROOMS := {
 		"rows": [
 			"...~~~...",
 			".........",
-			"..#...#..",
+			"...#.#...",
 			".........",
-			"..#...#..",
+			"...#.#...",
 			".........",
 			"...~~~...",
 		],
-		"rule": "La croix rouge, de portée 2 dans les quatre directions, reste fixe même si vous bougez. Elle inflige 32 dégâts physiques à tous en fin de tour, puis la prochaine croix se verrouille sur votre position finale. Les murs arrêtent les bras de la croix. Au levier L ou à une case : retarder coûte 1 PA et reporte l'explosion d'un tour, avec 48 dégâts ; chaque croix ne peut être retardée qu'une fois. Recentrer coûte 2 PA et verrouille la croix sur la position actuelle du chef. Une commande par tour. Déplacez-vous après le verrouillage ou attirez les ennemis dans la zone.",
+		"rule": "La croix rouge, de portée 2 dans les quatre directions, reste fixe même si vous bougez. Elle inflige 32 dégâts physiques à tous en fin de tour, puis la prochaine croix se verrouille sur votre position finale. Les murs arrêtent les bras de la croix. Au levier L ou à une case : retarder coûte 1 PA et reporte l'explosion d'un tour, avec 48 dégâts ; chaque croix ne peut être retardée qu'une fois. Recentrer coûte 2 PA et verrouille la croix sur la position actuelle du chef. Une commande par tour. Déplacez-vous après le verrouillage ou attirez les ennemis dans la zone. Le sablier reste actif après la mort du chef tant que le combat continue.",
 		"inspiration": "Télégraphie fixe, appât et arbitrage entre gagner un tour et renforcer le danger.",
 	},
 	"reservoir": {
 		"name": "Les réservoirs de Tantale",
 		"hint": "Terminez près de H ou B : vos PA restants deviennent des charges. Décharge : 22 dégâts par charge au chef. Les ennemis peuvent voler l'énergie.",
 		"rows": [
-			"...~~~...",
 			".........",
-			"..#...#..",
 			".........",
-			"..#...#..",
+			"...#.#...",
+			"....~....",
+			"...#.#...",
 			".........",
-			"...~~~...",
+			".........",
 		],
 		"rule": "En fin de tour, à distance 0 ou 1 de H ou B, vos PA restants sont consommés et stockés : 1 PA = 1 charge, maximum 6 par réservoir. À proximité du réservoir choisi, décharger coûte 1 PA et consomme toute sa réserve : 22 dégâts physiques par charge au chef, sans contrainte de portée ni de ligne de vue. Une décharge par tour. Chaque ennemi vivant à distance 0 ou 1 d'un réservoir vole une charge au début de son activation et récupère jusqu'à 12 PV ; il joue ensuite normalement. Écartez les ennemis, stockez une mauvaise main, puis revenez déclencher la décharge. Les charges disparaissent après le combat.",
 		"inspiration": "Report d'une ressource de deckbuilding, contrôle d'un objectif spatial et alimentation disputée.",
@@ -51,7 +70,7 @@ const ROOMS := {
 			".........",
 			"~~.....~~",
 		],
-		"rule": "La presse frappe la rangée ! à chaque fin de tour : 32 dégâts à Achille, 60 aux ennemis. Son rail avance de 1 → 3 → 5. Au levier L, 1 PA permet de choisir le prochain rail, une fois par tour. Les piliers coupent les tirs ; les passages latéraux permettent de contourner.",
+		"rule": "La presse frappe la rangée ! à chaque fin de tour : 32 dégâts à Achille, 60 aux ennemis. Son rail avance de 1 → 3 → 5. Au levier L, 1 PA permet de choisir le prochain rail, une fois par tour. Les piliers coupent les tirs ; les passages latéraux permettent de contourner. La presse reste active après la mort du chef tant que le combat continue.",
 		"inspiration": "Grym : attirer un adversaire dans une machine de salle ; Divinity : exploiter un danger commun.",
 	},
 	"garden": {
@@ -81,7 +100,7 @@ const ROOMS := {
 			".........",
 			".........",
 		],
-		"rule": "Les ennemis autres que le chef portent une âme. À leur activation, ils avancent de 1 case vers O au lieu d'attaquer. S'ils commencent à côté, ils se sacrifient : +35 PV au chef et +8 attaque permanente. Chaque porteur à distance ≤ 2 du chef lui donne 12 garde au début de son tour. Au sceau L, 2 PA ferment l'autel : les porteurs reprennent alors leurs attaques normales. Tuer un porteur laisse une âme : la ramasser donne 12 garde. Le chef est l'ennemi initial ayant le plus de PV maximum.",
+		"rule": "Seuls les deux Porteurs portent une âme ; le Molosse conserve ses attaques. À leur activation, ils avancent de 1 case vers O au lieu d'attaquer. S'ils commencent à côté, ils se sacrifient : +35 PV au chef et +8 attaque permanente. Chaque porteur à distance ≤ 2 du chef lui donne 12 garde au début de son tour. Au sceau L, 2 PA ferment l'autel : les porteurs reprennent alors leurs attaques normales. Tuer un porteur laisse une âme : la ramasser donne 12 garde. Le chef est le Collecteur, indépendamment des PV des autres ennemis.",
 		"inspiration": "Myrkul : intercepter les renforts avant leur conversion ; Raphael : supprimer une alimentation de puissance.",
 	},
 }

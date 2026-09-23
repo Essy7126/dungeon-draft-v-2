@@ -83,6 +83,9 @@ func _ready() -> void:
 		if room_id == "reservoir":
 			assert(battle.grid.relocate_unit(hero, Vector2i(3, 1)))
 			battle._sync_room_positions()
+			# Exercise a partial deposit; a full discharge can now kill the authored Fondeur.
+			if hero.current_ap > 3:
+				assert(hero.spend_ap(hero.current_ap - 3))
 			await _complete_round(battle)
 			assert(battle.room_rules.charges[0] > 0)
 			print("TACTICAL_RESERVOIR_STORAGE_PASS charges=", battle.room_rules.charges[0])

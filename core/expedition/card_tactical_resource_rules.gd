@@ -6,6 +6,9 @@ var mark := Vector2i.ZERO
 var blast_damage := 32
 var postponed := false
 var skip_blast := false
+var charges_stored := 0
+var charges_siphoned := 0
+var discharges := 0
 
 
 func bind(
@@ -40,13 +43,13 @@ func _cross(origin: Vector2i) -> Array[Vector2i]:
 
 
 func danger_cells() -> Array:
-	if not outcome.is_empty() or not boss.is_alive or room_id != "hourglass" or skip_blast:
+	if not is_mechanism_active() or room_id != "hourglass" or skip_blast:
 		return []
 	return _cross(mark)
 
 
 func terminal_failure(action: String) -> String:
-	if not _can_play() or not boss.is_alive:
+	if not _can_play() or not is_mechanism_active():
 		return "Commande indisponible hors de votre tour ou après la mort du chef."
 	if action not in ["left", "right"]:
 		return "Choisissez une des deux commandes."
@@ -61,6 +64,8 @@ func terminal_failure(action: String) -> String:
 			return "Réservoir vide : terminez un tour à proximité avec des PA restants."
 	else:
 		cost = 1 if action == "left" else 2
+		if action == "right" and not boss.is_alive:
+			return "Chef vaincu : recentrage impossible, la croix continue de vous suivre."
 		if action == "left" and postponed:
 			return "Cette croix a déjà été retardée."
 	if grid.manhattan(hero.grid_pos, target) > 1:
@@ -89,6 +94,7 @@ func use_terminal(action: String) -> bool:
 		var index := 0 if action == "left" else 1
 		var damage := charges[index] * 22
 		charges[index] = 0
+		discharges += 1
 		boss.take_damage(damage, null, Spell.DamageType.PHYSICAL)
 		environmental_hits += 1
 		log_message("Décharge : %d dégâts au chef avant défense." % [damage])
@@ -105,7 +111,7 @@ func use_terminal(action: String) -> bool:
 
 
 func finish_hero_turn() -> void:
-	if not outcome.is_empty() or not hero.is_alive or not boss.is_alive:
+	if not is_mechanism_active():
 		return
 	if room_id == "reservoir":
 		for index in 2:
@@ -114,6 +120,7 @@ func finish_hero_turn() -> void:
 			var stored := mini(hero.current_ap, 6 - charges[index])
 			if stored > 0 and hero.spend_ap(stored):
 				charges[index] += stored
+				charges_stored += stored
 				log_message("%d PA stockés. Réserve : %d/6." % [stored, charges[index]])
 	elif skip_blast:
 		skip_blast = false
@@ -138,6 +145,7 @@ func begin_enemy_turn(actor: Unit) -> bool:
 	for index in 2:
 		if charges[index] > 0 and grid.manhattan(actor.grid_pos, RESERVOIRS[index]) <= 1:
 			charges[index] -= 1
+			charges_siphoned += 1
 			actor.heal(12)
 			log_message("%s vole une charge : jusqu'à 12 PV récupérés." % [actor.unit_name])
 	changed.emit()
@@ -145,7 +153,7 @@ func begin_enemy_turn(actor: Unit) -> bool:
 
 
 func intention_text() -> String:
-	if not boss.is_alive:
+	if not is_mechanism_active():
 		return "CHEF VAINCU · Mécanismes désactivés. Éliminez les ennemis restants."
 	if room_id == "reservoir":
 		return "H : %d/6 → %d dégâts\nB : %d/6 → %d dégâts\nFinir près de H/B stocke vos PA.\nDécharger : 1 PA à proximité.\nEnnemi adjacent : vole 1 charge et se soigne de 12 PV à son activation." % [
