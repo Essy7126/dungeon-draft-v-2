@@ -83,6 +83,7 @@ func _ready() -> void:
 		_cards_setup.hero_selected.connect(func(index): selected_index = index)
 		_cards_setup.launch_requested.connect(_start_adventure)
 		_cards_setup.back_requested.connect(request_back)
+		_cards_setup.refuge_requested.connect(open_refuge)
 		_cards_setup.configure(_entries)
 		_preview = _cards_setup._preview
 		start_button = _cards_setup.start_button
@@ -656,7 +657,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
-		request_back()
+		if is_instance_valid(_cards_setup):
+			_cards_setup.go_back()
+		else:
+			request_back()
 
 
 func _layout() -> void:

@@ -1,0 +1,71 @@
+{
+  "all_identical": true,
+  "files": [
+    {
+      "file": "atlases/PR_BLADES.png",
+      "sha256": "c54ebbd7adaeb35a0eaa1990e8d4250a60e64e70a4944e631958e0a3328375cc",
+      "source_sha256": "c54ebbd7adaeb35a0eaa1990e8d4250a60e64e70a4944e631958e0a3328375cc",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_DAGGER.png",
+      "sha256": "88f421b33821b39062b27b716aae43cd2ce1dcfe494994ab8181e27f1b598e47",
+      "source_sha256": "88f421b33821b39062b27b716aae43cd2ce1dcfe494994ab8181e27f1b598e47",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_EMBER.png",
+      "sha256": "a091565c75f955c1d7b761ca327f106bc0a9de8877d6a0720f496566c7e71cf8",
+      "source_sha256": "a091565c75f955c1d7b761ca327f106bc0a9de8877d6a0720f496566c7e71cf8",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_IDLE.png",
+      "sha256": "18e3e389b5e9d0a77c5b44bb529b65c9de488d269463d19e2b22a8818a21d9d2",
+      "source_sha256": "18e3e389b5e9d0a77c5b44bb529b65c9de488d269463d19e2b22a8818a21d9d2",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_RIPOSTE.png",
+      "sha256": "b975b7b45ace9a103fa46e5e4f0c635536551d252e4b2ee19d97360b16fa9d7a",
+      "source_sha256": "b975b7b45ace9a103fa46e5e4f0c635536551d252e4b2ee19d97360b16fa9d7a",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_SEAL_v03.png",
+      "sha256": "d2dd7b7e955636ed786d7ef9065ff93c7f7f132e601a567f7ef6be700314281d",
+      "source_sha256": "d2dd7b7e955636ed786d7ef9065ff93c7f7f132e601a567f7ef6be700314281d",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_SHOT.png",
+      "sha256": "32317487eddb0bbba01a42fcee4aaa5015b02775be6e5915473356712ac667be",
+      "source_sha256": "32317487eddb0bbba01a42fcee4aaa5015b02775be6e5915473356712ac667be",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_VOLLEY.png",
+      "sha256": "cd6a5275713b248a9607a0d484a2d8127aed83b3482e2fced2e6c29b3ba515fe",
+      "source_sha256": "cd6a5275713b248a9607a0d484a2d8127aed83b3482e2fced2e6c29b3ba515fe",
+      "identical": true
+    },
+    {
+      "file": "atlases/PR_WALK.png",
+      "sha256": "c87b4fe8b18ed8c1aeef2b64366fc3eddf6cac4e52ac520a7d54f22889dc4b6d",
+      "source_sha256": "c87b4fe8b18ed8c1aeef2b64366fc3eddf6cac4e52ac520a7d54f22889dc4b6d",
+      "identical": true
+    },
+    {
+      "file": "clips.json",
+      "sha256": "e20b63a7697e7beeb00c38cb42bf3e464825979521170714560b5f0d4b02a8ed",
+      "source_sha256": "e20b63a7697e7beeb00c38cb42bf3e464825979521170714560b5f0d4b02a8ed",
+      "identical": true
+    },
+    {
+      "file": "atlas_regions.json",
+      "sha256": "a6b308a069563818c22b0175930b09717805d6f4f3ac9a200333f681625d8a0f",
+      "source_sha256": "a6b308a069563818c22b0175930b09717805d6f4f3ac9a200333f681625d8a0f",
+      "identical": true
+    }
+  ]
+}

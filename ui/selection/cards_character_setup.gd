@@ -3,6 +3,7 @@ extends MarginContainer
 signal hero_selected(index: int)
 signal launch_requested
 signal back_requested
+signal refuge_requested
 const PAGE := preload("res://ui/selection/cards_choice_page.gd")
 const PREVIEW := preload("res://ui/characters/CharacterPreview3D.tscn")
 const Catalog := preload("res://core/expedition/class_card_catalog.gd")
@@ -17,7 +18,7 @@ var hero := 2
 var entries: Array[Dictionary] = []
 var start_button: Button
 var status: Label
-var _nav: VBoxContainer
+var _nav: HBoxContainer
 var _page: VBoxContainer
 var _preview: CharacterPreview3D
 var _hero_name: Label
@@ -26,6 +27,14 @@ var _panel: PanelContainer
 var _stage: VBoxContainer
 var _inspected := ""
 var _drafts: Dictionary = { }
+var _summary: Label
+var _crest: TextureRect
+var _deck_strip: HBoxContainer
+var _facing := 2
+var _pose := "idle"
+var _pose_buttons: Array[Button] = []
+const GOLD := Color("d7bd87")
+const HEADING := preload("res://asset/ui/character_selection/selection_title_font.tres")
 
 
 func configure(value: Array[Dictionary]) -> void:
@@ -33,50 +42,81 @@ func configure(value: Array[Dictionary]) -> void:
 	hero = mini(2, entries.size() - 1)
 	theme = preload("res://ui/expedition/catabase_ui_theme.gd").get_theme()
 	for side in ["left", "right", "top", "bottom"]:
-		add_theme_constant_override("margin_" + side, 20)
+		add_theme_constant_override("margin_" + side, 24)
 	var root := VBoxContainer.new()
 	root.add_theme_constant_override("separation", 12)
 	add_child(root)
-	PAGE.text(root, "C A T A B A S E   /   L A   V O I E   D E S   C A R T E S", 14).modulate = Color(
-		"d7bd87"
-	)
-	PAGE.text(root, "Façonnez votre traversée", 32)
-	PAGE.text(
-		root,
-		"Une classe. Votre manière de combattre. Dix cartes choisies avant le premier pas.",
-		16,
-	)
+	var header := HBoxContainer.new()
+	root.add_child(header)
+	var brand := PAGE.text(header, "CATABASE", 30)
+	brand.add_theme_font_override("font", HEADING)
+	brand.modulate = GOLD
+	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var mode_label := PAGE.text(header, "NOUVELLE DESCENTE  /  CARTES", 14)
+	mode_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	mode_label.modulate = GOLD
+	var refuge := _action(header, "Sanctuaire", "SetupRefuge")
+	refuge.pressed.connect(func(): refuge_requested.emit())
+	_nav = HBoxContainer.new()
+	_nav.add_theme_constant_override("separation", 8)
+	root.add_child(_nav)
 	var columns := HBoxContainer.new()
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	columns.add_theme_constant_override("separation", 16)
 	root.add_child(columns)
-	_nav = VBoxContainer.new()
-	_nav.custom_minimum_size.x = 154
-	_nav.add_theme_constant_override("separation", 8)
-	columns.add_child(_nav)
-	var stage := VBoxContainer.new()
-	_stage = stage
-	stage.custom_minimum_size.x = 205
-	columns.add_child(stage)
-	_hero_name = PAGE.text(stage, "", 26)
-	_class_label = PAGE.text(stage, "", 18)
-	var framing := AspectRatioContainer.new()
-	framing.ratio = .6
-	framing.stretch_mode = AspectRatioContainer.STRETCH_FIT
-	framing.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stage.add_child(framing)
-	_preview = PREVIEW.instantiate()
-	_preview.custom_minimum_size = Vector2.ZERO
-	framing.add_child(_preview)
-	_preview.set_showcase_mode(true)
-	PAGE.text(stage, "L'apparence vous représente.\nLa classe définit votre jeu.", 14)
 	_panel = PanelContainer.new()
 	_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(_panel)
 	_page = VBoxContainer.new()
-	_page.add_theme_constant_override("separation", 10)
+	_page.add_theme_constant_override("separation", 12)
 	_panel.add_child(_page)
-	status = PAGE.text(root, "", 14)
+	var stage := VBoxContainer.new()
+	_stage = stage
+	stage.add_theme_constant_override("separation", 8)
+	columns.add_child(stage)
+	var identity := PanelContainer.new()
+	identity.add_theme_stylebox_override("panel", CardSkin.surface(GOLD, false, 12))
+	stage.add_child(identity)
+	var title_row := HBoxContainer.new()
+	identity.add_child(title_row)
+	_crest = _art(title_row, null, 58)
+	var names := VBoxContainer.new()
+	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_row.add_child(names)
+	_hero_name = PAGE.text(names, "", 26)
+	_hero_name.add_theme_font_override("font", HEADING)
+	_class_label = PAGE.text(names, "", 16)
+	_preview = PREVIEW.instantiate()
+	_preview.custom_minimum_size = Vector2.ZERO
+	_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	stage.add_child(_preview)
+	_preview.set_showcase_mode(true)
+	var poses := HBoxContainer.new()
+	poses.alignment = BoxContainer.ALIGNMENT_CENTER
+	stage.add_child(poses)
+	_action(poses, "‹", "SetupRotateLeft").pressed.connect(_rotate.bind(-1))
+	for index in 3:
+		var pose_button := _action(poses, ["Repos", "Marche", "Attaque"][index], "SetupPose_%d" % index)
+		pose_button.add_theme_font_size_override("font_size", 14)
+		pose_button.toggle_mode = true
+		pose_button.pressed.connect(func():
+			_pose = ["idle", "walk", "attack"][index]
+			_play_pose()
+		)
+		_pose_buttons.append(pose_button)
+	_action(poses, "›", "SetupRotateRight").pressed.connect(_rotate.bind(1))
+	var summary_panel := PanelContainer.new()
+	summary_panel.add_theme_stylebox_override("panel", CardSkin.surface(GOLD, false, 12))
+	stage.add_child(summary_panel)
+	var summary_body := VBoxContainer.new()
+	summary_body.add_theme_constant_override("separation", 8)
+	summary_panel.add_child(summary_body)
+	PAGE.text(summary_body, "VOTRE DÉPART", 13).modulate = GOLD
+	_summary = PAGE.text(summary_body, "", 15)
+	_deck_strip = HBoxContainer.new()
+	_deck_strip.alignment = BoxContainer.ALIGNMENT_CENTER
+	summary_body.add_child(_deck_strip)
+	status = PAGE.text(root, "", 15)
 	status.name = "CardsSetupStatus"
 	var footer := HBoxContainer.new()
 	footer.add_theme_constant_override("separation", 12)
@@ -85,18 +125,12 @@ func configure(value: Array[Dictionary]) -> void:
 	back.name = "SetupBack"
 	back.text = "← Retour"
 	back.custom_minimum_size = Vector2(154, 46)
-	back.pressed.connect(
-		func():
-			if step == 0:
-				back_requested.emit()
-			else:
-				step -= 1
-				_render(),
-	)
+	back.pressed.connect(go_back)
 	footer.add_child(back)
+	CardSkin.icon_button(back, GOLD)
 	start_button = Button.new()
 	start_button.name = "StartAdventure"
-	start_button.custom_minimum_size.y = 46
+	start_button.custom_minimum_size.y = 56
 	start_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	start_button.pressed.connect(
 		func():
@@ -117,7 +151,7 @@ func configure(value: Array[Dictionary]) -> void:
 
 
 func _resize_stage() -> void:
-	_stage.custom_minimum_size.x = clampf(size.x * .18, 205, 340)
+	_stage.custom_minimum_size.x = clampf(size.x * .34, 340, 560)
 
 
 func payload() -> Dictionary:
@@ -131,10 +165,7 @@ func _update_hero() -> void:
 	var entry := entries[hero]
 	_hero_name.text = str(entry.display_name)
 	_preview.configure(entry.unit)
-	for clip in [&"idle_S", &"idle_E"]:
-		if _preview.has_clip(clip):
-			_preview.play_clip(clip)
-			break
+	_play_pose()
 	hero_selected.emit(hero)
 
 
@@ -143,27 +174,44 @@ func _accent() -> Color:
 
 
 func _render() -> void:
+	var focused := get_viewport().gui_get_focus_owner()
+	var focus_name := str(focused.name) if focused != null and is_ancestor_of(focused) else ""
 	for parent in [_nav, _page]:
 		for child in parent.get_children():
 			parent.remove_child(child)
 			child.queue_free()
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("121820f2")
-	style.border_color = _accent().darkened(.25)
+	style.bg_color = Color("101e1bf2")
+	style.border_color = GOLD.darkened(.3)
 	style.set_border_width_all(1)
 	style.border_width_top = 3
 	style.set_corner_radius_all(9)
 	for side in ["left", "right", "top", "bottom"]:
 		style.set("content_margin_" + side, 16.)
 	_panel.add_theme_stylebox_override("panel", style)
-	_class_label.text = Catalog.CLASSES[selection.class_id][0]
+	_class_label.text = Catalog.CLASSES[selection.class_id][0] + "  ·  Niveau 1"
 	_class_label.modulate = _accent()
-	CardSkin.icon_button(start_button, _accent())
+	_crest.texture = Catalog.icon(selection.class_id)
+	_summary.text = "%s · %d / 10 cartes\n4 en main · équipement à trouver" % ["Difficulté normale" if difficulty == "normal" else "Difficulté facile", selection.card_families.size() * 2]
+	for child in _deck_strip.get_children():
+		_deck_strip.remove_child(child)
+		child.queue_free()
+	for id in selection.card_families:
+		var card := _art(_deck_strip, Catalog.make_spell(id, 2).icon, 42)
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		var spell := Catalog.make_spell(id, 2)
+		card.tooltip_text = "2 × %s · %d PA · %s\n%s" % [spell.spell_name, spell.ap_cost, _range(spell), spell.description]
+	CardSkin.icon_button(start_button, GOLD)
+	var launch_style := CardSkin.surface(GOLD, true, 10)
+	launch_style.bg_color = Color("315a45")
+	start_button.add_theme_stylebox_override("normal", launch_style)
+	start_button.add_theme_font_size_override("font_size", 22)
 	for index in STEPS.size():
 		var button := Button.new()
 		button.name = "SetupStep_%d" % index
 		button.text = ("✓  " if index < reached else "%02d  " % (index + 1)) + STEPS[index]
 		button.custom_minimum_size.y = 43
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.toggle_mode = true
 		button.button_pressed = step == index
 		button.disabled = index > reached or (index > 2 and not Catalog.valid_departure(selection))
@@ -174,20 +222,13 @@ func _render() -> void:
 				_render(),
 		)
 		_nav.add_child(button)
-	PAGE.text(_nav, "VOTRE DECK", 13).modulate = _accent()
-	PAGE.text(_nav, "%d / 10 cartes" % (selection.card_families.size() * 2), 19)
-	PAGE.text(_nav, "4 en main\n2 gestes de secours\nÉquipement en butin", 14)
 	start_button.text = (
-		"Commencer avec %s →" % entries[hero].display_name
+		"ENTRER DANS LES ENFERS  →"
 		if step == 4
 		else "Confirmer · " + STEPS[step + 1] + " →"
 	)
 	start_button.disabled = step >= 2 and not Catalog.valid_departure(selection)
-	status.text = "Étape %d / 5 · %s · %d techniques choisies, 2 copies chacune." % [
-		step + 1,
-		Catalog.CLASSES[selection.class_id][0],
-		selection.card_families.size(),
-	]
+	status.text = "Choisissez 5 techniques pour continuer (%d / 5)." % selection.card_families.size() if start_button.disabled else "Étape %d / 5  ·  %s  ·  Vos choix restent modifiables avant le départ." % [step + 1, STEPS[step]]
 	if step == 1:
 		_render_classes()
 	elif step == 2:
@@ -196,6 +237,25 @@ func _render() -> void:
 		_render_review()
 	else:
 		_render_choice()
+	_restore_focus.call_deferred(focus_name)
+
+
+func go_back() -> void:
+	if step == 0:
+		back_requested.emit()
+	else:
+		step -= 1
+		_render()
+
+
+func _restore_focus(node_name: String) -> void:
+	if node_name.is_empty():
+		return
+	var control := find_child(node_name, true, false) as Control
+	if control != null and not (control is BaseButton and control.disabled):
+		control.grab_focus()
+	else:
+		get_node_or_null(".").find_child("SetupBack", true, false).grab_focus()
 
 
 func _render_classes() -> void:
@@ -231,7 +291,10 @@ func _render_classes() -> void:
 	var body := _scroll_body(_page, "ChoiceImpact")
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][0], 32).modulate = _accent()
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][1], 21)
+	PAGE.text(body, "BONUS DE CLASSE", 13).modulate = GOLD
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][2], 18)
+	PAGE.text(body, "À PRENDRE EN COMPTE", 13).modulate = GOLD
+	PAGE.text(body, Catalog.CLASSES[selection.class_id][3], 16)
 	PAGE.text(body, "VOTRE PREMIÈRE COMBINAISON", 13).modulate = _accent()
 	PAGE.text(body, Starters.LOOPS[selection.class_id], 17)
 	PAGE.text(body, "ÉVOLUTIONS AU NIVEAU 4", 13).modulate = _accent()
@@ -376,11 +439,16 @@ func _render_review() -> void:
 	)
 	for id in selection.card_families:
 		var spell := Catalog.make_spell(id, 2)
-		PAGE.text(
-			body,
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 12)
+		body.add_child(row)
+		_art(row, spell.icon, 48)
+		var card_label := PAGE.text(
+			row,
 			"2 × %s  ·  %d PA  ·  %s" % [spell.spell_name, spell.ap_cost, Catalog.row(id)[9]],
 			17,
 		)
+		card_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	PAGE.text(
 		body,
 		"Votre deck est prêt. Il sera utilisé dès le premier combat, sans nouvelle sélection au seuil.",
@@ -394,6 +462,9 @@ func _render_review() -> void:
 
 
 func _render_choice() -> void:
+	if step == 0:
+		_render_appearances()
+		return
 	var options: Array = []
 	var current := str(hero) if step == 0 else difficulty
 	if step == 0:
@@ -433,3 +504,109 @@ func _render_choice() -> void:
 				difficulty = id
 			_render(),
 	)
+
+
+func _render_appearances() -> void:
+	PAGE.text(_page, "Qui franchira le seuil ?", 29).add_theme_font_override("font", HEADING)
+	PAGE.text(_page, "Trois apparences pour votre héros. Choisissez ensuite sa classe et ses cartes.", 17)
+	var body := _scroll_body(_page, "ChoiceImpact")
+	var roster := HBoxContainer.new()
+	roster.add_theme_constant_override("separation", 12)
+	body.add_child(roster)
+	for index in entries.size():
+		var button := Button.new()
+		button.name = "Choice_%d" % index
+		button.custom_minimum_size.y = 212
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.toggle_mode = true
+		button.button_pressed = index == hero
+		button.tooltip_text = str(entries[index].appearance)
+		CardSkin.icon_button(button, GOLD)
+		roster.add_child(button)
+		var contents := VBoxContainer.new()
+		button.add_child(contents)
+		contents.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		contents.offset_left = 10
+		contents.offset_right = -10
+		contents.offset_top = 10
+		contents.offset_bottom = -10
+		contents.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var unit: UnitData = entries[index].unit
+		var portrait: Texture2D = unit.portrait_texture_override
+		if portrait == null and unit.preview_sprite_frames != null:
+			var frames := unit.preview_sprite_frames
+			if frames.has_animation(unit.preview_sprite_animation):
+				portrait = frames.get_frame_texture(unit.preview_sprite_animation, 0)
+		if portrait == null:
+			portrait = load("res://asset/ui/character_selection/portraits/achilles_illustrated_v2.png")
+		var art := _art(contents, portrait, 120)
+		art.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		var title := PAGE.text(contents, str(entries[index].display_name), 17)
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var tag := PAGE.text(contents, "SÉLECTIONNÉ" if hero == index else "APPARENCE", 12)
+		tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tag.modulate = GOLD if hero == index else Color("a3b7ac")
+		tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.pressed.connect(func():
+			hero = index
+			_update_hero()
+			_render()
+		)
+	PAGE.text(body, entries[hero].display_name, 25).modulate = GOLD
+	PAGE.text(body, entries[hero].description, 17)
+	PAGE.text(body, "LIBRE DE CHOISIR VOTRE CLASSE", 13).modulate = GOLD
+	PAGE.text(body, "Assassin, Gardien, Arpenteur ou Thaumaturge : chaque apparence peut suivre chacune de ces voies. Ce choix visuel ne modifie pas vos statistiques.", 16)
+
+
+func _action(parent: Control, title: String, node_name: String) -> Button:
+	var button := Button.new()
+	button.name = node_name
+	button.text = title
+	button.custom_minimum_size = Vector2(38, 40)
+	CardSkin.icon_button(button, GOLD)
+	parent.add_child(button)
+	return button
+
+
+func _art(parent: Control, texture: Texture2D, side: int) -> TextureRect:
+	var art := TextureRect.new()
+	art.texture = texture
+	art.custom_minimum_size = Vector2(side, side)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(art)
+	return art
+
+
+func _rotate(direction: int) -> void:
+	_facing = posmod(_facing + direction, 4)
+	_play_pose()
+
+
+func _clip(pose: String) -> StringName:
+	if _preview.is_using_sprite_preview():
+		return StringName(pose + "_" + ["N", "E", "S", "W"][_facing])
+	var unit: UnitData = entries[hero].unit
+	if unit.animation_set != null:
+		var action := CharacterVisual3D.ACTION_IDLE
+		if pose == "walk": action = CharacterVisual3D.ACTION_WALK
+		elif pose == "attack": action = CharacterVisual3D.ACTION_CAST
+		return unit.animation_set.get_animation_name(action)
+	return &""
+
+
+func _play_pose() -> void:
+	if not _preview.is_using_sprite_preview():
+		var visual := _preview.get_visual_instance()
+		if visual != null: visual.rotation_degrees.y = (_facing - 1) * 90.0
+	if not _preview.has_clip(_clip(_pose)):
+		_pose = "idle"
+	if _preview.has_clip(_clip(_pose)):
+		_preview.play_clip(_clip(_pose))
+	for index in _pose_buttons.size():
+		var pose: String = ["idle", "walk", "attack"][index]
+		_pose_buttons[index].disabled = not _preview.has_clip(_clip(pose))
+		_pose_buttons[index].set_pressed_no_signal(_pose == pose)

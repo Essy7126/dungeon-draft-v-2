@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="PasseRiveAutoSpriteProfile" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://data/visuals/achilles/passe_rive_autosprite_profile.gd" id="1"]
-[ext_resource type="Script" path="res://characters/achilles/2d/passe_rive_autosprite_backend.gd" id="2"]
+[ext_resource type="Script" path="res://characters/achilles/2d/passe_rive_s19_backend.gd" id="2"]
 
 [resource]
 script = ExtResource("1")

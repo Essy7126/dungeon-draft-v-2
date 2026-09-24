@@ -2,6 +2,32 @@ class_name PasseRiveAutoSpriteView
 extends AchillesIsoUnitView
 
 var _stride_position := Vector2.ZERO
+const S19Backend := preload("res://characters/achilles/2d/passe_rive_s19_backend.gd")
+
+
+func uses_s19_cards() -> bool:
+	var session = CatabaseCombatModifier.session_for(_unit) if _unit != null else null
+	return session != null and session.cards != null
+
+
+func _sync_cards_mode() -> void:
+	if sprite_backend is S19Backend:
+		sprite_backend.set_cards_mode(uses_s19_cards())
+
+
+func _play_active_action() -> bool:
+	_sync_cards_mode()
+	return super._play_active_action()
+
+
+func _play_active_idle() -> bool:
+	_sync_cards_mode()
+	return super._play_active_idle()
+
+
+func _play_active_movement() -> bool:
+	_sync_cards_mode()
+	return super._play_active_movement()
 
 
 func _ready() -> void:
@@ -17,7 +43,7 @@ func _exit_tree() -> void:
 
 func get_action_presentation() -> Dictionary:
 	var presentation := super.get_action_presentation()
-	if PasseRiveAutoSpriteBackend.action_for(&"cast", presentation) == "bow_air":
+	if not uses_s19_cards() and PasseRiveAutoSpriteBackend.action_for(&"cast", presentation) == "bow_air":
 		# Presentation distance scales with the battlefield, not the sprite atlas.
 		presentation["projectile_arc_ratio"] = 0.65
 	return presentation

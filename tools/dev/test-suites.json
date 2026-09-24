@@ -17,6 +17,7 @@
       "test_catabase_cards.gd",
       "test_catabase_class_run.gd",
       "test_class_card_vfx.gd",
+      "test_passe_rive_s19.gd",
       "test_class_painted_icons.gd",
       "test_persistent_run_combat_hud.gd"
     ]
@@ -105,6 +106,7 @@
       "test_catabase_cards.gd",
       "test_catabase_class_run.gd",
       "test_class_card_vfx.gd",
+      "test_passe_rive_s19.gd",
       "test_class_painted_icons.gd",
       "test_persistent_run_combat_hud.gd"
     ]

@@ -1,0 +1,395 @@
+[
+  {
+    "id": "a_sweep",
+    "clip": "PR_BLADES",
+    "title": "Lames croisées",
+    "family": "Dagues",
+    "ap": 3,
+    "range": [
+      1,
+      1
+    ],
+    "effect": "cross",
+    "area": true,
+    "confirm_frame": 6,
+    "intent": "Deux coupes ferment la sortie.",
+    "rule": "Frappe physique en croix de rayon 1 ; ennemis seulement.",
+    "concept": "Armé haut conservé, coupe descendante puis contre-coupe. Deux accents visuels forment un X ; un seul événement de résolution.",
+    "vfx": "Deux croissants ivoire et jade se croisent, puis se déchirent en éclats.",
+    "forbid": "Pas de deuxième application de dégâts, pas de saignement inventé.",
+    "tracks": [
+      {
+        "asset": "slash",
+        "start_frame": 4,
+        "duration": 210,
+        "mount": "weapon",
+        "offset": [
+          55,
+          -100
+        ],
+        "size": 150,
+        "angle": -1.3,
+        "gate": "cast",
+        "start_ms": 440
+      },
+      {
+        "asset": "slash",
+        "start_frame": 6,
+        "duration": 300,
+        "mount": "target",
+        "offset": [
+          0,
+          -76
+        ],
+        "size": 170,
+        "angle": 0,
+        "gate": "confirmed",
+        "start_ms": 550
+      },
+      {
+        "asset": "slash",
+        "start_frame": 6,
+        "delay": 45,
+        "duration": 310,
+        "mount": "target",
+        "offset": [
+          0,
+          -76
+        ],
+        "size": 170,
+        "angle": 1.6,
+        "gate": "confirmed",
+        "start_ms": 595
+      }
+    ],
+    "source_row": [
+      "a_sweep",
+      "assassin",
+      "Lames croisées",
+      3,
+      1,
+      1,
+      0.95,
+      "cross",
+      1,
+      "Zone"
+    ],
+    "confirm_ms": 550,
+    "body_duration_ms": 1080,
+    "preview_duration_ms": 1830
+  },
+  {
+    "id": "a_ambush",
+    "clip": "PR_RIPOSTE",
+    "title": "Attaque oblique",
+    "family": "Dagues",
+    "ap": 2,
+    "range": [
+      1,
+      1
+    ],
+    "effect": "moved",
+    "area": false,
+    "confirm_frame": 6,
+    "intent": "Éviter l’axe, trouver le flanc.",
+    "rule": "Frappe physique ; bonus de 40 % de Prouesse après 2 cases déjà parcourues ce tour.",
+    "concept": "Le pas de traverse existant devient une feinte locale suivie d’une estocade de biais. Il ne déplace pas l’unité sur la grille.",
+    "vfx": "Un seul croissant décentré accompagne la main avant ; trois éclats marquent le contact.",
+    "forbid": "Ni esquive garantie, ni téléportation, ni bonus affiché sans confirmation du jeu.",
+    "tracks": [
+      {
+        "asset": "slash",
+        "start_frame": 6,
+        "duration": 250,
+        "mount": "weapon",
+        "offset": [
+          80,
+          -98
+        ],
+        "size": 155,
+        "angle": -0.7,
+        "gate": "cast",
+        "start_ms": 595
+      },
+      {
+        "asset": "pierce",
+        "start_frame": 6,
+        "duration": 240,
+        "mount": "target",
+        "offset": [
+          0,
+          -78
+        ],
+        "size": 125,
+        "angle": -0.3,
+        "gate": "confirmed",
+        "start_ms": 595
+      }
+    ],
+    "source_row": [
+      "a_ambush",
+      "assassin",
+      "Attaque oblique",
+      2,
+      1,
+      1,
+      1.0,
+      "moved",
+      0.4,
+      "Placement"
+    ],
+    "confirm_ms": 595,
+    "body_duration_ms": 1185,
+    "preview_duration_ms": 1935
+  },
+  {
+    "id": "a_dagger",
+    "clip": "PR_DAGGER",
+    "title": "Dague lancée",
+    "family": "Dagues",
+    "ap": 1,
+    "range": [
+      2,
+      3
+    ],
+    "effect": "hit",
+    "area": false,
+    "confirm_frame": 6,
+    "intent": "Un lancer bref, une seule cible.",
+    "rule": "Frappe physique monocible à 2–3 cases.",
+    "concept": "L’armé près de l’épaule et le lâcher existants portent le mouvement. La lame déjà dessinée reste visible.",
+    "vfx": "Impact fin dirigé vers la cible, sillage bref ; aucun effet durable.",
+    "forbid": "Pas d’explosion, pas de seconde dague superposée, pas de dégâts retardés après confirmation.",
+    "tracks": [
+      {
+        "asset": "pierce",
+        "start_frame": 6,
+        "duration": 270,
+        "mount": "target",
+        "offset": [
+          0,
+          -78
+        ],
+        "size": 115,
+        "angle": 0,
+        "gate": "confirmed",
+        "start_ms": 570
+      }
+    ],
+    "source_row": [
+      "a_dagger",
+      "assassin",
+      "Dague lancée",
+      1,
+      2,
+      3,
+      0.55,
+      "hit",
+      0,
+      "Distance"
+    ],
+    "confirm_ms": 570,
+    "body_duration_ms": 1125,
+    "preview_duration_ms": 1875
+  },
+  {
+    "id": "r_shot",
+    "clip": "PR_SHOT",
+    "title": "Trait tendu",
+    "family": "Arc",
+    "ap": 2,
+    "range": [
+      2,
+      4
+    ],
+    "effect": "hit",
+    "area": false,
+    "confirm_frame": 7,
+    "intent": "Concentrer la tension dans un trait.",
+    "rule": "Frappe physique monocible à 2–4 cases.",
+    "concept": "Appui arrière et tension conservés. L’accent visuel arrive exactement à la décoche, avec un contact plus étiré que celui de la dague.",
+    "vfx": "Pointe ivoire horizontale et éclats étroits sur la cible.",
+    "forbid": "Pas de recul forcé de la cible : cette carte ne pousse pas.",
+    "tracks": [
+      {
+        "asset": "pierce",
+        "start_frame": 7,
+        "duration": 330,
+        "mount": "target",
+        "offset": [
+          0,
+          -85
+        ],
+        "size": 175,
+        "angle": 0,
+        "gate": "confirmed",
+        "start_ms": 780
+      }
+    ],
+    "source_row": [
+      "r_shot",
+      "arpenteur",
+      "Trait tendu",
+      2,
+      2,
+      4,
+      1.0,
+      "hit",
+      0,
+      "Distance"
+    ],
+    "confirm_ms": 780,
+    "body_duration_ms": 1260,
+    "preview_duration_ms": 2010
+  },
+  {
+    "id": "r_fan",
+    "clip": "PR_VOLLEY",
+    "title": "Volée croisée",
+    "family": "Arc",
+    "ap": 3,
+    "range": [
+      2,
+      4
+    ],
+    "effect": "cross",
+    "area": true,
+    "confirm_frame": 7,
+    "intent": "Couvrir plusieurs adversaires.",
+    "rule": "Frappe physique en croix de rayon 1 ; ennemis seulement, portée 2–4.",
+    "concept": "La visée haute et les trois flèches existantes donnent l’ampleur. Les contacts sont placés sur les cibles réelles de la croix.",
+    "vfx": "Accents de flèches obliques descendants, un par ennemi touché ; dissipation courte.",
+    "forbid": "Pas de pluie couvrant une aire arbitraire ; pas de délai balistique ajouté aux règles.",
+    "tracks": [
+      {
+        "asset": "volley",
+        "start_frame": 7,
+        "duration": 400,
+        "mount": "target",
+        "offset": [
+          0,
+          -80
+        ],
+        "size": 145,
+        "angle": 0,
+        "gate": "confirmed",
+        "start_ms": 830
+      }
+    ],
+    "source_row": [
+      "r_fan",
+      "arpenteur",
+      "Volée croisée",
+      3,
+      2,
+      4,
+      0.75,
+      "cross",
+      1,
+      "Zone"
+    ],
+    "confirm_ms": 830,
+    "body_duration_ms": 1325,
+    "preview_duration_ms": 2075
+  },
+  {
+    "id": "t_fire",
+    "clip": "PR_EMBER",
+    "title": "Éclat de braise",
+    "family": "Sorts",
+    "ap": 3,
+    "range": [
+      1,
+      3
+    ],
+    "effect": "fire",
+    "area": true,
+    "confirm_frame": 7,
+    "intent": "Comprimer, projeter, éclater.",
+    "rule": "Dégâts magiques de feu en croix de rayon 1 ; ennemis seulement.",
+    "concept": "La petite flamme tenue puis projetée reste celle du sprite. Son énergie se déploie sur les victimes en trois langues ascendantes.",
+    "vfx": "Noyau chaud, gerbe découpée, braises ascendantes et extinction.",
+    "forbid": "Ni brûlure périodique ni terrain en feu : ils appartiennent à d’autres cartes.",
+    "tracks": [
+      {
+        "asset": "fire",
+        "start_frame": 7,
+        "duration": 760,
+        "mount": "target",
+        "offset": [
+          0,
+          -75
+        ],
+        "size": 190,
+        "angle": 0,
+        "gate": "confirmed",
+        "start_ms": 810
+      }
+    ],
+    "source_row": [
+      "t_fire",
+      "thaumaturge",
+      "Éclat de braise",
+      3,
+      1,
+      3,
+      0.8,
+      "fire",
+      1,
+      "Zone"
+    ],
+    "confirm_ms": 810,
+    "body_duration_ms": 1325,
+    "preview_duration_ms": 2320
+  },
+  {
+    "id": "t_mark",
+    "clip": "PR_SEAL",
+    "title": "Sceau d’ombre",
+    "family": "Sorts",
+    "ap": 1,
+    "range": [
+      1,
+      3
+    ],
+    "effect": "mark",
+    "area": false,
+    "confirm_frame": 7,
+    "intent": "Désigner une faille pour la suite.",
+    "rule": "Faibles dégâts magiques et état Marqué pendant 1 activation de la cible.",
+    "concept": "Le geste vertical et le talisman existants désignent l’adversaire. Le sceau se referme au contact puis devient un signe discret.",
+    "vfx": "Fragments or et pétrole convergents ; petit marqueur maintenu au-dessus de la cible.",
+    "forbid": "Pas de portail, d’invocation ou d’explosion ; maintien lié à l’état, pas à un nombre de secondes.",
+    "tracks": [
+      {
+        "asset": "mark",
+        "start_frame": 7,
+        "duration": 380,
+        "mount": "target",
+        "offset": [
+          0,
+          -88
+        ],
+        "size": 140,
+        "angle": 0,
+        "gate": "confirmed",
+        "start_ms": 870
+      }
+    ],
+    "source_row": [
+      "t_mark",
+      "thaumaturge",
+      "Sceau d'ombre",
+      1,
+      1,
+      3,
+      0.3,
+      "mark",
+      1,
+      "Préparation"
+    ],
+    "confirm_ms": 870,
+    "body_duration_ms": 1420,
+    "preview_duration_ms": 2170
+  }
+]
