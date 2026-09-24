@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+test-artifacts/
+public/generated/
+.npm-cache/
+*.log
+.vite/
+*.tsbuildinfo
