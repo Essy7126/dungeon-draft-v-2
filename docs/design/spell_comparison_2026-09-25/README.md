@@ -6,7 +6,11 @@
 
 Ce dossier compare les contrats de sorts, leurs enchaînements et les réponses adverses. Il distingue systématiquement le jeu Godot actuel de la proposition indépendante `consumable_v1`. Aucune règle du jeu n'a été modifiée.
 
+**Approfondissements disponibles :** [identité des sorts DOFUS/WAKFU](../dofus_wakfu_spell_identity_2026-09-25/README.md), [classes et bestiaire complémentaires](../dofus_wakfu_spell_identity_2026-09-25/extension_classes_bestiaire/README.md), et [étude complète des cartes de Slay the Spire 1](../slay_the_spire_complete_2026-09-25/README.md), avec 370 fiches, règles d’interaction, douze moteurs de build et comparaison à la V1.
+
 ## Parcours de lecture
+
+Dernier complément : [les 18 personnages WAKFU et leurs directions de build](../wakfu_character_builds_2026-09-25/README.md), avec passifs structurants, limites des sources et 15 calculs reproductibles.
 
 1. [Lectures comparées, jeu par jeu](LECTURES_COMPAREES.md) : DOFUS, WAVEN, Baldur's Gate 3, Divinity: Original Sin 2 Definitive Edition, Slay the Spire 1 ; sorts de personnages et capacités ennemies.
 2. [Audit et propositions prioritaires](AUDIT_ET_PRIORITES.md) : écarts concrets, redondances, calculs, huit pistes avec limites et critères d'essai.

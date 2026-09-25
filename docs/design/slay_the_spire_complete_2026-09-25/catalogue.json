@@ -62,7 +62,7 @@
       "upgradeCost": 1,
       "group": "ironclad",
       "contrat": "B5 ; améliore une carte en main pour ce combat → toutes les cartes en main.",
-      "analyse": "L’amélioration augmente la couverture, pas le blocage. Préparer une grosse main change sa rentabilité ; bénéfice perdu si les cartes ne sont pas rejouées.",
+      "analyse": "L’amélioration augmente la couverture, pas le blocage. La valeur dépend des cartes améliorables que l’on pourra effectivement jouer, puis de leurs éventuels rejouages.",
       "sources": [
         "https://github.com/nkhoit/spire-archive/blob/687e6dce1f325234425e1b75f09d13ddd6ce7000/data/sts1/cards.json"
       ]
@@ -1295,8 +1295,8 @@
       "cost": 1,
       "upgradeCost": 1,
       "group": "silent",
-      "contrat": "D7→10 ; si la cible est empoisonnée, deuxième impact de même valeur.",
-      "analyse": "Pont entre poison et attaques, sans consommation du poison. Dépend d’un état préalable et profite deux fois de la Force.",
+      "contrat": "D7→10 ; si la cible est empoisonnée après le premier impact, deuxième impact de même valeur.",
+      "analyse": "Pont entre poison et attaques, sans consommation du poison. Envenom peut poser le poison sur le premier impact non bloqué ; la Force profite aux deux.",
       "sources": [
         "https://github.com/nkhoit/spire-archive/blob/687e6dce1f325234425e1b75f09d13ddd6ce7000/data/sts1/cards.json",
         "https://slaythespire.gg/cards/silent/Bane"
@@ -2935,8 +2935,8 @@
       "cost": 1,
       "upgradeCost": 1,
       "group": "defect",
-      "contrat": "Bullseye : D8→11 puis Lock-On 2→3.",
-      "analyse": "Amplifie les dégâts d’orbes sur une cible ; complète la Foudre ou Ténèbres, contrairement à Vulnérable qui concerne les attaques.",
+      "contrat": "Bullseye : D8→11 puis Lock-On pendant 2→3 tours ; la cible reçoit +50 % de dégâts d’orbes.",
+      "analyse": "Complète la Foudre ou Ténèbres, contrairement à Vulnérable qui concerne les attaques. Le bonus ne renforce donc pas directement la frappe initiale de Bullseye.",
       "sources": [
         "https://github.com/nkhoit/spire-archive/blob/687e6dce1f325234425e1b75f09d13ddd6ce7000/data/sts1/cards.json"
       ]
@@ -3357,7 +3357,7 @@
       "upgradeCost": 3,
       "group": "defect",
       "contrat": "D7→9 aléatoire par Foudre canalisée depuis le début du combat ; coût 3.",
-      "analyse": "Récompense l’histoire de production, mais ajoute une carte chère à un moteur parfois déjà capable de gagner. Compte des attaques, pas des dégâts d’orbes.",
+      "analyse": "Récompense l’histoire de production, mais ajoute une carte chère à un moteur parfois déjà capable de gagner. Ses impacts sont des dégâts d’attaque, pas des dégâts d’orbes.",
       "sources": [
         "https://github.com/nkhoit/spire-archive/blob/687e6dce1f325234425e1b75f09d13ddd6ce7000/data/sts1/cards.json"
       ]
@@ -4514,7 +4514,7 @@
       "cost": 3,
       "upgradeCost": 3,
       "group": "watcher",
-      "contrat": "Choisit Armure métallique 6→8, Force 3→4, ou or 25→30 ; Épuisement ; coût 3.",
+      "contrat": "Choisit Armure plaquée 6→8, Force 3→4, ou or 25→30 ; Épuisement ; coût 3.",
       "analyse": "Relie combat et économie avec un choix explicite. Prendre l’or sacrifie une protection ou une accélération immédiate ; les copies peuvent déformer cette économie.",
       "sources": [
         "https://github.com/nkhoit/spire-archive/blob/687e6dce1f325234425e1b75f09d13ddd6ce7000/data/sts1/cards.json"

@@ -28,6 +28,8 @@ Ce document complète les 370 fiches : les effets nommés propres aux cartes (Co
 
 Références de règles : [pioche](https://slay-the-spire.fandom.com/wiki/Card_Draw), [épuisement](https://slay-the-spire.fandom.com/wiki/Exhaust), [rétention](https://slay-the-spire.fandom.com/wiki/Retain), [amélioration](https://slay-the-spire.fandom.com/wiki/Upgrade), [duplication par Burst](https://slay-the-spire.fandom.com/wiki/Burst). Les exemples précis sont détaillés dans les catalogues.
 
+Pour Fatal, une mise à zéro provisoire n’est pas toujours une mort éligible : le dernier Darkling du groupe compte, les autres non ; la première phase d’Awakened One ne compte pas. Les effets simplement formulés sur une mort, comme Sunder, ne partagent pas toutes ces exclusions. [Exceptions de Fatal](https://slay-the-spire.fandom.com/wiki/Fatal).
+
 ## 2. Énergie : trois temporalités, plusieurs limites
 
 **Coût imprimé**, **coût courant du combat**, **coût de ce tour** et **gratuité au prochain jeu** sont des états distincts. Streamline modifie un exemplaire pour le combat ; Bullet Time agit sur la main de ce tour ; Setup/Forethought réservent une gratuité jusqu’au jeu. Cette distinction influence All for One et Scrape. Une carte gratuite peut toujours coûter une place, une pioche, un compteur adverse et des PV annexes.

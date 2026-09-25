@@ -8,6 +8,8 @@ Cette étude approfondit le [premier audit comparatif](../spell_comparison_2026-
 
 ## Lecture du dossier
 
+**Approfondissement final : [personnages et builds WAKFU](../wakfu_character_builds_2026-09-25/README.md)**, avec 38 lectures complémentaires, 18 portraits et 15 calculs. Les trois études réunissent 166 identifiants WAKFU distincts ; les limites de lecture du client restent explicites.
+
 | Document | Contenu |
 |---|---|
 | [DOFUS](DOFUS.md) | 22 sorts du noyau Xélor affiché, 8 Pandawa, 6 Féca ; chiffres du dernier grade, rôle, restrictions et inconnues. |
@@ -43,4 +45,4 @@ Le dossier est autonome et utilise des liens locaux relatifs. Commencer par `SOU
 node docs/design/dofus_wakfu_spell_identity_2026-09-25/calculs.mjs
 ```
 
-Base de dépôt observée : `6a500c545f04d3e4c53a99d3643d0c4d844e303f`. Ces fichiers sont écrits dans le dépôt local ; ils ne sont pas automatiquement synchronisés sur l'autre ordinateur. Aucun commit ni push n'a été effectué.
+Base de dépôt observée pendant l’analyse : `6a500c545f04d3e4c53a99d3643d0c4d844e303f`. Ces recherches sont désormais versionnées sur `main` ; récupérer cette branche sur l’autre ordinateur pour les reprendre. L’[étude complète des cartes de Slay the Spire 1](../slay_the_spire_complete_2026-09-25/README.md) prolonge la comparaison.

@@ -289,12 +289,12 @@
     },
     {
       "id": "M40",
-      "hypothese": "StS : 3 cartes retenues et pioche normale 5, cap10 ; V1 théorique : remplit jusqu’à5.",
+      "hypothese": "StS : 3 cartes retenues et pioche normale 5, cap10 ; hypothèse d’ajout de rétention à notre V1 sans changer son remplissage jusqu’à5.",
       "resultat": {
         "stsMain": 8,
         "v1Main": 5
       },
-      "consequence": "La rétention n’aurait pas la même productivité dans les deux règles."
+      "consequence": "La rétention n’aurait pas la même productivité ; elle n’est pas déjà implémentée dans notre V1."
     },
     {
       "id": "M41",

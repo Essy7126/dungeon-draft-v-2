@@ -3,6 +3,12 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 const dir=path.dirname(fileURLToPath(import.meta.url));
+const checkOnly=process.argv.includes('--check');
+const write=(name,content)=>{
+  const target=path.join(dir,name);
+  if(checkOnly) assert.equal(fs.readFileSync(target,'utf8').replaceAll('\r\n','\n'),content,`Fichier calculé périmé : ${name}`);
+  else fs.writeFileSync(target,content);
+};
 const cases=[];
 let assertions=0;
 function check(id,hypothese,actual,expected,consequence) {
@@ -69,12 +75,12 @@ for(let a=0;a<11;a++)for(let b=a+1;b<12;b++)for(let c=b+1;c<13;c++)for(let d=c+1
 }
 assert.equal(total,choose(15,5));assert.ok(Math.abs(one/total-atLeastOne(15,3,5))<1e-12);assert.ok(Math.abs(two/total-both(15,3,3,5))<1e-12);assertions+=3;
 const out={date:'2026-09-25',scope:'Calculs déterministes isolés ; pas moteur StS, pas simulation complète de run, pas validation humaine du plaisir.',cases:cases.length,assertions,enumeratedHands:total,results:cases};
-fs.writeFileSync(path.join(dir,'resultats_calcules.json'),JSON.stringify(out,null,2)+'\n');
+write('resultats_calcules.json',JSON.stringify(out,null,2)+'\n');
 let md='# Calculs et contre-exemples\n\n'+out.scope+' Les contrats proviennent des [lectures de cartes](README.md) et des [règles transversales](EFFETS_ET_REGLES.md).\n\n';
 md+=`${cases.length} scénarios, ${assertions} assertions, ${total} mains énumérées pour recouper les probabilités.\n\n`;
 md+='Les dégâts supposent des cibles vivantes, sans résistance ou protection non indiquée. Les simulations de poison supposent aucune purge, aucun plafond de pertes de PV et aucune mort avant les tics comptés. Les hypothèses économiques ne remplacent pas les résultats de la V1 existante.\n\n';
 md+='| Cas | Hypothèse | Résultat | Ce que le calcul permet de conclure |\n|---|---|---|---|\n';
 for(const c of cases) md+=`| ${c.id} | ${c.hypothese} | ${JSON.stringify(c.resultat)} | ${c.consequence} |\n`;
 md+='\nReproduire : `node docs/design/slay_the_spire_complete_2026-09-25/calculs.mjs`. Les valeurs attendues sont fixées dans le script. La reproduction prouve la cohérence de ces calculs, pas l’exactitude de tous les cas limites du client original.\n';
-fs.writeFileSync(path.join(dir,'CALCULS.md'),md);
+write('CALCULS.md',md);
 console.log(JSON.stringify({scenarios:cases.length,assertions,mainsEnumerees:total}));

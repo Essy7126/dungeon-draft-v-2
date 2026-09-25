@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-09-25T16:08:53.013Z",
+  "repoHead": "24053adbb4a41f9442f14a6c23ca721b8c413c8b",
+  "status": "passed",
+  "scope": "Intégrité documentaire, couverture et calculs isolés ; aucun client StS ou Godot exécuté.",
+  "checks": [
+    "Couverture exacte des 370 identifiants",
+    "Répartition des cartes et des choix spéciaux",
+    "Contrats, analyses, coûts et références présents pour chaque entrée",
+    "Catalogues et calculs identiques à leurs sources éditables",
+    "Scénarios mathématiques annoncés et énumération indépendante",
+    "Encodage et largeur des tableaux Markdown",
+    "Liens Markdown locaux résolus ; URLs distantes syntaxiquement valides",
+    "Comparaison V1 : 48 familles et 33 améliorations exclusivement offensives"
+  ],
+  "totals": {
+    "entries": 370,
+    "cards": 367,
+    "wishChoices": 3,
+    "calculationScenarios": 47,
+    "calculationAssertions": 50,
+    "enumeratedHands": 3003,
+    "localLinks": 49,
+    "externalLinks": 444
+  },
+  "remoteLinksCheckedOverNetwork": false,
+  "fingerprints": {
+    "ANALYSE_DES_BUILDS.md": "1eb3fbd64eb3e556e7f80c3dfb09930a6f3b71d0812ba0b0d5ad8139dc4d00f2",
+    "APPLICATION_CATABASE.md": "e2af3dbf690b20543dcbe37c406963b6c5a891b5cda049f805a5dc3d962d47c0",
+    "CALCULS.md": "c9b4b1f04c4d976b8332e824c98eb7c55cae28b6fbd3f804af5d963774564976",
+    "CATALOGUE_DEFECT.md": "82786c63d3330744f406817c1b12597daf290cebb6345e8d22542ed590d5f4bc",
+    "CATALOGUE_IRONCLAD.md": "47f1593611ac02fdb5d680ac349b68b120b6dd438ef313617726f799918a38e6",
+    "CATALOGUE_NEUTRES.md": "85fa8c7f8ad49c31f3b3d15618a8f6489a14ee576118d431fcd48c36827aa33d",
+    "CATALOGUE_SILENT.md": "ee410e89b4a696f553cebf9e68fd2ec9c48400b02edd2206a5c2810b20fb742f",
+    "CATALOGUE_WATCHER.md": "4e5f1e1e6753cdfc4bf5c58849da88d413c0764d8b0cb85ba9f86beab182e270",
+    "EFFETS_ET_REGLES.md": "197dc19b412189a64a1372e721c9bd3b94fce32d5881aa36603236012ca9202d",
+    "README.md": "0fb64f9ab54603d89d0d2c9ee3687adf13b6936586b7fb33f9d2e1aa1e7a036c",
+    "SOURCES_ET_VERIFICATION.md": "3c7d1a87b643dd8bb983ca32c0009427462951b2b036919dbf6fe834510a2666",
+    "calculs.mjs": "979cb7a8a54e6fc9578e016734288423a18601485501e6c027bae36f309975d9",
+    "catalogue.json": "87cbd8f9c6689ad3294b232b750e32d4356ed0a44a40d2b764ef00bde2d466e3",
+    "construire_catalogue.mjs": "2aff555fb4b5580d5d54bed8f89777ce369059bf6aa43ed94c207add74936e1f",
+    "inventaire_reference.json": "5350636075645c5e9449769f9e91f70650614b5a1e5e9915b3c170812a38ca7d",
+    "lectures_defect.tsv": "6c2d66769cb79dcf68bcce0612d8430c796185c341128dbd98a582b221ad50f9",
+    "lectures_ironclad.tsv": "8b87903dd296cee3f000ede193bfa73bae45cf0f41387af266258108eff6f359",
+    "lectures_neutres.tsv": "ee62e01b144e04a8323eda76d28c52f1aef83d7244bdc5fd73bdf811acc4633a",
+    "lectures_silent.tsv": "2815c74d62f1aedc7fa3e3db044973934327031aa5cadf652ef3402ffd512f60",
+    "lectures_watcher.tsv": "abe48249acf5e4b416f98590d2f8f38b1133e229e301b23add372eb778003cc6",
+    "resultats_calcules.json": "ce939463109d751faa80c3797e6abadbf0b7ab46267c36007bbd3c7afd337ac6",
+    "supplements_reference.json": "65a2051679aff6e5d52b30967e621f4788b4d5bf311d9d79899cb393a6fa7485",
+    "verifier_dossier.mjs": "352f3751cb3e4d65a8f3d6175d9e79c1ed7a1de4f42081620975a47ce4066db4"
+  }
+}

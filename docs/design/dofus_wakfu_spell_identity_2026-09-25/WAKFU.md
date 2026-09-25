@@ -70,7 +70,7 @@ PO : intervalle affiché ; `M` : modifiable ; `F` : fixe. Ligne de vue requise s
 
 1. **Le numéro du tour** commande Tique/Taque et Contre-horaire.
 2. **L'heure courante** commande Symétrie, Promptitude, Déjà vu et le placement.
-3. **La file des événements différés** contient les effets futurs et peut être accélérée par Maître du cadran.
+3. **La file des événements différés** contient les effets futurs ; Maître du cadran peut provoquer une résolution immédiate. La [relecture complémentaire](../wakfu_character_builds_2026-09-25/LECTURES_COMPLEMENTAIRES.md) souligne que la description ne prouve pas l'annulation de l'échéance initiale : déclenchement supplémentaire et simple avance restent à distinguer dans le client.
 
 La puissance vient de leur coordination. Un simple buff « +20 % si tu t'es déplacé » ne produit pas le même jeu. Il récompense un fait binaire ; ici, le joueur prépare l'ordre de plusieurs événements et doit conserver les bons supports vivants.
 

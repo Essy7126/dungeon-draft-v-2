@@ -1,0 +1,235 @@
+{
+  "scope": "Modèles isolés, pas un simulateur du client WAKFU ni de combats Godot",
+  "scenarios": 15,
+  "assertions": 15,
+  "cases": [
+    {
+      "id": "W01",
+      "title": "Tacticien : deux plafonds distincts",
+      "sourceIds": [
+        7982
+      ],
+      "assumptions": "A désigne un seul lancement déplaçant deux bombes ; B/C/D sont trois autres lancements. Événements admissibles. Seul le remboursement est calculé, pas la perte de niveaux après plafond.",
+      "result": {
+        "events": 5,
+        "spells": 4,
+        "refundedAP": 3
+      },
+      "lesson": "Ni un PA par bombe sans limite, ni quatre PA parce que quatre sorts ont déplacé une bombe."
+    },
+    {
+      "id": "W02",
+      "title": "Bas les masques : différence et plafond",
+      "sourceIds": [
+        7094
+      ],
+      "assumptions": "Le personnage commence avec A ; les choix sans changement ne déclenchent rien. Le coût des changements ne figure pas dans le gain brut.",
+      "result": {
+        "refundedAP": 2
+      },
+      "lesson": "Deux changements admissibles ne rendent pas quatre PA."
+    },
+    {
+      "id": "W03",
+      "title": "Mini-Bond : payer plusieurs budgets",
+      "sourceIds": [
+        5103
+      ],
+      "assumptions": "Trois lancements légaux ; aucun autre modificateur. On ne calcule ni trajet ni portée cumulée traversable.",
+      "result": {
+        "AP": 6,
+        "WP": 3,
+        "casts": 3
+      },
+      "lesson": "Le coût appartient à l’économie WAKFU ; notre personnage V1 à quatre PA ne peut copier cette séquence."
+    },
+    {
+      "id": "W04",
+      "title": "Pacte de sang : passages plutôt que présence",
+      "sourceIds": [
+        5053
+      ],
+      "assumptions": "Base 1 000 PV, PV max réduits avant les seuils. Toutes les transitions sont dans une même fenêtre de compteurs ; aucun coup mortel. Trajectoire artificielle pour tester les caps, pas un combo garanti.",
+      "result": {
+        "maxHP": 700,
+        "lower": 140,
+        "upper": 280,
+        "armor": 210
+      },
+      "lesson": "Les séjours sous 20 % et les deuxièmes passages ne redonnent pas chacun une couche d’armure."
+    },
+    {
+      "id": "W05",
+      "title": "Jeu dangereux : frontière à 35 %",
+      "sourceIds": [
+        7214
+      ],
+      "assumptions": "Soin brut 100, sans autres modificateurs ni soin excédentaire. Le seuil est évalué avant cette instance ; cette convention doit être contrôlée dans le client.",
+      "result": {
+        "rawHeals": [
+          200,
+          200,
+          25,
+          25
+        ]
+      },
+      "lesson": "Une moyenne de PV masque une discontinuité de facteur huit entre les deux fenêtres."
+    },
+    {
+      "id": "W06",
+      "title": "Digestion : plafond sur les événements",
+      "sourceIds": [
+        7555
+      ],
+      "assumptions": "Fenêtre unique du compteur, PV max 1 000, événements déjà qualifiés, pas de modificateur de soin ni perte par soin excédentaire. Ne tranche pas le reset entre tours des combattants.",
+      "result": {
+        "three": {
+          "events": 3,
+          "rage": 12,
+          "rawHealFor1000HP": 120
+        },
+        "seven": {
+          "events": 5,
+          "rage": 20,
+          "rawHealFor1000HP": 200
+        }
+      },
+      "lesson": "Fractionner encore les dégâts après le cinquième événement ne produit plus de gain dans cette fenêtre."
+    },
+    {
+      "id": "W07",
+      "title": "Virevolte : accès à l’angle",
+      "sourceIds": [
+        7105
+      ],
+      "assumptions": "Dégâts de référence identiques par attaque ; aucun autre bonus DI ni multiplicateur d’orientation. 60 % des attaques de côté, 40 % de face.",
+      "result": {
+        "relativeOutput": 1.05,
+        "breakEvenSideShare": 0.5
+      },
+      "lesson": "Le gain moyen est ici 5 %, et non 25 %. La fréquence des positions légales fait partie de la balance."
+    },
+    {
+      "id": "W08",
+      "title": "Guerrier invocateur : quel acteur produit ?",
+      "sourceIds": [
+        7331
+      ],
+      "assumptions": "Deux répartitions de 200 dégâts bruts ; aucun autre bonus DI. Les +20/−20 points se lisent donc ici comme 1,2/0,8. Aucun soin inclus.",
+      "result": {
+        "petHeavy": 184,
+        "heroHeavy": 216
+      },
+      "lesson": "Le même passif donne −8 % ou +8 % selon la répartition de contribution."
+    },
+    {
+      "id": "W09",
+      "title": "Délai : même soin nominal, survie différente",
+      "sourceIds": [
+        5451
+      ],
+      "assumptions": "20 PV avant soin, PV max au moins 120, soin brut 100 ; ennemi inflige 80 avant le prochain tour du bénéficiaire. Aucun autre effet et aucune résurrection.",
+      "result": {
+        "immediate": {
+          "aliveBeforeDeferredHeal": true,
+          "finalHP": 40
+        },
+        "delayed": {
+          "aliveBeforeDeferredHeal": false,
+          "finalHP": 0
+        }
+      },
+      "lesson": "La seconde moitié ne peut sauver rétroactivement une cible morte."
+    },
+    {
+      "id": "W10",
+      "title": "Échange asynchrone : conversion non additive",
+      "sourceIds": [
+        8272
+      ],
+      "assumptions": "Statistiques fictives stables, aucune modification temporaire ; on isole la reprise de maîtrise et pas la formule complète des dégâts.",
+      "result": {
+        "convertedMelee": 1000,
+        "incorrectSum": 1200
+      },
+      "lesson": "Un parseur additionnant les deux maîtrises inventerait 200 points de puissance."
+    },
+    {
+      "id": "W11",
+      "title": "Fermentation : dépendance aux PV max",
+      "sourceIds": [
+        8597
+      ],
+      "assumptions": "Portage valide en fin de tour ; PV max 800 puis 1 200, aucun bonus d’armure. Le 245 isolé de la fiche n’est pas additionné.",
+      "result": {
+        "armorAt800": 160,
+        "armorAt1200": 240
+      },
+      "lesson": "Un test client à deux valeurs de PV permettrait de distinguer une formule proportionnelle d’un montant fixe."
+    },
+    {
+      "id": "W12",
+      "title": "Tarot : plusieurs paires, un seul gain",
+      "sourceIds": [
+        5246
+      ],
+      "assumptions": "Quatre cartes blanches légales dans un même tour, indépendamment des coûts et de leur accessibilité. Aucune paire noire : le cas du compteur mixte reste ouvert.",
+      "result": {
+        "WP": 1
+      },
+      "lesson": "Le plafond porte sur la récompense de séquence, pas sur chaque sous-séquence détectée."
+    },
+    {
+      "id": "W13",
+      "title": "Assimilation : revenu théorique et revenu utilisable",
+      "sourceIds": [
+        7196
+      ],
+      "assumptions": "Maximum initial fictif 12, réduit à 6 ; réserve 5 ; trois éliminations admissibles sans dépense intermédiaire. Le maximum 12 est un paramètre d’exemple, pas une affirmation sur toute classe équipée.",
+      "result": {
+        "maxWP": 6,
+        "finalWP": 6,
+        "wastedWP": 5
+      },
+      "lesson": "Une petite réserve transforme un remboursement généreux en excédent perdu ; l’ordre des dépenses compte."
+    },
+    {
+      "id": "W14",
+      "title": "Croissance : le coût de recommencer",
+      "sourceIds": [
+        8152
+      ],
+      "assumptions": "Poupée présente trois fins de tour sans interruption ; uniquement le bonus +1 du passif, sans croissance normale. Une transformation en graine enlève ensuite les niveaux.",
+      "result": {
+        "bonusByTurn": [
+          1,
+          2,
+          3
+        ],
+        "bonusAfterReset": 0,
+        "bonusLost": 3
+      },
+      "lesson": "Le repositionnement via recyclage peut détruire de l’investissement ; ne pas lui attribuer un coût nul."
+    },
+    {
+      "id": "W15",
+      "title": "Bouclier immédiat : disponibilité sur une cible",
+      "sourceIds": [
+        6991
+      ],
+      "assumptions": "Exemple abstrait : délai de base choisi à deux tours, augmenté de deux ; disponibilité initiale tour 1, observation jusqu’au tour 6. Cette convention de recharge n’est pas une mesure d’un bouclier particulier.",
+      "result": {
+        "baseline": [
+          1,
+          3,
+          5
+        ],
+        "immediateVariant": [
+          1,
+          5
+        ]
+      },
+      "lesson": "Le bénéfice de l’immédiateté doit être comparé à une intervention future absente, pas seulement au montant du premier bouclier."
+    }
+  ]
+}

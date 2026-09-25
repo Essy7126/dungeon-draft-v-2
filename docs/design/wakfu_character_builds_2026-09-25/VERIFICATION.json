@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-09-25T16:10:02.222Z",
+  "status": "passed",
+  "checks": [
+    "Fraîcheur du catalogue lisible et structuré depuis les lectures",
+    "Couverture : 18 classes, 38 fiches, 36 ajouts distincts",
+    "Fraîcheur des 15 scénarios et succès des 15 assertions",
+    "Portraits : deux directions et une épreuve pour chacune des 18 classes",
+    "Liens locaux, syntaxe URL, tableaux et encodage"
+  ],
+  "coverage": {
+    "classes": 18,
+    "readings": 38,
+    "passive": 37,
+    "active": 1,
+    "priorUniqueIds": 130,
+    "repeatedIds": [
+      758,
+      7196
+    ],
+    "additionalUniqueIds": 36,
+    "combinedUniqueIds": 166
+  },
+  "math": {
+    "scenarios": 15,
+    "assertions": 15
+  },
+  "localLinks": 43,
+  "externalUrlsSyntaxOnly": 39,
+  "clientRuntimeTested": false,
+  "godotRuntimeTested": false,
+  "limitation": "Intégrité et conséquences des modèles déclarés ; aucune mesure de popularité, test du client WAKFU ou équilibrage global certifié.",
+  "fingerprints": {
+    "APPLICATION_CATABASE.md": "3bb8b9dd16e8c36000a899482ea11d322800ab1412e50eddafe78246220df8e0",
+    "CALCULS.md": "d33779ade49a29a60f484bef953175a39281f4a6c8c68b401801d5011aa31c71",
+    "LECTURES_COMPLEMENTAIRES.md": "98abcbb7d0600834d9d76a7f2d6c73edf44367b2b74c95befc6da2817d940a86",
+    "PERSONNAGES.md": "5e3b3308a5d13531c104dbcab3d7f01a88b9c59def81ca99a603226cc15888e5",
+    "README.md": "e0a4058f49edb0474e84e6f76c55cfb81580e3014af61063698053b527898b25",
+    "SOURCES_ET_LIMITES.md": "c0a65ade35377d554d044be8efa38d891132612d76a06a20318513db98318de2",
+    "calculs.mjs": "d593fb27ce0a10e9813482d85554838309f03c11810f89be51cca0746e3a630e",
+    "construire_lectures.mjs": "666aa38453625dd32148fd27ecd53888ebd842ecea8b367179b46b395c4e5612",
+    "lectures.json": "52d14a9bdaef0b81801da52fc499016b9ea6b46bb5906d9b22b61cf0510b8a00",
+    "lectures.tsv": "ccb6c0fce58d8dd9fff06cca17aa29b950f300b472d38d9a402b01bf1132bc25",
+    "resultats_calcules.json": "aee8ae870e26e6d789cd6ed3cf24b71caac626ca3bc227998511fe240e221404",
+    "verifier_dossier.mjs": "fbef921147df139655226afbe0c40232c1b996ed7cd9643416de0ba88fad9fb0"
+  }
+}
