@@ -42,10 +42,20 @@ priorité de sortie de stase incorrecte et une fuite d’historique dans les fix
 du contrat de feedback. Tous sont corrigés, sans retirer d’assertion. Les anciennes
 captures des dossiers éthérés ne constituent pas des preuves de cette version.
 
-## Fin de validation en cours
+## Captures natives validées
 
-Capture finale `capture_combat.ps1 -Cel` en cours : seize sorts filmés (960 images),
-Brûlure et son tick réel, huit états simultanés, terrains, bilan et reprise réelle.
-Après son succès : encoder les seize GIF et inspecter les vues finales.
+Capture finale `capture_combat.ps1 -Cel` : **184 contrôles réussis, 17 lancers,
+960 images**. Seize sorts filmés, Brûlure et son tick réel, huit états simultanés,
+terrains, bilan et reprise réelle. Rapport :
+`artifacts/dev/class_card_vfx/cel/combat/report.json`.
+Inspection terminée : volée, faux, rempart, sablier, comparaison impact/tick,
+rangée de huit états, maintien des terrains et écran de reprise.
+
+Finalisation du 24 septembre : aucune différence d’empreinte entre les sources
+VFX, le catalogue courant et les captures. Encodage terminé : seize GIF de deux
+secondes, 960 images natives, empreintes des sorties vérifiées. Rapport complet :
+`artifacts/dev/class_card_vfx/cel/combat/encode_report.json`.
+La galerie et les GIF sont prêts à être revus ; aucune validation requise ne reste
+en attente. `git diff --check` est passé après la mise à jour de cette fiche.
 Le bilan emploie une victoire de fixture après les lancers : ce n’est pas une
 victoire jouée. Les contrôles techniques ne valent pas approbation artistique.

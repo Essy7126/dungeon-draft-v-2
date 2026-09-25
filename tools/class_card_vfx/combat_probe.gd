@@ -13,6 +13,7 @@ var target: Unit
 var router: Node
 var ground_layers: Array[Dictionary] = []
 var casts: Array[Dictionary] = []
+var hero_variants: Dictionary = {}
 
 
 func _ready() -> void:
@@ -30,7 +31,7 @@ func _run() -> void:
 	get_window().size = Vector2i(1440, 950)
 	get_tree().root.content_scale_size = Vector2i(1440, 950)
 	GameManager.cleanup_run_state()
-	var run := ExpeditionRunFactory.create(2401, { })
+	var run := ExpeditionRunFactory.create(2401, hero_variants)
 	var resolution := GameManager.resolve_run_hero_data(run, false)
 	if (
 		not resolution.is_valid()

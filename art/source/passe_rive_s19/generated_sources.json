@@ -1,0 +1,30 @@
+{
+  "mode": "built-in imagegen",
+  "sources": {
+    "pierce": {
+      "original": "C:\\Users\\paolo\\.codex\\generated_images\\01a0b99f-37a5-7191-9fe5-4161b6f92b4e\\exec-5cd88ccc-d763-4185-b2cc-0b291af784a8.png",
+      "saved": "vfx/pierce.png",
+      "prompt": "prompts/pierce.txt"
+    },
+    "slash": {
+      "original": "C:\\Users\\paolo\\.codex\\generated_images\\01a0b99f-37a5-7191-9fe5-4161b6f92b4e\\exec-a816bbea-69cf-4948-84a1-ca65c65c1615.png",
+      "saved": "vfx/slash.png",
+      "prompt": "prompts/slash.txt"
+    },
+    "volley": {
+      "original": "C:\\Users\\paolo\\.codex\\generated_images\\01a0b99f-37a5-7191-9fe5-4161b6f92b4e\\exec-a89a7007-b6c6-4d58-9304-90352d1f7685.png",
+      "saved": "vfx/volley.png",
+      "prompt": "prompts/volley.txt"
+    },
+    "fire": {
+      "original": "C:\\Users\\paolo\\.codex\\generated_images\\01a0b99f-37a5-7191-9fe5-4161b6f92b4e\\exec-8754a4f2-79ee-46c8-8cf0-9c7c737e05e5.png",
+      "saved": "vfx/fire.png",
+      "prompt": "prompts/fire.txt"
+    },
+    "mark": {
+      "original": "C:\\Users\\paolo\\.codex\\generated_images\\01a0b99f-37a5-7191-9fe5-4161b6f92b4e\\exec-12df19b7-1ed8-465a-9e64-1b7bcd29aceb.png",
+      "saved": "vfx/mark.png",
+      "prompt": "prompts/mark.txt"
+    }
+  }
+}

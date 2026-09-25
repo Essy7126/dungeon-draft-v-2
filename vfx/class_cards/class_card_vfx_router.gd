@@ -5,6 +5,8 @@ const Player := preload("res://vfx/class_cards/class_card_vfx_player.gd")
 const Flight := preload("class_card_vfx_flight.gd")
 const Ground := preload("class_card_vfx_ground.gd")
 const Profiles := preload("class_card_vfx_profiles.gd")
+const S19 := preload("res://characters/achilles/2d/passe_rive_s19_catalog.gd")
+const S19Player := preload("passe_rive_s19_effect.gd")
 const STATUS_PRIORITY := [
 	"ecosystem_stasis",
 	"class_root",
@@ -94,6 +96,10 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 	var entry := Catalog.for_spell(spell)
 	if entry.is_empty():
 		return
+	var authored := _s19_card(caster, str(spell.get_effective_spell_id()))
+	if not authored.is_empty():
+		entry["s19_card"] = authored.id
+		entry["width"] = 1.0
 	if entry.movement:
 		if report.has("caster_movement_from") and report.has("caster_movement_to") \
 				and report.caster_movement_from != report.caster_movement_to:
@@ -155,7 +161,7 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 		var fx := _spawn(impact_entry, manager._grid_cell_global(cell))
 		if fx != null:
 			fx.origin = manager._caster_effect_origin(caster)
-	if not had_flight and not cells.is_empty() and entry.ranged:
+	if not had_flight and not cells.is_empty() and entry.ranged and authored.is_empty():
 		_launch(caster, spell, cells[0], true)
 	if bool(report.get("class_passive", false)):
 		var passive := Catalog.feedback("mark", "passive")
@@ -169,6 +175,18 @@ func _available() -> bool:
 	return (
 		observing and is_instance_valid(manager) and manager._has_battle_view() and is_card_battle()
 	)
+
+
+func _s19_card(caster: Unit, spell_id: String) -> Dictionary:
+	if not is_instance_valid(caster) or not is_instance_valid(manager):
+		return {}
+	var view: Node = manager._find_unit_view(caster)
+	if view == null:
+		return {}
+	var visual: Node = view.get("_optional_visual")
+	if visual is PasseRiveAutoSpriteView and visual.uses_s19_cards():
+		return S19.card(spell_id)
+	return {}
 
 
 func _card_unit(unit) -> bool:
@@ -213,7 +231,7 @@ func _spawn(entry: Dictionary, point: Vector2, anchor: Node2D = null, hold := fa
 			return null
 		oldest.cancel()
 		effects.erase(oldest)
-	var fx := Player.new()
+	var fx = S19Player.new() if entry.has("s19_card") else Player.new()
 	parent.add_child(fx)
 	if anchor == null:
 		# Split impact sheets around the visible actor, including before a pushed
@@ -282,6 +300,9 @@ func _status_recipe(unit: Unit, id: String) -> Dictionary:
 		if str(data.get_effective_status_id()) == id:
 			var entry := Catalog.feedback(Catalog.status_family(data))
 			entry.seed = absi(id.hash())
+			if id == "class_marked" and not _s19_card(state.get("source"), "class_t_mark").is_empty():
+				entry["s19_card"] = "t_mark"
+				entry["width"] = 1.0
 			return Profiles.state(entry, id, data)
 	return { }
 
