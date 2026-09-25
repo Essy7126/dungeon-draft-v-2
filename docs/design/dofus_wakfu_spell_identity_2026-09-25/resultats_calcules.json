@@ -1,0 +1,341 @@
+{
+  "studyDate": "2026-09-25",
+  "kind": "documentary_contract_models_not_game_client_tests",
+  "coverage": {
+    "dofus": 36,
+    "wakfu": 55,
+    "total": 91
+  },
+  "checkedGroups": 15,
+  "cases": [
+    {
+      "id": "suspension",
+      "hypothesis": "Deux ciblages du Cadran légaux, remboursements immédiats, aucun autre gain.",
+      "required": 6,
+      "netCost": 4,
+      "at4": {
+        "legal": false,
+        "ap": 2,
+        "blocked": "Suspension 2",
+        "history": [
+          {
+            "name": "Suspension 1",
+            "before": 4,
+            "afterPayment": 0,
+            "refund": 2,
+            "after": 2
+          }
+        ]
+      },
+      "at5": {
+        "legal": false,
+        "ap": 3,
+        "blocked": "Suspension 2",
+        "history": [
+          {
+            "name": "Suspension 1",
+            "before": 5,
+            "afterPayment": 1,
+            "refund": 2,
+            "after": 3
+          }
+        ]
+      },
+      "at6": {
+        "legal": true,
+        "ap": 2,
+        "netCost": 4,
+        "history": [
+          {
+            "name": "Suspension 1",
+            "before": 6,
+            "afterPayment": 2,
+            "refund": 2,
+            "after": 4
+          },
+          {
+            "name": "Suspension 2",
+            "before": 4,
+            "afterPayment": 0,
+            "refund": 2,
+            "after": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "pointe",
+      "hypothesis": "Cumul théorique du remboursement du sort et du passif, un événement de transposition éligible. Plafond documentaire : deux lancers/tour, un/cible.",
+      "required": 2,
+      "netCost": 0,
+      "at1": {
+        "legal": false,
+        "ap": 1,
+        "blocked": "Pointe-heure avec échange et Cours du temps sous Distorsion",
+        "history": []
+      },
+      "at2": {
+        "legal": true,
+        "ap": 2,
+        "netCost": 0,
+        "history": [
+          {
+            "name": "Pointe-heure avec échange et Cours du temps sous Distorsion",
+            "before": 2,
+            "afterPayment": 0,
+            "refund": 2,
+            "after": 2
+          }
+        ]
+      },
+      "twoCasts": {
+        "legal": true,
+        "ap": 2,
+        "netCost": 0,
+        "history": [
+          {
+            "name": "Pointe-heure avec échange et Cours du temps sous Distorsion",
+            "before": 2,
+            "afterPayment": 0,
+            "refund": 2,
+            "after": 2
+          },
+          {
+            "name": "Pointe-heure avec échange et Cours du temps sous Distorsion",
+            "before": 2,
+            "afterPayment": 0,
+            "refund": 2,
+            "after": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "aiguille",
+      "hypothesis": "Règle de reliquat 1.92, base N245 WAKFULI ; cible légale et sans autres modificateurs.",
+      "rows": [
+        {
+          "remaining": 1,
+          "spent": 1,
+          "damage": 111,
+          "damagePerAP": 111,
+          "spentIfKill": 0
+        },
+        {
+          "remaining": 2,
+          "spent": 2,
+          "damage": 111,
+          "damagePerAP": 55.5,
+          "spentIfKill": 0
+        },
+        {
+          "remaining": 3,
+          "spent": 3,
+          "damage": 111,
+          "damagePerAP": 37,
+          "spentIfKill": 0
+        },
+        {
+          "remaining": 4,
+          "spent": 4,
+          "damage": 111,
+          "damagePerAP": 27.75,
+          "spentIfKill": 0
+        }
+      ]
+    },
+    {
+      "id": "eclair",
+      "hypothesis": "Deux ennemis éligibles, rebond effectif ; pas de résistance ni bonus.",
+      "first": 97,
+      "rebound": 181,
+      "total": 278,
+      "ap": 5,
+      "firstPerAP": 19.4,
+      "reboundPerAP": 36.2,
+      "totalPerAP": 55.6,
+      "criticalTotal": 349
+    },
+    {
+      "id": "poussiere",
+      "hypothesis": "Fenêtres successives tant que le bonus n’est pas réinitialisé ; règle de remise à zéro non établie.",
+      "ranges": [
+        {
+          "priorCasts": 0,
+          "min": 3,
+          "max": 5
+        },
+        {
+          "priorCasts": 1,
+          "min": 5,
+          "max": 7
+        },
+        {
+          "priorCasts": 2,
+          "min": 7,
+          "max": 9
+        }
+      ],
+      "stationaryDistance3": [
+        true,
+        false,
+        false
+      ],
+      "stationaryDistance5": [
+        true,
+        true,
+        false
+      ]
+    },
+    {
+      "id": "martel",
+      "hypothesis": "Trois cibles distinctes, toutes reçoivent chaque répétition ultérieure. Hypothèse de mémoire/éligibilité à confirmer en jeu ; dégâts seulement, pas retrait PA.",
+      "perTarget": [
+        249,
+        166,
+        83
+      ],
+      "hits": 6,
+      "damage": 498,
+      "ap": 9,
+      "damagePerAP": 55.333333333333336
+    },
+    {
+      "id": "symetrie",
+      "hypothesis": "Grille abstraite, destinations légales et libres ; ne modélise ni portée ni immunité.",
+      "caster": [
+        3,
+        3
+      ],
+      "target": [
+        5,
+        3
+      ],
+      "targetAroundCaster": [
+        1,
+        3
+      ],
+      "casterAroundTarget": [
+        7,
+        3
+      ]
+    },
+    {
+      "id": "volonte",
+      "hypothesis": "Modèle linéaire communautaire ; deux paquets nominaux de 2 sur une cible avec assez de PA, Volonté initiale égale, aucun bonus du lanceur. Ce n’est pas une rotation complète de Ralentissement.",
+      "points": [
+        {
+          "delta": -100,
+          "expectedRemovalOf2": 0
+        },
+        {
+          "delta": -50,
+          "expectedRemovalOf2": 0.5
+        },
+        {
+          "delta": 0,
+          "expectedRemovalOf2": 1
+        },
+        {
+          "delta": 50,
+          "expectedRemovalOf2": 1.5
+        },
+        {
+          "delta": 100,
+          "expectedRemovalOf2": 2
+        }
+      ],
+      "sameTargetTwoPackets": 1.9,
+      "distinctTargetsTwoPackets": 2
+    },
+    {
+      "id": "resistance",
+      "hypothesis": "Formule continue communautaire, sans arrondi en paliers ni plafond des joueurs. Trêve applique le gain aux deux camps.",
+      "rows": [
+        {
+          "before": 0,
+          "after": 100,
+          "damageBefore": 100,
+          "damageAfter": 80,
+          "relativeReduction": 0.19999999999999996
+        },
+        {
+          "before": 100,
+          "after": 200,
+          "damageBefore": 80,
+          "damageAfter": 64.00000000000001,
+          "relativeReduction": 0.19999999999999984
+        },
+        {
+          "before": 400,
+          "after": 500,
+          "damageBefore": 40.96000000000001,
+          "damageAfter": 32.76800000000001,
+          "relativeReduction": 0.19999999999999996
+        }
+      ]
+    },
+    {
+      "id": "di",
+      "hypothesis": "Bonus de même catégorie DI additionnés ; pas un multiplicateur final séparé.",
+      "initialDI": 100,
+      "addedDI": 50,
+      "relativeGain": 0.25
+    },
+    {
+      "id": "armures_feca",
+      "hypothesis": "Bases N245, sans modificateur d’armure ; comparaison de montants, pas de disponibilité. Les moments et conditions diffèrent.",
+      "rows": [
+        {
+          "enemies": 0,
+          "rempartArmor": 0,
+          "orbeArmorIfCondition": 499
+        },
+        {
+          "enemies": 1,
+          "rempartArmor": 166,
+          "orbeArmorIfCondition": 499
+        },
+        {
+          "enemies": 2,
+          "rempartArmor": 332,
+          "orbeArmorIfCondition": 499
+        },
+        {
+          "enemies": 3,
+          "rempartArmor": 498,
+          "orbeArmorIfCondition": 499
+        },
+        {
+          "enemies": 4,
+          "rempartArmor": 664,
+          "orbeArmorIfCondition": 499
+        }
+      ],
+      "orbeExpectedAt50PercentSuccess": 249.5
+    },
+    {
+      "id": "fermentation",
+      "hypothesis": "N200 ; deux applications de 480, chacune présente pour sa fenêtre ; dégâts positifs absorbables.",
+      "each": 480,
+      "twoWaves800": 960,
+      "oneWave960": 480,
+      "hpLostDuringOneWave960": 480
+    },
+    {
+      "id": "bombance",
+      "hypothesis": "Départ Sobre, deux bascules consécutives, aucun autre modificateur.",
+      "required": 2,
+      "netCost": 1,
+      "casts": 2
+    },
+    {
+      "id": "copies",
+      "hypothesis": "Transposition hypothétique dans Catabase : destruction d’une copie à chaque lancement ; aucune création/récupération.",
+      "copiesPrepared": 2,
+      "copiesPerCast": 1,
+      "apNetPerCast": 0,
+      "maxCastsFromCopies": 2
+    }
+  ]
+}

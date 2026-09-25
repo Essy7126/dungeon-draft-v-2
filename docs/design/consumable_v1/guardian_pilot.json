@@ -1,0 +1,55 @@
+[
+  {
+    "retaliation": 0.25,
+    "specIndex": 0,
+    "wins": 8,
+    "used": 81.8,
+    "fail": {
+      "3": 1,
+      "5": 1
+    }
+  },
+  {
+    "retaliation": 0.25,
+    "specIndex": 1,
+    "wins": 7,
+    "used": 82.5,
+    "fail": {
+      "3": 1,
+      "7": 1,
+      "10": 1
+    }
+  },
+  {
+    "retaliation": 0.4,
+    "specIndex": 0,
+    "wins": 10,
+    "used": 95.6,
+    "fail": {}
+  },
+  {
+    "retaliation": 0.4,
+    "specIndex": 1,
+    "wins": 10,
+    "used": 94.7,
+    "fail": {}
+  },
+  {
+    "retaliation": 0.55,
+    "specIndex": 0,
+    "wins": 9,
+    "used": 86.4,
+    "fail": {
+      "7": 1
+    }
+  },
+  {
+    "retaliation": 0.55,
+    "specIndex": 1,
+    "wins": 9,
+    "used": 90.9,
+    "fail": {
+      "10": 1
+    }
+  }
+]

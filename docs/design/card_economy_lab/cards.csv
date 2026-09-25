@@ -1,0 +1,21 @@
+id,name,rank,ap,range,power_coefficient,role,effect,balancing_risk,status
+n01,Estoc,normal,1,1,0.45,attaque,Dégâts physiques sur une cible,Comparer aux dégâts par PA du geste gratuit,concept
+n02,Protection brève,normal,1,soi,0.25,defense,Bouclier jusqu'au début de la prochaine activation,Ne doit pas rendre le garde gratuit inutile partout,concept
+n03,Pas latéral,normal,1,soi,0,mobilite,Déplacement de 1 case légale sans traverser un obstacle,Définir les interactions avec le tacle,concept
+n04,Heurt,normal,1,1,0.15,placement,Pousse de 1 case si destination valide,Collision ne doit pas être rentable à l'infini,concept
+n05,Flèche courte,normal,1,2-3,0.35,attaque,Dégâts avec ligne de vue,Identité propre face à Estoc,concept
+n06,Repérage,normal,1,1-4,0,preparation,Marque une cible pour un bonus de 0.25P au prochain impact puis disparition,Le bonus seul ne doit pas faire payer deux cartes pour un rendement inférieur,concept
+n07,Entrave légère,normal,1,1-3,0,controle,Retire 1 PM pour la prochaine activation seulement sans cumul,Ne doit pas neutraliser seul un ennemi de mêlée,concept
+n08,Recentrage,normal,1,soi,0,main,Échange jusqu'à deux cartes non jouées avec la pioche sans les détruire,Ne crée ni carte ni PA et exige une pioche disponible,concept
+e01,Fente mobile,elite,2,1-2,0.70,attaque,Avance de 1 case libre puis frappe à portée 1,Pas de téléportation à travers une cible,concept
+e02,Rempart bref,elite,2,soi,0.65,defense,Bouclier jusqu'à la prochaine activation,Surveiller empilement de boucliers et excédent perdu,concept
+e03,Traction,elite,1,2-3,0,placement,Attire de 2 cases maximum avec ligne de vue,Respecte obstacles et immunités de déplacement,concept
+e04,Tir de retrait,elite,2,2-4,0.65,attaque,Frappe puis recule de 1 case libre,Double utilité mais rendement brut inférieur à deux normales,concept
+e05,Relais,elite,1,soi,0,main,Cherche une normale dans la pioche et la met en main puis mélange,Cherche un exemplaire existant et ne touche pas la réserve,concept
+e06,Contre préparé,elite,2,soi,0.45,defense,Bouclier et première attaque de contact subie avant la prochaine activation déclenche une riposte de 0.40P,La riposte ne déclenche pas une autre riposte,concept
+r01,Permutation,rare,2,1-4,0,placement,Échange la position de deux ennemis éligibles en ligne de vue,Respecte immobilité de boss et cellules légales,concept
+r02,Rupture,rare,2,1-3,1.10,attaque,Ignore la moitié de la protection physique pour cet impact,Ne pas cumuler plusieurs formes de pénétration sans règle,concept
+r03,Écho défensif,rare,2,soi,0,defense,Transforme le bouclier restant en bouclier doublé plafonné à 1.2P jusqu'à la prochaine activation,Exige une préparation et ne prolonge pas indéfiniment les boucliers,concept
+l01,Convergence,legendary,3,1-4,0.60,zone,Attire les ennemis éligibles vers une cellule puis frappe une croix de rayon 1,Plafonner les déplacements et ne pas ignorer les immunités,concept
+g01,Décret du passage,god,3,soi,0,tempo,Jusqu'à la prochaine activation le premier impact mortel laisse le héros à 1 PV puis le décret disparaît,Ne garantit pas de survivre aux impacts suivants et ne se cumule pas,concept
+i01,Seconde aurore,immortal,4,soi,0,secours,Restaure uniquement les PV du héros à leur valeur du début de son activation puis termine son activation,Aucun retour de cartes PA PM monnaie position ou état du monde,concept

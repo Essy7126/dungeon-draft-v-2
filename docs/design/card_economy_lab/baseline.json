@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "source_commit": "6a500c545f04d3e4c53a99d3643d0c4d844e303f",
+  "initial_cards": 15,
+  "initial_gold": 40,
+  "deck_cap": 30,
+  "bag_sizes": [3, 3, 2, 1, 1, 1, 1],
+  "channels": ["normal_a", "normal_b", "elite", "rare", "legendary", "god", "immortal"],
+  "tiers": [0, 0, 1, 2, 3, 4, 5],
+  "rates": [
+    [0.55, 0, 0.05, 0.005, 0, 0, 0],
+    [0.70, 0.10, 0.10, 0.015, 0.001, 0, 0],
+    [0.85, 0.25, 0.18, 0.04, 0.004, 0.0003, 0],
+    [0.95, 0.45, 0.28, 0.08, 0.01, 0.0015, 0.0002]
+  ],
+  "depths": [1, 2, 3, 5, 6, 8, 10, 12, 13, 15, 17, 20],
+  "kinds": ["normal", "normal", "normal", "normal", "elite", "normal", "elite", "normal", "normal", "elite", "normal", "boss"],
+  "routes": {
+    "actual_airain": [1, 2, 3, 3, 4, 3, 2, 4, 3, 4, 3, 3],
+    "actual_styx_lethe": [1, 3, 3, 3, 4, 3, 2, 4, 3, 4, 3, 3],
+    "previous_hypothesis": [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5]
+  },
+  "profiles": {
+    "frugal": {"opening": 2, "normal": 4, "elite": 6, "boss": 10},
+    "central": {"opening": 3, "normal": 6, "elite": 9, "boss": 12},
+    "intensive": {"opening": 3, "normal": 9, "elite": 12, "boss": 15}
+  },
+  "economy": {
+    "gold_normal": 35,
+    "gold_elite": 65,
+    "pack_cards": 6,
+    "pack_price": 36,
+    "packs_per_visit": 2,
+    "target_stock": 15,
+    "shop_policies": {"none": [], "refuges": [5, 7, 10, 11], "early_vendor": [3, 5, 7, 10, 11]},
+    "sell": [1, 3, 12, 35, 80, 150],
+    "buy": [8, 16, 40, 110, 250, 500]
+  }
+}

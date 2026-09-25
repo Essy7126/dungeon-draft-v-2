@@ -1,0 +1,134 @@
+[
+  {
+    "id": "BETA",
+    "name": "Beta",
+    "color": "colorless",
+    "type": "Skill",
+    "rarity": "Special",
+    "cost": 2,
+    "upgradeCost": 1,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Beta"
+  },
+  {
+    "id": "EXPUNGER",
+    "name": "Expunger",
+    "color": "colorless",
+    "type": "Attack",
+    "rarity": "Special",
+    "cost": 1,
+    "upgradeCost": 1,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "INSIGHT",
+    "name": "Insight",
+    "color": "colorless",
+    "type": "Skill",
+    "rarity": "Special",
+    "cost": 0,
+    "upgradeCost": 0,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "MIRACLE",
+    "name": "Miracle",
+    "color": "colorless",
+    "type": "Skill",
+    "rarity": "Special",
+    "cost": 0,
+    "upgradeCost": 0,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "OMEGA",
+    "name": "Omega",
+    "color": "colorless",
+    "type": "Power",
+    "rarity": "Special",
+    "cost": 3,
+    "upgradeCost": 3,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "SAFETY",
+    "name": "Safety",
+    "color": "colorless",
+    "type": "Skill",
+    "rarity": "Special",
+    "cost": 1,
+    "upgradeCost": 1,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "SHIV",
+    "name": "Shiv",
+    "color": "colorless",
+    "type": "Attack",
+    "rarity": "Special",
+    "cost": 0,
+    "upgradeCost": 0,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "SMITE",
+    "name": "Smite",
+    "color": "colorless",
+    "type": "Attack",
+    "rarity": "Special",
+    "cost": 1,
+    "upgradeCost": 1,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "THROUGH_VIOLENCE",
+    "name": "Through Violence",
+    "color": "colorless",
+    "type": "Attack",
+    "rarity": "Special",
+    "cost": 0,
+    "upgradeCost": 0,
+    "choiceOnly": false,
+    "source": "https://slay-the-spire.fandom.com/wiki/Colorless_Cards"
+  },
+  {
+    "id": "BECOME_ALMIGHTY",
+    "name": "Become Almighty",
+    "color": "colorless",
+    "type": "Power",
+    "rarity": "Special",
+    "cost": -2,
+    "upgradeCost": -2,
+    "choiceOnly": true,
+    "source": "https://slaythespire.wiki.gg/wiki/Module%3ACards/data"
+  },
+  {
+    "id": "FAME_AND_FORTUNE",
+    "name": "Fame and Fortune",
+    "color": "colorless",
+    "type": "Skill",
+    "rarity": "Special",
+    "cost": -2,
+    "upgradeCost": -2,
+    "choiceOnly": true,
+    "source": "https://slaythespire.wiki.gg/wiki/Module%3ACards/data"
+  },
+  {
+    "id": "LIVE_FOREVER",
+    "name": "Live Forever",
+    "color": "colorless",
+    "type": "Power",
+    "rarity": "Special",
+    "cost": -2,
+    "upgradeCost": -2,
+    "choiceOnly": true,
+    "source": "https://slaythespire.wiki.gg/wiki/Module%3ACards/data"
+  }
+]

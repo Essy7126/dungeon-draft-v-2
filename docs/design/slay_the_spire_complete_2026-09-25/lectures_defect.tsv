@@ -1,0 +1,76 @@
+id	contrat	analyse
+AGGREGATE	+1 énergie par groupe complet de 4→3 cartes dans la pioche.	Récompense une pioche encore pleine ; piocher avant de le jouer peut réduire son financement. Gros deck et deck rapide ne sont pas synonymes.
+ALL_FOR_ONE	D10→14 ; récupère en main les cartes à coût 0 de la défausse.	Convertit un historique de petites actions en nouveau tour. Dépend des coûts actuels, de la place en main et d’une défausse bien préparée.
+AMPLIFY	Ce tour, prochain pouvoir → 2 prochains pouvoirs résolus deux fois.	Accélère une installation persistante. Ne duplique rien sans pouvoir à jouer et ne rembourse pas son propre coût.
+AUTO_SHIELDS	Si blocage actuel nul : B11→15.	Défense efficace avec contrainte d’ordre. Un petit gain préalable de Frost ou de relique peut désactiver la carte.
+BALL_LIGHTNING	D7→10 ; canalise 1 Foudre.	Attaque immédiate et installation récurrente en une carte. L’amélioration ne renforce pas l’orbe ; Focus reste une autre voie de croissance.
+BARRAGE	D4→6 par emplacement occupé par un orbe.	Transforme le moteur d’orbes en rafale de Force. Compte les orbes présents, pas toutes les canalisations passées.
+BEAM_CELL	D3→4 puis Vulnérable 1→2 ; coût 0.	Prépare les attaques à coût zéro ; Vulnérable n’amplifie pas directement Foudre ou Ténèbres. Mélanger ces voies sans compter leurs bénéficiaires dilue l’effet.
+BIASED_COGNITION	Focus +4→5 ; début de chaque tour suivant, Focus −1.	Accélération immédiate avec dette cumulative. Artefact préalable peut empêcher Bias ; bon timing près de la fin, ou suppression de la dette.
+BLIZZARD	D2→3 par Frost canalisé depuis le début du combat, à tous.	Attaque fondée sur une histoire de production, pas sur Focus. Lent à monter ; les orbes défensifs doivent d’abord permettre cette durée.
+BOOTSEQUENCE	B10→13 ; coût 0 ; Innée ; Épuisement.	Protège le tour d’installation, puis disparaît. La place de main initiale est son coût caché, surtout avec beaucoup d’Innées.
+BUFFER	Annule les 1→2 prochains événements de perte de PV.	Protège très bien d’un gros coup ; une petite perte peut consommer une charge. Ce n’est pas un nombre de tours d’Intangible.
+CAPACITOR	Ajoute 2→3 emplacements d’orbes.	Augmente la capacité passive, mais retarde les évocations par débordement. Demande de remplir les nouveaux emplacements pour rentabiliser l’action.
+CHAOS	Canalise 1→2 orbes aléatoires.	Diversifie les ressources à bas coût ; moins fiable pour une réponse exacte. L’ordre obtenu change la prochaine évocation.
+CHILL	Canalise un Frost par ennemi vivant ; coût 0 ; Épuisement ; amélioration : Innée.	La difficulté numérique du groupe devient production défensive. Plus de cibles peut aussi provoquer des évocations immédiates.
+COLD_SNAP	D6→9 ; canalise un Frost.	Attaque qui laisse une défense récurrente. Ne pas confondre le blocage futur de l’orbe avec un blocage immédiat à la résolution.
+COMPILE_DRIVER	D7→10 ; pioche une carte par type d’orbe différent présent.	Récompense la diversité plutôt que la quantité. Un deck mono-Frost peut défendre fort tout en tirant peu de cette carte.
+CONSERVE_BATTERY	B7→10 ; +1 énergie au prochain tour.	Défend en préparant le financement suivant. La valeur temporelle est perdue si le prochain tour manque de cartes utiles.
+CONSUME	Focus +2→3 ; supprime un emplacement d’orbe ; ne s’épuise pas.	Échange capacité contre puissance par emplacement. Très dépendant du nombre d’emplacements restant et des moyens d’en recréer.
+COOLHEADED	Canalise un Frost ; pioche 1→2.	Défense future et circulation. L’amélioration peut devenir une pièce de moteur même si le besoin initial était simplement de survivre.
+CORE_SURGE	D11→15 ; Artefact +1 ; Épuisement.	Attaque et protection contre une dette future. La valeur de l’Artefact dépend de ce qui sera appliqué ensuite, notamment Biased Cognition.
+CREATIVE_AI	Début de tour : pouvoir aléatoire en main ; coût 3→2.	Production longue qui nourrit Storm/Heatsinks. Les pouvoirs créés ne sont pas tous immédiatement jouables ; énergie et temps d’installation limitent le moteur.
+DARKNESS	Canalise Ténèbres ; amélioration : déclenche ensuite le passif de tous les orbes Ténèbres.	La version améliorée accélère les charges déjà installées. Préparer l’ordre des orbes permet de choisir quand convertir cette réserve en dégâts.
+DEFEND_B	B5→8.	Défense directe stable pendant l’installation. Les Frost et le Focus peuvent ensuite remplir ce rôle sans repayer une carte chaque tour.
+DEFRAGMENT	Focus +1→2.	Petit investissement qui amplifie plusieurs orbes et plusieurs tours. Doubler le bonus n’implique pas doubler les dégâts totaux du deck.
+DOOM_AND_GLOOM	D10→14 à tous ; canalise Ténèbres.	Traite les petites cibles tout en préparant un gros impact différé sur le survivant. Relie deux horizons de combat.
+DOUBLE_ENERGY	Double l’énergie restante après paiement ; Épuisement ; coût 1→0.	À 3 énergie, version normale termine à 4, améliorée à 6. La formule dépend du moment du paiement, pas seulement du mot doubler.
+DUALCAST	Évoque le prochain orbe deux fois ; coût 1→0.	Monétise immédiatement une installation ; deux évocations du même orbe, pas les deux prochains orbes. Excellent sur une charge Ténèbres préparée.
+ECHO_FORM	Première carte jouée de chaque tour résolue deux fois ; Éthérée retirée par amélioration.	Transforme le premier choix de chaque tour en décision majeure. Améliorer facilite la conservation en attendant un tour d’installation sûr.
+ELECTRODYNAMICS	La Foudre touche tous les ennemis ; canalise 2→3 Foudres.	Change une règle de ciblage et fournit immédiatement sa matière première. Sa valeur relative augmente avec le nombre de cibles.
+FISSION	Supprime tous les orbes ; +1 énergie et pioche 1 par orbe ; Épuisement ; amélioration : les évoque au lieu de les supprimer.	Convertit une installation en accès et financement. L’amélioration récupère aussi les effets de sortie : changement fonctionnel bien plus grand qu’un bonus plat.
+FORCE_FIELD	B12→16 ; coût initial 4, réduit de 1 par pouvoir joué dans ce combat.	Récompense l’installation déjà accomplie. Mauvaise défense d’ouverture sans pouvoirs ; les futurs coûts n’annulent pas le coût de pioche actuel.
+FTL	D5→6 ; pioche 1 si moins de 3→4 cartes ont déjà été jouées ce tour ; coût 0.	Attaque de début de séquence. Le seuil amélioré ajoute de la souplesse d’ordre, pas une pioche inconditionnelle.
+FUSION	Canalise un Plasma ; coût 2→1.	Installe une source d’énergie ou prépare son évocation. Ne profite pas de Focus ; il faut des cartes pour dépenser l’énergie obtenue.
+GASH	Claw : D3→5 ; toutes les Claw voient leurs dégâts augmenter de 2 pour le combat.	Croissance collective par rejouage. La rareté des copies et la vitesse de cycle importent davantage que le coût nul seul.
+GENETIC_ALGORITHM	B initial 1 ; après usage, valeur de cet exemplaire +2→3 définitivement dans la run ; Épuisement.	Investissement à entraîner tôt. Son amélioration change les gains futurs, pas rétroactivement tous les entraînements passés.
+GLACIER	B7→10 ; canalise deux Frost.	Combine réponse immédiate et protection persistante. Peut aussi évoquer les orbes existants ; son ordre dans la file change le bilan du tour.
+GO_FOR_THE_EYES	D3→4 ; si cible en intention d’attaque, Faible 1→2 ; coût 0.	Récompense la lecture adverse. Une cible non offensive ne donne que les dégâts ; utile pour soutenir les orbes durant l’installation.
+HEATSINKS	Jouer un pouvoir fait piocher 1→2.	Les cartes d’installation cessent d’assécher la main. Demande encore de financer les nouveaux pouvoirs ; ne se nourrit pas sans producteurs.
+HELLO_WORLD	Début de tour : carte commune aléatoire en main ; amélioration : Innée.	Ajoute des options pour une run pauvre, mais grossit le combat et ralentit les cycles d’un moteur déjà précis.
+HOLOGRAM	B3→5 ; remet une carte choisie de défausse en main ; Épuisement retiré en amélioration.	Accès déterministe à une carte déjà utilisée. La version réutilisable soutient les boucles, surtout avec coût réduit et All for One.
+HYPERBEAM	D26→34 à tous ; Focus −3.	Sacrifie une croissance par orbes pour une résolution immédiate. Très différent selon que la run dépend de Frost/Foudre ou d’attaques et Plasma.
+LEAP	B9→12.	Défense immédiate dense et lisible, sans effet de circulation. Répond à une urgence que les orbes encore absents ne peuvent couvrir.
+LOCKON	Bullseye : D8→11 puis Lock-On pendant 2→3 tours ; la cible reçoit +50 % de dégâts d’orbes.	Complète la Foudre ou Ténèbres, contrairement à Vulnérable qui concerne les attaques. Le bonus ne renforce donc pas directement la frappe initiale de Bullseye.
+LOOP	Début de tour : déclenche le passif du prochain orbe 1→2 fois.	Récompense l’ordre de file : défense, dégâts, charge ou énergie selon l’orbe placé en tête. Ne déclenche pas une évocation.
+MACHINE_LEARNING	Début de tour : pioche supplémentaire 1 ; amélioration : Innée.	Croissance d’accès régulière, peu explosive. Innée avance sa disponibilité mais ne donne pas la pioche avant son installation.
+MELTER	Retire tout le blocage de la cible, puis D10→14.	Réponse spécialisée à une protection massive. Le retrait n’est ni du poison ni du percement : les attaques suivantes profitent aussi de l’ouverture.
+METEOR_STRIKE	D24→30 ; canalise trois Plasma ; coût 5.	Gros problème d’amorçage puis source de carburant. L’énergie récupérée dépend du débordement et de l’état de la file, pas d’un remboursement fixe.
+MULTI_CAST	Coût X ; évoque le prochain orbe X→X+1 fois.	Convertit énergie en répétition d’un effet préparé. Une grosse Ténèbres et un Plasma ne donnent pas le même type de récompense.
+RAINBOW	Canalise Foudre, Frost puis Ténèbres ; Épuisement retiré en amélioration.	Fournit diversité et ordre déterministe. La réutilisabilité change le plan à long terme et la disponibilité de Compile Driver.
+REBOOT	Remélange main, pioche et défausse dans la pioche ; pioche 4→6 ; Épuisement ; coût 0.	Réinitialise une main médiocre, pas les pouvoirs installés ni les cartes épuisées. Peut détruire un ordre de pioche préalablement préparé.
+REBOUND	D9→12 ; la prochaine carte jouée ce tour retourne au-dessus de pioche si elle rejoint normalement la défausse.	Programme une répétition, mais ne fait pas piocher. Ne doit pas être pris pour un moyen universel de recycler pouvoirs ou cartes épuisées.
+RECYCLE	Épuise une carte choisie ; gagne une énergie égale à son coût applicable ; coût 1→0.	Épuration et financement réunis. Les coûts X et modifiés exigent une règle précise ; un statut injouable n’est pas une réserve d’énergie négative.
+REDO	Recursion : évoque le prochain orbe puis recanalise cet orbe ; coût 1→0.	Déclenche une sortie sans perdre le type installé. Une Ténèbres conserve sa charge, ce qui permet de réutiliser son investissement.
+REINFORCED_BODY	Coût X ; B7→9, X fois.	Absorbe l’énergie restante en une seule carte. Chaque gain profite de Dextérité et peut déclencher un effet de gain de blocage.
+REPROGRAM	Focus −1→−2 ; Force +1→2 et Dextérité +1→2.	Ouvre une branche d’attaques/défenses qui abandonne les orbes dépendants de Focus. Plasma conserve sa fonction, donc les choix ne sont pas totalement exclusifs.
+RIP_AND_TEAR	D7→9 sur une cible aléatoire, deux impacts.	Rafale efficace en duel, moins fiable pour choisir une mort dans un groupe. Force augmente les deux impacts.
+SCRAPE	D7→10 ; pioche 4→5 puis défausse les cartes ainsi piochées dont le coût n’est pas 0.	Filtre un moteur de cartes gratuites mais peut jeter ses pièces d’installation. Évaluer la composition restante, pas seulement la taille de pioche annoncée.
+SEEK	Met en main 1→2 cartes choisies de la pioche ; Épuisement ; coût 0.	Accès déterministe ; deux cartes peuvent assembler une combinaison complète. Mise en main et pioche n’ont pas tous les mêmes déclencheurs.
+SELF_REPAIR	À la fin du combat : soin 7→10.	Investissement de santé pour la suite de la run ; ne sauve pas d’une mort avant la victoire. Peut inciter à retarder une fin déjà disponible.
+SKIM	Pioche 3→4.	Accès pur, particulièrement utile quand énergie et moteur passif sont déjà installés. Faible si les cartes trouvées restent trop chères à jouer.
+STACK	Blocage égal au nombre de cartes en défausse ; amélioration : +3.	Récompense un combat déjà bien engagé. Faible après remélange ; Reboot et récupération de défausse changent sa valeur instantanée.
+STATIC_DISCHARGE	Perdre des PV sur un impact d’attaque canalise 1→2 Foudres.	Transforme un échec défensif en production. Une rafale peut provoquer des évocations entre impacts, mais le premier dommage reste payé.
+STEAM	Steam Barrier : B6→8 ; blocage de cet exemplaire −1 après usage pour le combat ; coût 0.	Défense gratuite qui s’use. La répétition nécessite une autre croissance pour éviter que le moteur ne perde son efficacité.
+STEAM_POWER	Overclock : pioche 2→3 ; ajoute Burn en défausse ; coût 0.	Achète un accès immédiat contre une dette future. Les cartes restent à financer ; pioche gratuite ne signifie pas tour gratuit.
+STORM	Jouer un pouvoir canalise une Foudre ; amélioration : Innée.	Les installations deviennent offensives et peuvent évoquer les orbes présents. Nécessite plusieurs pouvoirs, pas seulement une grande réserve d’énergie.
+STREAMLINE	D15→20 ; après usage, coût de cet exemplaire −1 pour le combat, depuis 2.	L’attaque devient plus fluide en la rejouant. Une copie consommable ne peut pas profiter de sa propre baisse sans règle différente.
+STRIKE_B	D6→9.	Offensive initiale directe. Devient moins centrale lorsque la production passive d’orbes ou les attaques spécialisées prennent le relais.
+SUNDER	D24→32 ; si la cible meurt, +3 énergie après paiement de 3.	Transforme une petite cible en remboursement. Nécessite de pouvoir avancer le coût et de garantir le seuil de mort.
+SWEEPING_BEAM	D6→9 à tous ; pioche 1.	Zone avec circulation. L’amélioration augmente les dégâts immédiats, mais ne remplace pas Electrodynamics comme moteur de groupe.
+TEMPEST	Coût X ; canalise X→X+1 Foudres ; Épuisement.	Réserve d’énergie convertie en orbes, passifs et évocations éventuelles. Le nombre d’emplacements change la part immédiate du résultat.
+THUNDER_STRIKE	D7→9 aléatoire par Foudre canalisée depuis le début du combat ; coût 3.	Récompense l’histoire de production, mais ajoute une carte chère à un moteur parfois déjà capable de gagner. Ses impacts sont des dégâts d’attaque, pas des dégâts d’orbes.
+TURBO	+2→3 énergie ; ajoute Void en défausse ; coût 0.	Dette différée de pioche et d’énergie, limitée à une énergie perdue lors de la pioche de Void. Un combat terminé tôt évite cette échéance.
+UNDO	Equilibrium : B13→16 ; conserve toute la main ce tour.	Défend et aligne les cartes pour le prochain tour. Rétention ponctuelle, différente d’un changement permanent du deck.
+WHITE_NOISE	Crée un pouvoir aléatoire en main, gratuit ce tour ; Épuisement ; coût 1→0.	Installe un effet persistant à prix réduit, mais imprévisible. Le choix de le jouer doit encore tenir compte des pouvoirs à dette.
+ZAP	Canalise une Foudre ; coût 1→0.	Introduction simple à la production d’orbes. L’amélioration libère de l’énergie et rend la carte récupérable par All for One.

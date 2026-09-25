@@ -1,0 +1,76 @@
+id	contrat	analyse
+ACCURACY	Les Shiv infligent +4→6 dégâts.	Améliore un type précis de jeton ; sans production de Shiv, l’investissement ne fait rien. Cumuler création et amplification produit une croissance multiplicative.
+ACROBATICS	Pioche 3→4 ; défausse une carte choisie.	Cherche des réponses tout en activant les défausses. L’énergie dépensée devient rentable si le deck finance ensuite les cartes trouvées.
+ADRENALINE	+1→2 énergie, pioche 2 ; Épuisement ; coût 0.	Accélère les deux ressources du tour, sans dette de PV. Reste soumis à la place en main et aux réactions par carte jouée.
+AFTER_IMAGE	Chaque carte jouée donne B1 ; amélioration : Innée.	La défense suit le volume de jeu. Protège contre de nombreuses petites menaces, mais n’annule pas automatiquement tout dégât réactif selon son ordre de résolution.
+ALL_OUT_ATTACK	D10→14 à tous ; défausse une carte aléatoire.	Attaque de groupe et déclencheur de défausse, avec risque de perdre la réponse à conserver. Jouer les cartes prioritaires avant réduit ce risque.
+A_THOUSAND_CUTS	Chaque carte jouée inflige D1→2 à tous.	Amplifie le volume, y compris les compétences. Son installation est chère ; la valeur double à l’amélioration mais exige assez d’actions ensuite.
+BACKFLIP	B5→8 ; pioche 2.	Relie défense et circulation, avec bénéfice de Dextérité. N’apporte pas seul l’énergie nécessaire aux longues chaînes.
+BACKSTAB	D11→15 ; Innée ; Épuisement ; coût 0.	Fiabilise le premier tour agressif, puis libère les cycles suivants. Plusieurs Innées peuvent aussi chasser une défense indispensable de la main initiale.
+BANE	D7→10 ; si la cible est empoisonnée après le premier impact, deuxième impact de même valeur.	Pont entre poison et attaques, sans consommation du poison. Envenom peut poser le poison sur le premier impact non bloqué ; la Force profite aux deux.
+BLADE_DANCE	Crée 3→4 Shiv en main.	Une pioche devient plusieurs attaques, avec synergies par carte, par attaque et par épuisement. Coûte aussi des places en main et des réactions adverses.
+BLUR	B5→8 ; conserve le blocage au début du prochain tour.	Reporte un excédent de défense. Plusieurs applications allongent la conservation ; sans excédent, la clause ne produit pas de blocage supplémentaire.
+BOUNCING_FLASK	3 Poison sur une cible aléatoire, répété 3→4 fois.	Excellent concentrateur sur cible unique et plusieurs tentatives contre Artefact. L’amélioration ajoute un rebond ; le hasard disperse face à un groupe.
+BULLET_TIME	Interdit la pioche puis met les cartes déjà en main à coût 0 ce tour ; coût 3→2 ; Épuisement.	Demande de remplir la main avant. Ne crée pas d’énergie et n’offre pas une quantité X gratuite aux cartes à coût X.
+BURST	Ce tour, la prochaine compétence → les 2 prochaines compétences sont résolues deux fois.	Double poison, blocage ou manipulation de main. Catalyst devient un multiplicateur de multiplicateur ; le choix d’ordre devient déterminant.
+CALCULATED_GAMBLE	Défausse le reste de la main puis repioche autant ; coût 0 ; Épuisement retiré en amélioration.	Change une mauvaise main et active Reflex/Tactician. La version améliorée peut boucler ; sans déclencheurs, elle ne crée pas spontanément des cartes nettes.
+CALTROPS	Riposte D3→5 à chaque impact d’attaque reçu.	Punit les rafales, même bloquées. Peu rentable contre les ennemis qui frappent rarement ou surtout par pertes de PV hors attaque.
+CATALYST	Double → triple le poison de la cible ; Épuisement.	Amplificateur sans valeur à poison nul. Le bon moment dépend du risque de mourir avant le tic, de la durée du combat et d’une purge adverse.
+CHOKE	D12 ; chaque carte jouée ensuite ce tour fait perdre 3→5 PV à cette cible.	Valorise une longue séquence après installation. Le gain secondaire ne suit pas la Force et demande encore assez de cartes et d’énergie.
+CLOAK_AND_DAGGER	B6 ; crée 1→2 Shiv.	Défense qui prépare des attaques gratuites. L’amélioration ajoute une action et un épuisement plutôt que du blocage de base.
+CONCENTRATE	Défausse 3→2 cartes choisies ; gagne 2 énergie ; coût 0.	Convertit une main abondante en carburant. Avec Tactician/Reflex, le coût devient bénéfice ; une main pauvre rend la carte difficile à rentabiliser.
+CORPSE_EXPLOSION	Poison 6→9 ; à la mort de la cible, dégâts à tous les autres ennemis égaux à ses PV max ; ne s’épuise pas.	Transforme une cible prioritaire en solution de groupe. Le gain principal vient du marquage de mort, distinct du poison et sensible séparément à Artefact.
+CRIPPLING_POISON	Poison 4→7 et Faible 2 à tous ; Épuisement.	Pose une horloge offensive tout en achetant du temps. Deux fonctions simultanées expliquent le coût plus élevé qu’un poison simple.
+DAGGER_SPRAY	D4→6 à tous, deux impacts.	Nettoyage de groupe bénéficiant deux fois de Force. Des réactions par impact peuvent rendre la zone plus coûteuse qu’elle ne paraît.
+DAGGER_THROW	D9→12 ; pioche 1 puis défausse 1.	Attaque de sélection et déclencheur de défausse. Son remplacement apparent masque la perte d’une carte de main supplémentaire.
+DASH	B10→13 puis D10→13.	Concentre deux besoins dans une pioche. Défendre avec une attaque contourne certaines sanctions visant les compétences, mais le coût 2 réduit la souplesse.
+DEADLY_POISON	Poison 5→7.	Dégâts différés contournant le blocage. Le rendement théorique suppose assez de tics ; tuer maintenant peut éviter davantage de dégâts.
+DEFEND_G	B5→8.	Dextérité maintient sa pertinence plus longtemps. Reste moins riche qu’une défense avec pioche, défausse ou report.
+DEFLECT	B4→7 ; coût 0.	Convertit une pioche en défense sans énergie. Utile aux decks riches en pioche, plus encombrant quand les cartes disponibles sont la ressource rare.
+DIE_DIE_DIE	D13→17 à tous ; Épuisement.	Réponse ponctuelle aux groupes, sans laisser une zone peu utile dans les cycles suivants du boss survivant.
+DISTRACTION	Crée une compétence aléatoire en main, gratuite ce tour ; Épuisement ; coût 1→0.	Offre un outil imprévisible ; l’amélioration réduit le risque économique immédiat sans garantir une compétence adaptée à l’intention adverse.
+DODGE_AND_ROLL	B4→6 maintenant et B4→6 au prochain tour.	Répartit la défense sur deux fenêtres ; Dextérité valorise les deux gains. L’urgence actuelle peut préférer un blocage entièrement immédiat.
+DOPPELGANGER	Coût X ; prochain tour : X→X+1 cartes supplémentaires et énergie ; Épuisement.	Convertit un tour calme en gros tour suivant. Améliorée, produit encore un bénéfice à X=0 ; ne protège pas le tour d’investissement.
+ENDLESS_AGONY	D4→6 ; à la pioche, crée une copie en main ; coût 0 ; Épuisement.	La pioche crée une attaque de plus, la création directe n’est pas une nouvelle pioche. Choisir de ne pas tout jouer peut multiplier les copies au cycle suivant.
+ENVENOM	Chaque impact d’attaque retirant des PV applique Poison 1 ; coût 2→1.	Relie rafales et poison. Un impact entièrement bloqué ne suffit pas ; forte dépendance au nombre d’impacts effectivement passés.
+ESCAPE_PLAN	Pioche 1 ; si cette carte est une compétence, B3→5 ; coût 0.	Cantrip conditionnel, sensible à la composition restante. Une carte gratuite peut rester défavorable sous une sanction par compétence ou par carte.
+EVISCERATE	D7→9 trois fois ; coût initial 3, −1 par carte défaussée ce tour.	Transforme la défausse en remise et valorise Force. Il faut financer l’accès à la défausse, pas supposer une attaque gratuite sans préparation.
+EXPERTISE	Pioche jusqu’à avoir 6→7 cartes en main.	Meilleure après avoir joué ou défaussé des cartes. Main déjà pleine : peu de valeur ; fonctionne bien avec une dépense rapide des cartes gratuites.
+FINISHER	D6→8 par carte d’attaque déjà jouée ce tour.	Récompense la longueur d’une chaîne d’attaques, pas les impacts des attaques multiples. Demande de garder l’énergie et la cible en vie jusqu’au final.
+FLECHETTES	D4→6 par compétence restant en main.	Offensive issue d’une main défensive ; invite à frapper avant de jouer les compétences. Oppose protection immédiate et optimisation des dégâts.
+FLYING_KNEE	D8→11 ; +1 énergie au prochain tour.	Gagne du tempo futur sans abandonner toute l’offensive actuelle. Le supplément peut être perdu si la main suivante ne peut le dépenser.
+FOOTWORK	Dextérité +2→3.	Amplifie les blocages de cartes, surtout plusieurs petits gains. Ne renforce pas uniformément tous les pouvoirs, reliques et protections.
+GLASS_KNIFE	D8→12 deux fois ; réduit de 2 les dégâts par impact de cet exemplaire pour ce combat après usage.	Attaque de départ très efficace qui s’use. Contrepoids à la répétition : idéale pour abréger, moins comme unique croissance de boss.
+GRAND_FINALE	D50→60 à tous ; coût 0 ; exige une pioche vide.	Transforme la taille exacte de la pioche en problème tactique. Dépasser le bon nombre de cartes piochées peut remélanger et fermer la fenêtre.
+HEEL_HOOK	D5→8 ; si cible Faible, +1 énergie et pioche 1.	Se rembourse sous condition et peut participer à des cycles fermés. Sans application fiable de Faible, le rendement direct reste faible.
+INFINITE_BLADES	Début de tour : crée un Shiv ; amélioration : Innée.	Production lente et répétée. Le premier tour paie l’installation ; une rencontre courte préfère souvent une production immédiate.
+LEG_SWEEP	Faible 2→3 sur une cible et B11→14.	Associe réduction des dégâts et absorption. Un gros attaquant donne plus de valeur à Faible qu’une intention non offensive.
+MALAISE	Coût X ; Force adverse −X→−(X+1) et Faible X→X+1 ; Épuisement.	Réponse durable aux multi-impacts et réduction temporaire supplémentaire. Améliorée, reste active à énergie nulle ; les deux affaiblissements sont distincts.
+MASTERFUL_STAB	D12→16 ; coût initial 0, +1 par événement de perte de PV du combat.	Récompense une défense parfaite puis se dégrade. Une succession de petites pertes est plus pénalisante qu’un unique gros coup.
+NEUTRALIZE	D3→4 puis Faible 1→2 ; coût 0.	Outil de départ qui conserve une utilité défensive. L’amélioration peut couvrir une attaque du tour suivant, pas seulement ajouter un dégât.
+NIGHT_TERROR	Copie une carte choisie en main : 3 copies au prochain tour ; Épuisement ; coût 3→2.	Programme un tour puissant au prix d’une installation et de places futures. Les copies de pouvoirs ou Catalyst peuvent dépasser les effets d’une simple pioche.
+NOXIOUS_FUMES	Début de tour : Poison 2→3 à tous.	Croissance autonome et gestion des groupes. Après le tic qui retire une pile, le poison net augmente progressivement ; il faut survivre à l’installation.
+OUTMANEUVER	+2→3 énergie au prochain tour.	Spécialise un tour en préparation. Sans pioche ou rétention alignée sur le tour suivant, le surplus ne garantit aucune action utile.
+PHANTASMAL_KILLER	Au prochain tour, dégâts des attaques doublés ; coût 1→0.	Récompense rétention et préparation. Ne double pas le poison ; une mauvaise main suivante peut gaspiller toute la fenêtre.
+PIERCINGWAIL	Tous les ennemis perdent 6→8 Force ce tour, puis récupèrent ce montant ; Épuisement.	Défense extrême contre rafales. Le retour de Force est un effet séparé : Artefact et purges rendent l’ordre d’application important.
+POISONED_STAB	D6→8 puis Poison 3→4.	Combine arrêt immédiat et dette de PV future. Active Bane pour la suite, mais ne se rembourse pas intégralement si la cible meurt avant les tics.
+PREDATOR	D15→20 ; pioche 2 cartes supplémentaires au prochain tour.	Attaque qui prépare les options du tour suivant. À combiner avec énergie future plutôt qu’à évaluer uniquement en dégâts par énergie.
+PREPARED	Pioche 1→2 puis défausse 1→2 ; coût 0.	Sélection sans création nette de main hors synergies. Sa valeur vient des cartes écartées et des déclencheurs de défausse.
+QUICK_SLASH	D8→12 ; pioche 1.	Attaque qui se remplace, utile pour traverser le deck. Sa simplicité la rend moins conditionnelle mais n’en fait pas un moteur d’énergie.
+REFLEX	Injouable ; une défausse provoquée pendant le tour fait piocher 2→3.	Brique de moteur qui a besoin d’un déclencheur. La défausse automatique de fin de tour ne fournit pas cette récompense.
+RIDDLE_WITH_HOLES	D3→4 cinq fois.	Cinq applications de Force et plusieurs occasions pour Envenom. Sans amplification, le coût 2 et les réactions adverses limitent son intérêt.
+SETUP	Replace une carte en main au-dessus de pioche ; elle coûte 0 jusqu’à son prochain jeu ; coût 1→0.	Échange une carte et de l’accès contre économie d’énergie. Exige une nouvelle pioche ou un tour suivant pour récupérer le bénéfice.
+SKEWER	Coût X ; D7→10 répété X fois.	Convertit une réserve d’énergie en rafale monocible. Force profite à chaque impact ; X n’est pas le nombre d’énergie imprimé sur une autre carte.
+SLICE	D6→9 ; coût 0.	Bon débouché pour un deck qui pioche beaucoup. La gratuité énergétique ne supprime ni son coût de pioche ni les ripostes par carte.
+STORM_OF_STEEL	Défausse le reste de la main ; crée autant de Shiv → Shiv améliorés.	Convertit une main inutilisable en attaques et déclenche les défausses. Peut détruire des options supérieures : compter le gain net, pas seulement les jetons.
+STRIKE_G	D6→9.	Offensive de référence sans condition. Les moteurs de poison, défausse ou jetons réduisent progressivement sa contribution relative.
+SUCKER_PUNCH	D7→9 et Faible 1→2.	Version offensive d’un outil défensif. Son amélioration est plus pertinente quand la durée supplémentaire rencontre une vraie attaque ennemie.
+SURVIVOR	B8→11 puis défausse une carte choisie.	Dès le départ, enseigne que jeter une carte peut être utile. Déclencheur fiable de défausse, à coût défensif déjà acceptable.
+TACTICIAN	Injouable ; défausse provoquée pendant le tour : +1→2 énergie.	Transforme une perte de carte en carburant. Peut rester une carte morte sans outil de défausse ; fin de tour automatique exclue.
+TERROR	Vulnérable 99 ; Épuisement ; coût 1→0.	Installe pratiquement la fenêtre offensive pour tout le combat, sauf purge. Redondant si les dégâts principaux viennent du poison.
+TOOLS_OF_THE_TRADE	Début de tour : pioche 1 puis défausse 1 ; coût 1→0.	Stabilise les mains et active les briques de défausse. Le coût d’installation et le premier déclenchement différé comptent.
+UNDERHANDED_STRIKE	D12→16 ; si une carte a été défaussée ce tour, +2 énergie après paiement du coût 2.	Gratuité nette conditionnelle, mais il faut normalement avancer l’énergie. Les réductions de coût peuvent rendre la résolution génératrice d’énergie.
+UNLOAD	D14→18 ; défausse toutes les non-attaques en main.	Nettoie pour poursuivre une offensive et active les défausses. Peut jeter la défense ou le multiplicateur dont la suite avait besoin.
+VENOMOLOGY	Crée une potion aléatoire ; Épuisement ; coût 1→0.	Économie de run produite en combat, limitée par les emplacements de potions. Favorise parfois une temporisation qu’il faut comptabiliser dans le risque.
+WELL_LAID_PLANS	Fin de tour : peut retenir 1→2 cartes choisies.	Fait rencontrer les pièces au bon tour, sans exiger un deck minuscule. Une réponse gardée assure une intention future et améliore les décisions de pioche.
+WRAITH_FORM_V2	Intangible 2→3 ; chaque fin de tour, perd 1 Dextérité.	Achète une fenêtre presque invulnérable par impact mais dégrade la défense future. Doit servir à finir, se réinstaller ou préparer une autre protection.

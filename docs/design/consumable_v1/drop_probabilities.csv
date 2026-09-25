@@ -1,0 +1,8 @@
+"channel","tier","expected","variance","atLeastOne","note"
+"0","normal","64","0","1","32 eligible kills; convoy sacrifice reduces actual rewards"
+"1","normal","44.1","24.87","1","32 eligible kills; convoy sacrifice reduces actual rewards"
+"2","elite","9.76","15.6984","0.995691","32 eligible kills; convoy sacrifice reduces actual rewards"
+"3","rare","1.1","1.0384","0.677703","32 eligible kills; convoy sacrifice reduces actual rewards"
+"4","legendary","0.116","0.115146","0.109907","32 eligible kills; convoy sacrifice reduces actual rewards"
+"5","god","0.0132","0.013183","0.013121","32 eligible kills; convoy sacrifice reduces actual rewards"
+"6","immortal","0.0014","0.0014","0.001399","32 eligible kills; convoy sacrifice reduces actual rewards"

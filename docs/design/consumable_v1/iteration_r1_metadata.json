@@ -1,0 +1,46 @@
+{
+  "version": "1.0-theory",
+  "node": "v24.19.0",
+  "date": "2026-09-25T11:49:31.200Z",
+  "sourceCommit": "6a500c545f04d3e4c53a99d3643d0c4d844e303f",
+  "runCount": 640,
+  "cardScenarios": 2304,
+  "itemComparisons": 672,
+  "policies": {
+    "balanced": {
+      "resource": 0.17,
+      "safety": 0.8,
+      "lookahead": 1
+    },
+    "aggressive": {
+      "resource": 0.02,
+      "safety": 0.55,
+      "lookahead": 1
+    },
+    "conserve": {
+      "resource": 0.7,
+      "safety": 1,
+      "lookahead": 1
+    },
+    "planner": {
+      "resource": 0.17,
+      "safety": 0.8,
+      "lookahead": 2
+    },
+    "fallback": {
+      "resource": 100,
+      "safety": 0.8,
+      "lookahead": 1
+    }
+  },
+  "hashes": {
+    "content.mjs": "da06e291a87c1aa54ec593755528e1fe3f2957aea318ddad9e9ce2f488115894",
+    "combat.mjs": "96c38ce054bb37a2944e4b58f1c125390ee5962613746574302f7d7cb2f7688b",
+    "run.mjs": "402b59f92f86687e8695430a8a95ced7cf11f42d414bb238537ba4a14a8b0b0a",
+    "market.mjs": "2e1d127cc48cde77c7fdc6c7f7aa51f412300d0b392e67a8dac638242ad4573e",
+    "fixtures.mjs": "3097c33e60f3b4d52db00ef85f74a15a0b70be54d6027c9a605e79b0c41b26ca",
+    "analyze.mjs": "62832fa4d681000341cbc404d1af4446bfcf0b761ef1d363b9336a7fa760e9bf",
+    "model.test.mjs": "57b140c658e2e18c6f41f7a63d4e02332af209c23eeacbe3f80f9d32169ac7d3",
+    "contracts.test.mjs": "67762d94e7df38d8da46748de4eb89eee95491fc28b55608e3f5eec9a097cba9"
+  }
+}

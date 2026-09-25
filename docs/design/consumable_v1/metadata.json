@@ -1,0 +1,54 @@
+{
+  "version": "1.0.1-theory",
+  "node": "v24.19.0",
+  "date": "2026-09-25T12:01:25.724Z",
+  "sourceCommit": "6a500c545f04d3e4c53a99d3643d0c4d844e303f",
+  "runCount": 640,
+  "cardScenarios": 2304,
+  "itemComparisons": 672,
+  "policies": {
+    "balanced": {
+      "resource": 0.17,
+      "safety": 0.8,
+      "lookahead": 1
+    },
+    "aggressive": {
+      "resource": 0.02,
+      "safety": 0.55,
+      "lookahead": 1
+    },
+    "conserve": {
+      "resource": 0.7,
+      "safety": 1,
+      "lookahead": 1
+    },
+    "planner": {
+      "resource": 0.17,
+      "safety": 0.8,
+      "lookahead": 2
+    },
+    "fallback": {
+      "resource": 100,
+      "safety": 0.8,
+      "lookahead": 1
+    }
+  },
+  "hashes": {
+    "content.mjs": "2c2ca3291e5ce9f4e4a5a708a434950725fb992a04bc90c16bbb72b63a2c0b17",
+    "combat.mjs": "71df3a7e8bcc965a23b6dbe0fb0001f2aee2ca753fcb29a9141b7739bf86b5d3",
+    "run.mjs": "ce9c4ed7d079ce1ee5ddb62a838769115926189a8e340e504c5bce9f91351a5c",
+    "market.mjs": "2e1d127cc48cde77c7fdc6c7f7aa51f412300d0b392e67a8dac638242ad4573e",
+    "fixtures.mjs": "3097c33e60f3b4d52db00ef85f74a15a0b70be54d6027c9a605e79b0c41b26ca",
+    "analyze.mjs": "62832fa4d681000341cbc404d1af4446bfcf0b761ef1d363b9336a7fa760e9bf",
+    "model.test.mjs": "57b140c658e2e18c6f41f7a63d4e02332af209c23eeacbe3f80f9d32169ac7d3",
+    "contracts.test.mjs": "6ff61705afee85d56306bce9cbd244329128dde890291fd68198a631c7b76bd3",
+    "replay_runs.mjs": "419c4b9a3a73135ba2e9eab3927494534058f0f55f24b44dc2f96c8dae776f6d"
+  },
+  "replay": {
+    "date": "2026-09-25T12:07:00.748Z",
+    "runs": 640,
+    "gameplayResults": "all identical",
+    "change": "after-reward timeline reference corrected",
+    "previousRunHash": "402b59f92f86687e8695430a8a95ced7cf11f42d414bb238537ba4a14a8b0b0a"
+  }
+}

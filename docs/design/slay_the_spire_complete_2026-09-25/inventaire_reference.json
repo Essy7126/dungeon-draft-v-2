@@ -1,0 +1,3239 @@
+{
+  "readAt": "2026-09-25",
+  "source": "https://github.com/nkhoit/spire-archive/blob/687e6dce1f325234425e1b75f09d13ddd6ce7000/data/sts1/cards.json",
+  "rawEntries": 360,
+  "excluded": [
+    {
+      "id": "IMPULSE",
+      "reason": "Carte retirée, absente du catalogue jouable."
+    },
+    {
+      "id": "UNRAVELING",
+      "reason": "Carte retirée, absente du catalogue jouable."
+    }
+  ],
+  "cards": [
+    {
+      "id": "ACCURACY",
+      "name": "Accuracy",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ACROBATICS",
+      "name": "Acrobatics",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ADAPTATION",
+      "name": "Rushdown",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "ADRENALINE",
+      "name": "Adrenaline",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "AFTER_IMAGE",
+      "name": "After Image",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "AGGREGATE",
+      "name": "Aggregate",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ALL_FOR_ONE",
+      "name": "All for One",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "ALL_OUT_ATTACK",
+      "name": "All-Out Attack",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ALPHA",
+      "name": "Alpha",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "AMPLIFY",
+      "name": "Amplify",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ANGER",
+      "name": "Anger",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "APOTHEOSIS",
+      "name": "Apotheosis",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ARMAMENTS",
+      "name": "Armaments",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ASCENDERSBANE",
+      "name": "Ascender's Bane",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Special",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "AUTO_SHIELDS",
+      "name": "Auto-Shields",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "A_THOUSAND_CUTS",
+      "name": "A Thousand Cuts",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "BACKFLIP",
+      "name": "Backflip",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BACKSTAB",
+      "name": "Backstab",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BALL_LIGHTNING",
+      "name": "Ball Lightning",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BANDAGE_UP",
+      "name": "Bandage Up",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BANE",
+      "name": "Bane",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BARRAGE",
+      "name": "Barrage",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BARRICADE",
+      "name": "Barricade",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 2
+    },
+    {
+      "id": "BASH",
+      "name": "Bash",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "BATTLEHYMN",
+      "name": "Battle Hymn",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BATTLE_TRANCE",
+      "name": "Battle Trance",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BEAM_CELL",
+      "name": "Beam Cell",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BERSERK",
+      "name": "Berserk",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BIASED_COGNITION",
+      "name": "Biased Cognition",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BITE",
+      "name": "Bite",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Special",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BLADE_DANCE",
+      "name": "Blade Dance",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BLASPHEMY",
+      "name": "Blasphemy",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BLIND",
+      "name": "Blind",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BLIZZARD",
+      "name": "Blizzard",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BLOODLETTING",
+      "name": "Bloodletting",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BLOOD_FOR_BLOOD",
+      "name": "Blood for Blood",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 4,
+      "upgradeCost": 3
+    },
+    {
+      "id": "BLUDGEON",
+      "name": "Bludgeon",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "BLUR",
+      "name": "Blur",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BODY_SLAM",
+      "name": "Body Slam",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BOOTSEQUENCE",
+      "name": "Boot Sequence",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BOUNCING_FLASK",
+      "name": "Bouncing Flask",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "BOWLINGBASH",
+      "name": "Bowling Bash",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BRILLIANCE",
+      "name": "Brilliance",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BRUTALITY",
+      "name": "Brutality",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "BUFFER",
+      "name": "Buffer",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "BULLET_TIME",
+      "name": "Bullet Time",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 2
+    },
+    {
+      "id": "BURN",
+      "name": "Burn",
+      "color": "status",
+      "type": "Status",
+      "rarity": "Common",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "BURNING_PACT",
+      "name": "Burning Pact",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "BURST",
+      "name": "Burst",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CALCULATED_GAMBLE",
+      "name": "Calculated Gamble",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CALTROPS",
+      "name": "Caltrops",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CAPACITOR",
+      "name": "Capacitor",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CARNAGE",
+      "name": "Carnage",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CARVEREALITY",
+      "name": "Carve Reality",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CATALYST",
+      "name": "Catalyst",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CHAOS",
+      "name": "Chaos",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CHILL",
+      "name": "Chill",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CHOKE",
+      "name": "Choke",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CHRYSALIS",
+      "name": "Chrysalis",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CLASH",
+      "name": "Clash",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CLEARTHEMIND",
+      "name": "Tranquility",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CLEAVE",
+      "name": "Cleave",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CLOAK_AND_DAGGER",
+      "name": "Cloak and Dagger",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CLOTHESLINE",
+      "name": "Clothesline",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CLUMSY",
+      "name": "Clumsy",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "COLD_SNAP",
+      "name": "Cold Snap",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "COLLECT",
+      "name": "Collect",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "COMBUST",
+      "name": "Combust",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "COMPILE_DRIVER",
+      "name": "Compile Driver",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CONCENTRATE",
+      "name": "Concentrate",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CONCLUDE",
+      "name": "Conclude",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CONJUREBLADE",
+      "name": "Conjure Blade",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "CONSECRATE",
+      "name": "Consecrate",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CONSERVE_BATTERY",
+      "name": "Charge Battery",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CONSUME",
+      "name": "Consume",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "COOLHEADED",
+      "name": "Coolheaded",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CORE_SURGE",
+      "name": "Core Surge",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CORPSE_EXPLOSION",
+      "name": "Corpse Explosion",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CORRUPTION",
+      "name": "Corruption",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CREATIVE_AI",
+      "name": "Creative AI",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CRESCENDO",
+      "name": "Crescendo",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "CRIPPLING_POISON",
+      "name": "Crippling Cloud",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "CRUSHJOINTS",
+      "name": "Crush Joints",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "CURSEOFTHEBELL",
+      "name": "Curse of the Bell",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Special",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "CUTTHROUGHFATE",
+      "name": "Cut Through Fate",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DAGGER_SPRAY",
+      "name": "Dagger Spray",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DAGGER_THROW",
+      "name": "Dagger Throw",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DARKNESS",
+      "name": "Darkness",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DARK_EMBRACE",
+      "name": "Dark Embrace",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DARK_SHACKLES",
+      "name": "Dark Shackles",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DASH",
+      "name": "Dash",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "DAZED",
+      "name": "Dazed",
+      "color": "status",
+      "type": "Status",
+      "rarity": "Common",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "DEADLY_POISON",
+      "name": "Deadly Poison",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DECAY",
+      "name": "Decay",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "DECEIVEREALITY",
+      "name": "Deceive Reality",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DEEP_BREATH",
+      "name": "Deep Breath",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DEFEND_B",
+      "name": "Defend",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DEFEND_G",
+      "name": "Defend",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DEFEND_P",
+      "name": "Defend",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DEFEND_R",
+      "name": "Defend",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DEFLECT",
+      "name": "Deflect",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DEFRAGMENT",
+      "name": "Defragment",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DEMON_FORM",
+      "name": "Demon Form",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "DEUSEXMACHINA",
+      "name": "Deus Ex Machina",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "DEVAFORM",
+      "name": "Deva Form",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "DEVOTION",
+      "name": "Devotion",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DIE_DIE_DIE",
+      "name": "Die Die Die",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DISARM",
+      "name": "Disarm",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DISCOVERY",
+      "name": "Discovery",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DISTRACTION",
+      "name": "Distraction",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DODGE_AND_ROLL",
+      "name": "Dodge and Roll",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DOOM_AND_GLOOM",
+      "name": "Doom and Gloom",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "DOPPELGANGER",
+      "name": "Doppelganger",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "DOUBLE_ENERGY",
+      "name": "Double Energy",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DOUBLE_TAP",
+      "name": "Double Tap",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DOUBT",
+      "name": "Doubt",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "DRAMATIC_ENTRANCE",
+      "name": "Dramatic Entrance",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DROPKICK",
+      "name": "Dropkick",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "DUALCAST",
+      "name": "Dualcast",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "DUAL_WIELD",
+      "name": "Dual Wield",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ECHO_FORM",
+      "name": "Echo Form",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "ELECTRODYNAMICS",
+      "name": "Electrodynamics",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "EMPTYBODY",
+      "name": "Empty Body",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "EMPTYFIST",
+      "name": "Empty Fist",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "EMPTYMIND",
+      "name": "Empty Mind",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ENDLESS_AGONY",
+      "name": "Endless Agony",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "ENLIGHTENMENT",
+      "name": "Enlightenment",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "ENTRENCH",
+      "name": "Entrench",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ENVENOM",
+      "name": "Envenom",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ERUPTION",
+      "name": "Eruption",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "ESCAPE_PLAN",
+      "name": "Escape Plan",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "ESTABLISHMENT",
+      "name": "Establishment",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "EVALUATE",
+      "name": "Evaluate",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "EVISCERATE",
+      "name": "Eviscerate",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "EVOLVE",
+      "name": "Evolve",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "EXHUME",
+      "name": "Exhume",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "EXPERTISE",
+      "name": "Expertise",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FASTING2",
+      "name": "Fasting",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "FEARNOEVIL",
+      "name": "Fear No Evil",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FEED",
+      "name": "Feed",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FEEL_NO_PAIN",
+      "name": "Feel No Pain",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FIEND_FIRE",
+      "name": "Fiend Fire",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "FINESSE",
+      "name": "Finesse",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FINISHER",
+      "name": "Finisher",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FIRE_BREATHING",
+      "name": "Fire Breathing",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FISSION",
+      "name": "Fission",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FLAME_BARRIER",
+      "name": "Flame Barrier",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "FLASH_OF_STEEL",
+      "name": "Flash of Steel",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FLECHETTES",
+      "name": "Flechettes",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FLEX",
+      "name": "Flex",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FLURRYOFBLOWS",
+      "name": "Flurry of Blows",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FLYINGSLEEVES",
+      "name": "Flying Sleeves",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FLYING_KNEE",
+      "name": "Flying Knee",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FOLLOWUP",
+      "name": "Follow-Up",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FOOTWORK",
+      "name": "Footwork",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "FORCE_FIELD",
+      "name": "Force Field",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 4,
+      "upgradeCost": 4
+    },
+    {
+      "id": "FOREIGNINFLUENCE",
+      "name": "Foreign Influence",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FORETHOUGHT",
+      "name": "Forethought",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FTL",
+      "name": "FTL",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "FUSION",
+      "name": "Fusion",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "GASH",
+      "name": "Claw",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "GENETIC_ALGORITHM",
+      "name": "Genetic Algorithm",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "GHOSTLY",
+      "name": "Apparition",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Special",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "GHOSTLY_ARMOR",
+      "name": "Ghostly Armor",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "GLACIER",
+      "name": "Glacier",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "GLASS_KNIFE",
+      "name": "Glass Knife",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "GOOD_INSTINCTS",
+      "name": "Good Instincts",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "GO_FOR_THE_EYES",
+      "name": "Go for the Eyes",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "GRAND_FINALE",
+      "name": "Grand Finale",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "HALT",
+      "name": "Halt",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "HANDOFGREED",
+      "name": "Hand of Greed",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "HAVOC",
+      "name": "Havoc",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "HEADBUTT",
+      "name": "Headbutt",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "HEATSINKS",
+      "name": "Heatsinks",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "HEAVY_BLADE",
+      "name": "Heavy Blade",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "HEEL_HOOK",
+      "name": "Heel Hook",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "HELLO_WORLD",
+      "name": "Hello World",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "HEMOKINESIS",
+      "name": "Hemokinesis",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "HOLOGRAM",
+      "name": "Hologram",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "HYPERBEAM",
+      "name": "Hyperbeam",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "IMMOLATE",
+      "name": "Immolate",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "IMPATIENCE",
+      "name": "Impatience",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "IMPERVIOUS",
+      "name": "Impervious",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "INDIGNATION",
+      "name": "Indignation",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "INFERNAL_BLADE",
+      "name": "Infernal Blade",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "INFINITE_BLADES",
+      "name": "Infinite Blades",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "INFLAME",
+      "name": "Inflame",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "INJURY",
+      "name": "Injury",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "INNERPEACE",
+      "name": "Inner Peace",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "INTIMIDATE",
+      "name": "Intimidate",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "IRON_WAVE",
+      "name": "Iron Wave",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "JACK_OF_ALL_TRADES",
+      "name": "Jack of All Trades",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "JUDGEMENT",
+      "name": "Judgment",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "JUGGERNAUT",
+      "name": "Juggernaut",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "JUSTLUCKY",
+      "name": "Just Lucky",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "J_A_X",
+      "name": "J.A.X.",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Special",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "LEAP",
+      "name": "Leap",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "LEG_SWEEP",
+      "name": "Leg Sweep",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "LESSONLEARNED",
+      "name": "Lesson Learned",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "LIKEWATER",
+      "name": "Like Water",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "LIMIT_BREAK",
+      "name": "Limit Break",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "LOCKON",
+      "name": "Bullseye",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "LOOP",
+      "name": "Loop",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MACHINE_LEARNING",
+      "name": "Machine Learning",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MADNESS",
+      "name": "Madness",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "MAGNETISM",
+      "name": "Magnetism",
+      "color": "colorless",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MALAISE",
+      "name": "Malaise",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "MASTERFUL_STAB",
+      "name": "Masterful Stab",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "MASTERREALITY",
+      "name": "Master Reality",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "MASTER_OF_STRATEGY",
+      "name": "Master of Strategy",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "MAYHEM",
+      "name": "Mayhem",
+      "color": "colorless",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MEDITATE",
+      "name": "Meditate",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MELTER",
+      "name": "Melter",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MENTALFORTRESS",
+      "name": "Mental Fortress",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "METALLICIZE",
+      "name": "Metallicize",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "METAMORPHOSIS",
+      "name": "Metamorphosis",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "METEOR_STRIKE",
+      "name": "Meteor Strike",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 5,
+      "upgradeCost": 5
+    },
+    {
+      "id": "MIND_BLAST",
+      "name": "Mind Blast",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "MULTI_CAST",
+      "name": "Multi-Cast",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "NECRONOMICURSE",
+      "name": "Necronomicurse",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Special",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "NEUTRALIZE",
+      "name": "Neutralize",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "NIGHT_TERROR",
+      "name": "Nightmare",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 2
+    },
+    {
+      "id": "NIRVANA",
+      "name": "Nirvana",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "NORMALITY",
+      "name": "Normality",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "NOXIOUS_FUMES",
+      "name": "Noxious Fumes",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "OFFERING",
+      "name": "Offering",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "OMNISCIENCE",
+      "name": "Omniscience",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 4,
+      "upgradeCost": 3
+    },
+    {
+      "id": "OUTMANEUVER",
+      "name": "Outmaneuver",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PAIN",
+      "name": "Pain",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "PANACEA",
+      "name": "Panacea",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "PANACHE",
+      "name": "Panache",
+      "color": "colorless",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "PANICBUTTON",
+      "name": "Panic Button",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "PARASITE",
+      "name": "Parasite",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "PATHTOVICTORY",
+      "name": "Pressure Points",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PERFECTED_STRIKE",
+      "name": "Perfected Strike",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "PERSEVERANCE",
+      "name": "Perseverance",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PHANTASMAL_KILLER",
+      "name": "Phantasmal Killer",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "PIERCINGWAIL",
+      "name": "Piercing Wail",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "POISONED_STAB",
+      "name": "Poisoned Stab",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "POMMEL_STRIKE",
+      "name": "Pommel Strike",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "POWER_THROUGH",
+      "name": "Power Through",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PRAY",
+      "name": "Pray",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PREDATOR",
+      "name": "Predator",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "PREPARED",
+      "name": "Prepared",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "PRIDE",
+      "name": "Pride",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Special",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PROSTRATE",
+      "name": "Prostrate",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "PROTECT",
+      "name": "Protect",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "PUMMEL",
+      "name": "Pummel",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "PURITY",
+      "name": "Purity",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "QUICK_SLASH",
+      "name": "Quick Slash",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "RAGE",
+      "name": "Rage",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "RAGNAROK",
+      "name": "Ragnarok",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "RAINBOW",
+      "name": "Rainbow",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "RAMPAGE",
+      "name": "Rampage",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "REACHHEAVEN",
+      "name": "Reach Heaven",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "REAPER",
+      "name": "Reaper",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "REBOOT",
+      "name": "Reboot",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "REBOUND",
+      "name": "Rebound",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "RECKLESS_CHARGE",
+      "name": "Reckless Charge",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "RECYCLE",
+      "name": "Recycle",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "REDO",
+      "name": "Recursion",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "REFLEX",
+      "name": "Reflex",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "REGRET",
+      "name": "Regret",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "REINFORCED_BODY",
+      "name": "Reinforced Body",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "REPROGRAM",
+      "name": "Reprogram",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "RIDDLE_WITH_HOLES",
+      "name": "Riddle with Holes",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "RIP_AND_TEAR",
+      "name": "Rip and Tear",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "RITUALDAGGER",
+      "name": "Ritual Dagger",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Special",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "RUPTURE",
+      "name": "Rupture",
+      "color": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SADISTIC_NATURE",
+      "name": "Sadistic Nature",
+      "color": "colorless",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SANCTITY",
+      "name": "Sanctity",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SANDSOFTIME",
+      "name": "Sands of Time",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 4,
+      "upgradeCost": 4
+    },
+    {
+      "id": "SASHWHIP",
+      "name": "Sash Whip",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SCRAPE",
+      "name": "Scrape",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SCRAWL",
+      "name": "Scrawl",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SEARING_BLOW",
+      "name": "Searing Blow",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "SECOND_WIND",
+      "name": "Second Wind",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SECRET_TECHNIQUE",
+      "name": "Secret Technique",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SECRET_WEAPON",
+      "name": "Secret Weapon",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SEEING_RED",
+      "name": "Seeing Red",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SEEK",
+      "name": "Seek",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SELF_REPAIR",
+      "name": "Self Repair",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SENTINEL",
+      "name": "Sentinel",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SETUP",
+      "name": "Setup",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SEVER_SOUL",
+      "name": "Sever Soul",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "SHAME",
+      "name": "Shame",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "SHOCKWAVE",
+      "name": "Shockwave",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "SHRUG_IT_OFF",
+      "name": "Shrug It Off",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SIGNATUREMOVE",
+      "name": "Signature Move",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "SKEWER",
+      "name": "Skewer",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "SKIM",
+      "name": "Skim",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SLICE",
+      "name": "Slice",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SLIMED",
+      "name": "Slimed",
+      "color": "status",
+      "type": "Status",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SPIRITSHIELD",
+      "name": "Spirit Shield",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "SPOT_WEAKNESS",
+      "name": "Spot Weakness",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STACK",
+      "name": "Stack",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STATIC_DISCHARGE",
+      "name": "Static Discharge",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STEAM",
+      "name": "Steam Barrier",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "STEAM_POWER",
+      "name": "Overclock",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "STORM",
+      "name": "Storm",
+      "color": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STORM_OF_STEEL",
+      "name": "Storm of Steel",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STREAMLINE",
+      "name": "Streamline",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "STRIKE_B",
+      "name": "Strike",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STRIKE_G",
+      "name": "Strike",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STRIKE_P",
+      "name": "Strike",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STRIKE_R",
+      "name": "Strike",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "STUDY",
+      "name": "Study",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SUCKER_PUNCH",
+      "name": "Sucker Punch",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SUNDER",
+      "name": "Sunder",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "SURVIVOR",
+      "name": "Survivor",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SWEEPING_BEAM",
+      "name": "Sweeping Beam",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "SWIFT_STRIKE",
+      "name": "Swift Strike",
+      "color": "colorless",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "SWIVEL",
+      "name": "Swivel",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "SWORD_BOOMERANG",
+      "name": "Sword Boomerang",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "TACTICIAN",
+      "name": "Tactician",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "TALKTOTHEHAND",
+      "name": "Talk to the Hand",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "TANTRUM",
+      "name": "Tantrum",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "TEMPEST",
+      "name": "Tempest",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "TERROR",
+      "name": "Terror",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "THE_BOMB",
+      "name": "The Bomb",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "THINKING_AHEAD",
+      "name": "Thinking Ahead",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "THIRDEYE",
+      "name": "Third Eye",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "THUNDERCLAP",
+      "name": "Thunderclap",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "THUNDER_STRIKE",
+      "name": "Thunder Strike",
+      "color": "defect",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "TOOLS_OF_THE_TRADE",
+      "name": "Tools of the Trade",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "TRANSMUTATION",
+      "name": "Transmutation",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "TRIP",
+      "name": "Trip",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "TRUE_GRIT",
+      "name": "True Grit",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "TURBO",
+      "name": "TURBO",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "TWIN_STRIKE",
+      "name": "Twin Strike",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "UNDERHANDED_STRIKE",
+      "name": "Sneaky Strike",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "UNDO",
+      "name": "Equilibrium",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "UNLOAD",
+      "name": "Unload",
+      "color": "silent",
+      "type": "Attack",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "UPPERCUT",
+      "name": "Uppercut",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "VAULT",
+      "name": "Vault",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 2
+    },
+    {
+      "id": "VENGEANCE",
+      "name": "Simmering Fury",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "VENOMOLOGY",
+      "name": "Alchemize",
+      "color": "silent",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "VIGILANCE",
+      "name": "Vigilance",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "VIOLENCE",
+      "name": "Violence",
+      "color": "colorless",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "VOID",
+      "name": "Void",
+      "color": "status",
+      "type": "Status",
+      "rarity": "Common",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "WALLOP",
+      "name": "Wallop",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "WARCRY",
+      "name": "Warcry",
+      "color": "ironclad",
+      "type": "Skill",
+      "rarity": "Common",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "WAVEOFTHEHAND",
+      "name": "Wave of the Hand",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "WEAVE",
+      "name": "Weave",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 0,
+      "upgradeCost": 0
+    },
+    {
+      "id": "WELL_LAID_PLANS",
+      "name": "Well-Laid Plans",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "WHEELKICK",
+      "name": "Wheel Kick",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "WHIRLWIND",
+      "name": "Whirlwind",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": -1,
+      "upgradeCost": -1
+    },
+    {
+      "id": "WHITE_NOISE",
+      "name": "White Noise",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 0
+    },
+    {
+      "id": "WILD_STRIKE",
+      "name": "Wild Strike",
+      "color": "ironclad",
+      "type": "Attack",
+      "rarity": "Common",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "WINDMILLSTRIKE",
+      "name": "Windmill Strike",
+      "color": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "WIREHEADING",
+      "name": "Foresight",
+      "color": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "WISH",
+      "name": "Wish",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "WORSHIP",
+      "name": "Worship",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 2,
+      "upgradeCost": 2
+    },
+    {
+      "id": "WOUND",
+      "name": "Wound",
+      "color": "status",
+      "type": "Status",
+      "rarity": "Common",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "WRAITH_FORM_V2",
+      "name": "Wraith Form",
+      "color": "silent",
+      "type": "Power",
+      "rarity": "Rare",
+      "cost": 3,
+      "upgradeCost": 3
+    },
+    {
+      "id": "WREATHOFFLAME",
+      "name": "Wreath of Flame",
+      "color": "watcher",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "cost": 1,
+      "upgradeCost": 1
+    },
+    {
+      "id": "WRITHE",
+      "name": "Writhe",
+      "color": "curse",
+      "type": "Curse",
+      "rarity": "Curse",
+      "cost": -2,
+      "upgradeCost": -2
+    },
+    {
+      "id": "ZAP",
+      "name": "Zap",
+      "color": "defect",
+      "type": "Skill",
+      "rarity": "Basic",
+      "cost": 1,
+      "upgradeCost": 0
+    }
+  ]
+}

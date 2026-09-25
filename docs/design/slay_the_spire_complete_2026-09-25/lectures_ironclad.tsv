@@ -1,0 +1,76 @@
+id	contrat	analyse
+ANGER	D6→8 ; crée une copie de soi en défausse.	Attaque gratuite qui devient son propre carburant ; la multiplication encombre aussi les prochaines mains et dilue les défenses.
+ARMAMENTS	B5 ; améliore une carte en main pour ce combat → toutes les cartes en main.	L’amélioration augmente la couverture, pas le blocage. La valeur dépend des cartes améliorables que l’on pourra effectivement jouer, puis de leurs éventuels rejouages.
+BARRICADE	Le blocage persiste entre les tours ; coût 3→2.	Transforme une défense excédentaire en réserve et permet Entrench/Body Slam. Installer une réserve vide coûte un tour dangereux.
+BASH	D8→10, puis Vulnérable 2→3.	Prépare les attaques suivantes ; ses propres dégâts ne profitent pas de la vulnérabilité nouvellement posée. Le tour supplémentaire ouvre une nouvelle main amplifiée.
+BATTLE_TRANCE	Pioche 3→4, puis interdit de piocher ce tour ; coût 0.	Accélération immédiate avec verrou de séquençage : jouer après les autres pioches. Mettre une carte en main reste distinct de piocher.
+BERSERK	Subit Vulnérable 2→1 ; +1 énergie au début des tours suivants.	Finance les combats longs. L’amélioration raccourcit l’exposition ; Artefact peut empêcher cette dette initiale.
+BLOODLETTING	Perd 3 PV ; gagne 2→3 énergie.	Convertit la santé en tempo et déclenche Rupture/Blood for Blood. Mauvais échange si aucune carte utile ne dépense l’énergie.
+BLOOD_FOR_BLOOD	D18→22 ; coût initial 4→3, réduit de 1 par événement de perte de PV du combat.	Compte les pertes distinctes, pas leur quantité. Le coût peut devenir nul ; provoquer artificiellement les pertes comporte un vrai risque de survie.
+BLUDGEON	D32→42 pour 3 énergie.	Concentre la puissance dans une seule pioche, mais monopolise un tour à trois énergie. Bonne cible de gratuité ou de duplication.
+BODY_SLAM	D égal au blocage actuel ; coût 1→0 ; ne consomme pas ce blocage.	Convertit un investissement défensif en attaque. Avec conservation et doublement du blocage, la réserve profite plusieurs fois.
+BRUTALITY	Début de tour : −1 PV et pioche 1 ; amélioration : Innée.	Accès récurrent aux cartes et déclencheur de sacrifice. Innée stabilise l’installation mais prend une place d’ouverture.
+BURNING_PACT	Épuise une carte choisie en main, puis pioche 2→3.	Remplace une mauvaise carte et accélère les futurs cycles ; excellent pont entre épuration, Feel No Pain et Dark Embrace.
+CARNAGE	D20→28 ; Éthérée.	Gros impact précoce ; si la main impose de défendre, on peut accepter sa disparition pour alléger le combat.
+CLASH	D14→18 ; jouable seulement si toute la main est composée d’attaques.	Gratuité conditionnée par une main nettoyée. Statuts et malédictions rendent la condition fragile, notamment Ascender’s Bane.
+CLEAVE	D8→11 à tous les ennemis.	Réponse simple aux groupes, disponible sans moteur. Le bonus total dépend du nombre de cibles mais tuer une cible prioritaire peut rester préférable.
+CLOTHESLINE	D12→14, puis Faible 2→3.	Attaque et réduction des dégâts futurs réunies. L’amélioration prolonge la fenêtre défensive sans augmenter le pourcentage de Faible.
+COMBUST	Fin de tour : −1 PV et D5→7 à tous les ennemis.	Dégâts répétés sans rejouer une carte ; bénéficie de la durée et des groupes. La perte de PV alimente Rupture, pas la Force directement.
+CORRUPTION	Compétences à coût 0 ; les compétences jouées s’épuisent ; coût 3→2.	Échange la durée de vie des compétences contre une forte accélération. Très puissant avec des déclencheurs d’épuisement, mais exige de finir avant épuisement des réponses.
+DARK_EMBRACE	Chaque carte épuisée fait piocher 1 ; coût 2→1.	Transforme la destruction en accès aux cartes. La valeur dépend de déclencheurs disponibles et d’une main qui ne déborde pas.
+DEFEND_R	B5→8.	Défense de référence, immédiatement fiable. Son coût d’opportunité augmente quand d’autres cartes défendent tout en préparant un moteur.
+DEMON_FORM	Début de tour : Force +2→3.	Croissance longue avec coût d’installation élevé. Un combat presque fini ne rembourse pas le tour investi ; Reaper peut valoriser la Force en soins.
+DISARM	La cible perd 2→3 Force pour le combat ; Épuisement.	Réduit chaque impact d’une attaque multiple. Son efficacité dépend du profil ennemi ; Artefact peut absorber l’application.
+DOUBLE_TAP	Ce tour, la prochaine attaque → les 2 prochaines attaques sont résolues deux fois.	La deuxième résolution ne repaie pas le coût ; favorise attaques chères, multi-impacts et effets utilitaires, sous réserve de leur séquence.
+DROPKICK	D5→8 ; si cible Vulnérable, +1 énergie et pioche 1.	Une fois la condition établie, se rembourse en énergie et en carte. Deux copies dans un cycle suffisamment réduit peuvent supprimer la limite de tours.
+DUAL_WIELD	Choisit attaque ou pouvoir en main ; en crée 1→2 copies en main.	Multiplie une bonne pièce sans attendre un nouveau cycle. Les copies exigent encore de l’énergie et de la place ; aucun ajout permanent au deck.
+ENTRENCH	Double le blocage actuel ; coût 2→1.	Multiplicateur, inutile à zéro. Demande de produire le blocage avant, puis de le dépenser utilement ou de le conserver.
+EVOLVE	Piocher un statut fait piocher 1→2 cartes.	Compense puis valorise l’encombrement des statuts. Les statuts ajoutés directement en main ne déclenchent pas cette pioche.
+EXHUME	Récupère en main une carte de la pile épuisée, sauf un Exhume ; Épuisement ; coût 1→0.	Réutilise une réponse exceptionnelle. La restriction empêche une récupération réciproque triviale ; ne récupère pas un pouvoir déjà installé.
+FEED	D10→12 ; Fatal : PV max +3→4 ; Épuisement.	Rend l’ordre des morts économiquement important. Retarder la victoire pour le dernier coup n’est rentable que si le risque reste inférieur au gain futur.
+FEEL_NO_PAIN	Chaque carte épuisée produit B3→4.	Protège pendant que le deck se simplifie. Fonctionne aussi avec Éthérée, mais les blocages tardifs n’annulent pas un dégât déjà subi.
+FIEND_FIRE	Épuise le reste de la main ; D7→10 par carte épuisée ; s’épuise aussi.	La main devient une munition. Force s’applique par impact ; les cartes piochées ensuite via Dark Embrace ne sont pas des victimes initiales supplémentaires.
+FIRE_BREATHING	Piocher statut ou malédiction produit D6→10 à tous les ennemis.	Convertit une nuisance en attaque sans énergie ; réclame encore une défense et un moyen de traverser les mains encombrées.
+FLAME_BARRIER	B12→16 ; riposte D4→6 à chaque impact d’attaque reçu ce tour.	Réponse aux rafales ennemies. La riposte n’exige pas de perdre des PV ; elle ne transforme pas une perte de PV hors attaque en déclencheur.
+FLEX	Force +2→4 ce tour, puis perte du même montant en fin de tour.	Fort quand plusieurs impacts suivent. Un Artefact préalable peut supprimer la dette ; l’amélioration seule ne laisse pas de Force permanente.
+GHOSTLY_ARMOR	B10→13 ; Éthérée.	Défense dense quand nécessaire, qui disparaît sinon. Peut déclencher l’épuisement sans dépenser d’énergie, mais après les décisions du tour.
+HAVOC	Joue gratuitement la carte du dessus de pioche, puis l’épuise ; coût 1→0.	Valorise Headbutt/Warcry pour maîtriser le résultat. Une carte conditionnelle ou dangereuse peut gâcher l’automatisme ; un pouvoir joué s’installe normalement.
+HEADBUTT	D9→12 ; remet une carte choisie de défausse au-dessus de la pioche.	Programme la prochaine pioche, sans donner immédiatement la carte. Utile pour rejouer une pièce de croissance ou contrôler Havoc.
+HEAVY_BLADE	D14 ; applique la Force 3→5 fois au calcul.	Une grosse attaque à coefficient de Force élevé, distincte d’une rafale : moins de réactions adverses par impact, mais moins de déclencheurs favorables.
+HEMOKINESIS	−2 PV ; D15→20.	Dégâts concentrés peu chers en énergie, financés par la santé. Peut prévenir plus de dégâts qu’il n’en coûte en abrégeant le combat.
+IMMOLATE	D21→28 à tous ; ajoute un Burn en défausse.	Paie sa puissance par une nuisance future. Si le combat se termine avant de la piocher, le coût différé ne se matérialise pas.
+IMPERVIOUS	B30→40 ; Épuisement.	Réponse ponctuelle à une grosse menace ; utile avec conservation du blocage. L’épuisement évite de repiocher une défense excessive aux tours calmes.
+INFERNAL_BLADE	Crée une attaque aléatoire en main, gratuite ce tour ; Épuisement ; coût 1→0.	Convertit une carte en option imprévisible. La réduction de coût concerne le tour, pas toute la run ni automatiquement les cartes à coût X.
+INFLAME	Force +2→3 pour le combat.	Croissance immédiate sans attente, surtout rentable sur plusieurs impacts et plusieurs tours. Échelle modeste mais installation accessible.
+INTIMIDATE	Faible 1→2 à tous ; coût 0 ; Épuisement.	Défend tout un groupe sans énergie, ou retire un Artefact. Une application trop précoce peut être gaspillée contre des intentions non offensives.
+IRON_WAVE	B5→7 puis D5→7.	Petit compromis attaque/défense dans une pioche ; une carte d’attaque peut défendre même quand jouer une compétence est défavorable.
+JUGGERNAUT	Chaque gain de blocage inflige D5→7 à une cible aléatoire.	Récompense le nombre de gains, pas leur taille. Relie les défenses répétées à l’offensive ; le hasard gêne la concentration des dégâts.
+LIMIT_BREAK	Double la Force ; Épuisement retiré par amélioration.	Le passage à une carte recyclable permet une croissance exponentielle, mais seulement si de la Force positive existe et si le deck recircule.
+METALLICIZE	Fin de tour : B3→4.	Défense récurrente sans nouvelle pioche ; n’est pas amplifiée comme le blocage directement produit par une carte avec Dextérité.
+OFFERING	−6 PV ; +2 énergie ; pioche 3→5 ; Épuisement.	Achète simultanément des options et leur financement. Forte accélération ; le soin de fin de combat ne doit pas être compté deux fois pour la justifier.
+PERFECTED_STRIKE	D6 + 2→3 par carte Strike pertinente encore dans le combat, incluant celle-ci ; hors pile épuisée.	Valorise un deck riche en Strike mais oppose croissance brute et épuration. Le tag interne importe davantage que la traduction du nom.
+POMMEL_STRIKE	D9→10 ; pioche 1→2.	L’amélioration change surtout la circulation. Avec énergie suffisante, une attaque devient un moteur de pioche plutôt qu’un simple remplacement.
+POWER_THROUGH	Ajoute 2 Wound en main ; B15→20.	La nuisance arrive tout de suite dans la main : nourriture pour Second Wind, mais pas déclencheur de pioche d’Evolve à cet instant.
+PUMMEL	D2 répété 4→5 fois ; Épuisement.	Amplifie la Force par nombre d’impacts. Mauvais contre des ripostes ou protections par impact si la Force ne compense pas.
+RAGE	Ce tour, chaque attaque jouée donne B3→5 ; coût 0.	Défense liée au nombre de cartes d’attaque, pas au nombre de coups de chaque carte. Nécessite encore de piocher des attaques.
+RAMPAGE	D8 ; après usage, dégâts de cet exemplaire +5→8 pour le combat.	Croît avec les rejouages, pas avec les autres copies. Sa qualité dépend de la vitesse du cycle, pas seulement de son plafond théorique.
+REAPER	D4→5 à tous ; soigne à hauteur des dégâts non bloqués infligés ; Épuisement.	La Force devient récupération de santé sur plusieurs cibles. Le sur-dégât ne doit pas être traité comme une réserve de soin illimitée.
+RECKLESS_CHARGE	D7→10 ; ajoute Dazed dans la pioche ; coût 0.	Dette de pioche plus immédiate qu’un ajout en défausse. Peut alimenter Evolve/Fire Breathing/Feel No Pain.
+RUPTURE	Chaque perte de PV causée par une carte donne Force +1→2.	Construit un moteur de sacrifice. Une attaque ennemie n’est pas un déclencheur équivalent ; prévenir totalement la perte peut supprimer le bénéfice.
+SEARING_BLOW	D12 ; améliorable sans limite : +4, puis +5, +6… ; première amélioration D16.	Concentre les feux de camp sur un exemplaire. Le coût réel est de renoncer aux soins et aux améliorations des autres cartes.
+SECOND_WIND	Épuise les non-attaques en main ; B5→7 par carte épuisée.	Transforme statuts, malédictions et compétences inutiles en défense. Nettoyage puissant, avec perte possible de réponses nécessaires plus tard.
+SEEING_RED	+2 énergie ; Épuisement ; coût 1→0.	Gain net +1 puis +2, pas +2 puis +3. Transporte de l’énergie dans le tour au prix d’une pioche.
+SENTINEL	B5→8 ; quand épuisée, +2→3 énergie.	A deux emplois concurrents : défendre normalement ou être sacrifiée pour financer une autre action. Le bénéfice spécial ne demande pas de la jouer.
+SEVER_SOUL	Épuise les non-attaques en main ; D16→22.	Nettoie tout en frappant, mais ne multiplie pas ses dégâts par carte détruite. Différence essentielle avec Fiend Fire.
+SHOCKWAVE	Faible et Vulnérable 3→5 à tous ; Épuisement.	Installe deux fenêtres complémentaires ; face à Artefact, deux applications distinctes comptent. Cher pour une rencontre déjà gagnée.
+SHRUG_IT_OFF	B8→11 ; pioche 1.	Défend sans diminuer la taille de la main après résolution normale. Demande toujours l’énergie et peut être moins utile un tour sans menace.
+SPOT_WEAKNESS	Si la cible prévoit une attaque : Force +3→4.	Récompense la lecture d’intention. Carte morte sans cible appropriée ; plusieurs ennemis augmentent parfois les occasions de la déclencher.
+STRIKE_R	D6→9.	Référence offensive ; facile à utiliser mais sans préparation ni circulation. Reste un élément de Perfected Strike avant de devenir un candidat au retrait.
+SWORD_BOOMERANG	D3, cible aléatoire à chaque impact, 3→4 impacts.	L’amélioration ajoute un déclenchement et une application de Force, pas un dégât à chaque coup. Répartir peut empêcher un meurtre prioritaire.
+THUNDERCLAP	D4→7 à tous, puis Vulnérable 1 à tous.	Prépare les attaques du même tour. Avec une seule durée, ne promet pas une seconde main amplifiée au prochain tour joueur.
+TRUE_GRIT	B7→9 ; épuise une carte aléatoire → choisie.	L’amélioration donne du contrôle : supprimer un statut sans risquer sa condition de victoire transforme sa fonction dans le deck.
+TWIN_STRIKE	D5→7 deux fois.	Deux applications de Force, deux interactions par impact ; dommage de base fiable, mais ne possède pas la montée de Rampage.
+UPPERCUT	D13 ; Faible 1→2 puis Vulnérable 1→2.	L’amélioration étend deux fenêtres de jeu. Ne change pas les dégâts directs ; se distingue d’un simple bonus chiffré d’attaque.
+WARCRY	Pioche 1→2 ; replace une carte en main au-dessus de la pioche ; Épuisement ; coût 0.	Version normale sélectionne sans créer d’avantage net de main. Permet de conserver indirectement une réponse ou de préparer un automatisme.
+WHIRLWIND	Coût X ; D5→8 à tous, X impacts.	Dépense l’énergie restante en une seule carte ; Force et nombre d’ennemis multiplient le rendement. Un coût X nul reste un cas pertinent avec Chemical X.
+WILD_STRIKE	D12→17 ; mélange Wound dans la pioche.	Gros dégât immédiat avec dégradation possible dès ce cycle. Evolve peut compenser, mais l’attaque ne constitue pas seule un moteur de statuts.

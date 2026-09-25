@@ -1,0 +1,284 @@
+{
+  "date": "2026-09-25",
+  "portee": "Modèles documentaires et propositions ; aucun moteur de jeu exécuté.",
+  "cas": 16,
+  "assertions": 32,
+  "resultats": [
+    {
+      "id": "main_clef",
+      "hypothese": "Pioche uniforme sans remise ; trois copies utiles ; aucune sélection.",
+      "resultats": [
+        {
+          "deck": 15,
+          "copies": 3,
+          "main": 5,
+          "acces": 0.7362637362637363
+        },
+        {
+          "deck": 30,
+          "copies": 3,
+          "main": 5,
+          "acces": 0.43349753694581283
+        }
+      ]
+    },
+    {
+      "id": "main_deux_outils",
+      "hypothese": "Trois A et trois B, disjoints ; main de cinq.",
+      "resultats": [
+        {
+          "deck": 15,
+          "probabilite": 0.5144855144855145
+        },
+        {
+          "deck": 30,
+          "probabilite": 0.1652561997389584
+        }
+      ]
+    },
+    {
+      "id": "protection_differee",
+      "hypothese": "Impacts finaux hypothétiques de 120/40 ou 40/120 ; aucun soin ni autre réduction.",
+      "resultats": {
+        "sans_effet": 160,
+        "ordre_favorable": 120,
+        "ordre_defavorable": 200
+      }
+    },
+    {
+      "id": "paiement_initial",
+      "hypothese": "Une commande coûte 1 PA puis rend 1 PA ; la copie est détruite.",
+      "resultats": {
+        "zero_ap": {
+          "legal": false,
+          "ap": 0
+        },
+        "un_ap": {
+          "legal": true,
+          "ap": 1
+        },
+        "copies_consommees": 1
+      }
+    },
+    {
+      "id": "infrastructure",
+      "hypothese": "Trois poses successives sans bombe détruite ; au moins deux tours pour respecter deux poses/tour.",
+      "resultats": {
+        "couts": [
+          2,
+          3,
+          4
+        ],
+        "total_pa": 9,
+        "copies_si_adaptation_consommable": 3
+      }
+    },
+    {
+      "id": "risque_contextuel",
+      "hypothese": "Tout ou rien N245 : lanceur 60 % PV, cible 40 %, base 98, sans mitigation.",
+      "resultats": {
+        "probabilite_retour": 0.7,
+        "auto_degats_moyens_bruts": 68.6
+      }
+    },
+    {
+      "id": "conversion_poison",
+      "hypothese": "Dix niveaux Hémorragie, N245 ; coefficient de la fiche Hémophilie.",
+      "resultats": {
+        "base_poison": 98,
+        "categorie": "mêlée",
+        "moment": "début du tour de la cible"
+      }
+    },
+    {
+      "id": "charge_par_impact",
+      "hypothese": "Prototype Catabase : 100 PV, charge 4, seuil 6 ; pas de charge post-mortem ; aucun sort Ankama simulé.",
+      "resultats": {
+        "gros_impact": {
+          "hp": 60,
+          "charge": 5,
+          "ultime_prochaine_activation": false
+        },
+        "petits_impacts": {
+          "hp": 60,
+          "charge": 8,
+          "ultime_prochaine_activation": true
+        },
+        "coup_letal": {
+          "hp": 0,
+          "charge": 4,
+          "ultime_prochaine_activation": false
+        }
+      }
+    },
+    {
+      "id": "origine_mobile",
+      "hypothese": "Prototype : anneau Manhattan exact 1 ; tous les occupants autres que sa source sont concernés.",
+      "resultats": {
+        "ennemi_avant": false,
+        "ennemi_apres": true,
+        "heros_apres": true
+      }
+    },
+    {
+      "id": "impact_simultane",
+      "hypothese": "Trois entités déjà incluses dans une explosion de 32 ; mourir en premier ne tronque pas la liste.",
+      "resultats": [
+        {
+          "id": "chef",
+          "hp": 0
+        },
+        {
+          "id": "garde",
+          "hp": 0
+        },
+        {
+          "id": "heros",
+          "hp": 68
+        }
+      ]
+    },
+    {
+      "id": "reservoirs_existants",
+      "hypothese": "Catalogue/règles locaux : 6 PA stockés, décharge 1 PA, 22/charge, vol 1 et soin ≤12 par ennemi proche.",
+      "resultats": {
+        "protege": {
+          "charges_perdues": 0,
+          "degats_bruts": 132,
+          "soins_ennemis_max": 0
+        },
+        "trois_voleurs": {
+          "charges_perdues": 3,
+          "degats_bruts": 66,
+          "soins_ennemis_max": 36
+        },
+        "rendement_brut_par_pa_total": 18.857142857142858,
+        "ecart_pression_max": 102
+      }
+    },
+    {
+      "id": "budget_soins",
+      "hypothese": "Boss original 360 PV ; coups effectifs 30/copie ; soin 60 ; coût de 2 PA/copie ; aucune autre défense.",
+      "resultats": {
+        "aucun_soin": {
+          "cartes": 12,
+          "pa": 24
+        },
+        "trois_soins": {
+          "cartes": 18,
+          "pa": 36
+        },
+        "economie_copies_par_soin_empeche": 2,
+        "soin_illimite": "aucune borne de stock garantie sans hypothèse de rythme de dégâts"
+      }
+    },
+    {
+      "id": "butin_unique",
+      "hypothese": "Proposition : seuls les ennemis initiaux ont une éligibilité ; résurrection conserve identité ; invocation ne crée pas de droit.",
+      "resultats": [
+        {
+          "id": "a",
+          "drop": true
+        },
+        {
+          "id": "a",
+          "drop": false
+        },
+        {
+          "id": "invocation",
+          "drop": false
+        },
+        {
+          "id": "b",
+          "drop": true
+        },
+        {
+          "id": "a",
+          "drop": false
+        },
+        {
+          "id": "invocation",
+          "drop": false
+        }
+      ]
+    },
+    {
+      "id": "renforts_bornes",
+      "hypothese": "Exemple original : appel T1 puis chaque quatre tours, renfort tué avant appel suivant ; plafond vivant jamais atteint.",
+      "resultats": {
+        "appels_en_13_tours": 4,
+        "avec_budget_total_deux": 2,
+        "conclusion": "le plafond vivant seul ne borne pas le nombre total de renforts"
+      }
+    },
+    {
+      "id": "seuil_solo",
+      "hypothese": "Prototype original : moitié de réserve conservée, +3/t, seuil 12 ; aucune dépense ni arrondi.",
+      "resultats": {
+        "trace": [
+          {
+            "turn": 1,
+            "p": 3
+          },
+          {
+            "turn": 2,
+            "p": 4.5
+          },
+          {
+            "turn": 3,
+            "p": 5.25
+          },
+          {
+            "turn": 4,
+            "p": 5.625
+          },
+          {
+            "turn": 5,
+            "p": 5.8125
+          },
+          {
+            "turn": 6,
+            "p": 5.90625
+          },
+          {
+            "turn": 7,
+            "p": 5.953125
+          },
+          {
+            "turn": 8,
+            "p": 5.9765625
+          },
+          {
+            "turn": 9,
+            "p": 5.98828125
+          },
+          {
+            "turn": 10,
+            "p": 5.994140625
+          },
+          {
+            "turn": 11,
+            "p": 5.9970703125
+          },
+          {
+            "turn": 12,
+            "p": 5.99853515625
+          }
+        ],
+        "limite": 6,
+        "seuil": 12,
+        "accessible": false,
+        "variante_seuil_5_premier_tour": 3
+      }
+    },
+    {
+      "id": "voie_de_secours",
+      "hypothese": "Proposition : commande de salle réutilisable coûtant 2 PA ; son accès spatial reste à vérifier dans Godot.",
+      "resultats": {
+        "sans_carte_sans_commande": false,
+        "sans_carte_commande_2_pa": true,
+        "limite": "la formule ne prouve ni un chemin libre ni la survie jusqu’au levier"
+      }
+    }
+  ]
+}

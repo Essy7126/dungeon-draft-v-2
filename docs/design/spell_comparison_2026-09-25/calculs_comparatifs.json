@@ -1,0 +1,195 @@
+{
+  "scope": "V1 reference model only. P=40, no equipment/relic/upgrades, no armor, no enemy action. Guardian has no outgoing damage passive here. Bastion used only where stated. One surviving target. Opening-hand probabilities: uniform draw without replacement, no mulligan.",
+  "probabilities": [
+    {
+      "deck": 15,
+      "hand": 5,
+      "copiesA": 3,
+      "copiesB": 3,
+      "bothProbability": 0.5144855144855145
+    },
+    {
+      "deck": 15,
+      "hand": 6,
+      "copiesA": 3,
+      "copiesB": 3,
+      "bothProbability": 0.6475524475524476
+    },
+    {
+      "deck": 30,
+      "hand": 5,
+      "copiesA": 3,
+      "copiesB": 3,
+      "bothProbability": 0.1652561997389584
+    },
+    {
+      "deck": 30,
+      "hand": 6,
+      "copiesA": 3,
+      "copiesB": 3,
+      "bothProbability": 0.2296341206686034
+    }
+  ],
+  "sequences": [
+    {
+      "cards": [
+        "a01",
+        "a02"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "a01",
+          "damage": 14,
+          "shield": 0,
+          "apLeft": 3,
+          "copiesConsumed": 1
+        },
+        {
+          "id": "a02",
+          "damage": 92,
+          "shield": 0,
+          "apLeft": 1,
+          "copiesConsumed": 2
+        }
+      ]
+    },
+    {
+      "cards": [
+        "g01",
+        "g02"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "g01",
+          "damage": 0,
+          "shield": 46,
+          "apLeft": 2,
+          "copiesConsumed": 1
+        },
+        {
+          "id": "g02",
+          "damage": 60,
+          "shield": 46,
+          "apLeft": 0,
+          "copiesConsumed": 2
+        }
+      ]
+    },
+    {
+      "cards": [
+        "g01",
+        "g09"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "g01",
+          "damage": 0,
+          "shield": 46,
+          "apLeft": 2,
+          "copiesConsumed": 1
+        },
+        {
+          "id": "g09",
+          "damage": 47.599999999999994,
+          "shield": 0,
+          "apLeft": 0,
+          "copiesConsumed": 2
+        }
+      ]
+    },
+    {
+      "cards": [
+        "g01",
+        "g09"
+      ],
+      "spec": "bastion",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "g01",
+          "damage": 0,
+          "shield": 57.5,
+          "apLeft": 2,
+          "copiesConsumed": 1
+        },
+        {
+          "id": "g09",
+          "damage": 54.5,
+          "shield": 0,
+          "apLeft": 0,
+          "copiesConsumed": 2
+        }
+      ]
+    },
+    {
+      "cards": [
+        "g03"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "g03",
+          "damage": 32,
+          "shield": 0,
+          "apLeft": 2,
+          "copiesConsumed": 1
+        }
+      ]
+    },
+    {
+      "cards": [
+        "g06"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "g06",
+          "damage": 36,
+          "shield": 0,
+          "apLeft": 2,
+          "copiesConsumed": 1
+        }
+      ]
+    },
+    {
+      "cards": [
+        "r04"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "r04",
+          "damage": 24,
+          "shield": 0,
+          "apLeft": 1,
+          "copiesConsumed": 1
+        }
+      ]
+    },
+    {
+      "cards": [
+        "r06"
+      ],
+      "spec": "",
+      "prowess": 40,
+      "log": [
+        {
+          "id": "r06",
+          "damage": 34,
+          "shield": 0,
+          "apLeft": 1,
+          "copiesConsumed": 1
+        }
+      ]
+    }
+  ]
+}

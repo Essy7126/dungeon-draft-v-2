@@ -1,0 +1,354 @@
+{
+  "date": "2026-09-25",
+  "scope": "Calculs déterministes isolés ; pas moteur StS, pas simulation complète de run, pas validation humaine du plaisir.",
+  "cases": 47,
+  "assertions": 50,
+  "enumeratedHands": 3003,
+  "results": [
+    {
+      "id": "M01",
+      "hypothese": "Strike, Force 3, Faible et Vulnérable, aucune autre règle.",
+      "resultat": 10,
+      "consequence": "Le résultat est arrondi en entier après les multiplicateurs de cet exemple."
+    },
+    {
+      "id": "M02",
+      "hypothese": "Trois impacts de base 1, cible Vulnérable.",
+      "resultat": 3,
+      "consequence": "Arrondir le total donnerait 4 à tort ; chaque impact est un calcul."
+    },
+    {
+      "id": "M03",
+      "hypothese": "Twin Strike normal, Force 3.",
+      "resultat": 16,
+      "consequence": "La Force apporte 6 sur deux impacts."
+    },
+    {
+      "id": "M04",
+      "hypothese": "Pummel normal, Force 3.",
+      "resultat": 20,
+      "consequence": "La même Force apporte 12 sur quatre impacts."
+    },
+    {
+      "id": "M05",
+      "hypothese": "Sword Boomerang amélioré, Force 3, une cible.",
+      "resultat": 24,
+      "consequence": "Quatre impacts ; la source automatique incorrecte 4 × 3 coups aurait donné 21."
+    },
+    {
+      "id": "M06",
+      "hypothese": "Heavy Blade amélioré, Force 3.",
+      "resultat": 29,
+      "consequence": "Coefficient de Force 5, mais une seule frappe."
+    },
+    {
+      "id": "M07",
+      "hypothese": "Blade Dance normale, tous les Shiv passent.",
+      "resultat": 12,
+      "consequence": "Une carte de départ engendre trois attaques supplémentaires."
+    },
+    {
+      "id": "M08",
+      "hypothese": "Blade Dance normale avec Accuracy normal déjà installé.",
+      "resultat": 24,
+      "consequence": "Le pouvoir double ici le résultat, au prix de son installation."
+    },
+    {
+      "id": "M09",
+      "hypothese": "Blade Dance+ avec Accuracy+ installé ; Shiv eux-mêmes non améliorés.",
+      "resultat": 40,
+      "consequence": "Ne pas confondre amélioration du producteur et du jeton."
+    },
+    {
+      "id": "M10",
+      "hypothese": "Même situation, jetons également améliorés par un effet distinct.",
+      "resultat": 48,
+      "consequence": "Master Reality affecterait un axe supplémentaire."
+    },
+    {
+      "id": "M11",
+      "hypothese": "Ancienne paire normale avant 2.2 : 2 Shiv, Accuracy +3 ; nouvelle : 3 Shiv, +4.",
+      "resultat": {
+        "avant": 14,
+        "apres": 24
+      },
+      "consequence": "Deux petits changements combinés : +71,43 % sur cet exemple conditionnel."
+    },
+    {
+      "id": "M12",
+      "hypothese": "Disarm normal contre cinq frappes de base 6.",
+      "resultat": {
+        "sans": 30,
+        "avec": 20
+      },
+      "consequence": "Réduction totale 10, contre seulement 2 sur un impact unique."
+    },
+    {
+      "id": "M13",
+      "hypothese": "Piercing Wail normal contre cinq frappes de base 6.",
+      "resultat": 0,
+      "consequence": "Réponse spectaculaire à un profil précis, pas une réduction proportionnelle universelle."
+    },
+    {
+      "id": "M14",
+      "hypothese": "5 Poison, cinq activations de la cible, aucune purge.",
+      "resultat": 15,
+      "consequence": "Somme finie ; la durée nécessaire compte."
+    },
+    {
+      "id": "M15",
+      "hypothese": "7 Poison, sept activations de la cible.",
+      "resultat": 28,
+      "consequence": "Passer de 5 à 7 ajoute 13 dégâts seulement si tous les tics arrivent."
+    },
+    {
+      "id": "M16",
+      "hypothese": "Même 7 Poison mais combat limité aux trois prochaines activations.",
+      "resultat": 18,
+      "consequence": "Le total 28 ne décrit pas ce combat court."
+    },
+    {
+      "id": "M17",
+      "hypothese": "10 Poison puis Catalyst+ avant le prochain tic ; horizon trois activations.",
+      "resultat": 87,
+      "consequence": "Puissance multiplicative sous condition préalable."
+    },
+    {
+      "id": "M18",
+      "hypothese": "10 Poison puis Catalyst+ doublé par Burst ; horizon trois activations.",
+      "resultat": {
+        "poison": 90,
+        "degats": 267
+      },
+      "consequence": "Deux résolutions multiplient successivement, elles n’additionnent pas deux triplements."
+    },
+    {
+      "id": "M19",
+      "hypothese": "Pressure Points normal trois fois sur la même cible, sans Artefact ni purge.",
+      "resultat": 48,
+      "consequence": "La marque persiste et se cumule ; elle ne fonctionne pas comme notre marque consommée au prochain impact."
+    },
+    {
+      "id": "M20",
+      "hypothese": "Deux Pressure Points normaux : même cible ou deux cibles.",
+      "resultat": {
+        "concentre": 24,
+        "disperse": 24
+      },
+      "consequence": "Même total brut, répartition et moment de la première mort différents."
+    },
+    {
+      "id": "M21",
+      "hypothese": "3 Frost, Focus 2, une fin de tour ; aucun autre déclencheur.",
+      "resultat": 12,
+      "consequence": "Production passive, pas coût récurrent de cartes."
+    },
+    {
+      "id": "M22",
+      "hypothese": "Consume normal : 3 Frost/3 emplacements et Focus 0 deviennent 2 Frost/2 emplacements et Focus 2.",
+      "resultat": {
+        "avant": 6,
+        "apres": 8
+      },
+      "consequence": "La perte d’emplacement peut être rentable, hors éventuelle évocation immédiate."
+    },
+    {
+      "id": "M23",
+      "hypothese": "Même échange à Focus 10.",
+      "resultat": {
+        "avant": 36,
+        "apres": 28
+      },
+      "consequence": "Le même sort dégrade ici la production passive ; comparer le produit capacité × puissance."
+    },
+    {
+      "id": "M24",
+      "hypothese": "Fission+ sur trois Frost à Focus 2.",
+      "resultat": {
+        "blocage": 21,
+        "energie": 3,
+        "pioche": 3
+      },
+      "consequence": "Version normale donnerait la même énergie/pioche mais zéro blocage d’évocation."
+    },
+    {
+      "id": "M25",
+      "hypothese": "Ténèbres déjà chargé à 40, Dualcast.",
+      "resultat": 80,
+      "consequence": "Ne pas recalculer un second orbe neuf."
+    },
+    {
+      "id": "M26",
+      "hypothese": "Double Energy depuis 3 énergie, normal puis amélioré.",
+      "resultat": {
+        "normal": 4,
+        "ameliore": 6
+      },
+      "consequence": "Le coût d’activation précède le doublement."
+    },
+    {
+      "id": "M27",
+      "hypothese": "Recycle normal depuis 3 énergie, épuise une carte X.",
+      "resultat": 4,
+      "consequence": "Le X recyclé vaut l’énergie restante après paiement de Recycle."
+    },
+    {
+      "id": "M28",
+      "hypothese": "Meteor Strike avec 5 énergie, trois emplacements déjà pleins de Plasma.",
+      "resultat": 6,
+      "consequence": "Trois évocations financent le futur ; emplacements vides ne donnent pas ce remboursement immédiat."
+    },
+    {
+      "id": "M29",
+      "hypothese": "Expunger de quatre impacts, non amélioré, Force 2, Wrath.",
+      "resultat": 88,
+      "consequence": "Il faut encore payer 1 énergie et avoir trouvé le jeton après Conjure Blade."
+    },
+    {
+      "id": "M30",
+      "hypothese": "Eruption+ depuis posture neutre puis Strike normal ; aucune autre règle.",
+      "resultat": 21,
+      "consequence": "Eruption frappe avant de passer en Wrath."
+    },
+    {
+      "id": "M31",
+      "hypothese": "Début en Calm, Eruption+ puis Inner Peace depuis Wrath.",
+      "resultat": {
+        "energieNette": 0,
+        "cartesJouees": 2
+      },
+      "consequence": "Avec Rushdown et cycle disponible, la paire peut se rembourser ; la pioche n’est pas garantie sans cette installation."
+    },
+    {
+      "id": "M32",
+      "hypothese": "Tantrum+ depuis neutre, Force 2.",
+      "resultat": 20,
+      "consequence": "Les impacts précèdent Wrath ; appliquer ×2 ici serait une erreur."
+    },
+    {
+      "id": "M33",
+      "hypothese": "Halt+ en Wrath, Dextérité 3, sans Fragile.",
+      "resultat": 24,
+      "consequence": "Deux gains séparés de blocage, donc deux ajouts de Dextérité."
+    },
+    {
+      "id": "M34",
+      "hypothese": "Mantra initial 0, une Prostrate+ par usage.",
+      "resultat": 4,
+      "consequence": "Quatre usages franchissent dix ; le surplus n’est pas un nouveau multiplicateur des attaques."
+    },
+    {
+      "id": "M35",
+      "hypothese": "Searing Blow améliorée n fois, n de 0 à 5.",
+      "resultat": [
+        12,
+        16,
+        21,
+        27,
+        34,
+        42
+      ],
+      "consequence": "Croissance des gains par amélioration ; investissement de plusieurs feux de camp."
+    },
+    {
+      "id": "M36",
+      "hypothese": "Genetic Algorithm entraîné cinq fois, sans bonus extérieur.",
+      "resultat": {
+        "normal": 11,
+        "amelioreDesLeDebut": 16
+      },
+      "consequence": "Valeur disponible après les cinq usages ; ne pas multiplier rétroactivement une ancienne progression."
+    },
+    {
+      "id": "M37",
+      "hypothese": "40 blocage conservés, Entrench+, puis Body Slam+ sans bonus.",
+      "resultat": {
+        "blocage": 80,
+        "degats": 80,
+        "energie": 1
+      },
+      "consequence": "Hors coûts antérieurs de Barricade et de production ; Body Slam ne consomme pas cette réserve."
+    },
+    {
+      "id": "M38",
+      "hypothese": "Une réponse en trois exemplaires, main 5, deck 15 puis 30, mélange uniforme.",
+      "resultat": {
+        "deck15": 73.63,
+        "deck30": 43.35
+      },
+      "consequence": "Le plafond 30 ne devrait pas devenir une obligation de remplissage."
+    },
+    {
+      "id": "M39",
+      "hypothese": "Deux familles différentes, trois copies chacune ; présence des deux dans main 5.",
+      "resultat": {
+        "deck15": 51.45,
+        "deck30": 16.53
+      },
+      "consequence": "Les combinaisons consommatrices de plusieurs familles deviennent peu fiables dans un grand deck."
+    },
+    {
+      "id": "M40",
+      "hypothese": "StS : 3 cartes retenues et pioche normale 5, cap10 ; V1 théorique : remplit jusqu’à5.",
+      "resultat": {
+        "stsMain": 8,
+        "v1Main": 5
+      },
+      "consequence": "La rétention n’aurait pas la même productivité dans les deux règles."
+    },
+    {
+      "id": "M41",
+      "hypothese": "Préparation de 30 consommables, neuf copies utiles dépensées par combat, aucun drop entre quatre combats.",
+      "resultat": -6,
+      "consequence": "Une capacité de deck ne suffit pas à garantir la survie économique ; ceci n’est pas une simulation de notre run avec drops."
+    },
+    {
+      "id": "M42",
+      "hypothese": "Générateur théorique : chaque jeton consommé crée deux nouveaux jetons, quatre générations, sans limite.",
+      "resultat": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "consequence": "Une limite de provenance ou de déclenchement est nécessaire si ces jetons ont un usage ou une valeur économique."
+    },
+    {
+      "id": "M43",
+      "hypothese": "Amélioration de coût 2→1 dans un tour à 3 énergie, cartes utiles abondantes.",
+      "resultat": {
+        "avant": 1,
+        "apres": 3
+      },
+      "consequence": "Une baisse de coût peut changer le nombre d’actions, pas seulement le rendement marginal."
+    },
+    {
+      "id": "M44",
+      "hypothese": "Time Eater : compteur déjà à10, puis tentative de Blade Dance et ses trois Shiv.",
+      "resultat": {
+        "actionsAvantFin": 2,
+        "actionsVoulues": 4
+      },
+      "consequence": "Une création de plusieurs jetons demande assez de places dans le budget de cartes jouées."
+    },
+    {
+      "id": "M45",
+      "hypothese": "Plafond hypothétique 200 pertes de PV par tour, cible800PV.",
+      "resultat": 4,
+      "consequence": "Un plafond force au moins quatre fenêtres de dégâts ; ce calcul ne résout ni les tours adverses ni les remises à zéro."
+    },
+    {
+      "id": "M46",
+      "hypothese": "Soin plafonné aux PV retirés : cible4PV, blocage3, attaque12 ; 20PV manquants au héros.",
+      "resultat": 4,
+      "consequence": "Ne pas soigner 9 ou 12 à partir d’une victime qui ne possédait plus que4PV."
+    },
+    {
+      "id": "M47",
+      "hypothese": "Dégât évité par mort : trois cibles, intention8 chacune ; tue une cible avant leur activation.",
+      "resultat": 8,
+      "consequence": "Le contrôle de la première mort peut dominer un meilleur total de dégâts répartis."
+    }
+  ]
+}
