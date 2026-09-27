@@ -1,0 +1,141 @@
+{
+  "passed": true,
+  "completedExecutions": 120,
+  "copyChecks": 1359,
+  "transactionChecks": 330,
+  "sourceHashesVerified": true,
+  "details": {
+    "baseline": {
+      "firstFightBoth": 21,
+      "pairedVictories": 29,
+      "pairedGoldDelta": 0,
+      "pairedCardSpendingDelta": 0,
+      "pairedConsumedDelta": 0,
+      "failures": [
+        {
+          "classId": "gardien",
+          "seed": 27001,
+          "fight": 7
+        },
+        {
+          "classId": "gardien",
+          "seed": 27007,
+          "fight": 10
+        },
+        {
+          "classId": "arpenteur",
+          "seed": 27001,
+          "fight": 12
+        },
+        {
+          "classId": "arpenteur",
+          "seed": 27006,
+          "fight": 10
+        },
+        {
+          "classId": "arpenteur",
+          "seed": 27007,
+          "fight": 10
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27001,
+          "fight": 3
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27002,
+          "fight": 10
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27003,
+          "fight": 12
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27005,
+          "fight": 3
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27006,
+          "fight": 10
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27010,
+          "fight": 10
+        }
+      ]
+    },
+    "opening": {
+      "firstFightBoth": 31,
+      "pairedVictories": 27,
+      "pairedGoldDelta": -3,
+      "pairedCardSpendingDelta": 1.3333333333333333,
+      "pairedConsumedDelta": -0.25925925925925924,
+      "failures": [
+        {
+          "classId": "gardien",
+          "seed": 27001,
+          "fight": 7
+        },
+        {
+          "classId": "gardien",
+          "seed": 27003,
+          "fight": 12
+        },
+        {
+          "classId": "arpenteur",
+          "seed": 27001,
+          "fight": 12
+        },
+        {
+          "classId": "arpenteur",
+          "seed": 27002,
+          "fight": 10
+        },
+        {
+          "classId": "arpenteur",
+          "seed": 27006,
+          "fight": 10
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27001,
+          "fight": 7
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27005,
+          "fight": 3
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27006,
+          "fight": 7
+        }
+      ]
+    },
+    "restock": {
+      "firstFightBoth": 21,
+      "pairedVictories": 29,
+      "pairedGoldDelta": -29.517241379310345,
+      "pairedCardSpendingDelta": 44.13793103448276,
+      "pairedConsumedDelta": -2.0344827586206895,
+      "failures": [
+        {
+          "classId": "thaumaturge",
+          "seed": 27001,
+          "fight": 3
+        },
+        {
+          "classId": "thaumaturge",
+          "seed": 27005,
+          "fight": 3
+        }
+      ]
+    }
+  }
+}

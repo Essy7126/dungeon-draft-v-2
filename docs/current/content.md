@@ -9,6 +9,7 @@ Le trio et la salle de l'Archiviste ont été retirés du produit.
 |---|---|
 | Achille original, peint et Passe-rive | Apparences publiques de la même aventure ; `data/runs/odyssey.tres` |
 | Monstres Catabase | Ennemis du produit ; `data/units/enemies/catabase_*.tres` et catalogues d’expédition |
+| Cartes consommables | Règles intégrées au parcours Cartes existant : 48 familles, 18 équipements et huit reliques sous `data/cards/consumable_v2/`. Les douze combats utilisent les cartes et apparences existantes ; les sept arènes 7×7 servent de fixtures de règles. [Guide et validation](cards_v2.md) |
 | Paris | Référencé notamment par `data/units/enemies/catabase_shadow_paris.tres` ; pas un personnage à supprimer en bloc |
 | Elfe, Mage, Guerrier | Modèles, textures et scènes spécifiques supprimés ; fiches de régression dans `test/fixtures/party_rules/`, sur un mannequin commun. Sorts et progressions partagés encore testés conservés dans `data/` |
 | Mage philosophe et spectre | Scénario `philosopher_trial`, laboratoires et tests ; conservés hors parcours public |
@@ -19,6 +20,9 @@ Le trio et la salle de l'Archiviste ont été retirés du produit.
 | Forêt, montagne, caldeira et station historiques | Sept scènes de terrain isolées dans `test/fixtures/terrain/`, sans leurs fonds ni musiques. Les terrains peints forêt/volcan/station restent des fixtures actives des contrats de grille et du Studio |
 | Laboratoires sous `tools/labs/` | Essais autonomes, pas automatiquement du contenu abandonné |
 | VFX run Cartes | DA **Animation cel**, production du 22/09/2026 : 112 compositions, 17 séquences de six poses, lecteur/vol/sol et états compacts dans `vfx/class_cards/cel/`. Atelier natif et captures : `tools/class_card_vfx/`. [Décision et références](../design/achilles/cards_vfx_cel_2026-09-22.md) |
+| Passe-Rive, sorts S18/S20 / intégration S23 / VFX S19 | Stature commune entre combat Cartes, haltes et seuil ; palette par matière commune au repos, aux déplacements et aux sept gestes conservés. Marche native liée à la distance, ruée avec réception à l’arrivée. Corrections de taille constantes et bornées par atlas. Les dessins gardent des différences de capuche et de vêtements : raccords parfaits non certifiés. S21 reste hors runtime. [Méthode, revue visuelle et audit S23](../../art/source/passe_rive_s23/README.md) |
+| Passe-Rive, incantation S26 | Nouveau geste SE partagé par Garde ferme, Bastion vivant, Grâce du bronze, Sommeil marqué, Sceau ombreux, Jardin de givre et Résonance du sceau. 1,15 s, effet à 590 ms, appui et calibration de taille fixes. Les autres vues conservent leur incantation existante ; chaque carte garde ses VFX. [Source, attributions et validation en combat](../../art/source/passe_rive_s26/README.md) |
+| Passe-Rive, garde S27 | Garde brève, Contre préparé et Garde de secours : 12 poses SE, 0,72 s, protection à 240 ms et bref arc de bronze confirmé. Échelle fixe et retour au repos ; autres angles en garde neutre. Secours sans copie consommée, riposte au coup reçu. [Sources et vérification de cinq lancers](../../art/source/passe_rive_s27/README.md) |
 | `web/achilles-run-lab/` | Prototype autonome expérimental, isolé de l’import Godot |
 | `art/source/` et `meshy_output/` | Sources, provenance et variantes artistiques ; ne pas supprimer sur le seul nom `v1` ou faute de chargement runtime |
 

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_y0vmn"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_y0b0h"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_6yqp3"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_ao2ay"]
+
+[resource]
+script = ExtResource("2_y0b0h")
+profile_modifiers = {
+"mp": -1.0,
+"range": 1.0,
+"ranged": 0.1
+}
+item_id = &"cc2_w_bow"
+display_name = "Arc des longues rives"
+description = "+10 % dégâts à 3 cases ou plus · +1 portée · -1 PM"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 0
+equipment_slot = 0

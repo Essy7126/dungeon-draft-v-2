@@ -3,6 +3,11 @@ extends RefCounted
 
 static func reason_text(reason: StringName, actor: Unit, spell: Spell) -> String:
 	match reason:
+		&"family_or_choice_unavailable": return "Famille déjà jouée, ou choix de carte à terminer."
+		&"choose_guard_sacrifice": return "Choisissez la quantité de garde à sacrifier."
+		&"choose_pull_distance": return "Choisissez une attraction de 1 ou 2 cases."
+		&"boss_cannot_swap": return "Cette cible ne peut pas échanger sa position."
+		&"requires_mark_without_stasis_immunity": return "La stase exige une marque et une cible sans immunité."
 		&"requires_marked_target": return "La stase demande une cible marquée."
 		&"stasis_immunity": return "Cette cible est encore protégée contre la stase."
 		&"": return ""

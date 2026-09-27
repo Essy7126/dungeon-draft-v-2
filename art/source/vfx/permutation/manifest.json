@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "night": "183f45",
+    "jade": "438d83",
+    "jade_light": "8de3c2",
+    "ivory": "fff0cc",
+    "cream_shadow": "bfae82",
+    "bronze": "ac743c",
+    "gold": "f3cc80",
+    "white": "ffffe9"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/g_permutation.png",
+  "source_script": "tools/class_card_vfx/permutation/build.py",
+  "assets": {
+    "clasp_back": {
+      "size": 384,
+      "frames": 20,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        211.8137
+      ],
+      "scene": "Permutation CEL - clasp_back"
+    },
+    "clasp_front": {
+      "size": 384,
+      "frames": 20,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        211.8137
+      ],
+      "scene": "Permutation CEL - clasp_front"
+    },
+    "slit": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        274.4891
+      ],
+      "scene": "Permutation CEL - slit"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "soot": "291f2b",
+    "coal": "44303c",
+    "facet": "65404b",
+    "rust": "9b382a",
+    "red": "d84725",
+    "orange": "fa852b",
+    "gold": "ffc26a",
+    "cream": "fff0c7",
+    "steam_shadow": "697e94",
+    "steam": "a9c3cf",
+    "steam_light": "e2ece4"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/e_braise_tenace.png",
+  "source_script": "tools/class_card_vfx/braise/build.py",
+  "assets": {
+    "coal": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        192.0002
+      ],
+      "scene": "Braise CEL - coal"
+    },
+    "impact": {
+      "size": 384,
+      "frames": 12,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        192.0002
+      ],
+      "scene": "Braise CEL - impact"
+    },
+    "ember": {
+      "size": 384,
+      "frames": 7,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        231.9363
+      ],
+      "scene": "Braise CEL - ember"
+    },
+    "steam": {
+      "size": 384,
+      "frames": 12,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        312.0002
+      ],
+      "scene": "Braise CEL - steam"
+    }
+  }
+}

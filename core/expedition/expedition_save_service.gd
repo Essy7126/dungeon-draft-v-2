@@ -67,7 +67,10 @@ static func prepare(snapshot: Dictionary) -> Dictionary:
 	var route := ExpeditionRouteState.new()
 	if not snapshot.session.get("route") is Dictionary or not route.restore_snapshot(snapshot.session.route) or route.phase == "complete":
 		return {}
-	var run_data := ExpeditionRunFactory.create(route.seed, variants)
+	var card_data: Variant = snapshot.session.get("cards_run", {})
+	if not card_data is Dictionary: return {}
+	var consumable: bool = card_data.get("ruleset_id", "") == preload("res://core/expedition/consumable_card_catalog.gd").RULESET
+	var run_data := ExpeditionRunFactory.create(route.seed, variants, consumable)
 	var resolution := RunHeroResolver.resolve_runtime_hero_data(run_data, false)
 	if not resolution.is_valid() or resolution.heroes.size() != 1:
 		return {}
@@ -117,6 +120,12 @@ static func prepare(snapshot: Dictionary) -> Dictionary:
 			state.dispose()
 			return {}
 	var saved_hp := int(snapshot.get("current_hp", -1))
+	if consumable and not session.combat_checkpoint.is_empty() and saved_hp != int(session.combat_checkpoint.units[0].hp):
+		state.dispose()
+		return {}
+	if consumable and not session.equipment_health_basis.is_empty() and saved_hp != preload("res://core/expedition/consumable_cards_integration.gd").equipment_hp(session, state.unit.max_hp.get_int()):
+		state.dispose()
+		return {}
 	if saved_hp <= 0 or saved_hp > state.unit.max_hp.get_int():
 		state.dispose()
 		return {}

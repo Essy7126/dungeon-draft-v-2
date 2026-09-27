@@ -96,6 +96,11 @@ static func describe_fact(
 
 
 static func _status_detail(status_id: StringName) -> String:
+	match status_id:
+		&"cc2_burn":
+			return "Brûlure"
+		&"cc2_bleed":
+			return "Saignement"
 	if status_id == APORIA_STATUS.get_effective_status_id():
 		return APORIA_STATUS.status_name
 	return String(status_id).replace("_", " ").capitalize()

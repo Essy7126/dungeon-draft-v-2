@@ -1,0 +1,5481 @@
+{
+  "metadata": {
+    "date": "2026-09-25T21:35:16.302Z",
+    "node": "v26.3.1",
+    "sourceSha256": "ce9c4ed7d079ce1ee5ddb62a838769115926189a8e340e504c5bce9f91351a5c",
+    "transformation": {
+      "from": "next%6===0?'vitality':state.classId==='gardien'?'resolve':'power'",
+      "to": "next%6===0?'vitality':'power'"
+    },
+    "assumptions": "20 new paired seeds; Guardian/Bastion only; same planner, drops, shops and deck cap 20. Allocation 4 resolve + 2 vitality becomes 4 power + 2 vitality at level 12. Divergent actions change future draws and purchases. Exploratory sensitivity, not human balance.",
+    "summary": {
+      "n": 20,
+      "baselineWins": 19,
+      "powerWins": 18,
+      "onlyBaseline": 1,
+      "onlyPower": 0
+    }
+  },
+  "rows": [
+    {
+      "seed": 26001,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 92,
+        "stock": 28,
+        "gold": 260,
+        "trained": [
+          "n03",
+          "n08",
+          "n06"
+        ],
+        "uses": {
+          "n05": 4,
+          "g01": 9,
+          "g02": 12,
+          "g03": 7,
+          "n06": 2,
+          "a02": 2,
+          "a04": 3,
+          "a03": 5,
+          "t01": 3,
+          "r03": 3,
+          "g07": 2,
+          "n02": 3,
+          "r02": 2,
+          "g04": 7,
+          "n04": 3,
+          "n03": 1,
+          "n01": 5,
+          "t04": 3,
+          "t03": 3,
+          "r04": 2,
+          "g05": 1,
+          "r06": 1,
+          "t02": 1,
+          "g09": 1,
+          "n07": 3,
+          "r01": 1,
+          "a06": 1,
+          "a01": 1,
+          "g06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9201481481481482,
+            "stockBefore": 13,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.9346666666666666,
+            "stockBefore": 15,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 4,
+            "turns": 2,
+            "cards": 4,
+            "hpRatio": 0.9460999999999999,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.7229551999999999,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 6,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.966269592476489,
+            "stockBefore": 20,
+            "stockAfterRewards": 35
+          },
+          {
+            "fight": 7,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.9720519480519481,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 10,
+            "turns": 11,
+            "cards": 14,
+            "hpRatio": 0.8118852459016395,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 39
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.7587337037037037,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 83,
+        "stock": 36,
+        "gold": 267,
+        "trained": [
+          "n03",
+          "n08",
+          "g02"
+        ],
+        "uses": {
+          "n05": 4,
+          "g01": 7,
+          "g02": 11,
+          "g03": 8,
+          "n06": 2,
+          "a02": 2,
+          "a04": 4,
+          "t01": 3,
+          "r03": 3,
+          "g07": 2,
+          "n02": 3,
+          "r02": 2,
+          "g04": 6,
+          "n03": 2,
+          "a03": 4,
+          "n08": 2,
+          "t03": 2,
+          "n01": 5,
+          "t04": 3,
+          "r04": 1,
+          "g05": 1,
+          "r06": 1,
+          "t02": 1,
+          "n04": 1,
+          "r01": 1,
+          "g06": 1,
+          "a06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9185185185185185,
+            "stockBefore": 13,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.9333333333333333,
+            "stockBefore": 15,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 4,
+            "turns": 2,
+            "cards": 4,
+            "hpRatio": 0.945,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 5,
+            "turns": 10,
+            "cards": 13,
+            "hpRatio": 0.75624,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 6,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 0.963385579937304,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.9696623376623377,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 8,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9370491803278689,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.7845081967213114,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 3,
+            "hpRatio": 0.8652560516129032,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.7149999999999999,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26002,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 92,
+        "stock": 29,
+        "gold": 259,
+        "trained": [
+          "g02",
+          "n08",
+          "g04"
+        ],
+        "uses": {
+          "n05": 5,
+          "g01": 8,
+          "g02": 17,
+          "g03": 9,
+          "t02": 2,
+          "n07": 2,
+          "t01": 4,
+          "r01": 6,
+          "a01": 2,
+          "r02": 1,
+          "n06": 1,
+          "t03": 2,
+          "a04": 2,
+          "n03": 2,
+          "a07": 1,
+          "t04": 6,
+          "a03": 2,
+          "g05": 1,
+          "n04": 3,
+          "r04": 2,
+          "n02": 1,
+          "g07": 2,
+          "g04": 5,
+          "r03": 1,
+          "g06": 2,
+          "a02": 1,
+          "n01": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 3,
+            "turns": 7,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 13,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.997823275862069,
+            "stockBefore": 17,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 5,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8217805755395684,
+            "stockBefore": 19,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9775141242937854,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 7,
+            "turns": 9,
+            "cards": 8,
+            "hpRatio": 0.8737119437939111,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 8,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 0.955078125,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 0.9419262295081968,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 10,
+            "turns": 8,
+            "cards": 11,
+            "hpRatio": 0.8398810533257962,
+            "stockBefore": 20,
+            "stockAfterRewards": 34
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 4,
+            "hpRatio": 0.8914538745387454,
+            "stockBefore": 20,
+            "stockAfterRewards": 42
+          },
+          {
+            "fight": 12,
+            "turns": 8,
+            "cards": 13,
+            "hpRatio": 0.4377900552486187,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 83,
+        "stock": 35,
+        "gold": 262,
+        "trained": [
+          "g02",
+          "n08",
+          "n03"
+        ],
+        "uses": {
+          "n05": 7,
+          "g01": 8,
+          "g02": 16,
+          "g03": 10,
+          "t02": 2,
+          "n07": 1,
+          "t01": 3,
+          "r01": 6,
+          "a01": 2,
+          "r02": 1,
+          "t03": 2,
+          "n06": 1,
+          "a03": 2,
+          "a04": 2,
+          "a07": 1,
+          "t04": 5,
+          "g05": 1,
+          "n02": 1,
+          "g06": 2,
+          "g04": 4,
+          "g07": 2,
+          "n04": 1,
+          "a02": 1,
+          "r03": 1,
+          "r04": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 3,
+            "turns": 7,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 13,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.9950646551724138,
+            "stockBefore": 17,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 5,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8124280575539569,
+            "stockBefore": 18,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.871728813559322,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 7,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.858423887587822,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.99326171875,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.8992213114754098,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 0.8670522423214622,
+            "stockBefore": 20,
+            "stockAfterRewards": 40
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9552767527675277,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.5064751381215468,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26003,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 97,
+        "stock": 19,
+        "gold": 230,
+        "trained": [
+          "g03",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 5,
+          "g01": 10,
+          "g02": 9,
+          "r03": 5,
+          "a01": 4,
+          "t02": 3,
+          "t01": 4,
+          "t04": 3,
+          "n06": 3,
+          "r01": 5,
+          "g03": 8,
+          "a02": 1,
+          "n03": 2,
+          "a03": 3,
+          "n01": 6,
+          "r04": 1,
+          "n07": 1,
+          "g07": 2,
+          "r06": 1,
+          "g04": 4,
+          "a04": 4,
+          "n04": 3,
+          "r02": 3,
+          "g05": 2,
+          "t09": 1,
+          "t03": 1,
+          "g06": 1,
+          "a06": 1,
+          "g08": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 6,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 5,
+            "turns": 5,
+            "cards": 11,
+            "hpRatio": 0.9498333333333334,
+            "stockBefore": 18,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 6,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 0.9591864406779662,
+            "stockBefore": 19,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 7,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 9,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.9832786885245901,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 0.9899612903225807,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 12,
+            "turns": 12,
+            "cards": 13,
+            "hpRatio": 0.2495343915343916,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 93,
+        "stock": 33,
+        "gold": 194,
+        "trained": [
+          "g03",
+          "n03",
+          "g02"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 11,
+          "g02": 9,
+          "r03": 5,
+          "a01": 3,
+          "t02": 3,
+          "t04": 4,
+          "r01": 5,
+          "t01": 4,
+          "n06": 2,
+          "a03": 3,
+          "a02": 2,
+          "g03": 8,
+          "r02": 4,
+          "n03": 1,
+          "g04": 4,
+          "r04": 1,
+          "n07": 1,
+          "a04": 4,
+          "g07": 2,
+          "t03": 1,
+          "n08": 1,
+          "r06": 1,
+          "n01": 4,
+          "t09": 1,
+          "g05": 2,
+          "g06": 1,
+          "n04": 1,
+          "a06": 1,
+          "g08": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.945375,
+            "stockBefore": 15,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 5,
+            "turns": 9,
+            "cards": 9,
+            "hpRatio": 0.9461458333333332,
+            "stockBefore": 18,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 6,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 0.9559322033898304,
+            "stockBefore": 19,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 7,
+            "turns": 7,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.95943359375,
+            "stockBefore": 19,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9370491803278689,
+            "stockBefore": 20,
+            "stockAfterRewards": 37
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 12,
+            "hpRatio": 0.9072131147540983,
+            "stockBefore": 20,
+            "stockAfterRewards": 41
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 0.9916387096774193,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 12,
+            "hpRatio": 0.942095238095238,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26004,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 95,
+        "stock": 33,
+        "gold": 326,
+        "trained": [
+          "n04",
+          "n03",
+          "g07"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 12,
+          "g02": 11,
+          "a02": 4,
+          "g03": 9,
+          "t03": 2,
+          "n08": 1,
+          "n06": 1,
+          "g07": 7,
+          "a06": 1,
+          "t04": 2,
+          "n07": 2,
+          "t01": 5,
+          "g04": 4,
+          "n01": 3,
+          "n04": 6,
+          "r02": 2,
+          "a04": 3,
+          "a03": 1,
+          "g05": 3,
+          "n02": 1,
+          "r03": 1,
+          "t02": 1,
+          "a01": 1,
+          "r01": 2,
+          "g08": 1,
+          "r06": 1,
+          "g06": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.92,
+            "stockBefore": 19,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 5,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.9031666666666667,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.7735141242937855,
+            "stockBefore": 18,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 7,
+            "turns": 10,
+            "cards": 14,
+            "hpRatio": 0.7872341920374709,
+            "stockBefore": 18,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 8,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 10,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.8671875,
+            "stockBefore": 20,
+            "stockAfterRewards": 43
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 0.9050922509225091,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 12,
+            "hpRatio": 0.7225193370165744,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 89,
+        "stock": 34,
+        "gold": 329,
+        "trained": [
+          "n04",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 4,
+          "g01": 10,
+          "g02": 11,
+          "g03": 11,
+          "n03": 1,
+          "a02": 4,
+          "g07": 6,
+          "n01": 4,
+          "a06": 1,
+          "a03": 1,
+          "t01": 5,
+          "g04": 5,
+          "n06": 1,
+          "n04": 5,
+          "t04": 1,
+          "a04": 3,
+          "r02": 2,
+          "n07": 2,
+          "g05": 3,
+          "a01": 1,
+          "r01": 3,
+          "g08": 1,
+          "t03": 1,
+          "g06": 2,
+          "r06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.8853749999999999,
+            "stockBefore": 17,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 5,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.8503124999999999,
+            "stockBefore": 17,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8666666666666666,
+            "stockBefore": 19,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 12,
+            "hpRatio": 0.8894613583138172,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.9591474245115453,
+            "stockBefore": 17,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 0.9059701492537313,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 10,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.829298041044776,
+            "stockBefore": 20,
+            "stockAfterRewards": 43
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9788929889298893,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.6380110497237568,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26005,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 101,
+        "stock": 16,
+        "gold": 168,
+        "trained": [
+          "g03",
+          "n03",
+          "g04"
+        ],
+        "uses": {
+          "n05": 8,
+          "g01": 10,
+          "g02": 8,
+          "n06": 3,
+          "r04": 4,
+          "g03": 10,
+          "t01": 2,
+          "t08": 1,
+          "n07": 2,
+          "t03": 4,
+          "r03": 2,
+          "a01": 2,
+          "g04": 8,
+          "a03": 6,
+          "r02": 2,
+          "n08": 1,
+          "n02": 2,
+          "n03": 3,
+          "r01": 3,
+          "t02": 5,
+          "n04": 6,
+          "r05": 1,
+          "a02": 1,
+          "t04": 1,
+          "g05": 2,
+          "g06": 2,
+          "n01": 1,
+          "l01": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.965375,
+            "stockBefore": 19,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 5,
+            "turns": 8,
+            "cards": 13,
+            "hpRatio": 0.8764460966542751,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 6,
+            "turns": 7,
+            "cards": 8,
+            "hpRatio": 0.9142005141388176,
+            "stockBefore": 17,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 7,
+            "turns": 8,
+            "cards": 10,
+            "hpRatio": 0.8417142857142857,
+            "stockBefore": 17,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 8,
+            "turns": 14,
+            "cards": 12,
+            "hpRatio": 0.6249999999999999,
+            "stockBefore": 16,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 9,
+            "turns": 8,
+            "cards": 4,
+            "hpRatio": 0.5642910447761192,
+            "stockBefore": 10,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 10,
+            "turns": 13,
+            "cards": 11,
+            "hpRatio": 0.33083955223880585,
+            "stockBefore": 17,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.7086545240893065,
+            "stockBefore": 18,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 12,
+            "turns": 13,
+            "cards": 15,
+            "hpRatio": 0.3069676190476191,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 92,
+        "stock": 25,
+        "gold": 168,
+        "trained": [
+          "g03",
+          "n03",
+          "g01"
+        ],
+        "uses": {
+          "n05": 7,
+          "g01": 8,
+          "g02": 8,
+          "n06": 4,
+          "r04": 4,
+          "g03": 10,
+          "t01": 2,
+          "t08": 1,
+          "n07": 3,
+          "t03": 3,
+          "g04": 7,
+          "r03": 1,
+          "a03": 6,
+          "r02": 2,
+          "n03": 2,
+          "r01": 3,
+          "a01": 2,
+          "t02": 5,
+          "n04": 6,
+          "t04": 1,
+          "a02": 1,
+          "g06": 2,
+          "g05": 2,
+          "l01": 1,
+          "n01": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 4,
+            "turns": 2,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.8104089219330854,
+            "stockBefore": 20,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.9546529562982006,
+            "stockBefore": 20,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 7,
+            "turns": 9,
+            "cards": 12,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 8,
+            "turns": 8,
+            "cards": 10,
+            "hpRatio": 1,
+            "stockBefore": 17,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 9,
+            "turns": 8,
+            "cards": 5,
+            "hpRatio": 0.896276119402985,
+            "stockBefore": 13,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8874440298507461,
+            "stockBefore": 19,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9774383078730904,
+            "stockBefore": 20,
+            "stockAfterRewards": 35
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.9499479365079365,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26006,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 102,
+        "stock": 30,
+        "gold": 224,
+        "trained": [
+          "g02",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 12,
+          "g03": 7,
+          "g04": 9,
+          "g02": 16,
+          "t02": 3,
+          "r03": 2,
+          "n02": 1,
+          "t03": 3,
+          "a07": 1,
+          "t01": 3,
+          "g07": 4,
+          "a02": 2,
+          "r07": 2,
+          "a01": 3,
+          "n01": 6,
+          "a03": 3,
+          "r02": 1,
+          "r04": 2,
+          "n04": 3,
+          "n06": 2,
+          "g05": 1,
+          "g08": 2,
+          "g06": 5,
+          "a04": 2,
+          "n07": 2,
+          "g09": 1,
+          "t04": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 0.8990303030303031,
+            "stockBefore": 14,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9167000000000001,
+            "stockBefore": 17,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8244166666666666,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 6,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.9139887005649718,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 7,
+            "turns": 15,
+            "cards": 11,
+            "hpRatio": 0.37745199063231855,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.8308046875,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.8042163934426231,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 10,
+            "turns": 13,
+            "cards": 13,
+            "hpRatio": 0.48110928961748645,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 11,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.980931612903226,
+            "stockBefore": 20,
+            "stockAfterRewards": 42
+          },
+          {
+            "fight": 12,
+            "turns": 8,
+            "cards": 12,
+            "hpRatio": 0.9136118518518518,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 86,
+        "stock": 35,
+        "gold": 241,
+        "trained": [
+          "g02",
+          "n03",
+          "n01"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 11,
+          "g03": 9,
+          "g04": 9,
+          "g02": 13,
+          "t02": 3,
+          "r03": 2,
+          "n02": 1,
+          "t03": 2,
+          "a07": 1,
+          "t01": 3,
+          "g07": 4,
+          "r07": 1,
+          "n01": 3,
+          "a02": 2,
+          "a03": 5,
+          "a01": 3,
+          "r02": 1,
+          "g05": 1,
+          "g08": 2,
+          "g06": 4,
+          "a04": 2,
+          "n03": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 8,
+            "cards": 8,
+            "hpRatio": 0.896969696969697,
+            "stockBefore": 14,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.915,
+            "stockBefore": 17,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8166666666666667,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9723163841807909,
+            "stockBefore": 20,
+            "stockAfterRewards": 37
+          },
+          {
+            "fight": 7,
+            "turns": 9,
+            "cards": 9,
+            "hpRatio": 0.9478103044496486,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 43
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 4,
+            "hpRatio": 0.9198770491803281,
+            "stockBefore": 20,
+            "stockAfterRewards": 48
+          },
+          {
+            "fight": 10,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 0.8055259562841531,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 11,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 5,
+            "cards": 10,
+            "hpRatio": 0.9204068148148146,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26007,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 108,
+        "stock": 17,
+        "gold": 273,
+        "trained": [
+          "g03",
+          "n03",
+          "n04"
+        ],
+        "uses": {
+          "n05": 4,
+          "g01": 15,
+          "g02": 10,
+          "g03": 14,
+          "t03": 4,
+          "n06": 3,
+          "a04": 1,
+          "r02": 4,
+          "t02": 3,
+          "r04": 2,
+          "n03": 3,
+          "g06": 3,
+          "t01": 2,
+          "r01": 3,
+          "a02": 3,
+          "r03": 4,
+          "t04": 3,
+          "a01": 4,
+          "n04": 5,
+          "a03": 1,
+          "n08": 2,
+          "g04": 5,
+          "r07": 1,
+          "n07": 2,
+          "n01": 5,
+          "t07": 1,
+          "g05": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.968575,
+            "stockBefore": 17,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 5,
+            "turns": 8,
+            "cards": 10,
+            "hpRatio": 0.8527343999999999,
+            "stockBefore": 20,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.8914106583072101,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.8263896103896105,
+            "stockBefore": 20,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 8,
+            "turns": 7,
+            "cards": 13,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 13,
+            "hpRatio": 0.9409090909090909,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 11,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 12,
+            "turns": 12,
+            "cards": 15,
+            "hpRatio": 0.469050740740741,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 85,
+        "stock": 33,
+        "gold": 260,
+        "trained": [
+          "g03",
+          "n03",
+          "n04"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 15,
+          "g02": 8,
+          "g03": 12,
+          "t03": 3,
+          "n06": 1,
+          "a04": 1,
+          "r02": 4,
+          "g06": 3,
+          "a01": 4,
+          "t01": 2,
+          "t04": 3,
+          "t02": 3,
+          "r01": 3,
+          "a02": 3,
+          "g04": 5,
+          "r03": 3,
+          "r07": 1,
+          "n08": 2,
+          "a03": 1,
+          "n04": 2,
+          "g05": 1,
+          "n01": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.968,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 6,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.7638119122257054,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.8043012987012989,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 5,
+            "hpRatio": 0.9003181818181818,
+            "stockBefore": 20,
+            "stockAfterRewards": 38
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 13,
+            "hpRatio": 0.8363863636363634,
+            "stockBefore": 20,
+            "stockAfterRewards": 41
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 6,
+            "cards": 12,
+            "hpRatio": 0.9504008888888889,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26008,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 96,
+        "stock": 19,
+        "gold": 205,
+        "trained": [
+          "g03",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 10,
+          "g02": 9,
+          "g04": 8,
+          "r01": 3,
+          "r02": 3,
+          "t04": 3,
+          "n07": 2,
+          "r04": 3,
+          "a03": 4,
+          "n04": 4,
+          "g03": 9,
+          "a04": 2,
+          "a02": 3,
+          "n03": 2,
+          "n02": 4,
+          "n01": 2,
+          "g06": 4,
+          "t07": 1,
+          "g05": 2,
+          "a01": 1,
+          "l01": 1,
+          "t02": 3,
+          "t05": 1,
+          "r03": 2,
+          "a06": 1,
+          "g07": 1,
+          "t01": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9201481481481482,
+            "stockBefore": 14,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9346666666666666,
+            "stockBefore": 17,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.9460999999999999,
+            "stockBefore": 17,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.6624166666666665,
+            "stockBefore": 18,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 6,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.6540564971751414,
+            "stockBefore": 20,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.5707868852459017,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 9,
+            "turns": 8,
+            "cards": 7,
+            "hpRatio": 0.8096311475409838,
+            "stockBefore": 14,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 13,
+            "hpRatio": 0.7767691256830603,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9318918918918918,
+            "stockBefore": 18,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 12,
+            "turns": 11,
+            "cards": 14,
+            "hpRatio": 0.7109348994708994,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 87,
+        "stock": 33,
+        "gold": 210,
+        "trained": [
+          "g03",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 11,
+          "g02": 9,
+          "g04": 6,
+          "r01": 3,
+          "r02": 3,
+          "t04": 3,
+          "n03": 3,
+          "r04": 2,
+          "g03": 7,
+          "n07": 1,
+          "a04": 2,
+          "a02": 4,
+          "a03": 4,
+          "n04": 4,
+          "n01": 4,
+          "g06": 4,
+          "g05": 2,
+          "t07": 1,
+          "l01": 1,
+          "t02": 2,
+          "a01": 1,
+          "n08": 1,
+          "r03": 2,
+          "g07": 1,
+          "t01": 2,
+          "a06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9185185185185185,
+            "stockBefore": 14,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 0.9333333333333333,
+            "stockBefore": 17,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9103749999999999,
+            "stockBefore": 18,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.7794791666666666,
+            "stockBefore": 20,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.9282485875706213,
+            "stockBefore": 20,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.7524004683840749,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.97685546875,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9435245901639343,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.919002732240437,
+            "stockBefore": 20,
+            "stockAfterRewards": 41
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9798354876615747,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 12,
+            "hpRatio": 0.9298600634920635,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26009,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 99,
+        "stock": 30,
+        "gold": 194,
+        "trained": [
+          "n03",
+          "g03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 13,
+          "r02": 7,
+          "g03": 10,
+          "g02": 10,
+          "r03": 2,
+          "n07": 3,
+          "r01": 1,
+          "t03": 3,
+          "a04": 4,
+          "n01": 4,
+          "t04": 4,
+          "a03": 2,
+          "a02": 4,
+          "g04": 5,
+          "t01": 2,
+          "n04": 7,
+          "r04": 3,
+          "n02": 2,
+          "g05": 2,
+          "g07": 2,
+          "g06": 3,
+          "g08": 1,
+          "n03": 1,
+          "r07": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9201481481481482,
+            "stockBefore": 13,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 3,
+            "turns": 8,
+            "cards": 7,
+            "hpRatio": 0.7889393939393938,
+            "stockBefore": 13,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.743825,
+            "stockBefore": 17,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 6,
+            "hpRatio": 0.5658541666666664,
+            "stockBefore": 16,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 6,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.8480903954802261,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.5375620608899297,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.869001953125,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.8900475409836065,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 10,
+            "turns": 11,
+            "cards": 14,
+            "hpRatio": 0.7233729508196721,
+            "stockBefore": 20,
+            "stockAfterRewards": 37
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.8940283870967741,
+            "stockBefore": 20,
+            "stockAfterRewards": 43
+          },
+          {
+            "fight": 12,
+            "turns": 9,
+            "cards": 13,
+            "hpRatio": 0.6956613756613756,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": false,
+        "failureFight": 3,
+        "level": 3,
+        "attributes": {
+          "power": 1
+        },
+        "consumed": 14,
+        "stock": 9,
+        "gold": 110,
+        "trained": [],
+        "uses": {
+          "n05": 3,
+          "g01": 3,
+          "r02": 2,
+          "g03": 1,
+          "g02": 1,
+          "n07": 3,
+          "r03": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 13,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 3,
+            "turns": 17,
+            "cards": 5,
+            "hpRatio": 0,
+            "stockBefore": 14
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26010,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 95,
+        "stock": 26,
+        "gold": 250,
+        "trained": [
+          "g02",
+          "n04",
+          "n03"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 9,
+          "g03": 9,
+          "g02": 14,
+          "r01": 3,
+          "r03": 3,
+          "r04": 2,
+          "a01": 3,
+          "n04": 6,
+          "r02": 2,
+          "t02": 2,
+          "t04": 2,
+          "g04": 5,
+          "n03": 3,
+          "a02": 3,
+          "t03": 4,
+          "g06": 1,
+          "a04": 5,
+          "a03": 3,
+          "t05": 1,
+          "n01": 6,
+          "g07": 1,
+          "g05": 2,
+          "t01": 2,
+          "t08": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.8353333333333333,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9297175141242938,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 7,
+            "turns": 8,
+            "cards": 10,
+            "hpRatio": 0.8630444964871195,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.955078125,
+            "stockBefore": 19,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9622950819672131,
+            "stockBefore": 20,
+            "stockAfterRewards": 34
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 12,
+            "hpRatio": 0.8462841530054646,
+            "stockBefore": 20,
+            "stockAfterRewards": 35
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 2,
+            "hpRatio": 0.9662451612903225,
+            "stockBefore": 20,
+            "stockAfterRewards": 41
+          },
+          {
+            "fight": 12,
+            "turns": 12,
+            "cards": 15,
+            "hpRatio": 0.32978835978835974,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 84,
+        "stock": 35,
+        "gold": 250,
+        "trained": [
+          "g02",
+          "n04",
+          "n03"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 11,
+          "g03": 6,
+          "g02": 14,
+          "r01": 3,
+          "r03": 3,
+          "r04": 1,
+          "a01": 3,
+          "n04": 3,
+          "r02": 2,
+          "t02": 2,
+          "t04": 2,
+          "a02": 3,
+          "a03": 3,
+          "n01": 5,
+          "a04": 5,
+          "t03": 4,
+          "g04": 1,
+          "n02": 1,
+          "g06": 1,
+          "n03": 2,
+          "g05": 2,
+          "g07": 1,
+          "t01": 2,
+          "t08": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9028248587570621,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.8374707259953161,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.955078125,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 9,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9301229508196721,
+            "stockBefore": 20,
+            "stockAfterRewards": 43
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.8053756830601092,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 11,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.8488774193548387,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.685079365079365,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26011,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 97,
+        "stock": 22,
+        "gold": 200,
+        "trained": [
+          "g03",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 9,
+          "g02": 10,
+          "r01": 5,
+          "g06": 4,
+          "g07": 1,
+          "a01": 6,
+          "n06": 2,
+          "g04": 7,
+          "a06": 1,
+          "t04": 3,
+          "t03": 1,
+          "r02": 1,
+          "n07": 1,
+          "g03": 9,
+          "a03": 5,
+          "t02": 1,
+          "a04": 5,
+          "r03": 2,
+          "a02": 2,
+          "n01": 6,
+          "t01": 2,
+          "n08": 2,
+          "g05": 4,
+          "n04": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 2,
+            "turns": 2,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 17,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 2,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 5,
+            "turns": 8,
+            "cards": 8,
+            "hpRatio": 0.7978333333333333,
+            "stockBefore": 16,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 6,
+            "turns": 8,
+            "cards": 7,
+            "hpRatio": 0.8028926553672318,
+            "stockBefore": 17,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 7,
+            "turns": 10,
+            "cards": 10,
+            "hpRatio": 0.8115901639344263,
+            "stockBefore": 19,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 11,
+            "cards": 9,
+            "hpRatio": 0.8779101562499999,
+            "stockBefore": 15,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 9,
+            "turns": 6,
+            "cards": 12,
+            "hpRatio": 0.8385081967213115,
+            "stockBefore": 17,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 10,
+            "turns": 8,
+            "cards": 12,
+            "hpRatio": 0.7700409836065575,
+            "stockBefore": 19,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 12,
+            "turns": 8,
+            "cards": 14,
+            "hpRatio": 0.6723030687830686,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 82,
+        "stock": 34,
+        "gold": 205,
+        "trained": [
+          "g03",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 9,
+          "g02": 10,
+          "r01": 5,
+          "g06": 4,
+          "g07": 1,
+          "a01": 6,
+          "n06": 1,
+          "a06": 1,
+          "t04": 2,
+          "t03": 1,
+          "g04": 2,
+          "n08": 1,
+          "r04": 2,
+          "g03": 9,
+          "r02": 1,
+          "n03": 2,
+          "t02": 1,
+          "a04": 5,
+          "a03": 4,
+          "n02": 1,
+          "r03": 1,
+          "n01": 3,
+          "a02": 2,
+          "t01": 2,
+          "g05": 3
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 2,
+            "turns": 2,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 17,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 4,
+            "turns": 2,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.8416666666666667,
+            "stockBefore": 19,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 6,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 0.7937853107344631,
+            "stockBefore": 19,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 7,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.7908079625292739,
+            "stockBefore": 20,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 8,
+            "turns": 7,
+            "cards": 6,
+            "hpRatio": 0.9055,
+            "stockBefore": 19,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9002434426229509,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.873754781420765,
+            "stockBefore": 20,
+            "stockAfterRewards": 40
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9368258064516128,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.7258321269841267,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26012,
+      "baseline": {
+        "won": false,
+        "failureFight": 3,
+        "level": 3,
+        "attributes": {
+          "resolve": 1
+        },
+        "consumed": 16,
+        "stock": 7,
+        "gold": 110,
+        "trained": [],
+        "uses": {
+          "n05": 3,
+          "g01": 4,
+          "g02": 3,
+          "g03": 4,
+          "g04": 1,
+          "n06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9201481481481482,
+            "stockBefore": 13,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 3,
+            "turns": 17,
+            "cards": 7,
+            "hpRatio": 0,
+            "stockBefore": 11
+          }
+        ]
+      },
+      "power": {
+        "won": false,
+        "failureFight": 3,
+        "level": 3,
+        "attributes": {
+          "power": 1
+        },
+        "consumed": 16,
+        "stock": 7,
+        "gold": 110,
+        "trained": [],
+        "uses": {
+          "n05": 3,
+          "g01": 4,
+          "g02": 3,
+          "g03": 4,
+          "g04": 1,
+          "n06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9185185185185185,
+            "stockBefore": 13,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 3,
+            "turns": 16,
+            "cards": 7,
+            "hpRatio": 0,
+            "stockBefore": 11
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26013,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 107,
+        "stock": 22,
+        "gold": 183,
+        "trained": [
+          "n03",
+          "n08",
+          "g02"
+        ],
+        "uses": {
+          "g01": 14,
+          "g03": 10,
+          "g02": 15,
+          "n06": 3,
+          "n05": 6,
+          "g04": 12,
+          "n02": 6,
+          "n07": 5,
+          "r04": 1,
+          "a03": 1,
+          "t04": 3,
+          "a01": 3,
+          "n01": 4,
+          "g05": 2,
+          "g06": 4,
+          "r02": 1,
+          "n03": 2,
+          "t03": 2,
+          "n04": 3,
+          "r03": 3,
+          "r01": 2,
+          "t02": 2,
+          "g07": 1,
+          "t01": 1,
+          "n08": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 12
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 12,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.9506115107913669,
+            "stockBefore": 19,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 6,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 7,
+            "turns": 10,
+            "cards": 13,
+            "hpRatio": 0.975,
+            "stockBefore": 19,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 8,
+            "turns": 11,
+            "cards": 9,
+            "hpRatio": 0.8241796874999999,
+            "stockBefore": 15,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 9,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8320163934426232,
+            "stockBefore": 16,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 10,
+            "turns": 11,
+            "cards": 12,
+            "hpRatio": 0.6540846994535523,
+            "stockBefore": 18,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 38
+          },
+          {
+            "fight": 12,
+            "turns": 10,
+            "cards": 16,
+            "hpRatio": 0.8205365079365079,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 97,
+        "stock": 28,
+        "gold": 219,
+        "trained": [
+          "n03",
+          "n08",
+          "g02"
+        ],
+        "uses": {
+          "g01": 11,
+          "g03": 8,
+          "g02": 13,
+          "n06": 3,
+          "n05": 6,
+          "n07": 5,
+          "n02": 4,
+          "g04": 11,
+          "r04": 1,
+          "a01": 3,
+          "t04": 4,
+          "a03": 1,
+          "n01": 4,
+          "g05": 2,
+          "t03": 2,
+          "r02": 1,
+          "g06": 4,
+          "r03": 3,
+          "n08": 2,
+          "n04": 3,
+          "t02": 2,
+          "r01": 2,
+          "g07": 1,
+          "t01": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 12
+          },
+          {
+            "fight": 3,
+            "turns": 9,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 12,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 18,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.9451438848920863,
+            "stockBefore": 19,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 6,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 9,
+            "cards": 10,
+            "hpRatio": 0.94368359375,
+            "stockBefore": 15,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 9,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.896032786885246,
+            "stockBefore": 15,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 10,
+            "turns": 11,
+            "cards": 12,
+            "hpRatio": 0.8301639344262295,
+            "stockBefore": 18,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9980239717978848,
+            "stockBefore": 20,
+            "stockAfterRewards": 39
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.808262095238095,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26014,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 95,
+        "stock": 28,
+        "gold": 178,
+        "trained": [
+          "n03",
+          "n08",
+          "g01"
+        ],
+        "uses": {
+          "n05": 5,
+          "g01": 10,
+          "g02": 13,
+          "n06": 2,
+          "g03": 7,
+          "g07": 4,
+          "g04": 6,
+          "t02": 3,
+          "r01": 4,
+          "n02": 4,
+          "t04": 5,
+          "a02": 2,
+          "t01": 2,
+          "n03": 2,
+          "a04": 3,
+          "r04": 1,
+          "n07": 1,
+          "n01": 3,
+          "n04": 7,
+          "r03": 1,
+          "r02": 2,
+          "n08": 1,
+          "a01": 2,
+          "r07": 1,
+          "r06": 1,
+          "a07": 1,
+          "g05": 1,
+          "g06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.8134999999999999,
+            "stockBefore": 20,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8841920903954803,
+            "stockBefore": 19,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 7,
+            "turns": 10,
+            "cards": 12,
+            "hpRatio": 0.8085222482435597,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 9,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.9120081967213114,
+            "stockBefore": 16,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 10,
+            "turns": 8,
+            "cards": 10,
+            "hpRatio": 0.8028210382513661,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9055675675675675,
+            "stockBefore": 20,
+            "stockAfterRewards": 42
+          },
+          {
+            "fight": 12,
+            "turns": 11,
+            "cards": 14,
+            "hpRatio": 0.6577959365079364,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 90,
+        "stock": 29,
+        "gold": 218,
+        "trained": [
+          "n03",
+          "n08",
+          "g01"
+        ],
+        "uses": {
+          "n05": 5,
+          "g01": 9,
+          "g02": 13,
+          "n06": 2,
+          "g03": 6,
+          "g07": 4,
+          "g04": 6,
+          "t02": 3,
+          "r01": 3,
+          "n02": 4,
+          "t04": 3,
+          "a02": 2,
+          "t01": 2,
+          "n03": 2,
+          "a04": 3,
+          "r04": 2,
+          "n01": 2,
+          "n04": 7,
+          "r02": 2,
+          "n07": 1,
+          "r03": 1,
+          "n08": 1,
+          "a01": 2,
+          "r07": 1,
+          "r06": 1,
+          "a07": 1,
+          "g05": 1,
+          "g06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.675,
+            "stockBefore": 20,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.8692090395480225,
+            "stockBefore": 19,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 7,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.80807962529274,
+            "stockBefore": 20,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 11,
+            "cards": 10,
+            "hpRatio": 0.914443359375,
+            "stockBefore": 16,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 10,
+            "hpRatio": 0.8973975409836064,
+            "stockBefore": 15,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8858094262295081,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9737015276145711,
+            "stockBefore": 20,
+            "stockAfterRewards": 41
+          },
+          {
+            "fight": 12,
+            "turns": 8,
+            "cards": 12,
+            "hpRatio": 0.8626402878306878,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26015,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 94,
+        "stock": 25,
+        "gold": 232,
+        "trained": [
+          "n03",
+          "n04",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 6,
+          "g02": 8,
+          "g03": 9,
+          "a04": 7,
+          "r03": 3,
+          "t03": 1,
+          "n01": 4,
+          "n07": 3,
+          "g04": 8,
+          "t01": 4,
+          "r02": 2,
+          "a03": 2,
+          "n03": 1,
+          "a02": 5,
+          "t02": 3,
+          "r01": 6,
+          "a01": 4,
+          "t04": 1,
+          "g05": 1,
+          "g06": 3,
+          "n08": 2,
+          "n04": 4,
+          "g07": 4
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 5,
+            "turns": 5,
+            "cards": 11,
+            "hpRatio": 0.828,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9450944625407166,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 7,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.9177061994609165,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 8,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 0.9700604838709677,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.939830508474576,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 10,
+            "turns": 10,
+            "cards": 12,
+            "hpRatio": 0.9071751412429376,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.7734365821094794,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 12,
+            "turns": 9,
+            "cards": 11,
+            "hpRatio": 0.7909046594982079,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 88,
+        "stock": 36,
+        "gold": 228,
+        "trained": [
+          "n03",
+          "n04",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 7,
+          "g02": 9,
+          "g03": 9,
+          "r03": 2,
+          "t03": 1,
+          "a04": 7,
+          "n04": 3,
+          "n01": 3,
+          "t01": 4,
+          "n07": 3,
+          "r02": 2,
+          "g04": 5,
+          "a01": 4,
+          "n03": 3,
+          "a02": 4,
+          "r01": 6,
+          "g06": 3,
+          "a03": 2,
+          "t02": 2,
+          "t04": 1,
+          "g05": 1,
+          "g07": 3,
+          "g08": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 4,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 0.98190625,
+            "stockBefore": 18,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.9057552083333333,
+            "stockBefore": 20,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 6,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 0.8380195439739415,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 7,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 0.8017574123989218,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 8,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 0.966008064516129,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 0.9290169491525424,
+            "stockBefore": 20,
+            "stockAfterRewards": 36
+          },
+          {
+            "fight": 10,
+            "turns": 5,
+            "cards": 11,
+            "hpRatio": 0.9042372881355931,
+            "stockBefore": 20,
+            "stockAfterRewards": 37
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9956208277703603,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.8278853046594983,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26016,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 97,
+        "stock": 22,
+        "gold": 169,
+        "trained": [
+          "g02",
+          "g01",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 11,
+          "g02": 13,
+          "g03": 9,
+          "g04": 7,
+          "a03": 5,
+          "a01": 1,
+          "n04": 7,
+          "r02": 3,
+          "t02": 4,
+          "t01": 2,
+          "n03": 1,
+          "n06": 2,
+          "n02": 1,
+          "r01": 4,
+          "r03": 1,
+          "a07": 1,
+          "a04": 3,
+          "t03": 2,
+          "n01": 5,
+          "t07": 1,
+          "g05": 2,
+          "n07": 1,
+          "g06": 2,
+          "a02": 1,
+          "a06": 1,
+          "t04": 1,
+          "r04": 2,
+          "g07": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9201481481481482,
+            "stockBefore": 16,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.9303181818181818,
+            "stockBefore": 17,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.9425125,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.9219270833333333,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9702033898305085,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 7,
+            "turns": 5,
+            "cards": 10,
+            "hpRatio": 0.9400632318501171,
+            "stockBefore": 20,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 8,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.98103515625,
+            "stockBefore": 17,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 9,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.9840819672131147,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 10,
+            "turns": 10,
+            "cards": 11,
+            "hpRatio": 0.9535382513661202,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 0.8589330199764982,
+            "stockBefore": 20,
+            "stockAfterRewards": 34
+          },
+          {
+            "fight": 12,
+            "turns": 10,
+            "cards": 12,
+            "hpRatio": 0.6446272592592595,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 81,
+        "stock": 35,
+        "gold": 208,
+        "trained": [
+          "g02",
+          "g01",
+          "n08"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 10,
+          "g02": 11,
+          "g03": 7,
+          "g04": 4,
+          "a03": 5,
+          "a01": 1,
+          "t01": 2,
+          "t02": 3,
+          "n06": 2,
+          "n02": 2,
+          "a04": 3,
+          "a07": 1,
+          "n01": 3,
+          "n04": 3,
+          "r01": 4,
+          "r03": 1,
+          "r02": 2,
+          "n03": 1,
+          "g05": 2,
+          "t03": 2,
+          "g06": 2,
+          "a02": 1,
+          "a06": 1,
+          "t04": 1,
+          "g07": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9185185185185185,
+            "stockBefore": 16,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 0.9248636363636363,
+            "stockBefore": 17,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 6,
+            "hpRatio": 0.9380124999999999,
+            "stockBefore": 18,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 5,
+            "turns": 8,
+            "cards": 9,
+            "hpRatio": 0.83584375,
+            "stockBefore": 20,
+            "stockAfterRewards": 23
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.9644067796610168,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 7,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.9533957845433256,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9818671875,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 8,
+            "hpRatio": 0.9526081967213115,
+            "stockBefore": 20,
+            "stockAfterRewards": 39
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.9564084699453552,
+            "stockBefore": 20,
+            "stockAfterRewards": 42
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 4,
+            "hpRatio": 0.8861198589894241,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.7871538793650792,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26017,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 97,
+        "stock": 26,
+        "gold": 249,
+        "trained": [
+          "n03",
+          "n08",
+          "g04"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 7,
+          "g02": 8,
+          "a03": 3,
+          "g03": 9,
+          "n01": 6,
+          "t04": 6,
+          "r03": 5,
+          "g04": 5,
+          "t01": 4,
+          "n06": 3,
+          "n07": 2,
+          "n04": 3,
+          "r02": 5,
+          "a01": 3,
+          "n03": 1,
+          "t03": 3,
+          "a02": 2,
+          "r01": 3,
+          "a04": 4,
+          "g07": 2,
+          "g05": 1,
+          "g06": 1,
+          "n02": 2,
+          "r04": 1,
+          "a06": 1,
+          "r06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 8,
+            "cards": 8,
+            "hpRatio": 0.8990303030303031,
+            "stockBefore": 15,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.85065,
+            "stockBefore": 17,
+            "stockAfterRewards": 21
+          },
+          {
+            "fight": 5,
+            "turns": 8,
+            "cards": 12,
+            "hpRatio": 0.8755416666666667,
+            "stockBefore": 18,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8516158192090396,
+            "stockBefore": 16,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 7,
+            "turns": 12,
+            "cards": 8,
+            "hpRatio": 0.6077915690866509,
+            "stockBefore": 14,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 8,
+            "turns": 12,
+            "cards": 6,
+            "hpRatio": 0.74244140625,
+            "stockBefore": 13,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.7634508196721311,
+            "stockBefore": 18,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 10,
+            "turns": 12,
+            "cards": 13,
+            "hpRatio": 0.5794330601092896,
+            "stockBefore": 20,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.8683517607368938,
+            "stockBefore": 15,
+            "stockAfterRewards": 37
+          },
+          {
+            "fight": 12,
+            "turns": 9,
+            "cards": 11,
+            "hpRatio": 0.9455873015873018,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 88,
+        "stock": 35,
+        "gold": 237,
+        "trained": [
+          "n03",
+          "n08",
+          "g04"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 7,
+          "g02": 7,
+          "a03": 3,
+          "g03": 8,
+          "n01": 3,
+          "t04": 6,
+          "r03": 3,
+          "g04": 5,
+          "t01": 4,
+          "n06": 3,
+          "n07": 2,
+          "r02": 4,
+          "a01": 3,
+          "n02": 2,
+          "t03": 4,
+          "a02": 2,
+          "r01": 3,
+          "a04": 4,
+          "n04": 2,
+          "g07": 2,
+          "g05": 1,
+          "g06": 1,
+          "r04": 1,
+          "a06": 1,
+          "r06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 17
+          },
+          {
+            "fight": 3,
+            "turns": 8,
+            "cards": 8,
+            "hpRatio": 0.896969696969697,
+            "stockBefore": 15,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.7911249999999999,
+            "stockBefore": 17,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.7415624999999999,
+            "stockBefore": 19,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.9644067796610168,
+            "stockBefore": 18,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.8573185011709602,
+            "stockBefore": 17,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 8,
+            "turns": 7,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 13,
+            "stockAfterRewards": 28
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.949344262295082,
+            "stockBefore": 20,
+            "stockAfterRewards": 34
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 43
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 8,
+            "hpRatio": 0.893703111111111,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26018,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 103,
+        "stock": 31,
+        "gold": 169,
+        "trained": [
+          "n03",
+          "n08",
+          "g02"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 13,
+          "g02": 11,
+          "r01": 5,
+          "r04": 1,
+          "a02": 2,
+          "n06": 2,
+          "t03": 3,
+          "g03": 8,
+          "a01": 2,
+          "r02": 3,
+          "g04": 8,
+          "r03": 2,
+          "n01": 5,
+          "n02": 2,
+          "a03": 5,
+          "n07": 2,
+          "n03": 2,
+          "a04": 3,
+          "t01": 3,
+          "g07": 6,
+          "t04": 2,
+          "t06": 1,
+          "n08": 1,
+          "g06": 2,
+          "a06": 1,
+          "g05": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 13,
+            "stockAfterRewards": 12
+          },
+          {
+            "fight": 3,
+            "turns": 7,
+            "cards": 7,
+            "hpRatio": 0.9657424242424242,
+            "stockBefore": 11,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.9717375,
+            "stockBefore": 18,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 5,
+            "turns": 12,
+            "cards": 15,
+            "hpRatio": 0.7192812499999999,
+            "stockBefore": 17,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8516158192090396,
+            "stockBefore": 19,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 7,
+            "turns": 8,
+            "cards": 11,
+            "hpRatio": 0.8769836065573772,
+            "stockBefore": 20,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 19,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 9,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 0.940983606557377,
+            "stockBefore": 20,
+            "stockAfterRewards": 29
+          },
+          {
+            "fight": 10,
+            "turns": 8,
+            "cards": 12,
+            "hpRatio": 0.9299999999999999,
+            "stockBefore": 20,
+            "stockAfterRewards": 35
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9400705052878966,
+            "stockBefore": 20,
+            "stockAfterRewards": 44
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 13,
+            "hpRatio": 0.93885291005291,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 86,
+        "stock": 34,
+        "gold": 187,
+        "trained": [
+          "n03",
+          "n08",
+          "g02"
+        ],
+        "uses": {
+          "n05": 5,
+          "g01": 11,
+          "g02": 10,
+          "r01": 5,
+          "r04": 1,
+          "a02": 2,
+          "n06": 2,
+          "t03": 2,
+          "g03": 7,
+          "r02": 3,
+          "a01": 1,
+          "g04": 7,
+          "r03": 1,
+          "n07": 1,
+          "n01": 4,
+          "n03": 1,
+          "a04": 3,
+          "a03": 4,
+          "t01": 3,
+          "g07": 6,
+          "n02": 1,
+          "t04": 2,
+          "g06": 2,
+          "a06": 1,
+          "g05": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 13
+          },
+          {
+            "fight": 2,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 13,
+            "stockAfterRewards": 12
+          },
+          {
+            "fight": 3,
+            "turns": 7,
+            "cards": 7,
+            "hpRatio": 0.9641666666666667,
+            "stockBefore": 11,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 0.9704375000000001,
+            "stockBefore": 18,
+            "stockAfterRewards": 20
+          },
+          {
+            "fight": 5,
+            "turns": 8,
+            "cards": 11,
+            "hpRatio": 0.8628645833333334,
+            "stockBefore": 19,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.7644067796610169,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.8046838407494145,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.92125,
+            "stockBefore": 20,
+            "stockAfterRewards": 33
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 6,
+            "hpRatio": 0.9339016393442624,
+            "stockBefore": 20,
+            "stockAfterRewards": 37
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 6,
+            "hpRatio": 0.790655737704918,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.9424676850763807,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.7734521904761904,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26019,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 101,
+        "stock": 29,
+        "gold": 263,
+        "trained": [
+          "n03",
+          "g01",
+          "n04"
+        ],
+        "uses": {
+          "n05": 6,
+          "g01": 13,
+          "g02": 11,
+          "t01": 3,
+          "r01": 1,
+          "r03": 2,
+          "r04": 3,
+          "n07": 1,
+          "g03": 10,
+          "g04": 7,
+          "n01": 2,
+          "n06": 2,
+          "a04": 5,
+          "a03": 4,
+          "a01": 4,
+          "n04": 4,
+          "g07": 5,
+          "t03": 2,
+          "a07": 1,
+          "g06": 6,
+          "t04": 1,
+          "t02": 2,
+          "g05": 2,
+          "r06": 1,
+          "n02": 1,
+          "n03": 2
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 3,
+            "turns": 9,
+            "cards": 10,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 22
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 26
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8895,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.8932881355932205,
+            "stockBefore": 20,
+            "stockAfterRewards": 39
+          },
+          {
+            "fight": 7,
+            "turns": 7,
+            "cards": 9,
+            "hpRatio": 0.8762974238875879,
+            "stockBefore": 20,
+            "stockAfterRewards": 38
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.955078125,
+            "stockBefore": 20,
+            "stockAfterRewards": 46
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.8755327868852459,
+            "stockBefore": 20,
+            "stockAfterRewards": 49
+          },
+          {
+            "fight": 10,
+            "turns": 8,
+            "cards": 12,
+            "hpRatio": 0.8026707650273225,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.8316593548387098,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 9,
+            "cards": 16,
+            "hpRatio": 0.9164814814814816,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 85,
+        "stock": 34,
+        "gold": 304,
+        "trained": [
+          "n03",
+          "g01",
+          "n04"
+        ],
+        "uses": {
+          "n05": 5,
+          "g01": 9,
+          "g02": 12,
+          "t01": 3,
+          "r01": 1,
+          "r03": 2,
+          "r04": 1,
+          "n07": 2,
+          "g03": 10,
+          "g04": 6,
+          "n02": 1,
+          "n06": 2,
+          "a04": 5,
+          "a03": 4,
+          "g07": 5,
+          "t03": 1,
+          "a01": 3,
+          "a07": 1,
+          "t02": 1,
+          "t04": 1,
+          "g05": 2,
+          "g06": 6,
+          "r06": 1,
+          "n01": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 2,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 16
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 1,
+            "stockBefore": 14,
+            "stockAfterRewards": 18
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 16,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 5,
+            "turns": 7,
+            "cards": 10,
+            "hpRatio": 0.7947916666666667,
+            "stockBefore": 20,
+            "stockAfterRewards": 31
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.8841807909604518,
+            "stockBefore": 20,
+            "stockAfterRewards": 40
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 7,
+            "hpRatio": 0.8657494145199062,
+            "stockBefore": 20,
+            "stockAfterRewards": 39
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 10,
+            "hpRatio": 0.955078125,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 7,
+            "hpRatio": 0.899344262295082,
+            "stockBefore": 20,
+            "stockAfterRewards": 50
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 8,
+            "hpRatio": 0.7123497267759562,
+            "stockBefore": 20,
+            "stockAfterRewards": 50
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 0.9030555555555557,
+            "stockBefore": 20
+          }
+        ]
+      }
+    },
+    {
+      "seed": 26020,
+      "baseline": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "resolve": 4,
+          "vitality": 2
+        },
+        "consumed": 102,
+        "stock": 29,
+        "gold": 334,
+        "trained": [
+          "g03",
+          "n03",
+          "g06"
+        ],
+        "uses": {
+          "n05": 4,
+          "g01": 10,
+          "g02": 12,
+          "a03": 3,
+          "g03": 13,
+          "t03": 2,
+          "r01": 3,
+          "a02": 6,
+          "t01": 4,
+          "t02": 2,
+          "a01": 3,
+          "g04": 7,
+          "n01": 4,
+          "a07": 1,
+          "l02": 1,
+          "n04": 4,
+          "n07": 3,
+          "n06": 3,
+          "n03": 1,
+          "r04": 2,
+          "t08": 1,
+          "r03": 1,
+          "g06": 6,
+          "r02": 1,
+          "a04": 3,
+          "g07": 1,
+          "a06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.9201481481481482,
+            "stockBefore": 13,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9346666666666666,
+            "stockBefore": 15,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 4,
+            "hpRatio": 0.9460999999999999,
+            "stockBefore": 15,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 8,
+            "hpRatio": 0.8354166666666666,
+            "stockBefore": 20,
+            "stockAfterRewards": 35
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.7571596091205212,
+            "stockBefore": 20,
+            "stockAfterRewards": 35
+          },
+          {
+            "fight": 7,
+            "turns": 7,
+            "cards": 11,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 8,
+            "turns": 8,
+            "cards": 15,
+            "hpRatio": 0.9408988764044944,
+            "stockBefore": 20,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 9,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9453773584905661,
+            "stockBefore": 20,
+            "stockAfterRewards": 30
+          },
+          {
+            "fight": 10,
+            "turns": 7,
+            "cards": 12,
+            "hpRatio": 0.9989150943396226,
+            "stockBefore": 20,
+            "stockAfterRewards": 34
+          },
+          {
+            "fight": 11,
+            "turns": 3,
+            "cards": 6,
+            "hpRatio": 0.9659741935483871,
+            "stockBefore": 20,
+            "stockAfterRewards": 42
+          },
+          {
+            "fight": 12,
+            "turns": 8,
+            "cards": 13,
+            "hpRatio": 0.48959629629629614,
+            "stockBefore": 20
+          }
+        ]
+      },
+      "power": {
+        "won": true,
+        "failureFight": null,
+        "level": 12,
+        "attributes": {
+          "power": 4,
+          "vitality": 2
+        },
+        "consumed": 91,
+        "stock": 34,
+        "gold": 342,
+        "trained": [
+          "g03",
+          "n03",
+          "n08"
+        ],
+        "uses": {
+          "n05": 3,
+          "g01": 9,
+          "g02": 11,
+          "a03": 3,
+          "g03": 12,
+          "t03": 2,
+          "r01": 3,
+          "t02": 2,
+          "a02": 5,
+          "g04": 6,
+          "a01": 2,
+          "n06": 4,
+          "t01": 4,
+          "a07": 1,
+          "n01": 4,
+          "n02": 1,
+          "n04": 3,
+          "l02": 1,
+          "r04": 1,
+          "n07": 1,
+          "a04": 3,
+          "r03": 1,
+          "r02": 1,
+          "t08": 1,
+          "g06": 5,
+          "g07": 1,
+          "a06": 1
+        },
+        "timeline": [
+          {
+            "fight": 1,
+            "turns": 3,
+            "cards": 3,
+            "hpRatio": 1,
+            "stockBefore": 15,
+            "stockAfterRewards": 14
+          },
+          {
+            "fight": 2,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.9185185185185185,
+            "stockBefore": 13,
+            "stockAfterRewards": 15
+          },
+          {
+            "fight": 3,
+            "turns": 5,
+            "cards": 8,
+            "hpRatio": 0.9333333333333333,
+            "stockBefore": 15,
+            "stockAfterRewards": 19
+          },
+          {
+            "fight": 4,
+            "turns": 3,
+            "cards": 5,
+            "hpRatio": 0.865,
+            "stockBefore": 16,
+            "stockAfterRewards": 24
+          },
+          {
+            "fight": 5,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.8391666666666666,
+            "stockBefore": 19,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 6,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 0.6573811074918566,
+            "stockBefore": 20,
+            "stockAfterRewards": 32
+          },
+          {
+            "fight": 7,
+            "turns": 6,
+            "cards": 9,
+            "hpRatio": 0.87083153638814,
+            "stockBefore": 20,
+            "stockAfterRewards": 25
+          },
+          {
+            "fight": 8,
+            "turns": 5,
+            "cards": 9,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 27
+          },
+          {
+            "fight": 9,
+            "turns": 4,
+            "cards": 7,
+            "hpRatio": 1,
+            "stockBefore": 20,
+            "stockAfterRewards": 34
+          },
+          {
+            "fight": 10,
+            "turns": 6,
+            "cards": 10,
+            "hpRatio": 0.9967924528301887,
+            "stockBefore": 20,
+            "stockAfterRewards": 42
+          },
+          {
+            "fight": 11,
+            "turns": 4,
+            "cards": 5,
+            "hpRatio": 0.8678399999999998,
+            "stockBefore": 20,
+            "stockAfterRewards": 45
+          },
+          {
+            "fight": 12,
+            "turns": 6,
+            "cards": 11,
+            "hpRatio": 0.7246555555555553,
+            "stockBefore": 20
+          }
+        ]
+      }
+    }
+  ]
+}

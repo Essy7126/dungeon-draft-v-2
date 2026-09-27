@@ -1,0 +1,548 @@
+{
+	"anchor": [
+		192,
+		192
+	],
+	"animation": "braise_impact_E",
+	"baseline": {
+		"anchor": [
+			192,
+			192
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "04899f607615d23aebc507e6d367cacd92f7cc3eb7e5ed564980fddc2b469b10",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4f9132f217fd48f15ba65a151b8dfa04719879217a9c9e722d953eb821f0ceb4",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b4806b887db014bb960936991685d97d16ef3f8ca13513bbd1d93f568cff5bbe",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "924815eb67a053dd70695997af193cdbfcb786cded56a32e1c0fdfdb063e0215",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6a8c007159f6ede1101aa81883f6a50de1f834d24be88c9aba57bc6da0af61ad",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "132f29fbac517e56cf328dffa0d150a92d412168eaf5bbb072e9fdc24530afb1",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "530c5e374fcb7aa54175bbeda5aa0729e22ff0767f46724121566a834b01af74",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "70bb3c85146323a3a07518b01f721539367605affb4cddb448787e5fec6d5532",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "72e7a9081608fe2855b8aff6bdd718c10c3acd1fe2a952c02916160e77c8c826",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "22ff5af3d67a1c1068bb56d892ef663684e6b6ff39ee840d922747d60993cbf1",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "74969117b6412ae3e86a4d0b72c5da33f5129dee85b4b0778960be5cc131b56f",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "5a5af39076d53c58efff8c0472eb37e6002e8b6fb07531ef5db25289b14018ad",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0012.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "04899f607615d23aebc507e6d367cacd92f7cc3eb7e5ed564980fddc2b469b10",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4f9132f217fd48f15ba65a151b8dfa04719879217a9c9e722d953eb821f0ceb4",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b4806b887db014bb960936991685d97d16ef3f8ca13513bbd1d93f568cff5bbe",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "924815eb67a053dd70695997af193cdbfcb786cded56a32e1c0fdfdb063e0215",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6a8c007159f6ede1101aa81883f6a50de1f834d24be88c9aba57bc6da0af61ad",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "132f29fbac517e56cf328dffa0d150a92d412168eaf5bbb072e9fdc24530afb1",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "530c5e374fcb7aa54175bbeda5aa0729e22ff0767f46724121566a834b01af74",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "70bb3c85146323a3a07518b01f721539367605affb4cddb448787e5fec6d5532",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "72e7a9081608fe2855b8aff6bdd718c10c3acd1fe2a952c02916160e77c8c826",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "22ff5af3d67a1c1068bb56d892ef663684e6b6ff39ee840d922747d60993cbf1",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "74969117b6412ae3e86a4d0b72c5da33f5129dee85b4b0778960be5cc131b56f",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "5a5af39076d53c58efff8c0472eb37e6002e8b6fb07531ef5db25289b14018ad",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0012.png"
+		}
+	],
+	"id": "braise_impact",
+	"intent": "Production de la planche E validée le 27 septembre. Charbon, éclatement, état de braise et vapeur.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/braise/provenance.json": "070a2d65957a850ad3ab883d842d2f812f769aaee04418ccafe7676b267e6c90"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "132f29fbac517e56cf328dffa0d150a92d412168eaf5bbb072e9fdc24530afb1",
+		"source": "res://artifacts/dev/class_card_vfx/braise/render/impact/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/braise/impact.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Braise tenace — impact"
+}

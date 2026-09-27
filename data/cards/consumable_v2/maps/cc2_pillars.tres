@@ -1,0 +1,760 @@
+[gd_resource type="Resource" script_class="ArenaDefinition" format=3]
+
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/ice.png" id="1_caanu"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/lava.png" id="2_874an"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/stone.png" id="3_ut4f6"]
+[ext_resource type="Script" path="res://data/rooms/arena_visual_profile.gd" id="4_jg8u6"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/wall_base.png" id="5_wvgee"]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/modular_battle.tscn" id="6_m7hhk"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_cell_definition.gd" id="7_lq1kd"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_decoration_definition.gd" id="8_p53i4"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="9_lpdn2"]
+[ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="10_svk00"]
+[ext_resource type="Resource" path="res://data/arenas/produced/room_01_forest/modular_visual_profile.tres" id="11_sntb0"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_objective_definition.gd" id="12_uatst"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_obstacle_definition.gd" id="13_yyp3s"]
+[ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_presentation.tres" id="14_f0hln"]
+[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="15_3gesu"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_definition.gd" id="16_7w16l"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_spawn_definition.gd" id="17_fgbl7"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_network_definition.gd" id="18_lgqq7"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_pair_definition.gd" id="19_vg6sf"]
+[ext_resource type="Script" path="res://data/rooms/room_wave_data.gd" id="20_yjagv"]
+
+[sub_resource type="Resource" id="Resource_akrwq"]
+script = ExtResource("4_jg8u6")
+normal_texture = ExtResource("3_ut4f6")
+wall_texture = ExtResource("5_wvgee")
+lava_texture = ExtResource("2_874an")
+ice_texture = ExtResource("1_caanu")
+
+[sub_resource type="Resource" id="Resource_pjwrd"]
+script = ExtResource("7_lq1kd")
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_2hkkq"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(0, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_88km2"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(0, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_5khf1"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(0, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_duqkd"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(0, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_x0lms"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(0, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_w8boa"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(0, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_aff4i"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 0)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_uy0pm"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_djin2"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_aqren"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_y5bws"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_yndnl"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_ipoyn"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(1, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_fiouv"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 0)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_ki50v"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_rr0o8"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_368wo"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_e1bct"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_c56ju"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_o8ivc"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(2, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_nx1v6"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 0)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_pjc2y"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_gptwl"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_gmibm"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_bo8qb"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_7ah5n"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_wyfi0"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(3, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_rs7dn"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 0)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_whviy"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_8fyf3"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_6e34h"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_86y1q"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_y8o53"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_ufjiv"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(4, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_wepuv"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 0)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_7s6jd"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_kiyn5"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_6tnwp"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_3xpqm"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_otgn6"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_e66au"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(5, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_iv3l4"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 0)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_yb6j0"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 1)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_6p2er"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 2)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_osgw5"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 3)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_hcmdo"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 4)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_y41br"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 5)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_tysah"]
+script = ExtResource("7_lq1kd")
+coordinate = Vector2i(6, 6)
+terrain_id = &"stone"
+
+[sub_resource type="Resource" id="Resource_xww66"]
+script = ExtResource("10_svk00")
+layout_id = &"cc2_pillars"
+debug_name = "Cartes V2 · Pillars"
+logical_size = Vector2i(7, 7)
+layout_rows = PackedStringArray(".......", ".......", ".......", ".......", ".......", ".......", ".......")
+terrain_property_overrides = {
+Vector2i(0, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(0, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(0, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(0, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(0, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(0, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(0, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": false,
+"terrain_id": &"stone",
+"transparent": false,
+"walkable": false
+},
+Vector2i(2, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": false,
+"terrain_id": &"stone",
+"transparent": false,
+"walkable": false
+},
+Vector2i(2, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": false,
+"terrain_id": &"stone",
+"transparent": false,
+"walkable": false
+},
+Vector2i(4, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": false,
+"terrain_id": &"stone",
+"transparent": false,
+"walkable": false
+},
+Vector2i(4, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 0): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"stone",
+"transparent": true,
+"walkable": true
+}
+}
+
+[sub_resource type="Resource" id="Resource_mhac6"]
+script = ExtResource("13_yyp3s")
+obstacle_id = &"cc2_wall_2_2"
+cell = Vector2i(2, 2)
+wall_id = &"normal"
+
+[sub_resource type="Resource" id="Resource_7p36a"]
+script = ExtResource("13_yyp3s")
+obstacle_id = &"cc2_wall_2_4"
+cell = Vector2i(2, 4)
+wall_id = &"normal"
+
+[sub_resource type="Resource" id="Resource_30jpr"]
+script = ExtResource("13_yyp3s")
+obstacle_id = &"cc2_wall_4_2"
+cell = Vector2i(4, 2)
+wall_id = &"normal"
+
+[sub_resource type="Resource" id="Resource_v6t7k"]
+script = ExtResource("13_yyp3s")
+obstacle_id = &"cc2_wall_4_4"
+cell = Vector2i(4, 4)
+wall_id = &"normal"
+
+[sub_resource type="Resource" id="Resource_8dhyj"]
+script = ExtResource("15_3gesu")
+map_id = &"cc2_pillars"
+debug_name = "Cartes V2 · Pillars"
+logical_grid_size = Vector2i(7, 7)
+grid_origin = Vector2(350, 100)
+axis_x = Vector2(32, 16)
+axis_y = Vector2(-32, 16)
+presentation_profile = ExtResource("14_f0hln")
+foreground_occluder_polygon = PackedVector2Array()
+
+[sub_resource type="Resource" id="Resource_e5p3y"]
+script = ExtResource("17_fgbl7")
+spawn_id = &"cc2_hero"
+kind = 0
+unit_id = &"achilles"
+cell = Vector2i(3, 5)
+
+[sub_resource type="Resource" id="Resource_itodl"]
+script = ExtResource("17_fgbl7")
+spawn_id = &"cc2_enemy_1"
+cell = Vector2i(3, 1)
+
+[sub_resource type="Resource" id="Resource_ptq86"]
+script = ExtResource("17_fgbl7")
+spawn_id = &"cc2_enemy_2"
+cell = Vector2i(1, 1)
+
+[sub_resource type="Resource" id="Resource_4eurr"]
+script = ExtResource("17_fgbl7")
+spawn_id = &"cc2_enemy_3"
+cell = Vector2i(5, 1)
+
+[sub_resource type="Resource" id="Resource_2os8o"]
+script = ExtResource("17_fgbl7")
+spawn_id = &"cc2_enemy_4"
+cell = Vector2i(3, 2)
+
+[resource]
+script = ExtResource("16_7w16l")
+arena_id = &"cc2_pillars"
+display_name = "Cartes V2 · Pillars"
+visual_mode = 1
+modular_visual_profile = ExtResource("11_sntb0")
+grid_size = Vector2i(7, 7)
+grid_origin = Vector2(350, 100)
+axis_x = Vector2(32, 16)
+axis_y = Vector2(-32, 16)
+foreground_occluder_polygon = PackedVector2Array()
+border_thickness = 0
+cells = Array[ExtResource("7_lq1kd")]([SubResource("Resource_pjwrd"), SubResource("Resource_2hkkq"), SubResource("Resource_88km2"), SubResource("Resource_5khf1"), SubResource("Resource_duqkd"), SubResource("Resource_x0lms"), SubResource("Resource_w8boa"), SubResource("Resource_aff4i"), SubResource("Resource_uy0pm"), SubResource("Resource_djin2"), SubResource("Resource_aqren"), SubResource("Resource_y5bws"), SubResource("Resource_yndnl"), SubResource("Resource_ipoyn"), SubResource("Resource_fiouv"), SubResource("Resource_ki50v"), SubResource("Resource_rr0o8"), SubResource("Resource_368wo"), SubResource("Resource_e1bct"), SubResource("Resource_c56ju"), SubResource("Resource_o8ivc"), SubResource("Resource_nx1v6"), SubResource("Resource_pjc2y"), SubResource("Resource_gptwl"), SubResource("Resource_gmibm"), SubResource("Resource_bo8qb"), SubResource("Resource_7ah5n"), SubResource("Resource_wyfi0"), SubResource("Resource_rs7dn"), SubResource("Resource_whviy"), SubResource("Resource_8fyf3"), SubResource("Resource_6e34h"), SubResource("Resource_86y1q"), SubResource("Resource_y8o53"), SubResource("Resource_ufjiv"), SubResource("Resource_wepuv"), SubResource("Resource_7s6jd"), SubResource("Resource_kiyn5"), SubResource("Resource_6tnwp"), SubResource("Resource_3xpqm"), SubResource("Resource_otgn6"), SubResource("Resource_e66au"), SubResource("Resource_iv3l4"), SubResource("Resource_yb6j0"), SubResource("Resource_6p2er"), SubResource("Resource_osgw5"), SubResource("Resource_hcmdo"), SubResource("Resource_y41br"), SubResource("Resource_tysah")])
+obstacles = Array[ExtResource("13_yyp3s")]([SubResource("Resource_mhac6"), SubResource("Resource_7p36a"), SubResource("Resource_30jpr"), SubResource("Resource_v6t7k")])
+spawns = Array[ExtResource("17_fgbl7")]([SubResource("Resource_e5p3y"), SubResource("Resource_itodl"), SubResource("Resource_ptq86"), SubResource("Resource_4eurr"), SubResource("Resource_2os8o")])
+production_notes = "Profil catabase_cards_consumable_v2. Géométrie de référence 7×7. Le décor ne modifie pas la logique."
+room_name = "Cartes V2 · Pillars"
+battle_scene = ExtResource("6_m7hhk")
+arena_visual_profile = SubResource("Resource_akrwq")
+grid_layout = SubResource("Resource_xww66")
+painted_map_visual_data = SubResource("Resource_8dhyj")
+hero_spawn_zone = Array[Vector2i]([Vector2i(3, 5)])
+enemy_spawn_zone = Array[Vector2i]([Vector2i(3, 1), Vector2i(1, 1), Vector2i(5, 1), Vector2i(3, 2)])

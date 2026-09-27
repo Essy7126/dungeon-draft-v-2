@@ -6,9 +6,7 @@ const Fog := preload("res://hub/catabase_threshold/threshold_fog.gd")
 const PortraitDialogue := preload("res://ui/dialogue/portrait_dialogue.gd")
 const CHARON_PORTRAIT := preload("res://assets/catabase/dialogue/charon_v1/portrait.png")
 const CHARON_GREETING := "Te voilà, Achille. Au-delà de cette porte, un nouveau monde t’attend.\n\nMais souviens-toi : ici, c’est moi, Charon, qui déciderai si tu peux poursuivre ta route… ou si ton voyage s’arrête."
-const CLASSIC_PROFILE := preload(
-	"res://data/visuals/achilles/achilles_autosprite_profile_v1.tres"
-)
+const CLASSIC_PROFILE := preload("res://data/visuals/achilles/achilles_autosprite_profile_v1.tres")
 const PAINTED_PROFILE := preload(
 	"res://data/visuals/achilles/achilles_painted_g_sprite_profile.tres"
 )
@@ -79,6 +77,9 @@ func _configure_player(actor: Player) -> void:
 	actor.sprite_profile = profile_for_variants(
 		_entry_run.hero_visual_variants if _entry_run != null else { }
 	)
+	if actor.sprite_profile is PasseRiveAutoSpriteProfile:
+		actor.display_scale = _passe_rive_display_scale()
+		return
 	var frames := load(actor.sprite_profile.sprite_frames_path) as SpriteFrames
 	var pose := frames.get_frame_texture(&"idle_S", 0)
 	var silhouette_top := pose.get_image().get_used_rect().position.y
@@ -475,7 +476,10 @@ func _advance_move(delta: float) -> void:
 	for index in range(_path_index, _path.size()):
 		remaining += _ground_distance(_path[index] - previous)
 		previous = _path[index]
-	var desired_speed := minf(float(definition.world.speed) * _route_speed_multiplier, sqrt(1200.0 * remaining))
+	var desired_speed := minf(
+		float(definition.world.speed) * _route_speed_multiplier,
+		sqrt(1200.0 * remaining),
+	)
 	if _path_index + 1 < _path.size():
 		var approach := _path[_path_index] - player.position
 		var departure := _path[_path_index + 1] - _path[_path_index]

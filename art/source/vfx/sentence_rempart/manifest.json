@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "authoring": "Original polygonal model and authored animation, Blender Python",
+  "blender_version": "5.1.2",
+  "scene": "Sentence du rempart - CEL",
+  "fps": 30,
+  "frames": 48,
+  "size": 384,
+  "contact_frame": 16,
+  "contact_seconds": 0.5,
+  "pivot_pixels": [
+    192.0,
+    291.4289
+  ],
+  "source_script": "tools/class_card_vfx/sentence/build_hammer.py",
+  "palette_revision": "bronze-contact-02",
+  "palette_srgb": {
+    "Ink": "151d2c",
+    "Bronze shadow": "652b1e",
+    "Bronze": "b86625",
+    "Gold": "f2a332",
+    "Edge light": "fff0bf",
+    "Obsidian": "203444",
+    "Obsidian light": "4c7180",
+    "Seal": "139f9b",
+    "Seal light": "94f0db"
+  },
+  "view_transform": "AgX",
+  "look": "None"
+}

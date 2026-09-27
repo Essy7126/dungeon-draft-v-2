@@ -1,0 +1,108 @@
+{
+	"anchor": [
+		128,
+		208
+	],
+	"animation": "approved_arrow_E",
+	"baseline": {
+		"anchor": [
+			128,
+			208
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "c9916cfdd7315480a7ceb4fdf8440f156c06a7620ee6776b506f9b97fa9102a5",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/arrow/frame_0001.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		256,
+		256
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "c9916cfdd7315480a7ceb4fdf8440f156c06a7620ee6776b506f9b97fa9102a5",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/arrow/frame_0001.png"
+		}
+	],
+	"id": "approved_arrow",
+	"intent": "Production des dessins A/B/C/D validés le 27 septembre. Composant Blender RGBA ; règles et durée portées par les faits de combat.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/approved/provenance.json": "2bb8e21a1065934f1c2284e4f9841faf16f00c598750b03631026910a86f7ea2"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			256,
+			256
+		],
+		"sha256": "c9916cfdd7315480a7ceb4fdf8440f156c06a7620ee6776b506f9b97fa9102a5",
+		"source": "res://artifacts/dev/class_card_vfx/approved/render/arrow/frame_0001.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/approved/arrow.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Sorts approuvés — arrow"
+}

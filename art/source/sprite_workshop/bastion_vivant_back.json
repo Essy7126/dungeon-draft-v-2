@@ -1,0 +1,2007 @@
+{
+	"anchor": [
+		192,
+		246
+	],
+	"animation": "bastion_vivant_back_E",
+	"baseline": {
+		"anchor": [
+			192,
+			246
+		],
+		"display_scale": 0.35,
+		"events": [
+			{
+				"frame": "f008",
+				"name": "left_lock"
+			},
+			{
+				"frame": "f010",
+				"name": "rear_lock"
+			},
+			{
+				"frame": "f012",
+				"name": "right_lock"
+			}
+		],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "a113818c6eb4405242f7a11c22767c08aeae9390a9d17a8d12fd42cf1f8e4532",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "9ceb7f13a6e57b71a39479c9818dd1b58890d02ccdd1e35e3f1df9e0acd9b53b",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "dbc76afcf310b2225727b02554f59b7b00ab6fceb316dc3fe088a6ab27b47528",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "2252ec5400fbfa3add1f2d323399107efb9bcd1c8de46be636d99a3430032290",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6dabd9d52cff2c6cc0951fdf691357fa94d8ceff1042f8eb14c2e7d4da013ee6",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "cb6932fee686700487548245b114b6056ebd64e2565b0edb11a497f98c963e00",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "5d5316afd5842e4c6706ae6e8cb12333e28c86cbc044e78a3227e61838613396",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "ad12b5c5705ac7882c1f1dd5d3c8f9237ec0073ddccaa1e1e0ee397b05bbd2a0",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "9c7097779d14bb58e3d918173eeb56fe57a7ec5b5945ecc8dbfa937556479afd",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "02a6660c9fa2e7bd182d3b46c600bd74381e130c857adbee44b97300dcf54c31",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6377bbbcd4d35cc1819d7839cda116c7468f3d1376fe42fe675cf6d0848a3fd7",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "70e7f21e2843bf4c9f9e54bf09f2368bec1b1f7ca6a2d9764f156cc5dc180e51",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0012.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f012",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "8e1ee8cbf4431e3bd6194b0fa3b5cd64f1459b3ceaec028b82c4bc6449efae5f",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0013.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f013",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "32ffa24741f333972aec513994075dff33a9b0595801d09bed1a8b616d11697d",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0014.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f014",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6e23b45a3c0f01bf680542106c822d23e04943499d84553e42f8ac676ab8c03c",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0015.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f015",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "5d42d5ecda247a50f76558e10b8f7a340dcacccee09b95e088e4e01b9243766b",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0016.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f016",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "5ecce3fbbc62099ada6ae7e3f63f0c4de9fcf76090e2a659a0d0dac8bad80329",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0017.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f017",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f3c1cf00d59aad810dcbb62cac182abc34ffd223a18b402005f5bf2cb7c578f8",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0018.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f018",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "db155d1066c4eb3a31aac070556438a60282fd27c6ab676e37c04ba619472561",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0019.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f019",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "af8b2ebd4611a8fb272aba4d1bbbec5a5f030b5f808b0dfdf6390c87845a1cf2",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0020.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f020",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "d308c6951245f0f740cf8aee2d50b9b9c788d02bb4f663a537b8d88c9b3b6937",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0021.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f021",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6d5b70c62429f24c59e9ebf331a4b845b659baaee2672353a60696e251b75fd5",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0022.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f022",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "91f2498671041312142629a074ce7de00fbd5a1e309140cea03236bc595f758c",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0023.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f023",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b57c2ccad2022f55a6ca8d75e3a92876be11502382191843e74cf92fefe9c07f",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0024.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f024",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "5a103334d13366ca5afcda1aeb0d63b8612434a0fb5e524224dccf30b4928d0f",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0025.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f025",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "ecf7bb6194eb7d18c93ecd2f1ec7f493d9906625f5889494b2cdce9102f7f1d8",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0026.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f026",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6292ab696d91d4eb668a92e2e0d5826a3be612ffce934f370dc58e474620578f",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0027.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f027",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "3efc13f6d786f70e343923ae0942db09bf57fa4d1b4bc60b0bbd5525e5ae8cd3",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0028.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f028",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "48e319895b021a0259f7ce89de31fca30878766c62773ac18fabe0e78b1c8551",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0029.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f029",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b5ea4718f51a94e4e5c2d408876ba08949c52e9359e4d57254b5a9810150089a",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0030.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f030",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "c4c562deedd85762dbdda077e295ee3a87a522609dd6794d76e2388a6be8ca1f",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0031.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f031",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "0e699d1971815ff280c67b0dbdd9c911875e84448073450f32fae49121fd825d",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0032.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f032",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b5360e5da61b350f97d27d426994b00c06dea556e2cf6f533de32d3c0c4edae3",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0033.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f033",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "183d6ea3f2d52e2751ac26ce40df298e14a79ceed19924a9ed30577b0f47e3da",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0034.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f034",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4ca3b03dd65a655326fd69cf82694636bd3377b011abfd0950e024c2264ff073",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0035.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f035",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "c0f26ed22758ebfdd5315b2afd29f4c9da255b20a66c488279cded17edea2630",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0036.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f036",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "a5d0d39e5a39b994dd37a837668460224350646bf49360b4573593867f052bd2",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0037.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f037",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "2d00eaa7e9c90a6b5f058fa8b13842fafba4ca96995b31d36b2bc0ab9760cc37",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0038.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f038",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "157675cba53f0d7525d6feefeef5785468e1efa8f0c07affdd338a8ec921d577",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0039.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f039",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4817372da5acdf4d44e7e595dc406e755e06303430172ca758f768488a57c70a",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0040.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f040",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b7311486ebfe94681a3ae53e3d4425bee92be8563d82d3c2040d4fe2f61b6ac4",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0041.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f041",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "c79f738e7128e6eb4b263567e7bbc8509967a2e7cea4032738838949f7aaa455",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0042.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f042",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "68a9d22eb586d39ee8e9f8c5d301cf9f3e209d0192678a340a5e2c7d8e8b816d",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0043.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f043",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4da634650a0036d0c4c186e9fa0adc3f828cecfc399d764530d6b428c15d8a63",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0044.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f044",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7470820323e6f90655d27690f570d67b6147bc6d96a6b39923c48fcd74f4aca7",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0045.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f045",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "8ebea5460b9ba1a1de520daf8eaec3172beadb9771059649ed16e35123bbf9fc",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0046.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f046",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "86cb19e135ba91b19267320d65cbe2a496dd6a24f5ad593f61464048045c607c",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0047.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f047",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "64797f59881c53bb5be72351abd4e4790daa0ef843f044aaad649b9f79b7686a",
+				"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0048.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [
+		{
+			"frame": "f008",
+			"name": "left_lock"
+		},
+		{
+			"frame": "f010",
+			"name": "rear_lock"
+		},
+		{
+			"frame": "f012",
+			"name": "right_lock"
+		}
+	],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "a113818c6eb4405242f7a11c22767c08aeae9390a9d17a8d12fd42cf1f8e4532",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "9ceb7f13a6e57b71a39479c9818dd1b58890d02ccdd1e35e3f1df9e0acd9b53b",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "dbc76afcf310b2225727b02554f59b7b00ab6fceb316dc3fe088a6ab27b47528",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "2252ec5400fbfa3add1f2d323399107efb9bcd1c8de46be636d99a3430032290",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6dabd9d52cff2c6cc0951fdf691357fa94d8ceff1042f8eb14c2e7d4da013ee6",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "cb6932fee686700487548245b114b6056ebd64e2565b0edb11a497f98c963e00",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "5d5316afd5842e4c6706ae6e8cb12333e28c86cbc044e78a3227e61838613396",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "ad12b5c5705ac7882c1f1dd5d3c8f9237ec0073ddccaa1e1e0ee397b05bbd2a0",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "9c7097779d14bb58e3d918173eeb56fe57a7ec5b5945ecc8dbfa937556479afd",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "02a6660c9fa2e7bd182d3b46c600bd74381e130c857adbee44b97300dcf54c31",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6377bbbcd4d35cc1819d7839cda116c7468f3d1376fe42fe675cf6d0848a3fd7",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "70e7f21e2843bf4c9f9e54bf09f2368bec1b1f7ca6a2d9764f156cc5dc180e51",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0012.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f012",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "8e1ee8cbf4431e3bd6194b0fa3b5cd64f1459b3ceaec028b82c4bc6449efae5f",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0013.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f013",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "32ffa24741f333972aec513994075dff33a9b0595801d09bed1a8b616d11697d",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0014.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f014",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6e23b45a3c0f01bf680542106c822d23e04943499d84553e42f8ac676ab8c03c",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0015.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f015",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "5d42d5ecda247a50f76558e10b8f7a340dcacccee09b95e088e4e01b9243766b",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0016.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f016",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "5ecce3fbbc62099ada6ae7e3f63f0c4de9fcf76090e2a659a0d0dac8bad80329",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0017.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f017",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f3c1cf00d59aad810dcbb62cac182abc34ffd223a18b402005f5bf2cb7c578f8",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0018.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f018",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "db155d1066c4eb3a31aac070556438a60282fd27c6ab676e37c04ba619472561",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0019.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f019",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "af8b2ebd4611a8fb272aba4d1bbbec5a5f030b5f808b0dfdf6390c87845a1cf2",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0020.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f020",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "d308c6951245f0f740cf8aee2d50b9b9c788d02bb4f663a537b8d88c9b3b6937",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0021.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f021",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6d5b70c62429f24c59e9ebf331a4b845b659baaee2672353a60696e251b75fd5",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0022.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f022",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "91f2498671041312142629a074ce7de00fbd5a1e309140cea03236bc595f758c",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0023.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f023",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b57c2ccad2022f55a6ca8d75e3a92876be11502382191843e74cf92fefe9c07f",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0024.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f024",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "5a103334d13366ca5afcda1aeb0d63b8612434a0fb5e524224dccf30b4928d0f",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0025.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f025",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "ecf7bb6194eb7d18c93ecd2f1ec7f493d9906625f5889494b2cdce9102f7f1d8",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0026.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f026",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6292ab696d91d4eb668a92e2e0d5826a3be612ffce934f370dc58e474620578f",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0027.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f027",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "3efc13f6d786f70e343923ae0942db09bf57fa4d1b4bc60b0bbd5525e5ae8cd3",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0028.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f028",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "48e319895b021a0259f7ce89de31fca30878766c62773ac18fabe0e78b1c8551",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0029.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f029",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b5ea4718f51a94e4e5c2d408876ba08949c52e9359e4d57254b5a9810150089a",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0030.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f030",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "c4c562deedd85762dbdda077e295ee3a87a522609dd6794d76e2388a6be8ca1f",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0031.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f031",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "0e699d1971815ff280c67b0dbdd9c911875e84448073450f32fae49121fd825d",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0032.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f032",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b5360e5da61b350f97d27d426994b00c06dea556e2cf6f533de32d3c0c4edae3",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0033.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f033",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "183d6ea3f2d52e2751ac26ce40df298e14a79ceed19924a9ed30577b0f47e3da",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0034.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f034",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4ca3b03dd65a655326fd69cf82694636bd3377b011abfd0950e024c2264ff073",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0035.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f035",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "c0f26ed22758ebfdd5315b2afd29f4c9da255b20a66c488279cded17edea2630",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0036.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f036",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "a5d0d39e5a39b994dd37a837668460224350646bf49360b4573593867f052bd2",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0037.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f037",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "2d00eaa7e9c90a6b5f058fa8b13842fafba4ca96995b31d36b2bc0ab9760cc37",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0038.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f038",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "157675cba53f0d7525d6feefeef5785468e1efa8f0c07affdd338a8ec921d577",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0039.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f039",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4817372da5acdf4d44e7e595dc406e755e06303430172ca758f768488a57c70a",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0040.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f040",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b7311486ebfe94681a3ae53e3d4425bee92be8563d82d3c2040d4fe2f61b6ac4",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0041.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f041",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "c79f738e7128e6eb4b263567e7bbc8509967a2e7cea4032738838949f7aaa455",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0042.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f042",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "68a9d22eb586d39ee8e9f8c5d301cf9f3e209d0192678a340a5e2c7d8e8b816d",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0043.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f043",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4da634650a0036d0c4c186e9fa0adc3f828cecfc399d764530d6b428c15d8a63",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0044.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f044",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7470820323e6f90655d27690f570d67b6147bc6d96a6b39923c48fcd74f4aca7",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0045.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f045",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "8ebea5460b9ba1a1de520daf8eaec3172beadb9771059649ed16e35123bbf9fc",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0046.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f046",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "86cb19e135ba91b19267320d65cbe2a496dd6a24f5ad593f61464048045c607c",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0047.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f047",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "64797f59881c53bb5be72351abd4e4790daa0ef843f044aaad649b9f79b7686a",
+			"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0048.png"
+		}
+	],
+	"id": "bastion_vivant_back",
+	"intent": "Trois plaques articulées après attribution réelle, verrouillage, retrait vers le signe actif. Plan séparé pour garder le personnage visible.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "5ecce3fbbc62099ada6ae7e3f63f0c4de9fcf76090e2a659a0d0dac8bad80329",
+		"source": "res://artifacts/dev/class_card_vfx/bastion/render/back/frame_0017.png"
+	},
+	"review": {},
+	"schema_version": 1,
+	"title": "Bastion vivant — plan back"
+}

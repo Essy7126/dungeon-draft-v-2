@@ -16,6 +16,8 @@ func make_manager(weapon := "marteau", cards_mode := true):
 	manager.expedition_save_path = "user://cards_test_%d.json" % Time.get_ticks_usec()
 	add_child(manager)
 	managers.append(manager)
+	# Historical profile; new public departures use consumable cards.
+	if cards_mode: manager._cards_departure_selection = CatabasePreparationCatalog.preset(weapon)
 	assert_true(manager.start_expedition(2401, {}, false, true, "normal", cards_mode))
 	assert_true(manager.confirm_catabase_preparation(CatabasePreparationCatalog.preset(weapon)).get("success", false))
 	return manager
@@ -328,8 +330,8 @@ func test_two_canonical_saves_resume_and_death_are_isolated() -> void:
 	assert_true(manager.select_run_variant("cards"))
 	assert_true(manager.configure_next_run(ExpeditionRunFactory.create(2402, {"achilles": "passe_rive"}), 0))
 	assert_true(manager.start_configured_run(), "same public launch used by character selection")
-	assert_true(manager.expedition.needs_preparation)
-	assert_true(manager.confirm_catabase_preparation(CatabasePreparationCatalog.preset("xiphos")).success)
+	assert_false(manager.expedition.needs_preparation)
+	assert_true(manager.expedition.uses_consumable_cards())
 	assert_eq(FileAccess.get_sha256(ExpeditionSaveService.SAVE_PATH), classic_hash)
 	assert_true(manager.get_expedition_snapshot().session.has("cards_run"))
 	manager.cleanup_run_state()
@@ -340,7 +342,7 @@ func test_two_canonical_saves_resume_and_death_are_isolated() -> void:
 	assert_true(manager.select_run_variant("cards"))
 	assert_true(manager.resume_expedition())
 	assert_not_null(manager.expedition.cards)
-	assert_eq(manager.expedition.cards.active.size(), 10)
+	assert_eq(manager.expedition.cards.active.size(), 15)
 	assert_false(manager.select_run_variant("classic"), "cannot switch a live run")
 	manager.begin_combat_report()
 	manager.expedition.character.unit.current_hp = 0
@@ -535,6 +537,7 @@ func test_invalid_starting_maneuvers_are_rejected_without_equipment_or_save_chan
 	manager.expedition_save_path = "user://cards_invalid_start_%d.json" % Time.get_ticks_usec()
 	add_child(manager)
 	managers.append(manager)
+	manager._cards_departure_selection = CatabasePreparationCatalog.preset("marteau")
 	assert_true(manager.start_expedition(2401, {}, false, true, "normal", true))
 	var before := manager.get_expedition_snapshot()
 	var saved := FileAccess.get_sha256(manager.expedition_save_path)

@@ -4,6 +4,9 @@ extends AchillesAutoSpriteBackend
 const MANIFEST := "res://assets/characters/PasseRive/autosprite_v1/manifest.json"
 const COMBAT_MANIFEST := "res://assets/characters/PasseRive/combat_v2/manifest.json"
 const LANDING_SECONDS := 0.30
+const Appearance := preload("res://characters/achilles/2d/passe_rive_appearance.gd")
+var appearance_material: ShaderMaterial
+var _palette_clip := ""
 var _geometry: Dictionary = { }
 var _dodging := false
 var _ground_phase := 0.0
@@ -20,7 +23,12 @@ func configure(profile: AchillesSpriteVisualProfile) -> bool:
 		_last_error = &"PASSE_RIVE_COMBAT_GEOMETRY_MISSING"
 		return false
 	_geometry.merge(combat.geometry, true)
-	return super.configure(profile)
+	if not super.configure(profile):
+		return false
+	appearance_material = Appearance.material_for("idle_S")
+	appearance_material.set_shader_parameter("display_scale", profile.display_scale)
+	animated_sprite.material = appearance_material
+	return true
 
 
 func _select_clip(stem: String) -> void:
@@ -41,6 +49,10 @@ func _apply_contact() -> void:
 		return
 	animated_sprite.offset = -Vector2(geometry.anchor[0], geometry.anchor[1])
 	animated_sprite.scale = Vector2.ONE * _profile.display_scale * float(geometry.scale)
+	var clip := str(animated_sprite.animation)
+	if clip != _palette_clip:
+		_palette_clip = clip
+		Appearance.apply_palette(appearance_material, clip)
 
 
 static func action_for(action_id: StringName, presentation: Dictionary) -> String:

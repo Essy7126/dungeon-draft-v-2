@@ -995,7 +995,7 @@ func _resolve_unit_impact(
 				"ability_id": spell.get_effective_spell_id(),
 				"attack_classification": get_action_classification(spell),
 				"impact_origin_cell": _damage_impact_origin_cell(ctx),
-			}
+			}.merged(ctx.impact_options_by_unit.get(target, {}), true)
 		)
 		if damage_result != null:
 			ctx.damage_result_by_unit[target] = damage_result

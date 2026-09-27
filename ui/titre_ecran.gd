@@ -34,12 +34,12 @@ func _ready() -> void:
 	_run_selector.name = "RunVariantSelector"
 	_run_selector.add_item("Catabase · Classique")
 	_run_selector.add_item("Catabase · Cartes")
-	_run_selector.tooltip_text = "Deux traversées indépendantes, chacune avec sa propre sauvegarde."
-	_run_selector.select(1 if GameManager.selected_run_variant == "cards" else 0)
+	_run_selector.tooltip_text = "Classique ou Cartes : choisissez votre mode de Catabase."
+	_run_selector.select(["classic", "cards"].find(GameManager.selected_run_variant))
 	boutons.add_child(_run_selector)
 	boutons.move_child(_run_selector, 1)
 	_run_selector.item_selected.connect(func(index):
-		if GameManager.select_run_variant("cards" if index == 1 else "classic"):
+		if GameManager.select_run_variant(["classic", "cards"][index]):
 			_refresh_run_choice()
 	)
 	_resume_button = Button.new()

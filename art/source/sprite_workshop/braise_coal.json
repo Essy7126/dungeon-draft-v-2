@@ -1,0 +1,388 @@
+{
+	"anchor": [
+		192,
+		192
+	],
+	"animation": "braise_coal_E",
+	"baseline": {
+		"anchor": [
+			192,
+			192
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "437d5c9e3197499020a522952bb6538bd83ae1eec179f21bd7e92d763faeb3c0",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "36660265b5b70963be0116d90c2c8233c886ccf15552cdf50e94cd353fa822bc",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "49a175936abe7a4017814e294539e768a8a368d84af8e5a78cbc4b6f416b2357",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7423a8391ab1d727178ec0a47f639528f2232fc9c3459d0fd9d15f972fee8428",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b1b1e8a517d7329360d04307774ab6f54f7c40182e920b4ced2d0ae3dcee17db",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "1ed632b6a1b335795dd374c57741119b49ef2f45190997803ca63ec8f12fd55f",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "cf2efee71b10aabb177588b75a2e901ff1748c4152dbd853d297f435d0d5762c",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "d9400811097cf4d5a40f425f337806d9bb017f943949c1f00293059865c44eec",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0008.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "437d5c9e3197499020a522952bb6538bd83ae1eec179f21bd7e92d763faeb3c0",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "36660265b5b70963be0116d90c2c8233c886ccf15552cdf50e94cd353fa822bc",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "49a175936abe7a4017814e294539e768a8a368d84af8e5a78cbc4b6f416b2357",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7423a8391ab1d727178ec0a47f639528f2232fc9c3459d0fd9d15f972fee8428",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b1b1e8a517d7329360d04307774ab6f54f7c40182e920b4ced2d0ae3dcee17db",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "1ed632b6a1b335795dd374c57741119b49ef2f45190997803ca63ec8f12fd55f",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "cf2efee71b10aabb177588b75a2e901ff1748c4152dbd853d297f435d0d5762c",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "d9400811097cf4d5a40f425f337806d9bb017f943949c1f00293059865c44eec",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0008.png"
+		}
+	],
+	"id": "braise_coal",
+	"intent": "Production de la planche E validée le 27 septembre. Charbon, éclatement, état de braise et vapeur.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/braise/provenance.json": "070a2d65957a850ad3ab883d842d2f812f769aaee04418ccafe7676b267e6c90"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "1ed632b6a1b335795dd374c57741119b49ef2f45190997803ca63ec8f12fd55f",
+		"source": "res://artifacts/dev/class_card_vfx/braise/render/coal/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/braise/coal.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Braise tenace — coal"
+}

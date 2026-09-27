@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_2wjjl"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_ft6um"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_xgyse"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_1seuj"]
+
+[resource]
+script = ExtResource("2_ft6um")
+profile_relic_rule = "cup"
+item_id = &"cc2_cup"
+display_name = "Coupe des blessures"
+description = "Les deux premières éliminations directes du combat soignent chacune 0,35 P."
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 5

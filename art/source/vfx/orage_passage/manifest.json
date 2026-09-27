@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "night": "132958",
+    "blue": "225a94",
+    "teal": "168e9b",
+    "cyan": "49e6ec",
+    "mint": "bcfff0",
+    "ivory": "fff6d6",
+    "gold": "eab763"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/h_orage_du_passage.png",
+  "source_script": "tools/class_card_vfx/orage/build.py",
+  "assets": {
+    "bolt": {
+      "size": 512,
+      "frames": 15,
+      "fps": 30,
+      "pivot": [
+        256.0,
+        451.698
+      ],
+      "scene": "Orage CEL - bolt"
+    },
+    "crown_back": {
+      "size": 384,
+      "frames": 18,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        211.1443
+      ],
+      "scene": "Orage CEL - crown_back"
+    },
+    "crown_front": {
+      "size": 384,
+      "frames": 18,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        211.1443
+      ],
+      "scene": "Orage CEL - crown_front"
+    },
+    "impact": {
+      "size": 384,
+      "frames": 15,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        210.6405
+      ],
+      "scene": "Orage CEL - impact"
+    }
+  }
+}

@@ -197,6 +197,10 @@ func configure_next_run(run_data: RunData, room_index: int) -> bool:
 
 func configure_cards_departure(selection: Dictionary) -> bool:
 	if selected_run_variant != "cards" or _next_run_data == null: return false
+	if selection.get("ruleset_id") == preload("res://core/expedition/consumable_card_catalog.gd").RULESET:
+		if not preload("res://core/expedition/consumable_card_catalog.gd").valid_departure(selection): return false
+		_cards_departure_selection = selection.duplicate(true)
+		return true
 	if selection.get("deck_selected", false) and not preload("res://core/expedition/class_card_catalog.gd").valid_departure(selection): return false
 	if not (preload("res://core/expedition/class_card_catalog.gd").valid(selection) if selection.has("class_id") else CatabasePreparationCatalog.valid(selection)) or selection.get("difficulty_id", "normal") not in ["normal", "easy"]: return false
 	_cards_departure_selection = selection.duplicate(true)
@@ -1712,7 +1716,22 @@ func schedule_battle_outcome(victory: bool, delay_seconds: float) -> void:
 	_battle_outcome_pending = true
 	_battle_outcome_generation += 1
 	var generation := _battle_outcome_generation
+	_checkpoint_consumable_outcome(victory)
 	_complete_battle_outcome_after_delay(victory, delay_seconds, generation)
+
+
+func _checkpoint_consumable_outcome(victory: bool) -> bool:
+	if expedition == null or not expedition.uses_consumable_cards(): return true
+	# The animation is presentation; completed gameplay is committed now.
+	# Otherwise quitting on the final impact could restore its consumed copy.
+	if victory:
+		expedition.combat_won()
+		_expedition_boundary_snapshot = _make_expedition_snapshot()
+		return save_expedition()
+	_expedition_boundary_snapshot.clear()
+	var removed := ExpeditionSaveService.remove_snapshot(expedition_save_path)
+	_set_expedition_save_status(removed, "finish_defeat")
+	return removed
 
 
 func _complete_battle_outcome_after_delay(
@@ -2304,15 +2323,30 @@ func select_run_variant(variant: String) -> bool:
 	return true
 
 
+func start_consumable_cards(selection: Dictionary, seed_value := -1) -> bool:
+	# Compatibility entry point: the normal expedition now owns this profile.
+	if selected_run_variant != "cards": return false
+	_cards_departure_selection = selection.duplicate(true)
+	_cards_departure_selection["deck_selected"] = true
+	return start_expedition(seed_value, {}, false, true, "normal", true)
+
+
 func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {}, challenges_enabled := false, prepare_loadout := false, difficulty_id: String = "normal", cards_mode := false) -> bool:
 	var departure_selection := _cards_departure_selection.duplicate(true)
 	if cards_mode and not prepare_loadout: return false
-	if cards_mode and departure_selection.get("deck_selected", false) and not preload("res://core/expedition/class_card_catalog.gd").valid_departure(departure_selection): return false
+	var consumable: bool = cards_mode and (departure_selection.is_empty() or departure_selection.get("ruleset_id") == preload("res://core/expedition/consumable_card_catalog.gd").RULESET)
+	if consumable and departure_selection.is_empty():
+		departure_selection = preload("res://core/expedition/consumable_card_catalog.gd").preset()
+		departure_selection.difficulty_id = difficulty_id
+	if consumable:
+		departure_selection.deck_selected = true
+	if cards_mode and departure_selection.get("deck_selected", false):
+		if not (preload("res://core/expedition/consumable_card_catalog.gd").valid_departure(departure_selection) if consumable else preload("res://core/expedition/class_card_catalog.gd").valid_departure(departure_selection)): return false
 	if difficulty_id not in ["normal", "easy"] or not RunHeroVisualVariants.validation_errors(hero_visual_variants).is_empty():
 		return false
 	var variant := "cards" if cards_mode else "classic"
 	var variant_path := ExpeditionSaveService.CARDS_SAVE_PATH if cards_mode else ExpeditionSaveService.SAVE_PATH
-	if expedition_save_path in [ExpeditionSaveService.SAVE_PATH, ExpeditionSaveService.CARDS_SAVE_PATH] and expedition_save_path != variant_path:
+	if expedition_save_path in [ExpeditionSaveService.SAVE_PATH, ExpeditionSaveService.CARDS_SAVE_PATH, preload("res://core/expedition/consumable_cards_profile.gd").SAVE_PATH] and expedition_save_path != variant_path:
 		if not select_run_variant(variant): return false
 	var fingerprint := _current_replacement_fingerprint()
 	if _has_expedition_to_replace() and _replacement_consent != fingerprint:
@@ -2322,7 +2356,7 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 		var random := RandomNumberGenerator.new()
 		random.randomize()
 		seed_value = int(random.randi()) & 0x7fffffff
-	var data := ExpeditionRunFactory.create(seed_value & 0x7fffffff, hero_visual_variants)
+	var data := ExpeditionRunFactory.create(seed_value & 0x7fffffff, hero_visual_variants, consumable)
 	var resolution := resolve_run_hero_data(data, false)
 	if not resolution.is_valid() or not _prepare_preconfigured_run(data, resolution.heroes):
 		return false
@@ -2331,12 +2365,12 @@ func start_expedition(seed_value: int = -1, hero_visual_variants: Dictionary = {
 	expedition.initialize(get_character_state(&"achilles"), run_seed, difficulty_id)
 	selected_run_variant = variant
 	if cards_mode:
-		expedition.cards = preload("res://core/expedition/class_cards.gd").new() if departure_selection.has("class_id") else CatabaseCards.new()
-		expedition.build.class_mode = expedition.cards.rules_revision == 3
+		expedition.cards = preload("res://core/expedition/consumable_cards_state.gd").new() if consumable else (preload("res://core/expedition/class_cards.gd").new() if departure_selection.has("class_id") else CatabaseCards.new())
+		expedition.build.class_mode = expedition.cards.rules_revision in [3, 4]
 		expedition.cards.bind(expedition)
 		expedition.card_inventory = run_inventory
 	CatabasePreparationCatalog.contextualize_item_descriptions(item_catalog, expedition.route.get_balance_revision())
-	expedition.challenges.enabled = challenges_enabled
+	expedition.challenges.enabled = challenges_enabled and not consumable
 	last_restore_error = &""
 	if prepare_loadout:
 		expedition.needs_preparation = true
@@ -2501,8 +2535,18 @@ func choose_expedition_capacity(option: String) -> Dictionary:
 func get_expedition_snapshot() -> Dictionary:
 	if expedition == null or not run_active or _combat_report_tracker.is_active():
 		return {}
+	return _make_expedition_snapshot()
+
+
+func _make_expedition_snapshot() -> Dictionary:
 	var state := expedition.character
 	return {"version": 2, "mode": "catabase_route", "hero_visual_variants": _active_run_data.hero_visual_variants.duplicate(), "session": expedition.to_snapshot(), "inventory": run_inventory.to_snapshot(), "equipment": state.equipment_loadout.to_snapshot(), "progression": state.get_progression_snapshot(), "current_hp": state.unit.current_hp}
+
+
+func commit_consumable_combat_checkpoint() -> bool:
+	if expedition == null or not expedition.uses_consumable_cards() or expedition.route.phase != "combat" or expedition.combat_checkpoint.is_empty(): return false
+	_expedition_boundary_snapshot = _make_expedition_snapshot()
+	return save_expedition()
 
 
 func _uses_card_ecosystem() -> bool:

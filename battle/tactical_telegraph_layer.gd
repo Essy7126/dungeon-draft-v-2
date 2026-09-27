@@ -183,6 +183,14 @@ func _draw() -> void:
 		var center := _cell_center(cell)
 		var source := _cell_center(caster.grid_pos)
 		draw_line(source, center, color, 5.0, true)
+		# Consumable boss lines announce every threatened cell on the same layer.
+		for extra_cell in payload.get("cells", []):
+			if extra_cell == cell: continue
+			var extra_center := _cell_center(extra_cell)
+			draw_circle(extra_center, 25.0, Color(color, 0.2))
+			draw_arc(extra_center, 25.0, 0.0, TAU, 28, color, 4.0, true)
+			draw_line(extra_center + Vector2(-12, -12), extra_center + Vector2(12, 12), color, 4.0)
+			draw_line(extra_center + Vector2(12, -12), extra_center + Vector2(-12, 12), color, 4.0)
 		if spell.is_summon():
 			draw_circle(center, 27.0, Color(color, 0.22))
 			draw_arc(center, 27.0, 0.0, TAU, 32, color, 4.0, true)

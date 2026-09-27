@@ -50,6 +50,10 @@ class DamageResult:
 # ============================================================
 
 class HitContext:
+	# Explicit, opt-in ruleset. No change to historical integer/mitigation paths.
+	var damage_ruleset: String = ""
+	var raw_payload: float = -1.0
+	var parry_payload: float = 0.0
 	var attacker = null                       # Unit ou null (terrain)
 	var raw_damage: int = 0                    # dégâts avant mitigation
 	var category: int = Spell.DamageType.PHYSICAL
@@ -99,6 +103,11 @@ static func compute(defender, ctx: HitContext) -> DamageResult:
 	var result := DamageResult.new(ctx.raw_damage)
 	result.category = ctx.category
 	result.element = ctx.element
+	if ctx.damage_ruleset == "catabase_cards_consumable_v2":
+		var raw := ctx.raw_payload if ctx.raw_payload >= 0.0 else float(ctx.raw_damage)
+		var resistance := _get_category_defense(defender, ctx.category) / 100.0
+		result.amount = preload("res://core/expedition/consumable_card_math.gd").damage(raw, resistance, ctx.ignore_defense, ctx.parry_payload)
+		return result
 
 	# Rien à faire si pas de dégâts bruts.
 	if ctx.raw_damage <= 0:

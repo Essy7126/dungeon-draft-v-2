@@ -36,6 +36,7 @@ var _painted_visual_scale := 1.0
 var _painted_readability_enabled := false
 var _runtime_signals_connected := false
 
+
 func setup(p_unit: Unit, connect_runtime_signals := true) -> void:
 	unit = p_unit
 	add_to_group("unit_views")
@@ -92,8 +93,8 @@ func cancel_pending_visual_actions() -> void:
 
 func _is_async_context_valid(generation: int) -> bool:
 	return generation == _lifecycle_generation \
-		and not _closing \
-		and is_inside_tree()
+			and not _closing \
+			and is_inside_tree()
 
 
 func _wait_one_safe_process_frame(generation: int) -> bool:
@@ -148,11 +149,9 @@ func _disconnect_optional_visual_waits() -> void:
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_signal("animation_finished") \
 			and _optional_visual.animation_finished.is_connected(
-				_on_optional_visual_action_finished
-			):
-		_optional_visual.animation_finished.disconnect(
-			_on_optional_visual_action_finished
-		)
+		_on_optional_visual_action_finished
+	):
+		_optional_visual.animation_finished.disconnect(_on_optional_visual_action_finished)
 
 
 func _disconnect_runtime_signals() -> void:
@@ -188,6 +187,7 @@ func _disconnect_runtime_signals() -> void:
 		if connection[0].is_connected(connection[1]):
 			connection[0].disconnect(connection[1])
 
+
 func _build_visual() -> void:
 	_sprite = AnimatedSprite2D.new()
 	if unit.sprite_frames != null:
@@ -203,7 +203,11 @@ func _build_visual() -> void:
 	_hp_bar = _make_bar(Vector2(UNIT_SIZE, 6), Vector2(-UNIT_SIZE / 2.0, -45), Color(0.3, 0.8, 0.3))
 	add_child(_hp_bar)
 
-	_shield_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, -51), Color(1.0, 0.82, 0.30))
+	_shield_bar = _make_bar(
+		Vector2(UNIT_SIZE, 4),
+		Vector2(-UNIT_SIZE / 2.0, -51),
+		Color(1.0, 0.82, 0.30),
+	)
 	_shield_bar.visible = false
 	add_child(_shield_bar)
 
@@ -214,12 +218,16 @@ func _build_visual() -> void:
 
 	_instantiate_optional_visual()
 
+
 func _instantiate_optional_visual() -> void:
 	if unit.visual_scene == null:
 		return
 	var candidate := unit.visual_scene.instantiate()
 	if not candidate is Node2D:
-		push_warning("UnitView: la scene visuelle optionnelle de %s doit avoir une racine Node2D." % unit.unit_name)
+		push_warning(
+			"UnitView: la scene visuelle optionnelle de %s doit avoir une racine Node2D."
+			% unit.unit_name
+		)
 		candidate.queue_free()
 		return
 	_optional_visual = candidate as Node2D
@@ -232,6 +240,7 @@ func _instantiate_optional_visual() -> void:
 		_optional_visual.bind_unit(unit)
 	if _optional_visual.has_signal("animation_finished"):
 		_optional_visual.animation_finished.connect(_on_optional_visual_action_finished)
+
 
 func has_optional_visual() -> bool:
 	return is_instance_valid(_optional_visual)
@@ -269,14 +278,15 @@ func synchronize_external_movement() -> void:
 ## Ne touche qu'au rendu enfant. La position, l'echelle historique et l'ordre
 ## Y-sort de la racine UnitView restent strictement inchanges.
 func apply_painted_presentation(
-		profile: BattlePresentationProfile,
-		apply_visual_scale: bool = true,
-		apply_readability: bool = true
-	) -> void:
+	profile: BattlePresentationProfile,
+	apply_visual_scale: bool = true,
+	apply_readability: bool = true,
+) -> void:
 	_painted_presentation = profile
 	_painted_family_profile = (
 		profile.profile_for_unit(unit.unit_id)
-		if profile != null and unit != null else null
+		if profile != null and unit != null
+		else null
 	)
 	# Room overrides stay authoritative. A visual may opt in to a family default
 	# so newly authored rooms preserve its proportions without copying profiles.
@@ -288,15 +298,15 @@ func apply_painted_presentation(
 			_painted_family_profile = fallback
 	_painted_visual_scale = (
 		_painted_family_profile.final_visual_scale(profile.global_unit_scale_multiplier)
-		if apply_visual_scale and profile != null and _painted_family_profile != null else 1.0
+		if apply_visual_scale and profile != null and _painted_family_profile != null
+		else 1.0
 	)
 	_painted_readability_enabled = apply_readability and profile != null
 	if is_instance_valid(_optional_visual):
 		_optional_visual.scale = _painted_optional_base_scale * _painted_visual_scale
 		_apply_optional_readability()
 	var optional_owns_readability := (
-		_painted_readability_enabled
-		and is_instance_valid(_optional_visual)
+		_painted_readability_enabled and is_instance_valid(_optional_visual)
 		and _optional_visual.has_method("set_painted_readability")
 	)
 	for child in get_children():
@@ -326,9 +336,11 @@ func _apply_optional_readability() -> void:
 	if _painted_presentation != null:
 		outline_color = (
 			_painted_presentation.active_outline_color
-			if _is_active else (
+			if _is_active
+			else (
 				_painted_presentation.ally_outline_color
-				if unit.team == 0 else _painted_presentation.enemy_outline_color
+				if unit.team == 0
+				else _painted_presentation.enemy_outline_color
 			)
 		)
 	if _painted_family_profile != null:
@@ -340,8 +352,9 @@ func _apply_optional_readability() -> void:
 		_painted_presentation.outline_width_px if _painted_presentation != null else 0.0,
 		_painted_presentation.contact_shadows_enabled if _painted_presentation != null else false,
 		shadow_scale,
-		shadow_opacity
+		shadow_opacity,
 	)
+
 
 func get_cast_effect_origin_global() -> Vector2:
 	if is_instance_valid(_optional_visual) \
@@ -373,13 +386,14 @@ func wait_for_transformation_visual_finished(timeout_seconds := 5.0) -> bool:
 			return false
 	return false
 
+
 ## Synchronisation visuelle seulement : le calcul du sort reste dans
 ## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
 func prepare_spell_visual(
-		target_cell: Vector2i,
-		spell: Spell = null,
-		release_timeout_msec: int = 5000
-	) -> bool:
+	target_cell: Vector2i,
+	spell: Spell = null,
+	release_timeout_msec: int = 5000,
+) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
 		return false
 	if not await wait_for_transformation_visual_finished():
@@ -398,7 +412,7 @@ func prepare_spell_visual(
 	_optional_visual_cast_generation += 1
 	var cast_generation := _optional_visual_cast_generation
 	var lifecycle_generation := _lifecycle_generation
-	var release_state := {"released": false}
+	var release_state := { "released": false }
 	var mark_released := func() -> void:
 		if cast_generation == _optional_visual_cast_generation \
 				and not _closing:
@@ -408,10 +422,10 @@ func prepare_spell_visual(
 	# play_* lui-meme. Brancher apres le demarrage perdrait alors le signal et
 	# garderait tout le combat verrouille jusqu'au watchdog.
 	if has_release_signal:
-		_optional_visual.connect(
-			"cast_release_reached", mark_released, CONNECT_ONE_SHOT
-		)
+		_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
 		_active_release_callables.append(mark_released)
+	if _optional_visual.has_method("set_spell_target_context"):
+		_optional_visual.set_spell_target_context(target_cell, spell)
 	var started = (
 		_optional_visual.play_spell_action(spell)
 		if has_spell_action
@@ -427,36 +441,45 @@ func prepare_spell_visual(
 		_optional_visual_action_pending = false
 		return true
 	var deadline := Time.get_ticks_msec() + maxi(release_timeout_msec, 1)
-	while cast_generation == _optional_visual_cast_generation \
-			and not release_state["released"] \
-			and is_instance_valid(unit) and unit.is_alive \
+	while (
+		cast_generation == _optional_visual_cast_generation \
+				and not release_state["released"] \
+				and is_instance_valid(unit)
+		and unit.is_alive
+	) \
 			and is_instance_valid(_optional_visual) \
 			and Time.get_ticks_msec() < deadline:
 		if not await _wait_one_safe_process_frame(lifecycle_generation):
 			break
 	_disconnect_release_callable(mark_released)
 	var context_active := _is_async_context_valid(lifecycle_generation) \
-		and cast_generation == _optional_visual_cast_generation
+			and cast_generation == _optional_visual_cast_generation
 	if context_active:
 		_optional_visual_cast_pending = false
-	if context_active and not release_state["released"] \
-			and is_instance_valid(unit) and unit.is_alive \
+	if (
+		context_active and not release_state["released"] \
+				and is_instance_valid(unit)
+		and unit.is_alive
+	) \
 			and Time.get_ticks_msec() >= deadline:
-		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule." % unit.unit_name)
+		push_warning(
+			"UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule."
+			% unit.unit_name
+		)
 	if context_active and not release_state["released"]:
 		cancel_pending_visual_actions()
 		return false
-	return context_active \
-		and is_instance_valid(unit) and unit.is_alive \
-		and release_state["released"]
+	return (
+		context_active \
+				and is_instance_valid(unit)
+		and unit.is_alive
+	) \
+			and release_state["released"]
 
 
 ## Joue l'attaque jusqu'a son impact artistique. Les degats restent entierement
 ## dans le systeme de combat et ne sont appliques qu'apres le retour true.
-func prepare_basic_attack_visual(
-		target_cell: Vector2i,
-		release_timeout_msec: int = 5000
-	) -> bool:
+func prepare_basic_attack_visual(target_cell: Vector2i, release_timeout_msec: int = 5000) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
 		return false
 	if not await wait_for_transformation_visual_finished():
@@ -473,16 +496,14 @@ func prepare_basic_attack_visual(
 	_optional_visual_cast_generation += 1
 	var cast_generation := _optional_visual_cast_generation
 	var lifecycle_generation := _lifecycle_generation
-	var release_state := {"released": false}
+	var release_state := { "released": false }
 	var mark_released := func() -> void:
 		if cast_generation == _optional_visual_cast_generation \
 				and not _closing:
 			release_state["released"] = true
 	var has_release_signal := _optional_visual.has_signal("cast_release_reached")
 	if has_release_signal:
-		_optional_visual.connect(
-			"cast_release_reached", mark_released, CONNECT_ONE_SHOT
-		)
+		_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
 		_active_release_callables.append(mark_released)
 	var started = _optional_visual.play_basic_attack()
 	if started is bool and not started:
@@ -495,28 +516,40 @@ func prepare_basic_attack_visual(
 		_optional_visual_action_pending = false
 		return true
 	var deadline := Time.get_ticks_msec() + maxi(release_timeout_msec, 1)
-	while cast_generation == _optional_visual_cast_generation \
-			and not release_state["released"] \
-			and is_instance_valid(unit) and unit.is_alive \
+	while (
+		cast_generation == _optional_visual_cast_generation \
+				and not release_state["released"] \
+				and is_instance_valid(unit)
+		and unit.is_alive
+	) \
 			and is_instance_valid(_optional_visual) \
 			and Time.get_ticks_msec() < deadline:
 		if not await _wait_one_safe_process_frame(lifecycle_generation):
 			break
 	_disconnect_release_callable(mark_released)
 	var context_active := _is_async_context_valid(lifecycle_generation) \
-		and cast_generation == _optional_visual_cast_generation
+			and cast_generation == _optional_visual_cast_generation
 	if context_active:
 		_optional_visual_cast_pending = false
-	if context_active and not release_state["released"] \
-			and is_instance_valid(unit) and unit.is_alive \
+	if (
+		context_active and not release_state["released"] \
+				and is_instance_valid(unit)
+		and unit.is_alive
+	) \
 			and Time.get_ticks_msec() >= deadline:
-		push_warning("UnitView: impact d'attaque absent apres 5 s pour %s; l'action visuelle est annulee." % unit.unit_name)
+		push_warning(
+			"UnitView: impact d'attaque absent apres 5 s pour %s; l'action visuelle est annulee."
+			% unit.unit_name
+		)
 	if context_active and not release_state["released"]:
 		cancel_pending_visual_actions()
 		return false
-	var released: bool = context_active \
-		and is_instance_valid(unit) and unit.is_alive \
-		and release_state["released"]
+	var released: bool = (
+		context_active \
+				and is_instance_valid(unit)
+		and unit.is_alive
+	) \
+			and release_state["released"]
 	if released:
 		_suppress_next_attack_event_visual = true
 	return released
@@ -557,6 +590,7 @@ func _on_optional_visual_action_finished(_animation_name: StringName) -> void:
 	if _optional_visual_action_pending:
 		_optional_visual_action_finished = true
 
+
 func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 	var bar := ProgressBar.new()
 	bar.size = size
@@ -571,9 +605,11 @@ func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 	bar.add_theme_stylebox_override("fill", fill)
 	return bar
 
+
 func _update_all_bars() -> void:
 	_update_hp_bar()
 	_update_shield_bar()
+
 
 func _update_hp_bar() -> void:
 	if _hp_bar == null:
@@ -592,6 +628,7 @@ func _update_hp_bar() -> void:
 	style.bg_color = bar_color
 	_hp_bar.add_theme_stylebox_override("fill", style)
 
+
 func _update_shield_bar() -> void:
 	if _shield_bar == null:
 		return
@@ -602,13 +639,14 @@ func _update_shield_bar() -> void:
 		_shield_bar.value = shield
 	queue_redraw()
 
+
 func _update_status_icons() -> void:
 	if _status_row == null:
 		return
 	for child in _status_row.get_children():
 		_status_row.remove_child(child)
 		child.queue_free()
-	for entry in unit.get_active_statuses():
+	for entry in preload("res://ui/expedition/consumable_cards_presenter.gd").status_entries(unit):
 		var data: StatusData = entry.get("data")
 		if data == null:
 			continue
@@ -620,15 +658,23 @@ func _update_status_icons() -> void:
 		chip.add_theme_color_override("font_color", Color.WHITE)
 		chip.modulate = data.color
 		chip.mouse_filter = Control.MOUSE_FILTER_STOP
-		chip.tooltip_text = "%s (%d tour(s))" % [data.status_name, int(entry.get("remaining", data.duration))]
-		chip.mouse_entered.connect(func(): _show_status_tooltip(data))
+		chip.tooltip_text = "%s (%d tour(s))" % [
+			data.status_name,
+			int(entry.get("remaining", data.duration)),
+		]
+		chip.mouse_entered.connect(
+			func():
+				_show_status_tooltip(data),
+		)
 		chip.mouse_exited.connect(_hide_keyword_tooltip)
 		_status_row.add_child(chip)
+
 
 func set_active(active: bool) -> void:
 	_is_active = active
 	_apply_optional_readability()
 	queue_redraw()
+
 
 ## Applique un materiau lumiere (golden hour) aux visuels du perso pour qu'il se
 ## fonde dans le decor. Parcourt TOUT le sous-arbre et vise les sprites
@@ -651,7 +697,7 @@ const _VISUAL_3D_WARM := Color(1.0, 0.95, 0.82)
 func _use_parent_light_recursive(node: Node) -> void:
 	for child in node.get_children():
 		if child.is_in_group("iso_ground_shadow"):
-			continue  # l'ombre au sol conserve son propre rendu
+			continue # l'ombre au sol conserve son propre rendu
 		if child.is_in_group("optional_unit_visuals"):
 			# Visuel 3D (elfe/mage) : le shader canvas cree des artefacts sur le
 			# rendu SubViewport. On ne l'y applique PAS ; teinte chaude via
@@ -663,6 +709,7 @@ func _use_parent_light_recursive(node: Node) -> void:
 			(child as CanvasItem).use_parent_material = true
 		_use_parent_light_recursive(child)
 
+
 func face_direction(from: Vector2, to: Vector2) -> void:
 	if _sprite == null:
 		return
@@ -670,10 +717,11 @@ func face_direction(from: Vector2, to: Vector2) -> void:
 	var dy := to.y - from.y
 	var row: int
 	if abs(dx) >= abs(dy):
-		row = 2 if dx >= 0.0 else 6  # E ou O
+		row = 2 if dx >= 0.0 else 6 # E ou O
 	else:
-		row = 0 if dy >= 0.0 else 4  # S ou N
+		row = 0 if dy >= 0.0 else 4 # S ou N
 	_set_facing_row(row)
+
 
 ## Oriente les sprites depuis la direction logique de GridData. Cette API ne
 ## depend pas de la projection a l'ecran et reste donc stable en isometrique.
@@ -686,10 +734,11 @@ func face_grid_direction(direction: Vector2i) -> void:
 		return
 	var row: int
 	if abs(direction.x) >= abs(direction.y):
-		row = 2 if direction.x >= 0 else 6  # +X / -X
+		row = 2 if direction.x >= 0 else 6 # +X / -X
 	else:
-		row = 0 if direction.y >= 0 else 4  # +Y / -Y
+		row = 0 if direction.y >= 0 else 4 # +Y / -Y
 	_set_facing_row(row)
+
 
 func _set_facing_row(row: int) -> void:
 	if _facing_row == row or _sprite == null or _sprite.sprite_frames == null:
@@ -709,16 +758,24 @@ func _set_facing_row(row: int) -> void:
 			# N'applique que si le spritesheet a assez de rangées
 			if tex.atlas.get_height() < (row + 1) * frame_h:
 				continue
-			tex.region = Rect2(tex.region.position.x, float(row * frame_h), tex.region.size.x, tex.region.size.y)
+			tex.region = Rect2(
+				tex.region.position.x,
+				float(row * frame_h),
+				tex.region.size.x,
+				tex.region.size.y,
+			)
+
 
 func _on_hp_changed(_unit: Unit) -> void:
 	_update_hp_bar()
+
 
 func _play_anim(anim_name: String) -> void:
 	if _sprite == null or unit.sprite_frames == null:
 		return
 	if anim_name in unit.sprite_frames.get_animation_names():
 		_sprite.play(anim_name)
+
 
 func _play_idle() -> void:
 	if is_instance_valid(_optional_visual) and _optional_visual.has_method("play_idle"):
@@ -744,7 +801,8 @@ func get_movement_segment_duration(path: Array) -> float:
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("get_movement_segment_duration"):
 		var custom_duration: Variant = _optional_visual.call(
-			"get_movement_segment_duration", path.duplicate()
+			"get_movement_segment_duration",
+			path.duplicate(),
 		)
 		if custom_duration is float or custom_duration is int:
 			var duration := float(custom_duration)
@@ -753,11 +811,7 @@ func get_movement_segment_duration(path: Array) -> float:
 	return MovementTiming.MOVE_SEGMENT_DURATION
 
 
-func _begin_movement_feedback(
-		from_cell: Vector2i,
-		to_cell: Vector2i,
-		path: Array
-	) -> void:
+func _begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i, path: Array) -> void:
 	face_grid_direction(to_cell - from_cell)
 	_play_anim("walk")
 	if not is_instance_valid(_optional_visual):
@@ -775,6 +829,7 @@ func update_movement_stride(step_index: int, progress: float) -> void:
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("update_movement_stride"):
 		_optional_visual.update_movement_stride(step_index, progress)
+
 
 func end_movement_feedback() -> void:
 	var optional_handles_idle := false
@@ -795,6 +850,7 @@ func end_movement_feedback() -> void:
 func _on_unit_moved(_from: Vector2i, _to: Vector2i) -> void:
 	_play_anim("walk")
 
+
 func _on_attack_performed(attacker, _target) -> void:
 	if attacker != unit:
 		return
@@ -805,18 +861,24 @@ func _on_attack_performed(attacker, _target) -> void:
 		_optional_visual.play_basic_attack()
 	_play_anim("attack")
 
+
 func _on_any_turn_started(_u) -> void:
 	_play_idle()
+
 
 func _on_died(_unit: Unit) -> void:
 	cancel_pending_visual_actions()
 	var lifecycle_generation := _lifecycle_generation
 	if is_instance_valid(_optional_visual):
 		if not _optional_visual.has_signal("death_animation_finished"):
-			push_warning("UnitView: visuel optionnel sans death_animation_finished pour %s; il reste affiche." % unit.unit_name)
+			push_warning(
+				"UnitView: visuel optionnel sans death_animation_finished pour %s; il reste affiche."
+				% unit.unit_name
+			)
 			return
-		var death_state := {"finished": false}
-		var mark_finished := func() -> void: death_state["finished"] = true
+		var death_state := { "finished": false }
+		var mark_finished := func() -> void:
+			death_state["finished"] = true
 		_optional_visual.connect("death_animation_finished", mark_finished, CONNECT_ONE_SHOT)
 		_active_death_callables.append(mark_finished)
 		var deadline := Time.get_ticks_msec() + 8000
@@ -829,7 +891,10 @@ func _on_died(_unit: Unit) -> void:
 		if death_state["finished"]:
 			queue_free()
 		elif Time.get_ticks_msec() >= deadline:
-			push_warning("UnitView: Death n'a pas termine en 8 s pour %s; le visuel est conserve." % unit.unit_name)
+			push_warning(
+				"UnitView: Death n'a pas termine en 8 s pour %s; le visuel est conserve."
+				% unit.unit_name
+			)
 		return
 	if _sprite != null and unit.sprite_frames != null \
 			and "death" in unit.sprite_frames.get_animation_names():
@@ -838,18 +903,22 @@ func _on_died(_unit: Unit) -> void:
 	if _is_async_context_valid(lifecycle_generation):
 		queue_free()
 
+
 func _on_shield_changed(u: Unit) -> void:
 	if u != unit:
 		return
 	_update_shield_bar()
 
+
 func _on_stats_changed(_unit: Unit) -> void:
 	_update_all_bars()
 	_update_status_icons()
 
+
 func _on_status_changed(u: Unit, _status_data) -> void:
 	if u == unit:
 		_update_status_icons()
+
 
 func _on_status_expired(u: Unit, _status_id: StringName) -> void:
 	if u == unit:
@@ -860,17 +929,21 @@ func _on_status_removed(u: Unit, _status_id: StringName, _source) -> void:
 	if u == unit:
 		_update_status_icons()
 
-func _on_damage_dealt(target, _attacker, amount: int, _category: int, _element: int, _is_crit: bool) -> void:
+
+func _on_damage_dealt(
+	target,
+	_attacker,
+	amount: int,
+	_category: int,
+	_element: int,
+	_is_crit: bool,
+) -> void:
 	if target != unit:
 		return
 	_flash(Color(1.0, 0.35, 0.28), 0.14)
 
 
-func _on_lethal_hit_resolved(
-		target,
-		_attacker,
-		origin_cell: Vector2i
-	) -> void:
+func _on_lethal_hit_resolved(target, _attacker, origin_cell: Vector2i) -> void:
 	if target != unit or unit == null:
 		return
 	var direction := origin_cell - unit.grid_pos
@@ -879,25 +952,30 @@ func _on_lethal_hit_resolved(
 	unit.facing_dir = unit._snap_to_cardinal(direction)
 	face_grid_direction(direction)
 
+
 func _on_unit_healed(u: Unit, amount: int) -> void:
 	if u != unit or amount <= 0:
 		return
 	_flash(Color(0.42, 1.0, 0.52), 0.16)
+
 
 func _on_shield_gained(u: Unit, amount: int) -> void:
 	if u != unit:
 		return
 	_flash(Color(0.95, 0.78, 0.24), 0.18)
 
+
 func _on_shield_absorbed(u: Unit, amount: int) -> void:
 	if u != unit:
 		return
 	_flash(Color(0.4, 0.65, 1.0), 0.15)
 
+
 func _on_shield_broken(u: Unit) -> void:
 	if u != unit:
 		return
 	_flash(Color(1.0, 0.45, 0.1), 0.25)
+
 
 func _flash(color: Color, duration: float) -> void:
 	_restore_active_flash()
@@ -920,10 +998,11 @@ func _flash(color: Color, duration: float) -> void:
 		maxf(duration, 0.0),
 	)
 	var active_tween := _flash_tween
-	active_tween.finished.connect(func() -> void:
-		if _flash_tween == active_tween:
-			_flash_tween = null
-			_flash_target = null
+	active_tween.finished.connect(
+		func() -> void:
+			if _flash_tween == active_tween:
+				_flash_tween = null
+				_flash_target = null,
 	)
 
 
@@ -937,6 +1016,7 @@ func _restore_active_flash() -> void:
 	if is_instance_valid(active_target):
 		active_target.self_modulate = _flash_restore_self_modulate
 
+
 func _show_status_tooltip(status_data: StatusData) -> void:
 	var layer = _tooltip_layer()
 	if layer == null or status_data == null:
@@ -945,23 +1025,40 @@ func _show_status_tooltip(status_data: StatusData) -> void:
 	if id != "":
 		layer.show_keyword(id, get_viewport().get_mouse_position())
 	else:
-		layer.show_text(status_data.status_name, status_data.description, get_viewport().get_mouse_position())
+		layer.show_text(
+			status_data.status_name,
+			status_data.description,
+			get_viewport().get_mouse_position(),
+		)
+
 
 func _hide_keyword_tooltip() -> void:
 	var layer = _tooltip_layer()
 	if layer != null:
 		layer.request_hide()
 
+
 func _tooltip_layer():
 	if get_tree() == null:
 		return null
 	return get_tree().get_first_node_in_group("keyword_tooltip_layer")
 
+
 func _draw() -> void:
 	if unit != null and unit.current_shield > 0:
-		var ratio := float(unit.current_shield) / float(max(unit.current_shield, unit.max_hp.get_int()))
+		var ratio := float(unit.current_shield) / float(
+			max(unit.current_shield, unit.max_hp.get_int())
+		)
 		var arc_end := TAU * ratio
-		draw_arc(Vector2.ZERO, UNIT_SIZE * 0.82, -PI / 2.0, -PI / 2.0 + arc_end, 32, Color(0.35, 0.65, 1.0, 0.75), 4.0)
+		draw_arc(
+			Vector2.ZERO,
+			UNIT_SIZE * 0.82,
+			-PI / 2.0,
+			-PI / 2.0 + arc_end,
+			32,
+			Color(0.35, 0.65, 1.0, 0.75),
+			4.0,
+		)
 	if _is_active:
 		# Si une ombre skewee epouse la case (salles iso), on cale la surbrillance
 		# d'unite active dessus : meme forme, meme taille, meme inclinaison que la
@@ -972,11 +1069,15 @@ func _draw() -> void:
 			outline.append(footprint[0])
 			draw_polyline(outline, Color(1.0, 0.9, 0.2, 0.9), 2.0, true)
 		elif has_optional_visual():
-			var diamond := PackedVector2Array([
-				Vector2(0.0, -16.0), Vector2(32.0, 0.0),
-				Vector2(0.0, 16.0), Vector2(-32.0, 0.0),
-				Vector2(0.0, -16.0),
-			])
+			var diamond := PackedVector2Array(
+				[
+					Vector2(0.0, -16.0),
+					Vector2(32.0, 0.0),
+					Vector2(0.0, 16.0),
+					Vector2(-32.0, 0.0),
+					Vector2(0.0, -16.0),
+				]
+			)
 			draw_polyline(diamond, Color(1.0, 0.9, 0.2, 0.62), 1.5, true)
 		else:
 			draw_arc(Vector2.ZERO, UNIT_SIZE * 0.75, 0, TAU, 32, Color(1.0, 0.9, 0.2), 3.0)

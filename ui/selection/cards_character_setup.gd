@@ -6,8 +6,7 @@ signal back_requested
 signal refuge_requested
 const PAGE := preload("res://ui/selection/cards_choice_page.gd")
 const PREVIEW := preload("res://ui/characters/CharacterPreview3D.tscn")
-const Catalog := preload("res://core/expedition/class_card_catalog.gd")
-const Starters := preload("res://core/expedition/class_starter_catalog.gd")
+const Catalog := preload("res://ui/selection/consumable_departure_catalog.gd")
 const CardSkin := preload("res://ui/expedition/catabase_card_skin.gd")
 const STEPS := ["Apparence", "Classe", "Cartes", "Difficulté", "Départ"]
 var selection := Catalog.preset()
@@ -29,7 +28,7 @@ var _inspected := ""
 var _drafts: Dictionary = { }
 var _summary: Label
 var _crest: TextureRect
-var _deck_strip: HBoxContainer
+var _deck_strip: HFlowContainer
 var _facing := 2
 var _pose := "idle"
 var _pose_buttons: Array[Button] = []
@@ -88,8 +87,12 @@ func configure(value: Array[Dictionary]) -> void:
 	_class_label = PAGE.text(names, "", 16)
 	_preview = PREVIEW.instantiate()
 	_preview.custom_minimum_size = Vector2.ZERO
-	_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stage.add_child(_preview)
+	var pedestal := preload("res://ui/selection/selection_hero_stage.gd").new()
+	pedestal.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	stage.add_child(pedestal)
+	pedestal.add_child(_preview)
+	_preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_preview.offset_bottom = -40
 	_preview.set_showcase_mode(true)
 	var poses := HBoxContainer.new()
 	poses.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -113,8 +116,8 @@ func configure(value: Array[Dictionary]) -> void:
 	summary_panel.add_child(summary_body)
 	PAGE.text(summary_body, "VOTRE DÉPART", 13).modulate = GOLD
 	_summary = PAGE.text(summary_body, "", 15)
-	_deck_strip = HBoxContainer.new()
-	_deck_strip.alignment = BoxContainer.ALIGNMENT_CENTER
+	_deck_strip = HFlowContainer.new()
+	_deck_strip.alignment = FlowContainer.ALIGNMENT_CENTER
 	summary_body.add_child(_deck_strip)
 	status = PAGE.text(root, "", 15)
 	status.name = "CardsSetupStatus"
@@ -192,15 +195,18 @@ func _render() -> void:
 	_class_label.text = Catalog.CLASSES[selection.class_id][0] + "  ·  Niveau 1"
 	_class_label.modulate = _accent()
 	_crest.texture = Catalog.icon(selection.class_id)
-	_summary.text = "%s · %d / 10 cartes\n4 en main · équipement à trouver" % ["Difficulté normale" if difficulty == "normal" else "Difficulté facile", selection.card_families.size() * 2]
+	_summary.text = "%s · %d / 15 copies\n5 en main · chaque carte jouée est consommée" % ["Difficulté normale" if difficulty == "normal" else "Difficulté facile", selection.card_families.size()]
 	for child in _deck_strip.get_children():
 		_deck_strip.remove_child(child)
 		child.queue_free()
+	var displayed := {}
 	for id in selection.card_families:
+		if displayed.has(id): continue
+		displayed[id] = true
 		var card := _art(_deck_strip, Catalog.make_spell(id, 2).icon, 42)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 		var spell := Catalog.make_spell(id, 2)
-		card.tooltip_text = "2 × %s · %d PA · %s\n%s" % [spell.spell_name, spell.ap_cost, _range(spell), spell.description]
+		card.tooltip_text = "%d × %s · %d PA · %s\n%s" % [selection.card_families.count(id), spell.spell_name, spell.ap_cost, _range(spell), spell.description]
 	CardSkin.icon_button(start_button, GOLD)
 	var launch_style := CardSkin.surface(GOLD, true, 10)
 	launch_style.bg_color = Color("315a45")
@@ -228,7 +234,7 @@ func _render() -> void:
 		else "Confirmer · " + STEPS[step + 1] + " →"
 	)
 	start_button.disabled = step >= 2 and not Catalog.valid_departure(selection)
-	status.text = "Choisissez 5 techniques pour continuer (%d / 5)." % selection.card_families.size() if start_button.disabled else "Étape %d / 5  ·  %s  ·  Vos choix restent modifiables avant le départ." % [step + 1, STEPS[step]]
+	status.text = "Choisissez 15 copies pour continuer (%d / 15)." % selection.card_families.size() if start_button.disabled else "Étape %d / 5  ·  %s  ·  Vos choix restent modifiables avant le départ." % [step + 1, STEPS[step]]
 	if step == 1:
 		_render_classes()
 	elif step == 2:
@@ -255,14 +261,14 @@ func _restore_focus(node_name: String) -> void:
 	if control != null and not (control is BaseButton and control.disabled):
 		control.grab_focus()
 	else:
-		get_node_or_null(".").find_child("SetupBack", true, false).grab_focus()
+		find_child("SetupBack", true, false).grab_focus()
 
 
 func _render_classes() -> void:
 	PAGE.text(_page, "Choisir une voie", 27)
 	PAGE.text(
 		_page,
-		"Quatre styles de combat. Chaque classe possède sept cartes d'initiation distinctes.",
+		"Quatre styles de combat. Composez votre départ avec les cartes normales de votre classe et les cartes communes.",
 		16,
 	)
 	var row := HBoxContainer.new()
@@ -296,13 +302,13 @@ func _render_classes() -> void:
 	PAGE.text(body, "À PRENDRE EN COMPTE", 13).modulate = GOLD
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][3], 16)
 	PAGE.text(body, "VOTRE PREMIÈRE COMBINAISON", 13).modulate = _accent()
-	PAGE.text(body, Starters.LOOPS[selection.class_id], 17)
+	PAGE.text(body, _deck_titles(), 17)
 	PAGE.text(body, "ÉVOLUTIONS AU NIVEAU 4", 13).modulate = _accent()
-	for spec in Catalog.SPECS[selection.class_id]:
+	for spec in Catalog.specs(selection.class_id):
 		PAGE.text(body, spec[1] + "  ·  " + spec[2], 15)
 	PAGE.text(
 		body,
-		"L'initiation ne gagne pas de puissance avec la maîtrise. Les cartes trouvées pendant la run ouvriront de nouvelles possibilités.",
+		"Améliorez une famille aux niveaux 4, 8 et 12 : ses copies actuelles et futures en bénéficient.",
 		14,
 	)
 
@@ -325,7 +331,7 @@ func _render_cards() -> void:
 	PAGE.text(_page, "Composer votre deck", 27)
 	PAGE.text(
 		_page,
-		"Choisissez 5 techniques parmi 7. Consultez une carte, puis ajoutez ou retirez ses 2 copies.",
+		"15 copies normales au départ, 3 au plus par famille. Une copie jouée disparaît de la run ; les cartes non jouées reviennent dans la pioche.",
 		15,
 	)
 	var columns := HBoxContainer.new()
@@ -340,7 +346,7 @@ func _render_cards() -> void:
 		var spell := Catalog.make_spell(id, 2)
 		var button := Button.new()
 		button.name = "Starter_" + id
-		button.text = ("✓  " if id in selection.card_families else "+  ") + spell.spell_name + "\n%d PA  ·  %s  ·  %s" % [
+		button.text = ("%d × " % selection.card_families.count(id)) + spell.spell_name + "\n%d PA  ·  %s  ·  %s" % [
 			spell.ap_cost,
 			_range(spell),
 			Catalog.row(id)[9],
@@ -352,7 +358,7 @@ func _render_cards() -> void:
 		button.custom_minimum_size = Vector2(225, 72)
 		button.toggle_mode = true
 		button.button_pressed = _inspected == id
-		button.tooltip_text = "2 copies dans le deck" if id in selection.card_families else "Disponible pour votre deck"
+		button.tooltip_text = "%d copie(s) préparée(s), maximum 3." % selection.card_families.count(id)
 		CardSkin.icon_button(button, _accent())
 		button.pressed.connect(
 			func():
@@ -366,39 +372,35 @@ func _render_cards() -> void:
 	columns.add_child(inspection)
 	var detail := _scroll_body(inspection, "ChoiceImpact")
 	var selected_spell := Catalog.make_spell(_inspected, 2)
-	var art := TextureRect.new()
-	art.texture = selected_spell.icon
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	art.custom_minimum_size = Vector2(100, 100)
-	detail.add_child(art)
-	PAGE.text(detail, Catalog.CLASSES[selection.class_id][0] + "  /  INITIATION", 13).modulate = _accent()
-	PAGE.text(detail, selected_spell.spell_name, 23)
+	var detail_header := HBoxContainer.new()
+	detail_header.add_theme_constant_override("separation", 12)
+	detail.add_child(detail_header)
+	_art(detail_header, selected_spell.icon, 74)
+	var detail_titles := VBoxContainer.new()
+	detail_titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	detail_header.add_child(detail_titles)
+	PAGE.text(detail_titles, Catalog.CLASSES[selection.class_id][0] + " / INITIATION", 13).modulate = _accent()
+	PAGE.text(detail_titles, selected_spell.spell_name, 23)
 	PAGE.text(detail, "%d PA  ·  %s" % [selected_spell.ap_cost, _range(selected_spell)], 18)
-	var actor := Unit.from_data(entries[hero].unit)
-	PAGE.text(
-		detail,
-		preload("res://ui/expedition/class_card_presentation.gd").numbers(selected_spell, actor),
-		18,
-	)
-	PAGE.text(detail, selected_spell.description.split("\n", true, 1)[1], 16)
+	PAGE.text(detail, selected_spell.description, 16)
 	var toggle := Button.new()
 	toggle.name = "ToggleStarter"
 	var included: bool = _inspected in selection.card_families
-	toggle.text = "Retirer ces 2 copies" if included else "Ajouter ces 2 copies"
+	toggle.text = "Ajouter une copie (%d / 3)" % selection.card_families.count(_inspected)
 	toggle.custom_minimum_size.y = 46
-	toggle.disabled = not included and selection.card_families.size() >= 5
+	toggle.disabled = selection.card_families.size() >= 15 or selection.card_families.count(_inspected) >= 3
 	CardSkin.icon_button(toggle, _accent())
 	toggle.pressed.connect(
 		func():
-			if _inspected in selection.card_families:
-				selection.card_families.erase(_inspected)
-			elif selection.card_families.size() < 5:
+			if selection.card_families.size() < 15 and selection.card_families.count(_inspected) < 3:
 				selection.card_families.append(_inspected)
 			_render(),
 	)
 	inspection.add_child(toggle)
-	if not included and selection.card_families.size() >= 5:
+	var remove := _action(inspection, "Retirer une copie", "RemoveStarter")
+	remove.disabled = not included
+	remove.pressed.connect(func(): selection.card_families.erase(_inspected); _render())
+	if not included and selection.card_families.size() >= 15:
 		PAGE.text(
 			inspection,
 			"Deck complet : retirez une technique avant d'en ajouter une autre.",
@@ -422,8 +424,11 @@ func _range(spell: Spell) -> String:
 
 func _deck_titles() -> String:
 	var titles: PackedStringArray = []
+	var seen := {}
 	for id in selection.card_families:
-		titles.append(Catalog.row(id)[2])
+		if seen.has(id): continue
+		seen[id] = true
+		titles.append("%d × %s" % [selection.card_families.count(id), Catalog.row(id)[2]])
 	return "  /  ".join(titles)
 
 
@@ -433,7 +438,7 @@ func _render_review() -> void:
 	PAGE.text(body, "%s · %s" % [entries[hero].display_name, Catalog.CLASSES[selection.class_id][0]], 23).modulate = _accent()
 	PAGE.text(
 		body,
-		"Difficulté %s · 10 cartes · 4 en main"
+		"Difficulté %s · 15 copies · 5 en main"
 		% ("normale" if difficulty == "normal" else "facile"),
 		17,
 	)
@@ -445,7 +450,7 @@ func _render_review() -> void:
 		_art(row, spell.icon, 48)
 		var card_label := PAGE.text(
 			row,
-			"2 × %s  ·  %d PA  ·  %s" % [spell.spell_name, spell.ap_cost, Catalog.row(id)[9]],
+			"%s  ·  %d PA  ·  %s" % [spell.spell_name, spell.ap_cost, Catalog.row(id)[9]],
 			17,
 		)
 		card_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -554,7 +559,7 @@ func _render_appearances() -> void:
 			_render()
 		)
 	PAGE.text(body, entries[hero].display_name, 25).modulate = GOLD
-	PAGE.text(body, entries[hero].description, 17)
+	PAGE.text(body, "Traversez les Enfers avec %s. Vos premiers combats vous apporteront l'équipement et les cartes qui feront évoluer votre façon de jouer." % entries[hero].display_name, 17)
 	PAGE.text(body, "LIBRE DE CHOISIR VOTRE CLASSE", 13).modulate = GOLD
 	PAGE.text(body, "Assassin, Gardien, Arpenteur ou Thaumaturge : chaque apparence peut suivre chacune de ces voies. Ce choix visuel ne modifie pas vos statistiques.", 16)
 

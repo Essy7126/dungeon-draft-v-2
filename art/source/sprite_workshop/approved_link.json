@@ -1,0 +1,108 @@
+{
+	"anchor": [
+		96,
+		96
+	],
+	"animation": "approved_link_E",
+	"baseline": {
+		"anchor": [
+			96,
+			96
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					192,
+					192
+				],
+				"sha256": "eb63af683a7c229159fd5cada3a60ecec3be7592e19ce52fdc3f524772c3c453",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/link/frame_0001.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		192,
+		192
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				192,
+				192
+			],
+			"sha256": "eb63af683a7c229159fd5cada3a60ecec3be7592e19ce52fdc3f524772c3c453",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/link/frame_0001.png"
+		}
+	],
+	"id": "approved_link",
+	"intent": "Production des dessins A/B/C/D validés le 27 septembre. Composant Blender RGBA ; règles et durée portées par les faits de combat.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/approved/provenance.json": "2bb8e21a1065934f1c2284e4f9841faf16f00c598750b03631026910a86f7ea2"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			192,
+			192
+		],
+		"sha256": "eb63af683a7c229159fd5cada3a60ecec3be7592e19ce52fdc3f524772c3c453",
+		"source": "res://artifacts/dev/class_card_vfx/approved/render/link/frame_0001.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/approved/link.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Sorts approuvés — link"
+}

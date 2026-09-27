@@ -9,6 +9,7 @@ Un import interrompu, zéro test ou un rapport absent reste un échec.
 | Lanceur, contexte, sélection des tests | `./dev.ps1 selftest` ; vérifier les résultats et la pagination de `context` |
 | Codex de personnage / sort | `./dev.ps1 test smoke` : seulement deux suites UI, aucun parcours complet |
 | Classes, cartes, deck et VFX Cartes | `./dev.ps1 test cards` ; parcours préparation → combat → bilan → reprise |
+| Copies consommables | `./dev.ps1 test consumable-v2` ; inclus dans `cards`, `catabase` et `all`. `test_consumable_cards_integration.gd` utilise les douze scènes de combat réelles. `./tools/consumable_cards/verify_integration.ps1` capture le parcours intégré ; `capture.tscn` concerne seulement le prototype |
 | Probabilités et transactions des anciennes révisions Cartes | `./dev.ps1 test cards-audit` : simulations statistiques longues, également conservées dans `all` |
 | Expédition, progression, inventaire | `./dev.ps1 test catabase` ; tester reprise, récompenses et sauvegardes antérieures |
 | Monstres | `./dev.ps1 test monsters` ; comportement de combat et lecture des intentions |
@@ -31,6 +32,13 @@ Rencontres et Objets. La liste historique n’est pas une autorisation d’ajout
 un échec et ses entrées manquantes doivent aussi être examinées.
 
 Les tests GUT ne remplacent pas une partie ou une validation visuelle.
+Le parcours automatique V2 affaiblit volontairement les ennemis et rétablit les
+PV entre rencontres pour vérifier les vingt transitions et les reprises. Il ne
+prouve ni la difficulté, ni un taux de victoire. Les résultats du prototype
+sont historiques. L'intégration dans la vraie run est documentée dans
+l'[audit du 27 septembre](../audits/cards_integrated_run_2026-09-27.md) : scènes,
+consommation, victoire, reprise et interfaces existantes. Ses fixtures de
+transactions ne mesurent pas non plus l'équilibrage d'une partie normale.
 `tests/expedition/README.md` décrit les scénarios d’expédition.
 Les captures du lanceur proviennent de la galerie HUD ; elles ne certifient
 pas tout le parcours public. Le workflow `ci.yml` est historique et manuel.

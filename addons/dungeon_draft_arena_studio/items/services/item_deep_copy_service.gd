@@ -6,6 +6,8 @@ extends RefCounted
 func duplicate_definition(source: ItemDefinition) -> ItemDefinition:
 	if source == null:
 		return null
+	if source is ConsumableCardItemDefinition:
+		return source.duplicate(true) as ConsumableCardItemDefinition
 	var copy := ItemDefinition.new()
 	copy.item_id = source.item_id
 	copy.display_name = source.display_name

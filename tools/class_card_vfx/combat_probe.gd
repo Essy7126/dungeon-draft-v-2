@@ -14,6 +14,7 @@ var router: Node
 var ground_layers: Array[Dictionary] = []
 var casts: Array[Dictionary] = []
 var hero_variants: Dictionary = {}
+var hud_enabled := false
 
 
 func _ready() -> void:
@@ -65,7 +66,7 @@ func _run() -> void:
 			"spawn_enemies": true,
 			"deployment_enabled": false,
 			"combat_enabled": false,
-			"hud_enabled": false,
+			"hud_enabled": hud_enabled,
 		},
 	)
 	battle = room.battle_scene.instantiate()

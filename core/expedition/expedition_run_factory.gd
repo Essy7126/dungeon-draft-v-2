@@ -80,7 +80,7 @@ const MONSTER_ELITE_HP := 1.15
 const MONSTER_ELITE_ATTACK := 1.12
 
 
-static func create(seed_value: int, hero_visual_variants: Dictionary = { }) -> RunData:
+static func create(seed_value: int, hero_visual_variants: Dictionary = { }, consumable_cards := false) -> RunData:
 	var source := load(BASE_RUN) as RunData
 	var result := source.duplicate(false) as RunData
 	result.hero_visual_variants = hero_visual_variants.duplicate()
@@ -108,6 +108,8 @@ static func create(seed_value: int, hero_visual_variants: Dictionary = { }) -> R
 		# Only the new tree owns mastery currency. Starting stats and attributes stay canonical.
 		progression.mastery_point_levels = PackedInt32Array()
 		progression.purchased_mastery_cap = 0
+		if consumable_cards:
+			preload("res://core/expedition/consumable_cards_integration.gd").configure_profile(progression)
 		hero.progression_profile.champion_progression_profile = progression
 		result.content_profile.hero_profiles.append(hero)
 	result.economy_profile = source.economy_profile.duplicate(false)

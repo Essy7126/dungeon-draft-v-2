@@ -1,0 +1,868 @@
+{
+	"anchor": [
+		192,
+		212
+	],
+	"animation": "permutation_clasp_front_E",
+	"baseline": {
+		"anchor": [
+			192,
+			212
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b62b348f1527513a440c07d1dc72730d26bb01263aa11883e1def425772b48e8",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "666ace27f054a14eb2c741a685d41a1b953e6674632acf26e3059cf7149954c3",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "9d1345db0a3ec9342d254bc147b65fa08719709289fb564cf011456ef6df2b37",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "d46bfba0cddee320ea96f348fe6cacc666650206b435188d0aade0c6130ccad3",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7bb0b7c32733f192234f83d752f47fb3790fa1f50635b3af2c18a4451f49e239",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f1ced6eb28398f5e10dbd42d7a73ed207d83e4e6ffdeecdac77e1b8624fd73d8",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4124bf16229c7da26cfef7c7b99f00200b56e2e83b969d7d876a283a1d1667cd",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "3ac41733a7233d31452d7b1cbf15c4a439343233fed81ba9554b2a430ff326fc",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "d191937aa00253cf365b93ade6495b20b0fca00c893a2601e3f0936875948b30",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "000328e5d63ec0a2f7309f9e51241e99b5014a0879e23bb7dd1efc7aa6629562",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7e4c4e29d4f9f26d318cd4347f652d3db687d8be5e577c155e2819ce855357ee",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "3f99316981d8b282b2d7e891a869b1094a6b0a56444c99ac94e635e46a3ae160",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0012.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f012",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4cd0f22405a8f6ddd790a971a05e8278ffbd8025f90e69468a33d9df0a52b6fd",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0013.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f013",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6fdfea48e01d09d97f7c659d96cb57b59a7e8abbfde27e090ed5d343aca7afef",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0014.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f014",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6c227eb37026f5af323da9c576a31a5dfa0354114fcbd3d1a7fdceec8017afa9",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0015.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f015",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "890f93c24705d6dcfb7c9ee8b7e3348e7feb0678f3e29a669685a7c17d1be124",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0016.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f016",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "aed64787164cf7cd24bec113978e956b27a8102b5171d5bf0dbc3ff769a496d4",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0017.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f017",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "8c21a1f34e47453e6a66fa455971f445ee16e44e96c04f0315e9c971f76bcd25",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0018.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f018",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "66dccf01f2dbb17ead9cd8d0541bc58c0f0b7f1f6e4f77fbb7efb1c0e89461a8",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0019.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f019",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "67566214e7806f6c45f05660234d21838a82b863a3c0bfc863182045598e624a",
+				"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0020.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b62b348f1527513a440c07d1dc72730d26bb01263aa11883e1def425772b48e8",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "666ace27f054a14eb2c741a685d41a1b953e6674632acf26e3059cf7149954c3",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "9d1345db0a3ec9342d254bc147b65fa08719709289fb564cf011456ef6df2b37",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "d46bfba0cddee320ea96f348fe6cacc666650206b435188d0aade0c6130ccad3",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7bb0b7c32733f192234f83d752f47fb3790fa1f50635b3af2c18a4451f49e239",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f1ced6eb28398f5e10dbd42d7a73ed207d83e4e6ffdeecdac77e1b8624fd73d8",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4124bf16229c7da26cfef7c7b99f00200b56e2e83b969d7d876a283a1d1667cd",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "3ac41733a7233d31452d7b1cbf15c4a439343233fed81ba9554b2a430ff326fc",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "d191937aa00253cf365b93ade6495b20b0fca00c893a2601e3f0936875948b30",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "000328e5d63ec0a2f7309f9e51241e99b5014a0879e23bb7dd1efc7aa6629562",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7e4c4e29d4f9f26d318cd4347f652d3db687d8be5e577c155e2819ce855357ee",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "3f99316981d8b282b2d7e891a869b1094a6b0a56444c99ac94e635e46a3ae160",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0012.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f012",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4cd0f22405a8f6ddd790a971a05e8278ffbd8025f90e69468a33d9df0a52b6fd",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0013.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f013",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6fdfea48e01d09d97f7c659d96cb57b59a7e8abbfde27e090ed5d343aca7afef",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0014.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f014",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6c227eb37026f5af323da9c576a31a5dfa0354114fcbd3d1a7fdceec8017afa9",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0015.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f015",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "890f93c24705d6dcfb7c9ee8b7e3348e7feb0678f3e29a669685a7c17d1be124",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0016.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f016",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "aed64787164cf7cd24bec113978e956b27a8102b5171d5bf0dbc3ff769a496d4",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0017.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f017",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "8c21a1f34e47453e6a66fa455971f445ee16e44e96c04f0315e9c971f76bcd25",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0018.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f018",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "66dccf01f2dbb17ead9cd8d0541bc58c0f0b7f1f6e4f77fbb7efb1c0e89461a8",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0019.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f019",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "67566214e7806f6c45f05660234d21838a82b863a3c0bfc863182045598e624a",
+			"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0020.png"
+		}
+	],
+	"id": "permutation_clasp_front",
+	"intent": "Production de la planche G validée le 27 septembre. Agrafes synchronisées et fente de bascule.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/permutation/provenance.json": "ad35ebbf54b50396afe5947ebe4d523ea46b08e19a3516ac25dd7c3c87e50b80"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "f1ced6eb28398f5e10dbd42d7a73ed207d83e4e6ffdeecdac77e1b8624fd73d8",
+		"source": "res://artifacts/dev/class_card_vfx/permutation/render/clasp_front/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/permutation/clasp_front.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Permutation — clasp_front"
+}

@@ -79,7 +79,7 @@ func _ready() -> void:
 		backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		_cards_setup = preload("res://ui/selection/cards_character_setup.gd").new()
 		add_child(_cards_setup)
-		_cards_setup.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_cards_setup.size = Vector2(1440, 810)
 		_cards_setup.hero_selected.connect(func(index): selected_index = index)
 		_cards_setup.launch_requested.connect(_start_adventure)
 		_cards_setup.back_requested.connect(request_back)
@@ -88,6 +88,8 @@ func _ready() -> void:
 		_preview = _cards_setup._preview
 		start_button = _cards_setup.start_button
 		_status = _cards_setup.status
+		resized.connect(_layout)
+		_layout()
 		return
 	_build_screen()
 	resized.connect(_layout)
@@ -132,6 +134,9 @@ func _build_screen() -> void:
 
 
 func _build_roster() -> void:
+	if not include_archived_adventures:
+		_build_appearance_roster()
+		return
 	_label(_canvas, "Les héros" if include_archived_adventures else "Achille", Rect2(32, 117, 260, 37), 27, TEXT, HEADING)
 	_hero_counter = _label(_canvas, "", Rect2(241, 125, 91, 25), 15, GOLD, BOLD, HORIZONTAL_ALIGNMENT_RIGHT)
 	_label(_canvas, "Un destin à incarner" if include_archived_adventures else "Choisissez votre apparence", Rect2(33, 154, 297, 24), 17, MUTED)
@@ -178,6 +183,37 @@ func _build_roster() -> void:
 	note.name = "RosterNote"
 	_label(note, "UN HÉROS, SON AVENTURE" if include_archived_adventures else "UNE DESCENTE EN SOLO", Rect2(14, 6, 272, 18), 13, GOLD, BOLD)
 	_label(note, "Le groupe est lié au récit choisi." if include_archived_adventures else "Trois apparences, la même aventure.", Rect2(14, 27, 272, 18), 15, MUTED)
+
+
+func _build_appearance_roster() -> void:
+	_label(_canvas, "Apparences", Rect2(32, 117, 260, 37), 27, TEXT, HEADING)
+	_hero_counter = _label(_canvas, "", Rect2(241, 125, 91, 25), 15, GOLD, BOLD, HORIZONTAL_ALIGNMENT_RIGHT)
+	_label(_canvas, "Un héros, trois façons de l’incarner", Rect2(33, 157, 310, 24), 16, MUTED)
+	for index in _entries.size():
+		var entry: Dictionary = _entries[index]
+		var button := _button(_canvas, "", Rect2(32, 197 + index * 173, 300, 159))
+		button.name = "Hero_%d_%s" % [index, entry.id]
+		button.set_meta("style_role", &"roster")
+		button.set_meta("accent", entry.accent)
+		button.toggle_mode = true
+		button.tooltip_text = str(entry.appearance)
+		button.pressed.connect(select_character.bind(index))
+		_roster_buttons.append(button)
+		var thumb := _portrait_for(entry.unit, bool(entry.get("use_preview_portrait", false)))
+		if thumb != null:
+			_texture(button, thumb, Rect2(10, 13, 112, 132))
+		var title := _label(button, entry.display_name, Rect2(135, 24, 150, 66), 21, TEXT, HEADING)
+		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_label(button, "Niveau 1 · Catabase", Rect2(135, 95, 155, 22), 14, MUTED)
+		var tag := _label(button, "", Rect2(135, 123, 152, 21), 12, GOLD, BOLD)
+		tag.name = "SelectionState"
+		var marker := _line(button, Rect2(0, 18, 3, 123), GOLD)
+		marker.name = "SelectionMarker"
+	var note := _panel(_canvas, Rect2(32, 734, 300, 70), Color("1b1714"), Color(LINE, 0.7), 4)
+	note.name = "RosterNote"
+	_label(note, "VOTRE STYLE, VOTRE PARCOURS", Rect2(12, 7, 280, 18), 12, GOLD, BOLD)
+	var hint := _label(note, "Équipement et techniques se choisissent au Seuil des Ombres.", Rect2(12, 28, 277, 34), 14, MUTED)
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 func _build_stage() -> void:
@@ -664,6 +700,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _layout() -> void:
+	if is_instance_valid(_cards_setup):
+		var cards_fit := minf(size.x / 1440.0, size.y / 810.0)
+		_cards_setup.scale = Vector2.ONE * cards_fit
+		_cards_setup.position = (size - Vector2(1440, 810) * cards_fit) * 0.5
+		return
 	if not is_instance_valid(_canvas):
 		return
 	var fit := minf(size.x / REFERENCE.x, size.y / REFERENCE.y)
@@ -716,6 +757,9 @@ func _mark_selected(button: Button, selected: bool) -> void:
 	if surface != null:
 		surface.set_selected(selected, accent)
 	if roster:
+		var tag := button.get_node_or_null("SelectionState") as Label
+		if tag != null:
+			tag.text = "SÉLECTIONNÉ" if selected else "APPARENCE"
 		var marker := button.get_node_or_null("SelectionMarker") as ColorRect
 		if marker != null:
 			marker.color = accent if selected else Color(accent, 0.15)

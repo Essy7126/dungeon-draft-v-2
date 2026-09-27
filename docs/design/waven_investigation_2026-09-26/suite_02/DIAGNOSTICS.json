@@ -1,0 +1,3299 @@
+{
+  "oldCases": [
+    {
+      "seed": 27001,
+      "completed": false,
+      "failureFight": 7,
+      "timeline": [
+        {
+          "fight": 1,
+          "depth": 1,
+          "level": 1,
+          "outcome": "victory",
+          "turns": 2,
+          "cards": 3,
+          "basic": 0,
+          "hpRatio": 1,
+          "stockBefore": 15,
+          "stockAfter": 12,
+          "gold": 40,
+          "lootEnemies": 1,
+          "metrics": {
+            "cards": 3,
+            "basic": 0,
+            "damage": 25,
+            "heroDamage": 0,
+            "healing": 0,
+            "shieldMade": 3.6,
+            "shieldAbsorbed": 0,
+            "enemyActions": 0,
+            "stuns": 0,
+            "moves": 1,
+            "displaced": 0,
+            "drawn": 10,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 3,
+            "t02": 3
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 110,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  4
+                ],
+                "cost": 1
+              },
+              "hp": 110,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_4",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 110,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "start_8",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 110,
+              "ap": 4,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 14,
+          "goldAfter": 75,
+          "hpAfter": 1
+        },
+        {
+          "fight": 2,
+          "depth": 2,
+          "level": 2,
+          "outcome": "victory",
+          "turns": 3,
+          "cards": 5,
+          "basic": 1,
+          "hpRatio": 0.9955185185185186,
+          "stockBefore": 14,
+          "stockAfter": 9,
+          "gold": 75,
+          "lootEnemies": 2,
+          "metrics": {
+            "cards": 5,
+            "basic": 1,
+            "damage": 66,
+            "heroDamage": 0.6050000000000004,
+            "healing": 0,
+            "shieldMade": 19.635,
+            "shieldAbsorbed": 10.395,
+            "enemyActions": 1,
+            "stuns": 0,
+            "moves": 5,
+            "displaced": 0,
+            "drawn": 15,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 2,
+            "t02": 2
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_0",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 135,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  4
+                ],
+                "cost": 1
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_5",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  5
+                ],
+                "cost": 1
+              },
+              "hp": 135,
+              "ap": 0,
+              "mp": 2
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "start_2",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 135,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "start_7",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 135,
+              "ap": 1,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  1,
+                  4
+                ],
+                "cost": 3
+              },
+              "hp": 135,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "start_3",
+                "pos": [
+                  1,
+                  3
+                ]
+              },
+              "hp": 134.395,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 134.395,
+              "ap": 2,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 13,
+          "goldAfter": 110,
+          "hpAfter": 0.9963333333333334
+        },
+        {
+          "fight": 3,
+          "depth": 3,
+          "level": 3,
+          "outcome": "victory",
+          "turns": 11,
+          "cards": 8,
+          "basic": 8,
+          "hpRatio": 0.655318181818182,
+          "stockBefore": 12,
+          "stockAfter": 5,
+          "gold": 110,
+          "lootEnemies": 3,
+          "metrics": {
+            "cards": 8,
+            "basic": 8,
+            "damage": 112.99999999999999,
+            "heroDamage": 56.2675,
+            "healing": 0,
+            "shieldMade": 107.73000000000002,
+            "shieldAbsorbed": 75.1075,
+            "enemyActions": 7,
+            "stuns": 0,
+            "moves": 7,
+            "displaced": 0,
+            "drawn": 52,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 12.375,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 1,
+            "t02": 0
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_1_0_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 164.395,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  5
+                ],
+                "cost": 2
+              },
+              "hp": 164.395,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_6",
+                "pos": [
+                  5,
+                  1
+                ]
+              },
+              "hp": 164.395,
+              "ap": 2,
+              "mp": 1
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 164.395,
+              "ap": 1,
+              "mp": 1
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  6
+                ],
+                "cost": 2
+              },
+              "hp": 164.395,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 164.395,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_0_0_0",
+                "pos": [
+                  6,
+                  6
+                ]
+              },
+              "hp": 164.395,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  6
+                ],
+                "cost": 1
+              },
+              "hp": 164.395,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 164.395,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_1_0_0_0",
+                "pos": [
+                  5,
+                  6
+                ]
+              },
+              "hp": 164.395,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_1_0_0",
+                "pos": [
+                  5,
+                  5
+                ]
+              },
+              "hp": 164.395,
+              "ap": 1,
+              "mp": 2
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_0_0_1",
+                "pos": [
+                  5,
+                  5
+                ]
+              },
+              "hp": 160.1525,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  6
+                ],
+                "cost": 1
+              },
+              "hp": 160.1525,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 160.1525,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "card",
+                "uid": "start_10",
+                "pos": [
+                  6,
+                  6
+                ]
+              },
+              "hp": 160.1525,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  6
+                ],
+                "cost": 1
+              },
+              "hp": 160.1525,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 160.1525,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 160.1525,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 160.1525,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "card",
+                "uid": "start_11",
+                "pos": [
+                  5,
+                  6
+                ]
+              },
+              "hp": 160.1525,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 160.1525,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 160.1525,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 160.1525,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 150.24,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 150.24,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 140.32750000000001,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 140.32750000000001,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 126.29000000000002,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 126.29000000000002,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 11,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 108.12750000000003,
+              "ap": 4,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 19,
+          "goldAfter": 44,
+          "hpAfter": 0.7156375000000003
+        },
+        {
+          "fight": 4,
+          "depth": 5,
+          "level": 4,
+          "outcome": "victory",
+          "turns": 4,
+          "cards": 6,
+          "basic": 1,
+          "hpRatio": 0.6789875000000003,
+          "stockBefore": 18,
+          "stockAfter": 13,
+          "gold": 44,
+          "lootEnemies": 3,
+          "metrics": {
+            "cards": 6,
+            "basic": 1,
+            "damage": 198.99999999999997,
+            "heroDamage": 7.329999999999998,
+            "healing": 0,
+            "shieldMade": 39.93000000000001,
+            "shieldAbsorbed": 32.67,
+            "enemyActions": 2,
+            "stuns": 0,
+            "moves": 4,
+            "displaced": 0,
+            "drawn": 24,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 0,
+            "t02": 1
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_3_0_1_0",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 143.12750000000005,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_3_0_1_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 143.12750000000005,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  1,
+                  5
+                ],
+                "cost": 2
+              },
+              "hp": 143.12750000000005,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "market_3_bag0_4",
+                "pos": [
+                  1,
+                  3
+                ]
+              },
+              "hp": 143.12750000000005,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "market_3_bag0_0",
+                "pos": [
+                  1,
+                  3
+                ]
+              },
+              "hp": 143.12750000000005,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 143.12750000000005,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "market_3_bag0_2",
+                "pos": [
+                  1,
+                  4
+                ]
+              },
+              "hp": 139.46250000000006,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  0,
+                  4
+                ],
+                "cost": 2
+              },
+              "hp": 139.46250000000006,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 139.46250000000006,
+              "ap": 2,
+              "mp": 1
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 139.46250000000006,
+              "ap": 1,
+              "mp": 1
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "card",
+                "uid": "market_3_bag0_1",
+                "pos": [
+                  1,
+                  4
+                ]
+              },
+              "hp": 135.79750000000007,
+              "ap": 4,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 25,
+          "goldAfter": 79,
+          "hpAfter": 0.7324895833333336
+        },
+        {
+          "fight": 5,
+          "depth": 6,
+          "level": 5,
+          "outcome": "victory",
+          "turns": 5,
+          "cards": 10,
+          "basic": 2,
+          "hpRatio": 0.6370729166666671,
+          "stockBefore": 20,
+          "stockAfter": 15,
+          "gold": 79,
+          "lootEnemies": 4,
+          "metrics": {
+            "cards": 10,
+            "basic": 2,
+            "damage": 336,
+            "heroDamage": 39.4,
+            "healing": 16.5,
+            "shieldMade": 26.400000000000002,
+            "shieldAbsorbed": 17.6,
+            "enemyActions": 3,
+            "stuns": 0,
+            "moves": 13,
+            "displaced": 1,
+            "drawn": 30,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 1,
+            "t02": 0
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_2_2_0",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 175.79750000000007,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_0_1_0",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 192.29750000000007,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  5
+                ],
+                "cost": 3
+              },
+              "hp": 192.29750000000007,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_2_1_1",
+                "pos": [
+                  5,
+                  4
+                ]
+              },
+              "hp": 192.29750000000007,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  6
+                ],
+                "cost": 2
+              },
+              "hp": 192.29750000000007,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_0_0_1",
+                "pos": [
+                  5,
+                  4
+                ]
+              },
+              "hp": 192.29750000000007,
+              "ap": 2,
+              "mp": 1
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "market_3_bag0_3",
+                "pos": [
+                  5,
+                  4
+                ]
+              },
+              "hp": 192.29750000000007,
+              "ap": 1,
+              "mp": 1
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 182.09750000000008,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_3_2_0_0",
+                "pos": [
+                  3,
+                  5
+                ]
+              },
+              "hp": 182.09750000000008,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_1_0_0",
+                "pos": [
+                  3,
+                  5
+                ]
+              },
+              "hp": 182.09750000000008,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  5
+                ],
+                "cost": 2
+              },
+              "hp": 182.09750000000008,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_0_0_0",
+                "pos": [
+                  4,
+                  5
+                ]
+              },
+              "hp": 182.09750000000008,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_2_0_1",
+                "pos": [
+                  4,
+                  5
+                ]
+              },
+              "hp": 182.09750000000008,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  5
+                ],
+                "cost": 3
+              },
+              "hp": 182.09750000000008,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  2,
+                  6
+                ],
+                "cost": 2
+              },
+              "hp": 171.8975000000001,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_2_0_0",
+                "pos": [
+                  1,
+                  5
+                ]
+              },
+              "hp": 171.8975000000001,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  1,
+                  6
+                ],
+                "cost": 1
+              },
+              "hp": 171.8975000000001,
+              "ap": 1,
+              "mp": 1
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 171.8975000000001,
+              "ap": 1,
+              "mp": 0
+            }
+          ],
+          "stockAfterRewards": 21,
+          "goldAfter": 89,
+          "hpAfter": 1
+        },
+        {
+          "fight": 6,
+          "depth": 8,
+          "level": 6,
+          "outcome": "victory",
+          "turns": 5,
+          "cards": 9,
+          "basic": 1,
+          "hpRatio": 0.875593220338983,
+          "stockBefore": 19,
+          "stockAfter": 12,
+          "gold": 89,
+          "lootEnemies": 3,
+          "metrics": {
+            "cards": 9,
+            "basic": 1,
+            "damage": 317,
+            "heroDamage": 44.03999999999999,
+            "healing": 0,
+            "shieldMade": 92.4,
+            "shieldAbsorbed": 68.76,
+            "enemyActions": 4,
+            "stuns": 0,
+            "moves": 8,
+            "displaced": 2,
+            "drawn": 30,
+            "gold": 8,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 1,
+            "t02": 1
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 354,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  4
+                ],
+                "cost": 1
+              },
+              "hp": 354,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_1_0_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 354,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_1_0_0",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 322.4,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "market_5_trade1_0",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 322.4,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  1,
+                  5
+                ],
+                "cost": 3
+              },
+              "hp": 322.4,
+              "ap": 1,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 322.4,
+              "ap": 1,
+              "mp": 0
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "market_5_trade0_0",
+                "pos": [
+                  1,
+                  4
+                ]
+              },
+              "hp": 309.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_2_0_1",
+                "pos": [
+                  1,
+                  4
+                ]
+              },
+              "hp": 309.96,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  2,
+                  5
+                ],
+                "cost": 1
+              },
+              "hp": 309.96,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_2_2_1",
+                "pos": [
+                  2,
+                  5
+                ]
+              },
+              "hp": 309.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  3
+                ],
+                "cost": 3
+              },
+              "hp": 309.96,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_0_0_0",
+                "pos": [
+                  2,
+                  2
+                ]
+              },
+              "hp": 309.96,
+              "ap": 2,
+              "mp": 0
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "card",
+                "uid": "drop_3_1_0_0",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 309.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_1_1_0",
+                "pos": [
+                  3,
+                  0
+                ]
+              },
+              "hp": 309.96,
+              "ap": 2,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 18,
+          "goldAfter": 132,
+          "hpAfter": 0.8968618266978923
+        },
+        {
+          "fight": 7,
+          "depth": 10,
+          "level": 7,
+          "outcome": "defeat",
+          "turns": 15,
+          "cards": 8,
+          "basic": 12,
+          "hpRatio": 0,
+          "stockBefore": 14,
+          "stockAfter": 10,
+          "gold": 132,
+          "lootEnemies": 1,
+          "metrics": {
+            "cards": 8,
+            "basic": 12,
+            "damage": 369.81824000000006,
+            "heroDamage": 382.96,
+            "healing": 0,
+            "shieldMade": 360.52500000000015,
+            "shieldAbsorbed": 243.07500000000007,
+            "enemyActions": 12,
+            "stuns": 0,
+            "moves": 14,
+            "displaced": 3,
+            "drawn": 90,
+            "gold": 4,
+            "fieldDamage": 0,
+            "pressure": 224.175,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 0,
+            "t02": 0
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_6_0_0_0",
+                "pos": [
+                  3,
+                  5
+                ]
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  2
+                ],
+                "cost": 3
+              },
+              "hp": 382.96,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_0"
+              },
+              "hp": 382.96,
+              "ap": 2,
+              "mp": 0
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_6_2_0_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 382.96,
+              "ap": 1,
+              "mp": 0
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_2_0_0",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_5_1_1_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 382.96,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  4,
+                  3
+                ],
+                "cost": 2
+              },
+              "hp": 382.96,
+              "ap": 0,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_4_1_0_1",
+                "pos": [
+                  4,
+                  3
+                ]
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  3
+                ],
+                "cost": 1
+              },
+              "hp": 382.96,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "drop_6_2_0_0",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 382.96,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  3
+                ],
+                "cost": 3
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 0
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "card",
+                "uid": "drop_6_0_0_1",
+                "pos": [
+                  6,
+                  3
+                ]
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  3
+                ],
+                "cost": 1
+              },
+              "hp": 382.96,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 382.96,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 382.96,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "card",
+                "uid": "drop_3_0_0_1",
+                "pos": [
+                  4,
+                  3
+                ]
+              },
+              "hp": 382.96,
+              "ap": 1,
+              "mp": 2
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  5
+                ],
+                "cost": 3
+              },
+              "hp": 382.96,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 382.96,
+              "ap": 3,
+              "mp": 0
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  5
+                ],
+                "cost": 1
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 382.96,
+              "ap": 4,
+              "mp": 2
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 382.96,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 363.635,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 363.635,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 344.31,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 344.31,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 314.31,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 314.31,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 11,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 273.635,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 11,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 273.635,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 12,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 222.285,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 12,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 222.285,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 13,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 160.26,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 13,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 160.26,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 14,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 87.56,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 14,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 87.56,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 15,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 4.184999999999988,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 15,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 4.184999999999988,
+              "ap": 3,
+              "mp": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 27005,
+      "completed": false,
+      "failureFight": 3,
+      "timeline": [
+        {
+          "fight": 1,
+          "depth": 1,
+          "level": 1,
+          "outcome": "victory",
+          "turns": 2,
+          "cards": 3,
+          "basic": 0,
+          "hpRatio": 1,
+          "stockBefore": 15,
+          "stockAfter": 12,
+          "gold": 40,
+          "lootEnemies": 1,
+          "metrics": {
+            "cards": 3,
+            "basic": 0,
+            "damage": 25,
+            "heroDamage": 0,
+            "healing": 0,
+            "shieldMade": 3.6,
+            "shieldAbsorbed": 0,
+            "enemyActions": 0,
+            "stuns": 0,
+            "moves": 1,
+            "displaced": 0,
+            "drawn": 10,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 3,
+            "t02": 3
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_2",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 110,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  4
+                ],
+                "cost": 1
+              },
+              "hp": 110,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_4",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 110,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "start_7",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 110,
+              "ap": 4,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 14,
+          "goldAfter": 75,
+          "hpAfter": 1
+        },
+        {
+          "fight": 2,
+          "depth": 2,
+          "level": 2,
+          "outcome": "victory",
+          "turns": 4,
+          "cards": 5,
+          "basic": 1,
+          "hpRatio": 0.9527407407407408,
+          "stockBefore": 13,
+          "stockAfter": 9,
+          "gold": 75,
+          "lootEnemies": 2,
+          "metrics": {
+            "cards": 5,
+            "basic": 1,
+            "damage": 66,
+            "heroDamage": 6.38,
+            "healing": 0,
+            "shieldMade": 19.635,
+            "shieldAbsorbed": 4.62,
+            "enemyActions": 1,
+            "stuns": 0,
+            "moves": 6,
+            "displaced": 0,
+            "drawn": 20,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 0,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 2,
+            "t02": 2
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_0",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 135,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  4
+                ],
+                "cost": 1
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "start_5",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 2
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  5
+                ],
+                "cost": 1
+              },
+              "hp": 135,
+              "ap": 0,
+              "mp": 2
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  6
+                ],
+                "cost": 1
+              },
+              "hp": 135,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "start_6",
+                "pos": [
+                  3,
+                  2
+                ]
+              },
+              "hp": 135,
+              "ap": 4,
+              "mp": 2
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 135,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "start_1",
+                "pos": [
+                  3,
+                  4
+                ]
+              },
+              "hp": 135,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  1,
+                  5
+                ],
+                "cost": 3
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "card",
+                "uid": "start_3",
+                "pos": [
+                  1,
+                  3
+                ]
+              },
+              "hp": 135,
+              "ap": 2,
+              "mp": 0
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 128.62,
+              "ap": 4,
+              "mp": 3
+            }
+          ],
+          "stockAfterRewards": 13,
+          "goldAfter": 110,
+          "hpAfter": 0.9613333333333334
+        },
+        {
+          "fight": 3,
+          "depth": 3,
+          "level": 3,
+          "outcome": "defeat",
+          "turns": 15,
+          "cards": 8,
+          "basic": 7,
+          "hpRatio": 0,
+          "stockBefore": 10,
+          "stockAfter": 5,
+          "gold": 110,
+          "lootEnemies": 2,
+          "metrics": {
+            "cards": 8,
+            "basic": 7,
+            "damage": 80.39045999999998,
+            "heroDamage": 158.62,
+            "healing": 0,
+            "shieldMade": 148.83750000000003,
+            "shieldAbsorbed": 99.19500000000002,
+            "enemyActions": 9,
+            "stuns": 0,
+            "moves": 21,
+            "displaced": 0,
+            "drawn": 57,
+            "gold": 0,
+            "fieldDamage": 0,
+            "pressure": 104.81500000000001,
+            "interactions": 0
+          },
+          "auditFocusStock": {
+            "t03": 1,
+            "t02": 0
+          },
+          "trace": [
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_0_0_0",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 158.62,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  3,
+                  3
+                ],
+                "cost": 2
+              },
+              "hp": 158.62,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 1,
+              "action": {
+                "kind": "card",
+                "uid": "drop_1_0_0_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 158.62,
+              "ap": 3,
+              "mp": 1
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  3
+                ],
+                "cost": 2
+              },
+              "hp": 158.62,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "start_8",
+                "pos": [
+                  1,
+                  3
+                ]
+              },
+              "hp": 158.62,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 158.62,
+              "ap": 3,
+              "mp": 1
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_1_0_0",
+                "pos": [
+                  4,
+                  2
+                ]
+              },
+              "hp": 158.62,
+              "ap": 2,
+              "mp": 1
+            },
+            {
+              "turn": 2,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_0_0_1",
+                "pos": [
+                  3,
+                  1
+                ]
+              },
+              "hp": 158.62,
+              "ap": 1,
+              "mp": 1
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  3
+                ],
+                "cost": 3
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 3,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 0
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  5
+                ],
+                "cost": 2
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 4,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  3
+                ],
+                "cost": 2
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 5,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  5
+                ],
+                "cost": 2
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 6,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  3
+                ],
+                "cost": 2
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 7,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  6,
+                  5
+                ],
+                "cost": 2
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 1
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  5,
+                  5
+                ],
+                "cost": 1
+              },
+              "hp": 154.3775,
+              "ap": 3,
+              "mp": 1
+            },
+            {
+              "turn": 8,
+              "action": {
+                "kind": "card",
+                "uid": "drop_2_1_0_1",
+                "pos": [
+                  5,
+                  5
+                ]
+              },
+              "hp": 154.3775,
+              "ap": 3,
+              "mp": 0
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 154.3775,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "card",
+                "uid": "drop_1_0_0_0",
+                "pos": [
+                  5,
+                  5
+                ]
+              },
+              "hp": 154.3775,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 9,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 154.3775,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 150.2525,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "card",
+                "uid": "start_10",
+                "pos": [
+                  5,
+                  5
+                ]
+              },
+              "hp": 150.2525,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 10,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 150.2525,
+              "ap": 2,
+              "mp": 3
+            },
+            {
+              "turn": 11,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 142.0025,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 11,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 142.0025,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 12,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 119.715,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 12,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 119.715,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 13,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 93.30250000000001,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 13,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 93.30250000000001,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 14,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_2"
+              },
+              "hp": 62.765000000000015,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 14,
+              "action": {
+                "kind": "walk",
+                "pos": [
+                  4,
+                  5
+                ],
+                "cost": 1
+              },
+              "hp": 62.765000000000015,
+              "ap": 3,
+              "mp": 3
+            },
+            {
+              "turn": 14,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 62.765000000000015,
+              "ap": 3,
+              "mp": 2
+            },
+            {
+              "turn": 15,
+              "action": {
+                "kind": "basic",
+                "target": "enemy_1"
+              },
+              "hp": 28.102500000000013,
+              "ap": 4,
+              "mp": 3
+            },
+            {
+              "turn": 15,
+              "action": {
+                "kind": "guard"
+              },
+              "hp": 28.102500000000013,
+              "ap": 3,
+              "mp": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "phaseFailure": {
+    "classId": "assassin",
+    "seed": 28001,
+    "failureFight": 2,
+    "turns": 17,
+    "metrics": {
+      "cards": 3,
+      "basic": 0,
+      "damage": 47,
+      "heroDamage": 135,
+      "healing": 0,
+      "shieldMade": 0,
+      "shieldAbsorbed": 0,
+      "enemyActions": 0,
+      "stuns": 0,
+      "moves": 7,
+      "displaced": 0,
+      "drawn": 102,
+      "gold": 0,
+      "fieldDamage": 0,
+      "pressure": 135,
+      "interactions": 0
+    },
+    "trace": [
+      {
+        "diagnostic": true,
+        "turn": 1,
+        "heroPos": [
+          3,
+          5
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 47,
+            "pos": [
+              3,
+              1
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              1
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 2,
+        "heroPos": [
+          3,
+          5
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 47,
+            "pos": [
+              3,
+              3
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              2
+            ]
+          }
+        ],
+        "action": {
+          "kind": "card",
+          "uid": "start_0",
+          "pos": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 2,
+        "heroPos": [
+          3,
+          5
+        ],
+        "hp": 135,
+        "ap": 3,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 34.248799999999996,
+            "pos": [
+              3,
+              3
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              2
+            ]
+          }
+        ],
+        "action": {
+          "kind": "walk",
+          "pos": [
+            4,
+            6
+          ],
+          "cost": 2
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 2,
+        "heroPos": [
+          4,
+          6
+        ],
+        "hp": 135,
+        "ap": 3,
+        "mp": 1,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 34.248799999999996,
+            "pos": [
+              3,
+              3
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              2
+            ]
+          }
+        ],
+        "action": {
+          "kind": "card",
+          "uid": "drop_1_0_0_0",
+          "pos": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 2,
+        "heroPos": [
+          4,
+          6
+        ],
+        "hp": 135,
+        "ap": 2,
+        "mp": 1,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 15.121999999999993,
+            "pos": [
+              3,
+              3
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              2
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 3,
+        "heroPos": [
+          4,
+          6
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 15.121999999999993,
+            "pos": [
+              3,
+              5
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              3
+            ]
+          }
+        ],
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 3,
+        "heroPos": [
+          6,
+          6
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 1,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 15.121999999999993,
+            "pos": [
+              3,
+              5
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              3
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 4,
+        "heroPos": [
+          6,
+          6
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 15.121999999999993,
+            "pos": [
+              4,
+              6
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": {
+          "kind": "walk",
+          "pos": [
+            5,
+            6
+          ],
+          "cost": 1
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 4,
+        "heroPos": [
+          5,
+          6
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 2,
+        "enemies": [
+          {
+            "id": "enemy_0",
+            "hp": 15.121999999999993,
+            "pos": [
+              4,
+              6
+            ]
+          },
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": {
+          "kind": "card",
+          "uid": "drop_1_0_0_1",
+          "pos": [
+            4,
+            6
+          ]
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 4,
+        "heroPos": [
+          5,
+          6
+        ],
+        "hp": 135,
+        "ap": 2,
+        "mp": 2,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": {
+          "kind": "walk",
+          "pos": [
+            5,
+            4
+          ],
+          "cost": 2
+        }
+      },
+      {
+        "diagnostic": true,
+        "turn": 4,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 135,
+        "ap": 2,
+        "mp": 0,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 5,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 6,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 7,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 8,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 9,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 135,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 10,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 131.625,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 11,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 124.875,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 12,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 114.75,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 13,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 101.25,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 14,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 84.375,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 15,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 64.125,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 16,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 40.5,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      },
+      {
+        "diagnostic": true,
+        "turn": 17,
+        "heroPos": [
+          5,
+          4
+        ],
+        "hp": 13.5,
+        "ap": 4,
+        "mp": 3,
+        "enemies": [
+          {
+            "id": "enemy_1",
+            "hp": 19,
+            "pos": [
+              1,
+              4
+            ]
+          }
+        ],
+        "action": null
+      }
+    ]
+  }
+}

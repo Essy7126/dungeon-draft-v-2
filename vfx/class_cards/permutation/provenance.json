@@ -1,0 +1,497 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "night": "183f45",
+    "jade": "438d83",
+    "jade_light": "8de3c2",
+    "ivory": "fff0cc",
+    "cream_shadow": "bfae82",
+    "bronze": "ac743c",
+    "gold": "f3cc80",
+    "white": "ffffe9"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/g_permutation.png",
+  "source_script": "tools/class_card_vfx/permutation/build.py",
+  "assets": {
+    "clasp_back": {
+      "size": 384,
+      "frames": 20,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        211.8137
+      ],
+      "scene": "Permutation CEL - clasp_back",
+      "columns": 6,
+      "rows": 4,
+      "sha256": "bf8d01c63935045a19af2cb1b2e99989f639a6429e0af600d509e7f5da2fa401",
+      "rendered_frames": [
+        {
+          "sha256": "a125d01b4300a9f78e25d70b5e9685ccda715f69995a2bace387a275beac439f",
+          "alpha_bounds": [
+            71,
+            127,
+            313,
+            212
+          ]
+        },
+        {
+          "sha256": "0918cb097ffb2fdf1e42036c3c92497e15abde5a6b204ae344d75995db3b615c",
+          "alpha_bounds": [
+            78,
+            131,
+            306,
+            211
+          ]
+        },
+        {
+          "sha256": "cd0e47e3b1345379900c1c5f24cb3ca6935f82b0fc9c85e963d46619387ddbc5",
+          "alpha_bounds": [
+            83,
+            134,
+            301,
+            211
+          ]
+        },
+        {
+          "sha256": "e4362cbb290a38897afc0f88a26be51183e75522f0074c815bc0517093cd2819",
+          "alpha_bounds": [
+            86,
+            136,
+            298,
+            212
+          ]
+        },
+        {
+          "sha256": "338fcae5254ad66e06bbf63ca52015b7c63cecb6fc8fd03d04a0432f8acffa60",
+          "alpha_bounds": [
+            88,
+            136,
+            296,
+            211
+          ]
+        },
+        {
+          "sha256": "c4fc3cc8cd40c7193d321e6a3d3588ac4c64073bf19aec31c7ffe8f1995c6540",
+          "alpha_bounds": [
+            91,
+            138,
+            293,
+            211
+          ]
+        },
+        {
+          "sha256": "34bebf744d10bcf56e0cbe52fb0c0fd39d554247fcdbb56b90ee45ac459ce509",
+          "alpha_bounds": [
+            115,
+            151,
+            269,
+            211
+          ]
+        },
+        {
+          "sha256": "ff101bebb3c93b9b3165e6c00bee28ca46f8dfb6c6c8bc6f68fa6f5285e09cb8",
+          "alpha_bounds": [
+            156,
+            174,
+            228,
+            211
+          ]
+        },
+        {
+          "sha256": "c959d297b65729f63e92628c2802aea93543e10cd214d0dacd1230d2b03e0681",
+          "alpha_bounds": [
+            182,
+            188,
+            202,
+            211
+          ]
+        },
+        {
+          "sha256": "39b20b05c61e2d71b3f78654939aad651a4af8ddfdab1e9eb3b5527afb7861d8",
+          "alpha_bounds": [
+            86,
+            133,
+            226,
+            211
+          ]
+        },
+        {
+          "sha256": "8bc431492aab1e9eb685ce459c0f81bc8b0666b3013c31297e2558e902b83681",
+          "alpha_bounds": [
+            80,
+            121,
+            268,
+            211
+          ]
+        },
+        {
+          "sha256": "00bada1c6c0e77559831a05a7fd2b2a72a2ce63a2675e0cccb61178959b23cf4",
+          "alpha_bounds": [
+            74,
+            109,
+            296,
+            211
+          ]
+        },
+        {
+          "sha256": "28059cbd1abc0603c75a5bbc9a55c07e810c1ffa1616d1d01d6baf6eba4056d9",
+          "alpha_bounds": [
+            68,
+            100,
+            307,
+            211
+          ]
+        },
+        {
+          "sha256": "9a74a7cbc47a8e7d34158988e2a29fc0f6f45ca6d7c893f4622e45c1c642d6a9",
+          "alpha_bounds": [
+            62,
+            93,
+            313,
+            196
+          ]
+        },
+        {
+          "sha256": "6dc2731700d768ae15834178e69d4333185fa24c94c166a3091fc8ba3df96ccf",
+          "alpha_bounds": [
+            56,
+            88,
+            318,
+            194
+          ]
+        },
+        {
+          "sha256": "127a0492db5e73a8e91f6f3262b4041a74ea529f4da11b2f5c8ba8956d991f61",
+          "alpha_bounds": [
+            50,
+            87,
+            325,
+            192
+          ]
+        },
+        {
+          "sha256": "1c6137a069d6afe2af364f3b4b477cd1f282cad9bb083aea85f1d441a20d1aca",
+          "alpha_bounds": [
+            44,
+            89,
+            331,
+            191
+          ]
+        },
+        {
+          "sha256": "ecd30691eec6460dd7ab54d9ae9964a3fab05577ffd0d7c42a125de475e876bd",
+          "alpha_bounds": [
+            38,
+            93,
+            337,
+            189
+          ]
+        },
+        {
+          "sha256": "ac7507744d1a53fe4fd4555ead43ad38f2bdfc2827bd0d5b9af4d087de9a8060",
+          "alpha_bounds": [
+            32,
+            99,
+            344,
+            187
+          ]
+        },
+        {
+          "sha256": "c412cac15a51dd36787665414c8d02a0ba1c89224ee5012b60f221e73fc1d57c",
+          "alpha_bounds": [
+            26,
+            94,
+            350,
+            187
+          ]
+        }
+      ]
+    },
+    "clasp_front": {
+      "size": 384,
+      "frames": 20,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        211.8137
+      ],
+      "scene": "Permutation CEL - clasp_front",
+      "columns": 6,
+      "rows": 4,
+      "sha256": "e66fe092bd36594ca491b5c77b9cf39fecaf1736b77f19dab756cd116229c3a6",
+      "rendered_frames": [
+        {
+          "sha256": "b62b348f1527513a440c07d1dc72730d26bb01263aa11883e1def425772b48e8",
+          "alpha_bounds": [
+            71,
+            198,
+            313,
+            286
+          ]
+        },
+        {
+          "sha256": "666ace27f054a14eb2c741a685d41a1b953e6674632acf26e3059cf7149954c3",
+          "alpha_bounds": [
+            78,
+            198,
+            306,
+            283
+          ]
+        },
+        {
+          "sha256": "9d1345db0a3ec9342d254bc147b65fa08719709289fb564cf011456ef6df2b37",
+          "alpha_bounds": [
+            83,
+            198,
+            301,
+            280
+          ]
+        },
+        {
+          "sha256": "d46bfba0cddee320ea96f348fe6cacc666650206b435188d0aade0c6130ccad3",
+          "alpha_bounds": [
+            86,
+            198,
+            298,
+            278
+          ]
+        },
+        {
+          "sha256": "7bb0b7c32733f192234f83d752f47fb3790fa1f50635b3af2c18a4451f49e239",
+          "alpha_bounds": [
+            88,
+            198,
+            296,
+            278
+          ]
+        },
+        {
+          "sha256": "f1ced6eb28398f5e10dbd42d7a73ed207d83e4e6ffdeecdac77e1b8624fd73d8",
+          "alpha_bounds": [
+            91,
+            198,
+            293,
+            276
+          ]
+        },
+        {
+          "sha256": "4124bf16229c7da26cfef7c7b99f00200b56e2e83b969d7d876a283a1d1667cd",
+          "alpha_bounds": [
+            115,
+            198,
+            269,
+            263
+          ]
+        },
+        {
+          "sha256": "3ac41733a7233d31452d7b1cbf15c4a439343233fed81ba9554b2a430ff326fc",
+          "alpha_bounds": [
+            156,
+            198,
+            228,
+            242
+          ]
+        },
+        {
+          "sha256": "d191937aa00253cf365b93ade6495b20b0fca00c893a2601e3f0936875948b30",
+          "alpha_bounds": [
+            179,
+            189,
+            202,
+            228
+          ]
+        },
+        {
+          "sha256": "000328e5d63ec0a2f7309f9e51241e99b5014a0879e23bb7dd1efc7aa6629562",
+          "alpha_bounds": [
+            158,
+            197,
+            298,
+            257
+          ]
+        },
+        {
+          "sha256": "7e4c4e29d4f9f26d318cd4347f652d3db687d8be5e577c155e2819ce855357ee",
+          "alpha_bounds": [
+            116,
+            189,
+            304,
+            263
+          ]
+        },
+        {
+          "sha256": "3f99316981d8b282b2d7e891a869b1094a6b0a56444c99ac94e635e46a3ae160",
+          "alpha_bounds": [
+            88,
+            181,
+            310,
+            278
+          ]
+        },
+        {
+          "sha256": "4cd0f22405a8f6ddd790a971a05e8278ffbd8025f90e69468a33d9df0a52b6fd",
+          "alpha_bounds": [
+            77,
+            176,
+            316,
+            283
+          ]
+        },
+        {
+          "sha256": "6fdfea48e01d09d97f7c659d96cb57b59a7e8abbfde27e090ed5d343aca7afef",
+          "alpha_bounds": [
+            68,
+            173,
+            322,
+            275
+          ]
+        },
+        {
+          "sha256": "6c227eb37026f5af323da9c576a31a5dfa0354114fcbd3d1a7fdceec8017afa9",
+          "alpha_bounds": [
+            62,
+            173,
+            328,
+            277
+          ]
+        },
+        {
+          "sha256": "890f93c24705d6dcfb7c9ee8b7e3348e7feb0678f3e29a669685a7c17d1be124",
+          "alpha_bounds": [
+            54,
+            176,
+            334,
+            280
+          ]
+        },
+        {
+          "sha256": "aed64787164cf7cd24bec113978e956b27a8102b5171d5bf0dbc3ff769a496d4",
+          "alpha_bounds": [
+            48,
+            182,
+            340,
+            282
+          ]
+        },
+        {
+          "sha256": "8c21a1f34e47453e6a66fa455971f445ee16e44e96c04f0315e9c971f76bcd25",
+          "alpha_bounds": [
+            42,
+            190,
+            346,
+            285
+          ]
+        },
+        {
+          "sha256": "66dccf01f2dbb17ead9cd8d0541bc58c0f0b7f1f6e4f77fbb7efb1c0e89461a8",
+          "alpha_bounds": [
+            35,
+            194,
+            352,
+            287
+          ]
+        },
+        {
+          "sha256": "67566214e7806f6c45f05660234d21838a82b863a3c0bfc863182045598e624a",
+          "alpha_bounds": [
+            29,
+            193,
+            358,
+            292
+          ]
+        }
+      ]
+    },
+    "slit": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        274.4891
+      ],
+      "scene": "Permutation CEL - slit",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "62a3198c7af20674006be951b6259152bc593246e4556f496230933a4add9303",
+      "rendered_frames": [
+        {
+          "sha256": "ac198e03994bd8402bf34b3d3cbc84f269869f698798f57829fe64560a5d3c7a",
+          "alpha_bounds": [
+            139,
+            214,
+            245,
+            270
+          ]
+        },
+        {
+          "sha256": "383a18e8dc7dd5852eea61c46b5d33b2e5c68d12dfd9872c4b716d589308ad0e",
+          "alpha_bounds": [
+            134,
+            184,
+            249,
+            270
+          ]
+        },
+        {
+          "sha256": "7710925a060f63422981ca1ab4e20c5bce05a28caa76dfe80adc3daa1672517c",
+          "alpha_bounds": [
+            130,
+            154,
+            254,
+            270
+          ]
+        },
+        {
+          "sha256": "ceeeac17270aa121d18b106a8dc8ad22db15fd47252b5538aba4371e61f2f82b",
+          "alpha_bounds": [
+            126,
+            163,
+            258,
+            270
+          ]
+        },
+        {
+          "sha256": "038e2cbb8ee8fbac5193e809d04467e5eb37f295876bd78cd21a4d009a314026",
+          "alpha_bounds": [
+            122,
+            192,
+            262,
+            270
+          ]
+        },
+        {
+          "sha256": "8c2fafcb38abb7f3601328c8f0f08b354113418154378bf5ee3708bc171859dd",
+          "alpha_bounds": [
+            172,
+            222,
+            212,
+            270
+          ]
+        },
+        {
+          "sha256": "df3b351d632adbe1c3435a85cb82d8bbddc0242660ad5fd4f39b3d7c0559fe6b",
+          "alpha_bounds": [
+            180,
+            245,
+            205,
+            270
+          ]
+        },
+        {
+          "sha256": "34e3fbb4af704a4fe30c85df088b6176c8fdd6c8a8db26d66037838195de415b",
+          "alpha_bounds": [
+            186,
+            261,
+            198,
+            270
+          ]
+        }
+      ]
+    }
+  },
+  "blend_sha256": "c79f20b54642791b4daadbaa833eb4711b53fb0ae094287758004c10beacbd09",
+  "script_sha256": "7bdf8636741d2ef0c1c115b1a00b4280150aa65bde2426e22305e0f0aeffb32e"
+}

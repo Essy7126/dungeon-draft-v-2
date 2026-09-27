@@ -21,6 +21,8 @@ const REWARD_CARD := preload("res://ui/expedition/expedition_reward_card.gd")
 const ATTRIBUTES_VIEW := preload("res://ui/expedition/expedition_attributes_view.gd")
 const TREE_CANVAS := preload("res://ui/expedition/expedition_tree_canvas.gd")
 const HUB_CANVAS := preload("res://ui/expedition/catabase_hub_canvas.gd")
+const DOSSIER_THEME := preload("res://ui/expedition/player_dossier_skin.gd")
+const DOSSIER_PAGES := ["gear", "attributes", "cards", "build", "progression", "advancement", "rewards", "level_up"]
 
 var inspection_only := false
 var allow_attribute_edits := false
@@ -76,6 +78,7 @@ func _ready() -> void:
 	resized.connect(_on_screen_resized)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var background := ColorRect.new()
+	background.name = "CatabaseScreenBackground"
 	background.color = Color(0.02, 0.04, 0.05, 0.68) if inspection_only else INK
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -128,6 +131,7 @@ func _ready() -> void:
 		var tab := _button(_navigation, entry[1])
 		if entry[0] == "build" and GameManager.expedition != null and GameManager.expedition.cards != null:
 			tab.text = "Classe & maîtrises" if GameManager.expedition.cards.rules_revision == 3 else "Arme & maîtrises"
+			if GameManager.expedition.uses_consumable_cards(): tab.text = "Classe & améliorations"
 		tab.name = "CatabaseTab_" + entry[0]
 		tab.set_meta("catabase_icon", entry[2])
 		tab.tooltip_text = entry[3]
@@ -202,6 +206,12 @@ func _render() -> void:
 		elif _page in ["rewards", "capacity"] and _page != required:
 			_page = required
 	var previous_focus := get_viewport().gui_get_focus_owner()
+	var dossier_page := GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES
+	var painted := get_node_or_null("CatabasePaintedBackdrop")
+	if painted != null: painted.visible = not dossier_page
+	var background := get_node_or_null("CatabaseScreenBackground")
+	if background != null:
+		background.color = Color(0.06, 0.045, 0.035, 0.90) if dossier_page else Color(0.02, 0.04, 0.05, 0.68) if inspection_only else INK
 	var focus_name := ""
 	if previous_focus != null and _body.is_ancestor_of(previous_focus) and not str(previous_focus.name).begins_with("@"):
 		focus_name = str(previous_focus.name)
@@ -308,6 +318,8 @@ func _create_decision_window() -> void:
 		drawn.content_margin_bottom = 20
 		_decision_panel.add_theme_stylebox_override("panel", drawn)
 	center.add_child(_decision_panel)
+	if GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
+		_decision_panel.add_theme_stylebox_override("panel", DOSSIER_THEME.surface(false, 20))
 	_body = VBoxContainer.new()
 	_body.add_theme_constant_override("separation", 12)
 	_decision_panel.add_child(_body)
@@ -316,17 +328,24 @@ func _create_decision_window() -> void:
 	_body.add_child(chrome)
 	_icon(chrome, ART_THEME.icon("nav", {"gear": "equipment", "attributes": "attributes", "cards": "tree", "build": "tree", "rewards": "check", "level_up": "check"}.get(_page, "journal")), 32)
 	_window_title = _label(chrome, {"gear": "INVENTAIRE", "attributes": "CARACTÉRISTIQUES", "cards": "SORTS & DECK", "build": "CLASSE & MAÎTRISES", "rewards": "BILAN DU COMBAT", "level_up": "NIVEAU SUPÉRIEUR", "progression": "RÉPARTIR MES POINTS", "advancement": "DÉVELOPPER MES MAÎTRISES"}.get(_page, "CATABASE"), 24, GOLD, true)
+	if GameManager.expedition.uses_consumable_cards() and _page in ["build", "advancement"]: _window_title.text = "CLASSE & AMÉLIORATIONS"
 	_window_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var close := _button(chrome, "Fermer  ×")
 	close.name = "CloseDedicatedWindow"
 	close.tooltip_text = "Fermer cette fenêtre · Échap"
 	close.pressed.connect(_close_current_view)
+	if GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
+		DOSSIER_THEME.button(close)
 	if _page in ["gear", "attributes", "cards", "build"]:
 		var tabs := HBoxContainer.new()
 		_body.add_child(tabs)
 		for entry in [["gear", "Personnage & inventaire"], ["attributes", "Caractéristiques"], ["cards", "Sorts & deck"], ["build", "Maîtrises"]]:
 			if entry[0] == "cards" and GameManager.expedition.cards == null: continue
 			var tab := _button(tabs, entry[1], _page == entry[0])
+			if GameManager.expedition.uses_consumable_cards() and entry[0] == "build": tab.text = "Classe & améliorations"
+			if GameManager.expedition.uses_consumable_cards():
+				DOSSIER_THEME.button(tab, _page == entry[0])
+				tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			tab.pressed.connect(func(): _navigate(entry[0]))
 
 
@@ -415,6 +434,9 @@ func _render_learning_choice() -> void:
 
 
 func _render_cards_advancement() -> void:
+	if GameManager.expedition.uses_consumable_cards():
+		_render_consumable_workshop("progression", true)
+		return
 	if GameManager.expedition.cards.rules_revision == 3:
 		_render_class_progression(true)
 		return
@@ -586,6 +608,8 @@ func _on_screen_resized() -> void:
 func _size_decision_window() -> void:
 	var width := 820 if _page == "level_up" else 920 if _page == "attributes" else 1120
 	var height := 570 if _page == "level_up" else 560 if _page == "rewards" else 800
+	if GameManager.expedition.uses_consumable_cards() and _page in ["gear", "attributes", "cards", "build", "progression", "advancement"]:
+		width = 1240
 	_decision_panel.custom_minimum_size = Vector2(minf(width, maxf(640, size.x - 100)), minf(height, size.y - 64))
 
 
@@ -601,6 +625,7 @@ func _refresh_resources() -> void:
 	_summary.text = "Achille · étape %d / 20" % int(session.route.get_current_node().get("depth", 0))
 	var values := {"health": "%d / %d PV" % [hero.current_hp, hero.max_hp.get_int()], "level": "Niveau %d" % champion.current_level, "destiny": "%d points de destin" % session.build.points, "oboles": "%d oboles" % session.gold}
 	if session.cards != null and session.cards.rules_revision == 3: values.destiny = "%d points de perfection" % session.cards.points()
+	if session.uses_consumable_cards(): values.destiny = "%d amélioration(s)" % session.cards.points()
 	for key in values:
 		var label: Label = _resource_values[key]
 		var changed := label.text != str(values[key])
@@ -608,6 +633,7 @@ func _refresh_resources() -> void:
 		if changed and not _rendered_page.is_empty():
 			ART_THEME.reveal(label)
 	var points := champion.unspent_attribute_points
+	if session.uses_consumable_cards(): points = session.cards.attribute_points()
 	var attributes: Button = _navigation_buttons.attributes
 	attributes.text = "Caractéristiques" + (" · %d" % points if points > 0 else "")
 	attributes.tooltip_text = "%d point(s) à répartir. Consultez vos PV, vos dégâts et votre protection." % points if points > 0 else "Consultez vos PV, vos dégâts et votre protection."
@@ -646,7 +672,7 @@ func _close_current_view() -> void:
 
 
 func _open_inventory() -> void:
-	if GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3:
+	if GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision in [3, 4]:
 		_navigate("gear")
 		return
 	var persistent := GameManager.get_persistent_run_ui()
@@ -684,6 +710,9 @@ func _continue_flow() -> void:
 
 
 func _render_progression() -> void:
+	if GameManager.expedition.uses_consumable_cards():
+		_render_consumable_workshop("progression", _page == "progression")
+		return
 	if not is_instance_valid(_decision_panel):
 		_label(_body, "Caractéristiques", 28, TEXT, true)
 	if _page == "attributes":
@@ -743,6 +772,9 @@ func _spend_attribute(attribute_id: StringName) -> void:
 
 
 func _render_choice_screen(capacity_only := false) -> void:
+	if not capacity_only and GameManager.expedition.uses_consumable_cards() and GameManager.expedition.has_class_combat_receipt():
+		_render_class_loot()
+		return
 	if not capacity_only and GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3 and str(GameManager.expedition.route.get_current_node().kind) in ["normal", "elite", "boss"]:
 		_render_class_loot()
 		return
@@ -862,7 +894,7 @@ func _confirm_reward_selection() -> void:
 
 func _render_preparation() -> void:
 	var session := GameManager.expedition
-	var class_run := session.cards != null and session.cards.rules_revision == 3
+	var class_run := session.cards != null and session.cards.rules_revision in [3, 4]
 	var column := _scroll_column(_body)
 	_label(column, "Prêt pour la suite ?", 28, TEXT, true)
 	_label(column, "Préparez votre héros à votre rythme. Vous pouvez conserver vos points de %s pour plus tard." % ("perfection" if class_run else "destin"), 17, MUTED)
@@ -879,6 +911,11 @@ func _render_preparation() -> void:
 			entry[3] = "%d points de perfection" % session.cards.points()
 			entry[4] = "Renforcez votre classe ou investissez dans les cartes étrangères."
 			entry[5] = "Voir mes maîtrises"
+			if session.uses_consumable_cards():
+				entry[1] = "Classe & améliorations"
+				entry[3] = "%d amélioration(s) de famille" % session.cards.points()
+				entry[4] = "Choisissez vos attributs, votre spécialisation et les familles à améliorer."
+				entry[5] = "Développer ma classe"
 		var card := _card(options, TEAL if entry[0] == "gear" and _last_reward.has("item_id") else GOLD)
 		_icon(card, ART_THEME.icon("resources", "level") if entry[0] == "attributes" else ART_THEME.icon("nav", entry[2]), 60)
 		_label(card, entry[1], 22, TEXT, true)
@@ -912,6 +949,9 @@ func _render_departure() -> void:
 
 
 func _render_build() -> void:
+	if GameManager.expedition.uses_consumable_cards():
+		_render_consumable_workshop("progression")
+		return
 	if GameManager.expedition.cards != null and GameManager.expedition.cards.rules_revision == 3:
 		_render_class_progression(false)
 		return
@@ -933,6 +973,9 @@ func _render_build() -> void:
 
 
 func _render_equipped_skills() -> void:
+	if GameManager.expedition.uses_consumable_cards():
+		_render_consumable_workshop("deck")
+		return
 	if GameManager.expedition.cards != null:
 		_label(_body, "Deux gestes d'arme fixes et quatre manœuvres piochées. Ajoutez ou remplacez les cartes de votre deck ; les objets restent accessibles séparément.", 17, MUTED)
 		var deck := preload("res://ui/expedition/catabase_card_collection.gd").new()
@@ -1183,7 +1226,9 @@ func _render_final_preparation() -> void:
 	var card := _card(column, GOLD)
 	_label(card, "DEVANT PÂRIS · DERNIÈRE PRÉPARATION", 15, GOLD)
 	_label(card, "Votre prochain choix vous mène au dernier combat.", 25, TEXT, true)
-	_label(card, "Pâris est accompagné de deux spectres. Ne laissez pas trois adversaires exploiter le même tour. Sous 20 % de vie, une blessure non fatale réveille sa seconde chance : préparez votre fin de combat.", 18)
+	var boss_hint := "Pâris est accompagné de deux spectres. Ne laissez pas trois adversaires exploiter le même tour. Sous 20 % de vie, une blessure non fatale réveille sa seconde chance : préparez votre fin de combat."
+	if GameManager.expedition.uses_consumable_cards(): boss_hint = "Pâris annonce ses frappes en ligne. À 50 % de PV, il passe en phase 2. Gardez une sortie hors des cases menacées et assez de copies pour terminer le combat."
+	_label(card, boss_hint, 18)
 	_label(card, "Aucun soin ni objet offert ici. Changez librement vos techniques et votre équipement ; conservez vos fournitures pour le moment décisif.", 18)
 	var build_button := _button(card, "Réviser mes techniques")
 	build_button.pressed.connect(func(): _navigate("build"))
@@ -1282,6 +1327,9 @@ func _render_loadout(parent: Control) -> void:
 
 
 func _render_gear() -> void:
+	if GameManager.expedition.uses_consumable_cards():
+		_render_consumable_workshop("gear")
+		return
 	if GameManager.expedition.build.class_mode:
 		var inventory := preload("res://ui/expedition/class_inventory_view.gd").new()
 		inventory.read_only = inspection_only and not allow_attribute_edits
@@ -1399,11 +1447,34 @@ func _label(parent: Control, value: String, font_size: int = 18, color: Color = 
 
 
 func _render_cards() -> void:
+	if GameManager.expedition.uses_consumable_cards():
+		_render_consumable_workshop("deck")
+		return
 	var column := _scroll_column(_body)
 	var collection := preload("res://ui/expedition/catabase_card_collection.gd").new()
 	collection.read_only = inspection_only and not allow_attribute_edits
 	collection.transaction_completed.connect(_refresh_resources)
 	column.add_child(collection)
+
+
+func _render_consumable_workshop(mode: String, required := false) -> void:
+	var view := preload("res://ui/expedition/consumable_player_dossier.gd").new()
+	view.mode = mode
+	view.section = _page
+	view.read_only = inspection_only and not allow_attribute_edits
+	view.transaction_completed.connect(_refresh_resources)
+	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_body.add_child(view)
+	if required:
+		var button := _button(_body, "Terminer ma montée de niveau →", true)
+		button.name = "ConsumableProgressionContinue"
+		var refresh := func():
+			var cards = GameManager.expedition.cards
+			button.disabled = inspection_only or (cards.level >= 4 and cards.specialization.is_empty())
+			button.text = "Choisissez votre spécialisation" if button.disabled else "Terminer ma montée de niveau →"
+		button.pressed.connect(_advance_level_window)
+		view.transaction_completed.connect(refresh)
+		refresh.call()
 
 
 func _button(parent: Control, value: String, primary: bool = false) -> Button:
@@ -1412,6 +1483,8 @@ func _button(parent: Control, value: String, primary: bool = false) -> Button:
 	button.custom_minimum_size.y = 44
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	ART_THEME.apply_button(button, primary)
+	if GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
+		DOSSIER_THEME.button(button, primary)
 	parent.add_child(button)
 	return button
 
@@ -1465,7 +1538,7 @@ func _render_class_loot() -> void:
 	if is_instance_valid(_decision_panel):
 		_decision_panel.custom_minimum_size.y = minf(560, maxf(400, size.y - 180))
 		_decision_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var view := preload("res://ui/expedition/class_combat_results.gd").new()
+	var view = preload("res://ui/expedition/consumable_combat_results.gd").new() if GameManager.expedition.uses_consumable_cards() else preload("res://ui/expedition/class_combat_results.gd").new()
 	view.deck_requested.connect(func(): _navigate("cards"))
 	view.inventory_requested.connect(_open_inventory)
 	_scroll_column(_body).add_child(view)

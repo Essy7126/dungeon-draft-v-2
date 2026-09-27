@@ -285,6 +285,10 @@ func _emit_refresh(kind: StringName, path: String) -> void:
 
 
 func _restore_definition(definition: ItemDefinition, snapshot: Dictionary) -> void:
+	if definition is ConsumableCardItemDefinition:
+		definition.ruleset_id = str(snapshot.get("ruleset_id", ""))
+		definition.profile_modifiers = snapshot.get("profile_modifiers", {}).duplicate(true)
+		definition.profile_relic_rule = str(snapshot.get("profile_relic_rule", ""))
 	definition.item_id = StringName(snapshot.get("item_id", &""))
 	definition.display_name = str(snapshot.get("display_name", ""))
 	definition.description = str(snapshot.get("description", ""))

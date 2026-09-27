@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_ytss6"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_kvyeb"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_iroxf"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_fk0l1"]
+
+[resource]
+script = ExtResource("2_kvyeb")
+profile_modifiers = {
+"healing": 0.3,
+"hp": 0.04
+}
+item_id = &"cc2_s_care"
+display_name = "Trousse du passeur"
+description = "+30 % soins · +4 % PV maximaux"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+equipment_slot = 4

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_0yp8v"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_uep8j"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_81fir"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_xslk2"]
+
+[resource]
+script = ExtResource("2_uep8j")
+profile_modifiers = {
+"armor": 0.04,
+"melee": 0.08
+}
+item_id = &"cc2_f_brace"
+display_name = "Solerets du rempart"
+description = "+8 % dégâts au contact · +4 % résistance physique"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 1
+equipment_slot = 5

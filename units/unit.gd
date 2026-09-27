@@ -1095,7 +1095,11 @@ func get_spell_ap_cost(spell: Spell) -> int:
 		return 0
 	if spell.ap_cost <= 0:
 		return 0
-	return spell.ap_cost
+	var cost := spell.ap_cost
+	for modifier in spell.modifiers:
+		if modifier != null and modifier.applies_to(spell):
+			cost = modifier.get_ap_cost(self, spell, cost)
+	return maxi(0, cost)
 
 func can_afford_spell_resources(spell: Spell) -> bool:
 	if spell == null:
@@ -1485,6 +1489,9 @@ func take_damage(
 	var ctx := DamageResolver.HitContext.new()
 	ctx.attacker = attacker
 	ctx.raw_damage = amount + charged_bonus + outgoing_bonus
+	ctx.damage_ruleset = str(options.get("damage_ruleset", get_meta("cc2_ruleset", "")))
+	ctx.raw_payload = float(options.get("raw_payload", -1.0))
+	ctx.parry_payload = float(options.get("parry_payload", 0.0))
 	ctx.category = category
 	ctx.element = element
 	# Options éventuelles (terrain et sorts spéciaux).
@@ -1522,6 +1529,8 @@ func take_damage(
 		ctx,
 		_resolve_hit_origin_cell(attacker, options),
 	)
+	if ctx.damage_ruleset == "catabase_cards_consumable_v2":
+		preload("res://core/expedition/consumable_card_turns.gd").after_hit(self, attacker, result, ctx)
 	if effect_key != &"":
 		_resolved_combat_effects[effect_key] = result
 	if result != null and not result.dodged and not splash_spec.is_empty():
@@ -1692,7 +1701,8 @@ func _apply_damage_result(
 	var damage_to_hp := result.amount
 	var absorbed := 0
 	var shield_resolution: Dictionary = {}
-	if current_shield > 0 and damage_to_hp > 0:
+	var is_card_pressure := ctx != null and ctx.damage_ruleset == "catabase_cards_consumable_v2" and ctx.attack_classification == &"cc2_pressure"
+	if current_shield > 0 and damage_to_hp > 0 and not is_card_pressure:
 		shield_resolution = _absorb_with_shield_instances(
 			damage_to_hp,
 			ctx.attack_classification if ctx != null else &"",
@@ -1736,6 +1746,11 @@ func _apply_damage_result(
 	# shield_absorbed est émis séparément pour les consommateurs du journal/UI.
 	# --- Application aux PV ---
 	var health_loss := 0
+	if ctx != null and ctx.damage_ruleset == "catabase_cards_consumable_v2" and damage_to_hp >= current_hp and has_meta("cc2_effects"):
+		var profile_effects: Dictionary = get_meta("cc2_effects")
+		if profile_effects.has("edict") and ctx.attack_classification != &"cc2_pressure":
+			damage_to_hp = maxi(0, current_hp - 1)
+			profile_effects.erase("edict")
 	if damage_to_hp > 0:
 		health_loss = mini(current_hp, damage_to_hp)
 		current_hp -= health_loss

@@ -1,5 +1,18 @@
 # VFX cel — run Cartes
 
+## Validation du dessin avant production
+
+À la demande de Paolo du 27 septembre 2026, chaque nouveau projet de sort ou
+refonte VFX passe d'abord par un dessin en perspective de combat : silhouette,
+échelle par rapport au personnage, couleurs, apparition, moment fort et fin.
+Les états et terrains durables doivent aussi montrer leur forme maintenue.
+Paolo valide cette planche avant la modélisation, l'animation et l'intégration.
+Une validation technique ou un concept généré ne vaut pas validation artistique.
+
+[Premiers projets à choisir : Chaînes, Jardin, Moisson, Volée](../../docs/design/vfx_avant_production_2026-09-27/README.md).
+
+[Braise tenace — source Blender, intégration et revue de la run Cartes actuelle](braise/README.md).
+
 La production du 22 septembre remplace la DA éthérée par des poses dessinées.
 112 cartes, 17 séquences de six poses, compositions spécifiques aux cartes fortes.
 [Sources, prompts, règles et contrôles](../../vfx/class_cards/cel/README.md).

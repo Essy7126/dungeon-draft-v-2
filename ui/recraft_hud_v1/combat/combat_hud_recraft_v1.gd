@@ -756,6 +756,7 @@ func mount_card_hand(view: Control) -> void:
 	clear_card_hand()
 	_card_hand_view = view
 	_spell_section.add_child(view)
+	view.minimum_size_changed.connect(_apply_layout_metrics, CONNECT_DEFERRED)
 	_show_spells_button.text = "CARTES"
 	_show_spells_button.tooltip_text = "Afficher la main de cartes."
 	_set_active_bar_mode(BAR_MODE_SPELL)
@@ -2561,7 +2562,10 @@ func _apply_layout_metrics() -> void:
 
 
 func get_card_hud_height() -> float:
-	return 258.0 if is_instance_valid(_card_hand_view) and _card_hand_view.get_meta("expanded_card_faces", false) else CARD_HUD_HEIGHT
+	if not is_instance_valid(_card_hand_view): return CARD_HUD_HEIGHT
+	var base := 258.0 if _card_hand_view.get_meta("expanded_card_faces", false) else CARD_HUD_HEIGHT
+	# Room commands and the late-combat forecast must fit above the card row.
+	return maxf(base, _card_hand_view.get_combined_minimum_size().y + 20.0)
 
 
 func _apply_card_hand_layout(viewport_width: float) -> void:

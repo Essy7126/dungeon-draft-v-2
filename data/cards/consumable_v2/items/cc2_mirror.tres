@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_rkust"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_mla7d"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_eapg2"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_ku7ut"]
+
+[resource]
+script = ExtResource("2_mla7d")
+profile_relic_rule = "mirror"
+item_id = &"cc2_mirror"
+display_name = "Miroir du bronze"
+description = "La première attaque reçue de chaque combat renvoie 0,40 P ; aucun déclenchement récursif."
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 5

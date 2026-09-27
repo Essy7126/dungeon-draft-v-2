@@ -1,0 +1,133 @@
+{
+  "scope": "V1 rules; proposed transfer emulated by inserting mark only after a kill; not an integrated ability or human balance.",
+  "economics": {
+    "bagPrice": 36,
+    "bagCopies": 6,
+    "qSpecificNormal": 0.05833333333333333,
+    "expectedSpecificPerBag": 0.35,
+    "chanceSpecificPerBag": 0.3027585705050664,
+    "expectedEitherOfTwoPerBag": 0.7,
+    "chanceEitherOfTwoPerBag": 0.5249408194230111,
+    "goldPerExpectedSpecific": 102.85714285714286,
+    "goldPerExpectedEitherOfTwo": 51.42857142857143,
+    "singlePrice": 8,
+    "twoSingles": 16,
+    "tradeSaleOpportunityCost": 3,
+    "tradeNetStockChange": -2,
+    "limits": "Fresh normal bag; 8 shared + 4 native normals; uniform within 70% native/shared pool. Expected-cost ratios are not an unlimited buying strategy: only two bags per visit."
+  },
+  "pressureBudget": [
+    {
+      "turn": 8,
+      "cumulativeMaxHpFraction": 0
+    },
+    {
+      "turn": 9,
+      "cumulativeMaxHpFraction": 0.025
+    },
+    {
+      "turn": 10,
+      "cumulativeMaxHpFraction": 0.07500000000000001
+    },
+    {
+      "turn": 12,
+      "cumulativeMaxHpFraction": 0.25
+    },
+    {
+      "turn": 14,
+      "cumulativeMaxHpFraction": 0.5250000000000001
+    },
+    {
+      "turn": 16,
+      "cumulativeMaxHpFraction": 0.9
+    },
+    {
+      "turn": 17,
+      "cumulativeMaxHpFraction": 1.125
+    }
+  ],
+  "transferCases": [
+    {
+      "firstHp": 76,
+      "damageUpgrade": {
+        "firstKilled": true,
+        "hpFirst": 0,
+        "ap": 1,
+        "markSecond": 0,
+        "secondA02Legal": false,
+        "damageSecondWithN01": 32,
+        "damageSecondWithBasic": 11.199999999999989,
+        "totalEffectiveDamage": 108,
+        "cards": 2,
+        "apAfter": 0
+      },
+      "transferPrototype": {
+        "firstKilled": true,
+        "hpFirst": 0,
+        "ap": 1,
+        "markSecond": 8,
+        "secondA02Legal": false,
+        "damageSecondWithN01": 40,
+        "damageSecondWithBasic": 11.199999999999989,
+        "totalEffectiveDamage": 116,
+        "cards": 2,
+        "apAfter": 0
+      }
+    },
+    {
+      "firstHp": 80,
+      "damageUpgrade": {
+        "firstKilled": true,
+        "hpFirst": 0,
+        "ap": 1,
+        "markSecond": 0,
+        "secondA02Legal": false,
+        "damageSecondWithN01": 32,
+        "damageSecondWithBasic": 11.199999999999989,
+        "totalEffectiveDamage": 112,
+        "cards": 2,
+        "apAfter": 0
+      },
+      "transferPrototype": {
+        "firstKilled": false,
+        "hpFirst": 2,
+        "ap": 1,
+        "markSecond": 0,
+        "secondA02Legal": false,
+        "damageSecondWithN01": 22,
+        "damageSecondWithBasic": 11.199999999999989,
+        "totalEffectiveDamage": 100,
+        "cards": 2,
+        "apAfter": 0
+      }
+    },
+    {
+      "firstHp": 90,
+      "damageUpgrade": {
+        "firstKilled": false,
+        "hpFirst": 6,
+        "ap": 1,
+        "markSecond": 0,
+        "secondA02Legal": false,
+        "damageSecondWithN01": 22,
+        "damageSecondWithBasic": 11.199999999999989,
+        "totalEffectiveDamage": 106,
+        "cards": 2,
+        "apAfter": 0
+      },
+      "transferPrototype": {
+        "firstKilled": false,
+        "hpFirst": 12,
+        "ap": 1,
+        "markSecond": 0,
+        "secondA02Legal": false,
+        "damageSecondWithN01": 22,
+        "damageSecondWithBasic": 11.199999999999989,
+        "totalEffectiveDamage": 100,
+        "cards": 2,
+        "apAfter": 0
+      }
+    }
+  ],
+  "guardPurpose": "Pressure bypasses armor and guard in V1; guard can still prevent ordinary enemy damage during an urgent turn."
+}

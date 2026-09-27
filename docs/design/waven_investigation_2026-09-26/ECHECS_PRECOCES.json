@@ -1,0 +1,1072 @@
+[
+  {
+    "seed": 27001,
+    "failureFight": 3,
+    "turns": 17,
+    "gold": 110,
+    "pressure": 160.1525,
+    "totalHpLoss": 164.395,
+    "pressureShare": 0.9741932540527388,
+    "actions": {
+      "card": 8,
+      "walk": 16,
+      "guard": 16,
+      "basic": 4
+    },
+    "terminal": {
+      "hero": {
+        "pos": [
+          6,
+          4
+        ],
+        "hp": 0,
+        "maxHp": 165,
+        "p": 28.35
+      },
+      "enemies": [
+        {
+          "archetype": "brute",
+          "hp": 25.09112,
+          "pos": [
+            4,
+            4
+          ]
+        }
+      ],
+      "remaining": [
+        "n03",
+        "n08",
+        "n03",
+        "n03"
+      ],
+      "hand": []
+    },
+    "trace": [
+      {
+        "turn": 1,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_1_0_1",
+          "pos": [
+            3,
+            1
+          ]
+        },
+        "hp": 164.395,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 1,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            5,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 164.395,
+        "ap": 2,
+        "mp": 3
+      },
+      {
+        "turn": 1,
+        "action": {
+          "kind": "card",
+          "uid": "start_6",
+          "pos": [
+            5,
+            1
+          ]
+        },
+        "hp": 164.395,
+        "ap": 2,
+        "mp": 1
+      },
+      {
+        "turn": 1,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 164.395,
+        "ap": 1,
+        "mp": 1
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        },
+        "hp": 164.395,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 164.395,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_0_0_0",
+          "pos": [
+            6,
+            6
+          ]
+        },
+        "hp": 164.395,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            5,
+            6
+          ],
+          "cost": 1
+        },
+        "hp": 164.395,
+        "ap": 3,
+        "mp": 3
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "basic",
+          "target": "enemy_2"
+        },
+        "hp": 164.395,
+        "ap": 3,
+        "mp": 2
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "card",
+          "uid": "drop_1_0_0_0",
+          "pos": [
+            5,
+            6
+          ]
+        },
+        "hp": 164.395,
+        "ap": 2,
+        "mp": 2
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_1_0_0",
+          "pos": [
+            5,
+            5
+          ]
+        },
+        "hp": 164.395,
+        "ap": 1,
+        "mp": 2
+      },
+      {
+        "turn": 4,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_0_0_1",
+          "pos": [
+            5,
+            5
+          ]
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 4,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 1
+        },
+        "hp": 160.1525,
+        "ap": 2,
+        "mp": 3
+      },
+      {
+        "turn": 4,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 160.1525,
+        "ap": 2,
+        "mp": 2
+      },
+      {
+        "turn": 5,
+        "action": {
+          "kind": "card",
+          "uid": "start_10",
+          "pos": [
+            6,
+            6
+          ]
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 5,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            5,
+            6
+          ],
+          "cost": 1
+        },
+        "hp": 160.1525,
+        "ap": 3,
+        "mp": 3
+      },
+      {
+        "turn": 5,
+        "action": {
+          "kind": "basic",
+          "target": "enemy_1"
+        },
+        "hp": 160.1525,
+        "ap": 3,
+        "mp": 2
+      },
+      {
+        "turn": 5,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 160.1525,
+        "ap": 2,
+        "mp": 2
+      },
+      {
+        "turn": 6,
+        "action": {
+          "kind": "basic",
+          "target": "enemy_1"
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 6,
+        "action": {
+          "kind": "card",
+          "uid": "start_11",
+          "pos": [
+            5,
+            6
+          ]
+        },
+        "hp": 160.1525,
+        "ap": 3,
+        "mp": 3
+      },
+      {
+        "turn": 6,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 160.1525,
+        "ap": 2,
+        "mp": 3
+      },
+      {
+        "turn": 7,
+        "action": {
+          "kind": "basic",
+          "target": "enemy_1"
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 7,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            4
+          ],
+          "cost": 3
+        },
+        "hp": 160.1525,
+        "ap": 3,
+        "mp": 3
+      },
+      {
+        "turn": 7,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 160.1525,
+        "ap": 3,
+        "mp": 0
+      },
+      {
+        "turn": 8,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 8,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 9,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            4
+          ],
+          "cost": 2
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 9,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 160.1525,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 10,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        },
+        "hp": 156.0275,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 10,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 156.0275,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 11,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            4
+          ],
+          "cost": 2
+        },
+        "hp": 147.7775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 11,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 147.7775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 12,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        },
+        "hp": 135.4025,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 12,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 135.4025,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 13,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            4
+          ],
+          "cost": 2
+        },
+        "hp": 118.9025,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 13,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 118.9025,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 14,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        },
+        "hp": 98.2775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 14,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 98.2775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 15,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            4
+          ],
+          "cost": 2
+        },
+        "hp": 73.5275,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 15,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 73.5275,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 16,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            6
+          ],
+          "cost": 2
+        },
+        "hp": 44.6525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 16,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 44.6525,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 17,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            4
+          ],
+          "cost": 2
+        },
+        "hp": 11.652500000000003,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 17,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 11.652500000000003,
+        "ap": 4,
+        "mp": 1
+      }
+    ]
+  },
+  {
+    "seed": 27005,
+    "failureFight": 3,
+    "turns": 17,
+    "gold": 110,
+    "pressure": 154.3775,
+    "totalHpLoss": 158.62,
+    "pressureShare": 0.9732536880595133,
+    "actions": {
+      "card": 5,
+      "walk": 17,
+      "guard": 16
+    },
+    "terminal": {
+      "hero": {
+        "pos": [
+          6,
+          3
+        ],
+        "hp": 0,
+        "maxHp": 165,
+        "p": 28.35
+      },
+      "enemies": [
+        {
+          "archetype": "brute",
+          "hp": 39.9125,
+          "pos": [
+            3,
+            3
+          ]
+        },
+        {
+          "archetype": "brute",
+          "hp": 37.8713,
+          "pos": [
+            4,
+            3
+          ]
+        }
+      ],
+      "remaining": [
+        "n02",
+        "n03",
+        "n03",
+        "n02",
+        "n02"
+      ],
+      "hand": []
+    },
+    "trace": [
+      {
+        "turn": 1,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_0_0_0",
+          "pos": [
+            3,
+            1
+          ]
+        },
+        "hp": 158.62,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 1,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            3,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 158.62,
+        "ap": 3,
+        "mp": 3
+      },
+      {
+        "turn": 1,
+        "action": {
+          "kind": "card",
+          "uid": "drop_1_0_0_1",
+          "pos": [
+            3,
+            1
+          ]
+        },
+        "hp": 158.62,
+        "ap": 3,
+        "mp": 1
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            5,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 158.62,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "card",
+          "uid": "start_8",
+          "pos": [
+            1,
+            3
+          ]
+        },
+        "hp": 158.62,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 158.62,
+        "ap": 3,
+        "mp": 1
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_1_0_0",
+          "pos": [
+            4,
+            2
+          ]
+        },
+        "hp": 158.62,
+        "ap": 2,
+        "mp": 1
+      },
+      {
+        "turn": 2,
+        "action": {
+          "kind": "card",
+          "uid": "drop_2_0_0_1",
+          "pos": [
+            3,
+            1
+          ]
+        },
+        "hp": 158.62,
+        "ap": 1,
+        "mp": 1
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 3
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 3,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 0
+      },
+      {
+        "turn": 4,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 4,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 5,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 5,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 6,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 6,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 7,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 7,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 8,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 8,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 9,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 9,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 154.3775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 10,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 150.2525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 10,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 150.2525,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 11,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 142.0025,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 11,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 142.0025,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 12,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 129.6275,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 12,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 129.6275,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 13,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 113.1275,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 13,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 113.1275,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 14,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 92.5025,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 14,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 92.5025,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 15,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 67.7525,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 15,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 67.7525,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 16,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            5
+          ],
+          "cost": 2
+        },
+        "hp": 38.8775,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 16,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 38.8775,
+        "ap": 4,
+        "mp": 1
+      },
+      {
+        "turn": 17,
+        "action": {
+          "kind": "walk",
+          "pos": [
+            6,
+            3
+          ],
+          "cost": 2
+        },
+        "hp": 5.877499999999998,
+        "ap": 4,
+        "mp": 3
+      },
+      {
+        "turn": 17,
+        "action": {
+          "kind": "guard"
+        },
+        "hp": 5.877499999999998,
+        "ap": 4,
+        "mp": 1
+      }
+    ]
+  }
+]

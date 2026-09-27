@@ -1,0 +1,548 @@
+{
+	"anchor": [
+		192,
+		312
+	],
+	"animation": "braise_steam_E",
+	"baseline": {
+		"anchor": [
+			192,
+			312
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "2e7692dbb5ade4e9e82ab9954c37b006912e827d5c96647e4da6bcbb6a42681f",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "def0522ed57af625f2722eba35561460bd46d0b865cb40a607c767da9aee3d46",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "885fed1c9d42ffc8faf8560205d1eea50d64f3b67451a343c872b3b842d7e6df",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "17064fe4504003a21bbed7a3f156dd4ffa28f07e266fd06db8cc10cc0b169244",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "82302bd477dba49d7fa2ea44f4184d5d4b0c824f0db1cc9517a275b516c774d4",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6a370f1466a80371e884eaeb11c2b42ea29b85c47ee2db75a5b4035abf0dc9c6",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "d5bf7b1aa95b529c4a9aa375ed25e26b2b3bd37a5c209c904f45708a4a1c3b26",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b4d4a9f21a0dc76bda37f9d1d799613f6d42e7030091df28bb63cef3a15b7bca",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "bd93301ae9b1a95ccf82e505c63d31f52df2e8b3f6678abce6e8df0e17fc99e9",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "65d747ae5d172a02b7dc2ba897b77fc8a95715359106c8fa8bd631fd1eabd285",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "2ea3b5c95dc368d5416100dfdb1f305f4fab92f7484edf95edfb808eb20440df",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "24d1eab070d3237a234ffaa6a628c9d5f3d0bf3ec5033288786e6c2672b87483",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0012.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "2e7692dbb5ade4e9e82ab9954c37b006912e827d5c96647e4da6bcbb6a42681f",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "def0522ed57af625f2722eba35561460bd46d0b865cb40a607c767da9aee3d46",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "885fed1c9d42ffc8faf8560205d1eea50d64f3b67451a343c872b3b842d7e6df",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "17064fe4504003a21bbed7a3f156dd4ffa28f07e266fd06db8cc10cc0b169244",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "82302bd477dba49d7fa2ea44f4184d5d4b0c824f0db1cc9517a275b516c774d4",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6a370f1466a80371e884eaeb11c2b42ea29b85c47ee2db75a5b4035abf0dc9c6",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "d5bf7b1aa95b529c4a9aa375ed25e26b2b3bd37a5c209c904f45708a4a1c3b26",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b4d4a9f21a0dc76bda37f9d1d799613f6d42e7030091df28bb63cef3a15b7bca",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "bd93301ae9b1a95ccf82e505c63d31f52df2e8b3f6678abce6e8df0e17fc99e9",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "65d747ae5d172a02b7dc2ba897b77fc8a95715359106c8fa8bd631fd1eabd285",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "2ea3b5c95dc368d5416100dfdb1f305f4fab92f7484edf95edfb808eb20440df",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "24d1eab070d3237a234ffaa6a628c9d5f3d0bf3ec5033288786e6c2672b87483",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0012.png"
+		}
+	],
+	"id": "braise_steam",
+	"intent": "Production de la planche E validée le 27 septembre. Charbon, éclatement, état de braise et vapeur.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/braise/provenance.json": "070a2d65957a850ad3ab883d842d2f812f769aaee04418ccafe7676b267e6c90"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "6a370f1466a80371e884eaeb11c2b42ea29b85c47ee2db75a5b4035abf0dc9c6",
+		"source": "res://artifacts/dev/class_card_vfx/braise/render/steam/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/braise/steam.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Braise tenace — steam"
+}

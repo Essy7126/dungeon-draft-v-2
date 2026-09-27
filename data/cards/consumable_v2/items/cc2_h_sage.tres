@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_0keqf"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_ita75"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_o3qt3"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_jyao1"]
+
+[resource]
+script = ExtResource("2_ita75")
+profile_modifiers = {
+"guard": 0.15
+}
+item_id = &"cc2_h_sage"
+display_name = "Diadème patient"
+description = "+15 % garde produite"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 1
+equipment_slot = 3

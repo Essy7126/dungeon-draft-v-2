@@ -4,6 +4,7 @@ extends Node2D
 const Navigation := preload("res://hub/sanctuary_prototype/sanctuary_navigation.gd")
 const Player := preload("res://hub/painted_halt/halt_player.gd")
 const ScaleReference := preload("res://hub/painted_halt/halt_scale_reference.gd")
+const PasseRiveAppearance := preload("res://characters/achilles/2d/passe_rive_appearance.gd")
 const Atmosphere := preload("res://hub/painted_halt/halt_atmosphere.gd")
 const Manifest := preload(
 	"res://addons/dungeon_draft_arena_studio/halts/services/painted_halt_manifest_service.gd"
@@ -222,7 +223,17 @@ func _configure_player(actor: Player) -> void:
 	if not preview_mode and run != null:
 		actor.sprite_profile = RunHeroVisualVariants.exploration_profile(run.hero_visual_variants)
 		if actor.sprite_profile is PasseRiveAutoSpriteProfile:
-			actor.display_scale = ScaleReference.height_ratio(definition) * world_size.y / 214.0
+			actor.display_scale = _passe_rive_display_scale()
+
+
+func _passe_rive_display_scale() -> float:
+	var viewport_size := get_viewport_rect().size
+	var fitted_scale := minf(viewport_size.x / world_size.x, viewport_size.y / world_size.y)
+	return PasseRiveAppearance.room_scale(
+		viewport_size,
+		fitted_scale,
+		PasseRiveAppearance.SOURCE_HEIGHT,
+	)
 
 
 func _create_interactions() -> Interactions:
@@ -383,12 +394,18 @@ func _choose_route_gait() -> void:
 	for point in _path:
 		distance += _ground_distance(point - previous)
 		previous = point
-	player.locomotion_running = player.sprite_profile is PasseRiveAutoSpriteProfile and distance >= 300.0 * player.display_scale
+	player.locomotion_running = (
+		player.sprite_profile is PasseRiveAutoSpriteProfile
+		and distance >= 300.0 * player.display_scale
+	)
 	_route_speed_multiplier = 1.0
 	if player.sprite_profile is PasseRiveAutoSpriteProfile:
 		var stride := 300.0 if player.locomotion_running else 180.0
 		var cycle_seconds := 0.60 if player.locomotion_running else 0.72
-		_route_speed_multiplier = stride * player.display_scale / cycle_seconds / maxf(float(definition.world.speed), 1.0)
+		_route_speed_multiplier = stride * player.display_scale / cycle_seconds / maxf(
+			float(definition.world.speed),
+			1.0,
+		)
 
 
 func stop_movement(cancel_interaction := true) -> void:
@@ -546,7 +563,12 @@ func _fit_world() -> void:
 	if world == null:
 		return
 	var size := get_viewport_rect().size
-	var factor := minf(size.x / world_size.x, size.y / world_size.y) * zoom
+	var fitted_scale := minf(size.x / world_size.x, size.y / world_size.y)
+	var factor := fitted_scale * zoom
+	if player != null and player.sprite_profile is PasseRiveAutoSpriteProfile:
+		player.set_reference_display_scale(_passe_rive_display_scale())
+		if is_player_moving():
+			_choose_route_gait()
 	world.scale = Vector2.ONE * factor
 	var center := world_size * 0.5
 	if zoom > 1.0 and player != null:

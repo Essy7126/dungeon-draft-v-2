@@ -1,0 +1,89 @@
+{
+  "files": [
+    {
+      "identical": true,
+      "sha256": "c54ebbd7adaeb35a0eaa1990e8d4250a60e64e70a4944e631958e0a3328375cc",
+      "original_sha256": "c54ebbd7adaeb35a0eaa1990e8d4250a60e64e70a4944e631958e0a3328375cc",
+      "file": "atlases/PR_BLADES.png"
+    },
+    {
+      "identical": true,
+      "sha256": "88f421b33821b39062b27b716aae43cd2ce1dcfe494994ab8181e27f1b598e47",
+      "original_sha256": "88f421b33821b39062b27b716aae43cd2ce1dcfe494994ab8181e27f1b598e47",
+      "file": "atlases/PR_DAGGER.png"
+    },
+    {
+      "identical": true,
+      "sha256": "a091565c75f955c1d7b761ca327f106bc0a9de8877d6a0720f496566c7e71cf8",
+      "original_sha256": "a091565c75f955c1d7b761ca327f106bc0a9de8877d6a0720f496566c7e71cf8",
+      "file": "atlases/PR_EMBER.png"
+    },
+    {
+      "identical": true,
+      "sha256": "18e3e389b5e9d0a77c5b44bb529b65c9de488d269463d19e2b22a8818a21d9d2",
+      "original_sha256": "18e3e389b5e9d0a77c5b44bb529b65c9de488d269463d19e2b22a8818a21d9d2",
+      "file": "atlases/PR_IDLE.png"
+    },
+    {
+      "identical": true,
+      "sha256": "b975b7b45ace9a103fa46e5e4f0c635536551d252e4b2ee19d97360b16fa9d7a",
+      "original_sha256": "b975b7b45ace9a103fa46e5e4f0c635536551d252e4b2ee19d97360b16fa9d7a",
+      "file": "atlases/PR_RIPOSTE.png"
+    },
+    {
+      "identical": true,
+      "sha256": "d2dd7b7e955636ed786d7ef9065ff93c7f7f132e601a567f7ef6be700314281d",
+      "original_sha256": "d2dd7b7e955636ed786d7ef9065ff93c7f7f132e601a567f7ef6be700314281d",
+      "file": "atlases/PR_SEAL_v03.png"
+    },
+    {
+      "identical": true,
+      "sha256": "32317487eddb0bbba01a42fcee4aaa5015b02775be6e5915473356712ac667be",
+      "original_sha256": "32317487eddb0bbba01a42fcee4aaa5015b02775be6e5915473356712ac667be",
+      "file": "atlases/PR_SHOT.png"
+    },
+    {
+      "identical": true,
+      "sha256": "cd6a5275713b248a9607a0d484a2d8127aed83b3482e2fced2e6c29b3ba515fe",
+      "original_sha256": "cd6a5275713b248a9607a0d484a2d8127aed83b3482e2fced2e6c29b3ba515fe",
+      "file": "atlases/PR_VOLLEY.png"
+    },
+    {
+      "identical": true,
+      "sha256": "c87b4fe8b18ed8c1aeef2b64366fc3eddf6cac4e52ac520a7d54f22889dc4b6d",
+      "original_sha256": "c87b4fe8b18ed8c1aeef2b64366fc3eddf6cac4e52ac520a7d54f22889dc4b6d",
+      "file": "atlases/PR_WALK.png"
+    },
+    {
+      "identical": true,
+      "sha256": "81bbbe0577cc256a6a36e535e1e7365a55391db14c771c8219be000cfa479ed7",
+      "original_sha256": "81bbbe0577cc256a6a36e535e1e7365a55391db14c771c8219be000cfa479ed7",
+      "file": "vfx/fire.png"
+    },
+    {
+      "identical": true,
+      "sha256": "3db0a3b2566a3c76ea87347e875880220590fd5e8e4282d65123152a45c1bcfa",
+      "original_sha256": "3db0a3b2566a3c76ea87347e875880220590fd5e8e4282d65123152a45c1bcfa",
+      "file": "vfx/mark.png"
+    },
+    {
+      "identical": true,
+      "sha256": "a5ea2282b90f0b96cbd1f1fdd87864b7a933040132d8e586237d29d4df6977d5",
+      "original_sha256": "a5ea2282b90f0b96cbd1f1fdd87864b7a933040132d8e586237d29d4df6977d5",
+      "file": "vfx/pierce.png"
+    },
+    {
+      "identical": true,
+      "sha256": "4d14ad21e6507821a5630001c2ab0153e48897642c4103aacce11f3415cf0458",
+      "original_sha256": "4d14ad21e6507821a5630001c2ab0153e48897642c4103aacce11f3415cf0458",
+      "file": "vfx/slash.png"
+    },
+    {
+      "identical": true,
+      "sha256": "845570a9dd8a93937caa8f14b9db8e2cde080ec6f03b2b27fee59a636595480b",
+      "original_sha256": "845570a9dd8a93937caa8f14b9db8e2cde080ec6f03b2b27fee59a636595480b",
+      "file": "vfx/volley.png"
+    }
+  ],
+  "all_identical": true
+}

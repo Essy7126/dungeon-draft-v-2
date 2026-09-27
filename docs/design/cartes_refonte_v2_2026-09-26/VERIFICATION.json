@@ -1,0 +1,106 @@
+{
+  "status": "DESIGN_PACKAGE_CHECKED_NOT_GAMEPLAY_VALIDATED",
+  "version": "2.0.0-design.1",
+  "checks": 49,
+  "checkNames": [
+    "Source manifeste V1 inchangée",
+    "Source catalogue V1 inchangée",
+    "Conception explicitement non implémentée",
+    "Version du profil cohérente",
+    "48 familles sans ID doublonné",
+    "48 ID runtime isolés",
+    "23 familles modifiées recensées",
+    "Quatre classes et huit spécialisations",
+    "18 équipements et huit reliques",
+    "48 effets de base et améliorations documentés",
+    "Coûts et portées légaux",
+    "Spécialisations assassin",
+    "Préparation assassin/0",
+    "Pool de normales assassin constant",
+    "Spécialisations gardien",
+    "Préparation gardien/0",
+    "Pool de normales gardien constant",
+    "Spécialisations arpenteur",
+    "Préparation arpenteur/0",
+    "Pool de normales arpenteur constant",
+    "Spécialisations thaumaturge",
+    "Préparation thaumaturge/0",
+    "Préparation thaumaturge/1",
+    "Pool de normales thaumaturge constant",
+    "Ancienne spécialisation ambush non superposée",
+    "Pression définie sans conflit",
+    "Douze rencontres ordonnées",
+    "Références ennemies valides",
+    "Cinq variantes documentées",
+    "Courbes complètes",
+    "XP monotone",
+    "Sept canaux par palier",
+    "Plancher normal",
+    "Sauvegarde V2 distincte",
+    "Copie consommée incompatible avec reprise au début du combat",
+    "Pas de double scaling de difficulté",
+    "Ouverture préparée : formule et énumération indépendante",
+    "Répercussion au sacrifice maximum",
+    "Répercussion conserve le point zéro",
+    "Le cap de supplément est cohérent",
+    "Sacrifice entier au niveau 1",
+    "Eau et glace exigent une préparation temporelle",
+    "Déplacement puis relais reste payable",
+    "Budget de monnaie sans vente/Obole",
+    "Le sac conserve son espérance ciblée",
+    "Pas d’arbitrage achat/revente normal",
+    "Budget de Pâris et transition conservée",
+    "Réservoir indépendant de P équipé",
+    "Tous les liens documentaires locaux résolus"
+  ],
+  "localLinks": 21,
+  "manifestSha256": "f7858b253a6af464563e18b25fc55cc504bde2b0ef40e37859339639bdfe10df",
+  "calculations": {
+    "access": [
+      {
+        "n": 15,
+        "normalHand": 0.5144855144855145,
+        "prepared": 0.6703296703296704
+      },
+      {
+        "n": 20,
+        "normalHand": 0.3308823529411764,
+        "prepared": 0.5304437564499485
+      },
+      {
+        "n": 30,
+        "normalHand": 0.1652561997389584,
+        "prepared": 0.37055281882868085
+      }
+    ],
+    "enumeratedPreparedHands": 3876,
+    "guardConversionAtP40": [
+      {
+        "sacrifice": 0,
+        "damage": 28,
+        "remainingGuard": 46
+      },
+      {
+        "sacrifice": 16,
+        "damage": 52,
+        "remainingGuard": 30
+      },
+      {
+        "sacrifice": 32,
+        "damage": 76,
+        "remainingGuard": 14
+      }
+    ],
+    "prebossGold": 515,
+    "targetCopiesPerBag": 0.3499999999999999,
+    "bossHP": 840,
+    "bossPhaseThreshold": 420,
+    "reservoirSixChargesLevel12": 336
+  },
+  "notExecuted": [
+    "Godot import",
+    "Godot unit/scenario tests",
+    "Full V2 combat/run simulation",
+    "Human playtest"
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "generated_at_utc": "2026-09-26T13:05:10.079405+00:00",
+  "snapshot": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project",
+  "snapshot_manifest": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\snapshot.json",
+  "scope": "Appearance runtime hashes identical in source and isolated test snapshot. Other tasks modify unrelated source files concurrently; this is not certification of their later changes.",
+  "runtime": [
+    {
+      "path": "characters/achilles/2d/passe_rive_appearance.gd",
+      "sha256": "b93e50cf2836a3c418eada6afeb99875e8303edffd76618c3c2dbfad7825ac44",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_palette.gdshader",
+      "sha256": "02076645ca8a2324b365547105a4b9df3222bc5b285e576ebff1e50ad38543ab",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_palette_data.gd",
+      "sha256": "c033eae9b0c141e71c1aa3ccfa07dcb872bf442300ce6d32ed4fd57f0bb81b20",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_registration.gd",
+      "sha256": "25fbace0df6f662444cffc3dd1e4748cb65e52dc7e767ebb29e2a1f52ebb5235",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_registration_data.gd",
+      "sha256": "0836064c4d4bd32fce866b36b6af9de0eed25f917fc32727eb65a7f0a8f74d79",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_autosprite_backend.gd",
+      "sha256": "7e8da571810644d028eb131f7efff6b45c65d0941e5aded97f5f7e6f6f6bc103",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_s19_backend.gd",
+      "sha256": "12d98be2b3a78aca834574e06e694c2cfaeec5d067ebad964037b8d5f8fe0215",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/2d/passe_rive_s19_body.gd",
+      "sha256": "96170238997237db9cdde66cf80f0489e00aa4a119f07edffedc24a18b5a12f5",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "characters/achilles/passe_rive_autosprite_view.gd",
+      "sha256": "e0ba6f349a0f5cc3cc0055d0ede9bd1915b4160e38a4e8dae16e68759d0418cb",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "hub/painted_halt/living_halt.gd",
+      "sha256": "7e0d490c3d092e3854cca5e3ae44bfddabe2bab9cc369c166aa60798b49b01a5",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "hub/painted_halt/halt_player.gd",
+      "sha256": "aabb337a88ef018476cdc1541ba6b9141bbf1720bc852572fd227ea1e6140f99",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "hub/catabase_threshold/catabase_threshold.gd",
+      "sha256": "600d8b0f9c49de74991a4fbf96152d039a954553013b6760dd53e17d925f4419",
+      "identical_in_snapshot": true
+    },
+    {
+      "path": "battle/audio/catabase_battle_audio.gd",
+      "sha256": "dfcd93deb4cf54f075e2344b2ef13511280d2013729eef8aded78748e8e05f7d",
+      "identical_in_snapshot": true
+    }
+  ],
+  "suites": [
+    {
+      "run": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-144959-test-cards-a17db766",
+      "passed": true,
+      "verdict": "PASS",
+      "tests": 121,
+      "assertions": 11498,
+      "failures": [],
+      "errors": [],
+      "report": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-144959-test-cards-a17db766\\gut-strict-report.json"
+    },
+    {
+      "run": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-145432-test-test_unit_test_passe_rive_autosprite.gd-91ac718b",
+      "passed": true,
+      "verdict": "PASS",
+      "tests": 13,
+      "assertions": 6589,
+      "failures": [],
+      "errors": [],
+      "report": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-145432-test-test_unit_test_passe_rive_autosprite.gd-91ac718b\\gut-strict-report.json"
+    },
+    {
+      "run": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-145531-test-halts-edb6e3da",
+      "passed": false,
+      "verdict": "FAIL",
+      "tests": 54,
+      "assertions": 1779,
+      "failures": [
+        "TEST_FAILURE"
+      ],
+      "errors": [
+        {
+          "classification": "TEST_FAILURE",
+          "code": "TEST_FAILURE",
+          "message": "Tests en echec: [test_painted_halt_runtime.gd::test_bindings_are_presentation_only_and_preserve_all_seeded_route_ids].",
+          "source": "junit",
+          "line": null,
+          "text": null
+        },
+        {
+          "classification": "TEST_FAILURE",
+          "code": "TEST_FAILURE",
+          "message": "GUT rapporte des tests en echec.",
+          "source": "gut",
+          "line": null,
+          "text": null
+        }
+      ],
+      "report": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-145531-test-halts-edb6e3da\\gut-strict-report.json"
+    },
+    {
+      "run": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-145631-test-audio-f41610d2",
+      "passed": false,
+      "verdict": "FAIL",
+      "tests": 106,
+      "assertions": 1906,
+      "failures": [
+        "TEST_FAILURE"
+      ],
+      "errors": [
+        {
+          "classification": "TEST_FAILURE",
+          "code": "TEST_FAILURE",
+          "message": "Tests en echec: [test_catabase_threshold.gd::test_failed_first_checkpoint_retries_the_write_without_creating_another_run, test_catabase_threshold.gd::test_intro_handoff_preserves_selection_and_previous_save_until_the_gate, test_catabase_threshold.gd::test_resuming_a_checkpoint_bypasses_both_cinematic_and_threshold, test_painted_halt_runtime.gd::test_bindings_are_presentation_only_and_preserve_all_seeded_route_ids].",
+          "source": "junit",
+          "line": null,
+          "text": null
+        },
+        {
+          "classification": "TEST_FAILURE",
+          "code": "TEST_FAILURE",
+          "message": "GUT rapporte des tests en echec.",
+          "source": "gut",
+          "line": null,
+          "text": null
+        }
+      ],
+      "report": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\20260926-145631-test-audio-f41610d2\\gut-strict-report.json"
+    }
+  ],
+  "visual": {
+    "path": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\artifacts\\dev\\passe-rive-s23-20260926-143603",
+    "checks": 168,
+    "frames": 98,
+    "rooms": 17,
+    "passed": true
+  },
+  "gameplay": {
+    "path": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\passe-rive-s22-20260926-145900",
+    "checks": 565,
+    "frames": 43,
+    "recorded_frames": 336,
+    "casts": 11,
+    "passed": true
+  },
+  "flow": {
+    "path": "C:\\Users\\paolo\\Documents\\Codex\\2026-09-19\\lis-la-conversation-x20\\artifacts\\s23_validation\\project\\artifacts\\dev\\passe-rive-flow-20260926-150019",
+    "casts": {
+      "class_i_t_burn": 2,
+      "class_i_t_fire": 1,
+      "class_i_t_frost": 1,
+      "class_i_t_hex": 1,
+      "class_i_t_mark": 3
+    },
+    "detail": "Cards preparation, real AI victory, receipt and disk resume with Passe-Rive",
+    "disk_resume": true,
+    "end_turns": 3,
+    "moves": 3,
+    "passed": true,
+    "s19_backend": true,
+    "s20_directional_views": [
+      "autosprite_v1/walk_SE",
+      "autosprite_v1/run_SW",
+      "autosprite_v1/run_SE",
+      "autosprite_v1/idle_SE",
+      "autosprite_v1/run_NE",
+      "PR_SEAL_SE",
+      "PR_EMBER_SE"
+    ]
+  },
+  "palette_metrics": {
+    "method": "Mean Euclidean distance in 8-bit RGB between material medians and canonical idle_SE; evaluated with runtime shader equation; not anatomical or temporal validation.",
+    "samples": 175,
+    "before_mean_rgb_distance": 20.430960697607382,
+    "after_mean_rgb_distance": 2.5767459494807046,
+    "reduction_percent": 87.38803334988324
+  },
+  "artistic_limit": "Atlas drawings retain different hood and garment construction. No claim of perfect silhouette or invisible joins; no ghosting crossfade."
+}

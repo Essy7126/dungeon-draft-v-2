@@ -15,6 +15,7 @@ var phase: String = "map"
 var last_restore_error: String = ""
 ## Presentation only; canonical graph and save fingerprint stay unchanged.
 var card_tactical_rooms_enabled := false
+var consumable_cards_enabled := false
 var difficulty_id: String = "normal"
 
 var _canonical_nodes: Array[Dictionary] = []
@@ -132,7 +133,9 @@ func _visible_descendants(start_id: String, visible: Dictionary) -> Dictionary:
 
 
 func get_current_node() -> Dictionary:
-	return _nodes_by_id.get(current_node_id, {}).duplicate(true)
+	var node: Dictionary = _nodes_by_id.get(current_node_id, {}).duplicate(true)
+	if consumable_cards_enabled: _consumable_hint(node)
+	return node
 
 
 func choose_node(node_id: String) -> bool:
@@ -273,8 +276,22 @@ func _available_ids() -> Array[String]:
 	return result
 
 
+func _consumable_hint(node: Dictionary) -> void:
+	if node.is_empty(): return
+	if node.get("preparation_only", false):
+		node.hint = "Préparez vos copies, vos améliorations et votre équipement avant Pâris."
+		return
+	match str(node.kind):
+		"boss": node.hint = "Pâris annonce ses frappes en ligne. À 50 % de PV, il passe en phase 2 ; évitez les cases menacées."
+		"normal", "elite": node.hint = "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+		"merchant": node.hint = "Copies, sacs, soin, équipement et reliques ; vente, échange et réaffectation d'améliorations."
+		"hub": node.hint = "Soin gratuit une fois, puis préparation du deck et de l'équipement."
+		_: node.hint = "Révélez un passage et recevez 20 oboles, puis préparez votre prochaine rencontre."
+
+
 func _preview(node: Dictionary) -> Dictionary:
 	var result := node.duplicate(true)
+	if consumable_cards_enabled: _consumable_hint(result)
 	if card_tactical_rooms_enabled:
 		var tactical = preload("res://core/expedition/card_tactical_room_catalog.gd")
 		var room_id: String = tactical.id_for(node)

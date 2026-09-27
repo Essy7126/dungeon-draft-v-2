@@ -39,6 +39,11 @@ func _style_id_for_fact(fact: CombatEventFact) -> StringName:
 	match fact.event_type:
 		&"hp_damage_taken":
 			if fact.is_periodic:
+				match fact.status_id:
+					&"cc2_burn":
+						return &"damage_cc2_burn"
+					&"cc2_bleed":
+						return &"damage_cc2_bleed"
 				return &"damage_periodic"
 			if fact.is_critical:
 				return &"damage_critical"

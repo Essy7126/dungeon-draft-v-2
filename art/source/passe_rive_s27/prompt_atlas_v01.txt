@@ -1,0 +1,20 @@
+Use case: stylized-concept.
+Create a production transparent sprite animation atlas for the approved "Sceau de parade / Garde brève" of Passe-Rive.
+Reference 1: approved four-pose concept, EXACT character design, costume, direction and defensive gesture. Reference 2: native idle sheet, PRIMARY proportions, narrow silhouette and isometric camera. Keep the native idle's slim body, not an enlarged/chibi torso.
+Layout: exactly TWELVE full-body drawings in a strict 4 columns by 3 rows grid of equal SQUARE cells, landscape 4:3 canvas. Reading left to right top to bottom. Every pose centered with generous padding and fits entirely inside its cell. Equal head size, leg lengths and drawing scale throughout. Camera fixed elevated isometric SE, face looking screen right in all frames. Both boots planted in the SAME relative positions in all twelve cells; no crouch or spreading stance. The lower/front boot is around local x 43%, y 91%; the upper/rear boot around x 62%, y 82%. Body stays tall and slender.
+Identity exactly from references: dark teal pointed hood and short split tunic, ivory angular full mask in shadowed opening, grey sage-green short shoulder mantle with round bronze pin on viewer left, ivory cloth waist sash, black sleeves gloves trousers and boots, simple bronze forearm and ankle bands. Thin dark contours, restrained flat two-tone cel shading. Constant neutral lighting and colors.
+Animate a compact DEFENSIVE gesture, with a subtle torso recoil, crossed forearm preparation, and one raised open palm. The arm arising from the screen-right shoulder becomes the raised guarding palm; the other stays low near the sternum. Preserve this arm identity all the way through. No weapons. NOT the earlier symmetric raised-hands incantation.
+Frame 1: native neutral, arms hanging down.
+Frame 2: beginning anticipation, shoulders lift a little, elbows start bending, hands near waist.
+Frame 3: both forearms gather and begin crossing before lower chest, slight torso recoil away from screen right.
+Frame 4: compact shallow-X crossed forearms before sternum as in reference concept TOP RIGHT. Loose closed hands, no praying hands. Chin tucked, face remains visible.
+Frame 5: the screen-right elbow opens slightly while the guarding forearm rises, hand halfway open; the other forearm lowers to sternum, creating clear separation.
+Frame 6: RELEASE/APEX: match reference concept BOTTOM LEFT, screen-right palm raised outward facing incoming threat at head height, elbow bent naturally; other hand relaxed near lower sternum. Asymmetrical warding pose, slight backward torso lean. Wrist straight in line with forearm, fingers compact, no enormous hand.
+Frame 7: brief settle in this same guarding position; tiny recoil in elbow and shoulders, palm still up. Feet unchanged.
+Frame 8: tension softens, guarding palm begins descending to shoulder height, other hand lower.
+Frame 9: guarding elbow sinks to chest height, fingers relax, torso returns toward upright.
+Frame 10: both hands descend past waist, shoulders lower, cloth follows with a slight delay.
+Frame 11: nearly native idle, slight residual bend in elbows.
+Frame 12: exactly return to frame 1 native neutral, identical feet, body height and costume.
+Maintain continuous plausible arm motion across drawings with exactly two arms, two hands, natural wrists, consistent cuffs, connected elbows. Movement mainly in torso shoulders and arms, never repeatedly squatting. The overall head-to-ground height should vary less than 2%.
+True transparent alpha background, NO floor or contact shadows, NO VFX/glows/energy/ward symbol; VFX will be layered separately in engine. No text, no labels, no panel lines or grids. Full uncropped sprites with margin in each cell.

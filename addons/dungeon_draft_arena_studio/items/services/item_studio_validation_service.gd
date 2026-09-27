@@ -45,6 +45,15 @@ func _validate_definition(
 	if definition == null:
 		_error(messages, &"ITEM_NULL", "Aucune définition d’objet n’est chargée.")
 		return _report(messages)
+	# Consumable Cards owns its trigger policy and final-rounding payloads. Its
+	# resources still use Studio identities, catalog checks and transactions.
+	if definition is ConsumableCardItemDefinition:
+		if not definition.is_valid(): _error(messages, &"PROFILE_ITEM_INVALID", "Objet Cartes V2 invalide.")
+		if path_service.normalize_item_id(str(definition.item_id)) != str(definition.item_id): _error(messages, &"ITEM_ID_INVALID", "Identifiant invalide.")
+		if catalog != null and catalog.has_item_id(definition.item_id, source_path): _error(messages, &"ITEM_ID_DUPLICATE", "Identifiant déjà utilisé.")
+		if published_item_id != &"" and definition.item_id != published_item_id: _error(messages, &"PUBLISHED_ID_IMMUTABLE", "Dupliquez un objet publié pour changer son identifiant.")
+		if not target_path.is_empty() and FileAccess.file_exists(target_path) and target_path != source_path: _error(messages, &"PATH_COLLISION", "Le chemin est occupé.")
+		return _report(messages)
 	if definition.item_id == &"":
 		_error(messages, &"ITEM_ID_EMPTY", "L’identifiant de l’objet est obligatoire.", "item_id")
 	elif path_service.normalize_item_id(str(definition.item_id)) != str(definition.item_id):

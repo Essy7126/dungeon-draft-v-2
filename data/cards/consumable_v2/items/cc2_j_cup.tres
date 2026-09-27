@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_ax23e"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_lc7q4"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_cbrgv"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_6tcfu"]
+
+[resource]
+script = ExtResource("2_lc7q4")
+profile_modifiers = {
+"lifesteal": 0.1
+}
+item_id = &"cc2_j_cup"
+display_name = "Pendentif écarlate"
+description = "+10 % drain de vie"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+equipment_slot = 2

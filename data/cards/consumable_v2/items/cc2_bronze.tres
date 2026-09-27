@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_o8a70"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_ktl03"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_u402n"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_jcsv2"]
+
+[resource]
+script = ExtResource("2_ktl03")
+profile_relic_rule = "bronze"
+item_id = &"cc2_bronze"
+display_name = "Urne patiente"
+description = "Si de la garde a absorbé des dégâts, gagne 0,25 P de garde au prochain tour."
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 5

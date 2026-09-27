@@ -39,6 +39,11 @@ func get_range_bonus(_caster, _spell) -> int:
 	return 0
 
 
+## Shared by availability, presentation and commitment; neutral for old profiles.
+func get_ap_cost(_caster, _spell, base_cost: int) -> int:
+	return base_cost
+
+
 ## Shared by actual healing and previews. Neutral for existing modifiers.
 func get_heal_amount(_caster, _spell, base_amount: int) -> int:
 	return base_amount

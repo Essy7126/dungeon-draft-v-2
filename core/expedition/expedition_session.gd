@@ -21,6 +21,13 @@ var advancement_step := ""
 var advancement_from_level := 0
 var cards: CatabaseCards = null
 var card_inventory: RunInventory = null
+var combat_checkpoint: Dictionary = {}
+var equipment_health_basis: Dictionary = {}
+const Consumable := preload("res://core/expedition/consumable_cards_integration.gd")
+
+
+func uses_consumable_cards() -> bool:
+	return Consumable.enabled(self)
 
 
 func initialize(state: CharacterRunState, seed_value: int, selected_difficulty: String = "normal", catalog_revision: int = ExpeditionRouteCatalog.REVISION) -> void:
@@ -44,6 +51,7 @@ func is_editable() -> bool:
 
 
 func prepare_start(raw_selection: Dictionary, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+	if uses_consumable_cards(): return Consumable.prepare(self, raw_selection, inventory)
 	if cards != null and cards.rules_revision == 3:
 		return _prepare_class_start(raw_selection, inventory)
 	var selection := raw_selection.duplicate(true)
@@ -100,6 +108,8 @@ func enter(node_id: String) -> bool:
 	hub_stock_ids.clear()
 	build.is_editable = route.phase != "combat"
 	if route.phase == "combat":
+		combat_checkpoint.clear()
+		equipment_health_basis.clear()
 		build.begin_encounter("catabase:%d:%s" % [route.seed, node_id])
 		if cards != null: cards.prepare_entry()
 	else:
@@ -126,6 +136,7 @@ func combat_won() -> bool:
 
 func _clear_encounter_effects() -> void:
 	var hero := character.unit
+	if uses_consumable_cards() and hero.has_meta("cc2_effects"): hero.remove_meta("cc2_effects")
 	for entry in hero.get_active_statuses():
 		var status: StatusData = entry.get("data")
 		if status != null:
@@ -141,6 +152,9 @@ func _clear_encounter_effects() -> void:
 func award_destination() -> void:
 	var node := route.get_current_node()
 	if route.phase != "reward" or str(node.id) in awarded_node_ids:
+		return
+	if uses_consumable_cards():
+		Consumable.award(self, node)
 		return
 	var depth := int(node.depth)
 	var xp := ExpeditionRunFactory.xp_for(node)
@@ -217,7 +231,7 @@ func reward_options(item_catalog: ItemCatalog, inventory: RunInventory = null) -
 
 
 func has_class_combat_receipt() -> bool:
-	return cards != null and cards.rules_revision == 3 and route.phase == "reward" and str(route.get_current_node().get("kind", "")) in ["normal", "elite", "boss"]
+	return cards != null and cards.rules_revision in [3, 4] and route.phase == "reward" and str(route.get_current_node().get("kind", "")) in ["normal", "elite", "boss"]
 
 
 func class_combat_receipt_reviewed() -> bool:
@@ -298,6 +312,7 @@ func claim(option_id: String, inventory: RunInventory, item_catalog: ItemCatalog
 
 
 func advance_level_step() -> Dictionary:
+	if uses_consumable_cards() and cards.level >= 4 and cards.specialization.is_empty(): return _failure("Choisissez votre spécialisation avant de continuer.")
 	match advancement_step:
 		"level_up":
 			advancement_step = "progression"
@@ -321,11 +336,13 @@ func refuge_heal_fraction() -> float:
 
 
 func _heal_fraction(fraction: float) -> void:
+	equipment_health_basis.clear()
 	character.unit.heal(roundi(float(character.unit.max_hp.get_int()) * fraction))
 
 
 ## A halt remains open for several transactions. Each service has one receipt.
 func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
+	if uses_consumable_cards(): return Consumable.services(self)
 	var result: Array[Dictionary] = []
 	var node := route.get_current_node()
 	if route.phase != "reward" or node.is_empty() or not ExpeditionRouteCatalog.is_halt(str(node.kind)):
@@ -385,6 +402,7 @@ func hub_services(item_catalog: ItemCatalog) -> Array[Dictionary]:
 
 
 func use_hub_service(service_id: String, inventory: RunInventory, item_catalog: ItemCatalog) -> Dictionary:
+	if uses_consumable_cards(): return Consumable.service(self, service_id)
 	var selected: Dictionary = {}
 	for service in hub_services(item_catalog):
 		if str(service.id) == service_id:
@@ -520,6 +538,8 @@ func to_snapshot() -> Dictionary:
 	result["advancement_step"] = advancement_step
 	result["advancement_from_level"] = advancement_from_level
 	if cards != null: result["cards_run"] = cards.snapshot()
+	if uses_consumable_cards(): result["combat_checkpoint"] = combat_checkpoint.duplicate(true)
+	if uses_consumable_cards(): result["equipment_health_basis"] = equipment_health_basis.duplicate(true)
 	return result
 
 
@@ -645,11 +665,27 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	if build.class_mode and not snapshot.has("cards_run"): return false
 	if snapshot.has("cards_run"):
 		if not snapshot.cards_run is Dictionary: return false
-		cards = preload("res://core/expedition/class_cards.gd").new() if int(snapshot.cards_run.get("rules_revision", 0)) == 3 else CatabaseCards.new()
-		if build.class_mode != (cards.rules_revision == 3): return false
+		if snapshot.cards_run.get("ruleset_id") == Consumable.Catalog.RULESET:
+			cards = Consumable.Cards.new()
+		else:
+			cards = preload("res://core/expedition/class_cards.gd").new() if int(snapshot.cards_run.get("rules_revision", 0)) == 3 else CatabaseCards.new()
+		if build.class_mode != (cards.rules_revision in [3, 4]): return false
 		cards.bind(self)
 		if not cards.restore(snapshot.cards_run, needs_preparation): return false
-		cards.migrate_legacy(needs_preparation)
+		if uses_consumable_cards():
+			if cards.level != character.champion_progression.current_level or cards.experience != character.champion_progression.current_xp or cards.gold != gold: return false
+			if not snapshot.get("equipment_health_basis", {}) is Dictionary: return false
+			equipment_health_basis = snapshot.get("equipment_health_basis", {}).duplicate(true)
+			if not equipment_health_basis.is_empty():
+				var validator = preload("res://core/expedition/consumable_expedition_checkpoint.gd")
+				if equipment_health_basis.size() != 2 or not validator.whole(equipment_health_basis.get("hp"), 1, 100000) or not validator.whole(equipment_health_basis.get("maximum"), 1, 100000) or equipment_health_basis.hp > equipment_health_basis.maximum: return false
+				if route.phase == "combat": return false
+			if not snapshot.get("combat_checkpoint", {}) is Dictionary: return false
+			combat_checkpoint = snapshot.get("combat_checkpoint", {}).duplicate(true)
+			if not preload("res://core/expedition/consumable_expedition_checkpoint.gd").valid(self, combat_checkpoint): return false
+			Consumable.rebuild(self, false, true)
+		else:
+			cards.migrate_legacy(needs_preparation)
 		route.card_tactical_rooms_enabled = cards.rules_revision == 3 and int(cards.get("ecosystem_revision")) > 0
 	return true
 

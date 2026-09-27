@@ -1,4 +1,13 @@
 {
+  "passe-rive": {
+    "patterns": [
+      "test_passe_rive_s19.gd",
+      "test_passe_rive_s24.gd",
+      "test_passe_rive_s25.gd",
+      "test_passe_rive_s27.gd",
+      "test_passe_rive_s26.gd"
+    ]
+  },
   "smoke": {
     "patterns": [
       "test_champion_codex.gd",
@@ -7,6 +16,10 @@
   },
   "catabase": {
     "patterns": [
+      "test_approved_card_vfx.gd",
+      "test_consumable_cards*.gd",
+      "test_sentence_rempart_vfx.gd",
+      "test_bastion_vivant_vfx.gd",
       "test_catabase*.gd",
       "test_expedition*.gd",
       "test_paris*.gd",
@@ -18,6 +31,9 @@
       "test_catabase_class_run.gd",
       "test_class_card_vfx.gd",
       "test_passe_rive_s19.gd",
+      "test_passe_rive_s25.gd",
+      "test_passe_rive_s27.gd",
+      "test_passe_rive_s26.gd",
       "test_class_painted_icons.gd",
       "test_persistent_run_combat_hud.gd"
     ]
@@ -103,10 +119,17 @@
   },
   "cards": {
     "patterns": [
+      "test_approved_card_vfx.gd",
+      "test_bastion_vivant_vfx.gd",
+      "test_consumable_cards*.gd",
+      "test_sentence_rempart_vfx.gd",
       "test_catabase_cards.gd",
       "test_catabase_class_run.gd",
       "test_class_card_vfx.gd",
       "test_passe_rive_s19.gd",
+      "test_passe_rive_s25.gd",
+      "test_passe_rive_s27.gd",
+      "test_passe_rive_s26.gd",
       "test_class_painted_icons.gd",
       "test_persistent_run_combat_hud.gd"
     ]
@@ -114,6 +137,11 @@
   "cards-audit": {
     "patterns": [
       "test_cards_studio_audit.gd"
+    ]
+  },
+  "consumable-v2": {
+    "patterns": [
+      "test_consumable_cards*.gd"
     ]
   },
   "content": {

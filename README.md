@@ -4,8 +4,11 @@
 
 Roguelite tactique au tour par tour sur grille, sous **Godot 4.7.1 / GDScript**.
 Catabase est l’aventure publique : Achille traverse les Enfers en solo,
-avec trois apparences et deux variantes à sauvegardes indépendantes :
-**Classique** (équipement et techniques) et **Cartes** (quatre classes et deck).
+avec trois apparences et deux modes : **Classique** (équipement et techniques)
+et **Cartes** (copies consommables, préparation et progression par famille).
+La [refonte Cartes](docs/current/cards_v2.md) utilise la sélection, le seuil,
+le combat et les haltes de cette même aventure. Les anciennes sauvegardes
+Cartes conservent leurs règles historiques.
 
 ## Jouer et développer
 
@@ -18,6 +21,7 @@ PowerShell 7.2+ est requis pour le lanceur :
 ./dev.ps1 doctor
 ./dev.ps1 context catabase -Kind code
 ./dev.ps1 test cards
+./dev.ps1 test consumable-v2
 ./dev.ps1 selftest
 ```
 

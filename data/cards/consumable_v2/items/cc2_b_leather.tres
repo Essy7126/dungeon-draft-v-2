@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_oro7o"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_4u287"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_wpob8"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_a8v5p"]
+
+[resource]
+script = ExtResource("2_4u287")
+profile_modifiers = {
+"hp": 0.12
+}
+item_id = &"cc2_b_leather"
+display_name = "Cuir du passage"
+description = "+12 % PV maximaux"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 1
+equipment_slot = 1

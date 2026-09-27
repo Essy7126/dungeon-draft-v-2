@@ -135,7 +135,9 @@ func test_legacy_two_argument_move_feedback_starts_before_motion_and_ends_on_arr
 	assert_eq(view.position, Vector2.ZERO)
 	assert_eq(view.end_count, 0)
 
-	await wait_seconds(MovementTiming.MOVE_SEGMENT_DURATION + 0.1)
+	var deadline := Time.get_ticks_msec() + 2000
+	while view.end_count == 0 and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
 
 	assert_eq(unit.grid_pos, Vector2i.RIGHT)
 	assert_eq(view.position, Vector2(64.0, 0.0))
@@ -171,9 +173,9 @@ func test_full_path_is_forwarded_from_battle_to_optional_visual() -> void:
 		0.4,
 		0.0001,
 	)
-	await wait_seconds(
-		view.get_movement_segment_duration(path) * (path.size() - 1) + 0.1
-	)
+	var deadline := Time.get_ticks_msec() + 3000
+	while unit.grid_pos != path[-1] and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
 	assert_eq(unit.grid_pos, Vector2i(3, 0))
 
 
@@ -263,7 +265,11 @@ func test_enemy_faces_nearest_hero_after_movement_feedback_ends() -> void:
 	assert_true(grid.place_unit(hero, Vector2i(0, 1)))
 
 	battle._animate_move(enemy, [Vector2i(2, 1), Vector2i(3, 1)])
-	await wait_seconds(MovementTiming.MOVE_SEGMENT_DURATION + 0.1)
+	# Presentation advances on its own wall clock; GUT's scene timer can expire
+	# first after a busy frame. Observe completion with a bounded real-time wait.
+	var deadline := Time.get_ticks_msec() + 2000
+	while view.end_count == 0 and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
 
 	assert_eq(view.end_count, 1)
 	assert_eq(view.faced_directions, [Vector2i.RIGHT, Vector2i(-3, 0)])

@@ -222,6 +222,8 @@ static func for_spell(spell: Spell) -> Dictionary:
 	if spell == null:
 		return { }
 	var id := str(spell.get_effective_spell_id())
+	if id.begins_with("cc2_"):
+		return _current_card(spell)
 	if id.begins_with("class_"):
 		return recipe(id)
 	var family: String = ENEMIES.get(id, "")
@@ -266,6 +268,36 @@ static func for_spell(spell: Spell) -> Dictionary:
 		true,
 	)
 	return preload("cel/recipes.gd").apply(entry, id)
+
+
+static func _current_card(spell: Spell) -> Dictionary:
+	var id := str(spell.get_effective_spell_id())
+	var key := id.trim_prefix("cc2_")
+	var aliases: Dictionary = preload("res://characters/achilles/2d/passe_rive_card_bindings.gd").EFFECTS
+	if not aliases.has(key):
+		return { }
+	var row := preload("res://core/expedition/consumable_card_spells.gd").definition(key)
+	if row.is_empty():
+		return { }
+	var entry := recipe(aliases[key]).duplicate(true)
+	# These current cards have no equivalent in the old card catalogue.
+	# Reuse the existing water/heal artwork instead of the legacy ice/guard icon.
+	if key == "t04" or row.op in ["heal", "renew"]:
+		entry = preload("cel/recipes.gd").apply(feedback("water" if key == "t04" else "heal"), id)
+	# The recipe supplies artwork, never the old card's target or gameplay meaning.
+	entry["visual_reference"] = aliases[key]
+	entry["id"] = id
+	entry["name"] = spell.spell_name
+	entry["class_id"] = row.get("affinity", "shared")
+	entry["area"] = row.shape != "single"
+	entry["movement"] = row.op in ["move", "blink", "swap"]
+	entry["effect"] = "guard" if row.op in ["guard", "counter", "edict", "renew"] else str(row.op)
+	if row.op == "renew":
+		entry["effect"] = "heal"
+	entry["ranged"] = (
+		entry.get("ranged", false) and spell.spell_range > 1 and not spell.can_target_self
+	)
+	return entry
 
 
 static func status_family(data: StatusData) -> String:

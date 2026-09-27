@@ -1,6 +1,7 @@
 extends RefCounted
 ## Authored levels are baked into the assets; all cues stay below combat attacks.
 const CUES := {
+	&"sentence_contact": ["res://vfx/class_cards/sentence/bronze_contact.wav"],
 	&"select": ["res://assets/audio/catabase/feedback/select.wav"],
 	&"open": ["res://assets/audio/catabase/feedback/open.wav"],
 	&"close": ["res://assets/audio/catabase/feedback/close.wav"],

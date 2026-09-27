@@ -1,0 +1,22 @@
+[
+  {
+    "Path": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\data\\cards\\consumable_v2\\catalog.json",
+    "Hash": "F7858B253A6AF464563E18B25FC55CC504BDE2B0EF40E37859339639BDFE10DF"
+  },
+  {
+    "Path": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\core\\expedition\\consumable_card_modifier.gd",
+    "Hash": "CB33A3339C80491F8892276AC64093BBA5506CA7ED0D586760FEA55338C0F2D1"
+  },
+  {
+    "Path": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\core\\expedition\\consumable_card_turns.gd",
+    "Hash": "E6052C1D87A67E7F189C257B791703751161ED828C6B55939249BB5469A93927"
+  },
+  {
+    "Path": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\core\\expedition\\consumable_card_spells.gd",
+    "Hash": "660A69BBFA9A42D399C24B0C1E96BEDE0667379D04E4D7004690EA732FC169C2"
+  },
+  {
+    "Path": "C:\\Users\\paolo\\Documents\\dungeon-draft-v-2\\core\\expedition\\consumable_card_terrain.gd",
+    "Hash": "D6C47784BFE2AA9F9C066B847C9B72EDAA34F1F0B1E635E0E54BBB58351FC3DB"
+  }
+]

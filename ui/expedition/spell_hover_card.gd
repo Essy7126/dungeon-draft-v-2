@@ -95,6 +95,12 @@ func _show() -> void:
 	_panel.custom_minimum_size.x = 360
 	_panel.add_theme_stylebox_override("panel", CardSkin.frame(true))
 	_layer.add_child(_panel)
+	if str(spell.spell_id).begins_with("cc2_"):
+		preload("res://ui/expedition/consumable_combat_card_view.gd").hover(_panel, spell, actor, context)
+		_panel.reset_size()
+		_place()
+		set_process(true)
+		return
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 10)
 	_panel.add_child(box)

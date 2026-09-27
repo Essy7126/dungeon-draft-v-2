@@ -1,0 +1,252 @@
+[
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_BLADES.png",
+    "sha256": "c54ebbd7adaeb35a0eaa1990e8d4250a60e64e70a4944e631958e0a3328375cc",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_DAGGER.png",
+    "sha256": "88f421b33821b39062b27b716aae43cd2ce1dcfe494994ab8181e27f1b598e47",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_EMBER.png",
+    "sha256": "a091565c75f955c1d7b761ca327f106bc0a9de8877d6a0720f496566c7e71cf8",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_IDLE.png",
+    "sha256": "18e3e389b5e9d0a77c5b44bb529b65c9de488d269463d19e2b22a8818a21d9d2",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_RIPOSTE.png",
+    "sha256": "b975b7b45ace9a103fa46e5e4f0c635536551d252e4b2ee19d97360b16fa9d7a",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_SEAL_v03.png",
+    "sha256": "d2dd7b7e955636ed786d7ef9065ff93c7f7f132e601a567f7ef6be700314281d",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_SHOT.png",
+    "sha256": "32317487eddb0bbba01a42fcee4aaa5015b02775be6e5915473356712ac667be",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_VOLLEY.png",
+    "sha256": "cd6a5275713b248a9607a0d484a2d8127aed83b3482e2fced2e6c29b3ba515fe",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\atlases\\PR_WALK.png",
+    "sha256": "c87b4fe8b18ed8c1aeef2b64366fc3eddf6cac4e52ac520a7d54f22889dc4b6d",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\vfx\\fire.png",
+    "sha256": "81bbbe0577cc256a6a36e535e1e7365a55391db14c771c8219be000cfa479ed7",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\vfx\\mark.png",
+    "sha256": "3db0a3b2566a3c76ea87347e875880220590fd5e8e4282d65123152a45c1bcfa",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\vfx\\pierce.png",
+    "sha256": "a5ea2282b90f0b96cbd1f1fdd87864b7a933040132d8e586237d29d4df6977d5",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\vfx\\slash.png",
+    "sha256": "4d14ad21e6507821a5630001c2ab0153e48897642c4103aacce11f3415cf0458",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s19\\vfx\\volley.png",
+    "sha256": "845570a9dd8a93937caa8f14b9db8e2cde080ec6f03b2b27fee59a636595480b",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_BLADES_N.png",
+    "sha256": "21ef6233f3dfdad6ffcb2b864087c937a532314ac73c63f430505f368c3d70a8",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_BLADES_NE.png",
+    "sha256": "a98a0abe0d05a3ca39f677cc205be0a7072dd7014e3c81921f3bf3d4155b79ec",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_BLADES_S.png",
+    "sha256": "99eacf76e478839bc101f0d5ee117b32907308e57cedb5fc7ef0ed4fb750acd7",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_BLADES_SE.png",
+    "sha256": "58545127b131ebc9eaaafe33da87a2898840c098e4357fdd959c72967a2583bd",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_DAGGER_N.png",
+    "sha256": "95af8a11b6c22783e20f8d009240ab2a47a38b57b63ee508c7ae93abd3ecda7e",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_DAGGER_NE.png",
+    "sha256": "fcac1898114ae5f6383a88bc8910b19b11b7116050872b8084543170dbc58687",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_DAGGER_S.png",
+    "sha256": "19f1499252350b38c7a1009cc27a840f1c5ae9c23406c0fba0d296adcd6bb749",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_DAGGER_SE.png",
+    "sha256": "eba5ebc7467aa402e0dd11974f94912f6c2c145e57555d6c9453e178b63bacbd",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_EMBER_N.png",
+    "sha256": "1c04fab81006e25f812cbd8bb70703a3738ac5ff188c899c1c62e641f0b3455d",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_EMBER_NE.png",
+    "sha256": "cac1b139900f6dba344d6035afd96b6473b6acfcb39fa745e54c62de2d6bc58a",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_EMBER_S.png",
+    "sha256": "d5d4c24577fdca7ed1c4b96e91aea86af5f589b9866ffaa316fa63ee849cf080",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_EMBER_SE.png",
+    "sha256": "20b6b6271ec6e0302ea229479efd89f2b38df489456d733720d44c68b4271f8d",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_IDLE_N.png",
+    "sha256": "adbe32fed9758bcfc2fb605f087a36ca74364d0bd3b3196dd42fc5652b106a48",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_IDLE_NE.png",
+    "sha256": "eb9f46439e18fe57fb8f062d029b7caac4e57e19649c7071f1ecdccfe0e762f2",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_IDLE_S.png",
+    "sha256": "ebf1c6a8b3ee675d038ba3008aed48fb35898141cb13c952a233238b9a4f84d4",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_IDLE_SE.png",
+    "sha256": "39711c1698575d1715ef0f00f48593d00240413bcece9f5af9860ec7ab7b1984",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_RIPOSTE_N.png",
+    "sha256": "b52a6705aa9085c4591d555f3f53c2decbb4ee5bf758be087b47c80ff493f33a",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_RIPOSTE_NE.png",
+    "sha256": "e918336d08b36c342f6eb37ad40d5c3204a5102ab8a37e47d99e3fd6180101e1",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_RIPOSTE_S.png",
+    "sha256": "17f6992b841f05e7d295a753ed584bc9718041a24b76b965c3e50034ac0aa342",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_RIPOSTE_SE.png",
+    "sha256": "eabde1fb8a7d8385b542d17375afe487c2d2573ebb31c3c2f21bca4be9055a70",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SEAL_v03_N.png",
+    "sha256": "45cd87d478c70f6514fe452f11e592291becc6c539ed230b8ad6586424022ef6",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SEAL_v03_NE.png",
+    "sha256": "694415460299fbbcb841bfa236966167d8d666afb22ac70fb4c3bf20fb84efdf",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SEAL_v03_S.png",
+    "sha256": "9f37811a93de4af5a90d5d5cf68e01253eb38536d8f9363182ea24dbe05b8b68",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SEAL_v03_SE.png",
+    "sha256": "d2d9e2e3353663ba90e0b83ee9de90e084ac0628557481a4704253cf070f5734",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SHOT_N.png",
+    "sha256": "1d4a6e58a3500a19da9987e9f219fc0f48919396f8d70fef584bd41da423a4c8",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SHOT_NE.png",
+    "sha256": "9d66b06c221d2a0a8d804434e291face05874d0d76df7e3f831e6589f28acbdb",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SHOT_S.png",
+    "sha256": "1b75f00cd79bd0be5a976280384d5bfd1ab3e202ad9c804191b3baee2321b101",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_SHOT_SE.png",
+    "sha256": "d90a35ab204d9f3667ce715af64d4c66f24c703d06eb0938edd9a477a9e2d830",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_VOLLEY_N.png",
+    "sha256": "9188bc1749cb1d67293c34d7b593f10d3793608bc9474056c632735b4ba90379",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_VOLLEY_NE.png",
+    "sha256": "8fc9e8bfffa77aac7821b4c5dfb8da43303e75f632f22c386d8eb263927f2602",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_VOLLEY_S.png",
+    "sha256": "f7bc014a9232f302f0868502f884bf96ef8a82209e83cc14ea93398adb5c6452",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_VOLLEY_SE.png",
+    "sha256": "4eec9360dfb73626b936ec193263d1a00781c3e5c5256db4ca9996c86abe8866",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_WALK_N.png",
+    "sha256": "425c77cf8c7dbfe71c582ba0d356604e2acfc1a59f6f5267fbdfc4ae25548835",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_WALK_NE.png",
+    "sha256": "bb522ee32ad193b336bb3c9d5d5b303979d5c989de4f6847bfd808798850736c",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_WALK_S.png",
+    "sha256": "9fd41f98660285cc7c6c7bfc003916c880ac2ab0e254836203414164de59c510",
+    "unchanged": true
+  },
+  {
+    "path": "assets\\characters\\PasseRive\\sprites_s20\\atlases\\PR_WALK_SE.png",
+    "sha256": "515e611aa03c5bdde88db4342721015ba8eab16c52184085802aa77ddd890d70",
+    "unchanged": true
+  }
+]

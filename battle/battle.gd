@@ -101,6 +101,7 @@ var grid: GridData
 var pathfinder: Pathfinder
 var spell_caster: SpellCaster
 var _challenge_battle: Node
+var _cards_runtime: Node
 var terrain_effects: TerrainEffects
 var _mastery_adapter: MasteryCombatAdapter
 var _mastery_panel
@@ -779,6 +780,7 @@ func set_external_interaction_lock(source: StringName, locked: bool) -> void:
 
 
 func _can_accept_player_intent() -> bool:
+	if is_instance_valid(_cards_runtime) and _cards_runtime.save_failed: return false
 	return presentation_state == null \
 		or presentation_state.can_accept_player_intent()
 
@@ -879,8 +881,19 @@ func _clear_intent_feedback_later(generation: int) -> void:
 
 func _spawn_units() -> void:
 	units = []
+	var resuming_cards := GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and not GameManager.expedition.combat_checkpoint.is_empty()
+	if resuming_cards: grid.set_block_signals(true)
 	# Les ennemis sont posés automatiquement (placement aléatoire dans leur zone).
 	_spawn_enemies()
+	if resuming_cards:
+		var hero := GameManager.expedition.character.unit
+		var spawn := _resolve_spawn_cell(room_data.hero_spawn_zone.duplicate(), hero.unit_name)
+		if _place(hero, spawn):
+			units.append(hero)
+			grid.set_block_signals(false)
+			_start_battle()
+		grid.set_block_signals(false)
+		return
 	# Les héros, eux, sont placés PAR LE JOUEUR (phase de déploiement).
 	_deployment.start()
 
@@ -1094,6 +1107,10 @@ func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
+	if GameManager.expedition != null and GameManager.expedition.uses_consumable_cards():
+		_cards_runtime = preload("res://battle/consumable_cards_runtime.gd").new()
+		add_child(_cards_runtime)
+		_cards_runtime.setup(self, GameManager.expedition)
 	if GameManager.expedition != null and GameManager.expedition.cards != null:
 		GameManager.expedition.cards.begin_combat()
 		var hand_view := preload("res://ui/expedition/catabase_card_hand.gd").new()
@@ -1163,6 +1180,7 @@ func _launch_combat() -> void:
 	if is_instance_valid(turn_order_timeline):
 		turn_order_timeline.bind_queue(turn_queue)
 	EventBus.combat_started.emit(units.duplicate(), grid)
+	if is_instance_valid(_cards_runtime) and _cards_runtime.restore_checkpoint(): return
 	turn_queue.start()
 
 # ============================================================
@@ -1329,6 +1347,8 @@ func _on_turn_started(unit: Unit) -> void:
 	var is_stunned = ArenaTerrainStatusTimingService.resolve_activation_start(
 		unit, terrain_effects
 	)
+	if is_instance_valid(_cards_runtime):
+		is_stunned = _cards_runtime.begin_activation(unit) or is_stunned
 	_sync_unit_terrain(unit)
 
 	# 3. Mort des dégâts (terrain ou poison) en début de tour ?
@@ -1385,7 +1405,7 @@ func _on_turn_started(unit: Unit) -> void:
 
 	# 6. Déroulement normal.
 	var cards = CatabaseCards.for_actor(unit)
-	if cards != null: cards.start_turn()
+	if cards != null and not is_instance_valid(_cards_runtime): cards.start_turn()
 	if is_instance_valid(_challenge_battle):
 		_challenge_battle.start_turn(unit)
 	_update_active_highlight(unit)
@@ -1394,7 +1414,8 @@ func _on_turn_started(unit: Unit) -> void:
 
 	if unit.team == 1:
 		turn_state.begin_enemy_turn()
-		await _enemy_turn.run(unit)
+		if is_instance_valid(_cards_runtime): await _cards_runtime.run_enemy(unit)
+		else: await _enemy_turn.run(unit)
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(unit):
 			return
@@ -1407,6 +1428,7 @@ func _on_turn_started(unit: Unit) -> void:
 		turn_state.begin_player_turn()
 		_hud_port.set_active_mode("")
 		await _process_mastery_choices_at_safe_point()
+		if is_instance_valid(_cards_runtime): _cards_runtime.checkpoint()
 
 
 func _resolve_pending_ability(unit: Unit) -> Dictionary:
@@ -1540,7 +1562,8 @@ func _finish_active_turn(reason: StringName) -> bool:
 		return false
 	_turn_end_committed = true
 	var cards = CatabaseCards.for_actor(unit)
-	if cards != null: cards.end_turn()
+	if is_instance_valid(_cards_runtime): _cards_runtime.end_activation(unit)
+	elif cards != null: cards.end_turn()
 	_begin_outcome_deferral()
 	ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 	EventBus.turn_ended.emit(unit, reason)
@@ -1656,6 +1679,9 @@ func _on_item_activation_requested(instance_id: StringName) -> void:
 		)
 
 func _on_end_turn_pressed() -> void:
+	if is_instance_valid(_cards_runtime) and not GameManager.expedition.cards.pending_choice.is_empty():
+		_show_intent_feedback("Terminez le choix de carte avant de finir le tour.")
+		return
 	if _is_evolution_locked() \
 			or _spell_resolution_pending \
 			or not _can_accept_player_intent():
@@ -1671,6 +1697,7 @@ func _on_end_turn_pressed() -> void:
 
 
 func _commit_player_end_turn() -> void:
+	if is_instance_valid(_cards_runtime) and not GameManager.expedition.cards.pending_choice.is_empty(): return
 	if _turn_end_committed \
 			or turn_queue == null \
 			or _battle_over \
@@ -1959,6 +1986,7 @@ func _update_movement_path_preview(cell: Vector2i) -> void:
 
 
 func _on_request_move_to(cell: Vector2i) -> void:
+	if is_instance_valid(_cards_runtime) and not GameManager.expedition.cards.pending_choice.is_empty(): return
 	if _closing \
 			or _battle_over \
 			or _is_evolution_locked() \
@@ -2019,6 +2047,7 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	turn_state.end_animating()
 	_hud_port.update_info(unit)
 	await _process_mastery_choices_at_safe_point()
+	if is_instance_valid(_cards_runtime): _cards_runtime.checkpoint()
 
 # Animation de déplacement BLINDÉE contre les objets détruits.
 # Une unité peut mourir en cours de route (lave via on_enter_cell) : on
@@ -2432,8 +2461,26 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 				return
 		elif view.has_method("face_grid_direction"):
 			view.face_grid_direction(cell - unit.grid_pos)
+	var presentation_sequence := _active_trigger_sequence
+	var preparation: Dictionary = await preload("res://vfx/class_cards/sentence/presentation.gd").prepare(
+		self, unit, spell, cell
+	)
+	var prepared_vfx: Node = preparation.get("fx")
+	if _active_trigger_sequence != presentation_sequence:
+		if is_instance_valid(prepared_vfx):
+			prepared_vfx.cancel()
+		return
+	if not _is_operation_current(lifecycle_generation) or _battle_over or not unit.is_alive \
+			or bool(preparation.get("cancelled", false)) \
+			or not _spell_resolution_pending:
+		if is_instance_valid(prepared_vfx):
+			prepared_vfx.cancel()
+		_abort_spell_resolution(unit)
+		return
 	var context := spell_caster.begin_cast(unit, spell, cell)
 	if context.failed:
+		if is_instance_valid(prepared_vfx):
+			prepared_vfx.cancel()
 		var context_reason := StringName(context.report.get("reason", "availability"))
 		_show_intent_feedback(
 			_spell_cast_rejection_reason(unit, spell, cell, context_reason)
@@ -2526,6 +2573,9 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 	if turn_state != null:
 		turn_state.begin_player_turn()
 	await _process_mastery_choices_at_safe_point()
+	if is_instance_valid(_cards_runtime):
+		_cards_runtime.checkpoint()
+		if unit.activation_consumed and GameManager.expedition.cards.pending_choice.is_empty(): _commit_player_end_turn()
 
 
 func _on_discipline_xp_gained(
@@ -2829,6 +2879,7 @@ func _on_round_started(number: int) -> void:
 	if terrain_effects != null and number > 1:
 		terrain_effects.tick_all_effects()
 		grid_view.queue_redraw()
+	if is_instance_valid(_cards_runtime): _cards_runtime.round_started(number)
 
 func _on_unit_died(unit: Unit) -> void:
 	if _mastery_adapter != null:

@@ -1,0 +1,788 @@
+{
+	"anchor": [
+		192,
+		211
+	],
+	"animation": "orage_crown_front_E",
+	"baseline": {
+		"anchor": [
+			192,
+			211
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "0f98f3902aeb9df26b0ed75fc23bf339f1d9d4cfbb3890107ff980482f4c7159",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "03946538a2b82b6551f6ce17b4daec7b74c208177df595f4551cb88aed94e62f",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f86dd4e8b8a17e64461ab37ad8e23b693adada53d897838a5858a9d446a5a8d3",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "1685a971010340114969f31907f3f8ab536d8355938ecf3538415654710c7922",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6495e57b6c489404d40861f0e6991a663be6e6f60b5e3458399ab0bcdcc2b3a8",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "3533ef7597a6bad3c656d4e5beb7466c8828560da72da33b319d651bdbef6d60",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6aa4053f633647b6bfa8f0a23a30020e5544238471e9b5ba8b7705e2c4cedc20",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "a53b466681fcff017b7a475020f87ca217dbf739c916d4ad6cface0270a56c73",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b82b99894d4d212df66d8e5d0cee006564452bce3affd56e525a6576274551ee",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "55ab047a457fe716a5a412b3202abc9fd048319ed497df3a1204856cac5a52a1",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "3b0cec33c67ca3ffdbd321a7549c5f292f53c6609e1ae1461476152db6567b54",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "beba4dbd86e08ab020a680cf70e6a61283b45aa5b738d8526824c2f25ced409d",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0012.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f012",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7a5ceff63f7259eb4735d794ed4b310e7255b68292bf8626bfc01def419697db",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0013.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f013",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "1320f0c73e5aa9fa06e4f5ddffb5c91d10bc92ed2f468ac33b252d6c665346b5",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0014.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f014",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "6f87431236e59d906398ed4ca6d0e3565193ed6f76914461dc739612bb069d37",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0015.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f015",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "e0ae9d84c7b5512314d9b05d07d9b84dc74b787ddfb5325da83e91764e05fc6c",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0016.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f016",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "bfda11919fa1f7c0db214238de7f29096d38c1b3ce90c8845f7f32f719f206ed",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0017.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f017",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "42a74fcda3f1423f801da33c7422845efca0bffcddcdb0b8b2f71ed911367d35",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0018.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "0f98f3902aeb9df26b0ed75fc23bf339f1d9d4cfbb3890107ff980482f4c7159",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "03946538a2b82b6551f6ce17b4daec7b74c208177df595f4551cb88aed94e62f",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f86dd4e8b8a17e64461ab37ad8e23b693adada53d897838a5858a9d446a5a8d3",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "1685a971010340114969f31907f3f8ab536d8355938ecf3538415654710c7922",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6495e57b6c489404d40861f0e6991a663be6e6f60b5e3458399ab0bcdcc2b3a8",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "3533ef7597a6bad3c656d4e5beb7466c8828560da72da33b319d651bdbef6d60",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6aa4053f633647b6bfa8f0a23a30020e5544238471e9b5ba8b7705e2c4cedc20",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "a53b466681fcff017b7a475020f87ca217dbf739c916d4ad6cface0270a56c73",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b82b99894d4d212df66d8e5d0cee006564452bce3affd56e525a6576274551ee",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "55ab047a457fe716a5a412b3202abc9fd048319ed497df3a1204856cac5a52a1",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "3b0cec33c67ca3ffdbd321a7549c5f292f53c6609e1ae1461476152db6567b54",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "beba4dbd86e08ab020a680cf70e6a61283b45aa5b738d8526824c2f25ced409d",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0012.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f012",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7a5ceff63f7259eb4735d794ed4b310e7255b68292bf8626bfc01def419697db",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0013.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f013",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "1320f0c73e5aa9fa06e4f5ddffb5c91d10bc92ed2f468ac33b252d6c665346b5",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0014.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f014",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "6f87431236e59d906398ed4ca6d0e3565193ed6f76914461dc739612bb069d37",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0015.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f015",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "e0ae9d84c7b5512314d9b05d07d9b84dc74b787ddfb5325da83e91764e05fc6c",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0016.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f016",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "bfda11919fa1f7c0db214238de7f29096d38c1b3ce90c8845f7f32f719f206ed",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0017.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f017",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "42a74fcda3f1423f801da33c7422845efca0bffcddcdb0b8b2f71ed911367d35",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0018.png"
+		}
+	],
+	"id": "orage_crown_front",
+	"intent": "Production de la planche H validée le 27 septembre. Couronne, foudre et contact cel.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/orage/provenance.json": "875e34f8936dbcc750181a5512f97594f65ad4895b73e08f5dfa3ea4cd54d81d"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "3533ef7597a6bad3c656d4e5beb7466c8828560da72da33b319d651bdbef6d60",
+		"source": "res://artifacts/dev/class_card_vfx/orage/render/crown_front/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/orage/crown_front.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Orage du passage — crown_front"
+}

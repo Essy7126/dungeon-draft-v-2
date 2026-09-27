@@ -1,0 +1,913 @@
+{
+  "version": 1,
+  "scene": "Bastion vivant - CEL",
+  "blender_version": "5.1.2",
+  "frames": 48,
+  "fps": 30,
+  "size": 384,
+  "pivot_pixels": [
+    192.0,
+    246.0192
+  ],
+  "layers": [
+    "back",
+    "front"
+  ],
+  "palette_srgb": {
+    "Ink": "172938",
+    "Bronze shadow": "723923",
+    "Bronze": "c47a30",
+    "Gold": "ecb951",
+    "Edge": "fff0bf",
+    "Enamel": "254f60",
+    "Enamel light": "3c7b85",
+    "Seal": "30bdac",
+    "Seal light": "bcf4d8"
+  },
+  "view_transform": "AgX",
+  "look": "None",
+  "source_script": "tools/class_card_vfx/bastion/build_bastion.py",
+  "intent": "Confirmed protection: three rising interlocking plates, open center, transfer to a compact source-scoped badge.",
+  "locks_seconds": [
+    0.26666666666666666,
+    0.3333333333333333,
+    0.4
+  ],
+  "gameplay_delay": 0,
+  "exports": {
+    "back": {
+      "sha256": "c6bbd682e04017a4582e73328dbe1bc0d2148e6eb01482ccf69827a74e22cbe5",
+      "frames": [
+        {
+          "sha256": "a113818c6eb4405242f7a11c22767c08aeae9390a9d17a8d12fd42cf1f8e4532",
+          "bounds": [
+            199,
+            180,
+            248,
+            255
+          ]
+        },
+        {
+          "sha256": "9ceb7f13a6e57b71a39479c9818dd1b58890d02ccdd1e35e3f1df9e0acd9b53b",
+          "bounds": [
+            199,
+            180,
+            248,
+            255
+          ]
+        },
+        {
+          "sha256": "dbc76afcf310b2225727b02554f59b7b00ab6fceb316dc3fe088a6ab27b47528",
+          "bounds": [
+            199,
+            180,
+            248,
+            255
+          ]
+        },
+        {
+          "sha256": "2252ec5400fbfa3add1f2d323399107efb9bcd1c8de46be636d99a3430032290",
+          "bounds": [
+            194,
+            150,
+            252,
+            243
+          ]
+        },
+        {
+          "sha256": "6dabd9d52cff2c6cc0951fdf691357fa94d8ceff1042f8eb14c2e7d4da013ee6",
+          "bounds": [
+            191,
+            129,
+            253,
+            234
+          ]
+        },
+        {
+          "sha256": "cb6932fee686700487548245b114b6056ebd64e2565b0edb11a497f98c963e00",
+          "bounds": [
+            186,
+            115,
+            254,
+            228
+          ]
+        },
+        {
+          "sha256": "5d5316afd5842e4c6706ae6e8cb12333e28c86cbc044e78a3227e61838613396",
+          "bounds": [
+            183,
+            107,
+            254,
+            224
+          ]
+        },
+        {
+          "sha256": "ad12b5c5705ac7882c1f1dd5d3c8f9237ec0073ddccaa1e1e0ee397b05bbd2a0",
+          "bounds": [
+            181,
+            101,
+            254,
+            222
+          ]
+        },
+        {
+          "sha256": "9c7097779d14bb58e3d918173eeb56fe57a7ec5b5945ecc8dbfa937556479afd",
+          "bounds": [
+            180,
+            99,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "02a6660c9fa2e7bd182d3b46c600bd74381e130c857adbee44b97300dcf54c31",
+          "bounds": [
+            180,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "6377bbbcd4d35cc1819d7839cda116c7468f3d1376fe42fe675cf6d0848a3fd7",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "70e7f21e2843bf4c9f9e54bf09f2368bec1b1f7ca6a2d9764f156cc5dc180e51",
+          "bounds": [
+            179,
+            95,
+            254,
+            217
+          ]
+        },
+        {
+          "sha256": "8e1ee8cbf4431e3bd6194b0fa3b5cd64f1459b3ceaec028b82c4bc6449efae5f",
+          "bounds": [
+            179,
+            94,
+            254,
+            216
+          ]
+        },
+        {
+          "sha256": "32ffa24741f333972aec513994075dff33a9b0595801d09bed1a8b616d11697d",
+          "bounds": [
+            179,
+            94,
+            254,
+            217
+          ]
+        },
+        {
+          "sha256": "6e23b45a3c0f01bf680542106c822d23e04943499d84553e42f8ac676ab8c03c",
+          "bounds": [
+            179,
+            96,
+            254,
+            218
+          ]
+        },
+        {
+          "sha256": "5d42d5ecda247a50f76558e10b8f7a340dcacccee09b95e088e4e01b9243766b",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "5ecce3fbbc62099ada6ae7e3f63f0c4de9fcf76090e2a659a0d0dac8bad80329",
+          "bounds": [
+            179,
+            99,
+            254,
+            221
+          ]
+        },
+        {
+          "sha256": "f3c1cf00d59aad810dcbb62cac182abc34ffd223a18b402005f5bf2cb7c578f8",
+          "bounds": [
+            179,
+            99,
+            254,
+            221
+          ]
+        },
+        {
+          "sha256": "db155d1066c4eb3a31aac070556438a60282fd27c6ab676e37c04ba619472561",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "af8b2ebd4611a8fb272aba4d1bbbec5a5f030b5f808b0dfdf6390c87845a1cf2",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "d308c6951245f0f740cf8aee2d50b9b9c788d02bb4f663a537b8d88c9b3b6937",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "6d5b70c62429f24c59e9ebf331a4b845b659baaee2672353a60696e251b75fd5",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "91f2498671041312142629a074ce7de00fbd5a1e309140cea03236bc595f758c",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "b57c2ccad2022f55a6ca8d75e3a92876be11502382191843e74cf92fefe9c07f",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "5a103334d13366ca5afcda1aeb0d63b8612434a0fb5e524224dccf30b4928d0f",
+          "bounds": [
+            179,
+            98,
+            254,
+            220
+          ]
+        },
+        {
+          "sha256": "ecf7bb6194eb7d18c93ecd2f1ec7f493d9906625f5889494b2cdce9102f7f1d8",
+          "bounds": [
+            180,
+            99,
+            253,
+            220
+          ]
+        },
+        {
+          "sha256": "6292ab696d91d4eb668a92e2e0d5826a3be612ffce934f370dc58e474620578f",
+          "bounds": [
+            180,
+            101,
+            252,
+            220
+          ]
+        },
+        {
+          "sha256": "3efc13f6d786f70e343923ae0942db09bf57fa4d1b4bc60b0bbd5525e5ae8cd3",
+          "bounds": [
+            181,
+            105,
+            250,
+            219
+          ]
+        },
+        {
+          "sha256": "48e319895b021a0259f7ce89de31fca30878766c62773ac18fabe0e78b1c8551",
+          "bounds": [
+            182,
+            110,
+            248,
+            219
+          ]
+        },
+        {
+          "sha256": "b5ea4718f51a94e4e5c2d408876ba08949c52e9359e4d57254b5a9810150089a",
+          "bounds": [
+            183,
+            116,
+            245,
+            218
+          ]
+        },
+        {
+          "sha256": "c4c562deedd85762dbdda077e295ee3a87a522609dd6794d76e2388a6be8ca1f",
+          "bounds": [
+            184,
+            123,
+            241,
+            217
+          ]
+        },
+        {
+          "sha256": "0e699d1971815ff280c67b0dbdd9c911875e84448073450f32fae49121fd825d",
+          "bounds": [
+            185,
+            131,
+            237,
+            216
+          ]
+        },
+        {
+          "sha256": "b5360e5da61b350f97d27d426994b00c06dea556e2cf6f533de32d3c0c4edae3",
+          "bounds": [
+            187,
+            139,
+            233,
+            215
+          ]
+        },
+        {
+          "sha256": "183d6ea3f2d52e2751ac26ce40df298e14a79ceed19924a9ed30577b0f47e3da",
+          "bounds": [
+            188,
+            147,
+            229,
+            214
+          ]
+        },
+        {
+          "sha256": "4ca3b03dd65a655326fd69cf82694636bd3377b011abfd0950e024c2264ff073",
+          "bounds": [
+            190,
+            156,
+            225,
+            213
+          ]
+        },
+        {
+          "sha256": "c0f26ed22758ebfdd5315b2afd29f4c9da255b20a66c488279cded17edea2630",
+          "bounds": [
+            191,
+            164,
+            221,
+            213
+          ]
+        },
+        {
+          "sha256": "a5d0d39e5a39b994dd37a837668460224350646bf49360b4573593867f052bd2",
+          "bounds": [
+            192,
+            173,
+            217,
+            212
+          ]
+        },
+        {
+          "sha256": "2d00eaa7e9c90a6b5f058fa8b13842fafba4ca96995b31d36b2bc0ab9760cc37",
+          "bounds": [
+            194,
+            180,
+            213,
+            211
+          ]
+        },
+        {
+          "sha256": "157675cba53f0d7525d6feefeef5785468e1efa8f0c07affdd338a8ec921d577",
+          "bounds": [
+            195,
+            187,
+            210,
+            210
+          ]
+        },
+        {
+          "sha256": "4817372da5acdf4d44e7e595dc406e755e06303430172ca758f768488a57c70a",
+          "bounds": [
+            196,
+            193,
+            207,
+            209
+          ]
+        },
+        {
+          "sha256": "b7311486ebfe94681a3ae53e3d4425bee92be8563d82d3c2040d4fe2f61b6ac4",
+          "bounds": [
+            197,
+            199,
+            204,
+            209
+          ]
+        },
+        {
+          "sha256": "c79f738e7128e6eb4b263567e7bbc8509967a2e7cea4032738838949f7aaa455",
+          "bounds": [
+            198,
+            202,
+            202,
+            208
+          ]
+        },
+        {
+          "sha256": "68a9d22eb586d39ee8e9f8c5d301cf9f3e209d0192678a340a5e2c7d8e8b816d",
+          "bounds": [
+            198,
+            205,
+            201,
+            208
+          ]
+        },
+        {
+          "sha256": "4da634650a0036d0c4c186e9fa0adc3f828cecfc399d764530d6b428c15d8a63",
+          "bounds": [
+            199,
+            206,
+            200,
+            208
+          ]
+        },
+        {
+          "sha256": "7470820323e6f90655d27690f570d67b6147bc6d96a6b39923c48fcd74f4aca7",
+          "bounds": [
+            199,
+            206,
+            200,
+            208
+          ]
+        },
+        {
+          "sha256": "8ebea5460b9ba1a1de520daf8eaec3172beadb9771059649ed16e35123bbf9fc",
+          "bounds": [
+            199,
+            206,
+            200,
+            208
+          ]
+        },
+        {
+          "sha256": "86cb19e135ba91b19267320d65cbe2a496dd6a24f5ad593f61464048045c607c",
+          "bounds": [
+            199,
+            206,
+            200,
+            208
+          ]
+        },
+        {
+          "sha256": "64797f59881c53bb5be72351abd4e4790daa0ef843f044aaad649b9f79b7686a",
+          "bounds": [
+            199,
+            206,
+            200,
+            208
+          ]
+        }
+      ]
+    },
+    "front": {
+      "sha256": "cf95d9a6433c848aa7675b3866c312a02dde6ef99b0332f8ff2beec668088e32",
+      "frames": [
+        {
+          "sha256": "8abb4621b648163a4be2518e3cb3a599d0b7d0e20a3690bf596278505d0dc516",
+          "bounds": [
+            81,
+            198,
+            305,
+            307
+          ]
+        },
+        {
+          "sha256": "272ef512c83f3516494f1b02f303d576e4ded50b8a3fcb9fdf80fb9c477911c3",
+          "bounds": [
+            86,
+            169,
+            305,
+            307
+          ]
+        },
+        {
+          "sha256": "4a2eca299e0991d1a6e32f06cc78d207ea124e57a85998b7ca8f1f4889feebb3",
+          "bounds": [
+            90,
+            149,
+            305,
+            307
+          ]
+        },
+        {
+          "sha256": "3dcddc41600328d72510ac23d396bce66708794f7a497f22442e2580f6c30855",
+          "bounds": [
+            92,
+            135,
+            305,
+            307
+          ]
+        },
+        {
+          "sha256": "a16d9593b80706fb306498a2c7a32a620f4e96c2ce2d75d8e3796a11be2c6568",
+          "bounds": [
+            93,
+            126,
+            305,
+            307
+          ]
+        },
+        {
+          "sha256": "e87c3257ca64c610d3adfd2e06d2eacea7758f5c390745f3667661343f625f01",
+          "bounds": [
+            92,
+            120,
+            300,
+            294
+          ]
+        },
+        {
+          "sha256": "23bafd4d88b84f334f7e9b66baaa1f350ee493571f747131c096742872cbd212",
+          "bounds": [
+            92,
+            118,
+            295,
+            284
+          ]
+        },
+        {
+          "sha256": "a136210634af50c0d400de28ed80f3e174a3c590677e228ae36920524b032468",
+          "bounds": [
+            92,
+            117,
+            293,
+            277
+          ]
+        },
+        {
+          "sha256": "0aed8bda4369c1081d848c9c68ec04dd6a008aa3efa73de3fc5af1959b0c6b40",
+          "bounds": [
+            91,
+            116,
+            292,
+            273
+          ]
+        },
+        {
+          "sha256": "9ef69c5c7c9a49ea62beba3bba16cd04c4b6dc7120bcf985e510c5e4c75078ad",
+          "bounds": [
+            91,
+            114,
+            291,
+            270
+          ]
+        },
+        {
+          "sha256": "dc883239254c628f1d65682ffde3bbcba0e2594b483e7a40020fe12283ce2e17",
+          "bounds": [
+            91,
+            112,
+            291,
+            268
+          ]
+        },
+        {
+          "sha256": "0afe8c398e60b33ff980cfc2e77db1bac3ad28a78e7e545c2436c33907219e98",
+          "bounds": [
+            91,
+            113,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "848220b9c174eb81d33bb014070ca5b2d2ecb28229408c4ce03fc108695790e2",
+          "bounds": [
+            91,
+            115,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "fccf03420d375da840aeba6bd2ce3268cb18239a5c3343339442bc984c5895d0",
+          "bounds": [
+            91,
+            116,
+            290,
+            265
+          ]
+        },
+        {
+          "sha256": "9853343f6b282f05d727aae0c5b81065448b69b9eb14ad7e468753d61a1e3cd7",
+          "bounds": [
+            91,
+            117,
+            290,
+            264
+          ]
+        },
+        {
+          "sha256": "2f41bd7c0d2693bc81560e36d71aafd6aa6511f46f71a50b0dd8d39d3020b686",
+          "bounds": [
+            91,
+            118,
+            290,
+            264
+          ]
+        },
+        {
+          "sha256": "e4306f60ebc42ce7a7d63779b4947dd051da5f48ea67cfffe192bed3961fe1f0",
+          "bounds": [
+            91,
+            117,
+            290,
+            266
+          ]
+        },
+        {
+          "sha256": "16adbaa522df951e42594069c65e64c7834981cb0bc09ac84d7f0ca453612200",
+          "bounds": [
+            91,
+            116,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "9dd1735aa4f75309e28aa6b2c9072cc79efb42f205fe09e20c995a0c05522043",
+          "bounds": [
+            91,
+            116,
+            290,
+            269
+          ]
+        },
+        {
+          "sha256": "19dafb67a2f0e2ef9fe67de6b4c70226c2bb2c2ca9809c57e09b06d4cd10c4c7",
+          "bounds": [
+            91,
+            116,
+            290,
+            269
+          ]
+        },
+        {
+          "sha256": "267cc91db7c74790c88f0cb0b4b2686ddd43e1a7c0188de965678986fa6ab1cf",
+          "bounds": [
+            91,
+            116,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "e238f070778e14e1f2f6c3153f6e8424c9292dce93f4e55c255cf2ba470f0666",
+          "bounds": [
+            91,
+            116,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "bcd66cc1d28de70689a275cf99ba6c60552c3818973253711da9ab7c99473057",
+          "bounds": [
+            91,
+            116,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "3f7c6a9c08fa47b3e83c564f8d204bba336e8309d00d5f3beb3eed2987f1fab2",
+          "bounds": [
+            91,
+            116,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "1ae978c5c9365a70c2457a40ed19586f5ee105a1425e4f381727331e80bb95a6",
+          "bounds": [
+            91,
+            116,
+            290,
+            268
+          ]
+        },
+        {
+          "sha256": "e62a76692c32dac77cd0bf539381cf56bbe972e86abb2c23bdcf3c4212f889e4",
+          "bounds": [
+            92,
+            117,
+            290,
+            267
+          ]
+        },
+        {
+          "sha256": "46a5525d5241878b60edc24b91fa00527bc8f2650b286cdf949bb50a07b7865e",
+          "bounds": [
+            94,
+            119,
+            288,
+            266
+          ]
+        },
+        {
+          "sha256": "346e2b1f3f33e9eafd2c65e120ca4636a3d9327a9cafa55c8e0be191414ced1c",
+          "bounds": [
+            97,
+            123,
+            285,
+            265
+          ]
+        },
+        {
+          "sha256": "ed4974731e66fc8fababc2543b32a91ccfa739dadbd8a3b742c1a7ecb12d8f4b",
+          "bounds": [
+            101,
+            127,
+            281,
+            262
+          ]
+        },
+        {
+          "sha256": "235626498f6d272f87609412d97d5adef2d00b8be39746b6b52a2bc2a2662024",
+          "bounds": [
+            105,
+            133,
+            277,
+            260
+          ]
+        },
+        {
+          "sha256": "fea0049f923816ed9af8f56ad202906ab72f6c3110229d0c72db4f2543aaa3c0",
+          "bounds": [
+            110,
+            139,
+            272,
+            257
+          ]
+        },
+        {
+          "sha256": "cd44ebee2abce9d0285a2b4478586746dee28bcac0b1d0f21201f39492ed92b5",
+          "bounds": [
+            116,
+            146,
+            266,
+            254
+          ]
+        },
+        {
+          "sha256": "054c10b20a9b5a22f6593092b8f336b4b89877b11e42014d127c7ba23f231e98",
+          "bounds": [
+            122,
+            153,
+            260,
+            250
+          ]
+        },
+        {
+          "sha256": "ec2b265b1c327cd38b1860b699483e2de352b33380047c749ffd1bab7e1c5fd4",
+          "bounds": [
+            128,
+            161,
+            254,
+            247
+          ]
+        },
+        {
+          "sha256": "b1150fd8a8d0c4b57e063d291b4e7181654dee08b579beffa3ae0092ea6888ae",
+          "bounds": [
+            134,
+            168,
+            248,
+            243
+          ]
+        },
+        {
+          "sha256": "8864c5bc6abf50c76aa330b1160ddc2076cc56c0f303d49507d74b3877eeda21",
+          "bounds": [
+            140,
+            176,
+            242,
+            240
+          ]
+        },
+        {
+          "sha256": "e95ebc1928a2033b955331db674c5204a9ee651e0fdb8dce39c9cd4551d29592",
+          "bounds": [
+            146,
+            183,
+            236,
+            236
+          ]
+        },
+        {
+          "sha256": "53b9a4d7e790a81f92b8d70a60e21c8b733c819d093755940d11747b3f79670c",
+          "bounds": [
+            152,
+            190,
+            230,
+            233
+          ]
+        },
+        {
+          "sha256": "12bd73cebff091b0eea9b64fc7e8f9b81e045cb61d8da19273fd95fe504fe8fc",
+          "bounds": [
+            157,
+            196,
+            225,
+            230
+          ]
+        },
+        {
+          "sha256": "340a4926609d118bf04b53374bc76e757cadb0f3a3ce8055e3a5994c196d9afc",
+          "bounds": [
+            161,
+            202,
+            221,
+            227
+          ]
+        },
+        {
+          "sha256": "cf51af84d3bfbba8c95360b6329f81d416d47c36724edf9dc0ab58e6ee19accb",
+          "bounds": [
+            165,
+            206,
+            217,
+            225
+          ]
+        },
+        {
+          "sha256": "63cab7ee935fde4acf5de9fb80541369ca797a54463c91c4785bc4da4f2382e2",
+          "bounds": [
+            168,
+            210,
+            214,
+            223
+          ]
+        },
+        {
+          "sha256": "8c37415dff97315ec7588489332808c0749766ea447b8b89cc6d27bd1cfcce4c",
+          "bounds": [
+            170,
+            212,
+            212,
+            222
+          ]
+        },
+        {
+          "sha256": "133995771b87f17f0a83dfa4cd6f957ddca4b368aabb07a8775400f69854b09e",
+          "bounds": [
+            210,
+            220,
+            211,
+            222
+          ]
+        },
+        {
+          "sha256": "2555c65e99853be5040d5b1fc45cab2f4219c9e7d6e167019dc63088d611896b",
+          "bounds": [
+            210,
+            220,
+            211,
+            222
+          ]
+        },
+        {
+          "sha256": "f9ed8d0e0b63ac7cc55b1acda515860c988d30cb77216891c0ba347446e97261",
+          "bounds": [
+            210,
+            220,
+            211,
+            222
+          ]
+        },
+        {
+          "sha256": "ac4c1cd2dbddb6f4f6042b9240ca001e1c80ebd44f14c4bf5f47fe184506608a",
+          "bounds": [
+            210,
+            220,
+            211,
+            222
+          ]
+        },
+        {
+          "sha256": "82880720e4137f5e2bdb5fbb1a342efaa0d02af5aa5a1a8017135c1540cb9065",
+          "bounds": [
+            210,
+            220,
+            211,
+            222
+          ]
+        }
+      ]
+    }
+  }
+}

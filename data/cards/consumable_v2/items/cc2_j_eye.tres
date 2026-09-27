@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_w4fx3"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_viuc8"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_6b8qe"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_v3ht3"]
+
+[resource]
+script = ExtResource("2_viuc8")
+profile_modifiers = {
+"firstHitReduction": 0.12,
+"range": 1.0
+}
+item_id = &"cc2_j_eye"
+display_name = "Œil des distances"
+description = "+1 portée · +12 % réduction du premier coup (P)"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+equipment_slot = 2

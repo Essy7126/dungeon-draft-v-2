@@ -1,0 +1,2140 @@
+{
+  "rules": {
+    "version": "2.0.0-design.1",
+    "source_commit": "c6ab5a72c1789e4cc285300c9bbae9c78524fa05",
+    "initialCards": 15,
+    "deckCap": 30,
+    "copiesPerFamily": 3,
+    "initialGold": 40,
+    "ap": 4,
+    "mp": 3,
+    "hand": 5,
+    "grid": 7,
+    "fallbackDamage": 0.28,
+    "fallbackGuard": 0.25,
+    "guardCap": 2.5,
+    "resistanceCap": 0.4,
+    "retaliation": 0.25,
+    "collapseStart": 9,
+    "collapseStep": 0.025,
+    "turnLimit": 24,
+    "hp": [
+      110,
+      135,
+      165,
+      200,
+      240,
+      290,
+      350,
+      420,
+      500,
+      600,
+      635,
+      675
+    ],
+    "prowess": [
+      18,
+      22,
+      27,
+      33,
+      40,
+      48,
+      57,
+      68,
+      82,
+      100,
+      106,
+      112
+    ],
+    "xp": [
+      100,
+      125,
+      145,
+      175,
+      195,
+      215,
+      245,
+      265,
+      295,
+      325,
+      355,
+      345
+    ],
+    "xpThresholds": [
+      0,
+      100,
+      220,
+      360,
+      520,
+      700,
+      900,
+      1120,
+      1360,
+      1700,
+      1990,
+      2300
+    ],
+    "attributeLevels": [
+      2,
+      4,
+      6,
+      8,
+      10,
+      12
+    ],
+    "trainingLevels": [
+      4,
+      8,
+      12
+    ],
+    "attributes": {
+      "power": 0.05,
+      "vitality": 0.06,
+      "resolveArmor": 0.02,
+      "resolveGuard": 0.05
+    },
+    "loot": {
+      "sizes": [
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tiers": [
+        "normal",
+        "normal",
+        "elite",
+        "rare",
+        "legendary",
+        "god",
+        "immortal"
+      ],
+      "rates": [
+        [
+          1,
+          0.5,
+          0.05,
+          0.005,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0.6,
+          0.1,
+          0.015,
+          0.001,
+          0,
+          0
+        ],
+        [
+          1,
+          0.75,
+          0.18,
+          0.04,
+          0.004,
+          0.0003,
+          0
+        ],
+        [
+          1,
+          0.9,
+          0.28,
+          0.08,
+          0.01,
+          0.0015,
+          0.0002
+        ]
+      ],
+      "gear": [
+        0.06,
+        0.08,
+        0.1,
+        0.12
+      ],
+      "relic": [
+        0.002,
+        0.004,
+        0.008,
+        0.012
+      ],
+      "nativeOrShared": 0.7
+    },
+    "economy": {
+      "goldNormal": 35,
+      "goldElite": 65,
+      "bagPrice": 36,
+      "bagCards": 6,
+      "bagsPerVisit": 2,
+      "normalSingle": 8,
+      "tradeInput": 3,
+      "tradesPerVisit": 2,
+      "healPrice": 25,
+      "healFraction": 0.3,
+      "freeRefugeHeal": 0.35,
+      "freePrebossHeal": 0.5,
+      "familyRespec": 35,
+      "sell": {
+        "normal": 1,
+        "elite": 3,
+        "rare": 10,
+        "legendary": 25,
+        "god": 60,
+        "immortal": 120
+      },
+      "buy": {
+        "normal": 8
+      }
+    },
+    "rulesetId": "catabase_cards_consumable_v2",
+    "openingPreparedNormal": 1,
+    "handCap": 7,
+    "classAndSpecialization": "independent_once_per_hero_round",
+    "familyLimitPerTurn": 1,
+    "maxSurfaceGroups": 2,
+    "saveSchema": 1,
+    "savePath": "user://catabase_cards_consumable_v2.json",
+    "checkpoint": "after_each_committed_action_and_each_actor_activation",
+    "guardSacrificeStep": 0.1,
+    "rounding": "half_up_once_per_final_payload",
+    "legacyCardsFallback": "keep_original_file_and_rules",
+    "pressure": {
+      "startsAfterEnemyPhase": 9,
+      "fractionPerStep": 0.025,
+      "maxTurns": 24,
+      "previewOneTurnAhead": true
+    },
+    "normalOpeningOptional": true,
+    "inventoryCap": null,
+    "difficultyProfile": "standard_v2",
+    "legacyDifficultyMultipliers": false
+  },
+  "classes": [
+    {
+      "id": "assassin",
+      "name": "Assassin",
+      "passive": "Premier impact direct sur une cible isolée : +0,25 P.",
+      "specs": [
+        "execution",
+        "relay"
+      ],
+      "starters": [
+        "a01",
+        "a02",
+        "a04",
+        "n02",
+        "n03"
+      ]
+    },
+    {
+      "id": "gardien",
+      "name": "Gardien",
+      "passive": "La première attaque ennemie absorbée au moins en partie par la garde, chaque tour, renvoie 0,25 P physiques à son auteur.",
+      "specs": [
+        "bastion",
+        "crusher"
+      ],
+      "starters": [
+        "g01",
+        "g02",
+        "g03",
+        "n05",
+        "n03"
+      ]
+    },
+    {
+      "id": "arpenteur",
+      "name": "Arpenteur",
+      "passive": "Ancre de repli : après un impact direct de carte à distance ≥3, peut revenir sur sa case de début de tour pour 1 PM, une fois, si libre et à distance ≤3.",
+      "specs": [
+        "sniper",
+        "skirmish"
+      ],
+      "starters": [
+        "r01",
+        "r02",
+        "r03",
+        "n02",
+        "n03"
+      ]
+    },
+    {
+      "id": "thaumaturge",
+      "name": "Thaumaturge",
+      "passive": "Première application directe de marque/brûlure/entrave OU première transformation élémentaire valide du tour : +0,20 P de garde. Compteur partagé.",
+      "specs": [
+        "pyre",
+        "frost"
+      ],
+      "starters": [
+        "t01",
+        "t02",
+        "t03",
+        "n02",
+        "n03"
+      ],
+      "alternativeStarters": [
+        "t01",
+        "t02",
+        "t04",
+        "n02",
+        "n03"
+      ]
+    }
+  ],
+  "specs": {
+    "execution": "Premier impact sur une cible à 35 % PV ou moins : +0,30 P.",
+    "bastion": "Première garde produite par une carte du tour : +25 %.",
+    "crusher": "Première cible effectivement poussée : subit 0,25 P physiques supplémentaires.",
+    "sniper": "Premier impact à distance 4 ou plus : +0,25 P.",
+    "skirmish": "Première carte offensive jouée après 2 cases de mouvement volontaire admissible : pioche 1 après sa résolution, limite de main normale.",
+    "pyre": "Première brûlure appliquée par tour : +0,10 P par tic.",
+    "frost": "Première entrave appliquée par tour : +0,30 P de garde.",
+    "relay": "Première élimination directe d’une cible marquée : transfert optionnel vers une cible à ≤2 cases du mort, valeur min(marque capturée,0,20 P), expire à la fin de la prochaine activation du héros. Une marque issue de relais ne peut pas être retransmise."
+  },
+  "cards": [
+    {
+      "id": "n01",
+      "name": "Estoc",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 1,
+      "damage": 0.55,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "damage": 0.7000000000000001
+      },
+      "runtimeId": "cc2_n01",
+      "baseText": "0,55 P physiques",
+      "upgradeText": "0,7 P physiques",
+      "changedFromV1": false
+    },
+    {
+      "id": "n02",
+      "name": "Garde brève",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "guard",
+      "amount": 0.45,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "retain": 1
+      },
+      "runtimeId": "cc2_n02",
+      "baseText": "0,45 P de garde",
+      "upgradeText": "0,45 P de garde ; peut retenir une autre copie en main pour une transition de tour.",
+      "changedFromV1": true
+    },
+    {
+      "id": "n03",
+      "name": "Pas latéral",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 2,
+      "damage": 0,
+      "op": "move",
+      "amount": 2,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 3,
+        "amount": 3
+      },
+      "runtimeId": "cc2_n03",
+      "baseText": "2 cases par chemin libre",
+      "upgradeText": "3 cases par chemin libre ; portée 1–3",
+      "changedFromV1": false
+    },
+    {
+      "id": "n04",
+      "name": "Heurt",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 1,
+      "damage": 0.25,
+      "op": "push",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "amount": 2
+      },
+      "runtimeId": "cc2_n04",
+      "baseText": "0,25 P physiques ; pousse de 1 cases",
+      "upgradeText": "0,25 P physiques ; poussée de 2 cases.",
+      "changedFromV1": true
+    },
+    {
+      "id": "n05",
+      "name": "Trait court",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 2,
+      "max": 4,
+      "damage": 0.45,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "damage": 0.6
+      },
+      "runtimeId": "cc2_n05",
+      "baseText": "0,45 P physiques",
+      "upgradeText": "0,6 P physiques",
+      "changedFromV1": false
+    },
+    {
+      "id": "n06",
+      "name": "Repérage",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 4,
+      "damage": 0.2,
+      "op": "mark",
+      "amount": 0.35,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 5
+      },
+      "runtimeId": "cc2_n06",
+      "baseText": "0,2 P physiques ; 0,35 P au prochain impact de carte ; expire après 2 phases ennemies",
+      "upgradeText": "Effet de base ; portée maximale 5.",
+      "changedFromV1": true
+    },
+    {
+      "id": "n07",
+      "name": "Entrave légère",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 3,
+      "damage": 0.2,
+      "op": "slow",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 4
+      },
+      "runtimeId": "cc2_n07",
+      "baseText": "0,2 P physiques ; -1 PM pour la prochaine activation",
+      "upgradeText": "Effet de base ; portée maximale 4.",
+      "changedFromV1": true
+    },
+    {
+      "id": "n08",
+      "name": "Recentrage",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "draw",
+      "amount": 2,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "amount": 3
+      },
+      "runtimeId": "cc2_n08",
+      "baseText": "pioche 2 exemplaires existants, limitée par la main",
+      "upgradeText": "pioche 3 exemplaires existants, limitée par la main",
+      "changedFromV1": false
+    },
+    {
+      "id": "a01",
+      "name": "Ouvrir la garde",
+      "affinity": "assassin",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 2,
+      "damage": 0.35,
+      "op": "mark",
+      "amount": 0.45,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "duration": 3
+      },
+      "runtimeId": "cc2_a01",
+      "baseText": "0,35 P physiques ; 0,45 P au prochain impact de carte ; expire après 2 phases ennemies",
+      "upgradeText": "Effet de base ; la marque dure 3 phases ennemies au lieu de 2.",
+      "changedFromV1": true
+    },
+    {
+      "id": "a02",
+      "name": "Frapper la faille",
+      "affinity": "assassin",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 1,
+      "damage": 0.95,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "condition": "marked",
+      "bonus": 0.55,
+      "upgrade": {
+        "max": 2
+      },
+      "runtimeId": "cc2_a02",
+      "baseText": "0,95 P physiques ; +0,55 P si cible marquée",
+      "upgradeText": "Effet de base ; portée 1–2.",
+      "changedFromV1": true
+    },
+    {
+      "id": "a03",
+      "name": "Entaille tenace",
+      "affinity": "assassin",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 1,
+      "damage": 0.7,
+      "op": "bleed",
+      "amount": 0.15,
+      "type": "physical",
+      "shape": "single",
+      "duration": 2,
+      "upgrade": {
+        "amount": 0.2
+      },
+      "runtimeId": "cc2_a03",
+      "baseText": "0,70 P physiques ; saignement physique 0,15 P pendant 2 activations.",
+      "upgradeText": "0,70 P physiques ; saignement physique 0,20 P pendant 2 activations.",
+      "changedFromV1": true
+    },
+    {
+      "id": "a04",
+      "name": "Attaque oblique",
+      "affinity": "assassin",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 1,
+      "damage": 1.05,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "condition": "moved",
+      "bonus": 0.35,
+      "upgrade": {
+        "movementThreshold": 1
+      },
+      "runtimeId": "cc2_a04",
+      "baseText": "1,05 P physiques ; +0,35 P si 2 cases parcourues",
+      "upgradeText": "1,05 P physiques ; +0,35 P après 1 case de mouvement volontaire admissible.",
+      "changedFromV1": true,
+      "movementThreshold": 2
+    },
+    {
+      "id": "g01",
+      "name": "Garde ferme",
+      "affinity": "gardien",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "guard",
+      "amount": 1.15,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "amount": 1.4
+      },
+      "runtimeId": "cc2_g01",
+      "baseText": "1,15 P de garde",
+      "upgradeText": "1,4 P de garde",
+      "changedFromV1": false
+    },
+    {
+      "id": "g02",
+      "name": "Heurt du rempart",
+      "affinity": "gardien",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 1,
+      "damage": 1,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "condition": "guarded",
+      "bonus": 0.5,
+      "upgrade": {
+        "damage": 1.15
+      },
+      "runtimeId": "cc2_g02",
+      "baseText": "1 P physiques ; +0,5 P si garde présente",
+      "upgradeText": "1,15 P physiques ; +0,5 P si garde présente",
+      "changedFromV1": false
+    },
+    {
+      "id": "g03",
+      "name": "Repousser",
+      "affinity": "gardien",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 1,
+      "damage": 0.8,
+      "op": "push",
+      "amount": 2,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "amount": 3
+      },
+      "runtimeId": "cc2_g03",
+      "baseText": "0,8 P physiques ; pousse de 2 cases",
+      "upgradeText": "0,80 P physiques ; pousse de 3 cases.",
+      "changedFromV1": true
+    },
+    {
+      "id": "g04",
+      "name": "Ramener au front",
+      "affinity": "gardien",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 2,
+      "max": 3,
+      "damage": 0.2,
+      "op": "pull",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "amount": 2
+      },
+      "runtimeId": "cc2_g04",
+      "baseText": "0,2 P physiques ; attire de 1 cases",
+      "upgradeText": "0,20 P physiques ; attire de 2 cases.",
+      "changedFromV1": true
+    },
+    {
+      "id": "r01",
+      "name": "Tir de relais",
+      "affinity": "arpenteur",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 2,
+      "max": 4,
+      "damage": 0.8,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "min": 1
+      },
+      "runtimeId": "cc2_r01",
+      "baseText": "0,80 P physiques ; après 2 cases de mouvement volontaire admissible, pioche 1 dans la limite de main.",
+      "upgradeText": "Même effet ; portée 1–4.",
+      "changedFromV1": true,
+      "drawOnMoved": 1,
+      "movementThreshold": 2
+    },
+    {
+      "id": "r02",
+      "name": "Trait de recul",
+      "affinity": "arpenteur",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 2,
+      "max": 4,
+      "damage": 0.7,
+      "op": "push",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "min": 1
+      },
+      "runtimeId": "cc2_r02",
+      "baseText": "0,7 P physiques ; pousse de 1 cases",
+      "upgradeText": "Effet de base ; portée 1–4.",
+      "changedFromV1": true
+    },
+    {
+      "id": "r03",
+      "name": "Flèche entravante",
+      "affinity": "arpenteur",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 2,
+      "max": 4,
+      "damage": 0.6,
+      "op": "slow",
+      "amount": 2,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 5
+      },
+      "runtimeId": "cc2_r03",
+      "baseText": "0,6 P physiques ; -2 PM pour la prochaine activation",
+      "upgradeText": "Effet de base ; portée 2–5.",
+      "changedFromV1": true
+    },
+    {
+      "id": "r04",
+      "name": "Volée croisée",
+      "affinity": "arpenteur",
+      "rarity": "normal",
+      "ap": 3,
+      "min": 2,
+      "max": 4,
+      "damage": 0.6,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "cross",
+      "upgrade": {
+        "damage": 0.75
+      },
+      "runtimeId": "cc2_r04",
+      "baseText": "0,6 P physiques en croix",
+      "upgradeText": "0,75 P physiques en croix",
+      "changedFromV1": false
+    },
+    {
+      "id": "t01",
+      "name": "Trait de givre",
+      "affinity": "thaumaturge",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 4,
+      "damage": 0.65,
+      "op": "slow",
+      "amount": 1,
+      "type": "magic",
+      "shape": "single",
+      "upgrade": {
+        "waterReactionDuration": 3
+      },
+      "runtimeId": "cc2_t01",
+      "baseText": "0,65 P magiques ; −1 PM à la prochaine activation ; sur eau dynamique, transforme la case en glace pour 2 phases.",
+      "upgradeText": "Même effet ; glace issue de l’eau : 3 phases.",
+      "changedFromV1": true,
+      "waterReaction": "freeze"
+    },
+    {
+      "id": "t02",
+      "name": "Braise tenace",
+      "affinity": "thaumaturge",
+      "rarity": "normal",
+      "ap": 2,
+      "min": 1,
+      "max": 3,
+      "damage": 0.55,
+      "op": "burn",
+      "amount": 0.18,
+      "type": "magic",
+      "shape": "single",
+      "duration": 2,
+      "upgrade": {
+        "waterReactionDuration": 2
+      },
+      "runtimeId": "cc2_t02",
+      "baseText": "0,55 P magiques ; brûlure 0,18 P × 2 ; sur eau dynamique, vapeur bloquant la vision pour 1 phase.",
+      "upgradeText": "Même effet ; vapeur issue de l’eau : 2 phases.",
+      "changedFromV1": true,
+      "waterReaction": "steam"
+    },
+    {
+      "id": "t03",
+      "name": "Sceau ombreux",
+      "affinity": "thaumaturge",
+      "rarity": "normal",
+      "ap": 1,
+      "min": 1,
+      "max": 4,
+      "damage": 0.25,
+      "op": "mark",
+      "amount": 0.4,
+      "type": "magic",
+      "shape": "single",
+      "upgrade": {
+        "amount": 0.6
+      },
+      "runtimeId": "cc2_t03",
+      "baseText": "0,25 P magiques ; 0,4 P au prochain impact de carte ; expire après 2 phases ennemies",
+      "upgradeText": "0,25 P magiques ; marque de 0,60 P pendant 2 phases.",
+      "changedFromV1": true
+    },
+    {
+      "id": "t04",
+      "name": "Onde du Léthé",
+      "affinity": "thaumaturge",
+      "rarity": "normal",
+      "ap": 3,
+      "min": 1,
+      "max": 3,
+      "damage": 0.45,
+      "op": "hit",
+      "amount": 0,
+      "type": "magic",
+      "shape": "cross",
+      "upgrade": {
+        "duration": 3
+      },
+      "runtimeId": "cc2_t04",
+      "baseText": "0,45 P magiques en croix ; pose de l’eau dynamique 2 phases sur les cases valides de la croix.",
+      "upgradeText": "Même effet ; eau 3 phases.",
+      "changedFromV1": true,
+      "waterField": true,
+      "duration": 2
+    },
+    {
+      "id": "a05",
+      "name": "Bond spectral",
+      "affinity": "assassin",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 3,
+      "damage": 0,
+      "op": "blink",
+      "amount": 3,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 4,
+        "amount": 4
+      },
+      "runtimeId": "cc2_a05",
+      "baseText": "3 cases par téléportation",
+      "upgradeText": "4 cases par téléportation ; portée 1–4",
+      "changedFromV1": false
+    },
+    {
+      "id": "a06",
+      "name": "Dernier verdict",
+      "affinity": "assassin",
+      "rarity": "elite",
+      "ap": 3,
+      "min": 1,
+      "max": 2,
+      "damage": 1.3,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "condition": "execute",
+      "bonus": 0.7,
+      "upgrade": {
+        "damage": 1.45
+      },
+      "runtimeId": "cc2_a06",
+      "baseText": "1,3 P physiques ; +0,7 P si cible à 35 % PV ou moins",
+      "upgradeText": "1,45 P physiques ; +0,7 P si cible à 35 % PV ou moins",
+      "changedFromV1": false
+    },
+    {
+      "id": "a07",
+      "name": "Pointe franche",
+      "affinity": "assassin",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 3,
+      "damage": 0.9,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "pierce": 1,
+      "upgrade": {
+        "damage": 1.05
+      },
+      "runtimeId": "cc2_a07",
+      "baseText": "0,9 P physiques ; ignore l’armure",
+      "upgradeText": "1,05 P physiques ; ignore l’armure",
+      "changedFromV1": false
+    },
+    {
+      "id": "g05",
+      "name": "Contre préparé",
+      "affinity": "gardien",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "counter",
+      "amount": 0.9,
+      "type": "physical",
+      "shape": "single",
+      "counter": 0.5,
+      "upgrade": {
+        "amount": 1.15
+      },
+      "runtimeId": "cc2_g05",
+      "baseText": "0,9 P de garde et une riposte de 0,5 P",
+      "upgradeText": "1,15 P de garde et une riposte de 0,5 P",
+      "changedFromV1": false
+    },
+    {
+      "id": "g06",
+      "name": "Choc de masse",
+      "affinity": "gardien",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 1,
+      "damage": 0.65,
+      "op": "push",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "collisionGuard": 0.45
+      },
+      "runtimeId": "cc2_g06",
+      "baseText": "0,65 P physiques ; poussée 1 ; si un mur/obstacle fixe arrête cette poussée : 0,30 P de garde, une fois.",
+      "upgradeText": "Même effet ; garde de collision 0,45 P.",
+      "changedFromV1": true,
+      "collisionGuard": 0.3
+    },
+    {
+      "id": "g07",
+      "name": "Dette du bronze",
+      "affinity": "gardien",
+      "rarity": "elite",
+      "ap": 3,
+      "min": 1,
+      "max": 2,
+      "damage": 1.2,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "condition": "absorbed",
+      "bonus": 0.5,
+      "upgrade": {
+        "damage": 1.3499999999999999
+      },
+      "runtimeId": "cc2_g07",
+      "baseText": "1,2 P physiques ; +0,5 P si garde absorbée au tour précédent",
+      "upgradeText": "1,35 P physiques ; +0,5 P si garde absorbée au tour précédent",
+      "changedFromV1": false
+    },
+    {
+      "id": "r05",
+      "name": "Au-delà du front",
+      "affinity": "arpenteur",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 4,
+      "damage": 0,
+      "op": "blink",
+      "amount": 4,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 5,
+        "amount": 5
+      },
+      "runtimeId": "cc2_r05",
+      "baseText": "4 cases par téléportation",
+      "upgradeText": "5 cases par téléportation ; portée 1–5",
+      "changedFromV1": false
+    },
+    {
+      "id": "r06",
+      "name": "Pluie de pointes",
+      "affinity": "arpenteur",
+      "rarity": "elite",
+      "ap": 3,
+      "min": 2,
+      "max": 5,
+      "damage": 0.7,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "line3_perpendicular",
+      "upgrade": {
+        "max": 6
+      },
+      "runtimeId": "cc2_r06",
+      "baseText": "0,70 P physiques sur une ligne de 3 cases perpendiculaire à l’axe dominant lanceur–centre ; une fois par cible.",
+      "upgradeText": "Même effet ; portée 2–6.",
+      "changedFromV1": true
+    },
+    {
+      "id": "r07",
+      "name": "Trait harpon",
+      "affinity": "arpenteur",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 2,
+      "max": 5,
+      "damage": 0.55,
+      "op": "pull",
+      "amount": 2,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "choosePull": true
+      },
+      "runtimeId": "cc2_r07",
+      "baseText": "0,55 P physiques ; attire de 2 cases",
+      "upgradeText": "0,55 P physiques ; choisit une attraction de 1 ou 2 cases.",
+      "changedFromV1": true
+    },
+    {
+      "id": "t05",
+      "name": "Bûcher des ombres",
+      "affinity": "thaumaturge",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 4,
+      "damage": 0,
+      "op": "firefield",
+      "amount": 0.35,
+      "type": "magic",
+      "shape": "cross",
+      "duration": 2,
+      "upgrade": {
+        "amount": 0.44999999999999996
+      },
+      "runtimeId": "cc2_t05",
+      "baseText": "0,35 P magiques par phase, 2 phases, croix affectant les deux camps",
+      "upgradeText": "0,45 P magiques par phase, 2 phases, croix affectant les deux camps",
+      "changedFromV1": false
+    },
+    {
+      "id": "t06",
+      "name": "Jardin de givre",
+      "affinity": "thaumaturge",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 4,
+      "damage": 0,
+      "op": "icefield",
+      "amount": 1,
+      "type": "magic",
+      "shape": "cross",
+      "duration": 2,
+      "upgrade": {
+        "duration": 3
+      },
+      "runtimeId": "cc2_t06",
+      "baseText": "-1 PM aux ennemis en croix pendant 2 phases",
+      "upgradeText": "-1 PM aux ennemis en croix pendant 3 phases",
+      "changedFromV1": false
+    },
+    {
+      "id": "t07",
+      "name": "Prélèvement",
+      "affinity": "thaumaturge",
+      "rarity": "elite",
+      "ap": 2,
+      "min": 1,
+      "max": 3,
+      "damage": 0.75,
+      "op": "drain",
+      "amount": 0.5,
+      "type": "magic",
+      "shape": "single",
+      "upgrade": {
+        "damage": 0.9
+      },
+      "runtimeId": "cc2_t07",
+      "baseText": "0,75 P magiques ; soigne 50 % des PV effectivement retirés",
+      "upgradeText": "0,9 P magiques ; soigne 50 % des PV effectivement retirés",
+      "changedFromV1": false
+    },
+    {
+      "id": "a08",
+      "name": "Couper le souffle",
+      "affinity": "assassin",
+      "rarity": "rare",
+      "ap": 2,
+      "min": 1,
+      "max": 3,
+      "damage": 0.7,
+      "op": "disrupt",
+      "amount": 0.5,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "damage": 0.85
+      },
+      "runtimeId": "cc2_a08",
+      "baseText": "0,7 P physiques ; prochaine attaque à −50 % ; boss −25 %",
+      "upgradeText": "0,85 P physiques ; prochaine attaque à −50 % ; boss −25 %",
+      "changedFromV1": false
+    },
+    {
+      "id": "a09",
+      "name": "Sommeil marqué",
+      "affinity": "assassin",
+      "rarity": "rare",
+      "ap": 3,
+      "min": 1,
+      "max": 3,
+      "damage": 0,
+      "op": "stasis",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 4
+      },
+      "runtimeId": "cc2_a09",
+      "baseText": "consomme une marque ; annule une activation ; immunité 3 suivantes ; boss : affaiblissement 25 %",
+      "upgradeText": "consomme une marque ; annule une activation ; immunité 3 suivantes ; boss : affaiblissement 25 % ; portée 1–4",
+      "changedFromV1": false
+    },
+    {
+      "id": "g08",
+      "name": "Bastion vivant",
+      "affinity": "gardien",
+      "rarity": "rare",
+      "ap": 3,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "guard",
+      "amount": 1.9,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "amount": 2.15
+      },
+      "runtimeId": "cc2_g08",
+      "baseText": "1,9 P de garde",
+      "upgradeText": "2,15 P de garde",
+      "changedFromV1": false
+    },
+    {
+      "id": "g09",
+      "name": "Répercussion",
+      "affinity": "gardien",
+      "rarity": "rare",
+      "ap": 2,
+      "min": 1,
+      "max": 3,
+      "damage": 0.7,
+      "op": "guardburst",
+      "amount": 1.5,
+      "type": "physical",
+      "shape": "single",
+      "cap": 1.2,
+      "upgrade": {
+        "max": 4
+      },
+      "runtimeId": "cc2_g09",
+      "baseText": "Choisit S entre 0 et min(garde, 0,80 P), consomme S ; inflige 0,70 P + 1,50 S physiques.",
+      "upgradeText": "Même formule et coût ; portée 1–4.",
+      "changedFromV1": true,
+      "sacrificeCap": 0.8,
+      "chooseSacrifice": true
+    },
+    {
+      "id": "r08",
+      "name": "Permutation",
+      "affinity": "arpenteur",
+      "rarity": "rare",
+      "ap": 2,
+      "min": 1,
+      "max": 5,
+      "damage": 0,
+      "op": "swap",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "max": 6
+      },
+      "runtimeId": "cc2_r08",
+      "baseText": "échange les positions ; boss exclu",
+      "upgradeText": "échange les positions ; boss exclu ; portée 1–6",
+      "changedFromV1": false
+    },
+    {
+      "id": "r09",
+      "name": "La longue vue",
+      "affinity": "arpenteur",
+      "rarity": "rare",
+      "ap": 3,
+      "min": 3,
+      "max": 6,
+      "damage": 1.75,
+      "op": "hit",
+      "amount": 0,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "damage": 1.9
+      },
+      "runtimeId": "cc2_r09",
+      "baseText": "1,75 P physiques",
+      "upgradeText": "1,9 P physiques",
+      "changedFromV1": false
+    },
+    {
+      "id": "t08",
+      "name": "Convergence",
+      "affinity": "thaumaturge",
+      "rarity": "rare",
+      "ap": 3,
+      "min": 1,
+      "max": 4,
+      "damage": 0.8,
+      "op": "converge",
+      "amount": 1,
+      "type": "magic",
+      "shape": "cross",
+      "upgrade": {
+        "max": 5
+      },
+      "runtimeId": "cc2_t08",
+      "baseText": "0,8 P magiques en croix ; attire d’une case vers le centre les ennemis à distance ≤2, puis frappe la croix",
+      "upgradeText": "Effet de base ; portée 1–5.",
+      "changedFromV1": true
+    },
+    {
+      "id": "t09",
+      "name": "Résonance du sceau",
+      "affinity": "thaumaturge",
+      "rarity": "rare",
+      "ap": 3,
+      "min": 1,
+      "max": 4,
+      "damage": 0.9,
+      "op": "hit",
+      "amount": 0,
+      "type": "magic",
+      "shape": "single",
+      "condition": "marked",
+      "bonus": 0.8,
+      "upgrade": {
+        "bonus": 1.05
+      },
+      "runtimeId": "cc2_t09",
+      "baseText": "0,9 P magiques ; +0,8 P si cible marquée",
+      "upgradeText": "0,90 P magiques ; +1,05 P si la cible est marquée.",
+      "changedFromV1": true
+    },
+    {
+      "id": "l01",
+      "name": "Orage du passage",
+      "affinity": "shared",
+      "rarity": "legendary",
+      "ap": 3,
+      "min": 0,
+      "max": 0,
+      "damage": 1.1,
+      "op": "storm",
+      "amount": 0,
+      "type": "magic",
+      "shape": "radius2",
+      "upgrade": {
+        "damage": 1.25
+      },
+      "runtimeId": "cc2_l01",
+      "baseText": "1,1 P magiques dans un rayon de 2",
+      "upgradeText": "1,25 P magiques dans un rayon de 2",
+      "changedFromV1": false
+    },
+    {
+      "id": "l02",
+      "name": "Grâce du bronze",
+      "affinity": "shared",
+      "rarity": "legendary",
+      "ap": 2,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "heal",
+      "amount": 1.5,
+      "type": "physical",
+      "shape": "single",
+      "shield": 0.5,
+      "upgrade": {
+        "amount": 1.75
+      },
+      "runtimeId": "cc2_l02",
+      "baseText": "soigne 1,5 P ; garde 0,5 P",
+      "upgradeText": "soigne 1,75 P ; garde 0,5 P",
+      "changedFromV1": false
+    },
+    {
+      "id": "d01",
+      "name": "Décret du dernier souffle",
+      "affinity": "shared",
+      "rarity": "god",
+      "ap": 3,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "edict",
+      "amount": 1,
+      "type": "physical",
+      "shape": "single",
+      "upgrade": {
+        "shield": 0.6
+      },
+      "runtimeId": "cc2_d01",
+      "baseText": "premier impact létal laisse 1 PV jusqu’au prochain tour ; pression exclue",
+      "upgradeText": "premier impact létal laisse 1 PV jusqu’au prochain tour ; pression exclue ; garde 0,6 P",
+      "changedFromV1": false
+    },
+    {
+      "id": "i01",
+      "name": "Seconde aurore",
+      "affinity": "shared",
+      "rarity": "immortal",
+      "ap": 4,
+      "min": 0,
+      "max": 0,
+      "damage": 0,
+      "op": "renew",
+      "amount": 0.6,
+      "type": "physical",
+      "shape": "single",
+      "shield": 1,
+      "endTurn": true,
+      "upgrade": {
+        "amount": 0.75
+      },
+      "runtimeId": "cc2_i01",
+      "baseText": "soigne 60 % PV max ; garde 1 P ; finit l’activation",
+      "upgradeText": "soigne 75 % PV max ; garde 1 P ; finit l’activation",
+      "changedFromV1": false
+    }
+  ],
+  "equipment": [
+    {
+      "id": "w_blade",
+      "name": "Lame des brèches",
+      "slot": "weapon",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "melee": 0.12
+      }
+    },
+    {
+      "id": "w_bow",
+      "name": "Arc des longues rives",
+      "slot": "weapon",
+      "stage": 1,
+      "price": 60,
+      "mods": {
+        "ranged": 0.1,
+        "range": 1,
+        "mp": -1
+      }
+    },
+    {
+      "id": "w_staff",
+      "name": "Bâton des braises",
+      "slot": "weapon",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "magic": 0.12
+      }
+    },
+    {
+      "id": "b_leather",
+      "name": "Cuir du passage",
+      "slot": "body",
+      "stage": 1,
+      "price": 50,
+      "mods": {
+        "hp": 0.12
+      }
+    },
+    {
+      "id": "b_plate",
+      "name": "Cuirasse pesante",
+      "slot": "body",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "armor": 0.12,
+        "mp": -1
+      }
+    },
+    {
+      "id": "b_robe",
+      "name": "Robe de cendre",
+      "slot": "body",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "magicResist": 0.12,
+        "guard": 0.1
+      }
+    },
+    {
+      "id": "h_watch",
+      "name": "Masque du guetteur",
+      "slot": "head",
+      "stage": 1,
+      "price": 65,
+      "mods": {
+        "hand": 1
+      }
+    },
+    {
+      "id": "h_bronze",
+      "name": "Casque du seuil",
+      "slot": "head",
+      "stage": 1,
+      "price": 50,
+      "mods": {
+        "openingShield": 0.6
+      }
+    },
+    {
+      "id": "h_sage",
+      "name": "Diadème patient",
+      "slot": "head",
+      "stage": 2,
+      "price": 55,
+      "mods": {
+        "guard": 0.15
+      }
+    },
+    {
+      "id": "f_quick",
+      "name": "Sandales du détour",
+      "slot": "feet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mp": 1
+      }
+    },
+    {
+      "id": "f_brace",
+      "name": "Solerets du rempart",
+      "slot": "feet",
+      "stage": 2,
+      "price": 60,
+      "mods": {
+        "melee": 0.08,
+        "armor": 0.04
+      }
+    },
+    {
+      "id": "f_flow",
+      "name": "Bottes du reflux",
+      "slot": "feet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "ranged": 0.06,
+        "mp": 1,
+        "guard": -0.1
+      }
+    },
+    {
+      "id": "s_life",
+      "name": "Ceinture des vivants",
+      "slot": "belt",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "hp": 0.16
+      }
+    },
+    {
+      "id": "s_care",
+      "name": "Trousse du passeur",
+      "slot": "belt",
+      "stage": 2,
+      "price": 55,
+      "mods": {
+        "healing": 0.3,
+        "hp": 0.04
+      }
+    },
+    {
+      "id": "s_guard",
+      "name": "Sangle de bronze",
+      "slot": "belt",
+      "stage": 2,
+      "price": 55,
+      "mods": {
+        "guard": 0.2
+      }
+    },
+    {
+      "id": "j_cup",
+      "name": "Pendentif écarlate",
+      "slot": "amulet",
+      "stage": 3,
+      "price": 80,
+      "mods": {
+        "lifesteal": 0.1
+      }
+    },
+    {
+      "id": "j_shard",
+      "name": "Éclat téméraire",
+      "slot": "amulet",
+      "stage": 3,
+      "price": 75,
+      "mods": {
+        "damage": 0.08,
+        "hp": -0.06
+      }
+    },
+    {
+      "id": "j_eye",
+      "name": "Œil des distances",
+      "slot": "amulet",
+      "stage": 3,
+      "price": 80,
+      "mods": {
+        "range": 1,
+        "firstHitReduction": 0.12
+      }
+    }
+  ],
+  "relics": [
+    {
+      "id": "thread",
+      "name": "Fil du détour",
+      "price": 90,
+      "rule": "Le premier déplacement par carte de chaque tour rend 1 PM."
+    },
+    {
+      "id": "bronze",
+      "name": "Urne patiente",
+      "price": 95,
+      "rule": "Si de la garde a absorbé des dégâts, gagne 0,25 P de garde au prochain tour."
+    },
+    {
+      "id": "embers",
+      "name": "Mèche obstinée",
+      "price": 95,
+      "rule": "Les brûlures et zones de feu infligent +0,10 P par tic."
+    },
+    {
+      "id": "obole",
+      "name": "Obole fendue",
+      "price": 90,
+      "rule": "Une élimination directe rapporte 4 or, maximum 20 par combat."
+    },
+    {
+      "id": "archive",
+      "name": "Agrafe des archives",
+      "price": 95,
+      "rule": "La première carte à 3 PA ou plus du combat coûte 1 PA de moins."
+    },
+    {
+      "id": "mirror",
+      "name": "Miroir du bronze",
+      "price": 100,
+      "rule": "La première attaque reçue de chaque combat renvoie 0,40 P ; aucun déclenchement récursif."
+    },
+    {
+      "id": "cup",
+      "name": "Coupe des blessures",
+      "price": 100,
+      "rule": "Les deux premières éliminations directes du combat soignent chacune 0,35 P."
+    },
+    {
+      "id": "seal",
+      "name": "Sceau du chasseur",
+      "price": 95,
+      "rule": "Une marque appliquée gagne +0,20 P de bonus au prochain impact."
+    }
+  ],
+  "enemyTypes": {
+    "brute": {
+      "name": "Brute",
+      "weight": 3,
+      "attack": 0.1,
+      "range": 1,
+      "mp": 2,
+      "type": "physical",
+      "armor": 0.08
+    },
+    "archer": {
+      "name": "Archer",
+      "weight": 1.2,
+      "attack": 0.08,
+      "range": 4,
+      "mp": 1,
+      "type": "physical",
+      "armor": 0
+    },
+    "hound": {
+      "name": "Molosse",
+      "weight": 2.4,
+      "attack": 0.08,
+      "range": 1,
+      "mp": 3,
+      "type": "physical",
+      "armor": 0
+    },
+    "mage": {
+      "name": "Lamie",
+      "weight": 1.8,
+      "attack": 0.08,
+      "range": 3,
+      "mp": 2,
+      "type": "magic",
+      "armor": 0
+    },
+    "priest": {
+      "name": "Officiant",
+      "weight": 1.5,
+      "attack": 0.055,
+      "range": 3,
+      "mp": 1,
+      "type": "magic",
+      "armor": 0,
+      "support": 0.25
+    },
+    "guard": {
+      "name": "Porte-égide",
+      "weight": 2.5,
+      "attack": 0.09,
+      "range": 1,
+      "mp": 2,
+      "type": "physical",
+      "armor": 0.2
+    },
+    "boss": {
+      "name": "Pâris — prototype",
+      "weight": 7,
+      "attack": 0.14,
+      "range": 3,
+      "mp": 2,
+      "type": "physical",
+      "armor": 0.1,
+      "boss": true
+    }
+  },
+  "maps": {
+    "plain": {
+      "name": "Le seuil",
+      "walls": [],
+      "hazard": "none"
+    },
+    "pillars": {
+      "name": "Les colonnes",
+      "walls": [
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "hazard": "none"
+    },
+    "forge": {
+      "name": "La presse",
+      "walls": [
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "hazard": "forge"
+    },
+    "garden": {
+      "name": "Le jardin",
+      "walls": [
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          3
+        ]
+      ],
+      "hazard": "garden"
+    },
+    "convoy": {
+      "name": "Le convoi",
+      "walls": [
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "hazard": "convoy"
+    },
+    "hourglass": {
+      "name": "Le sablier",
+      "walls": [
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "hazard": "hourglass"
+    },
+    "reservoir": {
+      "name": "Les réservoirs",
+      "walls": [
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "hazard": "reservoir"
+    }
+  },
+  "route": [
+    {
+      "index": 1,
+      "level": 1,
+      "depth": 1,
+      "kind": "normal",
+      "map": "plain",
+      "hpBudget": 1.4,
+      "roster": [
+        "brute"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 2,
+      "level": 2,
+      "depth": 2,
+      "kind": "normal",
+      "map": "pillars",
+      "hpBudget": 3,
+      "roster": [
+        "brute",
+        "archer"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 3,
+      "level": 3,
+      "depth": 3,
+      "kind": "normal",
+      "map": "plain",
+      "hpBudget": 4.2,
+      "roster": [
+        "archer",
+        "brute",
+        "brute"
+      ],
+      "shopAfter": true,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "telegraphed_execution"
+    },
+    {
+      "index": 4,
+      "level": 4,
+      "depth": 5,
+      "kind": "normal",
+      "map": "forge",
+      "hpBudget": 6,
+      "roster": [
+        "mage",
+        "brute",
+        "hound"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "support_line_of_sight"
+    },
+    {
+      "index": 5,
+      "level": 5,
+      "depth": 6,
+      "kind": "elite",
+      "map": "hourglass",
+      "hpBudget": 8.4,
+      "roster": [
+        "brute",
+        "archer",
+        "hound",
+        "priest"
+      ],
+      "shopAfter": true,
+      "refugeAfter": true,
+      "relicGuaranteed": true,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 6,
+      "level": 6,
+      "depth": 8,
+      "kind": "normal",
+      "map": "garden",
+      "hpBudget": 6.6,
+      "roster": [
+        "priest",
+        "hound",
+        "brute"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 7,
+      "level": 7,
+      "depth": 10,
+      "kind": "elite",
+      "map": "pillars",
+      "hpBudget": 6.8,
+      "roster": [
+        "guard",
+        "brute"
+      ],
+      "shopAfter": true,
+      "refugeAfter": true,
+      "relicGuaranteed": false,
+      "encounterVariant": "break_guard_formation"
+    },
+    {
+      "index": 8,
+      "level": 8,
+      "depth": 12,
+      "kind": "normal",
+      "map": "convoy",
+      "hpBudget": 6.6,
+      "roster": [
+        "priest",
+        "archer",
+        "archer",
+        "brute"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 9,
+      "level": 9,
+      "depth": 13,
+      "kind": "normal",
+      "map": "reservoir",
+      "hpBudget": 6,
+      "roster": [
+        "mage",
+        "hound",
+        "guard"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 10,
+      "level": 10,
+      "depth": 15,
+      "kind": "elite",
+      "map": "pillars",
+      "hpBudget": 8.4,
+      "roster": [
+        "guard",
+        "archer",
+        "mage",
+        "priest"
+      ],
+      "shopAfter": true,
+      "refugeAfter": true,
+      "relicGuaranteed": true,
+      "encounterVariant": "finite_parry"
+    },
+    {
+      "index": 11,
+      "level": 11,
+      "depth": 17,
+      "kind": "normal",
+      "map": "garden",
+      "hpBudget": 5.4,
+      "roster": [
+        "archer",
+        "hound",
+        "mage"
+      ],
+      "shopAfter": true,
+      "refugeAfter": true,
+      "relicGuaranteed": false,
+      "encounterVariant": "baseline_v1"
+    },
+    {
+      "index": 12,
+      "level": 12,
+      "depth": 20,
+      "kind": "boss",
+      "map": "pillars",
+      "hpBudget": 12,
+      "roster": [
+        "boss",
+        "mage",
+        "hound"
+      ],
+      "shopAfter": false,
+      "refugeAfter": false,
+      "relicGuaranteed": false,
+      "encounterVariant": "paris_two_phases"
+    }
+  ],
+  "meta": {
+    "id": "catabase_cards_consumable_v2",
+    "version": "2.0.0-design.1",
+    "date": "2026-09-26",
+    "status": "PREPARED_NOT_IMPLEMENTED",
+    "balance": "PROVISIONAL_NOT_PLAYTESTED",
+    "sourceCommit": "c6ab5a72c1789e4cc285300c9bbae9c78524fa05",
+    "sourceLock": {
+      "baseManifest": "731b0963ec2f113786ea8151328982fcbf40e4c64b4e5efa75793d034dd20cbd",
+      "baseCatalogue": "567d2aa364aa8defd6aa47a21f09206246180eaa1bd7d8348a0eda13d0cddae1"
+    },
+    "numericAuthority": "manifest.json generated by preparer.mjs",
+    "semanticAuthority": "REGLES.md, CONTENU_ET_RENCONTRES.md",
+    "incompatibleWithLegacySimulator": true
+  },
+  "contentChanges": [
+    {
+      "id": "n02",
+      "name": "Garde brève",
+      "reason": "Protection contre accès différé ; remplace le bonus de garde."
+    },
+    {
+      "id": "n04",
+      "name": "Heurt",
+      "reason": "Différencier déplacement et dégâts."
+    },
+    {
+      "id": "n06",
+      "name": "Repérage",
+      "reason": "Faciliter la préparation à distance."
+    },
+    {
+      "id": "n07",
+      "name": "Entrave légère",
+      "reason": "Étendre une réponse de contrôle ordinaire."
+    },
+    {
+      "id": "a01",
+      "name": "Ouvrir la garde",
+      "reason": "Préparation plus souple sans multiplier les marques."
+    },
+    {
+      "id": "a02",
+      "name": "Frapper la faille",
+      "reason": "Le finisseur gagne une cible possible, pas un multiplicateur."
+    },
+    {
+      "id": "a03",
+      "name": "Entaille tenace",
+      "reason": "Résoudre la confusion entre blessure de l’Assassin et brûlure magique."
+    },
+    {
+      "id": "a04",
+      "name": "Attaque oblique",
+      "reason": "Rendre la condition plus accessible."
+    },
+    {
+      "id": "g03",
+      "name": "Repousser",
+      "reason": "Créer un outil de placement distinct."
+    },
+    {
+      "id": "g04",
+      "name": "Ramener au front",
+      "reason": "Construire le contact."
+    },
+    {
+      "id": "g06",
+      "name": "Choc de masse",
+      "reason": "Une élite spécialisée dans les obstacles. Bord, unité et limitation du boss exclus."
+    },
+    {
+      "id": "g09",
+      "name": "Répercussion",
+      "reason": "Le sacrifice doit rémunérer un choix réel, avec défense restante visible."
+    },
+    {
+      "id": "r01",
+      "name": "Tir de relais",
+      "reason": "Relier position et accès aux cartes, sans remboursement de PA."
+    },
+    {
+      "id": "r02",
+      "name": "Trait de recul",
+      "reason": "Ouvrir une réponse de dégagement."
+    },
+    {
+      "id": "r03",
+      "name": "Flèche entravante",
+      "reason": "Mieux préparer les approches."
+    },
+    {
+      "id": "r06",
+      "name": "Pluie de pointes",
+      "reason": "La formation ennemie décide entre ligne et croix."
+    },
+    {
+      "id": "r07",
+      "name": "Trait harpon",
+      "reason": "Précision du placement."
+    },
+    {
+      "id": "t01",
+      "name": "Trait de givre",
+      "reason": "Une réponse élémentaire accessible sans rare."
+    },
+    {
+      "id": "t02",
+      "name": "Braise tenace",
+      "reason": "Choisir entre visibilité et protection. La cible est validée avant apparition de la vapeur."
+    },
+    {
+      "id": "t03",
+      "name": "Sceau ombreux",
+      "reason": "Améliorer la préparation plutôt que son impact."
+    },
+    {
+      "id": "t04",
+      "name": "Onde du Léthé",
+      "reason": "Remplace une zone de dégâts redondante par un support de transformation."
+    },
+    {
+      "id": "t08",
+      "name": "Convergence",
+      "reason": "Élargir la préparation des groupes."
+    },
+    {
+      "id": "t09",
+      "name": "Résonance du sceau",
+      "reason": "Renforcer l’identité de finisseur préparé."
+    }
+  ],
+  "classContracts": {
+    "baseAndSpec": "La spécialisation ajoute une règle au passif de classe avec un compteur distinct ; tous les déclencheurs bornés sont explicitement définis.",
+    "assassin": "Le passif d’isolement V1 reste. La spécialisation relay remplace ambush dans ce profil uniquement.",
+    "gardien": "Renvoi V1 0,25 P une fois par ronde ; garde de secours admissible. Bastion et crusher conservés.",
+    "arpenteur": "Ancre remplace le gain de PM de base. Retour volontaire, manuel, téléporté ; ne compte pas dans les cases de mouvement admissibles.",
+    "thaumaturge": "Garde commune aux déclencheurs de statut et transformation ; ni tic ni simple rafraîchissement. Pyre/frost V1 conservés."
+  },
+  "encounterContracts": {
+    "telegraphed_execution": "Combat 3 : dernière brute remplacée par variante, mêmes PV/ATK/PM. Activation de préparation : approche puis annonce une case au contact, sans attaque. Activation de résolution : frappe cette case à 1,5 ATK seulement si le héros y est et si elle reste au contact ; aucun déplacement.",
+    "support_line_of_sight": "Combat 4 : Lamie conserve ses statistiques ; une activation sur deux protège un allié à ≤3 avec ligne de vue pour 0,40 P de rencontre ; cette action remplace son attaque ; durée jusqu’au début de sa prochaine activation.",
+    "break_guard_formation": "Combat 7 : Porte-égide donne 0,25 P de rencontre de garde aux alliés adjacents en début d’activation, seulement sans héros adjacent ; ne se protège pas lui-même ; remplace son ancien bonus de protection de groupe.",
+    "finite_parry": "Combat 10 : Porte-égide possède une parade de 0,40 P de rencontre contre le premier impact physique direct reçu entre ses activations ; excédent perdu, statuts/déplacement conservés. Une charge par activation ; pas de protection de groupe supplémentaire.",
+    "paris_two_phases": "Combat 12 : PV du boss répartis 50/50 entre deux phases avec report du surplus de dégâts. Même UID, aucun drop/XP de transition. Phase 1 : attaque de base et préparation de ligne une fois toutes les 3 activations ; phase 2 : attaque de base avec poussée 1. Total PV/ATK et accompagnants V1 conservés."
+  },
+  "roomContracts": {
+    "scalar": "P de rencontre = rules.prowess[level-1], jamais puissance équipée du héros.",
+    "reservoir": "0,50 × P de rencontre × charges ; décharge coûte 1 PA, vide le réservoir ; plafond 6. Cible : ennemi vivant au plus petit encounter_spawn_index.",
+    "others": "Presse/Jardin/Convoi/Sablier : paramètres de REGLES.md ; emplacements logiques adaptés aux cartes via Studio, pas de coordonnées codées dans les visuels."
+  }
+}

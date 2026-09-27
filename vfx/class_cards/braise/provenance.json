@@ -1,0 +1,434 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "soot": "291f2b",
+    "coal": "44303c",
+    "facet": "65404b",
+    "rust": "9b382a",
+    "red": "d84725",
+    "orange": "fa852b",
+    "gold": "ffc26a",
+    "cream": "fff0c7",
+    "steam_shadow": "697e94",
+    "steam": "a9c3cf",
+    "steam_light": "e2ece4"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/e_braise_tenace.png",
+  "source_script": "tools/class_card_vfx/braise/build.py",
+  "assets": {
+    "coal": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        192.0002
+      ],
+      "scene": "Braise CEL - coal",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "66ecfc5452357ad54cfd4d8e09e10b1e9f6ee27854a0ff08169bd9aabb9de60f",
+      "rendered_frames": [
+        {
+          "sha256": "437d5c9e3197499020a522952bb6538bd83ae1eec179f21bd7e92d763faeb3c0",
+          "alpha_bounds": [
+            22,
+            126,
+            271,
+            249
+          ]
+        },
+        {
+          "sha256": "36660265b5b70963be0116d90c2c8233c886ccf15552cdf50e94cd353fa822bc",
+          "alpha_bounds": [
+            22,
+            126,
+            272,
+            249
+          ]
+        },
+        {
+          "sha256": "49a175936abe7a4017814e294539e768a8a368d84af8e5a78cbc4b6f416b2357",
+          "alpha_bounds": [
+            22,
+            126,
+            271,
+            248
+          ]
+        },
+        {
+          "sha256": "7423a8391ab1d727178ec0a47f639528f2232fc9c3459d0fd9d15f972fee8428",
+          "alpha_bounds": [
+            22,
+            128,
+            270,
+            245
+          ]
+        },
+        {
+          "sha256": "b1b1e8a517d7329360d04307774ab6f54f7c40182e920b4ced2d0ae3dcee17db",
+          "alpha_bounds": [
+            22,
+            129,
+            269,
+            244
+          ]
+        },
+        {
+          "sha256": "1ed632b6a1b335795dd374c57741119b49ef2f45190997803ca63ec8f12fd55f",
+          "alpha_bounds": [
+            22,
+            128,
+            269,
+            244
+          ]
+        },
+        {
+          "sha256": "cf2efee71b10aabb177588b75a2e901ff1748c4152dbd853d297f435d0d5762c",
+          "alpha_bounds": [
+            22,
+            127,
+            271,
+            247
+          ]
+        },
+        {
+          "sha256": "d9400811097cf4d5a40f425f337806d9bb017f943949c1f00293059865c44eec",
+          "alpha_bounds": [
+            22,
+            126,
+            271,
+            249
+          ]
+        }
+      ]
+    },
+    "impact": {
+      "size": 384,
+      "frames": 12,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        192.0002
+      ],
+      "scene": "Braise CEL - impact",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "0d1efac655a9d57cc9f7b1f7c6d1baba433e7483b5647767bd2d037c1e60a82e",
+      "rendered_frames": [
+        {
+          "sha256": "04899f607615d23aebc507e6d367cacd92f7cc3eb7e5ed564980fddc2b469b10",
+          "alpha_bounds": [
+            128,
+            118,
+            254,
+            257
+          ]
+        },
+        {
+          "sha256": "4f9132f217fd48f15ba65a151b8dfa04719879217a9c9e722d953eb821f0ceb4",
+          "alpha_bounds": [
+            117,
+            88,
+            270,
+            282
+          ]
+        },
+        {
+          "sha256": "b4806b887db014bb960936991685d97d16ef3f8ca13513bbd1d93f568cff5bbe",
+          "alpha_bounds": [
+            98,
+            59,
+            291,
+            308
+          ]
+        },
+        {
+          "sha256": "924815eb67a053dd70695997af193cdbfcb786cded56a32e1c0fdfdb063e0215",
+          "alpha_bounds": [
+            98,
+            59,
+            291,
+            308
+          ]
+        },
+        {
+          "sha256": "6a8c007159f6ede1101aa81883f6a50de1f834d24be88c9aba57bc6da0af61ad",
+          "alpha_bounds": [
+            98,
+            62,
+            283,
+            308
+          ]
+        },
+        {
+          "sha256": "132f29fbac517e56cf328dffa0d150a92d412168eaf5bbb072e9fdc24530afb1",
+          "alpha_bounds": [
+            90,
+            58,
+            291,
+            307
+          ]
+        },
+        {
+          "sha256": "530c5e374fcb7aa54175bbeda5aa0729e22ff0767f46724121566a834b01af74",
+          "alpha_bounds": [
+            83,
+            53,
+            298,
+            305
+          ]
+        },
+        {
+          "sha256": "70bb3c85146323a3a07518b01f721539367605affb4cddb448787e5fec6d5532",
+          "alpha_bounds": [
+            75,
+            48,
+            305,
+            304
+          ]
+        },
+        {
+          "sha256": "72e7a9081608fe2855b8aff6bdd718c10c3acd1fe2a952c02916160e77c8c826",
+          "alpha_bounds": [
+            67,
+            43,
+            312,
+            303
+          ]
+        },
+        {
+          "sha256": "22ff5af3d67a1c1068bb56d892ef663684e6b6ff39ee840d922747d60993cbf1",
+          "alpha_bounds": [
+            60,
+            39,
+            320,
+            307
+          ]
+        },
+        {
+          "sha256": "74969117b6412ae3e86a4d0b72c5da33f5129dee85b4b0778960be5cc131b56f",
+          "alpha_bounds": [
+            52,
+            35,
+            327,
+            313
+          ]
+        },
+        {
+          "sha256": "5a5af39076d53c58efff8c0472eb37e6002e8b6fb07531ef5db25289b14018ad",
+          "alpha_bounds": [
+            45,
+            30,
+            334,
+            319
+          ]
+        }
+      ]
+    },
+    "ember": {
+      "size": 384,
+      "frames": 7,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        231.9363
+      ],
+      "scene": "Braise CEL - ember",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "91122bd4577ac72692bef2198bf91cdb02fa1a56b759c218b9e69e693c825703",
+      "rendered_frames": [
+        {
+          "sha256": "f05bcd635be95f5c9c1ee74040699cbd4bdc5ef004be342f7f7408742f5e79ec",
+          "alpha_bounds": [
+            131,
+            134,
+            247,
+            284
+          ]
+        },
+        {
+          "sha256": "f6762b79a2030ac38bacae9e3b4668b54cfe6325251fe108623fcc6aaef93e2e",
+          "alpha_bounds": [
+            131,
+            111,
+            247,
+            284
+          ]
+        },
+        {
+          "sha256": "7defc7d1e19a0d0ab693117a9700a394dab63111f4db647a10e02f86f84d8131",
+          "alpha_bounds": [
+            131,
+            51,
+            247,
+            284
+          ]
+        },
+        {
+          "sha256": "9d9d4bd4d60b25e95e47bde4f55e37157f1624089a801cc613dc4889f0dcb890",
+          "alpha_bounds": [
+            131,
+            42,
+            247,
+            284
+          ]
+        },
+        {
+          "sha256": "44eed24313f612ad68232d6a95960bf588e3b40f9e25cad7cb31285ef879f35e",
+          "alpha_bounds": [
+            131,
+            73,
+            247,
+            284
+          ]
+        },
+        {
+          "sha256": "37da95f152281ef7061ecb12c607734877a445ab0c78e8ff60d237e57ed18c45",
+          "alpha_bounds": [
+            131,
+            108,
+            247,
+            284
+          ]
+        },
+        {
+          "sha256": "7337cd7e158f5f82e0ec9aea0ea8128d37641f3ad322323fa0309a99678ca31e",
+          "alpha_bounds": [
+            131,
+            132,
+            247,
+            284
+          ]
+        }
+      ]
+    },
+    "steam": {
+      "size": 384,
+      "frames": 12,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        312.0002
+      ],
+      "scene": "Braise CEL - steam",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "e41b62428bf29436fd1647decf00e0aa63aa6a91e27b5b0078f2deb2d4ea6a32",
+      "rendered_frames": [
+        {
+          "sha256": "2e7692dbb5ade4e9e82ab9954c37b006912e827d5c96647e4da6bcbb6a42681f",
+          "alpha_bounds": [
+            145,
+            191,
+            241,
+            306
+          ]
+        },
+        {
+          "sha256": "def0522ed57af625f2722eba35561460bd46d0b865cb40a607c767da9aee3d46",
+          "alpha_bounds": [
+            141,
+            187,
+            244,
+            306
+          ]
+        },
+        {
+          "sha256": "885fed1c9d42ffc8faf8560205d1eea50d64f3b67451a343c872b3b842d7e6df",
+          "alpha_bounds": [
+            137,
+            182,
+            246,
+            306
+          ]
+        },
+        {
+          "sha256": "17064fe4504003a21bbed7a3f156dd4ffa28f07e266fd06db8cc10cc0b169244",
+          "alpha_bounds": [
+            133,
+            178,
+            249,
+            306
+          ]
+        },
+        {
+          "sha256": "82302bd477dba49d7fa2ea44f4184d5d4b0c824f0db1cc9517a275b516c774d4",
+          "alpha_bounds": [
+            129,
+            173,
+            253,
+            306
+          ]
+        },
+        {
+          "sha256": "6a370f1466a80371e884eaeb11c2b42ea29b85c47ee2db75a5b4035abf0dc9c6",
+          "alpha_bounds": [
+            126,
+            169,
+            256,
+            306
+          ]
+        },
+        {
+          "sha256": "d5bf7b1aa95b529c4a9aa375ed25e26b2b3bd37a5c209c904f45708a4a1c3b26",
+          "alpha_bounds": [
+            122,
+            164,
+            260,
+            306
+          ]
+        },
+        {
+          "sha256": "b4d4a9f21a0dc76bda37f9d1d799613f6d42e7030091df28bb63cef3a15b7bca",
+          "alpha_bounds": [
+            118,
+            160,
+            263,
+            306
+          ]
+        },
+        {
+          "sha256": "bd93301ae9b1a95ccf82e505c63d31f52df2e8b3f6678abce6e8df0e17fc99e9",
+          "alpha_bounds": [
+            118,
+            160,
+            263,
+            306
+          ]
+        },
+        {
+          "sha256": "65d747ae5d172a02b7dc2ba897b77fc8a95715359106c8fa8bd631fd1eabd285",
+          "alpha_bounds": [
+            118,
+            160,
+            263,
+            306
+          ]
+        },
+        {
+          "sha256": "2ea3b5c95dc368d5416100dfdb1f305f4fab92f7484edf95edfb808eb20440df",
+          "alpha_bounds": [
+            118,
+            160,
+            263,
+            306
+          ]
+        },
+        {
+          "sha256": "24d1eab070d3237a234ffaa6a628c9d5f3d0bf3ec5033288786e6c2672b87483",
+          "alpha_bounds": [
+            118,
+            160,
+            263,
+            306
+          ]
+        }
+      ]
+    }
+  },
+  "blend_sha256": "ac35921ba6968bf15022c5db7ed489937e723b120bd5f17e3cc5a8fdbffc6661",
+  "script_sha256": "9eed474956a791e941fb0479c502f21a01a6ca71b2ecbf9a54625a7b518a0d19"
+}

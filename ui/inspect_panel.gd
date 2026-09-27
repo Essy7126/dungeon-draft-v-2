@@ -406,7 +406,7 @@ func _show_empty() -> void:
 	_add_paragraph("Les ressources, statuts, terrains et sorts apparaissent ici pendant le combat.")
 
 func _add_statuses(unit) -> void:
-	var statuses = unit.get_active_statuses()
+	var statuses = preload("res://ui/expedition/consumable_cards_presenter.gd").status_entries(unit)
 	var has_terrain_status: bool = false
 	for entry in statuses:
 		var metadata: Dictionary = entry.get("metadata", {})
@@ -555,6 +555,7 @@ func _unit_subject_fingerprint(unit) -> String:
 		unit.max_ap.get_int(),
 		_details_expanded,
 		str(unit.get_active_statuses()),
+		str(unit.get_meta("cc2_effects", {})),
 	]
 	if _details_expanded:
 		values.append_array([

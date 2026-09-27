@@ -1,0 +1,482 @@
+[
+  {
+    "key": "idle_E",
+    "head_box": [
+      98,
+      18,
+      148,
+      75
+    ],
+    "head_height": 57,
+    "head_width": 50,
+    "prior_scale": 0.96396
+  },
+  {
+    "key": "PR_BLADES",
+    "head_box": [
+      74,
+      45,
+      191,
+      130
+    ],
+    "head_height": 85,
+    "head_width": 117,
+    "prior_scale": 0.964912
+  },
+  {
+    "key": "PR_RIPOSTE",
+    "head_box": [
+      52,
+      38,
+      199,
+      122
+    ],
+    "head_height": 84,
+    "head_width": 147,
+    "prior_scale": 0.962099
+  },
+  {
+    "key": "PR_DAGGER",
+    "head_box": [
+      133,
+      58,
+      206,
+      131
+    ],
+    "head_height": 73,
+    "head_width": 73,
+    "prior_scale": 1.047619
+  },
+  {
+    "key": "PR_SHOT",
+    "head_box": [
+      116,
+      46,
+      194,
+      116
+    ],
+    "head_height": 70,
+    "head_width": 78,
+    "prior_scale": 1.006098
+  },
+  {
+    "key": "PR_VOLLEY",
+    "head_box": [
+      85,
+      64,
+      181,
+      132
+    ],
+    "head_height": 68,
+    "head_width": 96,
+    "prior_scale": 1.089109
+  },
+  {
+    "key": "PR_EMBER",
+    "head_box": [
+      114,
+      43,
+      192,
+      117
+    ],
+    "head_height": 74,
+    "head_width": 78,
+    "prior_scale": 0.985075
+  },
+  {
+    "key": "PR_SEAL",
+    "head_box": [
+      107,
+      39,
+      191,
+      117
+    ],
+    "head_height": 78,
+    "head_width": 84,
+    "prior_scale": 0.982143
+  },
+  {
+    "key": "idle_SE",
+    "head_box": [
+      97,
+      17,
+      150,
+      71
+    ],
+    "head_height": 54,
+    "head_width": 53,
+    "prior_scale": 0.95536
+  },
+  {
+    "key": "PR_BLADES_SE",
+    "head_box": [
+      77,
+      64,
+      247,
+      155
+    ],
+    "head_height": 91,
+    "head_width": 170,
+    "prior_scale": 1.00304
+  },
+  {
+    "key": "PR_RIPOSTE_SE",
+    "head_box": [
+      69,
+      40,
+      236,
+      130
+    ],
+    "head_height": 90,
+    "head_width": 167,
+    "prior_scale": 0.990991
+  },
+  {
+    "key": "PR_DAGGER_SE",
+    "head_box": [
+      99,
+      61,
+      238,
+      153
+    ],
+    "head_height": 92,
+    "head_width": 139,
+    "prior_scale": 1.037736
+  },
+  {
+    "key": "PR_SHOT_SE",
+    "head_box": [
+      110,
+      32,
+      204,
+      124
+    ],
+    "head_height": 92,
+    "head_width": 94,
+    "prior_scale": 0.964912
+  },
+  {
+    "key": "PR_VOLLEY_SE",
+    "head_box": [
+      105,
+      47,
+      231,
+      124
+    ],
+    "head_height": 77,
+    "head_width": 126,
+    "prior_scale": 1.006098
+  },
+  {
+    "key": "PR_EMBER_SE",
+    "head_box": [
+      128,
+      36,
+      226,
+      111
+    ],
+    "head_height": 75,
+    "head_width": 98,
+    "prior_scale": 0.990991
+  },
+  {
+    "key": "PR_SEAL_SE",
+    "head_box": [
+      109,
+      40,
+      205,
+      119
+    ],
+    "head_height": 79,
+    "head_width": 96,
+    "prior_scale": 0.979228
+  },
+  {
+    "key": "idle_S",
+    "head_box": [
+      97,
+      18,
+      161,
+      78
+    ],
+    "head_height": 60,
+    "head_width": 64,
+    "prior_scale": 1.0
+  },
+  {
+    "key": "PR_BLADES_S",
+    "head_box": [
+      117,
+      59,
+      239,
+      142
+    ],
+    "head_height": 83,
+    "head_width": 122,
+    "prior_scale": 1.047619
+  },
+  {
+    "key": "PR_RIPOSTE_S",
+    "head_box": [
+      106,
+      42,
+      230,
+      130
+    ],
+    "head_height": 88,
+    "head_width": 124,
+    "prior_scale": 1.01227
+  },
+  {
+    "key": "PR_DAGGER_S",
+    "head_box": [
+      139,
+      49,
+      224,
+      119
+    ],
+    "head_height": 70,
+    "head_width": 85,
+    "prior_scale": 1.028037
+  },
+  {
+    "key": "PR_SHOT_S",
+    "head_box": [
+      139,
+      17,
+      222,
+      100
+    ],
+    "head_height": 83,
+    "head_width": 83,
+    "prior_scale": 0.951009
+  },
+  {
+    "key": "PR_VOLLEY_S",
+    "head_box": [
+      99,
+      40,
+      207,
+      116
+    ],
+    "head_height": 76,
+    "head_width": 108,
+    "prior_scale": 1.00304
+  },
+  {
+    "key": "PR_EMBER_S",
+    "head_box": [
+      122,
+      25,
+      224,
+      98
+    ],
+    "head_height": 73,
+    "head_width": 102,
+    "prior_scale": 0.976331
+  },
+  {
+    "key": "PR_SEAL_S",
+    "head_box": [
+      131,
+      40,
+      233,
+      113
+    ],
+    "head_height": 73,
+    "head_width": 102,
+    "prior_scale": 0.996979
+  },
+  {
+    "key": "idle_NE",
+    "head_box": [
+      93,
+      21,
+      150,
+      81
+    ],
+    "head_height": 60,
+    "head_width": 57,
+    "prior_scale": 1.00943
+  },
+  {
+    "key": "PR_BLADES_NE",
+    "head_box": [
+      124,
+      63,
+      231,
+      129
+    ],
+    "head_height": 66,
+    "head_width": 107,
+    "prior_scale": 1.074919
+  },
+  {
+    "key": "PR_RIPOSTE_NE",
+    "head_box": [
+      133,
+      69,
+      246,
+      139
+    ],
+    "head_height": 70,
+    "head_width": 113,
+    "prior_scale": 1.061093
+  },
+  {
+    "key": "PR_DAGGER_NE",
+    "head_box": [
+      120,
+      79,
+      202,
+      144
+    ],
+    "head_height": 65,
+    "head_width": 82,
+    "prior_scale": 1.096346
+  },
+  {
+    "key": "PR_SHOT_NE",
+    "head_box": [
+      130,
+      90,
+      191,
+      152
+    ],
+    "head_height": 62,
+    "head_width": 61,
+    "prior_scale": 1.309524
+  },
+  {
+    "key": "PR_VOLLEY_NE",
+    "head_box": [
+      89,
+      64,
+      192,
+      142
+    ],
+    "head_height": 78,
+    "head_width": 103,
+    "prior_scale": 1.067961
+  },
+  {
+    "key": "PR_EMBER_NE",
+    "head_box": [
+      154,
+      44,
+      253,
+      125
+    ],
+    "head_height": 81,
+    "head_width": 99,
+    "prior_scale": 1.044304
+  },
+  {
+    "key": "PR_SEAL_NE",
+    "head_box": [
+      149,
+      83,
+      231,
+      150
+    ],
+    "head_height": 67,
+    "head_width": 82,
+    "prior_scale": 1.149826
+  },
+  {
+    "key": "idle_N",
+    "head_box": [
+      102,
+      16,
+      158,
+      76
+    ],
+    "head_height": 60,
+    "head_width": 56,
+    "prior_scale": 1.0
+  },
+  {
+    "key": "PR_BLADES_N",
+    "head_box": [
+      137,
+      72,
+      223,
+      146
+    ],
+    "head_height": 74,
+    "head_width": 86,
+    "prior_scale": 1.085526
+  },
+  {
+    "key": "PR_RIPOSTE_N",
+    "head_box": [
+      136,
+      61,
+      236,
+      131
+    ],
+    "head_height": 70,
+    "head_width": 100,
+    "prior_scale": 1.037736
+  },
+  {
+    "key": "PR_DAGGER_N",
+    "head_box": [
+      138,
+      79,
+      216,
+      151
+    ],
+    "head_height": 72,
+    "head_width": 78,
+    "prior_scale": 1.074919
+  },
+  {
+    "key": "PR_SHOT_N",
+    "head_box": [
+      134,
+      97,
+      208,
+      156
+    ],
+    "head_height": 59,
+    "head_width": 74,
+    "prior_scale": 1.294118
+  },
+  {
+    "key": "PR_VOLLEY_N",
+    "head_box": [
+      137,
+      96,
+      209,
+      164
+    ],
+    "head_height": 68,
+    "head_width": 72,
+    "prior_scale": 1.2
+  },
+  {
+    "key": "PR_EMBER_N",
+    "head_box": [
+      116,
+      37,
+      244,
+      121
+    ],
+    "head_height": 84,
+    "head_width": 128,
+    "prior_scale": 1.01227
+  },
+  {
+    "key": "PR_SEAL_N",
+    "head_box": [
+      144,
+      71,
+      220,
+      142
+    ],
+    "head_height": 71,
+    "head_width": 76,
+    "prior_scale": 1.111111
+  }
+]

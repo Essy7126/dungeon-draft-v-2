@@ -72,6 +72,9 @@ func owner():
 
 static func for_actor(actor):
 	if actor == null: return null
+	if actor.has_meta("cc2_cards"):
+		var reference: Variant = actor.get_meta("cc2_cards")
+		return reference.get_ref() if reference is WeakRef else null
 	var session = CatabaseCombatModifier.session_for(actor)
 	return session.cards if session != null and session.cards != null else null
 

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c1kxvlfy7fsom"
+
+[deps]
+
+files=["res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.profile.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.usefulness.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.policy.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.runs.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.budget.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.wilson.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.wilson.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.stock.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.stock.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.stock.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.average.translation"]
+
+source_file="res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.csv"
+dest_files=["res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.profile.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.usefulness.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.policy.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.runs.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.budget.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.wilson.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.wilson.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.stock.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.stock.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.stock.translation", "res://docs/design/card_economy_lab/research_2026-09-25/RESULTS.average.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

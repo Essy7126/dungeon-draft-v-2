@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_8s6lj"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_lj3yr"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_cg34h"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_bheq7"]
+
+[resource]
+script = ExtResource("2_lj3yr")
+profile_relic_rule = "embers"
+item_id = &"cc2_embers"
+display_name = "Mèche obstinée"
+description = "Les brûlures et zones de feu infligent +0,10 P par tic."
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 5

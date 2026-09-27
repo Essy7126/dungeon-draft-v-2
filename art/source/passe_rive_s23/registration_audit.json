@@ -1,0 +1,320 @@
+{
+  "method": "Median clothed coverage, allowance for open limbs; constant per atlas; visual review required.",
+  "entries": {
+    "PR_BLADES": {
+      "reference_area": 5954.1362543093755,
+      "before": 8138.141096104406,
+      "after": 7740.383472860642,
+      "factor": 0.975256,
+      "coverage_candidate": 0.9752556004508757,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 342.00009949093806
+    },
+    "PR_DAGGER": {
+      "reference_area": 5954.1362543093755,
+      "before": 10947.154506074918,
+      "after": 8867.195149920684,
+      "factor": 0.9,
+      "coverage_candidate": 0.8408730561253818,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 315.0000143181824
+    },
+    "PR_EMBER": {
+      "reference_area": 5954.1362543093755,
+      "before": 10280.18450443205,
+      "after": 8326.949448589961,
+      "factor": 0.9,
+      "coverage_candidate": 0.8677219946932816,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 334.9998731061087
+    },
+    "PR_RIPOSTE": {
+      "reference_area": 5954.1362543093755,
+      "before": 8331.649484238911,
+      "after": 7740.384068059509,
+      "factor": 0.963864,
+      "coverage_candidate": 0.9638635680597499,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 343.0000446939452
+    },
+    "PR_SEAL": {
+      "reference_area": 5954.1362543093755,
+      "before": 11707.400975233075,
+      "after": 9482.994789938792,
+      "factor": 0.9,
+      "coverage_candidate": 0.8131128304244161,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 335.9999511272798
+    },
+    "PR_SHOT": {
+      "reference_area": 5954.1362543093755,
+      "before": 11565.432665591585,
+      "after": 9368.000459129184,
+      "factor": 0.9,
+      "coverage_candidate": 0.8180881808319358,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 327.99985687278974
+    },
+    "PR_VOLLEY": {
+      "reference_area": 5954.1362543093755,
+      "before": 10633.113743885036,
+      "after": 8612.82213254688,
+      "factor": 0.9,
+      "coverage_candidate": 0.8531999685187741,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 302.9999752090929
+    },
+    "PR_BLADES_N": {
+      "reference_area": 8353.32,
+      "before": 9907.878755842841,
+      "after": 9907.878755842841,
+      "factor": 1.0,
+      "coverage_candidate": 1.0,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 304
+    },
+    "PR_BLADES_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 10136.529475069177,
+      "after": 9194.28642461776,
+      "factor": 0.952389,
+      "coverage_candidate": 0.952388762243288,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 307
+    },
+    "PR_BLADES_S": {
+      "reference_area": 8644.6,
+      "before": 10867.67019570339,
+      "after": 10867.67019570339,
+      "factor": 1.0,
+      "coverage_candidate": 1.0,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 315
+    },
+    "PR_BLADES_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 11115.99857822028,
+      "after": 9003.958848358428,
+      "factor": 0.9,
+      "coverage_candidate": 0.8344624896853422,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 329
+    },
+    "PR_DAGGER_N": {
+      "reference_area": 8353.32,
+      "before": 11961.778584700385,
+      "after": 10859.32679275928,
+      "factor": 0.952804,
+      "coverage_candidate": 0.9528035265182196,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 307
+    },
+    "PR_DAGGER_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 11291.324679834608,
+      "after": 9194.286715793673,
+      "factor": 0.902374,
+      "coverage_candidate": 0.9023737604404163,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 301
+    },
+    "PR_DAGGER_S": {
+      "reference_area": 8644.6,
+      "before": 12036.390227413178,
+      "after": 11237.969734702938,
+      "factor": 0.966264,
+      "coverage_candidate": 0.9662644413156901,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 321
+    },
+    "PR_DAGGER_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 12289.785691621137,
+      "after": 9954.726410213121,
+      "factor": 0.9,
+      "coverage_candidate": 0.7936132419288288,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 318
+    },
+    "PR_EMBER_N": {
+      "reference_area": 8353.32,
+      "before": 12012.639229422222,
+      "after": 10859.30831559048,
+      "factor": 0.950784,
+      "coverage_candidate": 0.9507843364032089,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 326
+    },
+    "PR_EMBER_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 12617.11108682613,
+      "after": 10219.859980329165,
+      "factor": 0.9,
+      "coverage_candidate": 0.8536482270259481,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 316
+    },
+    "PR_EMBER_S": {
+      "reference_area": 8644.6,
+      "before": 12209.024024780629,
+      "after": 11237.986981876547,
+      "factor": 0.959409,
+      "coverage_candidate": 0.9594087019717034,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 338
+    },
+    "PR_EMBER_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 12311.838674915283,
+      "after": 9972.58932668138,
+      "factor": 0.9,
+      "coverage_candidate": 0.7929021627695243,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 333
+    },
+    "PR_RIPOSTE_N": {
+      "reference_area": 8353.32,
+      "before": 10307.404418951317,
+      "after": 10307.404418951317,
+      "factor": 1.0,
+      "coverage_candidate": 1.0,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 318
+    },
+    "PR_RIPOSTE_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 10551.297169090069,
+      "after": 9194.280536033055,
+      "factor": 0.933482,
+      "coverage_candidate": 0.9334820658928976,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 311
+    },
+    "PR_RIPOSTE_S": {
+      "reference_area": 8644.6,
+      "before": 10692.89501246954,
+      "after": 10692.89501246954,
+      "factor": 1.0,
+      "coverage_candidate": 1.0,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 326
+    },
+    "PR_RIPOSTE_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 10797.01769813556,
+      "after": 8745.584335489804,
+      "factor": 0.9,
+      "coverage_candidate": 0.8466992087724244,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 333
+    },
+    "PR_SEAL_N": {
+      "reference_area": 8353.32,
+      "before": 15043.12297625178,
+      "after": 12184.929610763942,
+      "factor": 0.9,
+      "coverage_candidate": 0.8496346832582367,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 297
+    },
+    "PR_SEAL_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 13025.919814034525,
+      "after": 10550.995049367966,
+      "factor": 0.9,
+      "coverage_candidate": 0.8401458875146888,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 287
+    },
+    "PR_SEAL_S": {
+      "reference_area": 8644.6,
+      "before": 13615.369985611873,
+      "after": 11237.97121285516,
+      "factor": 0.908509,
+      "coverage_candidate": 0.908509355188604,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 331
+    },
+    "PR_SEAL_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 13486.678544436505,
+      "after": 10924.20962099357,
+      "factor": 0.9,
+      "coverage_candidate": 0.7575800987698031,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 337
+    },
+    "PR_SHOT_N": {
+      "reference_area": 8353.32,
+      "before": 12725.343750013397,
+      "after": 10859.326042522282,
+      "factor": 0.923776,
+      "coverage_candidate": 0.9237755728536389,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 255
+    },
+    "PR_SHOT_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 13490.22302873605,
+      "after": 10927.080653276202,
+      "factor": 0.9,
+      "coverage_candidate": 0.8255613283878462,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 252
+    },
+    "PR_SHOT_S": {
+      "reference_area": 8644.6,
+      "before": 10127.811833552089,
+      "after": 10127.811833552089,
+      "factor": 1.0,
+      "coverage_candidate": 1.0,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 347
+    },
+    "PR_SHOT_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 12758.691458465284,
+      "after": 10334.540081356881,
+      "factor": 0.9,
+      "coverage_candidate": 0.7788933447291053,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 342
+    },
+    "PR_VOLLEY_N": {
+      "reference_area": 8353.32,
+      "before": 12121.446481919998,
+      "after": 10859.306940428716,
+      "factor": 0.946507,
+      "coverage_candidate": 0.946507394820125,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 275
+    },
+    "PR_VOLLEY_NE": {
+      "reference_area": 7072.524487730901,
+      "before": 11854.171578889443,
+      "after": 9601.87897890045,
+      "factor": 0.9,
+      "coverage_candidate": 0.8806904795863262,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 309
+    },
+    "PR_VOLLEY_S": {
+      "reference_area": 8644.6,
+      "before": 10478.980470305627,
+      "after": 10478.980470305627,
+      "factor": 1.0,
+      "coverage_candidate": 1.0,
+      "bounded_after_visual_review": false,
+      "first_pose_height": 329
+    },
+    "PR_VOLLEY_SE": {
+      "reference_area": 5954.1362543093755,
+      "before": 12678.675892145699,
+      "after": 10269.727472638016,
+      "factor": 0.9,
+      "coverage_candidate": 0.7813472906335283,
+      "bounded_after_visual_review": true,
+      "first_pose_height": 328
+    }
+  }
+}

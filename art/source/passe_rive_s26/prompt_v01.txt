@@ -1,0 +1,23 @@
+Use case: stylized-concept.
+Asset: transparent 2D sprite animation atlas for an isometric tactical game, exactly 12 equal square cells in a strict 4 column by 3 row grid (landscape 4:3), reading left to right top to bottom.
+References: Image 1 is ONLY the canonical Passe-Rive character drawing, colors, body proportions and camera; do NOT repeat its pulling attack. Image 2 is ONLY the character's 3D model for costume construction and anatomy, not render style.
+Create a NEW grounded ritual spellcasting animation "Incantation du sceau", with theatrical hand and shoulder acting reminiscent of the clear economical spell poses in classic French isometric MMORPG animation. Original Passe-Rive character, not Sram or Feca themselves.
+Character: narrow athletic hooded masked traveler, deep dark teal hood and tunic, pale angular full face mask with narrow eye slits, sage grey green short shoulder mantle with round bronze pin on viewer left, cream waist sash, charcoal black sleeves gloves trousers boots, simple bronze forearm cuffs and ankle bands. Match EXACT reference face/costume/palette throughout.
+Camera: fixed elevated isometric three-quarter front facing screen right (SE) in EVERY cell. Whole body visible with padding. Character never turns away. Same anatomical head size and limb lengths in every frame, maximum character height including raised hands fits the cell. Same left boot fixed at local x~43%, y~92% and other boot fixed x~66%, y~84% in every cell. Do not expand stance. Both feet firmly planted and knees almost straight for the entire gesture. No squat, lunge, punch, pulling action or weapon.
+Choreography:
+1 relaxed neutral, arms at sides.
+2 head inclines slightly, both hands sweep inward below sternum with bent elbows.
+3 hands join closely before chest in ritual preparation, shoulders curl slightly inward.
+4 hands travel upward towards face, elbows open sideways, fingers gracefully extended.
+5 hands separate above shoulder level, palms cupped inward, chest lifts slightly.
+6 broad incantation apex: both hands open to either side of head, elbows bent and separated from torso, palms upward, face looking forward. Powerful but elegant.
+7 RELEASE: both open palms rotate forward and push a SHORT distance outward at shoulder height, symmetrical ritual release (not a punching pose).
+8 palms settle slightly lower and wider, shoulders relax, sash follows slightly.
+9 both forearms lower through chest level.
+10 hands descend past waist, body settles.
+11 almost neutral with small delayed cloth settle.
+12 same neutral silhouette and costume as frame 1.
+Must show a progressive continuous plausible movement across the 12 drawings. Exactly two arms and two hands, clean connected anatomy, natural wrists aligned with forearms, same hand identity and cuff assignment. Clear negative space between elbows and body. Maintain compact plausible hands; no giant fingers.
+Style: confident thin dark contour, flat cel shading, restrained 2-tone colors, warm hand-drawn game sprite finish matching image 1. Not photorealistic or rendered plastic. Neutral constant lighting.
+Transparent background true alpha; no floor, no contact shadow, no VFX, no spell symbols, no energy ball, no magical glow, no motion trails. Body layer only; effects are added separately in engine.
+No labels, no text, no panel borders, no grid lines. No cropped toes or hands. Every figure stays entirely within its equal cell.

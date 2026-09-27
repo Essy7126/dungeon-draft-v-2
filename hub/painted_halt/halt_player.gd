@@ -5,8 +5,23 @@ var water_positions: Array[Vector2] = []
 var water_tint := Color("48d896")
 
 
+func set_reference_display_scale(value: float) -> void:
+	if not _backend is PasseRiveAutoSpriteBackend or is_equal_approx(display_scale, value):
+		return
+	display_scale = value
+	_local_profile.display_scale = value
+	(_backend as PasseRiveAutoSpriteBackend)._apply_contact()
+	_hall_material.set_shader_parameter("display_scale", value)
+	queue_redraw()
+
+
 func _ready() -> void:
 	super._ready()
+	if _backend is PasseRiveAutoSpriteBackend:
+		_hall_material = (_backend as PasseRiveAutoSpriteBackend).appearance_material
+		_backend.animated_sprite.material = _hall_material
+		_hall_material.set_shader_parameter("water_tint", water_tint)
+		return
 	if _hall_material != null:
 		_hall_material.shader = load("res://hub/painted_halt/actor_light.gdshader")
 		_hall_material.set_shader_parameter("display_scale", display_scale)

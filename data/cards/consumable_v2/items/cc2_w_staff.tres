@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_jbpe5"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_oq020"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_ygb4a"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_bwlam"]
+
+[resource]
+script = ExtResource("2_oq020")
+profile_modifiers = {
+"magic": 0.12
+}
+item_id = &"cc2_w_staff"
+display_name = "Bâton des braises"
+description = "+12 % dégâts magiques"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 0
+equipment_slot = 0

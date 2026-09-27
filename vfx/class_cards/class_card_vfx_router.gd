@@ -7,10 +7,24 @@ const Ground := preload("class_card_vfx_ground.gd")
 const Profiles := preload("class_card_vfx_profiles.gd")
 const S19 := preload("res://characters/achilles/2d/passe_rive_s19_catalog.gd")
 const S19Player := preload("passe_rive_s19_effect.gd")
+const Sentence := preload("sentence/hammer_player.gd")
+const Bastion := preload("bastion/bastion_player.gd")
+const Approved := preload("approved/controller.gd")
+const ApprovedPlayer := preload("approved/player.gd")
+const Orage := preload("orage/controller.gd")
+const OragePlayer := preload("orage/player.gd")
+const Permutation := preload("permutation/controller.gd")
+const PermutationPlayer := preload("permutation/player.gd")
+const Braise := preload("braise/controller.gd")
+const BraisePlayer := preload("braise/player.gd")
+const BraiseSteam := preload("braise/steam.gd")
+const FrostGarden := preload("approved/frost_ground.gd")
+const HeelContact := preload("passe_rive_heel_contact.gd")
 const STATUS_PRIORITY := [
 	"ecosystem_stasis",
 	"class_root",
 	"class_burn",
+	"cc2_burn",
 	"class_bleed",
 	"class_marked",
 	"shield",
@@ -29,6 +43,9 @@ var pending := { }
 var surface_holds := { }
 var ground_effects: Array[Node] = []
 var observing := true
+var sentence_preparations := { }
+var sentence_legacy := false # Local comparison switch; ordinary battles use the pilot.
+var bastion_legacy := false
 
 
 func _ready() -> void:
@@ -82,12 +99,22 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 	if not accepts(caster, spell):
 		return
 	var had_flight := _finish_flight(caster, spell)
-	if bool(report.get("failed", false)) \
-			or spell.is_delayed():
-		return
 	var id := str(report.get("action_id", ""))
 	var key := "%s:%s:%s" % [caster.get_instance_id(), spell.get_effective_spell_id(), id]
 	if id != "" and key in resolved:
+		return
+	var prepared: Node = sentence_preparations.get(caster)
+	if (
+		is_instance_valid(prepared)
+		and prepared.recipe.id == str(spell.get_effective_spell_id()).trim_prefix("class_")
+	):
+		sentence_preparations.erase(caster)
+	else:
+		prepared = null
+	if bool(report.get("failed", false)) \
+			or spell.is_delayed():
+		if is_instance_valid(prepared):
+			prepared.cancel()
 		return
 	if id != "":
 		resolved.append(key)
@@ -96,10 +123,61 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 	var entry := Catalog.for_spell(spell)
 	if entry.is_empty():
 		return
+	if str(spell.spell_id) == "cc2_g04":
+		var caster_view: Node = manager._find_unit_view(caster)
+		var visual: Node = caster_view.get("_optional_visual") if caster_view != null else null
+		if (
+			visual is PasseRiveAutoSpriteView and is_instance_valid(visual.pull_tether) \
+					and not visual.pull_tether.closed
+			and visual.sprite_backend.get_runtime_state().get("pull_visible", false)
+		):
+			return # The hand-bound tether observes the same confirmed cast, without a second impact.
+	var heel_origin := _heel_origin(caster)
+	if (
+		str(spell.spell_id) in ["cc2_n02", "cc2_g05", "cc2_fallback_guard"]
+		and int(report.get("shield_increase_total", 0)) > 0
+	):
+		var guard_view: Node = manager._find_unit_view(caster)
+		var guard_visual: Node = guard_view.get("_optional_visual") if guard_view != null else null
+		if (
+			guard_visual is PasseRiveAutoSpriteView
+			and is_instance_valid(guard_visual.sprite_backend)
+		):
+			if guard_visual.sprite_backend.has_method("confirm_guard_ward"):
+				guard_visual.sprite_backend.confirm_guard_ward()
+	if Orage.handles(entry):
+		Orage.resolve(self, caster, spell, report, prepared)
+		return
+	if Permutation.handles(entry):
+		Permutation.resolve(self, caster, spell, report, prepared)
+		return
+	if Braise.handles(entry):
+		Braise.resolve(self, caster, spell, report, prepared)
+		return
+	if heel_origin.is_finite() and not report.get("damaged_enemies", []).is_empty():
+		entry["heel_contact"] = true
+		entry["width"] = .45
+		_spawn(entry, heel_origin)
+		return
+	if Approved.handles(entry):
+		Approved.resolve(self, caster, spell, report, prepared)
+		return
 	var authored := _s19_card(caster, str(spell.get_effective_spell_id()))
+	if _sentence_entry(entry) or _bastion_entry(entry):
+		authored = { }
 	if not authored.is_empty():
 		entry["s19_card"] = authored.id
 		entry["width"] = 1.0
+		if authored.id == "t_mark":
+			# class_marked is deliberately not source-scoped: its stored source
+			# can be null. The confirmed cast report supplies visual provenance.
+			for target: Unit in report.get("status_changed_units", []):
+				if target in _units() and target.is_alive and target.has_status(&"class_marked"):
+					var held := _status_recipe(target, "class_marked")
+					held["s19_card"] = "t_mark"
+					held["width"] = 1.0
+					_remove_hold("%s:class_marked" % target.get_instance_id(), false)
+					_ensure_hold(target, "class_marked", held)
 	if entry.movement:
 		if report.has("caster_movement_from") and report.has("caster_movement_to") \
 				and report.caster_movement_from != report.caster_movement_to:
@@ -158,10 +236,22 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 					var actual := _status_recipe(unit, "ecosystem_stasis")
 					if not actual.is_empty():
 						impact_entry["motif"] = actual.motif
-		var fx := _spawn(impact_entry, manager._grid_cell_global(cell))
+		var fx: Node
+		if is_instance_valid(prepared) and not prepared.closed \
+				and prepared.point.distance_to(manager._grid_cell_global(cell)) < 2.0:
+			fx = prepared
+			prepared.confirm()
+			prepared = null
+		else:
+			fx = _spawn(impact_entry, manager._grid_cell_global(cell))
 		if fx != null:
 			fx.origin = manager._caster_effect_origin(caster)
-	if not had_flight and not cells.is_empty() and entry.ranged and authored.is_empty():
+	if is_instance_valid(prepared):
+		prepared.cancel()
+	if (
+		not had_flight and not cells.is_empty() and entry.ranged
+		and authored.is_empty() and not _sentence_entry(entry)
+	):
 		_launch(caster, spell, cells[0], true)
 	if bool(report.get("class_passive", false)):
 		var passive := Catalog.feedback("mark", "passive")
@@ -179,14 +269,27 @@ func _available() -> bool:
 
 func _s19_card(caster: Unit, spell_id: String) -> Dictionary:
 	if not is_instance_valid(caster) or not is_instance_valid(manager):
-		return {}
+		return { }
 	var view: Node = manager._find_unit_view(caster)
 	if view == null:
-		return {}
+		return { }
 	var visual: Node = view.get("_optional_visual")
 	if visual is PasseRiveAutoSpriteView and visual.uses_s19_cards():
 		return S19.card(spell_id)
-	return {}
+	return { }
+
+
+func _heel_origin(caster: Unit) -> Vector2:
+	var view: Node = manager._find_unit_view(caster)
+	if view == null:
+		return Vector2.INF
+	var visual: Node = view.get("_optional_visual")
+	if (
+		visual is PasseRiveAutoSpriteView and is_instance_valid(visual.sprite_backend)
+		and visual.sprite_backend.get_runtime_state().get("s24_prototype", false)
+	):
+		return visual.sprite_backend.to_global(visual.sprite_backend.get_vfx_origin())
+	return Vector2.INF
 
 
 func _card_unit(unit) -> bool:
@@ -211,6 +314,53 @@ static func _status_priority(id: String) -> int:
 	return 99 if rank < 0 else rank
 
 
+func _sentence_entry(entry: Dictionary) -> bool:
+	return not sentence_legacy and entry.get("id", "") == "g_crash" \
+			and entry.get("feedback_phase", "") == ""
+
+
+func _bastion_entry(entry: Dictionary) -> bool:
+	return (
+		not bastion_legacy and (entry.get("id", "") == "g_bastion" or entry.get("bastion", false))
+	)
+
+
+func _shield_entry(unit: Unit) -> Dictionary:
+	var entry := Profiles.state(Catalog.feedback("guard"), "shield")
+	if not bastion_legacy and unit.get_shield_value(Bastion.SOURCE_ID) > 0:
+		entry["bastion"] = true
+	return entry
+
+
+func prepare_sentence(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
+	if not accepts(caster, spell):
+		return null
+	var entry := Catalog.for_spell(spell)
+	if Approved.handles(entry):
+		return Approved.prepare(self, caster, spell, cell, entry)
+	if Orage.handles(entry):
+		return Orage.prepare(self, caster, entry)
+	if Permutation.handles(entry):
+		return Permutation.prepare(self, caster, cell, entry)
+	if Braise.handles(entry):
+		return Braise.prepare(self, caster, cell, entry)
+	if not _sentence_entry(entry):
+		return null
+	var old: Node = sentence_preparations.get(caster)
+	if is_instance_valid(old):
+		old.cancel()
+	entry["sentence_preparing"] = true
+	var fx := _spawn(entry, manager._grid_cell_global(cell))
+	if fx != null:
+		sentence_preparations[caster] = fx
+		fx.cancelled.connect(
+			func():
+				if sentence_preparations.get(caster) == fx:
+					sentence_preparations.erase(caster),
+		)
+	return fx
+
+
 func _spawn(entry: Dictionary, point: Vector2, anchor: Node2D = null, hold := false) -> Node:
 	if not _available():
 		return null
@@ -231,7 +381,30 @@ func _spawn(entry: Dictionary, point: Vector2, anchor: Node2D = null, hold := fa
 			return null
 		oldest.cancel()
 		effects.erase(oldest)
-	var fx = S19Player.new() if entry.has("s19_card") else Player.new()
+	var fx = (
+		BraisePlayer.new()
+		if Braise.handles(entry) or entry.get("braise_badge", false)
+		else PermutationPlayer.new()
+		if Permutation.handles(entry) and not hold
+		else OragePlayer.new()
+		if Orage.handles(entry) and not hold
+		else HeelContact.new()
+		if entry.get("heel_contact", false)
+		else ApprovedPlayer.new()
+		if Approved.handles(entry) and not hold
+		else \
+				(
+					Sentence.new()
+					if _sentence_entry(entry) and not hold
+					else \
+							(
+								Bastion.new()
+								if _bastion_entry(entry)
+								else \
+										(S19Player.new() if entry.has("s19_card") else Player.new())
+							)
+				)
+	)
 	parent.add_child(fx)
 	if anchor == null:
 		# Split impact sheets around the visible actor, including before a pushed
@@ -263,6 +436,29 @@ func _at_unit(entry: Dictionary, unit: Unit, hold := false) -> Node:
 	)
 	var following := entry.duplicate(true)
 	following["follow_unit"] = true
+	if _bastion_entry(following):
+		following["bastion_unit"] = weakref(unit)
+		var phase: String = following.get("feedback_phase", "")
+		if not hold and phase in ["absorb", "break"]:
+			for old in effects:
+				if is_instance_valid(old) and old is Bastion and not old.persistent \
+						and old.recipe.get("bastion_unit") != null \
+						and old.recipe.bastion_unit.get_ref() == unit \
+						and (
+					old.phase in ["absorb", "break"] or (phase == "break" and old.phase == "")
+				):
+					old.cancel()
+		if following.get("feedback_phase", "") == "" and not hold:
+			following["width"] = 2.65
+			# A refresh replaces the deployment, never stacks another set of walls.
+			for old in effects:
+				if (
+					is_instance_valid(old) and old is Bastion and not old.persistent \
+							and old.phase == ""
+					and old.recipe.get("bastion_unit") != null
+				) \
+						and old.recipe.bastion_unit.get_ref() == unit:
+					old.cancel()
 	return _spawn(following, point, view, hold)
 
 
@@ -270,6 +466,10 @@ func _status_apply(fact: CombatEventFact) -> void:
 	var id := str(fact.status_id)
 	if not _in_scope(fact) or not fact.target.is_alive:
 		return
+	if id == "ecosystem_ice":
+		var garden: Node = surface_holds.get(fact.target.grid_pos)
+		if garden is FrostGarden and not garden.closed:
+			garden.pulse()
 	var entry := _status_recipe(fact.target, id)
 	if entry.is_empty():
 		return
@@ -300,9 +500,6 @@ func _status_recipe(unit: Unit, id: String) -> Dictionary:
 		if str(data.get_effective_status_id()) == id:
 			var entry := Catalog.feedback(Catalog.status_family(data))
 			entry.seed = absi(id.hash())
-			if id == "class_marked" and not _s19_card(state.get("source"), "class_t_mark").is_empty():
-				entry["s19_card"] = "t_mark"
-				entry["width"] = 1.0
 			return Profiles.state(entry, id, data)
 	return { }
 
@@ -312,8 +509,16 @@ func _ensure_hold(unit: Unit, id: String, entry: Dictionary) -> void:
 	var anchor: Node2D = manager._find_unit_view(unit)
 	if holds.has(key):
 		var previous: Variant = holds[key].fx
-		if is_instance_valid(previous) and not previous.closed and previous.anchor == anchor:
+		var same_style: bool = (
+			is_instance_valid(previous)
+			and bool(previous.recipe.get("bastion", false)) == bool(entry.get("bastion", false))
+		)
+		if (
+			is_instance_valid(previous) and not previous.closed
+			and previous.anchor == anchor and same_style
+		):
 			return
+		# A surviving shield replaces the sign in-place; no outgoing badge overlaps it.
 		_remove_hold(key, false)
 	var fx := _at_unit(entry, unit, true)
 	if fx != null:
@@ -344,6 +549,7 @@ func _layout_holds() -> void:
 
 
 func _restore_unit_holds() -> void:
+	Braise.restore(self)
 	for unit: Unit in _units():
 		if not unit.is_alive:
 			continue
@@ -355,11 +561,14 @@ func _restore_unit_holds() -> void:
 			seen[id] = true
 			_ensure_hold(unit, id, _status_recipe(unit, id))
 		if unit.current_shield > 0:
-			_ensure_hold(unit, "shield", Profiles.state(Catalog.feedback("guard"), "shield"))
+			_ensure_hold(unit, "shield", _shield_entry(unit))
 
 
 func _tick(fact: CombatEventFact) -> void:
 	if not _in_scope(fact) or fact.amount_applied <= 0:
+		return
+	if fact.status_id == &"cc2_burn":
+		Braise.tick(self, fact)
 		return
 	var family: String = Catalog.STATUSES.get(
 		str(fact.status_id),
@@ -380,15 +589,32 @@ func _heal(fact: CombatEventFact) -> void:
 func _shield(fact: CombatEventFact) -> void:
 	if not _in_scope(fact) or fact.amount_applied <= 0:
 		return
-	var entry := Profiles.state(Catalog.feedback("guard"), "shield")
+	var entry := _shield_entry(fact.target)
 	if not str(fact.ability_id).begins_with("class_"):
-		_at_unit(entry, fact.target)
+		_at_unit(Profiles.state(Catalog.feedback("guard"), "shield"), fact.target)
 	_ensure_hold(fact.target, "shield", entry)
 
 
 func _absorb(fact: CombatEventFact) -> void:
 	if _in_scope(fact) and fact.amount_absorbed > 0:
 		_confirm_pending_hit(fact)
+		if not bastion_legacy:
+			for contribution in fact.source_absorption:
+				if (
+					StringName(contribution.get("source_id", "")) != Bastion.SOURCE_ID
+					or int(contribution.get("amount_absorbed", 0)) <= 0
+				):
+					continue
+				var broken := Bastion.SOURCE_ID in fact.broken_source_ids
+				var bastion_feedback := Catalog.feedback("guard", "break" if broken else "absorb")
+				bastion_feedback["bastion"] = true
+				bastion_feedback["width"] = 1.1
+				if broken:
+					_remove_hold("%s:shield" % fact.target.get_instance_id(), false)
+				_at_unit(bastion_feedback, fact.target)
+				if fact.target.current_shield > 0:
+					_ensure_hold(fact.target, "shield", _shield_entry(fact.target))
+				return
 		var entry := Catalog.feedback(
 			"guard",
 			"break" if not fact.broken_source_ids.is_empty() else "absorb",
@@ -447,7 +673,8 @@ func _process(delta: float) -> void:
 		if not is_instance_valid(unit) or not unit.is_alive or not is_instance_valid(hold.fx):
 			_remove_hold(key, false)
 		elif (
-			unit.current_shield <= 0
+			not Braise.active(unit) if hold.status == "cc2_burn"
+			else unit.current_shield <= 0
 			if hold.status == "shield"
 			else not unit.has_status(StringName(hold.status))
 		):
@@ -494,6 +721,8 @@ func _remove_hold(key: String, expire: bool) -> void:
 			outro["status_slot"] = hold.fx.status_slot
 			outro["status_count"] = hold.fx.status_count
 			outro["status_owner"] = hold.unit.get_instance_id()
+			if hold.status == "cc2_burn":
+				outro["braise_pulse_age"] = hold.fx.pulse_age
 			if emit_release:
 				_at_unit(outro, hold.unit)
 		hold.fx.cancel()
@@ -514,6 +743,7 @@ func clear(stop_observing := false) -> void:
 	flights.clear()
 	echoes.clear()
 	pending.clear()
+	sentence_preparations.clear()
 	for fx in effects:
 		if is_instance_valid(fx):
 			fx.cancel()
@@ -549,6 +779,12 @@ func bind_terrain(value: TerrainEffects) -> void:
 		terrain.surface_cleared.connect(_surface_cleared)
 		terrain.surface_replaced.connect(_surface_replaced)
 		terrain.surface_reaction.connect(_surface_reaction)
+		# Existing surfaces are restored in their settled pose, without a new cast.
+		for cell: Vector2i in terrain.active_surface_cells():
+			_sync_surface(cell)
+			var restored: Node = surface_holds.get(cell)
+			if restored is FrostGarden or restored is BraiseSteam:
+				restored.sample(.8)
 
 
 func _surface_cleared(fact: Dictionary) -> void:
@@ -591,6 +827,8 @@ func _sync_surface(cell: Vector2i) -> void:
 	if family.is_empty():
 		return
 	var motif := Profiles.ground(state.source_spell, family)
+	if Braise.steam(state):
+		motif = "braise_steam"
 	var previous: Variant = surface_holds.get(cell)
 	if (
 		is_instance_valid(previous) and not previous.closed
@@ -616,7 +854,7 @@ func _sync_surface(cell: Vector2i) -> void:
 		polygon = PackedVector2Array(
 			[center - x - y, center + x - y, center + x + y, center - x + y]
 		)
-	var fx := Ground.new()
+	var fx: Node2D = BraiseSteam.new() if motif == "braise_steam" else FrostGarden.new() if motif == "frost_garden" else Ground.new()
 	parent.add_child(fx)
 	fx.configure(
 		family,

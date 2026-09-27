@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cd361mnm1ps0t"
+
+[deps]
+
+files=["res://docs/design/card_economy_lab/cards.name.translation", "res://docs/design/card_economy_lab/cards.rank.translation", "res://docs/design/card_economy_lab/cards.ap.translation", "res://docs/design/card_economy_lab/cards.range.translation", "res://docs/design/card_economy_lab/cards.power.translation", "res://docs/design/card_economy_lab/cards.role.translation", "res://docs/design/card_economy_lab/cards.effect.translation", "res://docs/design/card_economy_lab/cards.balancing.translation", "res://docs/design/card_economy_lab/cards.status.translation"]
+
+source_file="res://docs/design/card_economy_lab/cards.csv"
+dest_files=["res://docs/design/card_economy_lab/cards.name.translation", "res://docs/design/card_economy_lab/cards.rank.translation", "res://docs/design/card_economy_lab/cards.ap.translation", "res://docs/design/card_economy_lab/cards.range.translation", "res://docs/design/card_economy_lab/cards.power.translation", "res://docs/design/card_economy_lab/cards.role.translation", "res://docs/design/card_economy_lab/cards.effect.translation", "res://docs/design/card_economy_lab/cards.balancing.translation", "res://docs/design/card_economy_lab/cards.status.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

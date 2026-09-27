@@ -32,6 +32,8 @@ var report: Dictionary = {}
 var affected_cells: Array = []
 var damage_bonus_by_cell: Dictionary = {} # Vector2i -> int, propre au cast
 var damage_result_by_unit: Dictionary = {} # Unit -> DamageResult, interne
+## Optional profile payloads; empty for every historical spell.
+var impact_options_by_unit: Dictionary = {}
 var heal_bonus_by_unit: Dictionary = {} # Unit -> int, propre au cast
 var additional_statuses_by_unit: Dictionary = {} # Unit -> Array[StatusData]
 var additional_status_sources_by_unit: Dictionary = {} # Optional Unit -> source Unit

@@ -1,0 +1,348 @@
+{
+	"anchor": [
+		192,
+		232
+	],
+	"animation": "braise_ember_E",
+	"baseline": {
+		"anchor": [
+			192,
+			232
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f05bcd635be95f5c9c1ee74040699cbd4bdc5ef004be342f7f7408742f5e79ec",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f6762b79a2030ac38bacae9e3b4668b54cfe6325251fe108623fcc6aaef93e2e",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7defc7d1e19a0d0ab693117a9700a394dab63111f4db647a10e02f86f84d8131",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "9d9d4bd4d60b25e95e47bde4f55e37157f1624089a801cc613dc4889f0dcb890",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "44eed24313f612ad68232d6a95960bf588e3b40f9e25cad7cb31285ef879f35e",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "37da95f152281ef7061ecb12c607734877a445ab0c78e8ff60d237e57ed18c45",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7337cd7e158f5f82e0ec9aea0ea8128d37641f3ad322323fa0309a99678ca31e",
+				"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0007.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f05bcd635be95f5c9c1ee74040699cbd4bdc5ef004be342f7f7408742f5e79ec",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f6762b79a2030ac38bacae9e3b4668b54cfe6325251fe108623fcc6aaef93e2e",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7defc7d1e19a0d0ab693117a9700a394dab63111f4db647a10e02f86f84d8131",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "9d9d4bd4d60b25e95e47bde4f55e37157f1624089a801cc613dc4889f0dcb890",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "44eed24313f612ad68232d6a95960bf588e3b40f9e25cad7cb31285ef879f35e",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "37da95f152281ef7061ecb12c607734877a445ab0c78e8ff60d237e57ed18c45",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7337cd7e158f5f82e0ec9aea0ea8128d37641f3ad322323fa0309a99678ca31e",
+			"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0007.png"
+		}
+	],
+	"id": "braise_ember",
+	"intent": "Production de la planche E validée le 27 septembre. Charbon, éclatement, état de braise et vapeur.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/braise/provenance.json": "070a2d65957a850ad3ab883d842d2f812f769aaee04418ccafe7676b267e6c90"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "37da95f152281ef7061ecb12c607734877a445ab0c78e8ff60d237e57ed18c45",
+		"source": "res://artifacts/dev/class_card_vfx/braise/render/ember/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/braise/ember.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Braise tenace — ember"
+}

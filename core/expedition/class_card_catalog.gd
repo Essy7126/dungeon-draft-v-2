@@ -359,6 +359,8 @@ static func make_spell(id: String, rank := 0, upgraded := false) -> Spell:
 		ecosystem.value = float(r[8]) * mult
 		s.modifiers.append(ecosystem)
 	s.modifiers.append(CatabaseCombatModifier.new())
+	if id in preload("res://core/expedition/class_card_vfx_facts.gd").IDS:
+		s.modifiers.append(preload("res://core/expedition/class_card_vfx_facts.gd").new())
 	s.description = "%s · %s · maîtrise %d (+%d %% dégâts et garde).\n%s%s" % [
 		CLASSES[r[1]][0],
 		r[9],

@@ -1,0 +1,11 @@
+# Suite 02 — protocole avant résultats
+
+26 septembre 2026, base `c6ab5a72`. Suite de l'investigation WAVEN : isoler les causes des résultats, sans modifier le jeu Godot ou les sources V1.
+
+1. **Marchand : plan factoriel complet**. Trois facteurs binaires : achats unitaires ciblés (A), trocs ciblés (T), protection des deux familles contre ventes/trocs génériques (P). Huit combinaisons, quatre classes, première spécialisation, dix graines nouvelles 28001–28010 : 320 runs. Mêmes familles et seuils que l'essai précédent. Le plan distingue effets isolés, effets conditionnels et interactions ; pas d'arrêt anticipé si une variante paraît gagner.
+2. **Pilotage : deux variantes fixées avant résultats**. Comparer la politique existante à une urgence heuristique (pression des quatre prochaines fins de tour rapportée aux PV courants, qui réduit la prudence/coût des copies et favorise l'approche) et à une évaluation après simulation de la prochaine phase ennemie. Même politique marchande initiale et mêmes 40 cas. Ajouter urgence + A/T/P pour comparer le cumul des deux corrections. Trois bras supplémentaires : 120 runs ; la référence et A/T/P sont réutilisées du plan factoriel, pas recomptées comme nouvelles exécutions.
+3. Avant ces 440 exécutions : vérifier conservation, identité de baseline, fin de phase sans mutation du véritable combat, transactions finies et reproduction de la politique A/T/P précédente. Deux échecs connus 27001/27005 servent de diagnostics, pas de nouvelles graines de confirmation.
+4. Aucun coefficient de carte, taux de drop, marchand, ennemi ou pression ne change. Les modifications sont des politiques de laboratoire. Les nouvelles politiques peuvent échouer ; leurs résultats négatifs seront conservés. Les poids sont fixés dans `laboratoire.mjs` avant la série et ne seront pas ajustés à ses résultats.
+5. Critères : victoires, combats gagnés, copies consommées, coût des cartes, stock/or final, pression subie, défaites avant première boutique ; paires améliorées/dégradées. Moyennes de coût sur toutes les trajectoires et sur victoires communes séparées.
+
+Le résultat n'est pas un équilibre humain certifié. Les numéros de graine sont partagés entre classes ; ne pas traiter les 40 cas comme autant de joueurs indépendants. L'évaluation après phase connaît les règles déterministes du modèle, pas des futurs drops.

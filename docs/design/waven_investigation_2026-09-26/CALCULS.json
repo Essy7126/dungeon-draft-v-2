@@ -1,0 +1,143 @@
+{
+  "assumptions": {
+    "draw": "Uniform visible hand, without replacement. Waven 16/9 is an announced deck/maximum hand comparison, NOT a verified opening rule.",
+    "budget": "Toy scenarios, not forecasts of wins or Waven coefficients. P is Catabase prowess; retained resources have stipulated lifetime."
+  },
+  "access": [
+    {
+      "deck": 16,
+      "hand": 9,
+      "a": 1,
+      "b": 1,
+      "single": 0.5625,
+      "both": 0.3
+    },
+    {
+      "deck": 20,
+      "hand": 5,
+      "a": 1,
+      "b": 1,
+      "single": 0.25,
+      "both": 0.052631578947368474
+    },
+    {
+      "deck": 20,
+      "hand": 5,
+      "a": 3,
+      "b": 3,
+      "single": 0.6008771929824561,
+      "both": 0.3308823529411764
+    },
+    {
+      "deck": 15,
+      "hand": 5,
+      "a": 3,
+      "b": 3,
+      "single": 0.7362637362637363,
+      "both": 0.5144855144855145
+    },
+    {
+      "deck": 30,
+      "hand": 5,
+      "a": 3,
+      "b": 3,
+      "single": 0.43349753694581283,
+      "both": 0.1652561997389584
+    }
+  ],
+  "heroSignatures": {
+    "deck": 16,
+    "hand": 9,
+    "copies": 4,
+    "expectedVisible": 2.25,
+    "atLeastOne": 0.9807692307692307
+  },
+  "orderedDistinctPairs": {
+    "hand5": 20,
+    "hand7": 42,
+    "hand9": 72,
+    "ratio9to5": 3.6
+  },
+  "actionBudget": {
+    "baseTwoTurns": 8,
+    "storeOne": [
+      3,
+      5
+    ],
+    "bonusOne": [
+      4,
+      5
+    ],
+    "bonusInflation": 0.125
+  },
+  "conversion": {
+    "P": 40,
+    "guard": 32,
+    "readCoefficient": 0.5,
+    "reads": 3,
+    "readDamage": 48,
+    "spentCoefficient": 1.5,
+    "spentDamage": 48,
+    "guardRemainingIfUndamaged": 32,
+    "guardRemainingAfterSpend": 0
+  },
+  "teleport": {
+    "P": 40,
+    "damageCoefficient": 0.25,
+    "teleports": 2,
+    "enemiesPerArrival": 3,
+    "uncapped": 60,
+    "capOneArrival": 30,
+    "capOneTargetOnce": 10
+  },
+  "persistentSource": {
+    "P": 40,
+    "coefficient": 0.3,
+    "activations": 3,
+    "damage": 36,
+    "permanentCopiesSpent": 1,
+    "compareOneCopyPerActivation": 3
+  },
+  "hypotheticalEcho": {
+    "probabilities": [
+      {
+        "p": 0.2,
+        "uncappedExpectedActions": 1.25,
+        "capTwoReplaysExpectedActions": 1.24
+      },
+      {
+        "p": 0.5,
+        "uncappedExpectedActions": 2,
+        "capTwoReplaysExpectedActions": 1.75
+      },
+      {
+        "p": 0.8,
+        "uncappedExpectedActions": 5.000000000000001,
+        "capTwoReplaysExpectedActions": 2.4400000000000004
+      },
+      {
+        "p": 0.95,
+        "uncappedExpectedActions": 19.999999999999982,
+        "capTwoReplaysExpectedActions": 2.8525
+      }
+    ],
+    "assumption": "Independent fixed trigger probability p after each action, maximum two replays. Not a measured Waven Biste critical rate."
+  },
+  "historicalGaugeCap": {
+    "generated": 20,
+    "coefficient": 0.04,
+    "bonus": 0.8,
+    "assumption": "0.13.1 O'Lympic base effect only; no skill/other modifier added."
+  },
+  "reservoirs": {
+    "charges": 6,
+    "publicFixedDamage": 132,
+    "v1AtP40": 120,
+    "v1AtP112": 336,
+    "v1AtP145_6": 436.79999999999995
+  },
+  "prepared": {
+    "deck20family3": 0.5304437564499485,
+    "assumption": "Pin one existing A copy, draw 4 uniformly from other 19; B has 3 copies."
+  }
+}

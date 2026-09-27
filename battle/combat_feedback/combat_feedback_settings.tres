@@ -38,6 +38,22 @@ accent_color = Color(0.48, 0.7, 0.24, 1)
 font_size = 19
 icon_text = "◉"
 
+[sub_resource type="Resource" id="StyleCardsBurn"]
+script = ExtResource("2_style")
+style_id = &"damage_cc2_burn"
+font_color = Color(1, 0.761, 0.416, 1)
+accent_color = Color(0.98, 0.522, 0.169, 1)
+font_size = 19
+icon_text = "✹"
+
+[sub_resource type="Resource" id="StyleCardsBleed"]
+script = ExtResource("2_style")
+style_id = &"damage_cc2_bleed"
+font_color = Color(1, 0.65, 0.59, 1)
+accent_color = Color(0.87, 0.27, 0.26, 1)
+font_size = 19
+icon_text = "◆"
+
 [sub_resource type="Resource" id="StyleHealing"]
 script = ExtResource("2_style")
 style_id = &"healing_normal"
@@ -113,4 +129,4 @@ label_fallback = "STATUT EXPIRÉ"
 
 [resource]
 script = ExtResource("1_settings")
-styles = Array[ExtResource("2_style")]([SubResource("StylePhysical"), SubResource("StyleMagical"), SubResource("StyleCritical"), SubResource("StylePeriodic"), SubResource("StyleHealing"), SubResource("StyleShieldAbsorbed"), SubResource("StyleShieldGranted"), SubResource("StyleDodge"), SubResource("StyleImmune"), SubResource("StyleStatusAdded"), SubResource("StyleStatusExpired")])
+styles = Array[ExtResource("2_style")]([SubResource("StylePhysical"), SubResource("StyleMagical"), SubResource("StyleCritical"), SubResource("StylePeriodic"), SubResource("StyleCardsBurn"), SubResource("StyleCardsBleed"), SubResource("StyleHealing"), SubResource("StyleShieldAbsorbed"), SubResource("StyleShieldGranted"), SubResource("StyleDodge"), SubResource("StyleImmune"), SubResource("StyleStatusAdded"), SubResource("StyleStatusExpired")])

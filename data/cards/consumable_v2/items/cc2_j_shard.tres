@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_u5dld"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_wen4f"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_x4wfw"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_xmjkb"]
+
+[resource]
+script = ExtResource("2_wen4f")
+profile_modifiers = {
+"damage": 0.08,
+"hp": -0.06
+}
+item_id = &"cc2_j_shard"
+display_name = "Éclat téméraire"
+description = "+8 % dégâts des cartes · -6 % PV maximaux"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+equipment_slot = 2

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://kua6hiohatjq"
+
+[deps]
+
+files=["res://docs/design/card_economy_lab/RESULTS.compatible.translation", "res://docs/design/card_economy_lab/RESULTS.profile.translation", "res://docs/design/card_economy_lab/RESULTS.policy.translation", "res://docs/design/card_economy_lab/RESULTS.completion.translation", "res://docs/design/card_economy_lab/RESULTS.stock.translation", "res://docs/design/card_economy_lab/RESULTS.spend.translation"]
+
+source_file="res://docs/design/card_economy_lab/RESULTS.csv"
+dest_files=["res://docs/design/card_economy_lab/RESULTS.compatible.translation", "res://docs/design/card_economy_lab/RESULTS.profile.translation", "res://docs/design/card_economy_lab/RESULTS.policy.translation", "res://docs/design/card_economy_lab/RESULTS.completion.translation", "res://docs/design/card_economy_lab/RESULTS.stock.translation", "res://docs/design/card_economy_lab/RESULTS.spend.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

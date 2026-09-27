@@ -143,15 +143,19 @@ func danger_cells() -> Array:
 	var result: Array[Vector2i] = []
 	if room_id == "convoy" or not is_mechanism_active():
 		return result
-	for y in 7:
-		for x in 9:
+	return profile_danger_cells(room_id, grid, boss.grid_pos, rail if room_id == "forge" else radius)
+
+
+## Shared topology for authored 9x7 rooms and the consumable profile's 7x7 maps.
+## Timing, payload and room state remain owned by each explicit ruleset.
+static func profile_danger_cells(id: String, board: GridData, origin: Vector2i, band: int) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	var sight := Pathfinder.new(board)
+	for y in board.rows:
+		for x in board.cols:
 			var cell := Vector2i(x, y)
-			if not grid.is_terrain_interactable(cell):
-				continue
-			if (
-				(room_id == "forge" and y == rail)
-				or (room_id == "garden" and grid.manhattan(cell, boss.grid_pos) == radius)
-			):
+			if not board.is_terrain_interactable(cell): continue
+			if (id == "forge" and y == band) or (id == "garden" and board.manhattan(cell, origin) == band) or (id == "hourglass" and (x == origin.x or y == origin.y) and board.manhattan(cell, origin) <= band and sight.has_line_of_sight(origin, cell)):
 				result.append(cell)
 	return result
 

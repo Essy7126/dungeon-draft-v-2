@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_bvgxj"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_4saiv"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_6rfd1"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_fbnuq"]
+
+[resource]
+script = ExtResource("2_4saiv")
+profile_modifiers = {
+"openingShield": 0.6
+}
+item_id = &"cc2_h_bronze"
+display_name = "Casque du seuil"
+description = "+60 % garde initiale (P)"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 1
+equipment_slot = 3

@@ -22,7 +22,7 @@ static func semantic_snapshot(definition: ItemDefinition) -> Dictionary:
 	var reactive_snapshots: Array[Dictionary] = []
 	for effect in definition.reactive_effects:
 		reactive_snapshots.append(_resource_snapshot(effect))
-	return {
+	var result := {
 		"item_id": str(definition.item_id),
 		"display_name": definition.display_name,
 		"description": definition.description,
@@ -47,6 +47,11 @@ static func semantic_snapshot(definition: ItemDefinition) -> Dictionary:
 		"use_effect": int(definition.use_effect),
 		"use_value": definition.use_value,
 	}
+	if definition is ConsumableCardItemDefinition:
+		result["ruleset_id"] = definition.ruleset_id
+		result["profile_modifiers"] = _sorted_dictionary(definition.profile_modifiers)
+		result["profile_relic_rule"] = definition.profile_relic_rule
+	return result
 
 
 static func semantic_fingerprint(definition: ItemDefinition) -> String:

@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "ink": "302932",
+    "bronze_dark": "563d2a",
+    "bronze": "a56d32",
+    "gold": "e5ae59",
+    "ivory": "fff1cf",
+    "plum": "664761",
+    "obsidian": "342b41",
+    "violet": "8d6a8b",
+    "ice_dark": "344969",
+    "ice": "58bce7",
+    "ice_light": "a3eaff",
+    "porcelain": "eefbff",
+    "jade": "379a81",
+    "shaft": "203e38"
+  },
+  "assets": {
+    "hook": {
+      "size": 256,
+      "frames": 1,
+      "fps": 30,
+      "pivot": [
+        128.0,
+        128.0002
+      ],
+      "scene": "Approved CEL - hook"
+    },
+    "link": {
+      "size": 192,
+      "frames": 1,
+      "fps": 30,
+      "pivot": [
+        96.0,
+        96.0002
+      ],
+      "scene": "Approved CEL - link"
+    },
+    "link_edge": {
+      "size": 192,
+      "frames": 1,
+      "fps": 30,
+      "pivot": [
+        96.0,
+        96.0002
+      ],
+      "scene": "Approved CEL - link_edge"
+    },
+    "arrow": {
+      "size": 256,
+      "frames": 1,
+      "fps": 30,
+      "pivot": [
+        128.0,
+        207.7426
+      ],
+      "scene": "Approved CEL - arrow"
+    },
+    "ice": {
+      "size": 256,
+      "frames": 24,
+      "fps": 30,
+      "pivot": [
+        128.0,
+        154.0494
+      ],
+      "scene": "Approved CEL - ice"
+    },
+    "reap": {
+      "size": 384,
+      "frames": 30,
+      "fps": 30,
+      "pivot": [
+        192.0,
+        254.122
+      ],
+      "scene": "Approved CEL - reap"
+    }
+  },
+  "approval": "docs/design/vfx_avant_production_2026-09-27/README.md",
+  "source_script": "tools/class_card_vfx/approved/build.py"
+}

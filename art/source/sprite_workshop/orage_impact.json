@@ -1,0 +1,668 @@
+{
+	"anchor": [
+		192,
+		211
+	],
+	"animation": "orage_impact_E",
+	"baseline": {
+		"anchor": [
+			192,
+			211
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f94c454b210f5444f41be95c97fff5b161e1bfa029fb5a2f39c207ef3f531314",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "76ac1546bf825850a79edebe3fbe1fa62707358d13643d7695c652dedbd17be2",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4d411b6312ce64b34946714f2e120c798baf3d5e49f491fbd214c7c09ee34b38",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f653ef59c22f019bdaf402e11fe80b838ba13258c720cd6d640267e2943ff156",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "84f2868c5448f67c66e2d7c676af2d6d7ab5367de07d619548763506a12d3c29",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "9afe67403d33ab37e47de04a117a57e9faba73c06587f76e9b32323818bc1434",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "453fe2a0fd612075fa6da01d95c920411ff3b7abca0ae9e75f4e5f2d97ae62ff",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "ffc307767df7c2eb627ef5e9c29abcfe59f964b9933765bc2a07970381bf0c5c",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "33942437feb69188b7a1f7b1ec89ab4a1a611d74da90ea9118b2034db85121c1",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "3725bad65a4220f308dc0d233a7bdab74cddd6cf7734e54bbebe8f87d2aea3f9",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "88fd2b8514445e96ceac42d997c11e75d6a6fefb53bd2c90d27ca2944c0fb453",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "f9b0d9e53d21937531aae67dcfc4951cfc7a478bee1c7776a038e5d4b7699b71",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0012.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f012",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "7d743d261c098e3e76106361d5b5a147a551b4fc83904323b663ce647a5264e6",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0013.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f013",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "a2c03c14910739dc5b7f0a78b3a8e381a937dc6ade1e7331fa12713dceaead03",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0014.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f014",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "0226d9ee0a593c9cae5f9945bdd6117c877decafe451536a6d52088e12818527",
+				"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0015.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f94c454b210f5444f41be95c97fff5b161e1bfa029fb5a2f39c207ef3f531314",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "76ac1546bf825850a79edebe3fbe1fa62707358d13643d7695c652dedbd17be2",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4d411b6312ce64b34946714f2e120c798baf3d5e49f491fbd214c7c09ee34b38",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f653ef59c22f019bdaf402e11fe80b838ba13258c720cd6d640267e2943ff156",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "84f2868c5448f67c66e2d7c676af2d6d7ab5367de07d619548763506a12d3c29",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "9afe67403d33ab37e47de04a117a57e9faba73c06587f76e9b32323818bc1434",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "453fe2a0fd612075fa6da01d95c920411ff3b7abca0ae9e75f4e5f2d97ae62ff",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "ffc307767df7c2eb627ef5e9c29abcfe59f964b9933765bc2a07970381bf0c5c",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "33942437feb69188b7a1f7b1ec89ab4a1a611d74da90ea9118b2034db85121c1",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "3725bad65a4220f308dc0d233a7bdab74cddd6cf7734e54bbebe8f87d2aea3f9",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "88fd2b8514445e96ceac42d997c11e75d6a6fefb53bd2c90d27ca2944c0fb453",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "f9b0d9e53d21937531aae67dcfc4951cfc7a478bee1c7776a038e5d4b7699b71",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0012.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f012",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "7d743d261c098e3e76106361d5b5a147a551b4fc83904323b663ce647a5264e6",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0013.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f013",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "a2c03c14910739dc5b7f0a78b3a8e381a937dc6ade1e7331fa12713dceaead03",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0014.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f014",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "0226d9ee0a593c9cae5f9945bdd6117c877decafe451536a6d52088e12818527",
+			"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0015.png"
+		}
+	],
+	"id": "orage_impact",
+	"intent": "Production de la planche H validée le 27 septembre. Couronne, foudre et contact cel.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/orage/provenance.json": "875e34f8936dbcc750181a5512f97594f65ad4895b73e08f5dfa3ea4cd54d81d"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "9afe67403d33ab37e47de04a117a57e9faba73c06587f76e9b32323818bc1434",
+		"source": "res://artifacts/dev/class_card_vfx/orage/render/impact/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/orage/impact.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Orage du passage — impact"
+}

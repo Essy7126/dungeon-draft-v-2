@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_w765r"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_sr3a7"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_xi5xc"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_fbbb8"]
+
+[resource]
+script = ExtResource("2_sr3a7")
+profile_modifiers = {
+"guard": -0.1,
+"mp": 1.0,
+"ranged": 0.06
+}
+item_id = &"cc2_f_flow"
+display_name = "Bottes du reflux"
+description = "+6 % dégâts à 3 cases ou plus · +1 PM · -10 % garde produite"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+category = 1
+equipment_slot = 5

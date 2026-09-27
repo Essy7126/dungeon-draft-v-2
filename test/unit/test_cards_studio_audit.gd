@@ -19,6 +19,7 @@ func make_manager(weapon: String):
 	manager.expedition_save_path = "user://studio_audit_%d.json" % Time.get_ticks_usec()
 	add_child(manager)
 	managers.append(manager)
+	manager._cards_departure_selection = CatabasePreparationCatalog.preset(weapon)
 	assert_true(manager.start_expedition(7201, {}, false, true, "normal", true))
 	assert_true(manager.confirm_catabase_preparation(CatabasePreparationCatalog.preset(weapon)).success)
 	return manager

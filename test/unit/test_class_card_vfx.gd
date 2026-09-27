@@ -11,6 +11,32 @@ var host: BattleHost
 var session: ExpeditionSession
 
 
+func test_current_card_ids_select_explicit_vfx_without_changing_spell_identity() -> void:
+	var current = preload("res://core/expedition/consumable_card_spells.gd")
+	var bindings = preload("res://characters/achilles/2d/passe_rive_card_bindings.gd")
+	var ids: Array[String] = current.Catalog.pool()
+	ids.append_array(["fallback_strike", "fallback_guard"])
+	assert_eq(bindings.EFFECTS.size(), ids.size())
+	for id in ids:
+		for upgraded in [false, true]:
+			var spell: Spell = current.make_spell(id, upgraded)
+			var entry: Dictionary = Catalog.for_spell(spell)
+			assert_false(entry.is_empty(), id + " must not fall into generic Achilles melee VFX")
+			assert_eq(entry.id, str(spell.spell_id))
+			assert_eq(entry.art_direction, "cel")
+			assert_has(Cel.CLIPS, entry.cel_clip)
+			assert_eq(str(spell.spell_id), "cc2_" + id)
+	var short_shot: Dictionary = Catalog.for_spell(current.make_spell("n05"))
+	assert_eq(short_shot.visual_reference, "r_shot")
+	assert_eq(short_shot.cel_clip, "pierce")
+	assert_ne(short_shot.get("flight_motif", ""), "dagger")
+	assert_eq(Catalog.for_spell(current.make_spell("a07")).get("flight_motif"), "dagger")
+	assert_eq(Catalog.for_spell(current.make_spell("n03")).movement, true)
+	assert_eq(Catalog.for_spell(current.make_spell("t04")).cel_clip, "water")
+	for id in ["l02", "i01"]:
+		assert_eq(Catalog.for_spell(current.make_spell(id)).family, "heal")
+
+
 func test_cel_catalogue_has_authored_compositions_and_six_pose_assets() -> void:
 	assert_eq(Cel.CARDS.size(), Catalog.Cards.pool().size())
 	for id in Catalog.Cards.pool():
@@ -172,6 +198,7 @@ class GridView:
 class UnitAnchor:
 	extends Node2D
 	var unit: Unit
+	var _optional_visual: Node2D
 
 
 func before_each() -> void:
@@ -188,6 +215,77 @@ func before_each() -> void:
 	host.add_child(view)
 	manager.register_battle_view(view)
 	manager._class_card_router.set_process(false)
+
+
+func test_passe_rive_s19_confirmed_area_miss_and_unscoped_mark() -> void:
+	var hero := _unit()
+	var enemy := _unit("Cible", 1)
+	var second := _unit("Cible de zone", 1)
+	var ally := Factory.make_unit("Allié dans la croix", 0)
+	host.units.append(ally)
+	var anchor := UnitAnchor.new()
+	anchor.unit = hero
+	view.add_child(anchor)
+	anchor.add_to_group("unit_views")
+	anchor._optional_visual = preload("res://characters/achilles/PasseRiveIsoUnitView.tscn").instantiate()
+	anchor.add_child(anchor._optional_visual)
+	anchor._optional_visual.bind_unit(hero)
+	await get_tree().process_frame
+	var router: Node = manager._class_card_router
+	var authored := preload("res://vfx/class_cards/passe_rive_s19_effect.gd")
+	assert_eq(router._s19_card(hero, "class_r_fan").id, "r_fan")
+	for report in [
+		{ "failed": true },
+		{ "damaged_enemies": [], "dodges": [enemy] },
+		{ "visual_impact_cells": [] },
+	]:
+		manager._on_spell_cast(hero, Catalog.Cards.make_spell("r_shot"), report)
+	assert_true(router.effects.is_empty(), "Misses and failures have no S19 contact")
+	var field = Factory.make_battlefield(8, 6)
+	field.grid.place_unit(hero, Vector2i(1, 2))
+	field.grid.place_unit(enemy, Vector2i(3, 2))
+	field.grid.place_unit(second, Vector2i(3, 3))
+	field.grid.place_unit(ally, Vector2i(4, 2))
+	for target: Unit in [enemy, second, ally]:
+		target.esquive.base_value = 0
+	hero.crit_chance.base_value = 0
+	var ally_hp := ally.current_hp
+	session.cards.hand.assign([session.cards.add_copy("r_fan")])
+	var report: Dictionary = field.caster.cast(hero, Catalog.Cards.make_spell("r_fan"), enemy.grid_pos)
+	assert_false(report.get("failed", false))
+	assert_eq(router.effects.size(), 2, "Two actual enemies, no effect on ally/empty cross cells")
+	assert_eq(ally.current_hp, ally_hp)
+	for fx in router.effects:
+		assert_eq(fx.get_script(), authored)
+		assert_has(
+			[view.grid_to_local(enemy.grid_pos), view.grid_to_local(second.grid_pos)],
+			fx.point,
+		)
+	assert_true(router.echoes.is_empty(), "Baked release art has no duplicate legacy arrow")
+	manager._on_spell_cast(hero, Catalog.Cards.make_spell("r_fan"), report)
+	assert_eq(router.effects.size(), 2, "Duplicate report is visual-only and deduplicated")
+	router.clear()
+	hero.current_ap = 9
+	session.cards.hand.assign([session.cards.add_copy("t_mark")])
+	report = field.caster.cast(hero, Catalog.Cards.make_spell("t_mark"), enemy.grid_pos)
+	assert_false(report.get("failed", false))
+	assert_null(enemy.get_active_statuses()[0].source, "Mark rules keep an unscoped source")
+	var key := "%s:class_marked" % enemy.get_instance_id()
+	assert_has(router.holds, key)
+	assert_eq(
+		router.holds[key].fx.get_script(),
+		authored,
+		"Confirmed report supplies S19 provenance",
+	)
+	var hp := enemy.current_hp
+	router.holds[key].fx.sample(300.0)
+	assert_eq(enemy.current_hp, hp)
+	assert_true(enemy.has_status(&"class_marked"))
+	enemy.tick_statuses()
+	assert_false(router.holds.has(key), "Actual activation expiry removes the S19 badge")
+	router.clear()
+	field.terrain.dispose()
+	Cleanup.dispose_grid(field.grid)
 
 
 func after_each() -> void:

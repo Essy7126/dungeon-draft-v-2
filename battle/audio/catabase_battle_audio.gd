@@ -115,6 +115,14 @@ func _on_hit(fact: CombatEventFact) -> void:
 		return
 	if fact.amount_applied <= 0:
 		return
+	if fact.ability_id == &"class_g_crash" and fact.source != null:
+		var session = CatabaseCombatModifier.session_for(fact.source)
+		var router: Node = VFXManager._class_card_router
+		if session != null and session.cards != null and is_instance_valid(router) \
+				and router._available() and fact.source in router._units() \
+				and not router.sentence_legacy:
+			_play_feedback(&"sentence_contact", -3.0)
+			return
 	_play_feedback(&"hit" if fact.damage_type == 0 else &"magic_hit", -2.0)
 
 

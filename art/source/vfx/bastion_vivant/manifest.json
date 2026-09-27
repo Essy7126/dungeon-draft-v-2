@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "scene": "Bastion vivant - CEL",
+  "blender_version": "5.1.2",
+  "frames": 48,
+  "fps": 30,
+  "size": 384,
+  "pivot_pixels": [
+    192.0,
+    246.0192
+  ],
+  "layers": [
+    "back",
+    "front"
+  ],
+  "palette_srgb": {
+    "Ink": "172938",
+    "Bronze shadow": "723923",
+    "Bronze": "c47a30",
+    "Gold": "ecb951",
+    "Edge": "fff0bf",
+    "Enamel": "254f60",
+    "Enamel light": "3c7b85",
+    "Seal": "30bdac",
+    "Seal light": "bcf4d8"
+  },
+  "view_transform": "AgX",
+  "look": "None",
+  "source_script": "tools/class_card_vfx/bastion/build_bastion.py",
+  "intent": "Confirmed protection: three rising interlocking plates, open center, transfer to a compact source-scoped badge.",
+  "locks_seconds": [
+    0.26666666666666666,
+    0.3333333333333333,
+    0.4
+  ],
+  "gameplay_delay": 0
+}

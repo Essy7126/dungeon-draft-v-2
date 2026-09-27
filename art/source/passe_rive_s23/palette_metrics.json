@@ -1,0 +1,1934 @@
+{
+  "method": "Mean Euclidean distance in 8-bit RGB between material medians and canonical idle_SE; evaluated with runtime shader equation; not anatomical or temporal validation.",
+  "samples": 175,
+  "before_mean_rgb_distance": 20.430960697607382,
+  "after_mean_rgb_distance": 2.5767459494807046,
+  "reduction_percent": 87.38803334988324,
+  "rows": [
+    {
+      "clip": "PR_BLADES",
+      "material": "teal",
+      "before_rgb_distance": 12.529964086141668,
+      "after_rgb_distance": 5.6592207801879235,
+      "output_rgb": [
+        19.3414625383212,
+        54.92682868487343,
+        66.95121893470728
+      ]
+    },
+    {
+      "clip": "PR_BLADES",
+      "material": "cape",
+      "before_rgb_distance": 17.029386365926403,
+      "after_rgb_distance": 0.44684216483929784,
+      "output_rgb": [
+        118.20082363745333,
+        142.36692173159034,
+        128.15718215485555
+      ]
+    },
+    {
+      "clip": "PR_BLADES",
+      "material": "leather",
+      "before_rgb_distance": 13.92838827718412,
+      "after_rgb_distance": 0.8055322470050165,
+      "output_rgb": [
+        38.51037764488011,
+        37.58478952259727,
+        41.513427898676056
+      ]
+    },
+    {
+      "clip": "PR_BLADES",
+      "material": "gold",
+      "before_rgb_distance": 15.033296378372908,
+      "after_rgb_distance": 0.37136709500947146,
+      "output_rgb": [
+        134.22469057861485,
+        110.22091423352069,
+        65.19653133227418
+      ]
+    },
+    {
+      "clip": "PR_BLADES",
+      "material": "ivory",
+      "before_rgb_distance": 27.018512172212592,
+      "after_rgb_distance": 0.6364287662682695,
+      "output_rgb": [
+        240.11239133025566,
+        224.27451080298673,
+        201.5630751126277
+      ]
+    },
+    {
+      "clip": "PR_DAGGER",
+      "material": "teal",
+      "before_rgb_distance": 9.695359714832659,
+      "after_rgb_distance": 1.1983573673159038,
+      "output_rgb": [
+        23.804873829603917,
+        54.926828069917555,
+        66.95121798197383
+      ]
+    },
+    {
+      "clip": "PR_DAGGER",
+      "material": "cape",
+      "before_rgb_distance": 13.96424004376894,
+      "after_rgb_distance": 0.23461787241283152,
+      "output_rgb": [
+        118.21370013633344,
+        141.91099170492663,
+        127.96185132774626
+      ]
+    },
+    {
+      "clip": "PR_DAGGER",
+      "material": "leather",
+      "before_rgb_distance": 9.273618495495704,
+      "after_rgb_distance": 0.6544654580874951,
+      "output_rgb": [
+        38.607083551418704,
+        37.65478573818402,
+        41.60659332275267
+      ]
+    },
+    {
+      "clip": "PR_DAGGER",
+      "material": "gold",
+      "before_rgb_distance": 29.563490998188964,
+      "after_rgb_distance": 0.7361905069930691,
+      "output_rgb": [
+        134.52518509931454,
+        110.42225943190914,
+        65.29640183232979
+      ]
+    },
+    {
+      "clip": "PR_DAGGER",
+      "material": "ivory",
+      "before_rgb_distance": 27.80287754891569,
+      "after_rgb_distance": 0.8333058521746877,
+      "output_rgb": [
+        240.10592067171868,
+        224.48364156040898,
+        201.67027628304783
+      ]
+    },
+    {
+      "clip": "PR_EMBER",
+      "material": "teal",
+      "before_rgb_distance": 11.090536506409418,
+      "after_rgb_distance": 4.1708751026596005,
+      "output_rgb": [
+        20.829267528061457,
+        54.975609641150236,
+        67.02439015986675
+      ]
+    },
+    {
+      "clip": "PR_EMBER",
+      "material": "cape",
+      "before_rgb_distance": 14.491376746189438,
+      "after_rgb_distance": 0.3447267986576602,
+      "output_rgb": [
+        118.2064593310925,
+        142.09894763900647,
+        128.25772170077943
+      ]
+    },
+    {
+      "clip": "PR_EMBER",
+      "material": "leather",
+      "before_rgb_distance": 11.0,
+      "after_rgb_distance": 0.6888955499926063,
+      "output_rgb": [
+        38.58711634311393,
+        37.62715063818921,
+        41.59369036674811
+      ]
+    },
+    {
+      "clip": "PR_EMBER",
+      "material": "gold",
+      "before_rgb_distance": 33.481338085566414,
+      "after_rgb_distance": 0.8322892277372232,
+      "output_rgb": [
+        134.6480669633371,
+        110.44602472320273,
+        65.27161832767761
+      ]
+    },
+    {
+      "clip": "PR_EMBER",
+      "material": "ivory",
+      "before_rgb_distance": 23.430749027719962,
+      "after_rgb_distance": 0.5455630431441718,
+      "output_rgb": [
+        240.10792743496953,
+        224.36855387804394,
+        201.38750321521815
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE",
+      "material": "teal",
+      "before_rgb_distance": 11.874342087037917,
+      "after_rgb_distance": 2.6874709472079963,
+      "output_rgb": [
+        22.317070798699287,
+        54.87804717666331,
+        66.90243719061459
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE",
+      "material": "cape",
+      "before_rgb_distance": 9.16515138991168,
+      "after_rgb_distance": 0.17402523983832038,
+      "output_rgb": [
+        117.92319667115174,
+        141.84386928589342,
+        128.00303856729076
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE",
+      "material": "leather",
+      "before_rgb_distance": 13.30413469565007,
+      "after_rgb_distance": 0.8100424408049234,
+      "output_rgb": [
+        38.53523934853166,
+        37.57944510217101,
+        41.48687246160046
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE",
+      "material": "gold",
+      "before_rgb_distance": 14.035668847618199,
+      "after_rgb_distance": 0.344987935108683,
+      "output_rgb": [
+        134.29561924051328,
+        110.17132584861768,
+        65.047680117495
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE",
+      "material": "ivory",
+      "before_rgb_distance": 20.639767440550294,
+      "after_rgb_distance": 0.6537169135814674,
+      "output_rgb": [
+        240.24342120525182,
+        224.38512917252694,
+        201.46879360107081
+      ]
+    },
+    {
+      "clip": "PR_SEAL",
+      "material": "teal",
+      "before_rgb_distance": 15.297058540778355,
+      "after_rgb_distance": 7.149046388952718,
+      "output_rgb": [
+        17.853658503308004,
+        54.82926824663801,
+        66.9024389808896
+      ]
+    },
+    {
+      "clip": "PR_SEAL",
+      "material": "cape",
+      "before_rgb_distance": 22.693611435820433,
+      "after_rgb_distance": 1.7632041503379303,
+      "output_rgb": [
+        119.49957695769632,
+        142.76745487055206,
+        128.52074066998946
+      ]
+    },
+    {
+      "clip": "PR_SEAL",
+      "material": "leather",
+      "before_rgb_distance": 10.488088481701515,
+      "after_rgb_distance": 0.8108782293888089,
+      "output_rgb": [
+        38.53675594774964,
+        37.621246976710836,
+        41.45275727661237
+      ]
+    },
+    {
+      "clip": "PR_SEAL",
+      "material": "gold",
+      "before_rgb_distance": 37.749172176353746,
+      "after_rgb_distance": 0.9218055444005878,
+      "output_rgb": [
+        134.78146240557302,
+        110.48832089967287,
+        65.02417993602897
+      ]
+    },
+    {
+      "clip": "PR_SEAL",
+      "material": "ivory",
+      "before_rgb_distance": 25.019992006393608,
+      "after_rgb_distance": 0.870532671499128,
+      "output_rgb": [
+        239.20770031871382,
+        223.90594085960967,
+        201.34819710695274
+      ]
+    },
+    {
+      "clip": "PR_SHOT",
+      "material": "teal",
+      "before_rgb_distance": 11.224972160321824,
+      "after_rgb_distance": 4.171089038040277,
+      "output_rgb": [
+        20.829267531060665,
+        54.95121940797294,
+        66.97560964050174
+      ]
+    },
+    {
+      "clip": "PR_SHOT",
+      "material": "cape",
+      "before_rgb_distance": 17.549928774784245,
+      "after_rgb_distance": 0.5480518329175986,
+      "output_rgb": [
+        118.4939744945221,
+        142.20181973742535,
+        128.12497521318858
+      ]
+    },
+    {
+      "clip": "PR_SHOT",
+      "material": "leather",
+      "before_rgb_distance": 11.0,
+      "after_rgb_distance": 0.7002661122976787,
+      "output_rgb": [
+        38.57394766862619,
+        37.62204097748822,
+        41.59257023149335
+      ]
+    },
+    {
+      "clip": "PR_SHOT",
+      "material": "gold",
+      "before_rgb_distance": 29.34280150224242,
+      "after_rgb_distance": 0.7289215794250662,
+      "output_rgb": [
+        134.5484676818345,
+        110.39613202832003,
+        65.27127345442135
+      ]
+    },
+    {
+      "clip": "PR_SHOT",
+      "material": "ivory",
+      "before_rgb_distance": 28.231188426986208,
+      "after_rgb_distance": 0.6835913472924262,
+      "output_rgb": [
+        239.98724543860052,
+        224.37899612394543,
+        201.5687674298788
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY",
+      "material": "teal",
+      "before_rgb_distance": 14.142135623730951,
+      "after_rgb_distance": 8.634284232613936,
+      "output_rgb": [
+        16.3658535645687,
+        54.95121945987831,
+        66.99999994961648
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY",
+      "material": "cape",
+      "before_rgb_distance": 9.643650760992955,
+      "after_rgb_distance": 0.46717949398624875,
+      "output_rgb": [
+        117.8359882400684,
+        141.6845903180593,
+        127.69689349273985
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY",
+      "material": "leather",
+      "before_rgb_distance": 15.033296378372908,
+      "after_rgb_distance": 0.8503372459597474,
+      "output_rgb": [
+        38.51283858964156,
+        37.54874850091439,
+        41.46885098447142
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY",
+      "material": "gold",
+      "before_rgb_distance": 22.494443758403985,
+      "after_rgb_distance": 0.5577037277036979,
+      "output_rgb": [
+        134.39870331032995,
+        110.32120750187592,
+        65.22112181928786
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY",
+      "material": "ivory",
+      "before_rgb_distance": 28.653097563788805,
+      "after_rgb_distance": 1.027431583463137,
+      "output_rgb": [
+        240.3433919337303,
+        224.59333059161585,
+        201.76528193994065
+      ]
+    },
+    {
+      "clip": "PR_BLADES_N",
+      "material": "teal",
+      "before_rgb_distance": 13.490737563232042,
+      "after_rgb_distance": 4.175080138395582,
+      "output_rgb": [
+        20.82926792567872,
+        54.85365818148767,
+        66.87804837677386
+      ]
+    },
+    {
+      "clip": "PR_BLADES_N",
+      "material": "cape",
+      "before_rgb_distance": 14.142135623730951,
+      "after_rgb_distance": 0.8206634070889267,
+      "output_rgb": [
+        118.68495363194495,
+        141.6958352716965,
+        127.66561882846625
+      ]
+    },
+    {
+      "clip": "PR_BLADES_N",
+      "material": "leather",
+      "before_rgb_distance": 8.774964387392123,
+      "after_rgb_distance": 0.7096819489606218,
+      "output_rgb": [
+        38.60034792765231,
+        37.68471704286813,
+        41.50550698013933
+      ]
+    },
+    {
+      "clip": "PR_BLADES_N",
+      "material": "gold",
+      "before_rgb_distance": 23.790754506740637,
+      "after_rgb_distance": 0.5835307562790715,
+      "output_rgb": [
+        134.4666062723544,
+        110.3184988503342,
+        65.14610000841532
+      ]
+    },
+    {
+      "clip": "PR_BLADES_N",
+      "material": "ivory",
+      "before_rgb_distance": 28.600699292150182,
+      "after_rgb_distance": 1.0404837450333546,
+      "output_rgb": [
+        239.83445535997794,
+        224.58864163609758,
+        201.8418446531819
+      ]
+    },
+    {
+      "clip": "PR_BLADES_NE",
+      "material": "teal",
+      "before_rgb_distance": 11.874342087037917,
+      "after_rgb_distance": 2.6874694449955716,
+      "output_rgb": [
+        22.31707221943135,
+        54.87804816389392,
+        66.90243826719387
+      ]
+    },
+    {
+      "clip": "PR_BLADES_NE",
+      "material": "cape",
+      "before_rgb_distance": 6.782329983125268,
+      "after_rgb_distance": 0.8119471772334593,
+      "output_rgb": [
+        117.9251682287186,
+        141.32106664391597,
+        127.56101489476208
+      ]
+    },
+    {
+      "clip": "PR_BLADES_NE",
+      "material": "leather",
+      "before_rgb_distance": 8.774964387392123,
+      "after_rgb_distance": 0.6684866373262612,
+      "output_rgb": [
+        38.62852218477207,
+        37.714913195891086,
+        41.522921252621515
+      ]
+    },
+    {
+      "clip": "PR_BLADES_NE",
+      "material": "gold",
+      "before_rgb_distance": 15.7797338380595,
+      "after_rgb_distance": 0.385820603214941,
+      "output_rgb": [
+        134.34237148116327,
+        110.17083506864758,
+        64.95045521146086
+      ]
+    },
+    {
+      "clip": "PR_BLADES_NE",
+      "material": "ivory",
+      "before_rgb_distance": 24.71841418861655,
+      "after_rgb_distance": 0.9703728777729781,
+      "output_rgb": [
+        240.2886899647974,
+        224.61139576480772,
+        201.69604370905702
+      ]
+    },
+    {
+      "clip": "PR_BLADES_S",
+      "material": "teal",
+      "before_rgb_distance": 11.489125293076057,
+      "after_rgb_distance": 2.686475066648946,
+      "output_rgb": [
+        22.3170704463861,
+        54.902436757606296,
+        66.90243613473622
+      ]
+    },
+    {
+      "clip": "PR_BLADES_S",
+      "material": "cape",
+      "before_rgb_distance": 13.74772708486752,
+      "after_rgb_distance": 0.3356259879736671,
+      "output_rgb": [
+        118.25872582734168,
+        142.21216302639948,
+        127.97368269963165
+      ]
+    },
+    {
+      "clip": "PR_BLADES_S",
+      "material": "leather",
+      "before_rgb_distance": 9.486832980505138,
+      "after_rgb_distance": 0.5568104771922755,
+      "output_rgb": [
+        38.71990639910367,
+        37.75624697510767,
+        41.58506633650202
+      ]
+    },
+    {
+      "clip": "PR_BLADES_S",
+      "material": "gold",
+      "before_rgb_distance": 20.639767440550294,
+      "after_rgb_distance": 0.50943201305245,
+      "output_rgb": [
+        134.39619303862847,
+        110.27073719454316,
+        65.17103632232924
+      ]
+    },
+    {
+      "clip": "PR_BLADES_S",
+      "material": "ivory",
+      "before_rgb_distance": 24.351591323771842,
+      "after_rgb_distance": 0.6709282364703038,
+      "output_rgb": [
+        240.0488373822359,
+        224.25865525103103,
+        201.61713618408223
+      ]
+    },
+    {
+      "clip": "PR_BLADES_SE",
+      "material": "teal",
+      "before_rgb_distance": 16.0312195418814,
+      "after_rgb_distance": 11.609781742511093,
+      "output_rgb": [
+        13.390243877532638,
+        54.97560972375084,
+        66.99999996053073
+      ]
+    },
+    {
+      "clip": "PR_BLADES_SE",
+      "material": "cape",
+      "before_rgb_distance": 27.09243436828813,
+      "after_rgb_distance": 1.217368534830033,
+      "output_rgb": [
+        118.80165291431614,
+        142.78778700919196,
+        128.4676862011125
+      ]
+    },
+    {
+      "clip": "PR_BLADES_SE",
+      "material": "leather",
+      "before_rgb_distance": 8.774964387392123,
+      "after_rgb_distance": 0.5698216571655512,
+      "output_rgb": [
+        38.69707897939804,
+        37.72395979084461,
+        41.60409928115522
+      ]
+    },
+    {
+      "clip": "PR_BLADES_SE",
+      "material": "gold",
+      "before_rgb_distance": 32.83291031876401,
+      "after_rgb_distance": 0.802197041087848,
+      "output_rgb": [
+        134.65994845946122,
+        110.43952719898004,
+        65.12167154532436
+      ]
+    },
+    {
+      "clip": "PR_BLADES_SE",
+      "material": "ivory",
+      "before_rgb_distance": 35.35533905932738,
+      "after_rgb_distance": 0.6480323638751067,
+      "output_rgb": [
+        239.74431492437373,
+        224.16504422870548,
+        201.57212890968955
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_N",
+      "material": "teal",
+      "before_rgb_distance": 8.306623862918075,
+      "after_rgb_distance": 0.20260275093518323,
+      "output_rgb": [
+        24.804876192362617,
+        54.95121855484247,
+        66.97560850582813
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_N",
+      "material": "cape",
+      "before_rgb_distance": 20.97617696340303,
+      "after_rgb_distance": 1.5470505981845057,
+      "output_rgb": [
+        119.51928101770089,
+        142.18627733027705,
+        127.77538588908611
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_N",
+      "material": "leather",
+      "before_rgb_distance": 8.774964387392123,
+      "after_rgb_distance": 0.7517953271571121,
+      "output_rgb": [
+        38.578082840965465,
+        37.660969422264465,
+        41.478233392973635
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_N",
+      "material": "gold",
+      "before_rgb_distance": 20.615528128088304,
+      "after_rgb_distance": 0.5030553374416988,
+      "output_rgb": [
+        134.46367259902928,
+        110.1951213996017,
+        64.9998187391763
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_N",
+      "material": "ivory",
+      "before_rgb_distance": 33.0,
+      "after_rgb_distance": 1.3582361643537617,
+      "output_rgb": [
+        239.1470482577525,
+        224.37872225047062,
+        201.9868375046348
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_NE",
+      "material": "teal",
+      "before_rgb_distance": 7.14142842854285,
+      "after_rgb_distance": 0.17418820960883333,
+      "output_rgb": [
+        24.829262055924957,
+        54.9756075741365,
+        66.97560540264215
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_NE",
+      "material": "cape",
+      "before_rgb_distance": 12.68857754044952,
+      "after_rgb_distance": 0.5426733181120951,
+      "output_rgb": [
+        118.24547103894899,
+        141.63221436699757,
+        127.68540180009241
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_NE",
+      "material": "leather",
+      "before_rgb_distance": 3.7416573867739413,
+      "after_rgb_distance": 0.42807698649278875,
+      "output_rgb": [
+        38.782864459318866,
+        37.86679514368816,
+        41.65596725505731
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_NE",
+      "material": "gold",
+      "before_rgb_distance": 35.11409973215888,
+      "after_rgb_distance": 0.8730686869294509,
+      "output_rgb": [
+        134.64826592638363,
+        110.47168739608688,
+        65.34570395016469
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_NE",
+      "material": "ivory",
+      "before_rgb_distance": 30.01666203960727,
+      "after_rgb_distance": 1.0234837153768637,
+      "output_rgb": [
+        240.15429965055586,
+        224.58438239939153,
+        201.8259586822362
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_S",
+      "material": "teal",
+      "before_rgb_distance": 12.165525060596439,
+      "after_rgb_distance": 5.658747323532588,
+      "output_rgb": [
+        19.34146293743814,
+        54.951219028293416,
+        66.99999936302684
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_S",
+      "material": "cape",
+      "before_rgb_distance": 32.31098884280702,
+      "after_rgb_distance": 2.0438795735817603,
+      "output_rgb": [
+        119.00277764829376,
+        143.20089809381918,
+        129.315189897942
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_S",
+      "material": "leather",
+      "before_rgb_distance": 4.69041575982343,
+      "after_rgb_distance": 0.49619630421772176,
+      "output_rgb": [
+        38.738292419252936,
+        37.76928571730675,
+        41.64716741326773
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_S",
+      "material": "gold",
+      "before_rgb_distance": 35.11409973215888,
+      "after_rgb_distance": 0.8595228425824036,
+      "output_rgb": [
+        134.68576791868273,
+        110.4892906553784,
+        65.1705770593775
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_S",
+      "material": "ivory",
+      "before_rgb_distance": 29.698484809834994,
+      "after_rgb_distance": 0.5657703165854803,
+      "output_rgb": [
+        239.49685697710336,
+        223.7428941909851,
+        200.9710215146968
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_SE",
+      "material": "teal",
+      "before_rgb_distance": 12.083045973594572,
+      "after_rgb_distance": 5.658641869176643,
+      "output_rgb": [
+        19.34146326015715,
+        54.97560965617967,
+        67.02439013275672
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_SE",
+      "material": "cape",
+      "before_rgb_distance": 23.853720883753127,
+      "after_rgb_distance": 1.3828954162247993,
+      "output_rgb": [
+        119.22083587063719,
+        142.5485535773687,
+        128.34792022352417
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_SE",
+      "material": "leather",
+      "before_rgb_distance": 4.69041575982343,
+      "after_rgb_distance": 0.5133605046069311,
+      "output_rgb": [
+        38.70279224319067,
+        37.76632954775598,
+        41.65271815951489
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_SE",
+      "material": "gold",
+      "before_rgb_distance": 47.3392015141785,
+      "after_rgb_distance": 1.1584175926002767,
+      "output_rgb": [
+        134.93024662592657,
+        110.63596021825107,
+        65.26856495415467
+      ]
+    },
+    {
+      "clip": "PR_DAGGER_SE",
+      "material": "ivory",
+      "before_rgb_distance": 31.54362059117501,
+      "after_rgb_distance": 0.8540267965381717,
+      "output_rgb": [
+        239.39501901856005,
+        224.2030462756632,
+        201.56756672844742
+      ]
+    },
+    {
+      "clip": "PR_EMBER_N",
+      "material": "teal",
+      "before_rgb_distance": 21.563858652847824,
+      "after_rgb_distance": 17.56207652381789,
+      "output_rgb": [
+        7.439024390185946,
+        54.829268292481736,
+        66.90243902419864
+      ]
+    },
+    {
+      "clip": "PR_EMBER_N",
+      "material": "cape",
+      "before_rgb_distance": 26.645825188948457,
+      "after_rgb_distance": 2.5884905282341024,
+      "output_rgb": [
+        119.9000537875415,
+        143.23903356050914,
+        129.2469461316107
+      ]
+    },
+    {
+      "clip": "PR_EMBER_N",
+      "material": "leather",
+      "before_rgb_distance": 19.1049731745428,
+      "after_rgb_distance": 1.067279430990823,
+      "output_rgb": [
+        38.386236571934205,
+        37.44760463737469,
+        41.32380535233184
+      ]
+    },
+    {
+      "clip": "PR_EMBER_N",
+      "material": "gold",
+      "before_rgb_distance": 43.87482193696061,
+      "after_rgb_distance": 1.070835444494635,
+      "output_rgb": [
+        134.97629481759404,
+        110.43925633801062,
+        65.02430736190014
+      ]
+    },
+    {
+      "clip": "PR_EMBER_N",
+      "material": "ivory",
+      "before_rgb_distance": 20.639767440550294,
+      "after_rgb_distance": 1.3379274354896995,
+      "output_rgb": [
+        238.76058191055859,
+        223.57370120215725,
+        200.73137022287307
+      ]
+    },
+    {
+      "clip": "PR_EMBER_NE",
+      "material": "teal",
+      "before_rgb_distance": 10.04987562112089,
+      "after_rgb_distance": 1.2000912858607586,
+      "output_rgb": [
+        23.80487612207964,
+        54.90243790873083,
+        66.9512183521115
+      ]
+    },
+    {
+      "clip": "PR_EMBER_NE",
+      "material": "cape",
+      "before_rgb_distance": 13.892443989449804,
+      "after_rgb_distance": 0.3574998780048364,
+      "output_rgb": [
+        118.28560049754606,
+        141.91649675733223,
+        128.1981558150519
+      ]
+    },
+    {
+      "clip": "PR_EMBER_NE",
+      "material": "leather",
+      "before_rgb_distance": 8.12403840463596,
+      "after_rgb_distance": 0.6553532168034953,
+      "output_rgb": [
+        38.619567489408524,
+        37.68950752034614,
+        41.56600303717865
+      ]
+    },
+    {
+      "clip": "PR_EMBER_NE",
+      "material": "gold",
+      "before_rgb_distance": 36.40054944640259,
+      "after_rgb_distance": 0.892136593231477,
+      "output_rgb": [
+        134.73558225893464,
+        110.48988718802617,
+        65.12180716042616
+      ]
+    },
+    {
+      "clip": "PR_EMBER_NE",
+      "material": "ivory",
+      "before_rgb_distance": 23.958297101421877,
+      "after_rgb_distance": 0.6209452324620033,
+      "output_rgb": [
+        240.10777042056455,
+        224.41748775472675,
+        201.44683609167328
+      ]
+    },
+    {
+      "clip": "PR_EMBER_S",
+      "material": "teal",
+      "before_rgb_distance": 16.97056274847714,
+      "after_rgb_distance": 11.61057592486146,
+      "output_rgb": [
+        13.390243886755155,
+        54.90243900165215,
+        66.9024389957623
+      ]
+    },
+    {
+      "clip": "PR_EMBER_S",
+      "material": "cape",
+      "before_rgb_distance": 20.97617696340303,
+      "after_rgb_distance": 1.3785013241456165,
+      "output_rgb": [
+        118.95418962599719,
+        142.81409004000028,
+        128.5718788902232
+      ]
+    },
+    {
+      "clip": "PR_EMBER_S",
+      "material": "leather",
+      "before_rgb_distance": 6.4031242374328485,
+      "after_rgb_distance": 0.5397840550137277,
+      "output_rgb": [
+        38.686055571369515,
+        37.74042562755063,
+        41.645843442886544
+      ]
+    },
+    {
+      "clip": "PR_EMBER_S",
+      "material": "gold",
+      "before_rgb_distance": 45.13313638558703,
+      "after_rgb_distance": 1.1049688696341862,
+      "output_rgb": [
+        134.93058289635317,
+        110.56286755230607,
+        65.19532484336756
+      ]
+    },
+    {
+      "clip": "PR_EMBER_S",
+      "material": "ivory",
+      "before_rgb_distance": 22.22611077089287,
+      "after_rgb_distance": 0.5344857473435136,
+      "output_rgb": [
+        239.53429555152098,
+        223.8812958698299,
+        201.23388824310078
+      ]
+    },
+    {
+      "clip": "PR_EMBER_SE",
+      "material": "teal",
+      "before_rgb_distance": 22.20360331117452,
+      "after_rgb_distance": 20.536715717119012,
+      "output_rgb": [
+        4.463414634126892,
+        54.999999999943434,
+        67.07317073164602
+      ]
+    },
+    {
+      "clip": "PR_EMBER_SE",
+      "material": "cape",
+      "before_rgb_distance": 31.953090617340916,
+      "after_rgb_distance": 2.5146200945068538,
+      "output_rgb": [
+        119.7826578108745,
+        143.20791961186967,
+        129.29860523650817
+      ]
+    },
+    {
+      "clip": "PR_EMBER_SE",
+      "material": "leather",
+      "before_rgb_distance": 10.392304845413264,
+      "after_rgb_distance": 0.6716258876954233,
+      "output_rgb": [
+        38.62233430636929,
+        37.625263154240706,
+        41.59009482400502
+      ]
+    },
+    {
+      "clip": "PR_EMBER_SE",
+      "material": "gold",
+      "before_rgb_distance": 50.73460357586329,
+      "after_rgb_distance": 1.2402398052113264,
+      "output_rgb": [
+        135.02696896839788,
+        110.6597751109992,
+        65.21960490724118
+      ]
+    },
+    {
+      "clip": "PR_EMBER_SE",
+      "material": "ivory",
+      "before_rgb_distance": 30.133038346638727,
+      "after_rgb_distance": 1.153368446129638,
+      "output_rgb": [
+        238.87638520130523,
+        223.78107294643854,
+        200.85921824727438
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_N",
+      "material": "teal",
+      "before_rgb_distance": 17.72004514666935,
+      "after_rgb_distance": 7.152374130091102,
+      "output_rgb": [
+        17.853658459800798,
+        54.78048768731778,
+        66.80487790437613
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_N",
+      "material": "cape",
+      "before_rgb_distance": 13.638181696985855,
+      "after_rgb_distance": 0.4722581599765985,
+      "output_rgb": [
+        118.37239107195029,
+        141.70957255127536,
+        128.00213453121125
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_N",
+      "material": "leather",
+      "before_rgb_distance": 9.486832980505138,
+      "after_rgb_distance": 0.7366665145617404,
+      "output_rgb": [
+        38.61245675640189,
+        37.70680380845615,
+        41.446354101178216
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_N",
+      "material": "gold",
+      "before_rgb_distance": 26.419689627245813,
+      "after_rgb_distance": 0.6455342045312131,
+      "output_rgb": [
+        134.5865028230386,
+        110.2686091807628,
+        65.02404071125103
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_N",
+      "material": "ivory",
+      "before_rgb_distance": 26.1725046566048,
+      "after_rgb_distance": 0.7700207048331086,
+      "output_rgb": [
+        240.1060115202845,
+        224.46179504089196,
+        201.60699158449376
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_NE",
+      "material": "teal",
+      "before_rgb_distance": 14.317821063276353,
+      "after_rgb_distance": 5.661742520055424,
+      "output_rgb": [
+        19.341463069483822,
+        54.853658125015876,
+        66.87804826768668
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_NE",
+      "material": "cape",
+      "before_rgb_distance": 16.792855623746664,
+      "after_rgb_distance": 0.7405513685887257,
+      "output_rgb": [
+        118.33267544307127,
+        142.2109148271553,
+        128.62710311335698
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_NE",
+      "material": "leather",
+      "before_rgb_distance": 6.557438524302,
+      "after_rgb_distance": 0.47373455151499716,
+      "output_rgb": [
+        38.78329242318218,
+        37.78539170677355,
+        41.63750099044646
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_NE",
+      "material": "gold",
+      "before_rgb_distance": 26.627053911388696,
+      "after_rgb_distance": 0.6502964020334037,
+      "output_rgb": [
+        134.56171749559417,
+        110.29293619391177,
+        64.85321017767743
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_NE",
+      "material": "ivory",
+      "before_rgb_distance": 20.97617696340303,
+      "after_rgb_distance": 0.32826371792704057,
+      "output_rgb": [
+        240.1145382801264,
+        224.26576918122885,
+        201.15493480306864
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_S",
+      "material": "teal",
+      "before_rgb_distance": 16.64331697709324,
+      "after_rgb_distance": 10.123479195552898,
+      "output_rgb": [
+        14.878048753684531,
+        54.85365849296486,
+        66.90243897641076
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_S",
+      "material": "cape",
+      "before_rgb_distance": 18.973665961010276,
+      "after_rgb_distance": 0.8083738758605638,
+      "output_rgb": [
+        118.60094481632635,
+        142.39782670511,
+        128.3661523775775
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_S",
+      "material": "leather",
+      "before_rgb_distance": 8.774964387392123,
+      "after_rgb_distance": 0.6436036625404873,
+      "output_rgb": [
+        38.653391065446364,
+        37.70323696299142,
+        41.5461061569171
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_S",
+      "material": "gold",
+      "before_rgb_distance": 24.20743687382041,
+      "after_rgb_distance": 0.5916479260855901,
+      "output_rgb": [
+        134.5134003239547,
+        110.29307535907682,
+        65.02396267319357
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_S",
+      "material": "ivory",
+      "before_rgb_distance": 25.96150997149434,
+      "after_rgb_distance": 0.5129572667016222,
+      "output_rgb": [
+        239.85261237702673,
+        224.1915642789522,
+        201.45244355790066
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_SE",
+      "material": "teal",
+      "before_rgb_distance": 21.93171219946131,
+      "after_rgb_distance": 19.049405067726216,
+      "output_rgb": [
+        5.951219512148844,
+        54.85365853640242,
+        66.9512195120315
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_SE",
+      "material": "cape",
+      "before_rgb_distance": 17.72004514666935,
+      "after_rgb_distance": 0.5214210304868003,
+      "output_rgb": [
+        118.43427872231727,
+        142.14661664737594,
+        128.24856677390318
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_SE",
+      "material": "leather",
+      "before_rgb_distance": 8.774964387392123,
+      "after_rgb_distance": 0.6529110999922173,
+      "output_rgb": [
+        38.64299460241808,
+        37.70097316279202,
+        41.54237242082692
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_SE",
+      "material": "gold",
+      "before_rgb_distance": 33.83784863137726,
+      "after_rgb_distance": 0.8254879327663419,
+      "output_rgb": [
+        134.7318639767406,
+        110.34150558878862,
+        64.82918027187002
+      ]
+    },
+    {
+      "clip": "PR_RIPOSTE_SE",
+      "material": "ivory",
+      "before_rgb_distance": 28.053520278211074,
+      "after_rgb_distance": 0.6431269675387776,
+      "output_rgb": [
+        240.0765242590634,
+        224.38014054253358,
+        201.5130784560598
+      ]
+    },
+    {
+      "clip": "PR_SEAL_N",
+      "material": "teal",
+      "before_rgb_distance": 18.466185312619388,
+      "after_rgb_distance": 14.58571253370463,
+      "output_rgb": [
+        10.414634146244971,
+        54.902439024224044,
+        67.02439024376204
+      ]
+    },
+    {
+      "clip": "PR_SEAL_N",
+      "material": "cape",
+      "before_rgb_distance": 23.45207879911715,
+      "after_rgb_distance": 3.17235635463743,
+      "output_rgb": [
+        120.5583658832318,
+        143.49887671473235,
+        129.1278197738811
+      ]
+    },
+    {
+      "clip": "PR_SEAL_N",
+      "material": "leather",
+      "before_rgb_distance": 12.36931687685298,
+      "after_rgb_distance": 0.8017272306801544,
+      "output_rgb": [
+        38.588396459936966,
+        37.6262385718765,
+        41.42237427942592
+      ]
+    },
+    {
+      "clip": "PR_SEAL_N",
+      "material": "gold",
+      "before_rgb_distance": 36.932370625238775,
+      "after_rgb_distance": 0.901286139314544,
+      "output_rgb": [
+        134.78091607275348,
+        110.43925452346751,
+        64.90231552913016
+      ]
+    },
+    {
+      "clip": "PR_SEAL_N",
+      "material": "ivory",
+      "before_rgb_distance": 15.427248620541512,
+      "after_rgb_distance": 2.0949978488768144,
+      "output_rgb": [
+        238.10142744231027,
+        223.15042564615442,
+        200.74967691422123
+      ]
+    },
+    {
+      "clip": "PR_SEAL_NE",
+      "material": "teal",
+      "before_rgb_distance": 19.72308292331602,
+      "after_rgb_distance": 10.126769352764414,
+      "output_rgb": [
+        14.878048777833557,
+        54.75609755590256,
+        66.80487804343143
+      ]
+    },
+    {
+      "clip": "PR_SEAL_NE",
+      "material": "cape",
+      "before_rgb_distance": 14.7648230602334,
+      "after_rgb_distance": 1.391876410936801,
+      "output_rgb": [
+        119.02379838595273,
+        141.31503062122596,
+        127.35194617632114
+      ]
+    },
+    {
+      "clip": "PR_SEAL_NE",
+      "material": "leather",
+      "before_rgb_distance": 10.677078252031311,
+      "after_rgb_distance": 0.7706780022849695,
+      "output_rgb": [
+        38.603499090219145,
+        37.661470437883345,
+        41.432435600727096
+      ]
+    },
+    {
+      "clip": "PR_SEAL_NE",
+      "material": "gold",
+      "before_rgb_distance": 36.193922141707716,
+      "after_rgb_distance": 0.8830157953715386,
+      "output_rgb": [
+        134.75630402641644,
+        110.43911741233256,
+        64.87794668096173
+      ]
+    },
+    {
+      "clip": "PR_SEAL_NE",
+      "material": "ivory",
+      "before_rgb_distance": 30.364452901377952,
+      "after_rgb_distance": 1.2170711355737123,
+      "output_rgb": [
+        239.80253357228545,
+        224.71858777870477,
+        201.9622373736602
+      ]
+    },
+    {
+      "clip": "PR_SEAL_S",
+      "material": "teal",
+      "before_rgb_distance": 17.60681686165901,
+      "after_rgb_distance": 10.12444871043149,
+      "output_rgb": [
+        14.87804877768613,
+        54.8292682874978,
+        66.85365853081672
+      ]
+    },
+    {
+      "clip": "PR_SEAL_S",
+      "material": "cape",
+      "before_rgb_distance": 33.12099032335839,
+      "after_rgb_distance": 4.099145200022464,
+      "output_rgb": [
+        121.46861571686517,
+        143.86808851266602,
+        129.1322286378768
+      ]
+    },
+    {
+      "clip": "PR_SEAL_S",
+      "material": "leather",
+      "before_rgb_distance": 7.0,
+      "after_rgb_distance": 0.5614951318890324,
+      "output_rgb": [
+        38.705963917277835,
+        37.79668534349801,
+        41.567007256822976
+      ]
+    },
+    {
+      "clip": "PR_SEAL_S",
+      "material": "gold",
+      "before_rgb_distance": 48.54894437575342,
+      "after_rgb_distance": 1.1848820259035755,
+      "output_rgb": [
+        135.00066484918577,
+        110.63451970407476,
+        64.99985838692452
+      ]
+    },
+    {
+      "clip": "PR_SEAL_S",
+      "material": "ivory",
+      "before_rgb_distance": 26.645825188948457,
+      "after_rgb_distance": 2.632267846992612,
+      "output_rgb": [
+        237.51304146197188,
+        223.14646354646055,
+        200.87611791526027
+      ]
+    },
+    {
+      "clip": "PR_SEAL_SE",
+      "material": "teal",
+      "before_rgb_distance": 18.466185312619388,
+      "after_rgb_distance": 13.098741828933576,
+      "output_rgb": [
+        11.902439023537541,
+        54.85365853455183,
+        66.9024390221842
+      ]
+    },
+    {
+      "clip": "PR_SEAL_SE",
+      "material": "cape",
+      "before_rgb_distance": 39.26830783214372,
+      "after_rgb_distance": 4.648056167579338,
+      "output_rgb": [
+        121.53138483438791,
+        144.51176079368346,
+        129.68071562250788
+      ]
+    },
+    {
+      "clip": "PR_SEAL_SE",
+      "material": "leather",
+      "before_rgb_distance": 7.0,
+      "after_rgb_distance": 0.5128649143537519,
+      "output_rgb": [
+        38.74721704758834,
+        37.80763809280941,
+        41.59734866694977
+      ]
+    },
+    {
+      "clip": "PR_SEAL_SE",
+      "material": "gold",
+      "before_rgb_distance": 44.46346815083142,
+      "after_rgb_distance": 1.084775173461217,
+      "output_rgb": [
+        134.92709906218465,
+        110.5611022636834,
+        64.95112510313544
+      ]
+    },
+    {
+      "clip": "PR_SEAL_SE",
+      "material": "ivory",
+      "before_rgb_distance": 30.01666203960727,
+      "after_rgb_distance": 3.234280884628003,
+      "output_rgb": [
+        237.12268304478218,
+        222.61259652274586,
+        200.49331314286903
+      ]
+    },
+    {
+      "clip": "PR_SHOT_N",
+      "material": "teal",
+      "before_rgb_distance": 26.115129714401192,
+      "after_rgb_distance": 22.026456430107906,
+      "output_rgb": [
+        2.9756097560952623,
+        55.07317073170171,
+        67.29268292683042
+      ]
+    },
+    {
+      "clip": "PR_SHOT_N",
+      "material": "cape",
+      "before_rgb_distance": 30.364452901377952,
+      "after_rgb_distance": 1.8572305591445004,
+      "output_rgb": [
+        119.73514910906658,
+        142.4347621411335,
+        127.50045540763345
+      ]
+    },
+    {
+      "clip": "PR_SHOT_N",
+      "material": "leather",
+      "before_rgb_distance": 15.0996688705415,
+      "after_rgb_distance": 0.8872345029400943,
+      "output_rgb": [
+        38.542842377838966,
+        37.53899654419996,
+        41.39529529070145
+      ]
+    },
+    {
+      "clip": "PR_SHOT_N",
+      "material": "gold",
+      "before_rgb_distance": 26.019223662515376,
+      "after_rgb_distance": 0.6346323854082201,
+      "output_rgb": [
+        134.5853859430201,
+        110.24389604055426,
+        64.97558107853835
+      ]
+    },
+    {
+      "clip": "PR_SHOT_N",
+      "material": "ivory",
+      "before_rgb_distance": 52.65928218272634,
+      "after_rgb_distance": 2.149485962243987,
+      "output_rgb": [
+        238.92167778455098,
+        224.47111056809152,
+        202.79876789336078
+      ]
+    },
+    {
+      "clip": "PR_SHOT_NE",
+      "material": "teal",
+      "before_rgb_distance": 13.490737563232042,
+      "after_rgb_distance": 7.146882567547988,
+      "output_rgb": [
+        17.853658492630103,
+        54.95121950311836,
+        67.07317074201794
+      ]
+    },
+    {
+      "clip": "PR_SHOT_NE",
+      "material": "cape",
+      "before_rgb_distance": 3.7416573867739413,
+      "after_rgb_distance": 1.1646791570986148,
+      "output_rgb": [
+        117.52751813346076,
+        141.12184337320622,
+        127.39826969198012
+      ]
+    },
+    {
+      "clip": "PR_SHOT_NE",
+      "material": "leather",
+      "before_rgb_distance": 7.810249675906654,
+      "after_rgb_distance": 0.509335894264393,
+      "output_rgb": [
+        38.757461919515244,
+        37.821854096443346,
+        41.5890713325322
+      ]
+    },
+    {
+      "clip": "PR_SHOT_NE",
+      "material": "gold",
+      "before_rgb_distance": 17.72004514666935,
+      "after_rgb_distance": 0.4322896701279328,
+      "output_rgb": [
+        134.17074181890152,
+        109.92679006209944,
+        64.60966438137147
+      ]
+    },
+    {
+      "clip": "PR_SHOT_NE",
+      "material": "ivory",
+      "before_rgb_distance": 23.958297101421877,
+      "after_rgb_distance": 1.0127595065016373,
+      "output_rgb": [
+        240.42611299364114,
+        224.62142175485522,
+        201.67671599452967
+      ]
+    },
+    {
+      "clip": "PR_SHOT_S",
+      "material": "teal",
+      "before_rgb_distance": 22.360679774997898,
+      "after_rgb_distance": 17.56266929525695,
+      "output_rgb": [
+        7.439024390022438,
+        54.80487804796233,
+        66.85365853572056
+      ]
+    },
+    {
+      "clip": "PR_SHOT_S",
+      "material": "cape",
+      "before_rgb_distance": 14.352700094407323,
+      "after_rgb_distance": 0.37558105860988145,
+      "output_rgb": [
+        118.33733346222698,
+        142.0930955771969,
+        128.13638357802483
+      ]
+    },
+    {
+      "clip": "PR_SHOT_S",
+      "material": "leather",
+      "before_rgb_distance": 9.273618495495704,
+      "after_rgb_distance": 0.6192234079659449,
+      "output_rgb": [
+        38.6777384967776,
+        37.67715797132776,
+        41.58124210212034
+      ]
+    },
+    {
+      "clip": "PR_SHOT_S",
+      "material": "gold",
+      "before_rgb_distance": 27.440845468024488,
+      "after_rgb_distance": 0.6794647677551012,
+      "output_rgb": [
+        134.54611872385664,
+        110.32089579623151,
+        65.24587110044622
+      ]
+    },
+    {
+      "clip": "PR_SHOT_S",
+      "material": "ivory",
+      "before_rgb_distance": 23.853720883753127,
+      "after_rgb_distance": 0.592448351235651,
+      "output_rgb": [
+        240.03657801737887,
+        224.31238131897626,
+        201.50207072119485
+      ]
+    },
+    {
+      "clip": "PR_SHOT_SE",
+      "material": "teal",
+      "before_rgb_distance": 16.09347693943108,
+      "after_rgb_distance": 10.122950297222316,
+      "output_rgb": [
+        14.878048772085048,
+        54.878048770447066,
+        66.92682925888798
+      ]
+    },
+    {
+      "clip": "PR_SHOT_SE",
+      "material": "cape",
+      "before_rgb_distance": 16.24807680927192,
+      "after_rgb_distance": 0.8568349918457484,
+      "output_rgb": [
+        118.84922618426741,
+        141.9847712802916,
+        127.88708774512054
+      ]
+    },
+    {
+      "clip": "PR_SHOT_SE",
+      "material": "leather",
+      "before_rgb_distance": 12.727922061357855,
+      "after_rgb_distance": 0.7835393891671214,
+      "output_rgb": [
+        38.56276684303597,
+        37.58080897874091,
+        41.50296878516192
+      ]
+    },
+    {
+      "clip": "PR_SHOT_SE",
+      "material": "gold",
+      "before_rgb_distance": 25.37715508089904,
+      "after_rgb_distance": 0.6216370989797815,
+      "output_rgb": [
+        134.53930955008136,
+        110.29349497485823,
+        65.0971524150601
+      ]
+    },
+    {
+      "clip": "PR_SHOT_SE",
+      "material": "ivory",
+      "before_rgb_distance": 26.92582403567252,
+      "after_rgb_distance": 0.81912408738826,
+      "output_rgb": [
+        239.7905772918629,
+        224.45253286442596,
+        201.64986183644726
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_N",
+      "material": "teal",
+      "before_rgb_distance": 18.708286933869708,
+      "after_rgb_distance": 13.098946198334394,
+      "output_rgb": [
+        11.902439021666117,
+        54.8536585334218,
+        66.87804877678171
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_N",
+      "material": "cape",
+      "before_rgb_distance": 3.605551275463989,
+      "after_rgb_distance": 2.075309622745045,
+      "output_rgb": [
+        117.57687792442444,
+        140.57166690261138,
+        126.55509782257654
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_N",
+      "material": "leather",
+      "before_rgb_distance": 13.92838827718412,
+      "after_rgb_distance": 0.9433009063983435,
+      "output_rgb": [
+        38.46614022636325,
+        37.55101380746815,
+        41.365002566131004
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_N",
+      "material": "gold",
+      "before_rgb_distance": 28.460498941515414,
+      "after_rgb_distance": 0.6960889782610123,
+      "output_rgb": [
+        134.56272559290488,
+        110.39120297231737,
+        65.1218195681997
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_N",
+      "material": "ivory",
+      "before_rgb_distance": 32.38826948140329,
+      "after_rgb_distance": 1.5624455674962434,
+      "output_rgb": [
+        240.38551309291677,
+        224.8991547299557,
+        202.21825144292
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_NE",
+      "material": "teal",
+      "before_rgb_distance": 13.601470508735444,
+      "after_rgb_distance": 7.147007449104283,
+      "output_rgb": [
+        17.8536584651465,
+        54.99999998518859,
+        67.0975609798014
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_NE",
+      "material": "cape",
+      "before_rgb_distance": 12.68857754044952,
+      "after_rgb_distance": 0.37828224990160153,
+      "output_rgb": [
+        118.0706475373624,
+        141.68607428996236,
+        127.80111049642424
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_NE",
+      "material": "leather",
+      "before_rgb_distance": 4.123105625617661,
+      "after_rgb_distance": 0.4137936869292431,
+      "output_rgb": [
+        38.742353957817656,
+        37.8035101052878,
+        41.74263750551749
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_NE",
+      "material": "gold",
+      "before_rgb_distance": 28.178005607210743,
+      "after_rgb_distance": 0.6890401056098919,
+      "output_rgb": [
+        134.6116171526523,
+        110.29305695538437,
+        65.12173063140082
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_NE",
+      "material": "ivory",
+      "before_rgb_distance": 30.643106892089126,
+      "after_rgb_distance": 1.0197818437858832,
+      "output_rgb": [
+        240.28352449313968,
+        224.62568306509533,
+        201.75371717026889
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_S",
+      "material": "teal",
+      "before_rgb_distance": 19.235384061671343,
+      "after_rgb_distance": 16.07333728112543,
+      "output_rgb": [
+        8.926829267482391,
+        54.926829267081,
+        66.99999999888061
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_S",
+      "material": "cape",
+      "before_rgb_distance": 12.328828005937952,
+      "after_rgb_distance": 0.2679288349344559,
+      "output_rgb": [
+        118.04822113846893,
+        141.81238034454373,
+        127.81490692265629
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_S",
+      "material": "leather",
+      "before_rgb_distance": 8.660254037844387,
+      "after_rgb_distance": 0.5763354518031941,
+      "output_rgb": [
+        38.689323611391806,
+        37.67943974808944,
+        41.6354676153459
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_S",
+      "material": "gold",
+      "before_rgb_distance": 26.115129714401192,
+      "after_rgb_distance": 0.6382310578963932,
+      "output_rgb": [
+        134.56228463330484,
+        110.29302546743773,
+        65.07287626393888
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_S",
+      "material": "ivory",
+      "before_rgb_distance": 28.89636655359978,
+      "after_rgb_distance": 0.9516290584806479,
+      "output_rgb": [
+        240.2383278614049,
+        224.5227755106487,
+        201.7586194440488
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_SE",
+      "material": "teal",
+      "before_rgb_distance": 22.360679774997898,
+      "after_rgb_distance": 20.5368171008629,
+      "output_rgb": [
+        4.463414634113254,
+        54.999999999889845,
+        67.09756097550355
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_SE",
+      "material": "cape",
+      "before_rgb_distance": 29.29163703175362,
+      "after_rgb_distance": 1.6847585291876606,
+      "output_rgb": [
+        119.12908308662321,
+        142.97133551298967,
+        128.78745793943364
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_SE",
+      "material": "leather",
+      "before_rgb_distance": 3.7416573867739413,
+      "after_rgb_distance": 0.4242616694269119,
+      "output_rgb": [
+        38.78837365006208,
+        37.828752926913126,
+        41.6745976458044
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_SE",
+      "material": "gold",
+      "before_rgb_distance": 30.56141357987225,
+      "after_rgb_distance": 0.746141157296024,
+      "output_rgb": [
+        134.65931373352367,
+        110.34162885288917,
+        65.07295035484321
+      ]
+    },
+    {
+      "clip": "PR_VOLLEY_SE",
+      "material": "ivory",
+      "before_rgb_distance": 33.481338085566414,
+      "after_rgb_distance": 0.6158746213235663,
+      "output_rgb": [
+        239.48847067439283,
+        223.98187520192462,
+        201.34250662756952
+      ]
+    }
+  ]
+}

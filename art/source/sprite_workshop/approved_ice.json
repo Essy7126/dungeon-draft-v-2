@@ -1,0 +1,1028 @@
+{
+	"anchor": [
+		128,
+		154
+	],
+	"animation": "approved_ice_E",
+	"baseline": {
+		"anchor": [
+			128,
+			154
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "e792285f2971b415703e68629af14b0a3426ec754ec446a48cd3de857c2f8335",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "b99266d4068f4781d060755c8f408c583410471ddc21bf317782e37a9ab4e2a4",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "8f833b13e959c92e7c0117875f141d26ef4cce78d2dba613908c1b56717fb8ac",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "61b54919a46575ed4c29e2d9eef1d78069dc80169816a65aca87fc13765ff3d4",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "40ecddfde52a90b740b1ccedf285b3da9d4f1d20310a92c62ee7d06ee7ecb875",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "a42e7d316970422409fbb209d631203508096d4f2872315cc57cbd2785b002d7",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0006.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f006",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "52017fb09a35768941028d649ab300af0a5f0e79ee83283699ba5f2e8a4fbede",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0007.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f007",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "c2d65182196c3175ba8c15193719b45b6ef3121cb80a701ca88fc61f6835414f",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0008.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f008",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "86b2ceee8df6b925d171c6460baa663104f8860baa6687108e06458db50b3bb2",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0009.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f009",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "eaad558cc2fec107588f7608b8ef3777d5ca042d85433597855ece8b46407218",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0010.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f010",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "179450d11e7ce93af768be517a57639e148186664df511e6910fa96c65b78b98",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0011.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f011",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "83d5643ec987b14f3c60380d76943fe54db1cafdbde1e4eab10ade2d71c7ba5a",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0012.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f012",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "fe8c022821366c43c6567ee0b709b2377f2f90dbaeb93a632d77d2fb190468a4",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0013.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f013",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "1f532ca29eca6b2fc63a1ba15f9955e39248e4ee1ce4fa76fa8cb0a331c5ffac",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0014.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f014",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "c8e2bdb9e1880f915963f9b9c348d13f954429da0045a0de84fa3ff94957915b",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0015.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f015",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "5e021538f66551b9a58850066b2748f8020c2e9da1df976661dc7cc1e950534d",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0016.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f016",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "ca53911e5c4f825d25a70259ec7a2a20a6421a0a2c359d27557230f223e948eb",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0017.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f017",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "f5085b87f70a5213fb33d113f26c8cba655414b46ec300b764118027c3cc073c",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0018.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f018",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "1613364d761ef2c85481cee9cfc89bccc9c6a11d72909fb6e820120ed9dbddae",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0019.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f019",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "d4ba4daf6ced9d2d92637e1c33a72a9c0ba0ffb67482402cfdd57246983d3b6f",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0020.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f020",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "7ae190a950744eff796662e8560021157c15a96d8964d5a4eb7fdd8fc95b8c08",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0021.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f021",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "5da3e99d78b2ca3da4a40c1e4132e971549444a3d9c9e65c8f9439e8a4271c62",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0022.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f022",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "121a37a0da2e2338d1cb1fd4178a96e9dad9989229205fe7f766386bcf0d65c9",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0023.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f023",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					256,
+					256
+				],
+				"sha256": "059178a05bff6d9933cbd60a36c035635c745934d2351f58fabef2b5ed82d393",
+				"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0024.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		256,
+		256
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "e792285f2971b415703e68629af14b0a3426ec754ec446a48cd3de857c2f8335",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "b99266d4068f4781d060755c8f408c583410471ddc21bf317782e37a9ab4e2a4",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "8f833b13e959c92e7c0117875f141d26ef4cce78d2dba613908c1b56717fb8ac",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "61b54919a46575ed4c29e2d9eef1d78069dc80169816a65aca87fc13765ff3d4",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "40ecddfde52a90b740b1ccedf285b3da9d4f1d20310a92c62ee7d06ee7ecb875",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "a42e7d316970422409fbb209d631203508096d4f2872315cc57cbd2785b002d7",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0006.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f006",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "52017fb09a35768941028d649ab300af0a5f0e79ee83283699ba5f2e8a4fbede",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0007.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f007",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "c2d65182196c3175ba8c15193719b45b6ef3121cb80a701ca88fc61f6835414f",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0008.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f008",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "86b2ceee8df6b925d171c6460baa663104f8860baa6687108e06458db50b3bb2",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0009.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f009",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "eaad558cc2fec107588f7608b8ef3777d5ca042d85433597855ece8b46407218",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0010.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f010",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "179450d11e7ce93af768be517a57639e148186664df511e6910fa96c65b78b98",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0011.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f011",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "83d5643ec987b14f3c60380d76943fe54db1cafdbde1e4eab10ade2d71c7ba5a",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0012.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f012",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "fe8c022821366c43c6567ee0b709b2377f2f90dbaeb93a632d77d2fb190468a4",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0013.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f013",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "1f532ca29eca6b2fc63a1ba15f9955e39248e4ee1ce4fa76fa8cb0a331c5ffac",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0014.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f014",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "c8e2bdb9e1880f915963f9b9c348d13f954429da0045a0de84fa3ff94957915b",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0015.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f015",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "5e021538f66551b9a58850066b2748f8020c2e9da1df976661dc7cc1e950534d",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0016.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f016",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "ca53911e5c4f825d25a70259ec7a2a20a6421a0a2c359d27557230f223e948eb",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0017.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f017",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "f5085b87f70a5213fb33d113f26c8cba655414b46ec300b764118027c3cc073c",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0018.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f018",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "1613364d761ef2c85481cee9cfc89bccc9c6a11d72909fb6e820120ed9dbddae",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0019.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f019",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "d4ba4daf6ced9d2d92637e1c33a72a9c0ba0ffb67482402cfdd57246983d3b6f",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0020.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f020",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "7ae190a950744eff796662e8560021157c15a96d8964d5a4eb7fdd8fc95b8c08",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0021.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f021",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "5da3e99d78b2ca3da4a40c1e4132e971549444a3d9c9e65c8f9439e8a4271c62",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0022.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f022",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "121a37a0da2e2338d1cb1fd4178a96e9dad9989229205fe7f766386bcf0d65c9",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0023.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f023",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				256,
+				256
+			],
+			"sha256": "059178a05bff6d9933cbd60a36c035635c745934d2351f58fabef2b5ed82d393",
+			"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0024.png"
+		}
+	],
+	"id": "approved_ice",
+	"intent": "Production des dessins A/B/C/D validés le 27 septembre. Composant Blender RGBA ; règles et durée portées par les faits de combat.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/approved/provenance.json": "2bb8e21a1065934f1c2284e4f9841faf16f00c598750b03631026910a86f7ea2"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			256,
+			256
+		],
+		"sha256": "a42e7d316970422409fbb209d631203508096d4f2872315cc57cbd2785b002d7",
+		"source": "res://artifacts/dev/class_card_vfx/approved/render/ice/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/approved/ice.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Sorts approuvés — ice"
+}
