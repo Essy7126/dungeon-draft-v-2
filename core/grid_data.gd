@@ -399,7 +399,7 @@ func count_living_in_team(team: int) -> int:
 func has_living_unit_id(team: int, unit_id: StringName) -> bool:
 	for unit_value in get_units():
 		var unit := unit_value as Unit
-		if unit != null and unit.is_alive and unit.team == team and unit.unit_id == unit_id:
+		if unit != null and unit.is_alive and unit.team == team and (unit.unit_id == unit_id or unit.content_unit_id == unit_id):
 			return true
 	return false
 

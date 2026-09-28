@@ -1,0 +1,1241 @@
+{
+  "assumptions": [
+    "Normal difficulty; all eligible enemies killed; no sacrificed couriers; no purchases, sales or trades in drop expectations.",
+    "Independent Bernoulli drop channels and uniform family pools; analytical distribution, not replay of Godot PRNG.",
+    "One observed first-choice path, seed 33; all 32 native rosters enumerated for branch count bounds.",
+    "No boss loot or post-victory use of money; results do not estimate player win rate."
+  ],
+  "catalogSha256": "f7858b253a6af464563e18b25fc55cc504bde2b0ef40e37859339639bdfe10df",
+  "perEnemy": [
+    {
+      "normal": 3,
+      "elite": 0.1,
+      "rare": 0.005,
+      "legendary": 0,
+      "god": 0,
+      "immortal": 0
+    },
+    {
+      "normal": 3.2,
+      "elite": 0.2,
+      "rare": 0.015,
+      "legendary": 0.001,
+      "god": 0,
+      "immortal": 0
+    },
+    {
+      "normal": 3.5,
+      "elite": 0.36,
+      "rare": 0.04,
+      "legendary": 0.004,
+      "god": 0.0003,
+      "immortal": 0
+    },
+    {
+      "normal": 3.8,
+      "elite": 0.56,
+      "rare": 0.08,
+      "legendary": 0.01,
+      "god": 0.0015,
+      "immortal": 0.0002
+    }
+  ],
+  "actualCounts": [
+    1,
+    2,
+    3,
+    3,
+    4,
+    3,
+    2,
+    4,
+    3,
+    4,
+    3,
+    3
+  ],
+  "referenceCounts": [
+    1,
+    2,
+    3,
+    3,
+    4,
+    3,
+    2,
+    4,
+    3,
+    4,
+    3,
+    3
+  ],
+  "branchCounts": [
+    {
+      "branch": "airain",
+      "counts": [
+        1,
+        2,
+        3,
+        3,
+        4,
+        3,
+        2,
+        4,
+        3,
+        4,
+        3,
+        3
+      ]
+    },
+    {
+      "branch": "styx",
+      "counts": [
+        1,
+        3,
+        3,
+        3,
+        4,
+        3,
+        2,
+        4,
+        3,
+        4,
+        3,
+        3
+      ]
+    },
+    {
+      "branch": "lethe",
+      "counts": [
+        1,
+        3,
+        3,
+        3,
+        4,
+        3,
+        2,
+        4,
+        3,
+        4,
+        3,
+        3
+      ]
+    }
+  ],
+  "countsMin": [
+    1,
+    2,
+    3,
+    3,
+    4,
+    3,
+    2,
+    4,
+    3,
+    4,
+    3,
+    3
+  ],
+  "countsMax": [
+    1,
+    3,
+    3,
+    3,
+    4,
+    3,
+    2,
+    4,
+    3,
+    4,
+    3,
+    3
+  ],
+  "dropsActual": {
+    "copies": {
+      "normal": 108.1,
+      "elite": 9.76,
+      "rare": 1.1,
+      "legendary": 0.11599999999999999,
+      "god": 0.0132,
+      "immortal": 0.0014000000000000002
+    },
+    "gear": 2.8999999999999995,
+    "randomRelics": 0.208,
+    "totalRelicsWithGuarantees": 2.208,
+    "probabilityAnyRare": 0.677702691882403,
+    "probabilitySpecificNativeRareFamily": 0.3221533089807488,
+    "probabilitySpecificNativeEliteFamily": 0.8773359234313324,
+    "probabilitySpecificRelicIncludingTwoGuarantees": 0.2540350091859297,
+    "expectedCopiesSpecificNativeNormalFamily": 6.305833333333332,
+    "expectedCopiesOfThreeClassStarterFamilies": 18.917499999999997,
+    "normalMix": {
+      "ownClass": 0.2333333333333333,
+      "shared": 0.4666666666666666,
+      "foreign": 0.3
+    }
+  },
+  "dropsReference": {
+    "copies": {
+      "normal": 108.1,
+      "elite": 9.76,
+      "rare": 1.1,
+      "legendary": 0.11599999999999999,
+      "god": 0.0132,
+      "immortal": 0.0014000000000000002
+    },
+    "gear": 2.8999999999999995,
+    "randomRelics": 0.208,
+    "totalRelicsWithGuarantees": 2.208,
+    "probabilityAnyRare": 0.677702691882403,
+    "probabilitySpecificNativeRareFamily": 0.3221533089807488,
+    "probabilitySpecificNativeEliteFamily": 0.8773359234313324,
+    "probabilitySpecificRelicIncludingTwoGuarantees": 0.2540350091859297,
+    "expectedCopiesSpecificNativeNormalFamily": 6.305833333333332,
+    "expectedCopiesOfThreeClassStarterFamilies": 18.917499999999997,
+    "normalMix": {
+      "ownClass": 0.2333333333333333,
+      "shared": 0.4666666666666666,
+      "foreign": 0.3
+    }
+  },
+  "exceptional": {
+    "legendary": 0.1099071954244435,
+    "god": 0.01312144131508719,
+    "immortal": 0.0013991602799439118
+  },
+  "obole": [
+    {
+      "purchaseDepth": 9,
+      "price": 90,
+      "remainingSpendableFights": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "maxIncomeBeforeBoss": 64,
+      "maxProfitBeforeBoss": -26,
+      "assumption": "Every remaining enemy killed directly; maximum roster over every branch; no extra summons in this profile."
+    },
+    {
+      "purchaseDepth": 14,
+      "price": 90,
+      "remainingSpendableFights": [
+        10,
+        11
+      ],
+      "maxIncomeBeforeBoss": 28,
+      "maxProfitBeforeBoss": -62,
+      "assumption": "Every remaining enemy killed directly; maximum roster over every branch; no extra summons in this profile."
+    },
+    {
+      "purchaseDepth": 18,
+      "price": 90,
+      "remainingSpendableFights": [],
+      "maxIncomeBeforeBoss": 0,
+      "maxProfitBeforeBoss": -90,
+      "assumption": "Every remaining enemy killed directly; maximum roster over every branch; no extra summons in this profile."
+    }
+  ],
+  "normalReplacement": [
+    {
+      "combat": 1,
+      "enemies": 1,
+      "expectedOneChosenNativeNormal": 0.175,
+      "probabilityAtLeastOne": 0.16348147907021615
+    },
+    {
+      "combat": 2,
+      "enemies": 2,
+      "expectedOneChosenNativeNormal": 0.35,
+      "probabilityAtLeastOne": 0.30023676414144673
+    },
+    {
+      "combat": 3,
+      "enemies": 3,
+      "expectedOneChosenNativeNormal": 0.5249999999999999,
+      "probabilityAtLeastOne": 0.4146350929385636
+    },
+    {
+      "combat": 4,
+      "enemies": 3,
+      "expectedOneChosenNativeNormal": 0.56,
+      "probabilityAtLeastOne": 0.4354672155647299
+    },
+    {
+      "combat": 5,
+      "enemies": 4,
+      "expectedOneChosenNativeNormal": 0.7466666666666666,
+      "probabilityAtLeastOne": 0.5334277653503741
+    },
+    {
+      "combat": 6,
+      "enemies": 3,
+      "expectedOneChosenNativeNormal": 0.56,
+      "probabilityAtLeastOne": 0.4354672155647299
+    },
+    {
+      "combat": 7,
+      "enemies": 2,
+      "expectedOneChosenNativeNormal": 0.40833333333333327,
+      "probabilityAtLeastOne": 0.3416142568136836
+    },
+    {
+      "combat": 8,
+      "enemies": 4,
+      "expectedOneChosenNativeNormal": 0.8166666666666665,
+      "probabilityAtLeastOne": 0.5665282131690019
+    },
+    {
+      "combat": 9,
+      "enemies": 3,
+      "expectedOneChosenNativeNormal": 0.6124999999999999,
+      "probabilityAtLeastOne": 0.4657794046248056
+    },
+    {
+      "combat": 10,
+      "enemies": 4,
+      "expectedOneChosenNativeNormal": 0.8866666666666665,
+      "probabilityAtLeastOne": 0.5978354108981762
+    },
+    {
+      "combat": 11,
+      "enemies": 3,
+      "expectedOneChosenNativeNormal": 0.6649999999999998,
+      "probabilityAtLeastOne": 0.4949866358514141
+    }
+  ],
+  "hands": [
+    {
+      "deck": 15,
+      "hand": 5,
+      "twoThreeCopyFamilies": 0.5144855144855144,
+      "openingFirstFamilySecondDrawn": 0.6703296703296704
+    },
+    {
+      "deck": 15,
+      "hand": 6,
+      "twoThreeCopyFamilies": 0.6475524475524476,
+      "openingFirstFamilySecondDrawn": 0.7692307692307693
+    },
+    {
+      "deck": 30,
+      "hand": 5,
+      "twoThreeCopyFamilies": 0.16525619973895855,
+      "openingFirstFamilySecondDrawn": 0.37055281882868085
+    },
+    {
+      "deck": 30,
+      "hand": 6,
+      "twoThreeCopyFamilies": 0.2296341206686036,
+      "openingFirstFamilySecondDrawn": 0.44608648056923916
+    }
+  ],
+  "progression": [
+    {
+      "combat": 1,
+      "depth": 1,
+      "before": 1,
+      "after": 2,
+      "xp": 100
+    },
+    {
+      "combat": 2,
+      "depth": 2,
+      "before": 2,
+      "after": 3,
+      "xp": 225
+    },
+    {
+      "combat": 3,
+      "depth": 3,
+      "before": 3,
+      "after": 4,
+      "xp": 370
+    },
+    {
+      "combat": 4,
+      "depth": 5,
+      "before": 4,
+      "after": 5,
+      "xp": 545
+    },
+    {
+      "combat": 5,
+      "depth": 6,
+      "before": 5,
+      "after": 6,
+      "xp": 740
+    },
+    {
+      "combat": 6,
+      "depth": 8,
+      "before": 6,
+      "after": 7,
+      "xp": 955
+    },
+    {
+      "combat": 7,
+      "depth": 10,
+      "before": 7,
+      "after": 8,
+      "xp": 1200
+    },
+    {
+      "combat": 8,
+      "depth": 12,
+      "before": 8,
+      "after": 9,
+      "xp": 1465
+    },
+    {
+      "combat": 9,
+      "depth": 13,
+      "before": 9,
+      "after": 10,
+      "xp": 1760
+    },
+    {
+      "combat": 10,
+      "depth": 15,
+      "before": 10,
+      "after": 11,
+      "xp": 2085
+    },
+    {
+      "combat": 11,
+      "depth": 17,
+      "before": 11,
+      "after": 12,
+      "xp": 2440
+    },
+    {
+      "combat": 12,
+      "depth": 20,
+      "before": 12,
+      "after": 12,
+      "xp": 2440
+    }
+  ],
+  "pressure": [
+    {
+      "maxHP": 110,
+      "rounds": [
+        {
+          "endOfRound": 8,
+          "damage": 0,
+          "cumulative": 0,
+          "fraction": 0
+        },
+        {
+          "endOfRound": 9,
+          "damage": 3,
+          "cumulative": 3,
+          "fraction": 0.02727272727272727
+        },
+        {
+          "endOfRound": 10,
+          "damage": 6,
+          "cumulative": 9,
+          "fraction": 0.08181818181818182
+        },
+        {
+          "endOfRound": 11,
+          "damage": 8,
+          "cumulative": 17,
+          "fraction": 0.15454545454545454
+        },
+        {
+          "endOfRound": 12,
+          "damage": 11,
+          "cumulative": 28,
+          "fraction": 0.2545454545454545
+        },
+        {
+          "endOfRound": 13,
+          "damage": 14,
+          "cumulative": 42,
+          "fraction": 0.38181818181818183
+        },
+        {
+          "endOfRound": 14,
+          "damage": 17,
+          "cumulative": 59,
+          "fraction": 0.5363636363636364
+        },
+        {
+          "endOfRound": 15,
+          "damage": 19,
+          "cumulative": 78,
+          "fraction": 0.7090909090909091
+        },
+        {
+          "endOfRound": 16,
+          "damage": 22,
+          "cumulative": 100,
+          "fraction": 0.9090909090909091
+        },
+        {
+          "endOfRound": 17,
+          "damage": 25,
+          "cumulative": 125,
+          "fraction": 1.1363636363636365
+        },
+        {
+          "endOfRound": 18,
+          "damage": 28,
+          "cumulative": 153,
+          "fraction": 1.3909090909090909
+        },
+        {
+          "endOfRound": 19,
+          "damage": 30,
+          "cumulative": 183,
+          "fraction": 1.6636363636363636
+        },
+        {
+          "endOfRound": 20,
+          "damage": 33,
+          "cumulative": 216,
+          "fraction": 1.9636363636363636
+        },
+        {
+          "endOfRound": 21,
+          "damage": 36,
+          "cumulative": 252,
+          "fraction": 2.290909090909091
+        },
+        {
+          "endOfRound": 22,
+          "damage": 39,
+          "cumulative": 291,
+          "fraction": 2.6454545454545455
+        },
+        {
+          "endOfRound": 23,
+          "damage": 41,
+          "cumulative": 332,
+          "fraction": 3.018181818181818
+        },
+        {
+          "endOfRound": 24,
+          "damage": 44,
+          "cumulative": 376,
+          "fraction": 3.418181818181818
+        }
+      ]
+    },
+    {
+      "maxHP": 350,
+      "rounds": [
+        {
+          "endOfRound": 8,
+          "damage": 0,
+          "cumulative": 0,
+          "fraction": 0
+        },
+        {
+          "endOfRound": 9,
+          "damage": 9,
+          "cumulative": 9,
+          "fraction": 0.025714285714285714
+        },
+        {
+          "endOfRound": 10,
+          "damage": 18,
+          "cumulative": 27,
+          "fraction": 0.07714285714285714
+        },
+        {
+          "endOfRound": 11,
+          "damage": 26,
+          "cumulative": 53,
+          "fraction": 0.15142857142857144
+        },
+        {
+          "endOfRound": 12,
+          "damage": 35,
+          "cumulative": 88,
+          "fraction": 0.25142857142857145
+        },
+        {
+          "endOfRound": 13,
+          "damage": 44,
+          "cumulative": 132,
+          "fraction": 0.37714285714285717
+        },
+        {
+          "endOfRound": 14,
+          "damage": 53,
+          "cumulative": 185,
+          "fraction": 0.5285714285714286
+        },
+        {
+          "endOfRound": 15,
+          "damage": 61,
+          "cumulative": 246,
+          "fraction": 0.7028571428571428
+        },
+        {
+          "endOfRound": 16,
+          "damage": 70,
+          "cumulative": 316,
+          "fraction": 0.9028571428571428
+        },
+        {
+          "endOfRound": 17,
+          "damage": 79,
+          "cumulative": 395,
+          "fraction": 1.1285714285714286
+        },
+        {
+          "endOfRound": 18,
+          "damage": 88,
+          "cumulative": 483,
+          "fraction": 1.38
+        },
+        {
+          "endOfRound": 19,
+          "damage": 96,
+          "cumulative": 579,
+          "fraction": 1.6542857142857144
+        },
+        {
+          "endOfRound": 20,
+          "damage": 105,
+          "cumulative": 684,
+          "fraction": 1.9542857142857142
+        },
+        {
+          "endOfRound": 21,
+          "damage": 114,
+          "cumulative": 798,
+          "fraction": 2.28
+        },
+        {
+          "endOfRound": 22,
+          "damage": 123,
+          "cumulative": 921,
+          "fraction": 2.6314285714285712
+        },
+        {
+          "endOfRound": 23,
+          "damage": 131,
+          "cumulative": 1052,
+          "fraction": 3.005714285714286
+        },
+        {
+          "endOfRound": 24,
+          "damage": 140,
+          "cumulative": 1192,
+          "fraction": 3.4057142857142857
+        }
+      ]
+    },
+    {
+      "maxHP": 675,
+      "rounds": [
+        {
+          "endOfRound": 8,
+          "damage": 0,
+          "cumulative": 0,
+          "fraction": 0
+        },
+        {
+          "endOfRound": 9,
+          "damage": 17,
+          "cumulative": 17,
+          "fraction": 0.025185185185185185
+        },
+        {
+          "endOfRound": 10,
+          "damage": 34,
+          "cumulative": 51,
+          "fraction": 0.07555555555555556
+        },
+        {
+          "endOfRound": 11,
+          "damage": 51,
+          "cumulative": 102,
+          "fraction": 0.1511111111111111
+        },
+        {
+          "endOfRound": 12,
+          "damage": 68,
+          "cumulative": 170,
+          "fraction": 0.2518518518518518
+        },
+        {
+          "endOfRound": 13,
+          "damage": 84,
+          "cumulative": 254,
+          "fraction": 0.3762962962962963
+        },
+        {
+          "endOfRound": 14,
+          "damage": 101,
+          "cumulative": 355,
+          "fraction": 0.5259259259259259
+        },
+        {
+          "endOfRound": 15,
+          "damage": 118,
+          "cumulative": 473,
+          "fraction": 0.7007407407407408
+        },
+        {
+          "endOfRound": 16,
+          "damage": 135,
+          "cumulative": 608,
+          "fraction": 0.9007407407407407
+        },
+        {
+          "endOfRound": 17,
+          "damage": 152,
+          "cumulative": 760,
+          "fraction": 1.125925925925926
+        },
+        {
+          "endOfRound": 18,
+          "damage": 169,
+          "cumulative": 929,
+          "fraction": 1.3762962962962964
+        },
+        {
+          "endOfRound": 19,
+          "damage": 186,
+          "cumulative": 1115,
+          "fraction": 1.651851851851852
+        },
+        {
+          "endOfRound": 20,
+          "damage": 203,
+          "cumulative": 1318,
+          "fraction": 1.9525925925925927
+        },
+        {
+          "endOfRound": 21,
+          "damage": 219,
+          "cumulative": 1537,
+          "fraction": 2.277037037037037
+        },
+        {
+          "endOfRound": 22,
+          "damage": 236,
+          "cumulative": 1773,
+          "fraction": 2.6266666666666665
+        },
+        {
+          "endOfRound": 23,
+          "damage": 253,
+          "cumulative": 2026,
+          "fraction": 3.0014814814814814
+        },
+        {
+          "endOfRound": 24,
+          "damage": 270,
+          "cumulative": 2296,
+          "fraction": 3.4014814814814813
+        }
+      ]
+    }
+  ],
+  "nativeSpells": [
+    "catabase_airain_rempart",
+    "catabase_braise_fournaise",
+    "catabase_braise_trait",
+    "catabase_evolution_bousculade",
+    "catabase_evolution_brasier",
+    "catabase_evolution_chaine",
+    "catabase_evolution_egide",
+    "catabase_evolution_execution",
+    "catabase_evolution_fleche",
+    "catabase_evolution_fracture",
+    "catabase_evolution_givre",
+    "catabase_evolution_marque",
+    "catabase_evolution_massue",
+    "catabase_evolution_protection",
+    "catabase_evolution_revers",
+    "catabase_evolution_soin",
+    "catabase_evolution_trait_officiant",
+    "catabase_evolution_tribut",
+    "catabase_evolution_visee",
+    "catabase_hellspawn_shadow_bolt",
+    "catabase_lethe_reflux",
+    "catabase_lethe_trait",
+    "catabase_styx_dechirure",
+    "catabase_styx_morsure",
+    "paris_fire_arrow",
+    "paris_ice_arrow",
+    "paris_spectral_arrow",
+    "paris_vortex_arrow",
+    "paris_vortex_step",
+    "spectre_heavy_cleave"
+  ],
+  "nativeSpellCount": 30,
+  "rarityFamilyCounts": {
+    "normal": 24,
+    "elite": 12,
+    "rare": 8,
+    "legendary": 2,
+    "god": 1,
+    "immortal": 1
+  },
+  "cardAvailability": [
+    {
+      "id": "n01",
+      "name": "Estoc",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n02",
+      "name": "Garde brève",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n03",
+      "name": "Pas latéral",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n04",
+      "name": "Heurt",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n05",
+      "name": "Trait court",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n06",
+      "name": "Repérage",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n07",
+      "name": "Entrave légère",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "n08",
+      "name": "Recentrage",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "a01",
+      "name": "Ouvrir la garde",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "a02",
+      "name": "Frapper la faille",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "a03",
+      "name": "Entaille tenace",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "a04",
+      "name": "Attaque oblique",
+      "rarity": "normal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "g01",
+      "name": "Garde ferme",
+      "rarity": "normal",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "g02",
+      "name": "Heurt du rempart",
+      "rarity": "normal",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "g03",
+      "name": "Repousser",
+      "rarity": "normal",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "g04",
+      "name": "Ramener au front",
+      "rarity": "normal",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "r01",
+      "name": "Tir de relais",
+      "rarity": "normal",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "r02",
+      "name": "Trait de recul",
+      "rarity": "normal",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "r03",
+      "name": "Flèche entravante",
+      "rarity": "normal",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "r04",
+      "name": "Volée croisée",
+      "rarity": "normal",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "t01",
+      "name": "Trait de givre",
+      "rarity": "normal",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "t02",
+      "name": "Braise tenace",
+      "rarity": "normal",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "t03",
+      "name": "Sceau ombreux",
+      "rarity": "normal",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "t04",
+      "name": "Onde du Léthé",
+      "rarity": "normal",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.9984223190843307,
+      "meanFromLoot": 6.305833333333333
+    },
+    {
+      "id": "a05",
+      "name": "Bond spectral",
+      "rarity": "elite",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "a06",
+      "name": "Dernier verdict",
+      "rarity": "elite",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "a07",
+      "name": "Pointe franche",
+      "rarity": "elite",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "g05",
+      "name": "Contre préparé",
+      "rarity": "elite",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "g06",
+      "name": "Choc de masse",
+      "rarity": "elite",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "g07",
+      "name": "Dette du bronze",
+      "rarity": "elite",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "r05",
+      "name": "Au-delà du front",
+      "rarity": "elite",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "r06",
+      "name": "Pluie de pointes",
+      "rarity": "elite",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "r07",
+      "name": "Trait harpon",
+      "rarity": "elite",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "t05",
+      "name": "Bûcher des ombres",
+      "rarity": "elite",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "t06",
+      "name": "Jardin de givre",
+      "rarity": "elite",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "t07",
+      "name": "Prélèvement",
+      "rarity": "elite",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.8773359234313324,
+      "meanFromLoot": 2.277333333333333
+    },
+    {
+      "id": "a08",
+      "name": "Couper le souffle",
+      "rarity": "rare",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "a09",
+      "name": "Sommeil marqué",
+      "rarity": "rare",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "g08",
+      "name": "Bastion vivant",
+      "rarity": "rare",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "g09",
+      "name": "Répercussion",
+      "rarity": "rare",
+      "classId": "gardien",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "r08",
+      "name": "Permutation",
+      "rarity": "rare",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "r09",
+      "name": "La longue vue",
+      "rarity": "rare",
+      "classId": "arpenteur",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "t08",
+      "name": "Convergence",
+      "rarity": "rare",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "t09",
+      "name": "Résonance du sceau",
+      "rarity": "rare",
+      "classId": "thaumaturge",
+      "probabilityAtLeastOneFromLoot": 0.3221533089807488,
+      "meanFromLoot": 0.385
+    },
+    {
+      "id": "l01",
+      "name": "Orage du passage",
+      "rarity": "legendary",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.05645108112902675,
+      "meanFromLoot": 0.057999999999999996
+    },
+    {
+      "id": "l02",
+      "name": "Grâce du bronze",
+      "rarity": "legendary",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.05645108112902675,
+      "meanFromLoot": 0.057999999999999996
+    },
+    {
+      "id": "d01",
+      "name": "Décret du dernier souffle",
+      "rarity": "god",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.01312144131508719,
+      "meanFromLoot": 0.0132
+    },
+    {
+      "id": "i01",
+      "name": "Seconde aurore",
+      "rarity": "immortal",
+      "classId": "assassin",
+      "probabilityAtLeastOneFromLoot": 0.0013991602799439118,
+      "meanFromLoot": 0.0014000000000000002
+    }
+  ],
+  "upgrades": {
+    "damageOnly": [
+      "n01",
+      "n05",
+      "g02",
+      "r04",
+      "a06",
+      "a07",
+      "g07",
+      "t07",
+      "a08",
+      "r09",
+      "l01"
+    ],
+    "other": [
+      "n02",
+      "n03",
+      "n04",
+      "n06",
+      "n07",
+      "n08",
+      "a01",
+      "a02",
+      "a03",
+      "a04",
+      "g01",
+      "g03",
+      "g04",
+      "r01",
+      "r02",
+      "r03",
+      "t01",
+      "t02",
+      "t03",
+      "t04",
+      "a05",
+      "g05",
+      "g06",
+      "r05",
+      "r06",
+      "r07",
+      "t05",
+      "t06",
+      "a09",
+      "g08",
+      "g09",
+      "r08",
+      "t08",
+      "t09",
+      "l02",
+      "d01",
+      "i01"
+    ]
+  },
+  "stockMassBalance": [
+    {
+      "consumedPerFight": 4,
+      "expectedStockBeforeBoss": 90.0906,
+      "warning": "Arithmetic total only; early shortages, useful families, drawing and 30-card preparation cap are not modeled."
+    },
+    {
+      "consumedPerFight": 8,
+      "expectedStockBeforeBoss": 46.090599999999995,
+      "warning": "Arithmetic total only; early shortages, useful families, drawing and 30-card preparation cap are not modeled."
+    },
+    {
+      "consumedPerFight": 12,
+      "expectedStockBeforeBoss": 2.090599999999995,
+      "warning": "Arithmetic total only; early shortages, useful families, drawing and 30-card preparation cap are not modeled."
+    }
+  ]
+}

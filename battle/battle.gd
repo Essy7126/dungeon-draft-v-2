@@ -1520,6 +1520,8 @@ func _wait_pending_spell_flight(
 
 
 func _on_pending_unit_spawned(unit: Unit) -> void:
+	if is_instance_valid(_cards_runtime):
+		_cards_runtime.on_spawn(unit)
 	if _mastery_adapter != null:
 		_mastery_adapter.attach_unit(unit)
 	if unit == null or not unit.is_alive:

@@ -13,6 +13,8 @@ const LogDefinitions = preload("res://debug/log_definitions.gd")
 
 # --- Identite ---
 var unit_id: StringName = &""
+## Authored identity survives per-encounter actor IDs (duplicates and saves).
+var content_unit_id: StringName = &""
 var unit_name: String = "Sans nom"
 var team: int = 0
 var ai_behavior: int = 0
@@ -228,6 +230,7 @@ static func from_data(data: UnitData) -> Unit:
 		data.max_ap, data.max_mp, data.attack_power
 	)
 	u.unit_id = data.get_effective_unit_id()
+	u.content_unit_id = u.unit_id
 	u.character_data = data
 	u.combat_form_change = data.combat_form_change
 	u._combat_form_base_hp = maxi(1, data.max_hp)

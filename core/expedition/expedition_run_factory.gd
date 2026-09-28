@@ -158,6 +158,8 @@ static func make_room(node: Dictionary, seed_value: int, card_ecosystem := false
 		room.encounter_definition = encounter
 		room.enemies = []
 		return room
+	var consumable_profile := preload("res://core/expedition/consumable_enemy_profile.gd")
+	consumable_profile.configure(encounter, node)
 	if (
 		MonsterEncounterCatalog.uses_monsters(node)
 		and (
@@ -190,6 +192,7 @@ static func make_room(node: Dictionary, seed_value: int, card_ecosystem := false
 		if card_ecosystem:
 			preload("res://core/expedition/card_enemy_ecosystem.gd").apply(enemy, node)
 		encounter.roster_units.append(enemy)
+	consumable_profile.project(encounter, node)
 	room.encounter_definition = encounter
 	room.enemies = encounter.expanded_roster()
 	if card_ecosystem:

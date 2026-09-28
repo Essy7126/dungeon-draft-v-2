@@ -1,0 +1,3595 @@
+{
+	"completed": true,
+	"encounters": [
+		{
+			"actual_room": "",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 1,
+			"index": 1.0,
+			"planned_map": "plain",
+			"planned_roster": [
+				"brute"
+			],
+			"reference_stats": [
+				{
+					"attack": 11.0,
+					"hp": 25,
+					"kind": "brute"
+				}
+			],
+			"roster": [
+				{
+					"attack": 9.0,
+					"hp": 25,
+					"id": "cc2_enemy_00",
+					"kind": "archer",
+					"name": "Rejeton chétif des Enfers",
+					"role": "catabase_frail_hellspawn",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 2,
+			"index": 2.0,
+			"planned_map": "pillars",
+			"planned_roster": [
+				"brute",
+				"archer"
+			],
+			"reference_stats": [
+				{
+					"attack": 14.0,
+					"hp": 47,
+					"kind": "brute"
+				},
+				{
+					"attack": 11.0,
+					"hp": 19,
+					"kind": "archer"
+				}
+			],
+			"roster": [
+				{
+					"attack": 11.0,
+					"hp": 19,
+					"id": "cc2_enemy_00",
+					"kind": "archer",
+					"name": "Tireur du passeur",
+					"role": "catabase_evolution_archer",
+					"variant": ""
+				},
+				{
+					"attack": 14.0,
+					"hp": 47,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Brute du portique",
+					"role": "catabase_evolution_brute",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 3,
+			"index": 3.0,
+			"planned_map": "plain",
+			"planned_roster": [
+				"archer",
+				"brute",
+				"brute"
+			],
+			"reference_stats": [
+				{
+					"attack": 13.0,
+					"hp": 19,
+					"kind": "archer"
+				},
+				{
+					"attack": 17.0,
+					"hp": 47,
+					"kind": "brute"
+				},
+				{
+					"attack": 17.0,
+					"hp": 47,
+					"kind": "brute"
+				}
+			],
+			"roster": [
+				{
+					"attack": 13.0,
+					"hp": 19,
+					"id": "cc2_enemy_00",
+					"kind": "archer",
+					"name": "Tireur du passeur",
+					"role": "catabase_evolution_archer",
+					"variant": ""
+				},
+				{
+					"attack": 17.0,
+					"hp": 47,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Brute du portique",
+					"role": "catabase_evolution_brute",
+					"variant": ""
+				},
+				{
+					"attack": 17.0,
+					"hp": 47,
+					"id": "cc2_enemy_02",
+					"kind": "brute",
+					"name": "Brute du portique",
+					"role": "catabase_evolution_brute",
+					"variant": "execution"
+				}
+			],
+			"variant": "telegraphed_execution"
+		},
+		{
+			"actual_room": "forge",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 5,
+			"index": 4.0,
+			"planned_map": "forge",
+			"planned_roster": [
+				"mage",
+				"brute",
+				"hound"
+			],
+			"reference_stats": [
+				{
+					"attack": 16.0,
+					"hp": 50,
+					"kind": "mage"
+				},
+				{
+					"attack": 20.0,
+					"hp": 83,
+					"kind": "brute"
+				},
+				{
+					"attack": 16.0,
+					"hp": 66,
+					"kind": "hound"
+				}
+			],
+			"roster": [
+				{
+					"attack": 20.0,
+					"hp": 83,
+					"id": "cc2_enemy_00",
+					"kind": "brute",
+					"name": "Brute du portique",
+					"role": "catabase_evolution_brute",
+					"variant": ""
+				},
+				{
+					"attack": 16.0,
+					"hp": 66,
+					"id": "cc2_enemy_01",
+					"kind": "hound",
+					"name": "Jeune molosse du Styx",
+					"role": "catabase_evolution_molosse",
+					"variant": ""
+				},
+				{
+					"attack": 16.0,
+					"hp": 50,
+					"id": "cc2_enemy_02",
+					"kind": "mage",
+					"name": "Rejeton de braise",
+					"role": "catabase_evolution_rejeton",
+					"variant": "support"
+				}
+			],
+			"variant": "support_line_of_sight"
+		},
+		{
+			"actual_room": "hourglass",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 6,
+			"index": 5.0,
+			"planned_map": "hourglass",
+			"planned_roster": [
+				"brute",
+				"archer",
+				"hound",
+				"priest"
+			],
+			"reference_stats": [
+				{
+					"attack": 24.0,
+					"hp": 124,
+					"kind": "brute"
+				},
+				{
+					"attack": 19.0,
+					"hp": 50,
+					"kind": "archer"
+				},
+				{
+					"attack": 19.0,
+					"hp": 100,
+					"kind": "hound"
+				},
+				{
+					"attack": 13.0,
+					"hp": 62,
+					"kind": "priest"
+				}
+			],
+			"roster": [
+				{
+					"attack": 19.0,
+					"hp": 50,
+					"id": "cc2_enemy_00",
+					"kind": "archer",
+					"name": "Tireur du passeur",
+					"role": "catabase_evolution_archer",
+					"variant": ""
+				},
+				{
+					"attack": 24.0,
+					"hp": 124,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Brute du portique",
+					"role": "catabase_evolution_brute",
+					"variant": ""
+				},
+				{
+					"attack": 19.0,
+					"hp": 100,
+					"id": "cc2_enemy_02",
+					"kind": "hound",
+					"name": "Jeune molosse du Styx",
+					"role": "catabase_evolution_molosse",
+					"variant": ""
+				},
+				{
+					"attack": 13.0,
+					"hp": 62,
+					"id": "cc2_enemy_03",
+					"kind": "priest",
+					"name": "Officiant des oboles",
+					"role": "catabase_evolution_officiant",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "garden",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 8,
+			"index": 6.0,
+			"planned_map": "garden",
+			"planned_roster": [
+				"priest",
+				"hound",
+				"brute"
+			],
+			"reference_stats": [
+				{
+					"attack": 16.0,
+					"hp": 69,
+					"kind": "priest"
+				},
+				{
+					"attack": 23.0,
+					"hp": 110,
+					"kind": "hound"
+				},
+				{
+					"attack": 29.0,
+					"hp": 138,
+					"kind": "brute"
+				}
+			],
+			"roster": [
+				{
+					"attack": 29.0,
+					"hp": 144,
+					"id": "cc2_enemy_00",
+					"kind": "brute",
+					"name": "Brute aux deux frappes",
+					"role": "catabase_evolution_brute",
+					"variant": ""
+				},
+				{
+					"attack": 23.0,
+					"hp": 58,
+					"id": "cc2_enemy_01",
+					"kind": "archer",
+					"name": "Conducteur de la chasse",
+					"role": "catabase_evolution_conducteur",
+					"variant": ""
+				},
+				{
+					"attack": 23.0,
+					"hp": 115,
+					"id": "cc2_enemy_02",
+					"kind": "hound",
+					"name": "Molosse dévoreur",
+					"role": "catabase_evolution_molosse",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 10,
+			"index": 7.0,
+			"planned_map": "pillars",
+			"planned_roster": [
+				"guard",
+				"brute"
+			],
+			"reference_stats": [
+				{
+					"attack": 32.0,
+					"hp": 176,
+					"kind": "guard"
+				},
+				{
+					"attack": 35.0,
+					"hp": 211,
+					"kind": "brute"
+				}
+			],
+			"roster": [
+				{
+					"attack": 35.0,
+					"hp": 194,
+					"id": "cc2_enemy_00",
+					"kind": "brute",
+					"name": "Exécuteur d’airain",
+					"role": "catabase_evolution_executeur",
+					"variant": "formation"
+				},
+				{
+					"attack": 35.0,
+					"hp": 194,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Brute vétérane",
+					"role": "catabase_evolution_rabatteur",
+					"variant": ""
+				}
+			],
+			"variant": "break_guard_formation"
+		},
+		{
+			"actual_room": "convoy",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 12,
+			"index": 8.0,
+			"planned_map": "convoy",
+			"planned_roster": [
+				"priest",
+				"archer",
+				"archer",
+				"brute"
+			],
+			"reference_stats": [
+				{
+					"attack": 23.0,
+					"hp": 98,
+					"kind": "priest"
+				},
+				{
+					"attack": 34.0,
+					"hp": 78,
+					"kind": "archer"
+				},
+				{
+					"attack": 34.0,
+					"hp": 78,
+					"kind": "archer"
+				},
+				{
+					"attack": 42.0,
+					"hp": 195,
+					"kind": "brute"
+				}
+			],
+			"roster": [
+				{
+					"attack": 42.0,
+					"hp": 195,
+					"id": "cc2_enemy_00",
+					"kind": "brute",
+					"name": "Brute aux deux frappes",
+					"role": "catabase_evolution_brute",
+					"variant": ""
+				},
+				{
+					"attack": 23.0,
+					"hp": 98,
+					"id": "cc2_enemy_01",
+					"kind": "priest",
+					"name": "Collecteur d’oboles",
+					"role": "catabase_evolution_collecteur",
+					"variant": ""
+				},
+				{
+					"attack": 34.0,
+					"hp": 78,
+					"id": "cc2_enemy_02",
+					"kind": "archer",
+					"name": "Porteur d’obole",
+					"role": "catabase_evolution_porteur",
+					"variant": ""
+				},
+				{
+					"attack": 34.0,
+					"hp": 78,
+					"id": "cc2_enemy_03",
+					"kind": "archer",
+					"name": "Porteur d’obole",
+					"role": "catabase_evolution_porteur",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "reservoir",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 13,
+			"index": 9.0,
+			"planned_map": "reservoir",
+			"planned_roster": [
+				"mage",
+				"hound",
+				"guard"
+			],
+			"reference_stats": [
+				{
+					"attack": 40.0,
+					"hp": 132,
+					"kind": "mage"
+				},
+				{
+					"attack": 40.0,
+					"hp": 176,
+					"kind": "hound"
+				},
+				{
+					"attack": 45.0,
+					"hp": 184,
+					"kind": "guard"
+				}
+			],
+			"roster": [
+				{
+					"attack": 50.0,
+					"hp": 205,
+					"id": "cc2_enemy_00",
+					"kind": "brute",
+					"name": "Rabatteur du Styx",
+					"role": "catabase_evolution_deplaceur",
+					"variant": ""
+				},
+				{
+					"attack": 50.0,
+					"hp": 205,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Rabatteur du Styx",
+					"role": "catabase_evolution_deplaceur",
+					"variant": ""
+				},
+				{
+					"attack": 40.0,
+					"hp": 82,
+					"id": "cc2_enemy_02",
+					"kind": "archer",
+					"name": "Fondeur des Enfers",
+					"role": "catabase_evolution_fondeur",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 15,
+			"index": 10.0,
+			"planned_map": "pillars",
+			"planned_roster": [
+				"guard",
+				"archer",
+				"mage",
+				"priest"
+			],
+			"reference_stats": [
+				{
+					"attack": 54.0,
+					"hp": 300,
+					"kind": "guard"
+				},
+				{
+					"attack": 48.0,
+					"hp": 144,
+					"kind": "archer"
+				},
+				{
+					"attack": 48.0,
+					"hp": 216,
+					"kind": "mage"
+				},
+				{
+					"attack": 33.0,
+					"hp": 180,
+					"kind": "priest"
+				}
+			],
+			"roster": [
+				{
+					"attack": 60.0,
+					"hp": 319,
+					"id": "cc2_enemy_00",
+					"kind": "brute",
+					"name": "Rabatteur du Styx",
+					"role": "catabase_evolution_deplaceur",
+					"variant": ""
+				},
+				{
+					"attack": 48.0,
+					"hp": 128,
+					"id": "cc2_enemy_01",
+					"kind": "archer",
+					"name": "Guetteur des longues lignes",
+					"role": "catabase_evolution_guetteur",
+					"variant": ""
+				},
+				{
+					"attack": 54.0,
+					"hp": 266,
+					"id": "cc2_enemy_02",
+					"kind": "guard",
+					"name": "Porte-Égide",
+					"role": "catabase_evolution_porte_egide",
+					"variant": "parry"
+				},
+				{
+					"attack": 48.0,
+					"hp": 128,
+					"id": "cc2_enemy_03",
+					"kind": "archer",
+					"name": "Gardien des derniers voiles",
+					"role": "catabase_evolution_protecteur",
+					"variant": ""
+				}
+			],
+			"variant": "finite_parry"
+		},
+		{
+			"actual_room": "garden",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 17,
+			"index": 11.0,
+			"planned_map": "garden",
+			"planned_roster": [
+				"archer",
+				"hound",
+				"mage"
+			],
+			"reference_stats": [
+				{
+					"attack": 51.0,
+					"hp": 127,
+					"kind": "archer"
+				},
+				{
+					"attack": 51.0,
+					"hp": 254,
+					"kind": "hound"
+				},
+				{
+					"attack": 51.0,
+					"hp": 191,
+					"kind": "mage"
+				}
+			],
+			"roster": [
+				{
+					"attack": 51.0,
+					"hp": 172,
+					"id": "cc2_enemy_00",
+					"kind": "mage",
+					"name": "Artilleur de braise",
+					"role": "catabase_evolution_artilleur",
+					"variant": ""
+				},
+				{
+					"attack": 64.0,
+					"hp": 286,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Rabatteur du Styx",
+					"role": "catabase_evolution_deplaceur",
+					"variant": ""
+				},
+				{
+					"attack": 51.0,
+					"hp": 114,
+					"id": "cc2_enemy_02",
+					"kind": "archer",
+					"name": "Tisseuse du Léthé",
+					"role": "catabase_evolution_tisseuse",
+					"variant": ""
+				}
+			],
+			"variant": "baseline_v1"
+		},
+		{
+			"actual_room": "",
+			"actual_scene": "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+			"depth": 20,
+			"index": 12.0,
+			"planned_map": "pillars",
+			"planned_roster": [
+				"boss",
+				"mage",
+				"hound"
+			],
+			"reference_stats": [
+				{
+					"attack": 95.0,
+					"hp": 840,
+					"kind": "boss"
+				},
+				{
+					"attack": 54.0,
+					"hp": 216,
+					"kind": "mage"
+				},
+				{
+					"attack": 54.0,
+					"hp": 288,
+					"kind": "hound"
+				}
+			],
+			"roster": [
+				{
+					"attack": 95.0,
+					"hp": 724,
+					"id": "cc2_enemy_00",
+					"kind": "boss",
+					"name": "L’Ombre de Paris",
+					"role": "catabase_shadow_paris",
+					"variant": ""
+				},
+				{
+					"attack": 68.0,
+					"hp": 310,
+					"id": "cc2_enemy_01",
+					"kind": "brute",
+					"name": "Spectre errant",
+					"role": "spectre_greatsword",
+					"variant": ""
+				},
+				{
+					"attack": 68.0,
+					"hp": 310,
+					"id": "cc2_enemy_02",
+					"kind": "brute",
+					"name": "Spectre errant",
+					"role": "spectre_greatsword",
+					"variant": ""
+				}
+			],
+			"variant": "paris_two_phases"
+		}
+	],
+	"failures": [],
+	"findings": [],
+	"integration_complete": true,
+	"probes": {
+		"all_native_rosters": [
+			{
+				"branch": "common",
+				"depth": 1,
+				"roster": [
+					{
+						"ai_profile": false,
+						"id": "catabase_frail_hellspawn",
+						"maximum_range": 7,
+						"name": "Rejeton chétif des Enfers",
+						"preferred_range": 6,
+						"role": "catabase_frail_hellspawn",
+						"spells": [
+							{
+								"id": "catabase_hellspawn_shadow_bolt",
+								"name": "Trait d’ombre"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 2,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 2,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 2,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_lamie_g1",
+						"maximum_range": 6,
+						"name": "Lamie du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_lamie",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 3,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 3,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 3,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_lamie_g1",
+						"maximum_range": 6,
+						"name": "Lamie du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_lamie",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 5,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_rejeton_g1",
+						"maximum_range": 6,
+						"name": "Rejeton de braise",
+						"preferred_range": 4,
+						"role": "catabase_evolution_rejeton",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 5,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 5,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_lamie_g1",
+						"maximum_range": 6,
+						"name": "Lamie du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_lamie",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 6,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_officiant_g1",
+						"maximum_range": 4,
+						"name": "Officiant des oboles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_officiant",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_soin",
+								"name": "Obole de vie"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 6,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_officiant_g1",
+						"maximum_range": 4,
+						"name": "Officiant des oboles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_officiant",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_soin",
+								"name": "Obole de vie"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 6,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g1",
+						"maximum_range": 1,
+						"name": "Brute du portique",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_archer_g1",
+						"maximum_range": 5,
+						"name": "Tireur du passeur",
+						"preferred_range": 4,
+						"role": "catabase_evolution_archer",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g1",
+						"maximum_range": 1,
+						"name": "Jeune molosse du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_officiant_g1",
+						"maximum_range": 4,
+						"name": "Officiant des oboles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_officiant",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_soin",
+								"name": "Obole de vie"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 8,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_conducteur_g2",
+						"maximum_range": 6,
+						"name": "Conducteur de la chasse",
+						"preferred_range": 4,
+						"role": "catabase_evolution_conducteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_marque",
+								"name": "Appel de la chasse"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g2",
+						"maximum_range": 1,
+						"name": "Molosse dévoreur",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g2",
+						"maximum_range": 1,
+						"name": "Brute aux deux frappes",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_fracture",
+								"name": "Fracture"
+							},
+							{
+								"id": "catabase_evolution_revers",
+								"name": "Grand revers"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 8,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_conducteur_g2",
+						"maximum_range": 6,
+						"name": "Conducteur de la chasse",
+						"preferred_range": 4,
+						"role": "catabase_evolution_conducteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_marque",
+								"name": "Appel de la chasse"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g2",
+						"maximum_range": 1,
+						"name": "Molosse dévoreur",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g2",
+						"maximum_range": 1,
+						"name": "Molosse dévoreur",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 8,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_conducteur_g2",
+						"maximum_range": 6,
+						"name": "Conducteur de la chasse",
+						"preferred_range": 4,
+						"role": "catabase_evolution_conducteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_marque",
+								"name": "Appel de la chasse"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g2",
+						"maximum_range": 1,
+						"name": "Molosse dévoreur",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_lamie_g2",
+						"maximum_range": 6,
+						"name": "Gardienne du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_lamie",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							},
+							{
+								"id": "catabase_lethe_reflux",
+								"name": "Reflux du Léthé"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 10,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_rabatteur_g2",
+						"maximum_range": 1,
+						"name": "Brute vétérane",
+						"preferred_range": 1,
+						"role": "catabase_evolution_rabatteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_fracture",
+								"name": "Fracture"
+							},
+							{
+								"id": "catabase_evolution_revers",
+								"name": "Grand revers"
+							},
+							{
+								"id": "catabase_evolution_chaine",
+								"name": "Chaîne des damnés"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_executeur_g2",
+						"maximum_range": 1,
+						"name": "Exécuteur d’airain",
+						"preferred_range": 1,
+						"role": "catabase_evolution_executeur",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							},
+							{
+								"id": "catabase_evolution_execution",
+								"name": "Sentence de bronze"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 10,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_rabatteur_g2",
+						"maximum_range": 1,
+						"name": "Brute vétérane",
+						"preferred_range": 1,
+						"role": "catabase_evolution_rabatteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_fracture",
+								"name": "Fracture"
+							},
+							{
+								"id": "catabase_evolution_revers",
+								"name": "Grand revers"
+							},
+							{
+								"id": "catabase_evolution_chaine",
+								"name": "Chaîne des damnés"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_executeur_g2",
+						"maximum_range": 1,
+						"name": "Exécuteur d’airain",
+						"preferred_range": 1,
+						"role": "catabase_evolution_executeur",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							},
+							{
+								"id": "catabase_evolution_execution",
+								"name": "Sentence de bronze"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 10,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_rabatteur_g2",
+						"maximum_range": 1,
+						"name": "Brute vétérane",
+						"preferred_range": 1,
+						"role": "catabase_evolution_rabatteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_fracture",
+								"name": "Fracture"
+							},
+							{
+								"id": "catabase_evolution_revers",
+								"name": "Grand revers"
+							},
+							{
+								"id": "catabase_evolution_chaine",
+								"name": "Chaîne des damnés"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_executeur_g2",
+						"maximum_range": 1,
+						"name": "Exécuteur d’airain",
+						"preferred_range": 1,
+						"role": "catabase_evolution_executeur",
+						"spells": [
+							{
+								"id": "catabase_evolution_massue",
+								"name": "Massue d’airain"
+							},
+							{
+								"id": "catabase_evolution_execution",
+								"name": "Sentence de bronze"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 12,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_collecteur_g2",
+						"maximum_range": 4,
+						"name": "Collecteur d’oboles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_collecteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_soin",
+								"name": "Obole de vie"
+							},
+							{
+								"id": "catabase_evolution_protection",
+								"name": "Voile des défunts"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porteur_g2",
+						"maximum_range": 6,
+						"name": "Porteur d’obole",
+						"preferred_range": 4,
+						"role": "catabase_evolution_porteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_tribut",
+								"name": "Dernier tribut"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porteur_g2",
+						"maximum_range": 6,
+						"name": "Porteur d’obole",
+						"preferred_range": 4,
+						"role": "catabase_evolution_porteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_tribut",
+								"name": "Dernier tribut"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_brute_g2",
+						"maximum_range": 1,
+						"name": "Brute aux deux frappes",
+						"preferred_range": 1,
+						"role": "catabase_evolution_brute",
+						"spells": [
+							{
+								"id": "catabase_evolution_fracture",
+								"name": "Fracture"
+							},
+							{
+								"id": "catabase_evolution_revers",
+								"name": "Grand revers"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 12,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_collecteur_g2",
+						"maximum_range": 4,
+						"name": "Collecteur d’oboles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_collecteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_soin",
+								"name": "Obole de vie"
+							},
+							{
+								"id": "catabase_evolution_protection",
+								"name": "Voile des défunts"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porteur_g2",
+						"maximum_range": 6,
+						"name": "Porteur d’obole",
+						"preferred_range": 4,
+						"role": "catabase_evolution_porteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_tribut",
+								"name": "Dernier tribut"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porteur_g2",
+						"maximum_range": 6,
+						"name": "Porteur d’obole",
+						"preferred_range": 4,
+						"role": "catabase_evolution_porteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_tribut",
+								"name": "Dernier tribut"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_molosse_g2",
+						"maximum_range": 1,
+						"name": "Molosse dévoreur",
+						"preferred_range": 1,
+						"role": "catabase_evolution_molosse",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 12,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_collecteur_g2",
+						"maximum_range": 4,
+						"name": "Collecteur d’oboles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_collecteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_soin",
+								"name": "Obole de vie"
+							},
+							{
+								"id": "catabase_evolution_protection",
+								"name": "Voile des défunts"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porteur_g2",
+						"maximum_range": 6,
+						"name": "Porteur d’obole",
+						"preferred_range": 4,
+						"role": "catabase_evolution_porteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_tribut",
+								"name": "Dernier tribut"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porteur_g2",
+						"maximum_range": 6,
+						"name": "Porteur d’obole",
+						"preferred_range": 4,
+						"role": "catabase_evolution_porteur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_evolution_tribut",
+								"name": "Dernier tribut"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_lamie_g2",
+						"maximum_range": 6,
+						"name": "Gardienne du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_lamie",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							},
+							{
+								"id": "catabase_lethe_reflux",
+								"name": "Reflux du Léthé"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 13,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_fondeur_g3",
+						"maximum_range": 6,
+						"name": "Fondeur des Enfers",
+						"preferred_range": 4,
+						"role": "catabase_evolution_fondeur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_braise_fournaise",
+								"name": "Fournaise annoncée"
+							},
+							{
+								"id": "catabase_evolution_brasier",
+								"name": "Sillon de braise"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 13,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_fondeur_g3",
+						"maximum_range": 6,
+						"name": "Fondeur des Enfers",
+						"preferred_range": 4,
+						"role": "catabase_evolution_fondeur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_braise_fournaise",
+								"name": "Fournaise annoncée"
+							},
+							{
+								"id": "catabase_evolution_brasier",
+								"name": "Sillon de braise"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 13,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_fondeur_g3",
+						"maximum_range": 6,
+						"name": "Fondeur des Enfers",
+						"preferred_range": 4,
+						"role": "catabase_evolution_fondeur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_braise_fournaise",
+								"name": "Fournaise annoncée"
+							},
+							{
+								"id": "catabase_evolution_brasier",
+								"name": "Sillon de braise"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_lamie_g3",
+						"maximum_range": 6,
+						"name": "Tisseuse du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_lamie",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							},
+							{
+								"id": "catabase_lethe_reflux",
+								"name": "Reflux du Léthé"
+							},
+							{
+								"id": "catabase_evolution_givre",
+								"name": "Nappe du Léthé"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 15,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porte_egide_g3",
+						"maximum_range": 1,
+						"name": "Porte-Égide",
+						"preferred_range": 1,
+						"role": "catabase_evolution_porte_egide",
+						"spells": [
+							{
+								"id": "catabase_airain_rempart",
+								"name": "Heurt du rempart"
+							},
+							{
+								"id": "catabase_evolution_egide",
+								"name": "Égide de la procession"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_guetteur_g3",
+						"maximum_range": 8,
+						"name": "Guetteur des longues lignes",
+						"preferred_range": 6,
+						"role": "catabase_evolution_guetteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							},
+							{
+								"id": "catabase_evolution_visee",
+								"name": "Longue visée"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_protecteur_g3",
+						"maximum_range": 4,
+						"name": "Gardien des derniers voiles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_protecteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_protection",
+								"name": "Voile des défunts"
+							},
+							{
+								"id": "catabase_evolution_egide",
+								"name": "Égide de la procession"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 15,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porte_egide_g3",
+						"maximum_range": 1,
+						"name": "Porte-Égide",
+						"preferred_range": 1,
+						"role": "catabase_evolution_porte_egide",
+						"spells": [
+							{
+								"id": "catabase_airain_rempart",
+								"name": "Heurt du rempart"
+							},
+							{
+								"id": "catabase_evolution_egide",
+								"name": "Égide de la procession"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_guetteur_g3",
+						"maximum_range": 8,
+						"name": "Guetteur des longues lignes",
+						"preferred_range": 6,
+						"role": "catabase_evolution_guetteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							},
+							{
+								"id": "catabase_evolution_visee",
+								"name": "Longue visée"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_protecteur_g3",
+						"maximum_range": 4,
+						"name": "Gardien des derniers voiles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_protecteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_protection",
+								"name": "Voile des défunts"
+							},
+							{
+								"id": "catabase_evolution_egide",
+								"name": "Égide de la procession"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 15,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_porte_egide_g3",
+						"maximum_range": 1,
+						"name": "Porte-Égide",
+						"preferred_range": 1,
+						"role": "catabase_evolution_porte_egide",
+						"spells": [
+							{
+								"id": "catabase_airain_rempart",
+								"name": "Heurt du rempart"
+							},
+							{
+								"id": "catabase_evolution_egide",
+								"name": "Égide de la procession"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_guetteur_g3",
+						"maximum_range": 8,
+						"name": "Guetteur des longues lignes",
+						"preferred_range": 6,
+						"role": "catabase_evolution_guetteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_fleche",
+								"name": "Flèche du passeur"
+							},
+							{
+								"id": "catabase_evolution_visee",
+								"name": "Longue visée"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_protecteur_g3",
+						"maximum_range": 4,
+						"name": "Gardien des derniers voiles",
+						"preferred_range": 3,
+						"role": "catabase_evolution_protecteur",
+						"spells": [
+							{
+								"id": "catabase_evolution_trait_officiant",
+								"name": "Trait de l’officiant"
+							},
+							{
+								"id": "catabase_evolution_protection",
+								"name": "Voile des défunts"
+							},
+							{
+								"id": "catabase_evolution_egide",
+								"name": "Égide de la procession"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "airain",
+				"depth": 17,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_artilleur_g3",
+						"maximum_range": 7,
+						"name": "Artilleur de braise",
+						"preferred_range": 4,
+						"role": "catabase_evolution_artilleur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_braise_fournaise",
+								"name": "Fournaise annoncée"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_tisseuse_g3",
+						"maximum_range": 6,
+						"name": "Tisseuse du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_tisseuse",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							},
+							{
+								"id": "catabase_lethe_reflux",
+								"name": "Reflux du Léthé"
+							},
+							{
+								"id": "catabase_evolution_givre",
+								"name": "Nappe du Léthé"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "styx",
+				"depth": 17,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_fondeur_g3",
+						"maximum_range": 6,
+						"name": "Fondeur des Enfers",
+						"preferred_range": 4,
+						"role": "catabase_evolution_fondeur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_braise_fournaise",
+								"name": "Fournaise annoncée"
+							},
+							{
+								"id": "catabase_evolution_brasier",
+								"name": "Sillon de braise"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_tisseuse_g3",
+						"maximum_range": 6,
+						"name": "Tisseuse du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_tisseuse",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							},
+							{
+								"id": "catabase_lethe_reflux",
+								"name": "Reflux du Léthé"
+							},
+							{
+								"id": "catabase_evolution_givre",
+								"name": "Nappe du Léthé"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "lethe",
+				"depth": 17,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_artilleur_g3",
+						"maximum_range": 7,
+						"name": "Artilleur de braise",
+						"preferred_range": 4,
+						"role": "catabase_evolution_artilleur",
+						"spells": [
+							{
+								"id": "catabase_braise_trait",
+								"name": "Éclat de braise"
+							},
+							{
+								"id": "catabase_braise_fournaise",
+								"name": "Fournaise annoncée"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_deplaceur_g3",
+						"maximum_range": 1,
+						"name": "Rabatteur du Styx",
+						"preferred_range": 1,
+						"role": "catabase_evolution_deplaceur",
+						"spells": [
+							{
+								"id": "catabase_styx_morsure",
+								"name": "Morsure du Styx"
+							},
+							{
+								"id": "catabase_styx_dechirure",
+								"name": "Déchirure funèbre"
+							},
+							{
+								"id": "catabase_evolution_bousculade",
+								"name": "Croc du rabatteur"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "catabase_evolution_tisseuse_g3",
+						"maximum_range": 6,
+						"name": "Tisseuse du Léthé",
+						"preferred_range": 5,
+						"role": "catabase_evolution_tisseuse",
+						"spells": [
+							{
+								"id": "catabase_lethe_trait",
+								"name": "Trait de l’oubli"
+							},
+							{
+								"id": "catabase_lethe_reflux",
+								"name": "Reflux du Léthé"
+							},
+							{
+								"id": "catabase_evolution_givre",
+								"name": "Nappe du Léthé"
+							}
+						],
+						"transformation": false
+					}
+				]
+			},
+			{
+				"branch": "common",
+				"depth": 20,
+				"roster": [
+					{
+						"ai_profile": true,
+						"id": "catabase_shadow_paris",
+						"maximum_range": 7,
+						"name": "L’Ombre de Paris",
+						"preferred_range": 4,
+						"role": "catabase_shadow_paris",
+						"spells": [
+							{
+								"id": "paris_spectral_arrow",
+								"name": "Flèche des ombres"
+							},
+							{
+								"id": "paris_fire_arrow",
+								"name": "Flèche incendiaire"
+							},
+							{
+								"id": "paris_ice_arrow",
+								"name": "Flèche du Cocyte"
+							},
+							{
+								"id": "paris_vortex_arrow",
+								"name": "Flèche du vortex"
+							},
+							{
+								"id": "paris_vortex_step",
+								"name": "Pas du vortex"
+							}
+						],
+						"transformation": true
+					},
+					{
+						"ai_profile": true,
+						"id": "spectre_greatsword",
+						"maximum_range": 1,
+						"name": "Spectre errant",
+						"preferred_range": 1,
+						"role": "spectre_greatsword",
+						"spells": [
+							{
+								"id": "spectre_heavy_cleave",
+								"name": "Coupe lourde"
+							}
+						],
+						"transformation": false
+					},
+					{
+						"ai_profile": true,
+						"id": "spectre_greatsword",
+						"maximum_range": 1,
+						"name": "Spectre errant",
+						"preferred_range": 1,
+						"role": "spectre_greatsword",
+						"spells": [
+							{
+								"id": "spectre_heavy_cleave",
+								"name": "Coupe lourde"
+							}
+						],
+						"transformation": false
+					}
+				]
+			}
+		],
+		"boss_periodic": {
+			"hp": 340,
+			"maximum": 724,
+			"next_behavior": "idle",
+			"phase": 2,
+			"skipped": false
+		},
+		"geometry": [
+			{
+				"cols": 19,
+				"depth": 1,
+				"enemies": [
+					{
+						"manhattan": 6,
+						"name": "Rejeton chétif des Enfers",
+						"position": [
+							11,
+							10
+						],
+						"steps_to_contact": 5
+					}
+				],
+				"hero": [
+					7,
+					12
+				],
+				"interaction_movement_cost": {},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 18,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 16,
+				"depth": 2,
+				"enemies": [
+					{
+						"manhattan": 7,
+						"name": "Tireur du passeur",
+						"position": [
+							12,
+							10
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 7,
+						"name": "Brute du portique",
+						"position": [
+							10,
+							8
+						],
+						"steps_to_contact": 6
+					}
+				],
+				"hero": [
+					6,
+					11
+				],
+				"interaction_movement_cost": {},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 19,
+				"depth": 3,
+				"enemies": [
+					{
+						"manhattan": 7,
+						"name": "Tireur du passeur",
+						"position": [
+							6,
+							6
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 6,
+						"name": "Brute du portique",
+						"position": [
+							7,
+							6
+						],
+						"steps_to_contact": 5
+					},
+					{
+						"manhattan": 7,
+						"name": "Brute du portique",
+						"position": [
+							3,
+							9
+						],
+						"steps_to_contact": 6
+					}
+				],
+				"hero": [
+					7,
+					12
+				],
+				"interaction_movement_cost": {},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 18,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 15,
+				"depth": 5,
+				"enemies": [
+					{
+						"manhattan": 6,
+						"name": "Brute du portique",
+						"position": [
+							2,
+							9
+						],
+						"steps_to_contact": 5
+					},
+					{
+						"manhattan": 6,
+						"name": "Jeune molosse du Styx",
+						"position": [
+							1,
+							10
+						],
+						"steps_to_contact": 5
+					},
+					{
+						"manhattan": 7,
+						"name": "Rejeton de braise",
+						"position": [
+							2,
+							8
+						],
+						"steps_to_contact": -1
+					}
+				],
+				"hero": [
+					6,
+					11
+				],
+				"interaction_movement_cost": {
+					"rail_0": {
+						"with_occupancy": -1,
+						"without_occupancy": 8
+					},
+					"rail_1": {
+						"with_occupancy": -1,
+						"without_occupancy": 8
+					},
+					"rail_2": {
+						"with_occupancy": -1,
+						"without_occupancy": 8
+					}
+				},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 15,
+				"depth": 6,
+				"enemies": [
+					{
+						"manhattan": 5,
+						"name": "Tireur du passeur",
+						"position": [
+							5,
+							7
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 7,
+						"name": "Brute du portique",
+						"position": [
+							6,
+							6
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 8,
+						"name": "Jeune molosse du Styx",
+						"position": [
+							7,
+							6
+						],
+						"steps_to_contact": -1
+					},
+					{
+						"manhattan": 4,
+						"name": "Officiant des oboles",
+						"position": [
+							4,
+							7
+						],
+						"steps_to_contact": -1
+					}
+				],
+				"hero": [
+					4,
+					11
+				],
+				"interaction_movement_cost": {
+					"center": {
+						"with_occupancy": -1,
+						"without_occupancy": 10
+					},
+					"delay": {
+						"with_occupancy": -1,
+						"without_occupancy": 10
+					}
+				},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 15,
+				"depth": 8,
+				"enemies": [
+					{
+						"manhattan": 6,
+						"name": "Brute aux deux frappes",
+						"position": [
+							12,
+							11
+						],
+						"steps_to_contact": 7
+					},
+					{
+						"manhattan": 7,
+						"name": "Conducteur de la chasse",
+						"position": [
+							8,
+							6
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 6,
+						"name": "Molosse dévoreur",
+						"position": [
+							2,
+							9
+						],
+						"steps_to_contact": 5
+					}
+				],
+				"hero": [
+					6,
+					11
+				],
+				"interaction_movement_cost": {
+					"pedestal_0": {
+						"with_occupancy": 8,
+						"without_occupancy": 8
+					},
+					"pedestal_1": {
+						"with_occupancy": 8,
+						"without_occupancy": 8
+					}
+				},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": 9
+			},
+			{
+				"cols": 15,
+				"depth": 10,
+				"enemies": [
+					{
+						"manhattan": 7,
+						"name": "Exécuteur d’airain",
+						"position": [
+							8,
+							10
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 6,
+						"name": "Brute vétérane",
+						"position": [
+							1,
+							6
+						],
+						"steps_to_contact": 5
+					}
+				],
+				"hero": [
+					2,
+					11
+				],
+				"interaction_movement_cost": {},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 18,
+				"depth": 12,
+				"enemies": [
+					{
+						"manhattan": 8,
+						"name": "Brute aux deux frappes",
+						"position": [
+							8,
+							7
+						],
+						"steps_to_contact": 7
+					},
+					{
+						"manhattan": 6,
+						"name": "Collecteur d’oboles",
+						"position": [
+							9,
+							4
+						],
+						"steps_to_contact": 7
+					},
+					{
+						"manhattan": 8,
+						"name": "Porteur d’obole",
+						"position": [
+							7,
+							8
+						],
+						"steps_to_contact": 7
+					},
+					{
+						"manhattan": 6,
+						"name": "Porteur d’obole",
+						"position": [
+							4,
+							9
+						],
+						"steps_to_contact": 7
+					}
+				],
+				"hero": [
+					4,
+					3
+				],
+				"interaction_movement_cost": {
+					"seal": {
+						"with_occupancy": 8,
+						"without_occupancy": 8
+					}
+				},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 19,
+				"steps_to_mechanism": 9
+			},
+			{
+				"cols": 15,
+				"depth": 13,
+				"enemies": [
+					{
+						"manhattan": 8,
+						"name": "Rabatteur du Styx",
+						"position": [
+							13,
+							12
+						],
+						"steps_to_contact": 7
+					},
+					{
+						"manhattan": 6,
+						"name": "Rabatteur du Styx",
+						"position": [
+							1,
+							10
+						],
+						"steps_to_contact": 5
+					},
+					{
+						"manhattan": 7,
+						"name": "Fondeur des Enfers",
+						"position": [
+							7,
+							5
+						],
+						"steps_to_contact": 6
+					}
+				],
+				"hero": [
+					6,
+					11
+				],
+				"interaction_movement_cost": {
+					"discharge_0": {
+						"with_occupancy": -1,
+						"without_occupancy": 12
+					},
+					"discharge_1": {
+						"with_occupancy": -1,
+						"without_occupancy": 14
+					}
+				},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 15,
+				"depth": 15,
+				"enemies": [
+					{
+						"manhattan": 7,
+						"name": "Rabatteur du Styx",
+						"position": [
+							9,
+							7
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 6,
+						"name": "Guetteur des longues lignes",
+						"position": [
+							5,
+							6
+						],
+						"steps_to_contact": 5
+					},
+					{
+						"manhattan": 5,
+						"name": "Porte-Égide",
+						"position": [
+							6,
+							6
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 6,
+						"name": "Gardien des derniers voiles",
+						"position": [
+							4,
+							7
+						],
+						"steps_to_contact": 5
+					}
+				],
+				"hero": [
+					6,
+					11
+				],
+				"interaction_movement_cost": {},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 15,
+				"depth": 17,
+				"enemies": [
+					{
+						"manhattan": 4,
+						"name": "Artilleur de braise",
+						"position": [
+							2,
+							7
+						],
+						"steps_to_contact": -1
+					},
+					{
+						"manhattan": 5,
+						"name": "Rabatteur du Styx",
+						"position": [
+							1,
+							7
+						],
+						"steps_to_contact": 4
+					},
+					{
+						"manhattan": 5,
+						"name": "Tisseuse du Léthé",
+						"position": [
+							3,
+							7
+						],
+						"steps_to_contact": -1
+					}
+				],
+				"hero": [
+					2,
+					11
+				],
+				"interaction_movement_cost": {
+					"pedestal_0": {
+						"with_occupancy": -1,
+						"without_occupancy": 7
+					},
+					"pedestal_1": {
+						"with_occupancy": -1,
+						"without_occupancy": 7
+					}
+				},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 13,
+				"steps_to_mechanism": -1
+			},
+			{
+				"cols": 18,
+				"depth": 20,
+				"enemies": [
+					{
+						"manhattan": 7,
+						"name": "L’Ombre de Paris",
+						"position": [
+							8,
+							8
+						],
+						"steps_to_contact": 6
+					},
+					{
+						"manhattan": 9,
+						"name": "Spectre errant",
+						"position": [
+							12,
+							10
+						],
+						"steps_to_contact": 8
+					},
+					{
+						"manhattan": 7,
+						"name": "Spectre errant",
+						"position": [
+							5,
+							9
+						],
+						"steps_to_contact": 6
+					}
+				],
+				"hero": [
+					7,
+					14
+				],
+				"interaction_movement_cost": {},
+				"note": "First legal deployment cell; enemies stationary; not a minimum over deployments.",
+				"rows": 18,
+				"steps_to_mechanism": -1
+			}
+		],
+		"pressure": {
+			"after": {
+				"hp": 107,
+				"shield": 18
+			},
+			"before": {
+				"hp": 110,
+				"shield": 18
+			},
+			"expected_hp_loss": 3
+		},
+		"route_previews": [
+			{
+				"depth": 1,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {}
+			},
+			{
+				"depth": 2,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 2,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Brute du portique × 1\nInitié · Airain\n66 PV · 4 PA · 2 PM · initiative 6\nArmure 20 · résistance magique 0\n• Massue d’airain — 4 PA · portée 1–1 · 14 dégâts avant défenses\n  Frappe une cible adjacente.\n\nTireur du passeur × 1\nInitié · Tireurs\n26 PV · 4 PA · 3 PM · initiative 10\nArmure 5 · résistance magique 0\n• Flèche du passeur — 4 PA · portée 2–5 · 14 dégâts avant défenses\n  Tire à 2–5 cases avec ligne de vue.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Le portique des oboles",
+					"roles": [
+						"brute",
+						"archer"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 3,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 3,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Tireur du passeur × 1\nInitié · Tireurs\n27 PV · 4 PA · 3 PM · initiative 10\nArmure 5 · résistance magique 0\n• Flèche du passeur — 4 PA · portée 2–5 · 17 dégâts avant défenses\n  Tire à 2–5 cases avec ligne de vue.\n\nBrute du portique × 2\nInitié · Airain\n68 PV · 4 PA · 2 PM · initiative 6\nArmure 20 · résistance magique 0\n• Massue d’airain — 4 PA · portée 1–1 · 17 dégâts avant défenses\n  Frappe une cible adjacente.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Les percepteurs d'airain",
+					"roles": [
+						"archer",
+						"brute",
+						"brute"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 5,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 3,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Rejeton de braise × 1\nInitié · Braise\n36 PV · 4 PA · 3 PM · initiative 10\n• Éclat de braise — 4 PA · portée 2–5 · 20 dégâts avant défenses\n  Projette une braise : 10 dégâts de feu de base (100 % de la prouesse), à 2–5 cases. Nécessite une ligne de vue.\n\nBrute du portique × 1\nInitié · Airain\n90 PV · 4 PA · 2 PM · initiative 6\nArmure 20 · résistance magique 0\n• Massue d’airain — 4 PA · portée 1–1 · 20 dégâts avant défenses\n  Frappe une cible adjacente.\n\nJeune molosse du Styx × 1\nInitié · Styx\n72 PV · 4 PA · 4 PM · initiative 13\n• Morsure du Styx — 4 PA · portée 1–1 · 20 dégâts avant défenses\n  Mord au contact : 11 dégâts physiques de base (100 % de la prouesse). Le molosse parcourt cinq cases par activation.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Le gué des serments",
+					"roles": [
+						"rejeton",
+						"brute",
+						"molosse"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 6,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 4,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Brute du portique × 1\nInitié · Airain\n120 PV · 4 PA · 2 PM · initiative 6\nArmure 20 · résistance magique 0\n• Massue d’airain — 4 PA · portée 1–1 · 24 dégâts avant défenses\n  Frappe une cible adjacente.\n\nTireur du passeur × 1\nInitié · Tireurs\n48 PV · 4 PA · 3 PM · initiative 10\nArmure 5 · résistance magique 0\n• Flèche du passeur — 4 PA · portée 2–5 · 24 dégâts avant défenses\n  Tire à 2–5 cases avec ligne de vue.\n\nJeune molosse du Styx × 1\nInitié · Styx\n96 PV · 4 PA · 4 PM · initiative 13\n• Morsure du Styx — 4 PA · portée 1–1 · 24 dégâts avant défenses\n  Mord au contact : 11 dégâts physiques de base (100 % de la prouesse). Le molosse parcourt cinq cases par activation.\n\nOfficiant des oboles × 1\nInitié · Officiants\n72 PV · 4 PA · 3 PM · initiative 8\nArmure 0 · résistance magique 10\n• Trait de l’officiant — 4 PA · portée 2–4 · 14 dégâts avant défenses\n  Un trait spectral à 2–6 cases : 8 dégâts d’ombre de base (100 % de la prouesse). Nécessite une ligne de vue.\n• Obole de vie — 3 PA · portée 0–4 · soin 22 PV · 2 usages/combat\n  Rend 12 PV de base, une activation sur deux. 2 soins par combat.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "L'atrium des cendres",
+					"roles": [
+						"brute",
+						"archer",
+						"molosse",
+						"officiant"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 8,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 3,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Conducteur de la chasse × 1\nVétéran · Braise\n79 PV · 5 PA · 3 PM · initiative 10\n• Éclat de braise — 3 PA · portée 2–5 · 17 dégâts avant défenses\n  Projette une braise : 10 dégâts de feu de base (100 % de la prouesse), à 2–5 cases. Nécessite une ligne de vue.\n• Appel de la chasse — 2 PA · portée 2–6 · 4 dégâts avant défenses\n  Marque une cible pendant deux activations. Les crocs des molosses infligent des dégâts supplémentaires contre elle.\n\nMolosse dévoreur × 1\nVétéran · Styx\n106 PV · 5 PA · 5 PM · initiative 13\n• Morsure du Styx — 3 PA · portée 1–1 · 29 dégâts avant défenses\n  Mord au contact : 11 dégâts physiques de base (100 % de la prouesse). Le molosse parcourt cinq cases par activation.\n• Déchirure funèbre — 3 PA · portée 1–1 · 42 dégâts avant défenses\n  Déchire au contact : 16 dégâts physiques de base (145 % de la prouesse), puis Saignement de 3 dégâts pendant deux activations. Revient toutes les trois activations.\n\nBrute aux deux frappes × 1\nVétéran · Airain\n132 PV · 5 PA · 3 PM · initiative 6\nArmure 30 · résistance magique 0\n• Fracture — 3 PA · portée 1–1 · 25 dégâts avant défenses\n  Frappe au contact et retire 15 points d’armure pendant deux activations.\n• Grand revers — 3 PA · sur soi · 26 dégâts avant défenses\n  Balaye les ennemis adjacents. Les alliés restent à l’abri.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Les porteurs d'airain",
+					"roles": [
+						"conducteur",
+						"molosse",
+						"brute"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 10,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 2,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Brute vétérane × 1\nVétéran · Airain\n194 PV · 5 PA · 3 PM · initiative 6\nArmure 30 · résistance magique 0\n• Fracture — 3 PA · portée 1–1 · 30 dégâts avant défenses\n  Frappe au contact et retire 15 points d’armure pendant deux activations.\n• Grand revers — 3 PA · sur soi · 32 dégâts avant défenses\n  Balaye les ennemis adjacents. Les alliés restent à l’abri.\n• Chaîne des damnés — 2 PA · portée 2–4 · 7 dégâts avant défenses\n  Attire une cible de deux cases. Portée 2–4 avec ligne de vue ; revient toutes les trois activations.\n\nExécuteur d’airain × 1\nVétéran · Airain\n194 PV · 5 PA · 2 PM · initiative 6\nArmure 30 · résistance magique 0\n• Massue d’airain — 3 PA · portée 1–1 · 42 dégâts avant défenses\n  Frappe une cible adjacente.\n• Sentence de bronze — 3 PA · portée 1–1 · 76 dégâts avant défenses\n  Prépare un coup écrasant au contact pour la prochaine activation. Éloignez-vous pour l’annuler.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Les chaînes sous les arches",
+					"roles": [
+						"rabatteur",
+						"executeur"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 12,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 4,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Collecteur d’oboles × 1\nVétéran · Officiants\n112 PV · 5 PA · 3 PM · initiative 8\nArmure 0 · résistance magique 10\n• Trait de l’officiant — 3 PA · portée 2–4 · 25 dégâts avant défenses\n  Un trait spectral à 2–6 cases : 8 dégâts d’ombre de base (100 % de la prouesse). Nécessite une ligne de vue.\n• Obole de vie — 3 PA · portée 0–4 · soin 41 PV · 3 usages/combat\n  Trois soins au maximum, une activation sur deux. Nécessite un porteur vivant à deux cases.\n• Voile des défunts — 3 PA · portée 0–4 · bouclier 22 · 3 usages/combat\n  Protège un allié pendant deux activations. Trois utilisations par combat.\n\nPorteur d’obole × 2\nVétéran · Auxiliaire fragile\n75 PV · 4 PA · 3 PM · initiative 10\n• Éclat de braise — 4 PA · portée 2–5 · 25 dégâts avant défenses\n  Projette une braise : 10 dégâts de feu de base (100 % de la prouesse), à 2–5 cases. Nécessite une ligne de vue.\n• Dernier tribut — 3 PA · portée 1–1 · bouclier 34 · 1 usage/combat\n  Protège un allié adjacent une seule fois. Le porteur reste fragile après son offrande.\n\nBrute aux deux frappes × 1\nVétéran · Airain\n187 PV · 5 PA · 3 PM · initiative 6\nArmure 30 · résistance magique 0\n• Fracture — 3 PA · portée 1–1 · 36 dégâts avant défenses\n  Frappe au contact et retire 15 points d’armure pendant deux activations.\n• Grand revers — 3 PA · sur soi · 38 dégâts avant défenses\n  Balaye les ennemis adjacents. Les alliés restent à l’abri.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "La fosse des revenants",
+					"roles": [
+						"collecteur",
+						"porteur",
+						"porteur",
+						"brute"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 13,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 3,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Fondeur des Enfers × 1\nSpécialiste · Braise\n98 PV · 6 PA · 3 PM · initiative 10\n• Éclat de braise — 3 PA · portée 2–5 · 60 dégâts avant défenses\n  Projette une braise : 10 dégâts de feu de base (100 % de la prouesse), à 2–5 cases. Nécessite une ligne de vue.\n• Fournaise annoncée — 3 PA · portée 2–6 · 84 dégâts avant défenses\n  Prépare un projectile pour la prochaine activation : 14 dégâts de feu de base (140 % de la prouesse) et Brûlure de 4 dégâts pendant deux activations. Brisez la ligne de vue ou sortez des 2–6 cases pour l’annuler. La résolution consomme l’activation.\n• Sillon de braise — 3 PA · portée 2–5 · 39 dégâts avant défenses\n  Un trait brûlant dépose des braises pendant deux tours. Les déplacements forcés dans ce feu sont dangereux pour les deux camps.\n\nRabatteur du Styx × 2\nSpécialiste · Styx\n197 PV · 6 PA · 5 PM · initiative 13\n• Morsure du Styx — 3 PA · portée 1–1 · 50 dégâts avant défenses\n  Mord au contact : 11 dégâts physiques de base (100 % de la prouesse). Le molosse parcourt cinq cases par activation.\n• Déchirure funèbre — 3 PA · portée 1–1 · 73 dégâts avant défenses\n  Déchire au contact : 16 dégâts physiques de base (145 % de la prouesse), puis Saignement de 3 dégâts pendant deux activations. Revient toutes les trois activations.\n• Croc du rabatteur — 3 PA · portée 1–1 · 45 dégâts avant défenses\n  Mord et repousse la cible d’une case ; peut l’envoyer dans une zone dangereuse.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Le rempart des terrasses",
+					"roles": [
+						"fondeur",
+						"deplaceur",
+						"deplaceur"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 15,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 4,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Porte-Égide × 1\nSpécialiste · Airain\n300 PV · 6 PA · 2 PM · initiative 6\nArmure 45 · résistance magique 0\n• Heurt du rempart — 3 PA · portée 1–1 · 62 dégâts avant défenses\n  Un coup de bouclier : 18 dégâts physiques de base (129 % de la prouesse) et repousse d’une case. Revient toutes les trois activations.\n• Égide de la procession — 3 PA · portée 0–0 · bouclier 48 · 3 usages/combat\n  Protège le lanceur et ses alliés adjacents pendant deux activations. Trois utilisations par combat.\n\nGuetteur des longues lignes × 1\nSpécialiste · Tireurs\n120 PV · 6 PA · 2 PM · initiative 10\nArmure 5 · résistance magique 0\n• Flèche du passeur — 3 PA · portée 3–5 · 60 dégâts avant défenses\n  Tire à 2–5 cases avec ligne de vue.\n• Longue visée — 3 PA · portée 3–8 · 99 dégâts avant défenses\n  Prépare un tir à 3–8 cases pour la prochaine activation. Brisez la ligne de vue ou approchez pour l’annuler.\n\nRabatteur du Styx × 1\nSpécialiste · Styx\n240 PV · 6 PA · 5 PM · initiative 13\n• Morsure du Styx — 3 PA · portée 1–1 · 60 dégâts avant défenses\n  Mord au contact : 11 dégâts physiques de base (100 % de la prouesse). Le molosse parcourt cinq cases par activation.\n• Déchirure funèbre — 3 PA · portée 1–1 · 87 dégâts avant défenses\n  Déchire au contact : 16 dégâts physiques de base (145 % de la prouesse), puis Saignement de 3 dégâts pendant deux activations. Revient toutes les trois activations.\n• Croc du rabatteur — 3 PA · portée 1–1 · 54 dégâts avant défenses\n  Mord et repousse la cible d’une case ; peut l’envoyer dans une zone dangereuse.\n\nGardien des derniers voiles × 1\nSpécialiste · Officiants\n180 PV · 6 PA · 3 PM · initiative 8\nArmure 0 · résistance magique 10\n• Trait de l’officiant — 3 PA · portée 2–4 · 36 dégâts avant défenses\n  Un trait spectral à 2–6 cases : 8 dégâts d’ombre de base (100 % de la prouesse). Nécessite une ligne de vue.\n• Voile des défunts — 3 PA · portée 0–4 · bouclier 50 · 3 usages/combat\n  Protège un allié pendant deux activations. Trois utilisations par combat.\n• Égide de la procession — 3 PA · portée 0–0 · bouclier 25 · 3 usages/combat\n  Protège le lanceur et ses alliés adjacents pendant deux activations. Trois utilisations par combat.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "L'épreuve des obélisques",
+					"roles": [
+						"porte_egide",
+						"guetteur",
+						"deplaceur",
+						"protecteur"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 17,
+				"hint": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8.",
+				"preview": {
+					"attack_factor": 1.0,
+					"count": 3,
+					"counterplay": "Deux réponses tactiques doivent rester viables avec chaque arme.",
+					"details": "Artilleur de braise × 1\nSpécialiste · Braise\n127 PV · 6 PA · 3 PM · initiative 10\n• Éclat de braise — 3 PA · portée 2–5 · 76 dégâts avant défenses\n  Projette une braise : 10 dégâts de feu de base (100 % de la prouesse), à 2–5 cases. Nécessite une ligne de vue.\n• Fournaise annoncée — 3 PA · portée 2–7 · 125 dégâts avant défenses\n  Prépare un projectile pour la prochaine activation : 14 dégâts de feu de base (140 % de la prouesse) et Brûlure de 4 dégâts pendant deux activations. Brisez la ligne de vue ou sortez des 2–6 cases pour l’annuler. La résolution consomme l’activation.\n\nRabatteur du Styx × 1\nSpécialiste · Styx\n254 PV · 6 PA · 5 PM · initiative 13\n• Morsure du Styx — 3 PA · portée 1–1 · 64 dégâts avant défenses\n  Mord au contact : 11 dégâts physiques de base (100 % de la prouesse). Le molosse parcourt cinq cases par activation.\n• Déchirure funèbre — 3 PA · portée 1–1 · 93 dégâts avant défenses\n  Déchire au contact : 16 dégâts physiques de base (145 % de la prouesse), puis Saignement de 3 dégâts pendant deux activations. Revient toutes les trois activations.\n• Croc du rabatteur — 3 PA · portée 1–1 · 58 dégâts avant défenses\n  Mord et repousse la cible d’une case ; peut l’envoyer dans une zone dangereuse.\n\nTisseuse du Léthé × 1\nSpécialiste · Léthé\n191 PV · 6 PA · 3 PM · initiative 8\nArmure 0 · résistance magique 20\n• Trait de l’oubli — 3 PA · portée 2–6 · 51 dégâts avant défenses\n  Un trait spectral à 2–6 cases : 8 dégâts d’ombre de base (100 % de la prouesse). Nécessite une ligne de vue.\n• Reflux du Léthé — 3 PA · portée 2–5 · 64 dégâts avant défenses\n  Une vague d’oubli à 2–5 cases : 10 dégâts d’ombre de base (125 % de la prouesse) et −1 PM à la prochaine activation. Aucun tour sauté. Revient toutes les trois activations.\n• Nappe du Léthé — 3 PA · portée 2–5 · 23 dégâts avant défenses\n  Recouvre une petite croix de givre pendant deux tours. Entrer dedans retire un PM à la prochaine activation, sans faire passer de tour.",
+					"formations": [
+						"double_line"
+					],
+					"hp_factor": 1.0,
+					"mp_cap": 0,
+					"name": "Les porteurs du jardin",
+					"roles": [
+						"artilleur",
+						"deplaceur",
+						"tisseuse"
+					],
+					"summary": "Chaque copie jouée est consommée. Utilisez vos secours et surveillez les attaques annoncées ; la pression augmente après le tour 8."
+				}
+			},
+			{
+				"depth": 20,
+				"hint": "Pâris annonce ses frappes en ligne. À 50 % de PV, il passe en phase 2 ; évitez les cases menacées.",
+				"preview": {}
+			}
+		],
+		"vfx": {
+			"missing": [],
+			"supported": [
+				"n01",
+				"n02",
+				"n03",
+				"n04",
+				"n05",
+				"n06",
+				"n07",
+				"n08",
+				"a01",
+				"a02",
+				"a03",
+				"a04",
+				"g01",
+				"g02",
+				"g03",
+				"g04",
+				"r01",
+				"r02",
+				"r03",
+				"r04",
+				"t01",
+				"t02",
+				"t03",
+				"t04",
+				"a05",
+				"a06",
+				"a07",
+				"g05",
+				"g06",
+				"g07",
+				"r05",
+				"r06",
+				"r07",
+				"t05",
+				"t06",
+				"t07",
+				"a08",
+				"a09",
+				"g08",
+				"g09",
+				"r08",
+				"r09",
+				"t08",
+				"t09",
+				"l01",
+				"l02",
+				"d01",
+				"i01",
+				"fallback_strike",
+				"fallback_guard"
+			]
+		}
+	}
+}

@@ -16,6 +16,7 @@ var last_restore_error: String = ""
 ## Presentation only; canonical graph and save fingerprint stay unchanged.
 var card_tactical_rooms_enabled := false
 var consumable_cards_enabled := false
+var consumable_bestiary_revision := 0
 var difficulty_id: String = "normal"
 
 var _canonical_nodes: Array[Dictionary] = []
@@ -278,6 +279,8 @@ func _available_ids() -> Array[String]:
 
 func _consumable_hint(node: Dictionary) -> void:
 	if node.is_empty(): return
+	node["consumable_bestiary_revision"] = consumable_bestiary_revision
+	node["consumable_difficulty"] = difficulty_id
 	if node.get("preparation_only", false):
 		node.hint = "Préparez vos copies, vos améliorations et votre équipement avant Pâris."
 		return
@@ -287,6 +290,9 @@ func _consumable_hint(node: Dictionary) -> void:
 		"merchant": node.hint = "Copies, sacs, soin, équipement et reliques ; vente, échange et réaffectation d'améliorations."
 		"hub": node.hint = "Soin gratuit une fois, puis préparation du deck et de l'équipement."
 		_: node.hint = "Révélez un passage et recevez 20 oboles, puis préparez votre prochaine rencontre."
+	if consumable_bestiary_revision == 1:
+		var hint: String = preload("res://core/expedition/consumable_enemy_profile.gd").hint(node)
+		if not hint.is_empty(): node.hint = hint
 
 
 func _preview(node: Dictionary) -> Dictionary:
