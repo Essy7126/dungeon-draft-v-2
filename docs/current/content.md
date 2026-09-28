@@ -24,6 +24,7 @@ Le trio et la salle de l'Archiviste ont été retirés du produit.
 | Passe-Rive, incantation S26 | Nouveau geste SE partagé par Garde ferme, Bastion vivant, Grâce du bronze, Sommeil marqué, Sceau ombreux, Jardin de givre et Résonance du sceau. 1,15 s, effet à 590 ms, appui et calibration de taille fixes. Les autres vues conservent leur incantation existante ; chaque carte garde ses VFX. [Source, attributions et validation en combat](../../art/source/passe_rive_s26/README.md) |
 | Passe-Rive, garde S27 | Garde brève, Contre préparé et Garde de secours : 12 poses SE, 0,72 s, protection à 240 ms et bref arc de bronze confirmé. Échelle fixe et retour au repos ; autres angles en garde neutre. Secours sans copie consommée, riposte au coup reçu. [Sources et vérification de cinq lancers](../../art/source/passe_rive_s27/README.md) |
 | `web/achilles-run-lab/` | Prototype autonome expérimental, isolé de l’import Godot |
+| Passe-Rive, Prélèvement S28 | Carte `cc2_t07`, base/améliorée : saisir puis absorber, 0,94 s, résolution à 330 ms. Filament lié aux PV effectivement retirés, éclat discret uniquement si soin réel. Échelle constante, repos natif en sortie ; nouveau dessin SE, autres directions conservées. [Source, limites et validation](../../art/source/passe_rive_s28/README.md) |
 | `art/source/` et `meshy_output/` | Sources, provenance et variantes artistiques ; ne pas supprimer sur le seul nom `v1` ou faute de chargement runtime |
 
 ## Nettoyage du 21 septembre

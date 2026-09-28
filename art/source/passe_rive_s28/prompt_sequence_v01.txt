@@ -1,0 +1,20 @@
+Use case: stylized-concept
+Asset type: production 2D character animation sprite atlas, transparent background.
+Input image 1 is the APPROVED four-key pose concept for the character's drain spell. Retain its character identity, costume, camera, hand action, slender proportions and clean drawn style. Input image 2 is native game idle: use its slim silhouette and relaxed stance for first/last pose.
+Create the COMPLETE 12-frame in-between sequence for this precise spell, in a regular 4 columns by 3 rows grid. Twelve equal square cells. Image aspect ratio 4:3. Exactly one full-body same-size character in each cell, no labels or grid lines, ample transparent margin, feet baseline constant. Fixed elevated isometric camera SE facing screen right. No zoom, no direction changes.
+Character: slender hooded masked traveler, dark petrol teal hood/tunic, ivory angular mask, sage grey-green short shoulder mantle, bronze circular pin on SCREEN LEFT, ivory waist sash, black sleeves gloves leggings boots, bronze wrist and ankle cuffs. Maintain same outfit palette and body dimensions in all twelve drawings.
+Animate row-major:
+1 relaxed native idle both arms low.
+2 anticipation: screen-right shoulder gently lifts, elbow bent, hand rising; left arm stays down.
+3 reach: screen-right forearm unfolds at waist height, palm starting upward.
+4 aim: screen-right arm reaches toward screen right, elbow remains soft, palm open upwards.
+5 maximum reach open fingers, slightly counterturned chest, grounded narrow stance.
+6 seize: SAME screen-right hand closes into grasp, elbow begins to pull back.
+7 pull: SAME screen-right elbow bends, fist comes inward from the right toward chest, screen-left arm low.
+8 absorb: SAME screen-right hand arrives in front of sternum, elbow remains screen-right, shoulders turn slightly inward.
+9 settle: SAME hand at sternum, open fingers softly, small chest rise.
+10 release: SAME screen-right hand lowers from sternum towards waist, other arm low.
+11 recovery: active elbow relaxes and hand descends alongside hip, mantle follows softly.
+12 relaxed native idle matching pose1.
+CRITICAL ANATOMY: never swap active arms. In 6-10 trace screen-right shoulder to elbow on screen-right to hand in front of chest. The screen-left arm with bronze pin above it remains lowered throughout. Natural wrist alignment, no broken wrist, no detached hand, no extra arm. Feet planted, no squat, no walking, no weapon.
+Style: polished hand-drawn tactical RPG sprite, delicate dark outline, controlled cel shading, consistent light direction, same visual density in every frame. Body ONLY. NO spell effects, aura, particles, glow, shadow, text, background, floor or props. Genuine transparent alpha. All twelve full silhouettes must fit their own square cell without overlap.

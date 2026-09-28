@@ -1,0 +1,8 @@
+Edit only THREE cells of the supplied atlas: row1 column2, row2 column3, row3 column2. All other nine cells must remain unchanged.
+In these three cells the wrong arm is raised. ERASE their existing raised arms and redraw them using the anatomy of row2 column4 (the CORRECT chest pose).
+The arm under the circular bronze pin (on the left of each silhouette) must ALWAYS hang vertically at the side with glove at left hip. Copy that lowered arm from row2 column4 into all three edited cells.
+The arm on the right of the silhouette, under the point of the sage mantle WITHOUT a pin, does the gesture. Its upper arm goes DOWN AND RIGHT from that shoulder. Its elbow protrudes to the RIGHT of the torso. Its forearm bends back toward torso.
+row1 col2: this RIGHTMOST arm bends slightly forward, hand right of waist, starting to reach. Pin-side arm hangs.
+row2 col3: take correct pose row2 col4 but move the fist 40 pixels to the right and 12 pixels down, opening the RIGHTMOST elbow a little. Pin-side arm hangs.
+row3 col2: take correct pose row3 col1 but LOWER its active hand 40 pixels toward right waist. Its elbow remains OUTSIDE THE RIGHT of torso. Pin-side arm hangs.
+Preserve all heads, all feet, body dimensions, exact atlas grid, outfits and transparency. No effects, no labels, no background. Anatomical arm continuity matters more than any other change.

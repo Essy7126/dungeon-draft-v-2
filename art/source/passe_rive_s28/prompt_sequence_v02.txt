@@ -1,0 +1,9 @@
+Correct the attached 12-frame sprite sheet ONLY for arm continuity. This is an edit target. Keep the exact 4x3 layout, character design, all heads, torso costume, feet, camera, palette and transparent background unchanged.
+The active arm MUST always be the arm originating at the SCREEN-RIGHT shoulder. The arm below the round bronze pin on SCREEN LEFT must hang down quietly in ALL twelve cells, as it already does in cells1,4,5,8,9,11,12. Never lift the bronze-pin-side arm.
+Replace arms in cells2,3,6,7,10:
+cell2 (row1 col2): SCREEN-LEFT pin-side arm hangs exactly like cell1. SCREEN-RIGHT arm starts to lift forward, elbow screen-right, hand at waist on screen-right.
+cell3 (row1 col3): SCREEN-LEFT arm hangs as cell1. SCREEN-RIGHT arm unfolds palm up toward screen-right, halfway to cell4.
+cell6 (row2 col2): SCREEN-LEFT arm hangs as cell5. SCREEN-RIGHT shoulder connects to upper arm going rightward, elbow on screen-right, forearm reaches rightward and hand closes into a fist at the same location as cell5's open hand, just slightly closer to body. It must NOT cross from the screen-left shoulder.
+cell7 (row2 col3): SCREEN-LEFT arm hangs as cell8. SCREEN-RIGHT shoulder connects to elbow protruding on screen-right, forearm points up-left inward, fist halfway between cell6 reaching fist and cell8 sternum hand. Use cell8 arm construction, with elbow more open.
+cell10 (row3 col2): SCREEN-LEFT arm hangs as cell9. SCREEN-RIGHT arm lowers hand from sternum to screen-right waist, elbow still on screen-right.
+All remaining cells keep as-is. NO effects, text, floor, shadow. Real transparent alpha. Preserve same pose scale and support points.

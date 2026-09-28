@@ -13,6 +13,8 @@ Une validation technique ou un concept généré ne vaut pas validation artistiq
 
 [Braise tenace — source Blender, intégration et revue de la run Cartes actuelle](braise/README.md).
 
+[Passe-Rive — Prélèvement S28 intégré : geste, filament confirmé et revue en combat](../../art/source/passe_rive_s28/README.md). Essai : `./tools/class_card_vfx/passe_rive_s28/play.ps1` ; capture des cinq cas : ajouter `-Capture`.
+
 [Projets suivants à choisir : Contre préparé, Prélèvement, Convergence, Décret](../../docs/design/vfx_avant_production_lot3_2026-09-27/README.md).
 
 La production du 22 septembre remplace la DA éthérée par des poses dessinées.

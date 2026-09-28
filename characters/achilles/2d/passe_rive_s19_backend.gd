@@ -480,10 +480,10 @@ func confirm_drain(point: Vector2, damage: int, healing: int) -> bool:
 
 
 func owns_drain_heal_feedback() -> bool:
-	# The synchronous cast resolves while the body is sampled at its release.
-	# Outside that instant, unrelated healing retains the usual feedback.
+	# Battle can resume its cast coroutine on the frame after release. Own only
+	# the self-heal before this cast's report confirms its presentation.
 	return (
-			cards_mode and is_instance_valid(drain) and drain.visible \
-				and is_equal_approx(drain.seconds, DrainBody.RELEASE)
+		cards_mode and is_instance_valid(drain) and drain.visible \
+				and drain.seconds >= DrainBody.RELEASE
 		and not drain.siphon_confirmed
 	)
