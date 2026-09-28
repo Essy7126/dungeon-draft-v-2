@@ -208,6 +208,8 @@ func _play_current(id: String) -> void:
 		expected = KickBackend.PullBody.CLIP
 	elif binding.reference == "incantation":
 		expected = KickBackend.IncantationBody.CLIP
+	elif binding.reference == "drain":
+		expected = KickBackend.DrainBody.CLIP
 	elif binding.reference == "guard":
 		expected = KickBackend.GuardBody.CLIP
 	elif binding.reference == "dash":

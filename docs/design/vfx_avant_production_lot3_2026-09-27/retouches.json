@@ -1,0 +1,15 @@
+{
+  "tool": "image_gen built-in",
+  "edits": [
+    {
+      "id": "j_convergence",
+      "input": "C:/Users/paolo/.codex/generated_images/01a0bee7-b476-7853-b592-4723cee39252/exec-bbe302ec-be07-466f-a1f8-6ce3f88700b1.png",
+      "prompt": "Edit this VFX proposal sheet. Preserve the title, French labels, cel art, purple/ivory palette, parchment composition and BOTTOM TWO RULE DIAGRAMS unchanged (13 tiles for attraction, five for damage). Correct the geometry and character placement IN ALL THREE MAIN PANELS only. IMPORTANT: square floor-grid world directions run OBLIQUELY across the page, toward upper-left, upper-right, lower-left, lower-right. The effect is a PLUS IN WORLD GRID, so it appears as an oblique cross in this isometric view, not horizontal/vertical page directions. Choose the clearly marked EMPTY ivory-diamond center tile. Hero is at the third tile along the lower-left grid ray and must remain there. Three enemies occupy the upper-left, upper-right and lower-right grid rays, never the center. Panel 1: each enemy stands on the center of the SECOND tile from spell center along its ray. Panel 2: each moves exactly one tile toward center and now stands at the center of the adjacent tile on its ray. Three narrow heel streaks follow those actual oblique axes. Panel 3: same exact enemy and hero foot positions as panel 2. FOUR purple blades radiate toward the centers of all four adjacent squares along the floor grid, including the unoccupied lower-left arm; length bounded to the five-square cross. Ivory contact stars only at the THREE enemy occupied tiles, hero intact outside. Every foot must land on a TILE CENTER. Do not stack units, draw clones or rotate grid independently of effects. Preserve four-petal design and contraction from panel 1 to 2; no tornado. Keep all text and bottom drawings as before. Also remove tiny promotional slogans/logos at the outer corners; leave those corners blank parchment. This remains a concept illustration, not a game screenshot."
+    },
+    {
+      "id": "k_decret_dernier_souffle",
+      "input": "C:/Users/paolo/.codex/generated_images/01a0bee7-b476-7853-b592-4723cee39252/exec-ea10aba8-b7dd-42c1-ad87-e38fadaa4917.png",
+      "prompt": "Edit this concept sheet with TWO small changes only. In the first main panel \"01 · Décret posé\", reduce the floating gold seal to HALF its current HEIGHT and WIDTH, keep it beside the hero's shoulder and away from his face. It is the small initial arming gesture, the much larger split plates and white breath in panel 3 are reserved for the life-saving trigger. Keep panel 2 tiny waiting token, panel 3 trigger effect, all characters/positions, bottom seal model/endpoint hero, colors, typography, title, footer and \"1 PV\" EXACTLY as before. Second change: remove the tiny extra marketing slogans and CATABASE logos at outer corners, leaving blank parchment there. Do not alter the main title or subtitle. No other changes."
+    }
+  ]
+}

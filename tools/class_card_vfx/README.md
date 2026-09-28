@@ -13,6 +13,8 @@ Une validation technique ou un concept généré ne vaut pas validation artistiq
 
 [Braise tenace — source Blender, intégration et revue de la run Cartes actuelle](braise/README.md).
 
+[Projets suivants à choisir : Contre préparé, Prélèvement, Convergence, Décret](../../docs/design/vfx_avant_production_lot3_2026-09-27/README.md).
+
 La production du 22 septembre remplace la DA éthérée par des poses dessinées.
 112 cartes, 17 séquences de six poses, compositions spécifiques aux cartes fortes.
 [Sources, prompts, règles et contrôles](../../vfx/class_cards/cel/README.md).

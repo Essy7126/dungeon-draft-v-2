@@ -132,6 +132,8 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 			and visual.sprite_backend.get_runtime_state().get("pull_visible", false)
 		):
 			return # The hand-bound tether observes the same confirmed cast, without a second impact.
+	if str(spell.spell_id) == "cc2_t07" and _confirm_drain(caster, report):
+		return
 	var heel_origin := _heel_origin(caster)
 	if (
 		str(spell.spell_id) in ["cc2_n02", "cc2_g05", "cc2_fallback_guard"]
@@ -583,6 +585,13 @@ func _tick(fact: CombatEventFact) -> void:
 
 func _heal(fact: CombatEventFact) -> void:
 	if _in_scope(fact) and fact.amount_applied > 0:
+		if fact.source == fact.target and not fact.is_periodic:
+			var view: Node = manager._find_unit_view(fact.target)
+			var visual: Node = view.get("_optional_visual") if view != null else null
+			if visual is PasseRiveAutoSpriteView and is_instance_valid(visual.sprite_backend):
+				var backend: Node = visual.sprite_backend
+				if backend.has_method("owns_drain_heal_feedback") and backend.owns_drain_heal_feedback():
+					return # Confirmed report supplies the small hand accent; HP numbers stay native.
 		_at_unit(Catalog.feedback("heal"), fact.target)
 
 
@@ -1024,3 +1033,23 @@ func _drop_pending(caster: Unit) -> void:
 
 func _exit_tree() -> void:
 	clear()
+
+
+func _confirm_drain(caster: Unit, report: Dictionary) -> bool:
+	var view: Node = manager._find_unit_view(caster)
+	var visual: Node = view.get("_optional_visual") if view != null else null
+	if not visual is PasseRiveAutoSpriteView or not is_instance_valid(visual.sprite_backend):
+		return false
+	if not visual.sprite_backend.has_method("confirm_drain"):
+		return false
+	var cell: Vector2i = report.get("cell", caster.grid_pos)
+	var point: Vector2 = manager._grid_cell_global(cell) + Vector2(0, -40)
+	for target in report.get("damaged_enemies", []):
+		if not is_instance_valid(target):
+			continue
+		var target_view: Node = manager._find_unit_view(target)
+		if is_instance_valid(target_view):
+			point = target_view.get_cast_effect_origin_global()
+		break
+	return visual.sprite_backend.confirm_drain(point, int(report.get("hp_damage_total", 0)),
+		int(report.get("healing_total", 0)))

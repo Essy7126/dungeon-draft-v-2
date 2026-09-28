@@ -43,7 +43,7 @@ const CURRENT := {
 	"t04": ["t_mark", "Onde du Léthé : incantation partagée"],
 	"t05": ["t_fire", "Bûcher des ombres : projection de feu"],
 	"t06": ["incantation", "Jardin de givre : incantation de glyphe"],
-	"t07": ["t_mark", "Prélèvement : geste de siphon partagé"],
+	"t07": ["drain", "Prélèvement : viser, saisir, absorber, relâcher"],
 	"t08": ["t_mark", "Convergence : appel magique"],
 	"t09": ["incantation", "Résonance du sceau : incantation de résonance"],
 	"l01": ["t_mark", "Orage du passage : incantation de zone"],

@@ -15,6 +15,8 @@ const SUPPORT := Vector2(-18.3333584, 17.19648)
 const PullBody := preload("passe_rive_pull_body.gd")
 const IncantationBody := preload("passe_rive_incantation_body.gd")
 const GuardBody := preload("passe_rive_guard_body.gd")
+const DrainBody := preload("passe_rive_drain_body.gd")
+var drain: Sprite2D
 var guard: Sprite2D
 var incantation: Sprite2D
 var pull: Sprite2D
@@ -45,6 +47,10 @@ func configure(profile: AchillesSpriteVisualProfile) -> bool:
 	guard.name = "SceauDeParade"
 	add_child(guard)
 	guard.configure(profile)
+	drain = DrainBody.new()
+	drain.name = "Prelevement"
+	add_child(drain)
+	drain.configure(profile)
 	return true
 
 
@@ -62,6 +68,20 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 	var id := str(presentation.get("spell_id", str(action_id).trim_prefix("cast:")))
 	gesture_binding = Bindings.resolve(id)
 	var reference := str(gesture_binding.reference)
+	if reference == "drain":
+		if _facing == "SE":
+			return {
+				"stem": DrainBody.CLIP,
+				"duration": DrainBody.DURATION,
+				"release_seconds": DrainBody.RELEASE,
+				"release_frame": DrainBody.RELEASE_FRAME,
+				"legacy_loop": false,
+				"speed": 1.0,
+			}
+		gesture_binding["status"] = "pending_direction"
+		gesture_binding["fallback_reference"] = "t_mark"
+		gesture_binding["reason"] += " · geste directionnel existant : " + _facing
+		reference = "t_mark"
 	if reference == "guard":
 		if _facing == "SE":
 			return {
@@ -147,6 +167,8 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 
 
 func _show_native() -> void:
+	if is_instance_valid(drain):
+		drain.hide()
 	if is_instance_valid(guard):
 		guard.hide()
 	if is_instance_valid(incantation):
@@ -164,6 +186,8 @@ func _show_native() -> void:
 
 
 func _show(clip: String, frame: int) -> void:
+	if is_instance_valid(drain):
+		drain.hide()
 	if is_instance_valid(guard):
 		guard.hide()
 	if is_instance_valid(incantation):
@@ -186,7 +210,10 @@ func _show(clip: String, frame: int) -> void:
 
 
 func _select_clip(stem: String) -> void:
-	if stem == GuardBody.CLIP:
+	if stem == DrainBody.CLIP:
+		drain.reset_siphon()
+		_show_drain(0.0)
+	elif stem == GuardBody.CLIP:
 		guard.reset_ward()
 		_show_guard(0.0)
 	elif stem == IncantationBody.CLIP:
@@ -208,6 +235,9 @@ func _sample_weighted_clip(clip: StringName, phase: float) -> void:
 
 
 func _sample_action_at(seconds: float) -> void:
+	if cards_mode and _stem == DrainBody.CLIP:
+		_show_drain(seconds)
+		return
 	if cards_mode and _stem == GuardBody.CLIP:
 		_show_guard(seconds)
 		return
@@ -238,6 +268,9 @@ func _sample_action_at(seconds: float) -> void:
 
 func cancel_action() -> void:
 	super.cancel_action()
+	if is_instance_valid(drain):
+		drain.reset_siphon()
+		drain.hide()
 	if is_instance_valid(guard):
 		guard.reset_ward()
 		guard.hide()
@@ -253,6 +286,8 @@ func cancel_action() -> void:
 
 
 func get_vfx_origin() -> Vector2:
+	if is_instance_valid(drain) and drain.visible:
+		return drain.hand_position()
 	if is_instance_valid(guard) and guard.visible:
 		return guard.hand_position()
 	if is_instance_valid(incantation) and incantation.visible:
@@ -283,6 +318,20 @@ func get_runtime_state() -> Dictionary:
 	state["painted_weight"] = body.modulate.a if is_instance_valid(body) and body.visible else 0.0
 	state["directional_source"] = "autosprite_v1/" + str(state.get("animation", ""))
 	state["gesture_binding"] = gesture_binding.duplicate()
+	state["drain_visible"] = is_instance_valid(drain) and drain.visible
+	if state.drain_visible:
+		state["animation"] = DrainBody.CLIP
+		state["frame"] = drain.source_frame
+		state["painted_visible"] = true
+		state["painted_weight"] = 1.0
+		state["directional_source"] = drain.texture.resource_path
+		state["drawing_scale"] = drain.scale.x
+		state["drawing_scale_y"] = drain.scale.y
+		state["siphon_confirmed"] = drain.siphon_confirmed
+		state["siphon_visible"] = drain.siphon.visible
+		state["healing_glint"] = drain.siphon.glint and drain.siphon.visible
+		state["drained_hp"] = drain.hp_damage
+		state["healed_hp"] = drain.hp_healing
 	state["guard_visible"] = is_instance_valid(guard) and guard.visible
 	if state.guard_visible:
 		state["animation"] = GuardBody.CLIP
@@ -350,6 +399,8 @@ func _configure_kick(profile: AchillesSpriteVisualProfile) -> void:
 
 
 func _show_kick(frame: int) -> void:
+	if is_instance_valid(drain):
+		drain.hide()
 	if is_instance_valid(guard):
 		guard.hide()
 	if is_instance_valid(incantation):
@@ -371,6 +422,8 @@ func _show_kick(frame: int) -> void:
 
 
 func _show_pull(seconds: float) -> void:
+	if is_instance_valid(drain):
+		drain.hide()
 	if is_instance_valid(guard):
 		guard.hide()
 	if is_instance_valid(incantation):
@@ -382,6 +435,8 @@ func _show_pull(seconds: float) -> void:
 
 
 func _show_incantation(seconds: float) -> void:
+	if is_instance_valid(drain):
+		drain.hide()
 	if is_instance_valid(guard):
 		guard.hide()
 	animated_sprite.hide()
@@ -392,6 +447,8 @@ func _show_incantation(seconds: float) -> void:
 
 
 func _show_guard(seconds: float) -> void:
+	if is_instance_valid(drain):
+		drain.hide()
 	animated_sprite.hide()
 	body.hide()
 	kick.hide()
@@ -403,3 +460,30 @@ func _show_guard(seconds: float) -> void:
 func confirm_guard_ward() -> void:
 	if cards_mode and is_instance_valid(guard) and guard.visible:
 		guard.confirm_ward()
+
+
+func _show_drain(seconds: float) -> void:
+	animated_sprite.hide()
+	body.hide()
+	kick.hide()
+	pull.hide()
+	incantation.hide()
+	guard.hide()
+	drain.sample(seconds)
+
+
+func confirm_drain(point: Vector2, damage: int, healing: int) -> bool:
+	if not cards_mode or not is_instance_valid(drain) or not drain.visible:
+		return false
+	drain.confirm_siphon(point, damage, healing)
+	return drain.siphon_confirmed
+
+
+func owns_drain_heal_feedback() -> bool:
+	# The synchronous cast resolves while the body is sampled at its release.
+	# Outside that instant, unrelated healing retains the usual feedback.
+	return (
+			cards_mode and is_instance_valid(drain) and drain.visible \
+				and is_equal_approx(drain.seconds, DrainBody.RELEASE)
+		and not drain.siphon_confirmed
+	)

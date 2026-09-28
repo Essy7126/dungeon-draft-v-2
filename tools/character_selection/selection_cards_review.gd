@@ -34,15 +34,22 @@ func _run() -> void:
 				[setup._panel, setup._preview, screen.start_button],
 			)
 		await _press(screen.start_button)
-		await _press(screen.find_child("Starter_i_t_frost", true, false))
-		await _press(screen.find_child("ToggleStarter", true, false))
+		await _press(screen.find_child("Starter_t01", true, false))
+		await _press(screen.find_child("RemoveStarter", true, false))
 		_check(screen.start_button.disabled, "incomplete deck blocks next step", dimensions)
-		await _press(screen.find_child("Starter_i_t_guard", true, false))
-		await _press(screen.find_child("ToggleStarter", true, false))
-		_check(not screen.start_button.disabled, "five techniques unlock continuation", dimensions)
+		await _press(screen.find_child("Starter_n01", true, false))
 		_check(
-			"i_t_guard" in setup.selection.card_families
-			and "i_t_frost" not in setup.selection.card_families,
+			screen.find_child("StarterCategory", true, false).text == "Commune · toutes classes",
+			"common card is not attributed to selected class",
+			dimensions,
+		)
+		await _press(screen.find_child("ToggleStarter", true, false))
+		_check(not screen.start_button.disabled, "fifteen copies unlock continuation", dimensions)
+		_check(
+			setup.selection.card_families.count("n01") == 1 and setup.selection.card_families.count(
+				"t01"
+			)
+			== 2,
 			"chosen card replaces removed card",
 			dimensions,
 		)
@@ -53,6 +60,18 @@ func _run() -> void:
 		await _press(screen.start_button)
 		await _capture("review", dimensions, [setup._panel, screen.start_button])
 		var payload: Dictionary = setup.payload()
+		_check(
+			screen.find_children("ReviewFamily_*", "Button", true, false).size() == 6,
+			"review groups six families instead of fifteen copies",
+			dimensions,
+		)
+		await _press(screen.find_child("ReviewFamily_n01", true, false))
+		_check(
+			setup.step == 2 and setup._inspected == "n01",
+			"review links to inspected family",
+			dimensions,
+		)
+		_check(setup.payload() == payload, "inspection does not change prepared deck", dimensions)
 		await _press(screen.find_child("SetupStep_1", true, false))
 		await _press(screen.find_child("Choice_assassin", true, false))
 		await _press(screen.find_child("Choice_thaumaturge", true, false))
@@ -132,7 +151,8 @@ func _press(button: Button) -> void:
 	# Keep the native desktop pointer free. Feed both button events in one frame
 	# so an OS mouse-move from a concurrent user interaction cannot split the click.
 	var pressed := [false]
-	var observe := func(): pressed[0] = true
+	var observe := func():
+		pressed[0] = true
 	button.pressed.connect(observe, CONNECT_ONE_SHOT)
 	var button_name := str(button.name)
 	var motion := InputEventMouseMotion.new()

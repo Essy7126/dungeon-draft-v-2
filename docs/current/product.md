@@ -19,6 +19,10 @@ La sélection Cartes présente les apparences en galerie, un aperçu animé sur 
 et un résumé permanent du deck et de la difficulté. Les cinq étapes se revisitent
 avant le départ ; Échap revient à l'étape précédente. Une composition personnalisée
 est conservée lorsqu'on consulte une autre classe puis revient à la première.
+Les statistiques initiales sont affichées avant le départ et la notation P est
+expliquée dans les choix de classe et de cartes. Les cartes communes sont distinguées
+des cartes de classe. Le récapitulatif regroupe les copies par famille, affiche leur
+répartition par coût en PA et permet de revenir directement modifier une famille.
 La sélection Classique conserve sa fiche de caractéristiques et ses techniques,
 avec des portraits d'apparence agrandis et un rappel de la préparation au seuil.
 

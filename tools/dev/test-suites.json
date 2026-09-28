@@ -5,6 +5,7 @@
       "test_passe_rive_s24.gd",
       "test_passe_rive_s25.gd",
       "test_passe_rive_s27.gd",
+      "test_passe_rive_s28.gd",
       "test_passe_rive_s26.gd"
     ]
   },
@@ -33,6 +34,7 @@
       "test_passe_rive_s19.gd",
       "test_passe_rive_s25.gd",
       "test_passe_rive_s27.gd",
+      "test_passe_rive_s28.gd",
       "test_passe_rive_s26.gd",
       "test_class_painted_icons.gd",
       "test_persistent_run_combat_hud.gd"
@@ -129,6 +131,7 @@
       "test_passe_rive_s19.gd",
       "test_passe_rive_s25.gd",
       "test_passe_rive_s27.gd",
+      "test_passe_rive_s28.gd",
       "test_passe_rive_s26.gd",
       "test_class_painted_icons.gd",
       "test_persistent_run_combat_hud.gd"

@@ -8,6 +8,8 @@ const PAGE := preload("res://ui/selection/cards_choice_page.gd")
 const PREVIEW := preload("res://ui/characters/CharacterPreview3D.tscn")
 const Catalog := preload("res://ui/selection/consumable_departure_catalog.gd")
 const CardSkin := preload("res://ui/expedition/catabase_card_skin.gd")
+const D := preload("res://ui/expedition/player_dossier_skin.gd")
+const Readability := preload("res://ui/selection/departure_readability.gd")
 const STEPS := ["Apparence", "Classe", "Cartes", "Difficulté", "Départ"]
 var selection := Catalog.preset()
 var difficulty := "normal"
@@ -40,6 +42,8 @@ func configure(value: Array[Dictionary]) -> void:
 	entries = value
 	hero = mini(2, entries.size() - 1)
 	theme = preload("res://ui/expedition/catabase_ui_theme.gd").get_theme()
+	add_theme_font_override("font", D.FONT)
+	add_theme_color_override("font_color", D.PAPER)
 	for side in ["left", "right", "top", "bottom"]:
 		add_theme_constant_override("margin_" + side, 24)
 	var root := VBoxContainer.new()
@@ -74,7 +78,7 @@ func configure(value: Array[Dictionary]) -> void:
 	stage.add_theme_constant_override("separation", 8)
 	columns.add_child(stage)
 	var identity := PanelContainer.new()
-	identity.add_theme_stylebox_override("panel", CardSkin.surface(GOLD, false, 12))
+	identity.add_theme_stylebox_override("panel", D.surface(false, 12))
 	stage.add_child(identity)
 	var title_row := HBoxContainer.new()
 	identity.add_child(title_row)
@@ -109,7 +113,7 @@ func configure(value: Array[Dictionary]) -> void:
 		_pose_buttons.append(pose_button)
 	_action(poses, "›", "SetupRotateRight").pressed.connect(_rotate.bind(1))
 	var summary_panel := PanelContainer.new()
-	summary_panel.add_theme_stylebox_override("panel", CardSkin.surface(GOLD, false, 12))
+	summary_panel.add_theme_stylebox_override("panel", D.surface(false, 12))
 	stage.add_child(summary_panel)
 	var summary_body := VBoxContainer.new()
 	summary_body.add_theme_constant_override("separation", 8)
@@ -173,7 +177,7 @@ func _update_hero() -> void:
 
 
 func _accent() -> Color:
-	return Catalog.Ecology.CLASS_COLORS[selection.class_id]
+	return Catalog.Ecology.CLASS_COLORS[selection.class_id].lightened(.25)
 
 
 func _render() -> void:
@@ -184,7 +188,7 @@ func _render() -> void:
 			parent.remove_child(child)
 			child.queue_free()
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("101e1bf2")
+	style.bg_color = Color("28221ef5")
 	style.border_color = GOLD.darkened(.3)
 	style.set_border_width_all(1)
 	style.border_width_top = 3
@@ -196,6 +200,7 @@ func _render() -> void:
 	_class_label.modulate = _accent()
 	_crest.texture = Catalog.icon(selection.class_id)
 	_summary.text = "%s · %d / 15 copies\n5 en main · chaque carte jouée est consommée" % ["Difficulté normale" if difficulty == "normal" else "Difficulté facile", selection.card_families.size()]
+	_summary.text += "\n" + Readability.stats_text()
 	for child in _deck_strip.get_children():
 		_deck_strip.remove_child(child)
 		child.queue_free()
@@ -209,7 +214,7 @@ func _render() -> void:
 		card.tooltip_text = "%d × %s · %d PA · %s\n%s" % [selection.card_families.count(id), spell.spell_name, spell.ap_cost, _range(spell), spell.description]
 	CardSkin.icon_button(start_button, GOLD)
 	var launch_style := CardSkin.surface(GOLD, true, 10)
-	launch_style.bg_color = Color("315a45")
+	launch_style.bg_color = Color("584330")
 	start_button.add_theme_stylebox_override("normal", launch_style)
 	start_button.add_theme_font_size_override("font_size", 22)
 	for index in STEPS.size():
@@ -243,6 +248,12 @@ func _render() -> void:
 		_render_review()
 	else:
 		_render_choice()
+	for button in find_children("*", "Button", true, false):
+		D.button(button, button.button_pressed)
+		button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		button.add_theme_stylebox_override("hover_pressed", D.surface(true, 9))
+	start_button.add_theme_stylebox_override("normal", launch_style)
+	start_button.add_theme_font_size_override("font_size", 22)
 	_restore_focus.call_deferred(focus_name)
 
 
@@ -299,6 +310,7 @@ func _render_classes() -> void:
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][1], 21)
 	PAGE.text(body, "BONUS DE CLASSE", 13).modulate = GOLD
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][2], 18)
+	PAGE.text(body, Readability.power_help(), 15).modulate = GOLD
 	PAGE.text(body, "À PRENDRE EN COMPTE", 13).modulate = GOLD
 	PAGE.text(body, Catalog.CLASSES[selection.class_id][3], 16)
 	PAGE.text(body, "VOTRE PREMIÈRE COMBINAISON", 13).modulate = _accent()
@@ -379,10 +391,13 @@ func _render_cards() -> void:
 	var detail_titles := VBoxContainer.new()
 	detail_titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail_header.add_child(detail_titles)
-	PAGE.text(detail_titles, Catalog.CLASSES[selection.class_id][0] + " / INITIATION", 13).modulate = _accent()
+	var category := PAGE.text(detail_titles, Readability.category(_inspected), 13)
+	category.name = "StarterCategory"
+	category.modulate = GOLD
 	PAGE.text(detail_titles, selected_spell.spell_name, 23)
 	PAGE.text(detail, "%d PA  ·  %s" % [selected_spell.ap_cost, _range(selected_spell)], 18)
 	PAGE.text(detail, selected_spell.description, 16)
+	PAGE.text(detail, Readability.power_help(), 15).modulate = GOLD
 	var toggle := Button.new()
 	toggle.name = "ToggleStarter"
 	var included: bool = _inspected in selection.card_families
@@ -411,7 +426,7 @@ func _render_cards() -> void:
 		"Valeurs au départ, avant les protections de la cible et les bonus conditionnels.",
 		13,
 	)
-	PAGE.text(_page, "DANS VOTRE DECK  ·  " + _deck_titles(), 14).modulate = _accent()
+	PAGE.text(_page, Readability.deck_text(selection.card_families), 14).modulate = GOLD
 
 
 func _range(spell: Spell) -> String:
@@ -442,18 +457,20 @@ func _render_review() -> void:
 		% ("normale" if difficulty == "normal" else "facile"),
 		17,
 	)
-	for id in selection.card_families:
+	PAGE.text(body, Readability.stats_text() + "\nSans équipement · 2 actions de secours hors deck", 17)
+	PAGE.text(body, Readability.deck_text(selection.card_families), 16).modulate = GOLD
+	PAGE.text(body, "Cliquez une famille pour modifier ses copies.", 14)
+	var counts := Readability.counts(selection.card_families)
+	for id in counts:
 		var spell := Catalog.make_spell(id, 2)
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 12)
-		body.add_child(row)
-		_art(row, spell.icon, 48)
-		var card_label := PAGE.text(
-			row,
-			"%s  ·  %d PA  ·  %s" % [spell.spell_name, spell.ap_cost, Catalog.row(id)[9]],
-			17,
-		)
-		card_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var button := _action(body, "%d × %s  ·  %d PA  ·  %s" % [counts[id], spell.spell_name, spell.ap_cost, _range(spell)], "ReviewFamily_" + str(id))
+		button.icon = spell.icon
+		button.expand_icon = true
+		button.add_theme_constant_override("icon_max_width", 42)
+		button.custom_minimum_size.y = 52
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.tooltip_text = Readability.category(id) + "\n" + spell.description
+		button.pressed.connect(func(): _inspected = id; step = 2; _render())
 	PAGE.text(
 		body,
 		"Votre deck est prêt. Il sera utilisé dès le premier combat, sans nouvelle sélection au seuil.",

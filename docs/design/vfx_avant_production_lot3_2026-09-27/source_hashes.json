@@ -1,0 +1,26 @@
+[
+  {
+    "sha256": "F7858B253A6AF464563E18B25FC55CC504BDE2B0EF40E37859339639BDFE10DF",
+    "path": "data/cards/consumable_v2/catalog.json"
+  },
+  {
+    "sha256": "660A69BBFA9A42D399C24B0C1E96BEDE0667379D04E4D7004690EA732FC169C2",
+    "path": "core/expedition/consumable_card_spells.gd"
+  },
+  {
+    "sha256": "20F02327352C99984682D50998C6237ADEF11B7163086D02CB03D2202AD4F148",
+    "path": "core/expedition/consumable_card_modifier.gd"
+  },
+  {
+    "sha256": "360E05B7BF927EDEF64D3CBB05D999A92CC8E1D24237D12690018200AE90D231",
+    "path": "core/expedition/consumable_card_effects.gd"
+  },
+  {
+    "sha256": "4B0EDEAF635E316F81A69073F361826AE1B22D3AFC840EA94770EB94816DFE07",
+    "path": "core/expedition/consumable_card_turns.gd"
+  },
+  {
+    "sha256": "F1B48FAC17457D24B112FBA722A1816DA704DE2421D885CD556F0DAC29F6231B",
+    "path": "units/unit.gd"
+  }
+]
