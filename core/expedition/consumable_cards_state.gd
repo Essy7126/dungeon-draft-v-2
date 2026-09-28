@@ -17,6 +17,7 @@ var pending_choice: Dictionary = { }
 var followed_families: Array[String] = []
 var encounter_id := ""
 var run_seed := 0
+var bestiary_revision := 0 # Missing in pre-bestiary saves; never change their roster.
 var round_index := 0
 var hand_capacity := 5
 var moved_cells := 0
@@ -385,6 +386,8 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 	# Validate a detached candidate. A rejected restore never mutates this object.
 	var candidate = get_script().new()
 	for key in _persistent_keys():
+		if key == "bestiary_revision" and not data.has(key):
+			continue
 		if not data.has(key):
 			return false
 		var current: Variant = candidate.get(key)
@@ -441,6 +444,7 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 
 static func _persistent_keys() -> Array[String]:
 	return [
+		"bestiary_revision",
 		"primary_class",
 		"specialization",
 		"level",
@@ -493,7 +497,7 @@ static func _persistent_keys() -> Array[String]:
 func invariant_errors() -> Array[String]:
 	var errors: Array[String] = []
 	if (
-		primary_class not in Catalog.CLASSES or level < 1 or level > 12 or gold < 0
+		bestiary_revision not in [0, 1] or primary_class not in Catalog.CLASSES or level < 1 or level > 12 or gold < 0
 		or experience < 0 or round_index < 0 or serial < 0 or hand_capacity < 1 or hand_capacity > 7
 	):
 		errors.append("Profil ou ressources invalides.")

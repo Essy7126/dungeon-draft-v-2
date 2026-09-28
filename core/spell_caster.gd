@@ -637,11 +637,15 @@ func resolve_pending_activation(
 			)
 			EventBus.pending_ability_blocked.emit(caster, spell, result["reason"])
 			return result
+		var damage_options := {}
+		for modifier in _gather_modifiers(caster, spell):
+			damage_options.merge(modifier.get_delayed_damage_options(caster, spell, target), true)
 		target.take_damage(
 			spell.get_scaled_damage(caster),
 			caster,
 			spell.damage_type,
 			spell.element,
+			damage_options,
 		)
 		# Delayed projectiles apply their authored status only after a valid
 		# impact. Cancelled telegraphs and lethal hits cannot leave a status.

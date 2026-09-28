@@ -8,6 +8,8 @@ const Enemies := preload("res://core/expedition/consumable_enemy_rules.gd")
 const Math := preload("res://core/expedition/consumable_card_math.gd")
 const NativeStatuses := preload("res://core/expedition/consumable_native_status_checkpoint.gd")
 const RoomRules := preload("res://core/expedition/consumable_room_rules.gd")
+const Profile := preload("res://core/expedition/consumable_enemy_profile.gd")
+const NativeCheckpoint := preload("res://core/expedition/consumable_enemy_checkpoint.gd")
 var battle: Node
 var session: ExpeditionSession
 var restoring := false
@@ -22,8 +24,20 @@ func setup(value: Node, state: ExpeditionSession) -> void:
 	Integration.rebuild(session)
 	var hero := session.character.unit
 	hero.initiative.base_value = 100
+	if session.cards.bestiary_revision == 1: hero.combat_order = 0
 	var definition := Integration.encounter(session)
 	var roster: Array = battle.units.filter(func(unit): return unit.team != hero.team)
+	if session.cards.bestiary_revision == 1:
+		# The placement planner orders actors by formation. Save identities follow
+		# the authored roster, independently of those cell-selection priorities.
+		var unassigned := roster.duplicate()
+		roster = []
+		for data: UnitData in battle.room_data.enemies:
+			for candidate: Unit in unassigned:
+				if candidate.content_unit_id == data.get_effective_unit_id():
+					roster.append(candidate)
+					unassigned.erase(candidate)
+					break
 	definition.roster = []
 	for unit in roster:
 		var id: String = (str(unit.unit_id) + " " + unit.unit_name).to_lower()
@@ -41,6 +55,10 @@ func setup(value: Node, state: ExpeditionSession) -> void:
 	for index in roster.size():
 		var unit: Unit = roster[index]
 		var model: Unit = models[index]
+		if session.cards.bestiary_revision == 1:
+			bind_enemy(unit, index)
+			eligible.append(str(unit.unit_id))
+			continue
 		# Stable encounter identity distinguishes two copies of the same monster.
 		unit.unit_id = StringName("cc2_enemy_%02d" % index)
 		eligible.append(str(unit.unit_id))
@@ -72,6 +90,29 @@ func setup(value: Node, state: ExpeditionSession) -> void:
 		battle.grid_view.add_child(room_overlay)
 	if not EventBus.action_resolved.is_connected(_on_action): EventBus.action_resolved.connect(_on_action)
 	if not EventBus.hp_damage_taken.is_connected(_on_health_loss): EventBus.hp_damage_taken.connect(_on_health_loss)
+	# Runtime IDs are now final; update commander links and formation sources.
+	if session.cards.bestiary_revision == 1: battle.grid._next_combat_order = roster.size() + 1
+	battle.grid._refresh_tactical_links()
+
+
+func bind_enemy(unit: Unit, index: int, summoned := false) -> void:
+	unit.unit_id = StringName("cc2_enemy_%02d" % index)
+	unit.combat_order = index + 1
+	var data := UnitData.new()
+	data.unit_id = unit.content_unit_id
+	data.unit_name = unit.unit_name
+	data.maximum_range = unit.maximum_range
+	data.preferred_range = unit.preferred_range
+	var archetype := Profile.kind(data, session.route.get_current_node().kind == "boss" and index == 0)
+	for pair in [["cc2_ruleset", Effects.ID], ["cc2_kind", archetype], ["cc2_spawn", index], ["cc2_boss", archetype == "boss"], ["cc2_phase", 1], ["cc2_sacrificed", false], ["cc2_intent", {}], ["cc2_variant", ""], ["cc2_summoned", summoned]]:
+		unit.set_meta(pair[0], pair[1])
+	unit.set_meta("cc2_native_type", str(unit.content_unit_id) if Profile.NATIVE.has(str(unit.content_unit_id)) else "")
+	if not summoned: unit.reset_combat_resources()
+
+
+func on_spawn(unit: Unit) -> void:
+	if session.cards.bestiary_revision != 1 or restoring: return
+	bind_enemy(unit, battle.units.find(unit) - 1, true)
 
 
 func begin_activation(unit: Unit) -> bool:
@@ -83,6 +124,8 @@ func begin_activation(unit: Unit) -> bool:
 	Enemies.update_boss_phase(battle.units)
 	for other in battle.units: other.clear_shield_source(StringName("cc2_support_" + str(unit.unit_id)))
 	if skipped:
+		if unit.has_meta("cc2_native_type") and not str(unit.get_meta("cc2_native_type")).is_empty():
+			battle.spell_caster.cancel_pending_for_unit(unit, &"stasis")
 		unit.set_meta("cc2_intent", {})
 		_publish_intent(unit)
 	elif room_rules != null:
@@ -119,6 +162,9 @@ func round_started(number: int) -> void:
 
 
 func run_enemy(unit: Unit) -> void:
+	if not str(unit.get_meta("cc2_native_type", "")).is_empty():
+		await battle._enemy_turn.run(unit)
+		return
 	if unit.activation_consumed: return
 	var generation: int = battle._lifecycle_generation
 	var hero := session.character.unit
@@ -214,7 +260,10 @@ func checkpoint() -> bool:
 	if battle.turn_queue.get_current_unit() != session.character.unit: return false
 	var records := []
 	var ordered: Array = [session.character.unit]
-	ordered.append_array(battle.units.filter(func(unit): return unit != session.character.unit))
+	var enemies: Array = battle.units.filter(func(unit): return unit != session.character.unit)
+	if session.cards.bestiary_revision == 1:
+		enemies.sort_custom(func(a, b): return int(a.get_meta("cc2_spawn")) < int(b.get_meta("cc2_spawn")))
+	ordered.append_array(enemies)
 	for unit in ordered:
 		var metadata := {}
 		for key in unit.get_meta_list():
@@ -222,11 +271,17 @@ func checkpoint() -> bool:
 		var queued := {}
 		for key in ["next_turn_ap_modifier", "next_turn_mp_bonus", "next_turn_mp_penalty", "_moved_cells_this_activation", "_mp_spent_this_activation"]: queued[key] = unit.get(key)
 		records.append({"id": str(unit.unit_id), "cell": [unit.grid_pos.x, unit.grid_pos.y], "hp": unit.current_hp, "ap": unit.current_ap, "mp": unit.current_mp, "alive": unit.is_alive, "activation": unit.activation_index, "consumed": unit.activation_consumed, "abilities": unit._ability_states.duplicate(true), "shields": unit.get_shield_instances_snapshot(), "statuses": NativeStatuses.snapshot(unit), "queued": queued, "metadata": metadata})
+		if session.cards.bestiary_revision == 1: records[-1]["native"] = NativeCheckpoint.snapshot(unit)
 	var native_terrain := {"serial": battle.terrain_effects.runtime_service._resolution_serial, "void": {}, "electric": battle.terrain_effects.runtime_service._electrified_trigger_by_unit.duplicate(true)}
 	for unit in ordered:
 		var used: int = battle.terrain_effects.runtime_service._void_impulse_round_by_unit.get(unit.get_instance_id(), -1)
 		if used >= 0: native_terrain.void[str(unit.unit_id)] = used
 	session.combat_checkpoint = JSON.parse_string(JSON.stringify({"version": 2, "node": session.route.current_node_id, "round": battle.turn_queue.round_number, "units": records, "surfaces": Terrain.snapshot(battle.terrain_effects), "native_terrain": native_terrain, "cast_sequence": battle.spell_caster._cast_sequence, "room": room_rules.state if room_rules != null else {}}))
+	if session.cards.bestiary_revision == 1:
+		session.combat_checkpoint.version = 3
+		session.combat_checkpoint["summon_budgets"] = NativeCheckpoint.budgets(battle.encounter_runtime_state)
+		session.combat_checkpoint["turn_order"] = battle.turn_queue.get_full_order().map(func(actor): return str(actor.unit_id))
+		session.combat_checkpoint = JSON.parse_string(JSON.stringify(session.combat_checkpoint))
 	session.gold = session.cards.gold
 	save_failed = not GameManager.commit_consumable_combat_checkpoint()
 	return not save_failed
@@ -236,8 +291,18 @@ func restore_checkpoint() -> bool:
 	var checkpoint: Dictionary = session.combat_checkpoint
 	if checkpoint.is_empty(): return false
 	restoring = true
+	if int(checkpoint.version) == 3:
+		for index in range(battle.units.size(), checkpoint.units.size()):
+			var saved: Dictionary = checkpoint.units[index]
+			var summoned := Unit.from_data(Profile.summon_data(saved.native.type, session.route.get_current_node()))
+			bind_enemy(summoned, index - 1, true)
+			battle.units.append(summoned)
+			battle.turn_queue.add_unit(summoned)
+			battle._on_pending_unit_spawned(summoned)
 	var units := {}
 	for unit in battle.units: units[str(unit.unit_id)] = unit
+	if int(checkpoint.version) == 3:
+		for saved in checkpoint.units: units[saved.id].combat_order = int(saved.native.order)
 	if int(checkpoint.version) >= 2 and room_rules != null and not checkpoint.room.is_empty():
 		room_rules.restore(checkpoint.room)
 	# Restoring occupancy must not fire entry hazards, teleports or reactions.
@@ -270,7 +335,14 @@ func restore_checkpoint() -> bool:
 		if is_instance_valid(view):
 			view.position = battle.grid_cell_to_parent_local(cell, view.get_parent())
 			view.visible = unit.is_alive
+		if int(checkpoint.version) == 3: NativeCheckpoint.restore_pending(unit, saved.native, units, battle.encounter_runtime_state)
 	battle.grid.set_block_signals(false)
+	if int(checkpoint.version) == 3:
+		battle.encounter_runtime_state.normal_summons_committed = int(checkpoint.summon_budgets.normal)
+		battle.encounter_runtime_state.chief_summons_committed = int(checkpoint.summon_budgets.chief)
+		battle.grid._next_combat_order = 1 + checkpoint.units.map(func(entry): return int(entry.native.order)).max()
+		battle.grid._refresh_tactical_links()
+		battle.turn_queue._order.assign(checkpoint.turn_order.map(func(id): return units[id]))
 	if int(checkpoint.version) == 1 and room_rules != null and not room_rules.state.is_empty():
 		# Older integrated fights had no mechanisms to replay. Start their room state
 		# at the restored decision, with the current hand, resources and consumed UIDs.
@@ -303,6 +375,8 @@ func restore_checkpoint() -> bool:
 	battle._hud_port.build_actions(session.character.unit)
 	battle.turn_queue.queue_changed.emit()
 	for unit in battle.units:
-		if unit.team != session.character.unit.team: _publish_intent(unit)
+		if unit.team != session.character.unit.team:
+			_publish_intent(unit)
+			if int(checkpoint.version) == 3: NativeCheckpoint.publish(unit)
 	restoring = false
 	return true

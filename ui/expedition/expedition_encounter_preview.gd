@@ -10,6 +10,11 @@ static func describe(node: Dictionary, seed_value: int = 0) -> Dictionary:
 	if not ExpeditionRouteCatalog.is_combat(str(node.get("kind", "unknown"))):
 		return {}
 	var preview: Dictionary = ENCOUNTERS.encounter_preview(node).duplicate(true)
+	var profile := preload("res://core/expedition/consumable_enemy_profile.gd")
+	if profile.enabled(node):
+		preview["name"] = {2: "Patrouille osseuse", 6: "Légion de glace", 8: "Le débat des Enfers", 17: "Les derniers arguments"}.get(int(node.depth), str(node.get("title", "Rencontre")))
+		preview["summary"] = profile.hint(node) if not profile.hint(node).is_empty() else str(node.get("hint", "Surveillez les attaques annoncées."))
+		preview["counterplay"] = "Bloquez les invocations et sortez du contact avant la Sentence." if int(node.depth) == 6 else "Séparez les adversaires et gardez une voie de déplacement."
 	if preview.is_empty():
 		return {}
 	# Route presentation deliberately hides room_index. Reconstruct the canonical
@@ -57,4 +62,6 @@ static func _spell_values(spell: Spell, unit: UnitData) -> String:
 		values.append("bouclier %d" % shield)
 	if spell.max_uses_per_combat > 0:
 		values.append("%d usage%s/combat" % [spell.max_uses_per_combat, "s" if spell.max_uses_per_combat > 1 else ""])
+	if spell.cooldown_activations > 0: values.append("relance %d activations" % spell.cooldown_activations)
+	if spell.once_per_activation: values.append("une fois par activation")
 	return " · ".join(values)

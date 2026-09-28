@@ -682,6 +682,8 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 				if route.phase == "combat": return false
 			if not snapshot.get("combat_checkpoint", {}) is Dictionary: return false
 			combat_checkpoint = snapshot.get("combat_checkpoint", {}).duplicate(true)
+			route.consumable_cards_enabled = true
+			route.consumable_bestiary_revision = cards.bestiary_revision
 			if not preload("res://core/expedition/consumable_expedition_checkpoint.gd").valid(self, combat_checkpoint): return false
 			Consumable.rebuild(self, false, true)
 		else:

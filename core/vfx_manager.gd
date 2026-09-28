@@ -598,7 +598,7 @@ func _clear_class_card_effects() -> void:
 
 
 func _is_philosopher_spell(caster: Unit, spell: Spell) -> bool:
-	return caster != null and caster.unit_id == &"philosopher_mage" and spell != null \
+	return caster != null and (caster.unit_id == &"philosopher_mage" or caster.content_unit_id == &"philosopher_mage") and spell != null \
 		and spell.get_effective_spell_id() in PHILOSOPHER_SPELLS
 
 

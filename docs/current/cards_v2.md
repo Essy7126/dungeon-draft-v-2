@@ -29,6 +29,12 @@ les haltes de Catabase. Il n'existe plus de troisième variante publique.
 ses douze combats. Les sept petites arènes du prototype servent aux tests des
 règles ; elles ne remplacent pas les cartes et les décors de la run.
 
+Les nouvelles parties rencontrent aussi la famille squelette : patrouille au
+combat 2, puis légion du centurion au combat 5. Le Dialecticien intervient aux
+combats 6 et 11 avec son contrôle et ses soutiens. Leurs kits natifs, les budgets
+et les invocations bornées sont détaillés dans le [contrat du bestiaire](cards_bestiary.md).
+Les parties déjà sauvegardées conservent leur bestiaire initial.
+
 Les combats 4, 5, 6, 8, 9 et 11 portent leurs mécanismes sur ces mêmes décors :
 presse, sablier, jardin, convoi et réservoirs. Les zones orange annoncent les
 impacts ; les repères turquoise indiquent les leviers, socles, autel et réserves.
@@ -58,6 +64,10 @@ Les mécanismes sont aussi sauvegardés : commande dépensée, rail, croix,
 charges, sceau, sacrifices et bonus du convoi. Les anciens checkpoints intégrés
 sans mécanisme restent repris avec leur main et leurs ressources ; ils
 initialisent le mécanisme à cette décision, sans rejouer les tours antérieurs.
+
+Pour le nouveau bestiaire, le checkpoint 3 conserve aussi les renforts,
+l'ordre de jeu, les budgets d'invocation dépensés et les annonces natives en
+attente. Une reprise n'ajoute ni invocation gratuite ni tirage de butin.
 
 La victoire est enregistrée dès la fin de l'action, avant l'animation de sortie.
 Les changements d'équipement conservent le ratio de PV non arrondi, y compris

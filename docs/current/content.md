@@ -1,6 +1,6 @@
 # Personnages et maps — statut du contenu
 
-État consolidé le 21 septembre 2026. « Absent du menu » ne signifie pas « sans
+État consolidé le 21 septembre 2026, bestiaire Cartes actualisé le 28 septembre. « Absent du menu » ne signifie pas « sans
 dépendance ». Le catalogue public est `ui/selection/character_selection_catalog.gd` ;
 `get_entries(true)` ajoute seulement le scénario philosophe aux tests/laboratoires.
 Le trio et la salle de l'Archiviste ont été retirés du produit.
@@ -12,7 +12,9 @@ Le trio et la salle de l'Archiviste ont été retirés du produit.
 | Cartes consommables | Règles intégrées au parcours Cartes existant : 48 familles, 18 équipements et huit reliques sous `data/cards/consumable_v2/`. Les douze combats utilisent les cartes et apparences existantes ; les sept arènes 7×7 servent de fixtures de règles. [Guide et validation](cards_v2.md) |
 | Paris | Référencé notamment par `data/units/enemies/catabase_shadow_paris.tres` ; pas un personnage à supprimer en bloc |
 | Elfe, Mage, Guerrier | Modèles, textures et scènes spécifiques supprimés ; fiches de régression dans `test/fixtures/party_rules/`, sur un mannequin commun. Sorts et progressions partagés encore testés conservés dans `data/` |
-| Mage philosophe et spectre | Scénario `philosopher_trial`, laboratoires et tests ; conservés hors parcours public |
+| Mage philosophe | Le Dialecticien rejoint les nouvelles runs Cartes aux profondeurs 8 et 17, avec ses cinq sorts et son IA de soutien. `philosopher_trial` reste un laboratoire explicite |
+| Famille squelette | Mêlée et archer à la profondeur 2 ; centurion de glace, chef rouge, mêlée et archer au premier élite (profondeur 6). Kits natifs adaptés aux budgets Cartes, deux invocations bornées sans butin supplémentaire. [Contrat du bestiaire](cards_bestiary.md) |
+| Spectre | Ressources partagées par `philosopher_trial`, les laboratoires et les rencontres existantes ; ne pas supprimer sur la seule absence du menu |
 | Salle de l'Archiviste | Supprimée avec son modèle, son décor, ses panneaux et ses outils spécifiques. Les anciens retours de run vont au titre |
 | Refuge des braises, haltes et Seuil | Parcours actuels conservés, distincts de la salle de l'Archiviste |
 | Maps Catabase et branches | Catalogues `core/expedition/`, `data/rooms/catabase_routes/`, `data/rooms/catabase_expansion/` et explorateur |

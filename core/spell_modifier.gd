@@ -48,6 +48,11 @@ func get_ap_cost(_caster, _spell, base_cost: int) -> int:
 func get_heal_amount(_caster, _spell, base_amount: int) -> int:
 	return base_amount
 
+
+## Delayed strikes resolve outside CastContext, but use the same damage policy.
+func get_delayed_damage_options(_caster, _spell, _target) -> Dictionary:
+	return {}
+
 # Remplace la portée minimale d'un sort avant la validation de cible. Une
 # valeur négative signifie « aucun override ». Lorsque plusieurs sources sont
 # actives, SpellCaster retient la contrainte la plus forte pour que l'ordre des

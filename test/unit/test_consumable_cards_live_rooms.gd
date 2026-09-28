@@ -54,10 +54,12 @@ func after_each() -> void:
 	await wait_process_frames(2)
 
 
-func load_depth(depth: int) -> void:
+func load_depth(depth: int, bestiary_revision := 1) -> void:
 	driver.cleanup_run_state()
 	ExpeditionSaveService.remove_snapshot("user://rooms_driver.json")
 	assert_true(driver.start_expedition(33, { }, false, true, "normal", true))
+	driver.expedition.cards.bestiary_revision = bestiary_revision
+	Runtime.Integration.rebuild(driver.expedition)
 	while int(driver.expedition.route.get_current_node().depth) < depth:
 		var session: ExpeditionSession = driver.expedition
 		if session.route.phase == "combat":
@@ -132,6 +134,23 @@ func test_five_room_commands_are_visible_saved_and_not_replayed_on_resume() -> v
 			room.end_hero()
 			assert_gt(room.state.charges[0], 0)
 			hero.current_ap = 4 # next decision fixture; charge storage itself is real
+		if room.room_id == "garden":
+			# The new support formation may legally start on this pedestal.
+			# Check the obstruction, then free it for the command/replay fixture.
+			var destination: Vector2i = room.layout.pedestals[int(str(entry[2])[-1])]
+			var occupant: Unit = battle.grid.get_unit(destination)
+			if occupant != null:
+				assert_eq(room.failure(entry[2]), "Socle occupé.")
+				assert_false(runtime.use_room_command(entry[2]))
+				var freed := false
+				for y in battle.grid.rows:
+					for x in battle.grid.cols:
+						var cell := Vector2i(x, y)
+						if cell != destination and battle.grid.is_walkable(cell):
+							freed = battle.grid.relocate_unit(occupant, cell)
+							if freed: break
+					if freed: break
+				assert_true(freed)
 		var hand: Array = cards.hand.duplicate()
 		var consumed: Dictionary = cards.consumed.duplicate(true)
 		await wait_process_frames(3)
@@ -175,7 +194,7 @@ func test_five_room_commands_are_visible_saved_and_not_replayed_on_resume() -> v
 				return u.grid_pos,
 		)
 		var saved := ExpeditionSaveService.read_snapshot(path)
-		assert_eq(saved.session.combat_checkpoint.version, 2.0)
+		assert_eq(saved.session.combat_checkpoint.version, 3.0)
 		await mount(saved)
 		assert_eq(battle._cards_runtime.room_rules.state, JSON.parse_string(JSON.stringify(before)))
 		assert_eq(
@@ -299,6 +318,7 @@ func test_boss_periodic_transition_keeps_pending_intent_and_same_health_pool() -
 	assert_eq(boss.get_meta("cc2_phase"), 2)
 	assert_eq(boss.current_hp, hp - burn)
 	var older := saved.duplicate(true)
+	older.session.cards_run.erase("bestiary_revision")
 	older.session.combat_checkpoint.version = 1
 	older.session.combat_checkpoint.erase("room")
 	for record in older.session.combat_checkpoint.units:
@@ -444,7 +464,7 @@ func test_garden_and_reservoir_continue_on_the_next_living_enemy_after_reload() 
 
 
 func test_version_one_checkpoint_keeps_the_players_hand_when_room_rules_are_added() -> void:
-	await load_depth(5)
+	await load_depth(5, 0)
 	var hero: Unit = GameManager.expedition.character.unit
 	var spell: Spell = GameManager.expedition.cards.family_spell("fallback_guard")
 	await battle._on_request_cast_spell(spell, hero.grid_pos)

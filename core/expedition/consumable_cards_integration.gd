@@ -32,6 +32,7 @@ static func prepare(session, selection: Dictionary, inventory: RunInventory) -> 
 	session.build.class_mode = true
 	session.cards.initialize_deck(selection)
 	session.cards.run_seed = session.route.seed
+	session.cards.bestiary_revision = 1 if session.route.get_catalog_revision() == 6 else 0
 	session.card_inventory = inventory
 	if inventory != null:
 		for item in inventory.get_slots():
@@ -51,6 +52,7 @@ static func prepare(session, selection: Dictionary, inventory: RunInventory) -> 
 
 static func rebuild(session, proportional := false, restoring := false) -> void:
 	session.route.consumable_cards_enabled = true
+	session.route.consumable_bestiary_revision = session.cards.bestiary_revision
 	var hero: Unit = session.character.unit
 	var maximum := hero.max_hp.get_int()
 	var hp := hero.current_hp

@@ -4,13 +4,16 @@ const NativeStatuses := preload("res://core/expedition/consumable_native_status_
 static func valid(session: ExpeditionSession, value: Dictionary) -> bool:
 	if value.is_empty(): return not session.cards.combat_started
 	if session.route.phase != "combat" or not session.cards.combat_started or not session.cards._activation_open: return false
-	if not whole(value.get("version"), 1, 2) or value.get("node") != session.route.current_node_id: return false
+	if not whole(value.get("version"), 1, 3) or value.get("node") != session.route.current_node_id: return false
+	if (int(value.version) == 3) != (session.cards.bestiary_revision == 1): return false
 	if not whole(value.get("round"), 1, 24) or not whole(value.get("cast_sequence"), 0, 100000): return false
 	if int(value.round) != session.cards.round_index or not value.get("units") is Array or not value.get("surfaces") is Array: return false
 	var room := ExpeditionRunFactory.make_room(session.route.get_current_node(), session.route.seed)
 	if room == null: return false
 	var grid := EncounterGridFactory.build_from_room(room)
-	if grid == null or value.units.size() != room.enemies.size() + 1: return false
+	if grid == null: return false
+	var additional := 2 if int(value.version) == 3 and int(session.route.get_current_node().depth) == 6 else 0
+	if value.units.size() < room.enemies.size() + 1 or value.units.size() > room.enemies.size() + 1 + additional: return false
 	var occupied := {}
 	var identities := {}
 	for index in value.units.size():
@@ -37,6 +40,7 @@ static func valid(session: ExpeditionSession, value: Dictionary) -> bool:
 		var probe := Unit.new()
 		if not probe.restore_shield_instances_snapshot(entry.shields): return false
 		probe.clear_shield()
+	if int(value.version) == 3 and not preload("res://core/expedition/consumable_enemy_checkpoint.gd").valid(value, room, session.route.get_current_node(), grid): return false
 	for entry in value.units:
 		if not json_safe(entry.get("statuses")) or not NativeStatuses.valid(entry.get("statuses"), identities): return false
 		if not valid_metadata(entry.metadata, grid, identities): return false
