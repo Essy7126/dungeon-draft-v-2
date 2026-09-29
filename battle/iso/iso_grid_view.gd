@@ -300,20 +300,7 @@ func _draw() -> void:
 				draw_colored_polygon(polygon, fill_color)
 			if _highlights.has(cell):
 				var highlight_value = _highlights[cell]
-				draw_colored_polygon(
-					polygon,
-					HIGHLIGHT_MARKER.color_of(highlight_value),
-				)
-				var marker_center := grid_to_local(cell)
-				HIGHLIGHT_MARKER.draw(
-					self,
-					marker_center,
-					HIGHLIGHT_MARKER.marker_of(highlight_value),
-					HIGHLIGHT_MARKER.radius_for_polygon(
-						marker_center,
-						polygon,
-					),
-				)
+				HIGHLIGHT_MARKER.draw_tile(self, polygon, highlight_value)
 			if draw_grid_lines and grid.is_terrain_interactable(cell):
 				_draw_polygon_outline(polygon, GRID_LINE_COLOR, 0.75)
 			if draw_cell_centers:

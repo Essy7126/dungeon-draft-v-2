@@ -151,11 +151,7 @@ func set_resource(
 	maximum_value = maxf(maximum, 0.0001)
 	resource_color = color
 	_is_critical_health = icon_fallback == "PV" and current_value / maximum_value <= 0.25
-	_hide_inline_marker = (
-		icon_fallback == "PV"
-		and _visual_skin != null
-		and not _visual_skin.neutral_grayscale
-	)
+	_hide_inline_marker = false
 	_apply_resource_colors(_is_critical_health)
 	resource_icon.texture = icon
 	resource_icon.visible = icon != null and not _hide_inline_marker
@@ -167,6 +163,8 @@ func set_resource(
 	)
 	value_label.visible = show_text
 	value_label.text = "%d / %d" % [int(round(current_value)), int(round(maximum))]
+	tooltip_text = "%s : %s" % [icon_fallback, value_label.text]
+	accessibility_name = tooltip_text
 	value_label.add_theme_color_override("font_color", _resource_text_color())
 	if _delayed_tween != null:
 		_delayed_tween.kill()

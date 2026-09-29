@@ -133,6 +133,7 @@ func on_targets_resolved(ctx) -> void:
 			cards.primary_class,
 			cards.specialization,
 			triggers,
+			cards,
 		)
 		for key in evaluated.triggers:
 			triggers[key] = true
@@ -204,7 +205,7 @@ func on_damage_resolved(ctx) -> void:
 				applied = Effects.apply_state(
 					target,
 					"mark",
-					power * (float(card.amount) + (.2 if "seal" in cards.active_relics else 0.0)),
+					Math.component(card, "amount", power, cards, "mark", .2 if "seal" in cards.active_relics else 0.0),
 					int(card.get("duration", 2)),
 					hero,
 					{ "origin": "direct" },
@@ -221,7 +222,7 @@ func on_damage_resolved(ctx) -> void:
 				applied = Effects.apply_state(
 					target,
 					str(card.op),
-					power * tick,
+					Math.component(card, "amount", power, cards, "periodic", tick - float(card.amount)),
 					int(card.get("duration", 2)),
 					hero,
 				)
@@ -280,18 +281,21 @@ func on_damage_resolved(ctx) -> void:
 			cards,
 			multiplier,
 			&"cc2_g05" if card.op == "counter" else &"",
+			card,
 		)
 		if card.op == "counter":
-			Effects.apply_state(hero, "counter", power * float(card.counter), 1, hero)
+			Effects.apply_state(hero, "counter", Math.component(card, "counter", power, cards, "indirect"), 1, hero)
 	if card.op in ["heal", "renew", "drain"]:
 		var amount := power * float(card.amount)
 		if card.op == "renew":
 			amount = hero.max_hp.get_value() * float(card.amount)
 		if card.op == "drain":
 			amount = hp_damage * float(card.amount)
-		_heal(ctx, amount, cards)
+		elif cards.prototype_revision == 1:
+			amount = Math.component(card, "amount", hero.max_hp.get_value() if card.op == "renew" else power, cards, "heal")
+		_heal(ctx, amount, cards, card.op != "drain" and cards.prototype_revision == 1)
 	if card.has("shield"):
-		ctx.report.shield_increase_total += Effects.guard(hero, float(card.shield), cards)
+		ctx.report.shield_increase_total += Effects.guard(hero, float(card.shield), cards, 1.0, &"", card, "shield")
 	if card.op == "edict":
 		Effects.apply_state(hero, "edict", 1, 1, hero)
 	if hp_damage > 0 and not card.get("fallback", false):
@@ -313,9 +317,9 @@ func on_damage_resolved(ctx) -> void:
 				)) + hero.current_hp - before
 
 
-func _heal(ctx, raw: float, cards) -> void:
+func _heal(ctx, raw: float, cards, already_scaled := false) -> void:
 	var before: int = ctx.caster.current_hp
-	var bonus := float(Math.equipment_mods(cards.equipped).get("healing", 0))
+	var bonus := 0.0 if already_scaled else float(Math.equipment_mods(cards.equipped).get("healing", 0))
 	ctx.caster.heal(Math.rounded(raw * (1.0 + bonus)), ctx.caster)
 	ctx.report.healing_total += ctx.caster.current_hp - before
 
@@ -356,6 +360,7 @@ func on_movement_resolved(ctx) -> void:
 				ctx.caster,
 				float(card.collisionGuard),
 				cards,
+				1.0, &"", card, "collisionGuard",
 			)
 	elif target != null and target.is_alive and card.op == "swap":
 		var from: Vector2i = ctx.caster.grid_pos

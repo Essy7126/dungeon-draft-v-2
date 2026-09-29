@@ -5,6 +5,14 @@ const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd
 const InspectPanelScript = preload("res://ui/inspect_panel.gd")
 const BattleScript = preload("res://battle/battle.gd")
 const GridViewScript = preload("res://battle/grid_view.gd")
+const Cleanup := preload("res://test/support/isolated_battlefield_cleanup.gd")
+var _fixture_grids: Array[GridData] = []
+
+
+func after_each() -> void:
+	for grid in _fixture_grids:
+		Cleanup.dispose_grid(grid)
+	_fixture_grids.clear()
 
 
 class GridViewFixture:
@@ -25,6 +33,8 @@ func _unit(
 
 
 func _place(grid: GridData, unit: Unit, cell: Vector2i) -> Unit:
+	if not _fixture_grids.has(grid):
+		_fixture_grids.append(grid)
 	assert_true(grid.place_unit(unit, cell))
 	return unit
 
@@ -220,6 +230,7 @@ func test_leaving_one_controller_still_costs_while_remaining_with_another() -> v
 
 func test_08_forced_movement_ignores_control_and_spends_no_mp() -> void:
 	var field := Factory.make_battlefield(5, 3)
+	_fixture_grids.append(field.grid)
 	var controller := _place(
 		field.grid,
 		_unit("Controller", 1, UnitData.ControlLevel.CONTROL),
@@ -247,6 +258,7 @@ func test_08_forced_movement_ignores_control_and_spends_no_mp() -> void:
 
 func test_09_teleport_ignores_control_and_spends_no_mp() -> void:
 	var field := Factory.make_battlefield(5, 3)
+	_fixture_grids.append(field.grid)
 	var mover := _place(field.grid, _unit("Mover", 0), Vector2i(1, 1))
 	var controller := _place(
 		field.grid,
@@ -328,7 +340,7 @@ func test_12_insufficient_mp_makes_the_destination_unreachable() -> void:
 	assert_eq(mover.current_mp, 1)
 
 
-func test_engagement_range_keeps_real_cells_green_and_lost_edge_cells_red() -> void:
+func test_engagement_range_distinguishes_reachable_and_control_limited_cells() -> void:
 	var grid := GridData.new(7, 7)
 	var mover := _place(grid, _unit("Mover", 0), Vector2i(3, 3))
 	var controller := _place(
@@ -355,12 +367,14 @@ func test_engagement_range_keeps_real_cells_green_and_lost_edge_cells_red() -> v
 		assert_false((layers.reachable as Array).has(cell))
 
 	battle._on_request_show_move_range()
-	var highlights := grid_view.get("_highlights") as Dictionary
-	assert_eq(highlights.get(Vector2i(5, 3)), BattleScript.MOVE_COLOR)
+	var highlights := grid_view.get_highlight_snapshot() as Dictionary
+	assert_eq(highlights[Vector2i(5, 3)].color, BattleScript.MOVE_COLOR)
+	assert_eq(highlights[Vector2i(5, 3)].marker, &"move")
 	assert_eq(
-		highlights.get(Vector2i(6, 3)),
+		highlights[Vector2i(6, 3)].color,
 		BattleScript.CONTROL_LIMITED_MOVE_COLOR,
 	)
+	assert_eq(highlights[Vector2i(6, 3)].marker, &"control_limited")
 
 	controller.is_alive = false
 	var released_layers := battle._movement_range_layers(mover)
@@ -416,6 +430,7 @@ func test_14_distinct_successive_disengagements_each_apply_once() -> void:
 
 func test_ai_uses_a_strictly_affordable_path_prefix() -> void:
 	var field := Factory.make_battlefield(5, 5)
+	_fixture_grids.append(field.grid)
 	var enemy := _place(field.grid, _unit("Enemy", 1), Vector2i(2, 2))
 	var controller := _place(
 		field.grid,

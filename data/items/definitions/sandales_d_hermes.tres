@@ -1,11 +1,12 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c0iynvfd1p4u6"]
 
-[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/sandales_d_hermes.png" id="relic_icon"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_8jefs"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_77ct7"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_vd21e"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_0i17w"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_tl76w"]
 [ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_43608"]
+[ext_resource type="Texture2D" uid="uid://dihpsx7dvuxq1" path="res://asset/ui/items/relics_premium_v1/sandales_d_hermes.png" id="relic_icon"]
 
 [sub_resource type="Resource" id="Resource_m87j3"]
 script = ExtResource("2_77ct7")
@@ -22,8 +23,8 @@ frequency_id = &"per_turn"
 script = ExtResource("3_vd21e")
 item_id = &"sandales_d_hermes"
 display_name = "Sandales d’Hermès"
-inventory_icon = ExtResource("relic_icon")
 description = "Ton premier déplacement libre de chaque tour coûte 1 PM de moins. "
+inventory_icon = ExtResource("relic_icon")
 rarity = &"mythic"
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5

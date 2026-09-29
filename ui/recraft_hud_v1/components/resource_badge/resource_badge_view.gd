@@ -20,9 +20,18 @@ var _resource_name := ""
 var _refined_style := false
 var _visual_skin: HudVisualSkinData = null
 var _badge_style: StyleBoxFlat = null
+var _resource_color := Color.WHITE
+var _pips: Control
 
 
 func _ready() -> void:
+	_pips = Control.new()
+	_pips.name = "RemainingPoints"
+	_pips.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_pips.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_pips)
+	_pips.draw.connect(_draw_pips)
+	resized.connect(func(): _pips.queue_redraw())
 	apply_layout(1.0)
 	set_badge(0, 0, Color.WHITE, null, "")
 
@@ -70,6 +79,7 @@ func set_badge(
 	_value = value
 	_maximum = maximum
 	_resource_name = icon_text
+	_resource_color = color
 	accessibility_name = "Points d’action" if icon_text == "PA" else "Points de mouvement" if icon_text == "PM" else icon_text
 	var style := _badge_style
 	if _visual_skin != null and not _visual_skin.neutral_grayscale:
@@ -103,6 +113,8 @@ func set_badge(
 	value_label.text = "%s %d/%d" % [icon_text, value, maximum] if _tactical else str(value)
 	empty_overlay.visible = value <= 0 and not _tactical
 	tooltip_text = "%s : %d / %d" % [icon_text, value, maximum]
+	if _pips != null:
+		_pips.queue_redraw()
 
 
 func set_refined_style(enabled: bool) -> void:
@@ -126,7 +138,7 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 		true
 	)
 	color_overlay.add_theme_stylebox_override("panel", _badge_style)
-	icon.modulate = skin.text_primary
+	icon.modulate = Color.WHITE
 	icon_fallback.add_theme_font_override("font", skin.font_emphasis)
 	icon_fallback.add_theme_color_override("font_color", skin.text_secondary)
 	value_label.add_theme_font_override("font", skin.font_numeric)
@@ -141,6 +153,9 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 
 func apply_tactical_layout(enabled: bool, scale_factor: float) -> void:
 	_tactical = enabled
+	if _pips != null:
+		_pips.visible = enabled
+		_pips.queue_redraw()
 	if not enabled:
 		value_label.text = str(_value)
 		return
@@ -153,12 +168,32 @@ func apply_tactical_layout(enabled: bool, scale_factor: float) -> void:
 	color_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER_LEFT)
 	icon.offset_left = 6
-	icon.offset_right = 24
-	icon.offset_top = -9
-	icon.offset_bottom = 9
+	icon.offset_right = 30
+	icon.offset_top = -14
+	icon.offset_bottom = 10
 	value_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	value_label.offset_left = 26
+	value_label.offset_left = 30
 	value_label.offset_right = -4
-	value_label.add_theme_font_size_override("font_size", maxi(roundi(14 * scale_factor), 13))
+	value_label.offset_top = -3
+	value_label.offset_bottom = -3
+	value_label.add_theme_font_size_override("font_size", maxi(roundi(16 * scale_factor), 14))
 	value_label.text = "%s %d/%d" % [_resource_name, _value, _maximum]
 	empty_overlay.hide()
+
+
+func _draw_pips() -> void:
+	if not _tactical or _maximum <= 0:
+		return
+	# Au-delà de 12 points, la jauge reste continue ; le nombre garde la précision.
+	var count := mini(_maximum, 12)
+	var width := maxf(size.x - 16, 1)
+	var step := width / count
+	var ink := _resource_color
+	if _visual_skin != null and _visual_skin.neutral_grayscale:
+		ink = _visual_skin.text_primary
+	for index in count:
+		var rect := Rect2(8 + index * step, size.y - 6, maxf(step - 2, 1), 3)
+		_pips.draw_rect(rect, Color(ink, 0.18))
+		var filled := clampf(float(_value) * count / _maximum - index, 0, 1)
+		rect.size.x *= filled
+		_pips.draw_rect(rect, ink)

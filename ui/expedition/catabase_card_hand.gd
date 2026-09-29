@@ -16,7 +16,7 @@ func _ready() -> void:
 	_hud = battle.action_bar
 	_panel = VBoxContainer.new()
 	_panel.name = "CatabaseCardHand"
-	_panel.set_meta("expanded_card_faces", GameManager.expedition.cards.rules_revision == 3)
+	_panel.set_meta("expanded_card_faces", GameManager.expedition.cards.rules_revision >= 3)
 	_panel.add_theme_constant_override("separation", 4)
 	_panel.add_theme_font_override("font", CardSkin.FONT)
 	_hud.mount_card_hand(_panel)

@@ -44,7 +44,7 @@ func grid_to_corner(pos: Vector2i) -> Vector2:
 	return Vector2(pos.x * CELL_SIZE, pos.y * CELL_SIZE)
 
 func world_to_grid(world_pos: Vector2) -> Vector2i:
-	return Vector2i(int(world_pos.x / CELL_SIZE), int(world_pos.y / CELL_SIZE))
+	return Vector2i(floori(world_pos.x / CELL_SIZE), floori(world_pos.y / CELL_SIZE))
 
 func get_pixel_size() -> Vector2:
 	if grid == null:
@@ -114,8 +114,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if cell != _hovered:
 			_hovered = cell
 			queue_redraw()
-			if grid.is_valid(cell):
-				cell_hovered.emit(cell)
+			cell_hovered.emit(cell)
 
 	if event is InputEventMouseButton \
 			and event.pressed \
@@ -143,17 +142,10 @@ func _draw() -> void:
 			# Surbrillances de gameplay : toujours.
 			if _highlights.has(pos):
 				var highlight_value = _highlights[pos]
-				draw_rect(
-					rect,
-					HIGHLIGHT_MARKER.color_of(highlight_value),
-					true,
-				)
-				HIGHLIGHT_MARKER.draw(
-					self,
-					rect.get_center(),
-					HIGHLIGHT_MARKER.marker_of(highlight_value),
-					CELL_SIZE * 0.32,
-				)
+				HIGHLIGHT_MARKER.draw_tile(self, PackedVector2Array([
+					rect.position, rect.position + Vector2(rect.size.x, 0),
+					rect.end, rect.position + Vector2(0, rect.size.y)
+				]), highlight_value)
 
 			# Effet de terrain dynamique : toujours, avec couleur propre a l'effet.
 			var stored_effect = grid.get_effect(pos)

@@ -685,7 +685,8 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 			route.consumable_cards_enabled = true
 			route.consumable_bestiary_revision = cards.bestiary_revision
 			if not preload("res://core/expedition/consumable_expedition_checkpoint.gd").valid(self, combat_checkpoint): return false
-			Consumable.rebuild(self, false, true)
+			# SaveService restores and validates the saved HP before migrating stats.
+			Consumable.rebuild(self, false, true, false)
 		else:
 			cards.migrate_legacy(needs_preparation)
 		route.card_tactical_rooms_enabled = cards.rules_revision == 3 and int(cards.get("ecosystem_revision")) > 0

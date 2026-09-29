@@ -5,10 +5,10 @@
 Roguelite tactique au tour par tour sur grille, sous **Godot 4.7.1 / GDScript**.
 Catabase est l’aventure publique : Achille traverse les Enfers en solo,
 avec trois apparences et deux modes : **Classique** (équipement et techniques)
-et **Cartes** (copies consommables, préparation et progression par famille).
+et **Cartes — Prototype v1** (copies consommables, maîtrises élémentaires et progression).
 La [refonte Cartes](docs/current/cards_v2.md) utilise la sélection, le seuil,
-le combat et les haltes de cette même aventure. Les anciennes sauvegardes
-Cartes conservent leurs règles historiques.
+le combat et les haltes de cette même aventure. Les sauvegardes consommables
+migrent vers Prototype v1 hors combat ; les variantes plus anciennes restent compatibles.
 
 ## Jouer et développer
 

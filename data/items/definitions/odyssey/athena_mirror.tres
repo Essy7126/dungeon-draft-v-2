@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://byqaigbdn1qyh"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
-[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
-[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
-
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_athena_mirror.png" id="glyph_da"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="6_0vdht"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="7_18brq"]
+[ext_resource type="Texture2D" uid="uid://sjx3jm5d8u0i" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_athena_mirror.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Absorbed"]
 script = ExtResource("3_condition")
@@ -18,30 +19,29 @@ condition_id = &"projectile"
 [sub_resource type="Resource" id="Reflect"]
 script = ExtResource("4_parameter")
 parameter_id = &"reflect_ratio"
-float_value = 0.50
+float_value = 0.5
 
 [sub_resource type="Resource" id="Effect"]
 script = ExtResource("2_effect")
 trigger_id = &"hit_resolved"
-conditions = Array[ItemReactiveConditionData]([SubResource("Absorbed"), SubResource("Projectile")])
-target_id = &"trigger_hero"
+conditions = Array[ExtResource("3_condition")]([SubResource("Absorbed"), SubResource("Projectile")])
 result_id = &"reflect_absorbed_projectile"
 value = 0.0
 frequency_id = &"per_combat"
 reaction_group = &"projectile_counter"
 stackable = false
 priority = 100
-parameters = Array[ItemReactiveParameterData]([SubResource("Reflect")])
+parameters = Array[ExtResource("4_parameter")]([SubResource("Reflect")])
 
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_athena_mirror"
 display_name = "Miroir d’Athéna"
 description = "Le premier projectile entièrement absorbé par Garde est renvoyé à 50 %."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 rarity = &"legendary"
 tags = Array[StringName]([&"odyssey", &"aeacus", &"hybrid"])
 category = 5
-reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])
+reactive_effects = Array[ExtResource("2_effect")]([SubResource("Effect")])

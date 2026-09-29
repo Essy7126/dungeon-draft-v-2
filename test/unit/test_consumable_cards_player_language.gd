@@ -59,8 +59,8 @@ func test_power_percentages_do_not_claim_a_damage_multiplier() -> void:
 
 
 func test_role_does_not_invent_an_element_for_utility_cards() -> void:
-	assert_eq(Language.identity(Catalog.card("n02")), "Protection")
+	assert_eq(Language.identity(Catalog.card("n02")), "Protection · Soleil")
 	assert_eq(Language.identity(Catalog.card("n03")), "Déplacement")
 	assert_eq(Language.identity(Catalog.card("t02")), "Attaque · Feu · magique")
-	assert_eq(Language.identity(Catalog.card("t04")), "Attaque · Eau · magique")
+	assert_eq(Language.identity(Catalog.card("t04")), "Attaque · Eau/Nuit · magique")
 	assert_string_contains(Language.DECK_HELP, "3 cartes Estoc = 3 utilisations")

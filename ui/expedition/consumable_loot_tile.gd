@@ -134,7 +134,7 @@ static func detail(value: Dictionary, actor: Unit) -> PanelContainer:
 	rules.add_theme_font_override("normal_font", CardSkin.FONT)
 	rules.add_theme_font_size_override("normal_font_size", 17)
 	var description := (
-		Language.effect(value.row, actor.attack_power.get_value())
+		Language.effect(value.row, actor.attack_power.get_value(), CatabaseCards.for_actor(actor))
 		if card
 		else Language.plain(str(value.body))
 	)

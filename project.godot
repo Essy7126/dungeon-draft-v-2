@@ -24,7 +24,7 @@ DebugOverlay="*uid://i5c6lt5m6q0w"
 GameManager="*uid://bkqluvhsrm1gs"
 AudioManager="*uid://b6yj2wg2t5akr"
 VFXManager="*uid://bjqhf4gosaohn"
-GawWorkbenchRuntimeProbe="*res://addons/godot_ai_workbench/runtime/workbench_runtime_probe.gd"
+GawWorkbenchRuntimeProbe="*uid://b1gt47ammaqro"
 
 [display]
 

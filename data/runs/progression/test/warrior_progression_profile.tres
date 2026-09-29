@@ -6,10 +6,13 @@
 [ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="4_5ow8l"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="5_4m1si"]
 [ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="6_0xg62"]
+[ext_resource type="Script" uid="uid://bj0c41e8n6gjv" path="res://data/characters/doctrine_point_requirement_data.gd" id="7_5ow8l"]
 [ext_resource type="Script" uid="uid://cpg5mh1aaesav" path="res://data/runs/content/character_progression_profile.gd" id="7_t2uvq"]
+[ext_resource type="Script" uid="uid://drhvt2vs5d7o6" path="res://data/characters/mastery_reactive_effect_data.gd" id="8_4m1si"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="8_jov2s"]
 [ext_resource type="Texture2D" uid="uid://yew33q17ambp" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="9_vu8x8"]
 [ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="10_nj15w"]
+[ext_resource type="Script" uid="uid://csb12lum057l8" path="res://data/characters/targeted_spell_modifier_data.gd" id="11_0xg62"]
 [ext_resource type="Texture2D" uid="uid://dyvy32pjjepak" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="11_aqumh"]
 [ext_resource type="Texture2D" uid="uid://ddxdc1sss0ghh" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="12_gh3vi"]
 

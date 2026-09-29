@@ -1,4 +1,5 @@
 extends RefCounted
+const Progression := preload("res://core/expedition/consumable_progression_v1.gd")
 
 
 ## All factors stay real until the final payload. Preview and execution share this.
@@ -17,26 +18,47 @@ static func guard(power: float, coefficient: float, bonus: float, current: int) 
 	)
 
 
-static func stats(level: int, attributes: Dictionary, equipment: Dictionary) -> Dictionary:
+static func stats(level: int, attributes: Dictionary, equipment: Dictionary, cards = null) -> Dictionary:
 	var rules: Dictionary = preload("res://core/expedition/consumable_card_catalog.gd").data().rules
 	var index := clampi(level - 1, 0, 11)
+	var prototype: bool = cards != null and cards.prototype_revision == 1
 	return {
 		"hp": rounded(
 			float(rules.hp[index])
-			* (1.0 + .06 * int(attributes.get("vitality", 0)) + float(equipment.get("hp", 0)))
+			* (1.0 + (Progression.aptitude(cards, "vitality") if prototype else .06 * int(attributes.get("vitality", 0))) + float(equipment.get("hp", 0)))
 		),
-		"power": float(rules.prowess[index]) * (1.0 + .05 * int(attributes.get("power", 0))),
+		"power": float(Progression.POWER[index]) if prototype else float(rules.prowess[index]) * (1.0 + .05 * int(attributes.get("power", 0))),
 		"ap": 4,
 		"mp": clampi(3 + int(equipment.get("mp", 0)), 1, 5),
 		"hand": clampi(5 + int(equipment.get("hand", 0)), 1, 7),
 		"physical": clampf(
-			.02 * int(attributes.get("resolve", 0)) + float(equipment.get("armor", 0)),
+			(0.0 if prototype else .02 * int(attributes.get("resolve", 0))) + float(equipment.get("armor", 0)),
 			0.0,
 			.4,
 		),
 		"magic": clampf(float(equipment.get("magicResist", 0)), 0.0, .4),
-		"guard": .05 * int(attributes.get("resolve", 0)) + float(equipment.get("guard", 0)),
+		"guard": (Progression.aptitude(cards, "protection") if prototype else .05 * int(attributes.get("resolve", 0))) + float(equipment.get("guard", 0)),
 	}
+
+
+static func component_bonus(card: Dictionary, key: String, cards, mods: Dictionary, kind: String, facts: Dictionary = {}) -> float:
+	var bonus := Progression.elemental_bonus(card, key, cards, mods)
+	if kind == "guard": return bonus + float(mods.get("guard", 0)) + (Progression.aptitude(cards, "protection") if cards.prototype_revision == 1 else .05 * int(cards.attributes.get("resolve", 0)))
+	if kind == "heal": return bonus + float(mods.get("healing", 0))
+	if kind in ["direct", "periodic", "indirect", "mark"]:
+		bonus += float(mods.get("damage", 0))
+		if card.get("type") == "magic": bonus += float(mods.get("magic", 0))
+	if kind == "direct":
+		var distance := int(facts.get("distance", 0))
+		if distance == 1: bonus += float(mods.get("melee", 0)) + Progression.aptitude(cards, "contact")
+		if distance >= 3: bonus += float(mods.get("ranged", 0)) + Progression.aptitude(cards, "distance")
+	return bonus
+
+
+static func component(card: Dictionary, key: String, basis: float, cards, kind: String, extra_coefficient := 0.0, facts: Dictionary = {}) -> float:
+	var raw := basis * (float(card.get(key, 0)) + extra_coefficient)
+	if cards == null or cards.prototype_revision != 1: return raw
+	return raw * (1.0 + component_bonus(card, key, cards, equipment_mods(cards.equipped), kind, facts))
 
 
 static func equipment_mods(equipped: Dictionary) -> Dictionary:
@@ -65,6 +87,7 @@ static func impact(
 	class_id: String,
 	spec: String,
 	triggers: Dictionary,
+	cards = null,
 ) -> Dictionary:
 	var raw := power * float(card.get("damage", 0))
 	var consumed_triggers: Array[String] = []
@@ -83,7 +106,7 @@ static func impact(
 			applies = int(facts.get("absorbed", 0)) > 0
 	if applies:
 		raw += power * float(card.get("bonus", 0))
-	if card.op == "guardburst":
+	if card.op == "guardburst" and (cards == null or cards.prototype_revision != 1):
 		raw += 1.5 * int(facts.get("sacrifice", 0))
 	var bonus := float(equipment.get("damage", 0))
 	var distance := int(facts.get("distance", 0))
@@ -95,6 +118,11 @@ static func impact(
 		bonus += float(equipment.get("magic", 0))
 	if not bool(card.get("fallback", false)):
 		raw *= 1.0 + bonus
+	if cards != null and cards.prototype_revision == 1:
+		raw = power * float(card.get("damage", 0)) * (1.0 + component_bonus(card, "damage", cards, equipment, "direct", facts))
+		if applies: raw += power * float(card.get("bonus", 0)) * (1.0 + component_bonus(card, "bonus", cards, equipment, "direct", facts))
+		# Derived guard is already valued. Neither element nor direct modifiers apply twice.
+		if card.op == "guardburst": raw += 1.5 * int(facts.get("sacrifice", 0))
 	if not bool(card.get("fallback", false)):
 		if (
 			class_id == "assassin" and not triggers.get("class", false)

@@ -7,6 +7,7 @@ const Presenter := preload("res://ui/expedition/consumable_cards_presenter.gd")
 const Icons := preload("res://core/expedition/class_icon_catalog.gd")
 const Math := preload("res://core/expedition/consumable_card_math.gd")
 const BuildPreview := preload("res://ui/expedition/consumable_build_preview.gd")
+const Symbols := preload("res://ui/expedition/player_stat_symbols.gd")
 const DeckInventory := preload("res://ui/expedition/consumable_deck_inventory.gd")
 var rarity_filter := 0
 var affinity_filter := 0
@@ -362,7 +363,7 @@ func _deck_lane(parent: Node, cards, inventory: Dictionary, prepared: bool) -> v
 func _deck_guide() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "Classe, famille, rôle : les repères"
-	dialog.dialog_text = "AFFINITÉ — Assassin, Gardien, Arpenteur, Thaumaturge ou Commune. Elle indique l'origine du sort. Les cartes d'autres classes reçues pendant la run peuvent rejoindre votre deck. Votre bonus de classe reste celui choisi au départ.\n\nRÔLE — Attaque, protection, contrôle… Il décrit l'utilité du sort.\n\nRARETÉ — Normale, Élite, Rare, Légendaire, Divine, Immortelle. Elle indique sa rareté de butin ; le coût et les effets restent écrits sur la fiche.\n\nFAMILLE DE SORT — Tous les exemplaires d'un même sort. 3 cartes Estoc = 3 utilisations dans la run, mais une seule par tour. Améliorer Estoc les renforce toutes. Il n'existe pas de famille élémentaire supplémentaire."
+	dialog.dialog_text = "AFFINITÉ — Assassin, Gardien, Arpenteur, Thaumaturge ou Commune. Elle indique l'origine du sort. Les cartes d'autres classes reçues pendant la run peuvent rejoindre votre deck. Votre bonus de classe reste celui choisi au départ.\n\nÉLÉMENTS — Terre, Eau, Feu, Vent, Nuit, Soleil. Chaque composante chiffrée indique ses éléments et leurs proportions. Vos maîtrises renforcent ces composantes, quelle que soit votre classe. Les effets utilitaires neutres restent fixes.\n\nRÔLE — Attaque, protection, contrôle… Il décrit l'utilité du sort.\n\nRARETÉ — Normale, Élite, Rare, Légendaire, Divine, Immortelle. Elle indique sa rareté de butin ; le coût et les effets restent écrits sur la fiche.\n\nFAMILLE DE SORT — Tous les exemplaires d'un même sort. 3 cartes Estoc = 3 utilisations dans la run, mais une seule par tour. Améliorer Estoc les renforce toutes."
 	dialog.ok_button_text = "Compris"
 	dialog.get_label().autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dialog.get_label().custom_minimum_size.x = 570
@@ -488,6 +489,7 @@ func _show_family(cards) -> void:
 	var reach := preload("res://ui/expedition/catabase_card_text.gd").range_text(spell, hero)
 	D.label(_detail, "%d PA · Portée %s" % [hero.get_spell_ap_cost(spell), reach], 19, D.GOLD)
 	D.label(_detail, Language.identity(record.row), 15, D.MUTED)
+	Symbols.element_strip(_detail, record.row)
 	var prepared_count := _copies(cards, selected_family, true).size()
 	D.label(
 		_detail,
@@ -496,7 +498,7 @@ func _show_family(cards) -> void:
 		15,
 		D.GOLD,
 	)
-	_rules(_detail, Language.effect(record.row, hero.attack_power.get_value()))
+	_rules(_detail, Language.effect(record.row, hero.attack_power.get_value(), cards))
 	D.label(_detail, Language.power_reference(hero.attack_power.get_value()), 14, D.MUTED)
 	if _recent_cards.has(selected_family):
 		D.label(
@@ -522,7 +524,11 @@ func _show_family(cards) -> void:
 		D.label(evolution, "AMÉLIORATION · 1 POINT", 13, D.GREEN)
 		D.label(
 			evolution,
-			Language.effect(Catalog.card(selected_family, true), hero.attack_power.get_value()),
+			Language.effect(
+				Catalog.card(selected_family, true),
+				hero.attack_power.get_value(),
+				cards,
+			),
 			16,
 		)
 	D.label(_detail, "DÉVELOPPER CE SORT", 13, D.GOLD)
@@ -961,43 +967,103 @@ func _progression(cards) -> void:
 	var columns := _columns()
 	var stats := D.column(columns, 300)
 	var hero: Unit = GameManager.expedition.character.unit
-	D.label(stats, "VOTRE PERSONNAGE", 13, D.MUTED)
-	D.label(stats, hero.unit_name, 28, D.GOLD)
+	var identity := HBoxContainer.new()
+	stats.add_child(identity)
+	D.image(identity, Icons.icon(cards.primary_class), 40)
+	var names := VBoxContainer.new()
+	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	identity.add_child(names)
+	D.label(names, hero.unit_name, 22, D.GOLD)
 	D.label(
-		stats,
+		names,
 		"%s · Niveau %d" % [Catalog.class_row(cards.primary_class).name, cards.level],
-		19,
+		16,
 	)
 	var life := ProgressBar.new()
-	life.custom_minimum_size.y = 18
+	life.custom_minimum_size.y = 12
 	life.max_value = hero.max_hp.get_int()
 	life.value = hero.current_hp
 	life.show_percentage = false
 	var fill := D.surface(false, 0)
-	fill.bg_color = Color("a8835e")
+	fill.bg_color = Symbols.color("hp")
 	life.add_theme_stylebox_override("fill", fill)
 	life.add_theme_stylebox_override("background", D.surface(false, 0))
 	stats.add_child(life)
-	D.label(stats, "%d / %d points de vie" % [hero.current_hp, hero.max_hp.get_int()], 19, D.GREEN)
-	stats.add_child(HSeparator.new())
-	D.label(stats, "COMBAT", 13, D.GOLD)
-	for entry in [
-		["Points d'action", str(hero.max_ap.get_int()) + " PA"],
-		["Points de mouvement", str(hero.max_mp.get_int()) + " PM"],
-		["Puissance des cartes", "%.1f" % hero.attack_power.get_value()],
-		["Résistance physique", "%.0f %%" % minf(40, hero.armure.get_value())],
-		["Résistance magique", "%.0f %%" % minf(40, hero.resist_magique.get_value())],
-		["Taille de main", "%d cartes" % cards.hand_capacity],
-	]:
-		var row := HBoxContainer.new()
-		stats.add_child(row)
-		var label := D.label(row, entry[0], 17, D.MUTED)
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		label = D.label(row, entry[1], 18)
-		label.custom_minimum_size.x = 68
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	stats.add_child(HSeparator.new())
+	D.label(
+		stats,
+		"%d / %d points de vie" % [hero.current_hp, hero.max_hp.get_int()],
+		19,
+		Symbols.color("hp"),
+	)
+	var combat_grid := GridContainer.new()
+	combat_grid.columns = 2
+	combat_grid.add_theme_constant_override("h_separation", 8)
+	combat_grid.add_theme_constant_override("v_separation", 6)
+	stats.add_child(combat_grid)
 	var mods := Math.equipment_mods(cards.equipped)
+	for entry in [
+		[
+			"ap",
+			"Points d'action",
+			str(hero.max_ap.get_int()) + " PA",
+			"Budget pour jouer vos sorts à chaque tour.",
+		],
+		[
+			"mp",
+			"Mouvement",
+			str(hero.max_mp.get_int()) + " PM",
+			"Budget de déplacement à chaque tour.",
+		],
+		[
+			"power",
+			"Puissance",
+			BuildPreview.value("power", hero.attack_power.get_value()),
+			"Base des dégâts, de la garde et des soins de vos sorts.",
+		],
+		[
+			"hand",
+			"Taille de main",
+			"%d cartes" % cards.hand_capacity,
+			"Nombre de cartes rejointes en main au début du tour.",
+		],
+		[
+			"physical",
+			"Rés. physique",
+			"%.0f %%" % minf(40, hero.armure.get_value()),
+			"Réduit les dégâts physiques. Plafond : 40 %.",
+		],
+		[
+			"magic",
+			"Rés. magique",
+			"%.0f %%" % minf(40, hero.resist_magique.get_value()),
+			"Réduit les dégâts magiques. Plafond : 40 %.",
+		],
+	]:
+		Symbols.stat_tile(combat_grid, entry[0], entry[1], entry[2], entry[3])
+	if cards.prototype_revision == 1:
+		D.label(stats, "MAÎTRISES ÉLÉMENTAIRES", 13, D.GOLD)
+		D.label(
+			stats,
+			"Renforcent les effets du même élément, quelle que soit votre classe.",
+			14,
+			D.MUTED,
+		)
+		var elements := GridContainer.new()
+		elements.columns = 3
+		elements.add_theme_constant_override("h_separation", 8)
+		elements.add_theme_constant_override("v_separation", 6)
+		stats.add_child(elements)
+		for id in Math.Progression.ELEMENTS:
+			var trained := Math.Progression.mastery(int(cards.masteries[id]))
+			var equipped := float(mods.get("mastery_" + id, 0))
+			Symbols.stat_tile(
+				elements,
+				id,
+				Math.Progression.ELEMENT_NAMES[id],
+				"+%.0f %%" % ((trained + equipped) * 100),
+				"Points investis : %d · Maîtrise +%.0f %% · Équipement +%.0f %%"
+				% [cards.masteries[id], trained * 100, equipped * 100],
+			)
 	var sources := VBoxContainer.new()
 	sources.name = "StatSources"
 	sources.visible = show_sources
@@ -1017,7 +1083,8 @@ func _progression(cards) -> void:
 	stats.add_child(sources)
 	D.label(
 		sources,
-		"Base du niveau + attributs + équipement\nContributions effectives après arrondis et plafonds. Hors effets temporaires du combat.",
+		"Base du niveau + %s + équipement\nContributions effectives après arrondis et plafonds. Hors effets temporaires du combat."
+		% ("aptitudes" if cards.prototype_revision == 1 else "attributs"),
 		14,
 		D.MUTED,
 	)
@@ -1030,9 +1097,10 @@ func _progression(cards) -> void:
 		)
 		D.label(
 			sources,
-			"Base %s  ·  Attributs %s  ·  Équipement %s"
+			"Base %s  ·  %s %s  ·  Équipement %s"
 			% [
 				BuildPreview.value(entry.key, entry.base),
+				"Aptitudes" if cards.prototype_revision == 1 else "Attributs",
 				BuildPreview.value(entry.key, entry.attributes),
 				BuildPreview.value(entry.key, entry.equipment),
 			],
@@ -1201,6 +1269,15 @@ func _market(cards) -> void:
 
 
 func _attribute_choices(parent: VBoxContainer, cards) -> void:
+	if cards.prototype_revision == 1:
+		var editor := preload("res://ui/expedition/consumable_progression_editor.gd").new()
+		editor.session = GameManager.expedition
+		editor.read_only = read_only
+		editor.committed.connect(_commit)
+		parent.add_child(editor)
+		if section == "progression":
+			_class_choices(parent, cards)
+		return
 	D.label(parent, "Renforcer votre personnage", 25, D.GOLD)
 	D.label(
 		parent,
@@ -1284,6 +1361,21 @@ func _class_choices(parent: VBoxContainer, cards) -> void:
 	D.label(parent, Language.CLASSES[cards.primary_class][0], 20, D.GOLD)
 	D.label(parent, Language.CLASSES[cards.primary_class][1], 17)
 	_rules(parent, Language.PASSIVES[cards.primary_class])
+	if cards.prototype_revision == 1:
+		var basic: Spell = cards.family_spell("fallback_strike")
+		D.label(parent, "ATTAQUE PERMANENTE · " + basic.spell_name, 16, D.GOLD)
+		_rules(
+			parent,
+			Language.effect(
+				preload("res://core/expedition/consumable_card_spells.gd").definition(
+					"fallback_strike",
+					false,
+					cards.primary_class,
+				),
+				GameManager.expedition.character.unit.attack_power.get_value(),
+				cards,
+			),
+		)
 	D.label(parent, "SPÉCIALISATION · NIVEAU 4", 14, D.GOLD)
 	if cards.level < 4:
 		D.label(parent, "Au niveau 4, choisissez l'une de ces deux voies.", 16, D.MUTED)
@@ -1312,6 +1404,14 @@ func _class_choices(parent: VBoxContainer, cards) -> void:
 		D.MUTED,
 	)
 	var families := Catalog.pool()
+	if cards.prototype_revision == 1:
+		families = families.filter(
+			func(id):
+				return cards.copies.any(
+					func(copy):
+						return copy.family == id,
+				),
+		)
 	var choice := OptionButton.new()
 	choice.name = "UpgradeFamilyChoice"
 	for id in families:
@@ -1325,9 +1425,25 @@ func _class_choices(parent: VBoxContainer, cards) -> void:
 		"Améliorer ce sort · 1 point",
 		func():
 			return cards.upgrade_copy(families[choice.selected]),
-		cards.points() <= 0,
+		cards.points() <= 0 or families.is_empty(),
 	)
 	var session = GameManager.expedition
+	if cards.prototype_revision == 1:
+		D.label(
+			parent,
+			"Les emplacements peuvent être libérés puis réaffectés gratuitement entre les combats. Aucune carte n'est rendue.",
+			15,
+			D.MUTED,
+		)
+		for id in cards.upgraded_ids:
+			var release := _button(
+				parent,
+				"Libérer · " + str(Catalog.card(id).name),
+				func():
+					return cards.release_upgrade(id),
+			)
+			release.name = "ReleaseUpgrade_" + str(id)
+		return
 	if Integration.is_market(session) and not cards.upgraded_ids.is_empty():
 		var stock := Economy.market(
 			cards,

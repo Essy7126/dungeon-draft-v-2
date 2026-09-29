@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" format=3 uid="uid://bxu0clylqtvdc"]
 
-[ext_resource type="Script" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1_catalog"]
-[ext_resource type="Script" path="res://data/characters/combat_action_classification_data.gd" id="2_entry"]
+[ext_resource type="Script" uid="uid://b71eupna0ccmg" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1_catalog"]
+[ext_resource type="Script" uid="uid://dw5mtkdl8oil0" path="res://data/characters/combat_action_classification_data.gd" id="2_entry"]
 
 [sub_resource type="Resource" id="Axiom"]
 script = ExtResource("2_entry")
@@ -31,7 +31,6 @@ classification = 2
 [sub_resource type="Resource" id="SpectreCleave"]
 script = ExtResource("2_entry")
 ability_id = &"spectre_heavy_cleave"
-classification = 0
 
 [resource]
 script = ExtResource("1_catalog")

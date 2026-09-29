@@ -1,21 +1,17 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=16 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://maakm8qvn0to"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
-[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
-[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
-
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_pelion_shard.png" id="glyph_da"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="6_7ipp1"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="7_bny6c"]
+[ext_resource type="Texture2D" uid="uid://c823mhc5jd6kd" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_pelion_shard.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="StrikeCondition"]
 script = ExtResource("3_condition")
 condition_id = &"ability_id"
 string_name_value = &"achilles_peleid_strike"
-
-[sub_resource type="Resource" id="ShotCondition"]
-script = ExtResource("3_condition")
-condition_id = &"ability_id"
-string_name_value = &"achilles_pelion_shot"
 
 [sub_resource type="Resource" id="FirstStrike"]
 script = ExtResource("4_parameter")
@@ -43,12 +39,16 @@ integer_value = 25
 [sub_resource type="Resource" id="EffectStrike"]
 script = ExtResource("2_effect")
 trigger_id = &"spell_cast"
-conditions = Array[ItemReactiveConditionData]([SubResource("StrikeCondition")])
-target_id = &"trigger_hero"
+conditions = Array[ExtResource("3_condition")]([SubResource("StrikeCondition")])
 result_id = &"dual_technique"
 value = 0.0
 frequency_id = &"per_activation"
-parameters = Array[ItemReactiveParameterData]([SubResource("FirstStrike"), SubResource("SecondShot"), SubResource("DamageBonus"), SubResource("ArmorIgnore")])
+parameters = Array[ExtResource("4_parameter")]([SubResource("FirstStrike"), SubResource("SecondShot"), SubResource("DamageBonus"), SubResource("ArmorIgnore")])
+
+[sub_resource type="Resource" id="ShotCondition"]
+script = ExtResource("3_condition")
+condition_id = &"ability_id"
+string_name_value = &"achilles_pelion_shot"
 
 [sub_resource type="Resource" id="FirstStrike2"]
 script = ExtResource("4_parameter")
@@ -76,22 +76,21 @@ integer_value = 25
 [sub_resource type="Resource" id="EffectShot"]
 script = ExtResource("2_effect")
 trigger_id = &"spell_cast"
-conditions = Array[ItemReactiveConditionData]([SubResource("ShotCondition")])
-target_id = &"trigger_hero"
+conditions = Array[ExtResource("3_condition")]([SubResource("ShotCondition")])
 result_id = &"dual_technique"
 value = 0.0
 frequency_id = &"per_activation"
-parameters = Array[ItemReactiveParameterData]([SubResource("FirstStrike2"), SubResource("SecondShot2"), SubResource("DamageBonus2"), SubResource("ArmorIgnore2")])
+parameters = Array[ExtResource("4_parameter")]([SubResource("FirstStrike2"), SubResource("SecondShot2"), SubResource("DamageBonus2"), SubResource("ArmorIgnore2")])
 
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_pelion_shard"
 display_name = "Éclat du Pélion"
 description = "Si Frappe et Tir sont utilisés dans la même activation, la seconde gagne 25 % et ignore 25 Armure."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 rarity = &"legendary"
 tags = Array[StringName]([&"odyssey", &"hybrid"])
 category = 5
-reactive_effects = Array[ItemReactiveEffectData]([SubResource("EffectStrike"), SubResource("EffectShot")])
+reactive_effects = Array[ExtResource("2_effect")]([SubResource("EffectStrike"), SubResource("EffectShot")])

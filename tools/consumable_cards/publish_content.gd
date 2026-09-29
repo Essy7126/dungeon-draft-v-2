@@ -12,7 +12,10 @@ func _run() -> void:
 	var failures: Array = []
 	var maps := 0
 	var items := 0
+	var items_only := "--items-only" in OS.get_cmdline_user_args()
+	var expected_items: int = Catalog.data().equipment.size() + Catalog.data().relics.size()
 	for id in Catalog.data().maps:
+		if items_only: continue
 		var arena := Content.arena(id, true)
 		var report := ArenaValidator.validate(arena, false)
 		if not report.is_valid():
@@ -53,13 +56,13 @@ func _run() -> void:
 				saved.definitions.append(
 					ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
 				)
-		if items == 26 and ResourceSaver.save(saved, ROOT.path_join("item_catalog.tres")) != OK:
+		if items == expected_items and ResourceSaver.save(saved, ROOT.path_join("item_catalog.tres")) != OK:
 			failures.append("catalog_write")
 	var output := {
 		"maps": maps,
 		"items": items,
 		"failures": failures,
-		"passed": failures.is_empty() and maps == 7 and items == 26,
+		"passed": failures.is_empty() and (items_only or maps == 7) and items == expected_items,
 	}
 	DirAccess.make_dir_recursive_absolute(
 		ProjectSettings.globalize_path("res://artifacts/consumable_cards_v2")

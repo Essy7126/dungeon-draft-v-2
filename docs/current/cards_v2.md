@@ -1,7 +1,8 @@
-# Cartes — règles consommables dans Catabase
+# Cartes — Prototype v1 dans Catabase
 
 Choisir **Cartes** au menu, puis **Nouvelle partie**. La galerie existante permet
-de choisir l'apparence, la classe, quinze copies normales et la difficulté.
+de choisir l'apparence, la classe, quinze copies normales, la difficulté et quatre
+points élémentaires sur l'écran de récapitulatif.
 Le parcours suit ensuite la cinématique, le Seuil des Ombres, les combats et
 les haltes de Catabase. Il n'existe plus de troisième variante publique.
 
@@ -26,10 +27,11 @@ conditionnels peuvent modifier ces valeurs de base en combat.
   L'aide **Les familles ?** distingue l'affinité de classe, le rôle, la rareté et
   la famille de sort (tous les exemplaires d'un même sort). L'affinité détermine
   le catalogue de départ, pas une interdiction d'emprunter des cartes en cours
-  de run. Le bonus de classe reste celui choisi au départ. Aucune famille
-  élémentaire indépendante n'est actuellement définie dans les règles.
-- **Classe & améliorations** : attributs tous les deux niveaux, spécialisation
-  au niveau 4, améliorations de famille aux niveaux 4, 8 et 12.
+  de run. Chaque composante chiffrée indique ses éléments et leurs poids ;
+  ces éléments sont indépendants de l'affinité, du rôle et de la rareté.
+- **Caractéristiques / Classe & améliorations** : répartition des maîtrises et
+  aptitudes, spécialisation au niveau 4, perfectionnements aux niveaux 4, 8 et 12.
+  Les règles précises figurent dans le [contrat Prototype v1](prototype_v1.md).
 - **Inventaire** : six emplacements d'équipement et deux reliques distinctes.
   La fiche compare les valeurs permanentes avant/après équipement ou retrait,
   précise les plafonds et garde l'action accessible sous le détail défilant.
@@ -39,13 +41,20 @@ conditionnels peuvent modifier ces valeurs de base en combat.
   acquises. Les fiches distinguent quantités reçues et quantités encore disponibles.
   Ces repères restent disponibles après reprise et changement de salle.
 - Dans **Caractéristiques**, **Origine des statistiques** détaille la base du
-  niveau, les attributs et l'apport effectif de l'équipement après arrondis/plafonds.
+  niveau, les aptitudes et l'apport effectif de l'équipement après arrondis/plafonds.
   Les effets conditionnels restent séparés du total permanent.
+  Les ressources et résistances occupent des tuiles distinctes ; les six maîtrises
+  utilisent les mêmes pictogrammes et couleurs que les cartes. La répartition
+  sépare **Éléments** et **Aptitudes** en onglets, avec aperçu avant confirmation.
+  La main de combat affiche l'affinité de classe et le nom de rareté, un cadre
+  de rareté et les symboles élémentaires. L'infobulle nomme les éléments et reste
+  passive, hors de la zone de sélection. Les cartes neutres sont indiquées.
 - En combat, utiliser la main dans le HUD habituel et cibler sur la vraie carte.
   Une famille ne se joue qu'une fois par tour. Chaque copie jouée disparaît de
   la traversée ; les copies non jouées sont défaussées puis repiochées.
 - La main revient à cinq cartes, modifiable par équipement jusqu'à sept.
-  Les deux gestes de secours restent disponibles sans consommer de copie.
+  L'attaque permanente propre à la classe et la garde de secours restent
+  disponibles sans consommer de copie, chacune une fois par tour.
   Conserver une carte exige un effet de rétention. L'ancre, le Relais et les
   choix d'attraction/sacrifice apparaissent dans cette même barre d'actions.
 - Aux marchands existants : achats ciblés, sacs, équipement, reliques, soin,
@@ -53,7 +62,7 @@ conditionnels peuvent modifier ces valeurs de base en combat.
   se trouve dans la fenêtre de progression. Les stocks et reçus sont persistants.
 
 48 familles et leurs améliorations, quatre classes, huit spécialisations,
-18 équipements et huit reliques sont définis dans
+24 équipements, dont six sceaux de maîtrise, et huit reliques sont définis dans
 `data/cards/consumable_v2/catalog.json`. La route garde ses vingt profondeurs et
 ses douze combats. Les sept petites arènes du prototype servent aux tests des
 règles ; elles ne remplacent pas les cartes et les décors de la run.
@@ -79,8 +88,12 @@ PV, y compris sur une brûlure ou un saignement ; son intention déjà annoncée
 
 Le mode Cartes continue d'utiliser `user://catabase_cards_v1.json` et le format
 ExpeditionSession. Le champ explicite `ruleset_id = catabase_cards_consumable_v2`
-sélectionne les nouvelles règles. Les anciennes parties restent lisibles sous
-leurs règles initiales, sans conversion implicite ni effacement.
+sélectionne les règles consommables. Leur champ interne `prototype_revision = 1`
+identifie cette progression. Une ancienne partie consommable migre hors combat :
+les anciens attributs sont remboursés et les nouveaux budgets deviennent disponibles.
+Un combat actif reprend avec ses anciennes valeurs et migre après sa victoire.
+Copies, niveaux, XP et équipement sont conservés ; les PV restent proportionnels.
+Les variantes Cartes antérieures au moteur consommable gardent leurs règles historiques.
 
 Les actions du héros sauvegardent l'état de la vraie Battle : main, copies
 consommées, PA/PM, PV, garde, positions, usages, statuts, intentions et surfaces. Une reprise ne

@@ -1,0 +1,15 @@
+# Recherche — montée du personnage
+
+29 septembre 2026. HEAD observé : `86018f9c7ea0f13f1dde868b6fcafe95e8b620f1`.
+Travail de conception demandé ; aucun changement de gameplay effectué dans cette étude.
+
+- Conserver la direction du 28 septembre : statistiques communes, éléments accessibles à toutes les classes, répertoires ouverts. Pas de combinaisons imposées ni de seuils obligatoires pour devenir hybride.
+- Objectif : comparer les mécanismes de progression (XP/paliers, allocations, talents, sorts, équipement, réorientation, progression entre runs), puis proposer une chronologie chiffrée sur notre traversée.
+- Audit frais : 12 combats, onze récompenses XP donnant chacune un niveau ; niveau 12 atteint après le combat 11, avant le boss. Le dernier montant XP du catalogue n'est pas versé par `collect_victory` au boss. Sources : catalogue, état des cartes, économie, intégration et route v6.
+- Actuel : 6 points Power/Vitality/Resolve, spécialisation à 4, améliorations de familles à 4/8/12 ; Puissance de base 18→112, PV 110→675. Une montée ajoute aux PV courants la hausse du maximum, en conservant les PV manquants.
+- Recherches : devblog Dofus 2.30 reproduit sur JeuxOnLine (coûts communs et recalibrage des dégâts), guide Dofus communautaire daté août 2026 ; aptitudes Wakfu ; tableau DOS2 ; paliers BG3 ; guides officiels Grim Dawn (attributs, compétences, dévotion, réinitialisation) ; présentations développeurs de Slay the Spire et Hades. Les sources et versions seront distinguées.
+- Proposition produite : 4 points élémentaires au départ puis 2/niveau (26 au total), rendement par élément 3/2/1 points de pourcentage selon tranches de 4/4/reste ; aptitudes à 3/6/9, spécialisation à 4, perfectionnements à 4/8/12 réaffectables entre combats. Deux points déplaçables par halte et une réorientation complète à partir du refuge de profondeur 11. Ce sont des paramètres d'essai, pas des règles déjà validées par l'utilisateur.
+- Décisions de modèle : pas de prérequis élémentaires ; premier essai sans bonus natif supplémentaire ; anciens attributs remplacés ; courbe de Puissance de référence corrigée pour isoler le surcroît de dégâts ; progression de compte horizontale recommandée, état global actuel non audité exhaustivement.
+- Livrables : [proposition](../design/progression_personnage_2026-09-29/README.md), [enquête et sources](../design/progression_personnage_2026-09-29/RECHERCHE.md), script, JSON et parcours dans le même dossier. Visualisation interactive dans le répertoire de visualisation du thread.
+- Vérifications : script exécuté, cadence et budgets contrôlés ; simulateur testé avec Playwright (profils, 18/8 manuel, plafond de points, restauration d'état, largeur 736/320, aucune erreur JS), captures inspectées. Logs dans `artifacts/dev/progression_personnage_2026-09-29/`. Les liens et empreintes sont contrôlés à la clôture.
+- Suite : couverture de contenu et noyaux de classe, intégration/migration dans la run existante, essais de combats complets et CI du moteur commun si l'implémentation est demandée. Aucune balance ni exécution Godot revendiquée ici.

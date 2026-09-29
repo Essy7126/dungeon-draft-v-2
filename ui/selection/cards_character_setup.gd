@@ -232,7 +232,7 @@ func _render() -> void:
 			spell.spell_name,
 			spell.ap_cost,
 			_range(spell),
-			Language.effect(Catalog.Rules.card(id), Readability.Math.stats(1, { }, { }).power),
+			Language.effect(Catalog.Rules.card(id), float(Readability.Math.Progression.POWER[0]), _preview_cards()),
 		]
 	CardSkin.icon_button(start_button, GOLD)
 	var launch_style := CardSkin.surface(GOLD, true, 10)
@@ -442,7 +442,7 @@ func _render_cards() -> void:
 	PAGE.text(detail, "%d PA  ·  %s" % [selected_spell.ap_cost, _range(selected_spell)], 18)
 	var selected_row := Catalog.Rules.card(_inspected)
 	PAGE.text(detail, Language.identity(selected_row), 15).modulate = GOLD
-	PAGE.text(detail, Language.effect(selected_row, Readability.Math.stats(1, { }, { }).power), 17)
+	PAGE.text(detail, Language.effect(selected_row, float(Readability.Math.Progression.POWER[0]), _preview_cards()), 17)
 	var scaling_toggle := _action(
 		detail,
 		"Lien avec la Puissance  " + ("−" if _show_scaling else "+"),
@@ -513,6 +513,7 @@ func _deck_titles() -> String:
 func _render_review() -> void:
 	PAGE.text(_page, "Prêt pour la descente", 27)
 	var body := _scroll_body(_page, "ChoiceImpact")
+	_render_initial_masteries(body)
 	PAGE.text(body, "%s · %s" % [entries[hero].display_name, Catalog.CLASSES[selection.class_id][0]], 23).modulate = _accent()
 	PAGE.text(
 		body,
@@ -543,7 +544,8 @@ func _render_review() -> void:
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.tooltip_text = Readability.category(id) + "\n" + Language.effect(
 			Catalog.Rules.card(id),
-			Readability.Math.stats(1, { }, { }).power,
+			float(Readability.Math.Progression.POWER[0]),
+			_preview_cards(),
 		)
 		button.pressed.connect(
 			func():
@@ -561,6 +563,66 @@ func _render_review() -> void:
 		"Pendant la run, les cartes tombent avec les objets et rejoignent votre réserve. Adaptez votre deck entre les combats.",
 		15,
 	)
+
+
+func _preview_cards():
+	var cards = preload("res://core/expedition/consumable_cards_state.gd").new()
+	cards.prototype_revision = 1
+	cards.primary_class = selection.class_id
+	cards.masteries = selection.get("masteries", cards.masteries).duplicate(true)
+	return cards
+
+
+func _render_initial_masteries(parent: Node) -> void:
+	var rules = preload("res://core/expedition/consumable_progression_v1.gd")
+	if not selection.has("masteries"): selection.masteries = rules.empty_elements()
+	PAGE.text(parent, "Prototype v1 · 4 points élémentaires de départ", 21).modulate = GOLD
+	var remaining := PAGE.text(parent, "%d point(s) restant(s)" % (4 - rules.spent(selection.masteries)), 16)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 16)
+	parent.add_child(grid)
+	for id in rules.ELEMENTS:
+		var row := HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_theme_constant_override("separation", 12)
+		grid.add_child(row)
+		var label := PAGE.text(row, str(rules.ELEMENT_NAMES[id]), 16)
+		label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		label.custom_minimum_size.x = 80
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var input := SpinBox.new()
+		input.name = "DepartureMastery_" + str(id)
+		input.max_value = 4
+		input.value = selection.masteries[id]
+		input.custom_minimum_size.x = 88
+		input.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(input)
+		input.value_changed.connect(func(value):
+			var available := 4 - rules.spent(selection.masteries) + int(selection.masteries[id])
+			selection.masteries[id] = mini(int(value), available)
+			input.set_value_no_signal(selection.masteries[id])
+			remaining.text = "%d point(s) restant(s) · +3 %% de maîtrise par point" % (4 - rules.spent(selection.masteries))
+			_refresh_mastery_preview()
+		)
+	var basic := Catalog.Spells.definition("fallback_strike", false, selection.class_id)
+	var label := PAGE.text(parent, "Attaque permanente : " + str(basic.name) + "\n" + Language.effect(basic, float(rules.POWER[0]), _preview_cards()), 16)
+	label.name = "DepartureBasicAttack"
+	PAGE.text(parent, "Les points non dépensés restent disponibles après le combat. Les éléments renforcent seulement les composantes indiquées sur les sorts.", 14)
+
+
+func _refresh_mastery_preview() -> void:
+	var cards = _preview_cards()
+	var power := float(Readability.Math.Progression.POWER[0])
+	var basic := Catalog.Spells.definition("fallback_strike", false, selection.class_id)
+	var label := find_child("DepartureBasicAttack", true, false) as Label
+	if label != null:
+		label.text = "Attaque permanente : " + str(basic.name) + "\n" + Language.effect(basic, power, cards)
+	for id in Readability.counts(selection.card_families):
+		var button := find_child("ReviewFamily_" + str(id), true, false) as Button
+		if button != null:
+			button.tooltip_text = Readability.category(id) + "\n" + Language.effect(Catalog.Rules.card(id), power, cards)
 
 
 func _render_choice() -> void:

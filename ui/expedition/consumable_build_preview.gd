@@ -24,9 +24,11 @@ static func value(key: String, amount: float) -> String:
 
 
 static func sources(cards) -> Array[Dictionary]:
-	var base := Math.stats(cards.level, { }, { })
-	var attributed := Math.stats(cards.level, cards.attributes, { })
-	var final := Math.stats(cards.level, cards.attributes, Math.equipment_mods(cards.equipped))
+	var blank = cards.get_script().new()
+	blank.prototype_revision = cards.prototype_revision
+	var base := Math.stats(cards.level, { }, { }, blank)
+	var attributed := Math.stats(cards.level, cards.attributes, { }, cards)
+	var final := Math.stats(cards.level, cards.attributes, Math.equipment_mods(cards.equipped), cards)
 	var result: Array[Dictionary] = []
 	for key in METRICS:
 		result.append(
@@ -54,8 +56,8 @@ static func compare(cards, id: String) -> Dictionary:
 		next[item.slot] = id
 	var before_mods := Math.equipment_mods(cards.equipped)
 	var after_mods := Math.equipment_mods(next)
-	var before := Math.stats(cards.level, cards.attributes, before_mods)
-	var after := Math.stats(cards.level, cards.attributes, after_mods)
+	var before := Math.stats(cards.level, cards.attributes, before_mods, cards)
+	var after := Math.stats(cards.level, cards.attributes, after_mods, cards)
 	var rows: Array[Dictionary] = []
 	for key in METRICS:
 		if not is_equal_approx(float(before[key]), float(after[key])):
@@ -83,7 +85,7 @@ static func compare(cards, id: String) -> Dictionary:
 	]:
 		var key: String = spec[0]
 		var raw := float(after_mods.get(spec[1], 0))
-		if key == "physical":
+		if key == "physical" and cards.prototype_revision == 0:
 			raw += .02 * int(cards.attributes.get("resolve", 0))
 		elif key == "mp":
 			raw += 3

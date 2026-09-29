@@ -40,9 +40,13 @@ static func apply_state(
 
 static func guard(
 	hero: Unit, coefficient: float, cards, extra_multiplier := 1.0, ability_id: StringName = &"",
+	card: Dictionary = {}, component_key := "amount",
 ) -> int:
 	var mods := Math.equipment_mods(cards.equipped)
 	var bonus := float(mods.get("guard", 0)) + .05 * int(cards.attributes.get("resolve", 0))
+	if cards.prototype_revision == 1:
+		bonus = Math.component_bonus(card, component_key, cards, mods, "guard") + extra_multiplier - 1.0
+		extra_multiplier = 1.0
 	var amount := Math.guard(
 		hero.attack_power.get_value(),
 		coefficient * extra_multiplier,

@@ -10,7 +10,8 @@ Le menu propose **Classique** et **Cartes**. Les nouvelles règles de
 
 `ui/TitreEcran.tscn` → sélection du personnage → cinématique → Seuil des Ombres →
 parcours de Catabase. En Classique, la préparation a lieu au seuil ; en Cartes,
-apparence, classe, quinze copies normales et difficulté se choisissent dès la sélection.
+apparence, classe, quinze copies normales, difficulté et quatre points élémentaires
+se choisissent dès la sélection. La progression est décrite dans [Prototype v1](prototype_v1.md).
 Le seuil utilise ce deck sans refaire les choix. La reprise rejoint la sauvegarde de la variante.
 Les apparences originale, peinte et Passe-rive jouent la même aventure solo.
 Le refuge reste accessible depuis la sélection.
@@ -51,7 +52,7 @@ vente ou rechargement. La carte est accessible pendant le combat.
 Pour les chiffres, lire les catalogues dans `core/expedition/` et le contrat de
 conception concerné, sans recopier tous leurs tableaux ici :
 
-- [Règles actuelles Cartes](../design/cartes_refonte_v2_2026-09-26/REGLES.md).
+- [Règles actuelles Cartes](cards_v2.md) et [progression Prototype v1](prototype_v1.md).
 - [Règles de classes historiques](../design/class_run_rules_v3.md).
 - [Sélection et audit des cartes du 21 septembre](../design/card_catalog_and_selection_audit_2026-09-21.md).
 - [Écosystème Cartes, compte rendu du 20 septembre](../ai/CARDS_ECOSYSTEM_2026-09-20.md).

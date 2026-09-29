@@ -3,6 +3,8 @@
 28 septembre 2026 — proposition révisée après le recadrage de l'utilisateur.
 Conception uniquement : aucun changement de combat ni de sauvegarde.
 
+Suite de la conception : [montée du personnage, enquête et prototype chiffré du 29 septembre](progression_personnage_2026-09-29/README.md).
+
 ## Direction corrigée
 
 Construire un vocabulaire commun de statistiques et de cartes, extensible au fil

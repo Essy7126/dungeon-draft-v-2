@@ -7,6 +7,7 @@ signal utility_attributes_requested
 signal item_activation_requested(instance_id: StringName)
 
 const UNIT_PRESENTATION := preload("res://ui/combat/combat_unit_presentation.gd")
+const RESOURCE_PALETTE := preload("res://ui/combat/tactical_palette.gd")
 const SPELL_SLOT_SCENE := preload(
 	"res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn"
 )
@@ -884,16 +885,16 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 		return
 	if unit == null:
 		_hp_bar.set_resource(
-			0.0, 1.0, Color(0.64, 0.15, 0.16), null, "PV", true, animate_changes
+			0.0, 1.0, RESOURCE_PALETTE.HEALTH, RESOURCE_PALETTE.HP_ICON, "PV", true, animate_changes
 		)
 		_ap_badge.set_badge(
-			0, 0, Color(0.92, 0.69, 0.18),
-			visual_skin.icon_action_points if visual_skin != null else null,
+			0, 0, RESOURCE_PALETTE.ACTION,
+			RESOURCE_PALETTE.AP_ICON,
 			"PA"
 		)
 		_mp_badge.set_badge(
-			0, 0, Color(0.31, 0.67, 0.9),
-			visual_skin.icon_movement_points if visual_skin != null else null,
+			0, 0, RESOURCE_PALETTE.MOVEMENT,
+			RESOURCE_PALETTE.MP_ICON,
 			"PM"
 		)
 		return
@@ -901,8 +902,8 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 	_hp_bar.set_resource(
 		unit.current_hp,
 		unit.max_hp.get_int(),
-		Color(0.72, 0.12, 0.15),
-		null,
+		RESOURCE_PALETTE.HEALTH,
+		RESOURCE_PALETTE.HP_ICON,
 		"PV",
 		true,
 		animate_changes
@@ -910,15 +911,15 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 	_ap_badge.set_badge(
 		unit.current_ap,
 		unit.max_ap.get_int(),
-		Color(0.94, 0.68, 0.12),
-		visual_skin.icon_action_points if visual_skin != null else null,
+		RESOURCE_PALETTE.ACTION,
+		RESOURCE_PALETTE.AP_ICON,
 		"PA"
 	)
 	_mp_badge.set_badge(
 		unit.current_mp,
 		unit.max_mp.get_int(),
-		Color(0.27, 0.62, 0.92),
-		visual_skin.icon_movement_points if visual_skin != null else null,
+		RESOURCE_PALETTE.MOVEMENT,
+		RESOURCE_PALETTE.MP_ICON,
 		"PM"
 	)
 
@@ -1152,6 +1153,13 @@ func _targeting_instruction() -> String:
 		"attack":
 			return "ENNEMI"
 		"spell":
+			if _active_spell != null and _current_unit != null \
+				and is_instance_valid(_combat_context):
+				var caster: SpellCaster = _combat_context.get("spell_caster")
+				if caster != null:
+					return "PORTÉE %d–%d · CIBLE" % [
+						caster.get_effective_spell_minimum_range(_current_unit, _active_spell),
+						caster.get_effective_spell_range(_current_unit, _active_spell)]
 			return "CIBLE"
 	return "CIBLE"
 
@@ -2582,7 +2590,7 @@ func _apply_card_hand_layout(viewport_width: float) -> void:
 	var modules: Array[Rect2] = [Rect2(0, 0, identity, height), Rect2(identity + 8, 0, center + 8, height), Rect2(width - commands, 0, commands, height)]
 	_material_surface.configure(visual_skin, modules)
 	_portrait_view.apply_layout(64.0 / METRICS.PORTRAIT_SIZE)
-	_hp_bar.apply_calibrated_layout(Vector2(124, 24), 1.0)
+	_hp_bar.apply_calibrated_layout(Vector2(130, 30), 1.0)
 	_character_info.custom_minimum_size.x = 124
 	_character_row.add_theme_constant_override("separation", 6)
 	_info_label.add_theme_font_size_override("font_size", 15)

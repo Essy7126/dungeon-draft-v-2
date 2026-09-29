@@ -55,9 +55,9 @@ const ICONS := {
 }
 
 
-static func definition(id: String, upgraded := false) -> Dictionary:
+static func definition(id: String, upgraded := false, class_id := "") -> Dictionary:
 	if id == "fallback_strike":
-		return {
+		var result := {
 			"id": id,
 			"runtimeId": "cc2_" + id,
 			"name": "Attaque de secours",
@@ -72,6 +72,8 @@ static func definition(id: String, upgraded := false) -> Dictionary:
 			"fallback": true,
 			"baseText": "0,28 P physiques. Une fois par tour, hors pioche.",
 		}
+		if not class_id.is_empty(): result.merge(Catalog.class_row(class_id).get("basicAttack", {}), true)
+		return result
 	if id == "fallback_guard":
 		return {
 			"id": id,
@@ -91,8 +93,8 @@ static func definition(id: String, upgraded := false) -> Dictionary:
 	return Catalog.card(id, upgraded)
 
 
-static func make_spell(id: String, upgraded := false) -> Spell:
-	var row := definition(id, upgraded)
+static func make_spell(id: String, upgraded := false, class_id := "") -> Spell:
+	var row := definition(id, upgraded, class_id)
 	if row.is_empty():
 		return null
 	var spell := Spell.new()

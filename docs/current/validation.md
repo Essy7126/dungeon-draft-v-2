@@ -10,6 +10,7 @@ Un import interrompu, zéro test ou un rapport absent reste un échec.
 | Codex de personnage / sort | `./dev.ps1 test smoke` : seulement deux suites UI, aucun parcours complet |
 | Classes, cartes, deck et VFX Cartes | `./dev.ps1 test cards` ; parcours préparation → combat → bilan → reprise |
 | Copies consommables | `./dev.ps1 test consumable-v2` ; inclus dans `cards`, `catabase` et `all`. `test_consumable_cards_integration.gd` utilise les douze scènes de combat réelles. `./tools/consumable_cards/verify_integration.ps1` capture le parcours intégré ; `capture.tscn` concerne seulement le prototype |
+| Progression Prototype v1 | `./dev.ps1 test test/unit/test_consumable_cards_prototype_v1.gd` ; inclus dans les suites Cartes. Vérifier allocation au départ et dans le dossier, calculs élémentaires, quotas, anciens combats et ratio de PV à la reprise. Contrat : [prototype_v1.md](prototype_v1.md) |
 | Probabilités et transactions des anciennes révisions Cartes | `./dev.ps1 test cards-audit` : simulations statistiques longues, également conservées dans `all` |
 | Expédition, progression, inventaire | `./dev.ps1 test catabase` ; tester reprise, récompenses et sauvegardes antérieures |
 | Monstres | `./dev.ps1 test monsters` ; comportement de combat et lecture des intentions |
@@ -18,6 +19,7 @@ Un import interrompu, zéro test ou un rapport absent reste un échec.
 | Haltes / audio | `./dev.ps1 test halts` ou `audio` ; contrôle runtime/écoute concernés |
 | Moteur commun, déplacements ou suppressions de ressources | Import + `./dev.ps1 test all` + gates CI et scénarios impactés |
 | Rendu HUD / inventaire | `./dev.ps1 capture hud` ou `inventory` ; inspection effective des images |
+| Portées et survol tactique | `./dev.ps1 test tactical-readability` ; `./tools/tactical_readability/verify.ps1` capture la Battle réelle, le survol allié/ennemi, la portée des sorts et les ressources épuisées en 720p et 1080p |
 
 `cards` fait partie de `catabase`. Les tests exacts échouent explicitement si
 leur fichier a disparu du manifeste. `all` reste strict localement : ses échecs

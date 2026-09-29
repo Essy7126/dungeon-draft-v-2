@@ -45,7 +45,7 @@ func _button(parent: Node, value: String, action: Callable, locked := false) -> 
 
 func _commit(ok: bool) -> void:
 	if ok:
-		Integration.rebuild(GameManager.expedition, mode == "gear")
+		Integration.rebuild(GameManager.expedition, mode == "gear" or GameManager.expedition.cards.prototype_revision == 1)
 		notice = "Enregistré." if GameManager.save_expedition() else "Sauvegarde impossible : réessayez avant de quitter."
 	else:
 		notice = "Cette action n'est pas disponible."
@@ -73,6 +73,18 @@ func _render() -> void:
 
 
 func _progression(cards) -> void:
+	if cards.prototype_revision == 1:
+		var editor := preload("res://ui/expedition/consumable_progression_editor.gd").new()
+		editor.session = GameManager.expedition
+		editor.read_only = read_only
+		editor.committed.connect(_commit)
+		add_child(editor)
+		for id in Catalog.class_row(cards.primary_class).specs:
+			_button(self, "Spécialisation · " + str(id).capitalize(), func(): return cards.specialize(id), cards.level < 4 or not cards.specialization.is_empty())
+		for id in cards.upgraded_ids:
+			_button(self, "Libérer · " + str(Catalog.card(id).name), func(): return cards.release_upgrade(id))
+		_text("Les perfectionnements se choisissent dans Sorts & deck.")
+		return
 	_text("%s · Niveau %d" % [Catalog.class_row(cards.primary_class).name, cards.level], 24)
 	_text(PlayerWords.PASSIVES[cards.primary_class])
 	_text(
@@ -324,6 +336,7 @@ func _deck(cards) -> void:
 			PlayerWords.effect(
 				Catalog.card(id, id in cards.upgraded_ids),
 				GameManager.expedition.character.unit.attack_power.get_value(),
+				cards,
 			)
 		)
 		var row := HFlowContainer.new()

@@ -84,6 +84,16 @@ static func role(row: Dictionary) -> String:
 
 
 static func identity(row: Dictionary) -> String:
+	var labels: PackedStringArray = []
+	var seen := {}
+	for weights in row.get("elements", {}).values():
+		for id in weights:
+			if not seen.has(id):
+				labels.append(str(Math.Progression.ELEMENT_NAMES[id]))
+				seen[id] = true
+	if not labels.is_empty():
+		var magic: bool = row.type == "magic" and (float(row.get("damage", 0)) > 0 or row.op == "firefield")
+		return role(row) + " · " + "/".join(labels) + (" · magique" if magic else "")
 	var element := "Physique" if row.type == "physical" else "Magie"
 	if row.op in ["burn", "firefield"]:
 		element = "Feu · magique"
@@ -96,7 +106,25 @@ static func identity(row: Dictionary) -> String:
 	return role(row) + " · " + element
 
 
-static func effect(row: Dictionary, power: float) -> String:
+static func effect(row: Dictionary, power: float, cards = null) -> String:
+	if cards != null and cards.prototype_revision == 1:
+		var adjusted := row.duplicate(true)
+		var mods := Math.equipment_mods(cards.equipped)
+		for key in ["damage", "bonus", "counter", "shield", "collisionGuard", "amount"]:
+			if not adjusted.has(key): continue
+			var kind := "direct" if key in ["damage", "bonus"] else "indirect" if key == "counter" else "guard" if key in ["shield", "collisionGuard"] or row.op in ["guard", "counter"] else "heal" if row.op in ["heal", "renew"] else "mark" if row.op == "mark" else "periodic" if row.op in ["burn", "bleed", "firefield"] else ""
+			if kind.is_empty(): continue
+			adjusted[key] = float(row[key]) * (1.0 + Math.component_bonus(row, key, cards, mods, kind))
+		var description := effect(adjusted, power)
+		if float(row.get("damage", 0)) > 0:
+			var contextual: PackedStringArray = []
+			for entry in [[1, "Au contact"], [3, "À 3 cases ou plus"]]:
+				if int(row.max) + int(mods.get("range", 0)) < int(entry[0]) or (int(entry[0]) == 1 and int(row.min) > 1): continue
+				var base := Math.component(row, "damage", power, cards, "direct")
+				var value := Math.component(row, "damage", power, cards, "direct", 0.0, {"distance": entry[0]})
+				if not is_equal_approx(base, value): contextual.append("%s : %d dégâts de base." % [entry[1], Math.rounded(value)])
+			if not contextual.is_empty(): description += "\n" + "\n".join(contextual)
+		return description
 	var lines: PackedStringArray = []
 	var damage := Math.rounded(float(row.get("damage", 0)) * power)
 	var amount := float(row.get("amount", 0))
@@ -196,6 +224,7 @@ static func effect(row: Dictionary, power: float) -> String:
 	match str(row.get("condition", "")):
 		"marked":
 			lines.append("+%d dégâts si la cible porte une Marque." % bonus)
+			if row.get("fallback", false): lines.append("Ne consomme pas la Marque.")
 		"moved":
 			lines.append(
 				"+%d dégâts après avoir parcouru %d case(s) avec vos PM ou un déplacement, ce tour."
@@ -245,6 +274,11 @@ static func power_reference(power: float) -> String:
 
 static func scaling(row: Dictionary) -> String:
 	var parts: PackedStringArray = []
+	for component in row.get("elements", {}):
+		var weights: PackedStringArray = []
+		for id in row.elements[component]:
+			weights.append("%.0f %% %s" % [float(row.elements[component][id]) * 100, Math.Progression.ELEMENT_NAMES[id]])
+		parts.append("%s : %s." % [{"damage": "Impact", "bonus": "Bonus conditionnel", "amount": "Effet principal", "counter": "Riposte", "shield": "Garde", "collisionGuard": "Garde de collision"}[component], " / ".join(weights)])
 	for key in ["damage", "bonus", "counter", "shield", "collisionGuard"]:
 		if float(row.get(key, 0)) <= 0:
 			continue

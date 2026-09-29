@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c2ydtg5o52ckb"]
 
-[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/fureur_d_ares.png" id="1_hton6"]
+[ext_resource type="Texture2D" uid="uid://ciwdom4etjt3o" path="res://asset/ui/items/relics_premium_v1/fureur_d_ares.png" id="1_hton6"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_5tb72"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_rgajr"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_2ytyo"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="4_km3qs"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="5_nsl0h"]
 [ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="6_xcgfb"]

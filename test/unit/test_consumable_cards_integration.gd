@@ -63,6 +63,8 @@ func test_public_cards_uses_existing_threshold_session_and_save() -> void:
 	var selection := Catalog.preset("gardien")
 	selection.deck_selected = true
 	selection.difficulty_id = "easy"
+	selection.masteries = Runtime.Integration.Progression.empty_elements()
+	selection.masteries.earth = 4
 	assert_true(manager.configure_cards_departure(selection))
 	assert_true(manager.continue_after_intro())
 	assert_eq(manager.destinations[-1], manager.CATABASE_THRESHOLD_SCREEN_PATH)
@@ -71,6 +73,7 @@ func test_public_cards_uses_existing_threshold_session_and_save() -> void:
 	assert_not_null(manager.expedition)
 	assert_true(manager.expedition.uses_consumable_cards())
 	assert_eq(manager.expedition.cards.active.size(), 15)
+	assert_eq(int(manager.expedition.cards.masteries.earth), 4)
 	assert_eq(manager.expedition.route.current_node_id, "d01_0")
 	assert_eq(manager.expedition.route.difficulty_id, "easy")
 	assert_eq(manager.destinations[-1], "battle")
@@ -81,6 +84,7 @@ func test_public_cards_uses_existing_threshold_session_and_save() -> void:
 	var snapshot: Dictionary = JSON.parse_string(JSON.stringify(manager.get_expedition_snapshot()))
 	assert_true(manager.restore_expedition_snapshot(snapshot))
 	assert_eq(manager.expedition.cards.primary_class, "gardien")
+	assert_eq(int(manager.expedition.cards.masteries.earth), 4)
 	assert_eq(manager.expedition.cards.active.size(), 15)
 	assert_eq(manager.expedition_save_path, paths[0])
 
@@ -226,16 +230,14 @@ func test_existing_workshop_displays_deck_with_empty_search() -> void:
 	workshop = Workshop.new()
 	workshop.mode = "progression"
 	add_child(workshop)
-	var spent := false
-	for button in workshop.get_children():
-		if button is Button and button.text.begins_with("Puissance"):
-			assert_false(button.disabled)
-			button.pressed.emit()
-			spent = true
-			break
-	assert_true(spent)
-	assert_eq(int(GameManager.expedition.cards.attributes.power), 1)
-	assert_eq(int(ExpeditionSaveService.read_snapshot(GameManager.expedition_save_path).session.cards_run.attributes.power), 1)
+	var allocation := workshop.find_child("Allocation_night", true, false) as SpinBox
+	assert_not_null(allocation)
+	allocation.value = 1
+	var apply := workshop.find_child("ApplyPrototypeAllocation", true, false) as Button
+	assert_false(apply.disabled)
+	apply.pressed.emit()
+	assert_eq(int(GameManager.expedition.cards.masteries.night), 1)
+	assert_eq(int(ExpeditionSaveService.read_snapshot(GameManager.expedition_save_path).session.cards_run.masteries.night), 1)
 	workshop.free()
 
 

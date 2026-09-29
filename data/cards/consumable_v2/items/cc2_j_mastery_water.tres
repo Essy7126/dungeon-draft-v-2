@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_gddcf"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_8h8j6"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_fmcr4"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_axlyj"]
+
+[resource]
+script = ExtResource("2_8h8j6")
+profile_modifiers = {
+"mastery_water": 0.12
+}
+item_id = &"cc2_j_mastery_water"
+display_name = "Sceau de Eau"
+description = "+12 % maîtrise Eau"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+equipment_slot = 2

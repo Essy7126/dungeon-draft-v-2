@@ -54,6 +54,20 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	return result
 
 
+## Portée spatiale réelle, même quand le sort exige une unité comme cible.
+## Le filtre des cibles et des modificateurs reste dans get_targetable_cells.
+func get_spell_range_cells(caster: Unit, spell: Spell) -> Array:
+	var result: Array = []
+	if caster == null or spell == null or _grid == null:
+		return result
+	for x in _grid.cols:
+		for y in _grid.rows:
+			var cell := Vector2i(x, y)
+			if is_cell_in_spell_range(caster, spell, cell):
+				result.append(cell)
+	return result
+
+
 func get_effective_spell_range(caster: Unit, spell: Spell) -> int:
 	if caster == null or spell == null:
 		return 0
@@ -201,6 +215,11 @@ func _is_base_valid_target(
 		spell: Spell,
 		cell: Vector2i
 	) -> bool:
+	return is_cell_in_spell_range(caster, spell, cell) \
+		and (spell.is_self_only() or _matches_target(caster, spell, cell))
+
+
+func is_cell_in_spell_range(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 	if caster == null or spell == null or _grid == null:
 		return false
 	if spell.is_self_only():
@@ -222,7 +241,7 @@ func _is_base_valid_target(
 		return false
 	if get_action_classification(spell) == &"PROJECTILE" and not _pathfinder.has_projectile_path(origin, cell):
 		return false
-	return _matches_target(caster, spell, cell)
+	return true
 
 
 func get_cast_origin(caster: Unit, spell: Spell) -> Vector2i:

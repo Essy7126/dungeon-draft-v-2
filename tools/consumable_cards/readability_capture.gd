@@ -67,6 +67,12 @@ func _check_hand(hand: Control, count: int) -> void:
 		check(art != null and art.size.x >= 52 and art.size.y >= 52, "readable art " + str(count))
 		var range_label: Label = button.find_child("CardRange", true, false)
 		check(range_label != null and not range_label.text.is_empty(), "effective range visible")
+		check(button.find_child("CardAffinity", true, false) != null, "class affinity visible")
+		check(
+			button.find_child("CardRarityName", true, false) != null,
+			"rarity named, not only colored",
+		)
+		check(button.find_child("CardElements", true, false) != null, "element symbols visible")
 		for child in button.find_children("*", "Control", true, false):
 			check(button.get_global_rect().grow(1).encloses(child.get_global_rect()), "face fits "
 				+ str(child.name))

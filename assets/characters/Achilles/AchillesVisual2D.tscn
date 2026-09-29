@@ -1,19 +1,19 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://cprcftj8ajx8n"]
 
-[ext_resource type="Script" path="res://assets/characters/Achilles/achilles_visual_2d.gd" id="1_visual"]
+[ext_resource type="Script" uid="uid://dnd3rxd08knkx" path="res://assets/characters/Achilles/achilles_visual_2d.gd" id="1_visual"]
 [ext_resource type="SpriteFrames" path="res://assets/characters/Achilles/achilles_sprite_frames.tres" id="2_frames"]
 
-[node name="AchillesVisual2D" type="Node2D"]
+[node name="AchillesVisual2D" type="Node2D" unique_id=1061098897]
 script = ExtResource("1_visual")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1944899471]
 texture_filter = 1
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_SE"
 autoplay = "idle_SE"
 offset = Vector2(0, -64)
 
-[node name="FootAnchor" type="Node2D" parent="."]
+[node name="FootAnchor" type="Node2D" parent="." unique_id=1671063828]
 
-[node name="VFXAnchor" type="Node2D" parent="."]
+[node name="VFXAnchor" type="Node2D" parent="." unique_id=1084766553]
 position = Vector2(0, -92)

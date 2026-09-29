@@ -2,7 +2,7 @@ class_name CombatHighlightMarker
 extends RefCounted
 
 ## Sémantique visuelle redondante avec la couleur des cases.
-## Chaque famille de portée conserve sa teinte historique et reçoit une forme.
+## Les aplats et contours restent lisibles sur les décors peints.
 
 const MOVE: StringName = &"move"
 const CONTROL_LIMITED: StringName = &"control_limited"
@@ -18,6 +18,22 @@ const SHAPE_BARRED_CIRCLE: StringName = &"barred_circle"
 
 const INK := Color(0.97, 0.97, 0.91, 0.94)
 const SHADOW := Color(0.015, 0.02, 0.025, 0.82)
+
+
+static func draw_tile(canvas: CanvasItem, polygon: PackedVector2Array, value) -> void:
+	var color := color_of(value)
+	var center := Vector2.ZERO
+	for point in polygon:
+		center += point
+	center /= polygon.size()
+	var inset := PackedVector2Array()
+	for point in polygon:
+		inset.append(point.lerp(center, 0.055))
+	canvas.draw_colored_polygon(inset, color)
+	inset.append(inset[0])
+	canvas.draw_polyline(inset, Color(0.035, 0.075, 0.11, 0.50), 2.6, true)
+	canvas.draw_polyline(inset, Color(color.lightened(0.25), 0.80), 1.1, true)
+	draw(canvas, center, marker_of(value), radius_for_polygon(center, polygon))
 
 
 static func entry(color: Color, marker: StringName = &"") -> Dictionary:
@@ -94,8 +110,8 @@ static func draw(
 	radius = maxf(radius, 5.0)
 	match marker:
 		MOVE:
-			canvas.draw_circle(center, radius * 0.28 + 1.5, SHADOW)
-			canvas.draw_circle(center, radius * 0.28, ink)
+			canvas.draw_circle(center, 2.4, SHADOW)
+			canvas.draw_circle(center, 1.3, Color(ink, 0.72))
 		CONTROL_LIMITED:
 			var gap := radius * 0.22
 			_draw_line(

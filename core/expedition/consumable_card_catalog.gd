@@ -2,6 +2,7 @@ extends RefCounted
 ## Versioned V2 definitions. Callers receive detached data, never shared mutable rows.
 const PATH := "res://data/cards/consumable_v2/catalog.json"
 const RULESET := "catabase_cards_consumable_v2"
+const Progression := preload("res://core/expedition/consumable_progression_v1.gd")
 const RARITIES := ["normal", "elite", "rare", "legendary", "god", "immortal"]
 const CLASSES := ["assassin", "gardien", "arpenteur", "thaumaturge"]
 const OPS := [
@@ -67,7 +68,7 @@ static func validation_errors(value: Variant) -> Array[String]:
 				return (n is float or n is int) and is_finite(float(n)) and n >= 0,
 		):
 			errors.append("Valeur de courbe invalide : " + key)
-	var counts := { "classes": 4, "cards": 48, "equipment": 18, "relics": 8, "route": 12 }
+	var counts := { "classes": 4, "cards": 48, "equipment": 24, "relics": 8, "route": 12 }
 	for key in counts:
 		if value[key].size() != counts[key]:
 			errors.append("Nombre incorrect : " + key)
@@ -77,6 +78,7 @@ static func validation_errors(value: Variant) -> Array[String]:
 			errors.append("Définition de carte invalide.")
 			continue
 		var id: String = card.id
+		for error in Progression.component_errors(card): errors.append(id + " : " + error)
 		if families.has(id) or card.get("runtimeId") != "cc2_" + id:
 			errors.append("Identifiant de carte invalide : " + id)
 		families[id] = card
@@ -111,6 +113,10 @@ static func validation_errors(value: Variant) -> Array[String]:
 			errors.append("Classe invalide ou dupliquée.")
 			continue
 		seen_classes[entry.id] = true
+		if not entry.get("basicAttack") is Dictionary or not entry.basicAttack.get("name") is String:
+			errors.append("Attaque permanente absente : " + str(entry.id))
+		else:
+			for error in Progression.component_errors(entry.basicAttack): errors.append(str(entry.id) + " : " + error)
 		if (
 			not entry.get("specs") is Array or entry.specs.size() != 2
 			or not entry.get("starters") is Array or entry.starters.size() != 5
@@ -211,6 +217,7 @@ static func preset(class_id := "assassin") -> Dictionary:
 
 
 static func valid_departure(selection: Dictionary) -> bool:
+	if selection.has("masteries") and not Progression.valid_allocation(selection.masteries, Progression.ELEMENTS, 4, 4): return false
 	if (
 		selection.get("ruleset_id") != RULESET or selection.get("class_id") not in CLASSES
 		or selection.get("difficulty_id") not in ["normal", "easy", "standard_v2"]

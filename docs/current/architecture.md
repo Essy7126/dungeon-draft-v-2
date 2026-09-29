@@ -13,7 +13,8 @@ un dossier ne donnent pas son statut d’usage. Commencer par un domaine :
 | Cartes | `core/expedition/consumable_cards_state.gd`, `consumable_cards_integration.gd` | Règles consommables branchées dans ExpeditionSession ; anciens profils via `class_cards.gd` et `catabase_cards.gd` |
 | Combat Cartes | `battle/consumable_cards_runtime.gd`, `core/expedition/consumable_expedition_checkpoint.gd` | Adaptation de la vraie Battle et reprise de ses unités, positions, ressources et piles |
 | Présentation Cartes | `ui/selection/cards_character_setup.gd`, `ui/expedition/consumable_cards_workshop.gd`, `catabase_card_hand.gd` | Sélection existante, fenêtres d'inventaire/progression et HUD persistant |
-| Contenu Cartes | `data/cards/consumable_v2/`, `tools/consumable_cards/publish_content.gd` | Manifeste et catalogue de 26 objets publiés avec les services Studio ; les sept arènes de référence restent des fixtures, la run garde ses salles existantes |
+| Contenu Cartes | `data/cards/consumable_v2/`, `tools/consumable_cards/publish_content.gd` | Manifeste et catalogue de 32 objets publiés avec les services Studio ; les sept arènes de référence restent des fixtures, la run garde ses salles existantes |
+| Progression Prototype v1 | `core/expedition/consumable_progression_v1.gd`, `ui/expedition/consumable_progression_editor.gd` | Budgets, maîtrises et aptitudes ; édition dans le dossier existant, migration hors combat après validation des PV sauvegardés |
 | Combat | `battle/battle.gd`, `core/spell_caster.gd`, `units/unit.gd` | Cycle, résolution des sorts et état des unités |
 | Grille / IA | `core/grid_data.gd`, `core/pathfinder.gd`, `core/enemy_ai.gd` | Terrain logique, chemin et décisions ennemies |
 | HUD | `ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd` | Présentation du combat et main Cartes |

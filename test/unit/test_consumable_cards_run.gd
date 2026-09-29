@@ -61,7 +61,10 @@ func test_real_first_victory_and_checkpoint_after_every_action() -> void:
 	assert_eq(run.cards.level, 2)
 	assert_eq(run.cards.gold, 75)
 	assert_eq(run.cards.consumed.size(), 0, "fallbacks never consume copies")
-	assert_true(run.act({ "kind": "attribute", "id": "vitality" }).success)
+	assert_false(run.act({ "kind": "attribute", "id": "vitality" }).success, "first aptitude unlocks at level 3")
+	for _point in 6:
+		assert_true(run.act({ "kind": "attribute", "id": "earth" }).success)
+	assert_false(run.act({ "kind": "attribute", "id": "earth" }).success)
 	assert_false(run.act({ "kind": "attribute", "id": "power" }).success)
 	assert_true(run.act({ "kind": "continue" }).success)
 	assert_eq(int(run.battle.encounter.index), 2)

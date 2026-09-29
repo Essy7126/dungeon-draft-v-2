@@ -212,16 +212,48 @@ func _run() -> void:
 	await get_tree().process_frame
 	check(dossier.find_child("StatSources", true, false).visible, "stat source disclosure opens")
 	await capture("05b_origine_statistiques")
-	var attribute = dossier.find_child("Attribute_power", true, false)
-	check(attribute != null and not attribute.disabled, "attribute action available")
-	if attribute != null:
-		attribute.pressed.emit()
+	var allocation = dossier.find_child("Allocation_night", true, false)
+	for id in [
+		"ap",
+		"mp",
+		"power",
+		"hand",
+		"physical",
+		"magic",
+		"earth",
+		"water",
+		"fire",
+		"wind",
+		"night",
+		"sun",
+	]:
+		check(
+			dossier.find_child("Stat_" + id, true, false) != null,
+			"stat has a dedicated visual tile: " + id,
+		)
+	var categories = dossier.find_child("ProgressionCategories", true, false)
+	check(categories != null, "elements and aptitudes are separate tabs")
+	if categories != null:
+		categories.current_tab = 1
+		await get_tree().process_frame
+		check(
+			dossier.find_child("Allocation_vitality", true, false).is_visible_in_tree(),
+			"aptitude allocation is reachable",
+		)
+		categories.current_tab = 0
+	var apply = dossier.find_child("ApplyPrototypeAllocation", true, false)
+	check(allocation != null and allocation.editable, "mastery allocation available")
+	if allocation != null:
+		allocation.value = 4
+	check(apply != null and not apply.disabled, "allocation confirmation available")
+	if apply != null:
+		apply.pressed.emit()
 	await get_tree().process_frame
-	check(int(cards.attributes.power) == 1, "attribute allocation applies")
+	check(int(cards.masteries.night) == 4, "mastery allocation applies")
 	var saved := ExpeditionSaveService.read_snapshot(GameManager.expedition_save_path)
 	check(
-		int(saved.get("session", { }).get("cards_run", { }).get("attributes", { }).get("power", 0)) == 1,
-		"attribute persisted",
+		int(saved.get("session", { }).get("cards_run", { }).get("masteries", { }).get("night", 0)) == 4,
+		"mastery persisted",
 	)
 	clear_scene()
 	_open("build")

@@ -190,11 +190,12 @@ var _deployment: DeploymentController = null
 
 # --- Salle-situation (optionnel) — instancié seulement si la salle est configurée.
 
-const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
-const CONTROL_LIMITED_MOVE_COLOR = Color(1.0, 0.42, 0.42, 0.34)
-const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
-const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
-const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
+const MOVE_COLOR = Color(0.22, 0.76, 0.51, 0.48)
+const CONTROL_LIMITED_MOVE_COLOR = Color(0.91, 0.57, 0.29, 0.30)
+const ATTACK_COLOR = Color(0.93, 0.38, 0.43, 0.60)
+const SPELL_COLOR = Color(0.24, 0.48, 0.88, 0.48)
+const SPELL_TARGET_COLOR = Color(0.36, 0.72, 1.0, 0.62)
+const AOE_COLOR = Color(1.0, 0.69, 0.31, 0.64)
 
 # Durée d'affichage de l'écran de fin avant de rendre la main au run.
 const END_SCREEN_DELAY := 1.5
@@ -414,6 +415,10 @@ func _setup_view() -> void:
 
 
 func _setup_movement_path_preview() -> void:
+	var hover_preview := preload("res://battle/tactical_hover_preview.gd").new()
+	hover_preview.name = "TacticalHoverPreview"
+	hover_preview.battle = self
+	add_child(hover_preview)
 	_movement_path_preview = MovementPathPreviewScript.new()
 	_movement_path_preview.name = "MovementPathPreview"
 	var layer_parent := grid_view.get_parent() as Node2D
@@ -1867,14 +1872,9 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	var unit = turn_queue.get_current_unit()
 	if spell == null or unit == null:
 		return
-	grid_view.clear_highlights()
 	var targetable = spell_caster.get_targetable_cells(unit, spell)
 	_set_target_hover_feedback(cell, targetable.has(cell))
-	grid_view.highlight(
-		targetable,
-		SPELL_COLOR,
-		COMBAT_HIGHLIGHT_MARKER.SPELL,
-	)
+	_draw_spell_range(unit, spell, targetable)
 	if targetable.has(cell):
 		grid_view.highlight(
 			spell_caster.get_aoe_cells(spell, cell, unit.grid_pos),
@@ -1946,6 +1946,10 @@ func _on_request_show_move_range() -> void:
 		return
 	_clear_movement_path_preview()
 	_clear_target_hover_feedback()
+	_draw_movement_range(unit)
+
+
+func _draw_movement_range(unit: Unit) -> void:
 	grid_view.clear_highlights()
 	var range_layers := _movement_range_layers(unit)
 	grid_view.highlight(
@@ -2319,12 +2323,16 @@ func _on_request_show_spell_range(spell: Spell) -> void:
 			unit, spell, unit.grid_pos, availability_reason
 		))
 		return
+	_draw_spell_range(unit, spell, spell_caster.get_targetable_cells(unit, spell))
+
+
+func _draw_spell_range(unit: Unit, spell: Spell, targetable: Array) -> void:
 	grid_view.clear_highlights()
-	grid_view.highlight(
-		spell_caster.get_targetable_cells(unit, spell),
-		SPELL_COLOR,
-		COMBAT_HIGHLIGHT_MARKER.SPELL,
-	)
+	grid_view.highlight(spell_caster.get_spell_range_cells(unit, spell), SPELL_COLOR)
+	grid_view.highlight(targetable, SPELL_TARGET_COLOR)
+	for cell in targetable:
+		if grid.get_unit(cell) != null:
+			grid_view.highlight([cell], SPELL_TARGET_COLOR, COMBAT_HIGHLIGHT_MARKER.SPELL)
 
 
 func _spell_target_rejection_reason(

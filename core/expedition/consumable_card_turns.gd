@@ -15,7 +15,7 @@ static func bind_hero(hero: Unit, cards) -> void:
 static func rebuild(hero: Unit, cards, preserve_ratio := false) -> void:
 	var before := hero.max_hp.get_int()
 	var hp := hero.current_hp
-	var stats := Math.stats(cards.level, cards.attributes, Math.equipment_mods(cards.equipped))
+	var stats := Math.stats(cards.level, cards.attributes, Math.equipment_mods(cards.equipped), cards)
 	hero.max_hp.base_value = stats.hp
 	hero.attack_power.base_value = stats.power
 	hero.max_ap.base_value = 4

@@ -20,6 +20,8 @@ const SLOTS := {
 	"amulet": "Amulette",
 }
 const MODS := {
+	"mastery_earth": "maîtrise Terre", "mastery_water": "maîtrise Eau", "mastery_fire": "maîtrise Feu",
+	"mastery_wind": "maîtrise Vent", "mastery_night": "maîtrise Nuit", "mastery_sun": "maîtrise Soleil",
 	"melee": "dégâts au contact",
 	"ranged": "dégâts à 3 cases ou plus",
 	"range": "portée",

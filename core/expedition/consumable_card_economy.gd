@@ -253,6 +253,7 @@ static func _apply(cards, visit: String, request: Dictionary, receipt: String) -
 			stock.heal -= 1
 			heal = .3
 		"respec":
+			if cards.prototype_revision == 1: return _failure("free_training_slots")
 			var from := str(request.get("from", ""))
 			if (
 				int(stock.respec) < 1 or from not in cards.upgraded_ids

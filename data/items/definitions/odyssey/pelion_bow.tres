@@ -1,10 +1,18 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bxcdv8kev0qg3"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_3k5pg"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_p6r8m"]
+[ext_resource type="Texture2D" uid="uid://c0ns2swxs2uab" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_pelion_bow.png" id="glyph_da"]
 
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_pelion_bow.png" id="glyph_da"]
+[sub_resource type="Resource" id="Shot"]
+script = ExtResource("3_spell")
+range_bonus = 1
+minimum_range_override = 3
+modifier_name = "Portée du Pélion"
+target_spell_id = &"achilles_pelion_shot"
 
 [sub_resource type="Resource" id="Prowess"]
 script = ExtResource("2_stat")
@@ -12,24 +20,17 @@ stat_id = &"attack_power"
 value = 0.12
 modifier_type = 1
 
-[sub_resource type="Resource" id="Shot"]
-script = ExtResource("3_spell")
-modifier_name = "Portée du Pélion"
-target_spell_id = &"achilles_pelion_shot"
-range_bonus = 1
-minimum_range_override = 3
-
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_pelion_bow"
 display_name = "Arc du Pélion"
 description = "+12 % Prouesse ; Tir gagne 1 portée maximale et sa portée minimale devient 3."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 tags = Array[StringName]([&"odyssey", &"achilles", &"chiron"])
 category = 0
 equipment_slot = 0
 compatible_character_ids = Array[StringName]([&"achilles"])
-stat_modifiers = Array[ItemStatModifierData]([SubResource("Prowess")])
-spell_modifiers = Array[SpellModifier]([SubResource("Shot")])
+stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Prowess")])
+spell_modifiers = Array[ExtResource("4_p6r8m")]([SubResource("Shot")])

@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="CinematicSequenceData" load_steps=25 format=3]
+[gd_resource type="Resource" script_class="CinematicSequenceData" format=3 uid="uid://cvundu8rkss3d"]
 
-[ext_resource type="Script" path="res://cinematics/core/cinematic_sequence_data.gd" id="1_sequence"]
-[ext_resource type="Script" path="res://cinematics/core/cinematic_frame_data.gd" id="2_frame"]
-[ext_resource type="Script" path="res://cinematics/core/cinematic_text_cue_data.gd" id="3_cue"]
+[ext_resource type="Script" uid="uid://dhnt2kaojt3p4" path="res://cinematics/core/cinematic_sequence_data.gd" id="1_sequence"]
+[ext_resource type="Script" uid="uid://c0jqfqwmcngod" path="res://cinematics/core/cinematic_frame_data.gd" id="2_frame"]
+[ext_resource type="Script" uid="uid://c4nqt5xv577t" path="res://cinematics/core/cinematic_text_cue_data.gd" id="3_cue"]
 [ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_01_legende.tres" id="10_image_01"]
 [ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_02_montagne.tres" id="11_image_02"]
 [ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_03_souvenirs.tres" id="12_image_03"]
@@ -12,8 +12,8 @@
 [ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_07_coeur_aube.tres" id="16_image_07"]
 [ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_08_transformation.tres" id="17_image_08"]
 [ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_09_marchand.tres" id="18_image_09"]
-[ext_resource type="AudioStream" path="res://cinematics/intro/audio/intro_narration.mp3" id="20_narration"]
-[ext_resource type="AudioStream" path="res://cinematics/intro/audio/The Heart of Dawn.mp3" id="21_music"]
+[ext_resource type="AudioStream" uid="uid://dlggytahruhnx" path="res://cinematics/intro/audio/intro_narration.mp3" id="20_narration"]
+[ext_resource type="AudioStream" uid="uid://cvhx4wvm46u26" path="res://cinematics/intro/audio/The Heart of Dawn.mp3" id="21_music"]
 
 [sub_resource type="Resource" id="Frame_01"]
 script = ExtResource("2_frame")
@@ -197,8 +197,3 @@ music_fade_in_seconds = 1.5
 music_fade_out_start_seconds = 93.46
 music_fade_out_seconds = 1.0
 narration_stream = ExtResource("20_narration")
-allow_skip = true
-opening_fade_seconds = 0.8
-exit_fade_seconds = 0.8
-continuation = 0
-

@@ -211,7 +211,8 @@
     "normalOpeningOptional": true,
     "inventoryCap": null,
     "difficultyProfile": "standard_v2",
-    "legacyDifficultyMultipliers": false
+    "legacyDifficultyMultipliers": false,
+    "prototypeName": "Prototype v1"
   },
   "classes": [
     {
@@ -228,7 +229,22 @@
         "a04",
         "n02",
         "n03"
-      ]
+      ],
+      "basicAttack": {
+        "name": "Pointe d'ombre",
+        "damage": 0.28,
+        "condition": "marked",
+        "bonus": 0.12,
+        "elements": {
+          "damage": {
+            "night": 1
+          },
+          "bonus": {
+            "night": 1
+          }
+        },
+        "baseText": "0,28 P physiques ; +0,12 P contre une cible marquée. Ne consomme pas la Marque."
+      }
     },
     {
       "id": "gardien",
@@ -244,7 +260,21 @@
         "g03",
         "n05",
         "n03"
-      ]
+      ],
+      "basicAttack": {
+        "name": "Frappe du rempart",
+        "damage": 0.25,
+        "shield": 0.12,
+        "elements": {
+          "damage": {
+            "earth": 1
+          },
+          "shield": {
+            "sun": 1
+          }
+        },
+        "baseText": "0,25 P physiques et 0,12 P de garde."
+      }
     },
     {
       "id": "arpenteur",
@@ -260,7 +290,25 @@
         "r03",
         "n02",
         "n03"
-      ]
+      ],
+      "basicAttack": {
+        "name": "Tir de rive",
+        "damage": 0.24,
+        "min": 2,
+        "max": 4,
+        "condition": "moved",
+        "movementThreshold": 2,
+        "bonus": 0.08,
+        "elements": {
+          "damage": {
+            "wind": 1
+          },
+          "bonus": {
+            "wind": 1
+          }
+        },
+        "baseText": "0,24 P physiques ; +0,08 P après 2 cases de déplacement. Portée 2–4."
+      }
     },
     {
       "id": "thaumaturge",
@@ -283,7 +331,20 @@
         "t04",
         "n02",
         "n03"
-      ]
+      ],
+      "basicAttack": {
+        "name": "Étincelle du Léthé",
+        "damage": 0.22,
+        "max": 3,
+        "type": "magic",
+        "elements": {
+          "damage": {
+            "water": 0.8,
+            "night": 0.2
+          }
+        },
+        "baseText": "0,22 P magiques. Portée 1–3."
+      }
     }
   ],
   "specs": {
@@ -316,7 +377,12 @@
       "runtimeId": "cc2_n01",
       "baseText": "0,55 P physiques",
       "upgradeText": "0,7 P physiques",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "earth": 1
+        }
+      }
     },
     {
       "id": "n02",
@@ -337,7 +403,12 @@
       "runtimeId": "cc2_n02",
       "baseText": "0,45 P de garde",
       "upgradeText": "0,45 P de garde ; peut retenir une autre copie en main pour une transition de tour.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "amount": {
+          "sun": 1
+        }
+      }
     },
     {
       "id": "n03",
@@ -359,7 +430,8 @@
       "runtimeId": "cc2_n03",
       "baseText": "2 cases par chemin libre",
       "upgradeText": "3 cases par chemin libre ; portée 1–3",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "n04",
@@ -380,7 +452,12 @@
       "runtimeId": "cc2_n04",
       "baseText": "0,25 P physiques ; pousse de 1 cases",
       "upgradeText": "0,25 P physiques ; poussée de 2 cases.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "fire": 1
+        }
+      }
     },
     {
       "id": "n05",
@@ -401,7 +478,12 @@
       "runtimeId": "cc2_n05",
       "baseText": "0,45 P physiques",
       "upgradeText": "0,6 P physiques",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "wind": 1
+        }
+      }
     },
     {
       "id": "n06",
@@ -422,7 +504,15 @@
       "runtimeId": "cc2_n06",
       "baseText": "0,2 P physiques ; 0,35 P au prochain impact de carte ; expire après 2 phases ennemies",
       "upgradeText": "Effet de base ; portée maximale 5.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "night": 1
+        },
+        "amount": {
+          "night": 1
+        }
+      }
     },
     {
       "id": "n07",
@@ -443,7 +533,12 @@
       "runtimeId": "cc2_n07",
       "baseText": "0,2 P physiques ; -1 PM pour la prochaine activation",
       "upgradeText": "Effet de base ; portée maximale 4.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "water": 1
+        }
+      }
     },
     {
       "id": "n08",
@@ -464,7 +559,8 @@
       "runtimeId": "cc2_n08",
       "baseText": "pioche 2 exemplaires existants, limitée par la main",
       "upgradeText": "pioche 3 exemplaires existants, limitée par la main",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "a01",
@@ -485,7 +581,15 @@
       "runtimeId": "cc2_a01",
       "baseText": "0,35 P physiques ; 0,45 P au prochain impact de carte ; expire après 2 phases ennemies",
       "upgradeText": "Effet de base ; la marque dure 3 phases ennemies au lieu de 2.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "night": 1
+        },
+        "amount": {
+          "night": 1
+        }
+      }
     },
     {
       "id": "a02",
@@ -508,7 +612,17 @@
       "runtimeId": "cc2_a02",
       "baseText": "0,95 P physiques ; +0,55 P si cible marquée",
       "upgradeText": "Effet de base ; portée 1–2.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "night": 0.7,
+          "earth": 0.3
+        },
+        "bonus": {
+          "night": 0.7,
+          "earth": 0.3
+        }
+      }
     },
     {
       "id": "a03",
@@ -530,7 +644,17 @@
       "runtimeId": "cc2_a03",
       "baseText": "0,70 P physiques ; saignement physique 0,15 P pendant 2 activations.",
       "upgradeText": "0,70 P physiques ; saignement physique 0,20 P pendant 2 activations.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "fire": 0.5,
+          "night": 0.5
+        },
+        "amount": {
+          "fire": 0.5,
+          "night": 0.5
+        }
+      }
     },
     {
       "id": "a04",
@@ -554,7 +678,17 @@
       "baseText": "1,05 P physiques ; +0,35 P si 2 cases parcourues",
       "upgradeText": "1,05 P physiques ; +0,35 P après 1 case de mouvement volontaire admissible.",
       "changedFromV1": true,
-      "movementThreshold": 2
+      "movementThreshold": 2,
+      "elements": {
+        "damage": {
+          "wind": 0.6,
+          "night": 0.4
+        },
+        "bonus": {
+          "wind": 0.6,
+          "night": 0.4
+        }
+      }
     },
     {
       "id": "g01",
@@ -575,7 +709,12 @@
       "runtimeId": "cc2_g01",
       "baseText": "1,15 P de garde",
       "upgradeText": "1,4 P de garde",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "amount": {
+          "earth": 1
+        }
+      }
     },
     {
       "id": "g02",
@@ -598,7 +737,17 @@
       "runtimeId": "cc2_g02",
       "baseText": "1 P physiques ; +0,5 P si garde présente",
       "upgradeText": "1,15 P physiques ; +0,5 P si garde présente",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "earth": 0.7,
+          "sun": 0.3
+        },
+        "bonus": {
+          "earth": 0.7,
+          "sun": 0.3
+        }
+      }
     },
     {
       "id": "g03",
@@ -619,7 +768,13 @@
       "runtimeId": "cc2_g03",
       "baseText": "0,8 P physiques ; pousse de 2 cases",
       "upgradeText": "0,80 P physiques ; pousse de 3 cases.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "fire": 0.5,
+          "earth": 0.5
+        }
+      }
     },
     {
       "id": "g04",
@@ -640,7 +795,12 @@
       "runtimeId": "cc2_g04",
       "baseText": "0,2 P physiques ; attire de 1 cases",
       "upgradeText": "0,20 P physiques ; attire de 2 cases.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "water": 1
+        }
+      }
     },
     {
       "id": "r01",
@@ -663,7 +823,12 @@
       "upgradeText": "Même effet ; portée 1–4.",
       "changedFromV1": true,
       "drawOnMoved": 1,
-      "movementThreshold": 2
+      "movementThreshold": 2,
+      "elements": {
+        "damage": {
+          "wind": 1
+        }
+      }
     },
     {
       "id": "r02",
@@ -684,7 +849,13 @@
       "runtimeId": "cc2_r02",
       "baseText": "0,7 P physiques ; pousse de 1 cases",
       "upgradeText": "Effet de base ; portée 1–4.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "fire": 0.5,
+          "wind": 0.5
+        }
+      }
     },
     {
       "id": "r03",
@@ -705,7 +876,12 @@
       "runtimeId": "cc2_r03",
       "baseText": "0,6 P physiques ; -2 PM pour la prochaine activation",
       "upgradeText": "Effet de base ; portée 2–5.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "water": 1
+        }
+      }
     },
     {
       "id": "r04",
@@ -726,7 +902,13 @@
       "runtimeId": "cc2_r04",
       "baseText": "0,6 P physiques en croix",
       "upgradeText": "0,75 P physiques en croix",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "sun": 0.5,
+          "wind": 0.5
+        }
+      }
     },
     {
       "id": "t01",
@@ -748,7 +930,12 @@
       "baseText": "0,65 P magiques ; −1 PM à la prochaine activation ; sur eau dynamique, transforme la case en glace pour 2 phases.",
       "upgradeText": "Même effet ; glace issue de l’eau : 3 phases.",
       "changedFromV1": true,
-      "waterReaction": "freeze"
+      "waterReaction": "freeze",
+      "elements": {
+        "damage": {
+          "water": 1
+        }
+      }
     },
     {
       "id": "t02",
@@ -771,7 +958,15 @@
       "baseText": "0,55 P magiques ; brûlure 0,18 P × 2 ; sur eau dynamique, vapeur bloquant la vision pour 1 phase.",
       "upgradeText": "Même effet ; vapeur issue de l’eau : 2 phases.",
       "changedFromV1": true,
-      "waterReaction": "steam"
+      "waterReaction": "steam",
+      "elements": {
+        "damage": {
+          "fire": 1
+        },
+        "amount": {
+          "fire": 1
+        }
+      }
     },
     {
       "id": "t03",
@@ -792,7 +987,15 @@
       "runtimeId": "cc2_t03",
       "baseText": "0,25 P magiques ; 0,4 P au prochain impact de carte ; expire après 2 phases ennemies",
       "upgradeText": "0,25 P magiques ; marque de 0,60 P pendant 2 phases.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "night": 1
+        },
+        "amount": {
+          "night": 1
+        }
+      }
     },
     {
       "id": "t04",
@@ -815,7 +1018,13 @@
       "upgradeText": "Même effet ; eau 3 phases.",
       "changedFromV1": true,
       "waterField": true,
-      "duration": 2
+      "duration": 2,
+      "elements": {
+        "damage": {
+          "water": 0.8,
+          "night": 0.2
+        }
+      }
     },
     {
       "id": "a05",
@@ -837,7 +1046,8 @@
       "runtimeId": "cc2_a05",
       "baseText": "3 cases par téléportation",
       "upgradeText": "4 cases par téléportation ; portée 1–4",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "a06",
@@ -860,7 +1070,15 @@
       "runtimeId": "cc2_a06",
       "baseText": "1,3 P physiques ; +0,7 P si cible à 35 % PV ou moins",
       "upgradeText": "1,45 P physiques ; +0,7 P si cible à 35 % PV ou moins",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "night": 1
+        },
+        "bonus": {
+          "night": 1
+        }
+      }
     },
     {
       "id": "a07",
@@ -882,7 +1100,12 @@
       "runtimeId": "cc2_a07",
       "baseText": "0,9 P physiques ; ignore l’armure",
       "upgradeText": "1,05 P physiques ; ignore l’armure",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "earth": 1
+        }
+      }
     },
     {
       "id": "g05",
@@ -904,7 +1127,15 @@
       "runtimeId": "cc2_g05",
       "baseText": "0,9 P de garde et une riposte de 0,5 P",
       "upgradeText": "1,15 P de garde et une riposte de 0,5 P",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "counter": {
+          "earth": 1
+        },
+        "amount": {
+          "sun": 1
+        }
+      }
     },
     {
       "id": "g06",
@@ -926,7 +1157,17 @@
       "baseText": "0,65 P physiques ; poussée 1 ; si un mur/obstacle fixe arrête cette poussée : 0,30 P de garde, une fois.",
       "upgradeText": "Même effet ; garde de collision 0,45 P.",
       "changedFromV1": true,
-      "collisionGuard": 0.3
+      "collisionGuard": 0.3,
+      "elements": {
+        "damage": {
+          "earth": 0.7,
+          "wind": 0.3
+        },
+        "collisionGuard": {
+          "earth": 0.7,
+          "wind": 0.3
+        }
+      }
     },
     {
       "id": "g07",
@@ -949,7 +1190,15 @@
       "runtimeId": "cc2_g07",
       "baseText": "1,2 P physiques ; +0,5 P si garde absorbée au tour précédent",
       "upgradeText": "1,35 P physiques ; +0,5 P si garde absorbée au tour précédent",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "sun": 1
+        },
+        "bonus": {
+          "sun": 1
+        }
+      }
     },
     {
       "id": "r05",
@@ -971,7 +1220,8 @@
       "runtimeId": "cc2_r05",
       "baseText": "4 cases par téléportation",
       "upgradeText": "5 cases par téléportation ; portée 1–5",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "r06",
@@ -992,7 +1242,13 @@
       "runtimeId": "cc2_r06",
       "baseText": "0,70 P physiques sur une ligne de 3 cases perpendiculaire à l’axe dominant lanceur–centre ; une fois par cible.",
       "upgradeText": "Même effet ; portée 2–6.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "earth": 0.5,
+          "wind": 0.5
+        }
+      }
     },
     {
       "id": "r07",
@@ -1013,7 +1269,13 @@
       "runtimeId": "cc2_r07",
       "baseText": "0,55 P physiques ; attire de 2 cases",
       "upgradeText": "0,55 P physiques ; choisit une attraction de 1 ou 2 cases.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "water": 0.7,
+          "earth": 0.3
+        }
+      }
     },
     {
       "id": "t05",
@@ -1035,7 +1297,13 @@
       "runtimeId": "cc2_t05",
       "baseText": "0,35 P magiques par phase, 2 phases, croix affectant les deux camps",
       "upgradeText": "0,45 P magiques par phase, 2 phases, croix affectant les deux camps",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "amount": {
+          "fire": 0.7,
+          "night": 0.3
+        }
+      }
     },
     {
       "id": "t06",
@@ -1057,7 +1325,8 @@
       "runtimeId": "cc2_t06",
       "baseText": "-1 PM aux ennemis en croix pendant 2 phases",
       "upgradeText": "-1 PM aux ennemis en croix pendant 3 phases",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "t07",
@@ -1078,7 +1347,13 @@
       "runtimeId": "cc2_t07",
       "baseText": "0,75 P magiques ; soigne 50 % des PV effectivement retirés",
       "upgradeText": "0,9 P magiques ; soigne 50 % des PV effectivement retirés",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "night": 0.6,
+          "water": 0.4
+        }
+      }
     },
     {
       "id": "a08",
@@ -1099,7 +1374,13 @@
       "runtimeId": "cc2_a08",
       "baseText": "0,7 P physiques ; prochaine attaque à −50 % ; boss −25 %",
       "upgradeText": "0,85 P physiques ; prochaine attaque à −50 % ; boss −25 %",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "water": 0.4,
+          "night": 0.6
+        }
+      }
     },
     {
       "id": "a09",
@@ -1120,7 +1401,8 @@
       "runtimeId": "cc2_a09",
       "baseText": "consomme une marque ; annule une activation ; immunité 3 suivantes ; boss : affaiblissement 25 %",
       "upgradeText": "consomme une marque ; annule une activation ; immunité 3 suivantes ; boss : affaiblissement 25 % ; portée 1–4",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "g08",
@@ -1141,7 +1423,13 @@
       "runtimeId": "cc2_g08",
       "baseText": "1,9 P de garde",
       "upgradeText": "2,15 P de garde",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "amount": {
+          "sun": 0.5,
+          "earth": 0.5
+        }
+      }
     },
     {
       "id": "g09",
@@ -1165,7 +1453,12 @@
       "upgradeText": "Même formule et coût ; portée 1–4.",
       "changedFromV1": true,
       "sacrificeCap": 0.8,
-      "chooseSacrifice": true
+      "chooseSacrifice": true,
+      "elements": {
+        "damage": {
+          "earth": 1
+        }
+      }
     },
     {
       "id": "r08",
@@ -1186,7 +1479,8 @@
       "runtimeId": "cc2_r08",
       "baseText": "échange les positions ; boss exclu",
       "upgradeText": "échange les positions ; boss exclu ; portée 1–6",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {}
     },
     {
       "id": "r09",
@@ -1207,7 +1501,12 @@
       "runtimeId": "cc2_r09",
       "baseText": "1,75 P physiques",
       "upgradeText": "1,9 P physiques",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "sun": 1
+        }
+      }
     },
     {
       "id": "t08",
@@ -1228,7 +1527,13 @@
       "runtimeId": "cc2_t08",
       "baseText": "0,8 P magiques en croix ; attire d’une case vers le centre les ennemis à distance ≤2, puis frappe la croix",
       "upgradeText": "Effet de base ; portée 1–5.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "wind": 0.5,
+          "earth": 0.5
+        }
+      }
     },
     {
       "id": "t09",
@@ -1251,7 +1556,17 @@
       "runtimeId": "cc2_t09",
       "baseText": "0,9 P magiques ; +0,8 P si cible marquée",
       "upgradeText": "0,90 P magiques ; +1,05 P si la cible est marquée.",
-      "changedFromV1": true
+      "changedFromV1": true,
+      "elements": {
+        "damage": {
+          "sun": 0.5,
+          "night": 0.5
+        },
+        "bonus": {
+          "sun": 0.5,
+          "night": 0.5
+        }
+      }
     },
     {
       "id": "l01",
@@ -1272,7 +1587,13 @@
       "runtimeId": "cc2_l01",
       "baseText": "1,1 P magiques dans un rayon de 2",
       "upgradeText": "1,25 P magiques dans un rayon de 2",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "damage": {
+          "water": 0.5,
+          "wind": 0.5
+        }
+      }
     },
     {
       "id": "l02",
@@ -1294,7 +1615,15 @@
       "runtimeId": "cc2_l02",
       "baseText": "soigne 1,5 P ; garde 0,5 P",
       "upgradeText": "soigne 1,75 P ; garde 0,5 P",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "shield": {
+          "sun": 1
+        },
+        "amount": {
+          "sun": 1
+        }
+      }
     },
     {
       "id": "d01",
@@ -1315,7 +1644,12 @@
       "runtimeId": "cc2_d01",
       "baseText": "premier impact létal laisse 1 PV jusqu’au prochain tour ; pression exclue",
       "upgradeText": "premier impact létal laisse 1 PV jusqu’au prochain tour ; pression exclue ; garde 0,6 P",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "shield": {
+          "sun": 1
+        }
+      }
     },
     {
       "id": "i01",
@@ -1338,7 +1672,15 @@
       "runtimeId": "cc2_i01",
       "baseText": "soigne 60 % PV max ; garde 1 P ; finit l’activation",
       "upgradeText": "soigne 75 % PV max ; garde 1 P ; finit l’activation",
-      "changedFromV1": false
+      "changedFromV1": false,
+      "elements": {
+        "shield": {
+          "sun": 1
+        },
+        "amount": {
+          "sun": 1
+        }
+      }
     }
   ],
   "equipment": [
@@ -1530,6 +1872,66 @@
       "mods": {
         "range": 1,
         "firstHitReduction": 0.12
+      }
+    },
+    {
+      "id": "j_mastery_earth",
+      "name": "Sceau de Terre",
+      "slot": "amulet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mastery_earth": 0.12
+      }
+    },
+    {
+      "id": "j_mastery_water",
+      "name": "Sceau de Eau",
+      "slot": "amulet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mastery_water": 0.12
+      }
+    },
+    {
+      "id": "j_mastery_fire",
+      "name": "Sceau de Feu",
+      "slot": "amulet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mastery_fire": 0.12
+      }
+    },
+    {
+      "id": "j_mastery_wind",
+      "name": "Sceau de Vent",
+      "slot": "amulet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mastery_wind": 0.12
+      }
+    },
+    {
+      "id": "j_mastery_night",
+      "name": "Sceau de Nuit",
+      "slot": "amulet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mastery_night": 0.12
+      }
+    },
+    {
+      "id": "j_mastery_sun",
+      "name": "Sceau de Soleil",
+      "slot": "amulet",
+      "stage": 1,
+      "price": 55,
+      "mods": {
+        "mastery_sun": 0.12
       }
     }
   ],

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConsumableCardItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_xbg85"]
+[ext_resource type="Script" path="res://data/cards/consumable_v2/consumable_item_definition.gd" id="2_y83c6"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="3_sq0es"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="4_gavrl"]
+
+[resource]
+script = ExtResource("2_y83c6")
+profile_modifiers = {
+"mastery_wind": 0.12
+}
+item_id = &"cc2_j_mastery_wind"
+display_name = "Sceau de Vent"
+description = "+12 % maîtrise Vent"
+tags = Array[StringName]([&"catabase_cards_consumable_v2"])
+equipment_slot = 2

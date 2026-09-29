@@ -1,4 +1,16 @@
 {
+  "tactical-readability": {
+    "patterns": [
+      "test_tactical_readability.gd",
+      "test_target_feedback_markers.gd",
+      "test_control_engagement.gd",
+      "test_iso_grid_view.gd",
+      "test_unit_movement_presentation.gd",
+      "test_recraft_hud_component_states.gd",
+      "test_hud_material_polish_v2.gd",
+      "test_persistent_run_combat_hud.gd"
+    ]
+  },
   "passe-rive": {
     "patterns": [
       "test_passe_rive_s19.gd",

@@ -5,7 +5,9 @@ const Math := preload("res://core/expedition/consumable_card_math.gd")
 
 
 static func stats_text() -> String:
-	var stats := Math.stats(1, { }, { })
+	var cards = preload("res://core/expedition/consumable_cards_state.gd").new()
+	cards.prototype_revision = 1
+	var stats := Math.stats(1, { }, { }, cards)
 	return "%d PV · %d PA · %d PM · Puissance %s" % [
 		stats.hp,
 		stats.ap,

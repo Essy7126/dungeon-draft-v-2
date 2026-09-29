@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_modifier"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_c8b82"]
 [ext_resource type="Texture2D" uid="uid://bcrswtltewnvb" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="3_icon"]
-[ext_resource type="Texture2D" path="res://asset/ui/items/basics_premium_v1/charme_runique.png" id="premium_icon"]
+[ext_resource type="Texture2D" uid="uid://c23137we4v8j3" path="res://asset/ui/items/basics_premium_v1/charme_runique.png" id="premium_icon"]
 
 [sub_resource type="Resource" id="Resource_health"]
 script = ExtResource("2_modifier")

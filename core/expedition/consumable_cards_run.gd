@@ -138,7 +138,7 @@ func _resolve(candidate: Dictionary, request: Dictionary) -> Dictionary:
 						runtime.dispose()
 						return reward
 					candidate.route["reward"] = reward.reward
-					var stats := Math.stats(next_cards.level, next_cards.attributes, Math.equipment_mods(next_cards.equipped))
+					var stats := Math.stats(next_cards.level, next_cards.attributes, Math.equipment_mods(next_cards.equipped), next_cards)
 					candidate.route.hero_hp = mini(int(stats.hp), int(candidate.route.hero_hp) + maxi(0, int(stats.hp) - int(candidate.route.hero_max_hp)))
 					candidate.route.hero_max_hp = int(stats.hp)
 					candidate.phase = "complete" if int(runtime.encounter.index) == 12 else "reward"
@@ -196,10 +196,8 @@ func _resolve(candidate: Dictionary, request: Dictionary) -> Dictionary:
 			if not next_cards.upgrade_copy(str(request.get("family", ""))): return _failure("upgrade")
 		"attribute":
 			var attribute := str(request.get("id", ""))
-			var spent := int(next_cards.attributes.power) + int(next_cards.attributes.vitality) + int(next_cards.attributes.resolve)
-			if attribute not in ["power", "vitality", "resolve"] or spent >= floori(float(next_cards.level) / 2.0): return _failure("attribute")
-			next_cards.attributes[attribute] += 1
-			_rebuild_route(candidate, next_cards, false)
+			if not next_cards.spend_attribute(attribute): return _failure("attribute")
+			_rebuild_route(candidate, next_cards, next_cards.prototype_revision == 1)
 		"equipment":
 			var uid := str(request.get("uid", ""))
 			var slot := str(request.get("slot", ""))
@@ -238,7 +236,7 @@ func _resolve(candidate: Dictionary, request: Dictionary) -> Dictionary:
 
 
 static func _rebuild_route(candidate: Dictionary, state, proportional: bool) -> void:
-	var stats := Math.stats(state.level, state.attributes, Math.equipment_mods(state.equipped))
+	var stats := Math.stats(state.level, state.attributes, Math.equipment_mods(state.equipped), state)
 	var before := int(candidate.route.get("hero_max_hp", stats.hp))
 	var hp := int(candidate.route.get("hero_hp", before))
 	candidate.route["hero_max_hp"] = int(stats.hp)

@@ -1,15 +1,23 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://djk5a5qmmmswn"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_rk2pd"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_g33xu"]
+[ext_resource type="Texture2D" uid="uid://eox3g3yp6v5w" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_myrmidon_linothorax.png" id="glyph_da"]
 
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_myrmidon_linothorax.png" id="glyph_da"]
+[sub_resource type="Resource" id="Dash"]
+script = ExtResource("3_spell")
+range_bonus = 1
+minimum_prior_moved_cells = 2
+modifier_name = "Élan du linothorax"
+target_spell_id = &"achilles_fulminant_dash"
 
 [sub_resource type="Resource" id="Hp"]
 script = ExtResource("2_stat")
 stat_id = &"max_hp"
-value = 0.10
+value = 0.1
 modifier_type = 1
 
 [sub_resource type="Resource" id="Armor"]
@@ -17,24 +25,17 @@ script = ExtResource("2_stat")
 stat_id = &"armure"
 value = 20.0
 
-[sub_resource type="Resource" id="Dash"]
-script = ExtResource("3_spell")
-modifier_name = "Élan du linothorax"
-target_spell_id = &"achilles_fulminant_dash"
-range_bonus = 1
-minimum_prior_moved_cells = 2
-
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_myrmidon_linothorax"
 display_name = "Linothorax des Myrmidons"
 description = "+10 % PV max, +20 Armure ; Percée gagne 1 portée après un déplacement préalable d’au moins 2 cases."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 tags = Array[StringName]([&"odyssey", &"achilles", &"hybrid"])
 category = 1
 equipment_slot = 1
 compatible_character_ids = Array[StringName]([&"achilles"])
-stat_modifiers = Array[ItemStatModifierData]([SubResource("Hp"), SubResource("Armor")])
-spell_modifiers = Array[SpellModifier]([SubResource("Dash")])
+stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Hp"), SubResource("Armor")])
+spell_modifiers = Array[ExtResource("4_g33xu")]([SubResource("Dash")])

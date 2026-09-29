@@ -2,12 +2,18 @@ extends CatabaseCards
 ## Only unspent UIDs are owned. Prepared is a selection, not a fourth combat pile.
 const Catalog := preload("res://core/expedition/consumable_card_catalog.gd")
 const Profile := preload("res://core/expedition/consumable_cards_profile.gd")
+const Progression := preload("res://core/expedition/consumable_progression_v1.gd")
 var ruleset_id := Profile.ID
 var primary_class := "assassin"
 var specialization := ""
 var level := 1
 var experience := 0
 var attributes := { "power": 0, "vitality": 0, "resolve": 0 }
+var prototype_revision := 0 # Legacy until departure or a safe preparation migration.
+var masteries := Progression.empty_elements()
+var aptitudes := Progression.empty_aptitudes()
+var correction_visits: Array[String] = []
+var full_reorientation_used := false
 var upgraded_ids: Array[String] = []
 var consumed: Dictionary = { }
 var retired: Dictionary = { }
@@ -50,6 +56,9 @@ func initialize_deck(selection: Dictionary) -> void:
 	if not copies.is_empty() or serial > 0 or not Catalog.valid_departure(selection):
 		return
 	primary_class = selection.class_id
+	prototype_revision = 1
+	if selection.has("masteries"):
+		masteries = selection.masteries.duplicate(true)
 	for family in selection.card_families:
 		active.append(acquire(str(family), "initial", "initial"))
 
@@ -289,10 +298,21 @@ func grant_loot(_node: Dictionary) -> void:
 
 
 func attribute_points() -> int:
+	if prototype_revision == 1:
+		return Progression.element_budget(level) - Progression.spent(masteries) + Progression.aptitude_budget(level) - Progression.spent(aptitudes)
 	return floori(float(level) / 2) - int(attributes.power) - int(attributes.vitality) - int(attributes.resolve)
 
 
 func spend_attribute(id: String) -> bool:
+	if prototype_revision == 1:
+		if combat_started: return false
+		if id in Progression.ELEMENTS and Progression.spent(masteries) < Progression.element_budget(level):
+			masteries[id] += 1
+		elif id in Progression.APTITUDES and Progression.spent(aptitudes) < Progression.aptitude_budget(level) and int(aptitudes[id]) < 3:
+			aptitudes[id] += 1
+		else: return false
+		changed.emit()
+		return true
 	if combat_started or not attributes.has(id) or attribute_points() <= 0: return false
 	attributes[id] += 1
 	changed.emit()
@@ -304,11 +324,12 @@ func rarity(family: String) -> int:
 
 
 func family_spell(family: String) -> Spell:
-	var key := family + ("+" if family in upgraded_ids else "")
+	var key := "%s:%s:%d" % [family + ("+" if family in upgraded_ids else ""), primary_class, prototype_revision]
 	if not _spells.has(key):
 		_spells[key] = load("res://core/expedition/consumable_card_spells.gd").make_spell(
 			family,
 			family in upgraded_ids,
+			primary_class if prototype_revision == 1 else "",
 		)
 	return _spells[key]
 
@@ -338,8 +359,27 @@ func upgrade_copy(id: String) -> bool:
 	var family := str(copy_for(id).get("family", id))
 	if combat_started or points() <= 0 or family in upgraded_ids or Catalog.card(family).is_empty():
 		return false
+	if prototype_revision == 1 and not copies.any(func(copy): return copy.family == family): return false
 	upgraded_ids.append(family)
 	changed.emit()
+	return true
+
+
+func release_upgrade(family: String) -> bool:
+	if prototype_revision != 1 or combat_started or family not in upgraded_ids: return false
+	upgraded_ids.erase(family)
+	_spells.clear()
+	changed.emit()
+	return true
+
+
+func migrate_prototype() -> bool:
+	if prototype_revision == 1 or combat_started: return false
+	prototype_revision = 1
+	attributes = {"power": 0, "vitality": 0, "resolve": 0}
+	masteries = Progression.empty_elements()
+	aptitudes = Progression.empty_aptitudes()
+	_spells.clear()
 	return true
 
 
@@ -386,6 +426,9 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 	# Validate a detached candidate. A rejected restore never mutates this object.
 	var candidate = get_script().new()
 	for key in _persistent_keys():
+		if key in ["prototype_revision", "masteries", "aptitudes", "correction_visits", "full_reorientation_used"] and not data.has("prototype_revision"):
+			if data.has(key): return false
+			continue
 		if key == "bestiary_revision" and not data.has(key):
 			continue
 		if not data.has(key):
@@ -429,6 +472,9 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 	candidate.anchor_cell = Vector2i(int(anchor[0]), int(anchor[1]))
 	if not candidate.invariant_errors().is_empty():
 		return false
+	# JSON represents integers as floats; keep allocation drafts canonical after validation.
+	for allocation in [candidate.masteries, candidate.aptitudes]:
+		for key in allocation: allocation[key] = int(allocation[key])
 	for key in _persistent_keys():
 		var value: Variant = candidate.get(key)
 		if value is Array:
@@ -444,6 +490,7 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 
 static func _persistent_keys() -> Array[String]:
 	return [
+		"prototype_revision", "masteries", "aptitudes", "correction_visits", "full_reorientation_used",
 		"bestiary_revision",
 		"primary_class",
 		"specialization",
@@ -496,6 +543,12 @@ static func _persistent_keys() -> Array[String]:
 
 func invariant_errors() -> Array[String]:
 	var errors: Array[String] = []
+	if prototype_revision not in [0, 1] or not Progression.valid_allocation(masteries, Progression.ELEMENTS, Progression.element_budget(level) if prototype_revision == 1 else 0, 26) or not Progression.valid_allocation(aptitudes, Progression.APTITUDES, Progression.aptitude_budget(level) if prototype_revision == 1 else 0, 3):
+		errors.append("Progression Prototype v1 invalide.")
+	if correction_visits.size() > Progression.HALTS.size() or correction_visits.any(func(id): return id.is_empty() or correction_visits.count(id) != 1):
+		errors.append("Corrections de halte invalides.")
+	if (prototype_revision == 0 and (not correction_visits.is_empty() or full_reorientation_used)) or (full_reorientation_used and level < 8):
+		errors.append("Réorientation incompatible avec le profil.")
 	if (
 		bestiary_revision not in [0, 1] or primary_class not in Catalog.CLASSES or level < 1 or level > 12 or gold < 0
 		or experience < 0 or round_index < 0 or serial < 0 or hand_capacity < 1 or hand_capacity > 7
@@ -572,6 +625,8 @@ func invariant_errors() -> Array[String]:
 			spent += int(attributes[key])
 	if attributes.size() != 3 or spent > floori(float(level) / 2):
 		errors.append("Points d'attribut dépassés.")
+	if prototype_revision == 1 and spent != 0:
+		errors.append("Les anciens attributs doivent être remboursés.")
 	var equipment_ids := { }
 	for row in Catalog.data().equipment:
 		equipment_ids[row.id] = row.slot

@@ -45,6 +45,7 @@ func is_valid() -> bool:
 			"openingShield",
 			"firstHitReduction",
 			"lifesteal",
+			"mastery_earth", "mastery_water", "mastery_fire", "mastery_wind", "mastery_night", "mastery_sun",
 		]:
 			return false
 		var value: Variant = profile_modifiers[key]

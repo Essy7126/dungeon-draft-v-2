@@ -132,4 +132,6 @@ static func prepare(snapshot: Dictionary) -> Dictionary:
 	state.unit.current_hp = saved_hp
 	state.unit.is_alive = true
 	state.champion_progression.current_hp = saved_hp
+	if consumable:
+		preload("res://core/expedition/consumable_cards_integration.gd").rebuild(session, false, true)
 	return {"run_data": run_data, "state": state, "inventory": inventory, "session": session}

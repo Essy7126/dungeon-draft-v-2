@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cu14re72vctgs"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
-[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="3_parameter"]
-
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_hephaestus_nail.png" id="glyph_da"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_epi6r"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="3_parameter"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="6_4yk82"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="7_w73ua"]
+[ext_resource type="Texture2D" uid="uid://b0b1evutkc244" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_hephaestus_nail.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="ArmorLoss"]
 script = ExtResource("3_parameter")
@@ -15,7 +17,7 @@ integer_value = 40
 [sub_resource type="Resource" id="Followup"]
 script = ExtResource("3_parameter")
 parameter_id = &"followup_ratio"
-float_value = 0.50
+float_value = 0.5
 
 [sub_resource type="Resource" id="Behind"]
 script = ExtResource("3_parameter")
@@ -35,17 +37,17 @@ trigger_id = &"collision_impact"
 target_id = &"event_target"
 result_id = &"collision_armor_followup"
 value = 0.0
-parameters = Array[ItemReactiveParameterData]([SubResource("ArmorLoss"), SubResource("Followup"), SubResource("Behind"), SubResource("FollowupAbility")])
+parameters = Array[ExtResource("3_parameter")]([SubResource("ArmorLoss"), SubResource("Followup"), SubResource("Behind"), SubResource("FollowupAbility")])
 
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_hephaestus_nail"
 display_name = "Clou d’Héphaïstos"
 description = "Une collision provoquée retire 40 Armure ; la prochaine Frappe touche la case derrière pour 50 %."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 rarity = &"legendary"
 tags = Array[StringName]([&"odyssey", &"wrath"])
 category = 5
-reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])
+reactive_effects = Array[ExtResource("2_effect")]([SubResource("Effect")])

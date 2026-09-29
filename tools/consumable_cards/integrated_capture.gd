@@ -50,6 +50,12 @@ func _run() -> void:
 	await capture("01_selection_cartes")
 	scene._cards_setup.step = 4
 	scene._cards_setup._render()
+	var sun = scene.find_child("DepartureMastery_sun", true, false)
+	check(sun != null, "departure exposes initial allocation")
+	if sun != null: sun.value = 4
+	await get_tree().process_frame
+	for allocation in scene.find_children("DepartureMastery_*", "SpinBox", true, false):
+		check(allocation.size.y < 70, "departure allocation rows stay compact")
 	await capture("02_depart")
 	var manager := Manager.new()
 	add_child(manager)
@@ -61,6 +67,7 @@ func _run() -> void:
 	check(manager.finish_catabase_threshold().success, "actual threshold departure")
 	clear_scene()
 	var prepared_cards: Variant = manager.expedition.cards
+	check(int(prepared_cards.masteries.sun) == 4, "initial allocation reaches public combat")
 	var opening := ""
 	for copy in prepared_cards.copies:
 		if copy.family == "n02":
@@ -94,6 +101,7 @@ func _run() -> void:
 		if not scene._spell_resolution_pending:
 			break
 	check(opening in GameManager.expedition.cards.consumed, "real cast consumes copy")
+	check(GameManager.expedition.character.unit.current_shield == 8, "sun mastery scales the real guard cast at 16 power")
 	await capture("04_combat_carte_consommee")
 	clear_scene()
 	# UI fixture for the postcombat windows, not a victory or balance simulation.

@@ -1,0 +1,546 @@
+{
+  "scope": "Modèle arithmétique de conception, pas des taux de victoire ni une validation Godot.",
+  "source_head": "86018f9c7ea0f13f1dde868b6fcafe95e8b620f1",
+  "sha256": {
+    "data/cards/consumable_v2/catalog.json": "f7858b253a6af464563e18b25fc55cc504bde2b0ef40e37859339639bdfe10df",
+    "core/expedition/catabase_route_v6.gd": "dea1014ab37e11d0c2a3dc407b1ef1c401de4acc705c9da50c67a91eeef931b3",
+    "core/expedition/consumable_cards_state.gd": "0e1d8ebeddde3c0e90ba77622bae127a25e26bb844081fd209c3b507fa7e3f12",
+    "core/expedition/consumable_card_economy.gd": "8cbd58c85e1290d8d7f5f8d967580bcd03456117ceeccc7a9e73c499adccbe7a",
+    "core/expedition/consumable_cards_integration.gd": "11947ded85f526d4864bc9fad9e48ca6f149a3c3bbadf10bcc2a47c75c2d74e1",
+    "core/expedition/consumable_card_math.gd": "4510be68667da8d2d6b04d882503aa2a8cd50873e9451645216a46139e9a979c"
+  },
+  "current_cadence": [
+    {
+      "combat": 1,
+      "depth": 1,
+      "paid_xp": 100,
+      "cumulative_xp": 100,
+      "level_after": 2
+    },
+    {
+      "combat": 2,
+      "depth": 2,
+      "paid_xp": 125,
+      "cumulative_xp": 225,
+      "level_after": 3
+    },
+    {
+      "combat": 3,
+      "depth": 3,
+      "paid_xp": 145,
+      "cumulative_xp": 370,
+      "level_after": 4
+    },
+    {
+      "combat": 4,
+      "depth": 5,
+      "paid_xp": 175,
+      "cumulative_xp": 545,
+      "level_after": 5
+    },
+    {
+      "combat": 5,
+      "depth": 6,
+      "paid_xp": 195,
+      "cumulative_xp": 740,
+      "level_after": 6
+    },
+    {
+      "combat": 6,
+      "depth": 8,
+      "paid_xp": 215,
+      "cumulative_xp": 955,
+      "level_after": 7
+    },
+    {
+      "combat": 7,
+      "depth": 10,
+      "paid_xp": 245,
+      "cumulative_xp": 1200,
+      "level_after": 8
+    },
+    {
+      "combat": 8,
+      "depth": 12,
+      "paid_xp": 265,
+      "cumulative_xp": 1465,
+      "level_after": 9
+    },
+    {
+      "combat": 9,
+      "depth": 13,
+      "paid_xp": 295,
+      "cumulative_xp": 1760,
+      "level_after": 10
+    },
+    {
+      "combat": 10,
+      "depth": 15,
+      "paid_xp": 325,
+      "cumulative_xp": 2085,
+      "level_after": 11
+    },
+    {
+      "combat": 11,
+      "depth": 17,
+      "paid_xp": 355,
+      "cumulative_xp": 2440,
+      "level_after": 12
+    },
+    {
+      "combat": 12,
+      "depth": 20,
+      "paid_xp": 0,
+      "cumulative_xp": 2440,
+      "level_after": 12
+    }
+  ],
+  "proposed_levels": [
+    {
+      "level": 1,
+      "element_points": 4,
+      "aptitude_points": 0,
+      "training_slots": 0,
+      "specialization": false,
+      "current_power": 18,
+      "current_hp": 110,
+      "old_all_power_proxy": 18.0,
+      "proposed_max_direct_factor": 1.12,
+      "calibrated_power_reference": 16.071429,
+      "calibrated_power_rounded": 16
+    },
+    {
+      "level": 2,
+      "element_points": 6,
+      "aptitude_points": 0,
+      "training_slots": 0,
+      "specialization": false,
+      "current_power": 22,
+      "current_hp": 135,
+      "old_all_power_proxy": 23.1,
+      "proposed_max_direct_factor": 1.16,
+      "calibrated_power_reference": 19.913793,
+      "calibrated_power_rounded": 20
+    },
+    {
+      "level": 3,
+      "element_points": 8,
+      "aptitude_points": 1,
+      "training_slots": 0,
+      "specialization": false,
+      "current_power": 27,
+      "current_hp": 165,
+      "old_all_power_proxy": 28.35,
+      "proposed_max_direct_factor": 1.26,
+      "calibrated_power_reference": 22.5,
+      "calibrated_power_rounded": 23
+    },
+    {
+      "level": 4,
+      "element_points": 10,
+      "aptitude_points": 1,
+      "training_slots": 1,
+      "specialization": true,
+      "current_power": 33,
+      "current_hp": 200,
+      "old_all_power_proxy": 36.3,
+      "proposed_max_direct_factor": 1.28,
+      "calibrated_power_reference": 28.359375,
+      "calibrated_power_rounded": 28
+    },
+    {
+      "level": 5,
+      "element_points": 12,
+      "aptitude_points": 1,
+      "training_slots": 1,
+      "specialization": true,
+      "current_power": 40,
+      "current_hp": 240,
+      "old_all_power_proxy": 44.0,
+      "proposed_max_direct_factor": 1.3,
+      "calibrated_power_reference": 33.846154,
+      "calibrated_power_rounded": 34
+    },
+    {
+      "level": 6,
+      "element_points": 14,
+      "aptitude_points": 2,
+      "training_slots": 1,
+      "specialization": true,
+      "current_power": 48,
+      "current_hp": 290,
+      "old_all_power_proxy": 55.2,
+      "proposed_max_direct_factor": 1.38,
+      "calibrated_power_reference": 40.0,
+      "calibrated_power_rounded": 40
+    },
+    {
+      "level": 7,
+      "element_points": 16,
+      "aptitude_points": 2,
+      "training_slots": 1,
+      "specialization": true,
+      "current_power": 57,
+      "current_hp": 350,
+      "old_all_power_proxy": 65.55,
+      "proposed_max_direct_factor": 1.4,
+      "calibrated_power_reference": 46.821429,
+      "calibrated_power_rounded": 47
+    },
+    {
+      "level": 8,
+      "element_points": 18,
+      "aptitude_points": 2,
+      "training_slots": 2,
+      "specialization": true,
+      "current_power": 68,
+      "current_hp": 420,
+      "old_all_power_proxy": 81.6,
+      "proposed_max_direct_factor": 1.42,
+      "calibrated_power_reference": 57.464789,
+      "calibrated_power_rounded": 57
+    },
+    {
+      "level": 9,
+      "element_points": 20,
+      "aptitude_points": 3,
+      "training_slots": 2,
+      "specialization": true,
+      "current_power": 82,
+      "current_hp": 500,
+      "old_all_power_proxy": 98.4,
+      "proposed_max_direct_factor": 1.5,
+      "calibrated_power_reference": 65.6,
+      "calibrated_power_rounded": 66
+    },
+    {
+      "level": 10,
+      "element_points": 22,
+      "aptitude_points": 3,
+      "training_slots": 2,
+      "specialization": true,
+      "current_power": 100,
+      "current_hp": 600,
+      "old_all_power_proxy": 125.0,
+      "proposed_max_direct_factor": 1.52,
+      "calibrated_power_reference": 82.236842,
+      "calibrated_power_rounded": 82
+    },
+    {
+      "level": 11,
+      "element_points": 24,
+      "aptitude_points": 3,
+      "training_slots": 2,
+      "specialization": true,
+      "current_power": 106,
+      "current_hp": 635,
+      "old_all_power_proxy": 132.5,
+      "proposed_max_direct_factor": 1.54,
+      "calibrated_power_reference": 86.038961,
+      "calibrated_power_rounded": 86
+    },
+    {
+      "level": 12,
+      "element_points": 26,
+      "aptitude_points": 3,
+      "training_slots": 3,
+      "specialization": true,
+      "current_power": 112,
+      "current_hp": 675,
+      "old_all_power_proxy": 145.6,
+      "proposed_max_direct_factor": 1.56,
+      "calibrated_power_reference": 93.333333,
+      "calibrated_power_rounded": 93
+    }
+  ],
+  "dofus_budget300": {
+    "pure": [
+      200,
+      0
+    ],
+    "dual": [
+      125,
+      125
+    ],
+    "hypothetical_8_plus_8": {
+      "pure": 32.0,
+      "dual": 36.0
+    },
+    "hypothetical_16_first": {
+      "pure": 48.0,
+      "dual": 36.0
+    }
+  },
+  "models_budget26": {
+    "linear_2pct": {
+      "mono_pct": 52,
+      "dual_each_pct": 26
+    },
+    "cost_1_2_3_per4_ranks_gain3pct": {
+      "mono_rank_remainder": [
+        12,
+        2
+      ],
+      "dual_each_rank_remainder": [
+        8,
+        1
+      ]
+    },
+    "diminishing_3_2_1": {
+      "mono": {
+        "points": [
+          26,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "bonus_pct": [
+          38,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "value_base20_first": 27.6,
+        "value_base20_half_first_second": 23.8
+      },
+      "dual": {
+        "points": [
+          13,
+          13,
+          0,
+          0,
+          0,
+          0
+        ],
+        "bonus_pct": [
+          25,
+          25,
+          0,
+          0,
+          0,
+          0
+        ],
+        "value_base20_first": 25.0,
+        "value_base20_half_first_second": 25.0
+      },
+      "triple": {
+        "points": [
+          9,
+          9,
+          8,
+          0,
+          0,
+          0
+        ],
+        "bonus_pct": [
+          21,
+          21,
+          20,
+          0,
+          0,
+          0
+        ],
+        "value_base20_first": 24.2,
+        "value_base20_half_first_second": 24.2
+      },
+      "six": {
+        "points": [
+          5,
+          5,
+          4,
+          4,
+          4,
+          4
+        ],
+        "bonus_pct": [
+          14,
+          14,
+          12,
+          12,
+          12,
+          12
+        ],
+        "value_base20_first": 22.8,
+        "value_base20_half_first_second": 22.8
+      }
+    }
+  },
+  "optimization": [
+    {
+      "weights": [
+        0.5,
+        0.5
+      ],
+      "best_bonus_pct": 25.0,
+      "allocations": [
+        [
+          8,
+          18
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          15,
+          11
+        ],
+        [
+          16,
+          10
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          18,
+          8
+        ]
+      ]
+    },
+    {
+      "weights": [
+        0.65,
+        0.35
+      ],
+      "best_bonus_pct": 26.5,
+      "allocations": [
+        [
+          18,
+          8
+        ]
+      ]
+    },
+    {
+      "weights": [
+        0.75,
+        0.25
+      ],
+      "best_bonus_pct": 28.5,
+      "allocations": [
+        [
+          22,
+          4
+        ],
+        [
+          23,
+          3
+        ],
+        [
+          24,
+          2
+        ],
+        [
+          25,
+          1
+        ],
+        [
+          26,
+          0
+        ]
+      ]
+    },
+    {
+      "weights": [
+        0.8,
+        0.2
+      ],
+      "best_bonus_pct": 30.4,
+      "allocations": [
+        [
+          26,
+          0
+        ]
+      ]
+    },
+    {
+      "weights": [
+        1.0,
+        0.0
+      ],
+      "best_bonus_pct": 38.0,
+      "allocations": [
+        [
+          26,
+          0
+        ]
+      ]
+    },
+    {
+      "weights": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "best_bonus_pct": 20.666667,
+      "allocations": [
+        [
+          8,
+          8,
+          10
+        ],
+        [
+          8,
+          9,
+          9
+        ],
+        [
+          8,
+          10,
+          8
+        ],
+        [
+          9,
+          8,
+          9
+        ],
+        [
+          9,
+          9,
+          8
+        ],
+        [
+          10,
+          8,
+          8
+        ]
+      ]
+    }
+  ],
+  "power_budget": {
+    "current_growth": 6.222222222222222,
+    "old_all_power": 145.6,
+    "new_mastery_only": 154.56,
+    "new_mastery_and_contact": 174.72,
+    "increase_pct": 19.999999999999996,
+    "if_native10_also_added": 185.92,
+    "native10_increase_vs_old_pct": 27.692307692307683,
+    "old_all_vitality_hp": 918.0000000000001,
+    "new_all_vitality_hp": 837.0
+  }
+}

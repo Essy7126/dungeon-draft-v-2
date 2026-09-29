@@ -1,7 +1,7 @@
 [gd_resource type="Theme" format=3 uid="uid://dt4rafn5yl2c7"]
 
-[ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf" id="1_body"]
-[ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf" id="2_display"]
+[ext_resource type="FontFile" uid="uid://cfi647ydopajt" path="res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf" id="1_body"]
+[ext_resource type="FontFile" uid="uid://hsetsxqicnuq" path="res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf" id="2_display"]
 
 [sub_resource type="StyleBoxFlat" id="StyleAcquireDisabled"]
 bg_color = Color(0.025, 0.022, 0.027, 0.94)
@@ -284,20 +284,10 @@ corner_radius_bottom_left = 4
 [resource]
 default_font = ExtResource("1_body")
 default_font_size = 14
-Button/fonts/font = ExtResource("2_display")
 Button/colors/font_color = Color(0.92, 0.93, 0.9, 1)
 Button/colors/font_hover_color = Color(1, 0.94, 0.7, 1)
+Button/fonts/font = ExtResource("2_display")
 Label/colors/font_color = Color(0.94, 0.87, 0.73, 1)
-SkillTreeTitleLabel/base_type = &"Label"
-SkillTreeTitleLabel/colors/font_color = Color(0.98, 0.82, 0.48, 1)
-SkillTreeTitleLabel/fonts/font = ExtResource("2_display")
-SkillTreeSectionLabel/base_type = &"Label"
-SkillTreeSectionLabel/colors/font_color = Color(0.86, 0.69, 0.42, 1)
-SkillTreeSectionLabel/fonts/font = ExtResource("2_display")
-SkillTreeMetaLabel/base_type = &"Label"
-SkillTreeMetaLabel/colors/font_color = Color(0.76, 0.68, 0.57, 1)
-SkillTreeMutedLabel/base_type = &"Label"
-SkillTreeMutedLabel/colors/font_color = Color(0.55, 0.49, 0.44, 1)
 SkillTreeAcquireButton/base_type = &"Button"
 SkillTreeAcquireButton/styles/disabled = SubResource("StyleAcquireDisabled")
 SkillTreeAcquireButton/styles/focus = SubResource("StyleAcquireHover")
@@ -343,6 +333,10 @@ SkillTreeGraphView/colors/connection_incompatible = Color(0.5, 0.3, 0.31, 0.84)
 SkillTreeGraphView/colors/connection_selected = Color(1, 0.75, 0.24, 1)
 SkillTreeGraphView/colors/connection_underlay = Color(0.012, 0.016, 0.023, 0.9)
 SkillTreeGraphView/colors/rank_title = Color(0.86, 0.88, 0.9, 1)
+SkillTreeMetaLabel/base_type = &"Label"
+SkillTreeMetaLabel/colors/font_color = Color(0.76, 0.68, 0.57, 1)
+SkillTreeMutedLabel/base_type = &"Label"
+SkillTreeMutedLabel/colors/font_color = Color(0.55, 0.49, 0.44, 1)
 SkillTreeNodeAvailable/base_type = &"PanelContainer"
 SkillTreeNodeAvailable/styles/panel = SubResource("StyleAvailable")
 SkillTreeNodeBackdropAvailable/base_type = &"Panel"
@@ -373,6 +367,9 @@ SkillTreeRankBadge/base_type = &"PanelContainer"
 SkillTreeRankBadge/styles/panel = SubResource("StyleRankBadge")
 SkillTreeScreen/base_type = &"PanelContainer"
 SkillTreeScreen/styles/panel = SubResource("StyleScreen")
+SkillTreeSectionLabel/base_type = &"Label"
+SkillTreeSectionLabel/colors/font_color = Color(0.86, 0.69, 0.42, 1)
+SkillTreeSectionLabel/fonts/font = ExtResource("2_display")
 SkillTreeSelectionRail/base_type = &"Panel"
 SkillTreeSelectionRail/styles/panel = SubResource("StyleSelectionRail")
 SkillTreeStatusButton/base_type = &"Button"
@@ -380,6 +377,9 @@ SkillTreeStatusButton/styles/focus = SubResource("StyleStatusHover")
 SkillTreeStatusButton/styles/hover = SubResource("StyleStatusHover")
 SkillTreeStatusButton/styles/normal = SubResource("StyleTransparent")
 SkillTreeStatusButton/styles/pressed = SubResource("StyleStatusHover")
+SkillTreeTitleLabel/base_type = &"Label"
+SkillTreeTitleLabel/colors/font_color = Color(0.98, 0.82, 0.48, 1)
+SkillTreeTitleLabel/fonts/font = ExtResource("2_display")
 SkillTreeTooltip/base_type = &"PanelContainer"
 SkillTreeTooltip/styles/panel = SubResource("StyleTooltip")
 SkillTreeXpProgress/base_type = &"ProgressBar"

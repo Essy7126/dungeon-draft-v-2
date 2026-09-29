@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c34o1ot1ukt88"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
-
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_heel.png" id="glyph_da"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_x2cn0"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_60833"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="6_ra3y2"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="7_eldrr"]
+[ext_resource type="Texture2D" uid="uid://0nptg1n6a24l" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_heel.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Effect"]
 script = ExtResource("2_effect")
 trigger_id = &"hp_threshold_crossed"
-target_id = &"trigger_hero"
 result_id = &"grant_shield_max_hp"
 value = 0.18
 threshold = 0.25
@@ -16,13 +18,13 @@ frequency_id = &"per_combat"
 
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_thetis_heel"
 display_name = "Talon de Thétis"
 description = "La première descente sous 25 % PV par combat accorde une Garde égale à 18 % des PV max."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 rarity = &"legendary"
 tags = Array[StringName]([&"odyssey", &"aeacus", &"recovery"])
 category = 5
-reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])
+reactive_effects = Array[ExtResource("2_effect")]([SubResource("Effect")])

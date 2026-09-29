@@ -95,7 +95,7 @@ static func resolve_cast(ctx, cards, card: Dictionary) -> void:
 			state.gameplay_flags["cc2_vfx"] = "braise_steam"
 		if surface == "fire":
 			var coefficient := float(card.amount) + (.1 if "embers" in cards.active_relics else 0.0)
-			state.gameplay_flags["cc2_payload"] = coefficient * ctx.caster.attack_power.get_value()
+			state.gameplay_flags["cc2_payload"] = Effects.Math.component(card, "amount", ctx.caster.attack_power.get_value(), cards, "periodic", coefficient - float(card.amount))
 		if cell not in ctx.report.terrain_changed:
 			ctx.report.terrain_changed.append(cell)
 		transformed = transformed or changed_type

@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c4rmhkutxixo3"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
-[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
-[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
-
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_anchor.png" id="glyph_da"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="6_wgghe"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="7_p08yf"]
+[ext_resource type="Texture2D" uid="uid://de7bnaf64csdr" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_thetis_anchor.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Dash"]
 script = ExtResource("3_condition")
@@ -19,7 +20,7 @@ condition_id = &"guard_active"
 [sub_resource type="Resource" id="Consume"]
 script = ExtResource("4_parameter")
 parameter_id = &"guard_consume_ratio"
-float_value = 0.30
+float_value = 0.3
 
 [sub_resource type="Resource" id="SameDamage"]
 script = ExtResource("4_parameter")
@@ -36,25 +37,24 @@ integer_value = 1
 [sub_resource type="Resource" id="Effect"]
 script = ExtResource("2_effect")
 trigger_id = &"spell_cast"
-conditions = Array[ItemReactiveConditionData]([SubResource("Dash"), SubResource("GuardActive")])
-target_id = &"trigger_hero"
+conditions = Array[ExtResource("3_condition")]([SubResource("Dash"), SubResource("GuardActive")])
 result_id = &"guard_dash_conversion"
 value = 0.0
 frequency_id = &"per_activation"
 reaction_group = &"guard_dash_conversion"
 stackable = false
 priority = 100
-parameters = Array[ItemReactiveParameterData]([SubResource("Consume"), SubResource("SameDamage"), SubResource("Push")])
+parameters = Array[ExtResource("4_parameter")]([SubResource("Consume"), SubResource("SameDamage"), SubResource("Push")])
 
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_thetis_anchor"
 display_name = "Ancre de Thétis"
 description = "Percée avec Garde active consomme 30 % de la Garde, inflige cette valeur autour de l’arrivée et pousse d’une case, une fois par activation."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 rarity = &"legendary"
 tags = Array[StringName]([&"odyssey", &"aeacus", &"hybrid"])
 category = 5
-reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])
+reactive_effects = Array[ExtResource("2_effect")]([SubResource("Effect")])

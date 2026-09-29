@@ -1,14 +1,15 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dpouasynimgnx"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-
-[ext_resource type="Texture2D" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_myrmidon_crest.png" id="glyph_da"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_sjamb"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_46hxh"]
+[ext_resource type="Texture2D" uid="uid://t8c6j6y8846r" path="res://assets/catabase/emerald_icons_v2/equipment/odyssey_myrmidon_crest.png" id="glyph_da"]
 
 [sub_resource type="Resource" id="Hp"]
 script = ExtResource("2_stat")
 stat_id = &"max_hp"
-value = 0.10
+value = 0.1
 modifier_type = 1
 
 [sub_resource type="Resource" id="Prowess"]
@@ -24,14 +25,13 @@ value = 2.0
 
 [resource]
 script = ExtResource("1_item")
-icon = ExtResource("glyph_da")
-inventory_icon = ExtResource("glyph_da")
-card_texture = ExtResource("glyph_da")
 item_id = &"odyssey_myrmidon_crest"
 display_name = "Aigrette des Myrmidons"
 description = "+10 % PV max, +12 % Prouesse, +2 Initiative."
+icon = ExtResource("glyph_da")
+inventory_icon = ExtResource("glyph_da")
+card_texture = ExtResource("glyph_da")
 tags = Array[StringName]([&"odyssey", &"achilles", &"universal"])
-category = 2
 equipment_slot = 2
 compatible_character_ids = Array[StringName]([&"achilles"])
-stat_modifiers = Array[ItemStatModifierData]([SubResource("Hp"), SubResource("Prowess"), SubResource("Initiative")])
+stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Hp"), SubResource("Prowess"), SubResource("Initiative")])

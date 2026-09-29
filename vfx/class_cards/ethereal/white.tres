@@ -1,6 +1,8 @@
-[gd_resource type="GradientTexture2D" load_steps=2 format=3]
+[gd_resource type="GradientTexture2D" format=3 uid="uid://cmxwb7668ai3x"]
+
 [sub_resource type="Gradient" id="Gradient_white"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
 [resource]
 gradient = SubResource("Gradient_white")
 width = 256

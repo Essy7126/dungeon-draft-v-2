@@ -1,14 +1,13 @@
-[gd_resource type="Resource" script_class="MerchantProfile" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="MerchantProfile" format=3 uid="uid://clf7xqo65gjus"]
 
-[ext_resource type="Script" path="res://data/runs/economy/merchant_profile.gd" id="1_profile"]
-[ext_resource type="Script" path="res://data/runs/economy/merchant_offer_data.gd" id="2_offer"]
+[ext_resource type="Script" uid="uid://8unt4gc3wky8" path="res://data/runs/economy/merchant_profile.gd" id="1_profile"]
+[ext_resource type="Script" uid="uid://0d7sob4epyou" path="res://data/runs/economy/merchant_offer_data.gd" id="2_offer"]
 
 [sub_resource type="Resource" id="Equipment"]
 script = ExtResource("2_offer")
 offer_id = &"odyssey_equipment_offer"
 display_name = "Armurerie de Chiron"
 description = "Choisir une pièce pour préparer la prochaine rencontre."
-offer_type = 0
 currency_cost = 60
 catalog_tags = Array[StringName]([&"odyssey", &"achilles"])
 per_run_limit = 3
@@ -40,8 +39,8 @@ display_name = "Forge"
 description = "Améliore d’un palier une pièce éligible."
 offer_type = 3
 currency_cost = 70
-forge_tier_delta = 1
 per_run_limit = 2
+forge_tier_delta = 1
 
 [sub_resource type="Resource" id="Reroll"]
 script = ExtResource("2_offer")
@@ -50,8 +49,8 @@ display_name = "Renouveler l’étal"
 description = "Renouvelle les propositions d’équipements et de reliques."
 offer_type = 4
 currency_cost = 25
-reroll_offer_count = 3
 per_run_limit = 3
+reroll_offer_count = 3
 
 [sub_resource type="Resource" id="Reorientation"]
 script = ExtResource("2_offer")
@@ -61,7 +60,6 @@ description = "Rembourse un point de maîtrise éligible."
 offer_type = 5
 currency_cost = 55
 reorientation_refund_limit = 1
-per_run_limit = 1
 
 [sub_resource type="Resource" id="ChironLesson"]
 script = ExtResource("2_offer")
@@ -77,5 +75,4 @@ per_run_limit = 3
 script = ExtResource("1_profile")
 merchant_id = &"odyssey_chiron_merchant"
 display_name = "L’étape de Chiron"
-maximum_mastery_purchases_per_run = 3
 offers = Array[ExtResource("2_offer")]([SubResource("Equipment"), SubResource("Relic"), SubResource("Heal"), SubResource("Forge"), SubResource("Reroll"), SubResource("Reorientation"), SubResource("ChironLesson")])

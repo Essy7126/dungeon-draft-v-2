@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" format=3 uid="uid://di58ntwyxsted"]
 
-[ext_resource type="Script" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1"]
-[ext_resource type="Script" path="res://data/characters/combat_action_classification_data.gd" id="2"]
+[ext_resource type="Script" uid="uid://b71eupna0ccmg" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://dw5mtkdl8oil0" path="res://data/characters/combat_action_classification_data.gd" id="2"]
 
 [sub_resource type="Resource" id="s0"]
 script = ExtResource("2")
@@ -26,7 +26,6 @@ classification = 1
 [sub_resource type="Resource" id="s4"]
 script = ExtResource("2")
 ability_id = &"paris_infernal_whip"
-classification = 0
 
 [sub_resource type="Resource" id="s5"]
 script = ExtResource("2")
@@ -36,7 +35,6 @@ classification = 2
 [sub_resource type="Resource" id="s6"]
 script = ExtResource("2")
 ability_id = &"paris_infernal_pull"
-classification = 0
 
 [sub_resource type="Resource" id="s7"]
 script = ExtResource("2")

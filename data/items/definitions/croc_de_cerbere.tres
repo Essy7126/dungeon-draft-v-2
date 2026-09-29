@@ -1,11 +1,12 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://d17xhv7drx70f"]
 
-[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/croc_de_cerbere.png" id="relic_icon"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_dxsxb"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_x7rdk"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_jnf8j"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_eqxdv"]
+[ext_resource type="Script" uid="uid://ccvx4bnf07moe" path="res://data/items/item_reactive_parameter_data.gd" id="4_xfxjo"]
 [ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_hw07e"]
+[ext_resource type="Texture2D" uid="uid://bld7qysq12o3d" path="res://asset/ui/items/relics_premium_v1/croc_de_cerbere.png" id="relic_icon"]
 
 [sub_resource type="Resource" id="Resource_12x50"]
 script = ExtResource("2_x7rdk")
@@ -23,8 +24,8 @@ frequency_id = &"per_turn"
 script = ExtResource("3_jnf8j")
 item_id = &"croc_de_cerbere"
 display_name = "Croc de Cerbère"
-inventory_icon = ExtResource("relic_icon")
 description = "Ta première élimination de chaque tour te rend 8 % de tes PV maximum."
+inventory_icon = ExtResource("relic_icon")
 rarity = &"mythic"
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5

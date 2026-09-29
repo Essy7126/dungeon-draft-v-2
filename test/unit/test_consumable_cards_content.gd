@@ -19,13 +19,13 @@ func test_seven_maps_use_studio_projection_without_geometry_drift() -> void:
 			assert_true(grid.is_walkable(cell), "%s %s" % [id, cell])
 
 
-func test_twenty_six_items_roundtrip_through_studio_services() -> void:
+func test_all_items_roundtrip_through_studio_services() -> void:
 	var catalog := Content.items()
 	assert_not_null(catalog)
 	if catalog == null:
 		return
 	assert_true(catalog.validate_catalog().valid)
-	assert_eq(catalog.get_definitions().size(), 26)
+	assert_eq(catalog.get_definitions().size(), Catalog.data().equipment.size() + Catalog.data().relics.size())
 	var copier := ItemDeepCopyService.new()
 	var validator := ItemStudioValidationService.new()
 	for item in catalog.get_definitions():

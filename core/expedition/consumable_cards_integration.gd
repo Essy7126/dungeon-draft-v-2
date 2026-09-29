@@ -4,6 +4,7 @@ const Catalog := preload("res://core/expedition/consumable_card_catalog.gd")
 const Cards := preload("res://core/expedition/consumable_cards_state.gd")
 const Economy := preload("res://core/expedition/consumable_card_economy.gd")
 const Turns := preload("res://core/expedition/consumable_card_turns.gd")
+const Progression := preload("res://core/expedition/consumable_progression_v1.gd")
 
 
 static func enabled(session) -> bool:
@@ -50,12 +51,15 @@ static func prepare(session, selection: Dictionary, inventory: RunInventory) -> 
 	return {"success": true, "message": session.last_message}
 
 
-static func rebuild(session, proportional := false, restoring := false) -> void:
+static func rebuild(session, proportional := false, restoring := false, allow_migration := true) -> void:
 	session.route.consumable_cards_enabled = true
 	session.route.consumable_bestiary_revision = session.cards.bestiary_revision
 	var hero: Unit = session.character.unit
 	var maximum := hero.max_hp.get_int()
 	var hp := hero.current_hp
+	if allow_migration and not session.needs_preparation and session.cards.migrate_prototype():
+		proportional = true
+		session.journal.append("Prototype v1 · anciens attributs remboursés ; points élémentaires et aptitudes disponibles. PV conservés proportionnellement.")
 	if not restoring and not session.equipment_health_basis.is_empty() and hp != equipment_hp(session, maximum):
 		session.equipment_health_basis.clear()
 	if proportional and session.equipment_health_basis.is_empty():
@@ -121,13 +125,68 @@ static func award(session, node: Dictionary) -> void:
 	session.build.grant_depth_reward(int(node.depth))
 	session.build.sync_level(session.character.champion_progression.current_level)
 	session.awarded_node_ids.append(str(node.id))
-	rebuild(session)
+	rebuild(session, false, false, false)
 	# Champion progression also rebuilds its base stats. Apply the final maximum
 	# increase once, including the card equipment, without a second level heal.
 	hero.current_hp = mini(hero.max_hp.get_int(), previous_hp + maxi(0, hero.max_hp.get_int() - previous_max))
 	session.character.champion_progression.current_hp = hero.current_hp
+	# Finish the old encounter and its level heal before migrating its investment.
+	if cards.prototype_revision == 0: rebuild(session)
 	session.last_message = "%s franchi · +%d XP · +%d oboles · %d copies trouvées" % [node.title, gained_xp, gained_gold, cards.last_drops.size() if gained_xp > 0 else 0]
 	session.journal.append(session.last_message)
+
+
+static func can_edit_progression(session) -> bool:
+	return enabled(session) and session.cards.prototype_revision == 1 and not session.cards.combat_started and session.route.phase in ["map", "reward"]
+
+
+static func before_first_combat(session) -> bool:
+	# Victory is awarded before the route marks the node completed on departure.
+	if not session.cards.battle_results.is_empty(): return false
+	for id in session.route.completed_node_ids:
+		for node in session.route.nodes:
+			if node.id == id and ExpeditionRouteCatalog.is_combat(str(node.kind)): return false
+	return true
+
+
+static func correction_available(session) -> bool:
+	if not can_edit_progression(session): return false
+	var node: Dictionary = session.route.get_current_node()
+	return session.route.phase == "reward" and int(node.get("depth", 0)) in Progression.HALTS and str(node.get("id", "")) not in session.cards.correction_visits
+
+
+static func full_reorientation_available(session) -> bool:
+	if not can_edit_progression(session) or session.cards.full_reorientation_used or session.cards.level < 8: return false
+	return session.route.phase == "reward" and int(session.route.get_current_node().get("depth", 0)) in Progression.FULL_RESET_DEPTHS
+
+
+static func allocate_progression(session, masteries: Dictionary, aptitudes: Dictionary) -> bool:
+	if not can_edit_progression(session): return false
+	var cards = session.cards
+	if not Progression.valid_allocation(masteries, Progression.ELEMENTS, Progression.element_budget(cards.level), 26) or not Progression.valid_allocation(aptitudes, Progression.APTITUDES, Progression.aptitude_budget(cards.level), 3): return false
+	var refund := Progression.refunded(cards.masteries, masteries)
+	var initial := before_first_combat(session)
+	if not initial and Progression.refunded(cards.aptitudes, aptitudes) > 0: return false
+	if not initial and refund > 0 and (refund > 2 or not correction_available(session)): return false
+	if masteries == cards.masteries and aptitudes == cards.aptitudes: return false
+	if not initial and refund > 0: cards.correction_visits.append(str(session.route.current_node_id))
+	cards.masteries = masteries.duplicate(true)
+	cards.aptitudes = aptitudes.duplicate(true)
+	rebuild(session, true)
+	cards.changed.emit()
+	return true
+
+
+static func full_reorientation(session) -> bool:
+	if not full_reorientation_available(session): return false
+	var cards = session.cards
+	cards.full_reorientation_used = true
+	cards.masteries = Progression.empty_elements()
+	cards.aptitudes = Progression.empty_aptitudes()
+	cards.specialization = ""
+	rebuild(session, true)
+	cards.changed.emit()
+	return true
 
 
 static func is_market(session) -> bool:
