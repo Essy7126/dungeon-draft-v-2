@@ -1,5 +1,6 @@
 extends VBoxContainer
 ## Mounted in the existing inventory, collection and progression windows.
+const PlayerWords := preload("res://ui/expedition/card_player_language.gd")
 const Catalog := preload("res://core/expedition/consumable_card_catalog.gd")
 const Integration := preload("res://core/expedition/consumable_cards_integration.gd")
 const Economy := preload("res://core/expedition/consumable_card_economy.gd")
@@ -73,13 +74,13 @@ func _render() -> void:
 
 func _progression(cards) -> void:
 	_text("%s · Niveau %d" % [Catalog.class_row(cards.primary_class).name, cards.level], 24)
-	_text(Catalog.class_row(cards.primary_class).passive)
+	_text(PlayerWords.PASSIVES[cards.primary_class])
 	_text(
-		"%d point(s) d'attribut · %d amélioration(s) de famille"
+		"%d point(s) d'attribut · %d amélioration(s) de sort"
 		% [cards.attribute_points(), cards.points()]
 	)
 	for entry in [
-		["power", "Puissance", "+5 % de P de base"],
+		["power", "Puissance", "+5 % de Puissance de base"],
 		["vitality", "Vitalité", "+6 % de PV de base"],
 		["resolve", "Résolution", "+2 % de résistance physique et +5 % de garde"],
 	]:
@@ -96,13 +97,13 @@ func _progression(cards) -> void:
 			self,
 			("✓ " if cards.specialization == id else "")
 			+ str(preload("res://ui/expedition/consumable_cards_presenter.gd").SPECS[id])
-			+ " · " + str(Catalog.data().specs[id]),
+			+ " · " + PlayerWords.SPECIALIZATIONS[id],
 			func():
 				return cards.specialize(id),
 			cards.level < 4 or not cards.specialization.is_empty(),
 		)
 	_text(
-		"Les améliorations de famille se choisissent dans Sorts & deck. Elles s'appliquent aux copies actuelles et futures."
+		"Les améliorations de sort se choisissent dans Sorts & deck. Elles s'appliquent aux cartes actuelles et futures."
 	)
 	var families := Catalog.pool()
 	var choice := OptionButton.new()
@@ -111,7 +112,7 @@ func _progression(cards) -> void:
 	add_child(choice)
 	_button(
 		self,
-		"Améliorer cette famille · 1 point",
+		"Améliorer ce sort · 1 point",
 		func():
 			return cards.upgrade_copy(families[choice.selected]),
 		cards.points() <= 0,
@@ -129,7 +130,7 @@ func _progression(cards) -> void:
 		add_child(from)
 		_button(
 			self,
-			"Réaffecter cette amélioration vers la famille choisie · 35 oboles",
+			"Réaffecter cette amélioration vers le sort choisi · 35 oboles",
 			func():
 				return Economy.transact(cards, session.route.current_node_id, {
 					"id": "respec",
@@ -204,22 +205,26 @@ func _gear(cards) -> void:
 
 func _deck(cards) -> void:
 	_text(
-		"%d copies préparées · %d en réserve · %d consommées"
+		"%d cartes préparées · %d en réserve · %d consommées"
 		% [cards.active.size(), cards.copies.size() - cards.active.size(), cards.consumed.size()],
 		22,
 	)
 	_text(
-		"0 à 30 copies préparées, 3 par famille. Main de %d. Chaque copie jouée est consommée définitivement. Les deux secours restent disponibles."
+		"0 à 30 cartes préparées, 3 exemplaires du même sort. Main de %d. Chaque carte jouée est consommée définitivement. Les deux secours restent disponibles."
 		% cards.hand_capacity
 	)
 	if mode == "loot":
 		_text(
-			"%d copie(s) reçue(s) après ce combat. Retrouvez également vos objets dans l'inventaire."
+			"%d carte(s) reçue(s) après ce combat. Retrouvez également vos objets dans l'inventaire."
 			% cards.last_drops.size()
 		)
-		var report: Dictionary = cards.battle_results.get(GameManager.expedition.route.current_node_id, {})
-		var lost: Array = report.get("enemies", {}).get("forfeited", [])
-		if not lost.is_empty(): _text("%d porteur(s) sacrifié(s) : leur butin a été perdu à l'autel." % lost.size())
+		var report: Dictionary = cards.battle_results.get(
+			GameManager.expedition.route.current_node_id,
+			{ },
+		)
+		var lost: Array = report.get("enemies", { }).get("forfeited", [])
+		if not lost.is_empty():
+			_text("%d porteur(s) sacrifié(s) : leur butin a été perdu à l'autel." % lost.size())
 	var session = GameManager.expedition
 	var merchant: bool = Integration.is_market(session)
 	if merchant:
@@ -233,7 +238,7 @@ func _deck(cards) -> void:
 				return not cards.copy_for(uid).is_empty(),
 		)
 		_text(
-			"Échange · %d / 3 copies normales sélectionnées · %d échange(s) restant(s)"
+			"Échange · %d / 3 cartes normales sélectionnées · %d échange(s) restant(s)"
 			% [trade_copies.size(), int(stock.trades)]
 		)
 		var targets := Catalog.pool(cards.primary_class, "normal", true)
@@ -243,7 +248,7 @@ func _deck(cards) -> void:
 		add_child(choice)
 		_button(
 			self,
-			"Échanger ces 3 copies contre la famille choisie",
+			"Échanger ces 3 cartes contre le sort choisi",
 			func():
 				var result := Economy.transact(
 					cards,
@@ -269,7 +274,7 @@ func _deck(cards) -> void:
 			trade_copies.is_empty(),
 		)
 	var search := LineEdit.new()
-	search.placeholder_text = "Rechercher une famille"
+	search.placeholder_text = "Rechercher un sort"
 	search.text = query
 	search.text_submitted.connect(
 		func(value):
@@ -282,8 +287,10 @@ func _deck(cards) -> void:
 	for copy in cards.copies:
 		if (
 			copy.family not in families
-			and (query.is_empty()
-			or query.to_lower() in str(Catalog.card(copy.family).name).to_lower())
+			and (
+				query.is_empty()
+				or query.to_lower() in str(Catalog.card(copy.family).name).to_lower()
+			)
 		):
 			families.append(str(copy.family))
 	if mode == "loot":
@@ -313,7 +320,12 @@ func _deck(cards) -> void:
 	for id in families.slice(page * 8, page * 8 + 8):
 		var spell: Spell = cards.family_spell(id)
 		_text(spell.spell_name + " · %d PA" % spell.ap_cost, 20).name = "Family_" + id
-		_text(spell.description)
+		_text(
+			PlayerWords.effect(
+				Catalog.card(id, id in cards.upgraded_ids),
+				GameManager.expedition.character.unit.attack_power.get_value(),
+			)
+		)
 		var row := HFlowContainer.new()
 		add_child(row)
 		var owned: Array = cards.copies.filter(
@@ -354,14 +366,14 @@ func _deck(cards) -> void:
 			)
 		_button(
 			row,
-			"Famille améliorée" if id in cards.upgraded_ids else "Améliorer la famille",
+			"Sort amélioré" if id in cards.upgraded_ids else "Améliorer le sort",
 			func():
 				return cards.upgrade_copy(id),
 			cards.points() <= 0 or id in cards.upgraded_ids,
 		)
 		_button(
 			row,
-			"Ne plus suivre" if id in cards.followed_families else "Suivre cette famille",
+			"Ne plus suivre" if id in cards.followed_families else "Suivre ce sort",
 			func():
 				if id in cards.followed_families:
 					cards.followed_families.erase(id)
@@ -379,7 +391,7 @@ func _deck(cards) -> void:
 			)
 			_button(
 				row,
-				"Vendre une copie en réserve",
+				"Vendre une carte en réserve",
 				func():
 					return Economy.transact(cards, session.route.current_node_id, {
 						"id": "sell:" + str(reserved[0].id),
@@ -394,7 +406,7 @@ func _deck(cards) -> void:
 			)
 			_button(
 				row,
-				"Ajouter une copie à l'échange",
+				"Ajouter une carte à l'échange",
 				func():
 					trade_copies.append(str(tradable[0].id))
 					return true,

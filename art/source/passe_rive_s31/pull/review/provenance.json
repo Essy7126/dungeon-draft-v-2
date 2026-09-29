@@ -1,0 +1,11 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-pull-directions-20260928-231758",
+  "combat": "artifacts\\dev\\passe-rive-pull-cards-20260928-231451",
+  "casts": 16,
+  "checks": 427,
+  "frames": 58,
+  "scope": "Eight authored directions;16 genuine g04 casts (base/upgrade). Diagnostic red point in presentation only denotes active hand. Game displacement remains authoritative, including axis selection for diagonals.",
+  "same_release_ms": 400,
+  "same_duration_ms": 890,
+  "mirrors": false
+}

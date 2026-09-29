@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "ink": "3a2528",
+    "shadow": "674139",
+    "bronze": "a36237",
+    "copper": "ca8542",
+    "honey": "efa84f",
+    "light": "ffd891",
+    "ivory": "fff4d1",
+    "ochre": "df9135"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/f_contre_prepare.png",
+  "source_script": "tools/class_card_vfx/contre/build.py",
+  "assets": {
+    "arm": {
+      "size": 384,
+      "frames": 14,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - arm",
+      "columns": 6,
+      "rows": 3,
+      "sha256": "93d370cfbd60363cc8b90b2d6c97614090df39a988b2fdd53cc80ca4d0d2a1b1",
+      "rendered_frames": [
+        {
+          "sha256": "11b840ed8f8329c03bd8ec13007de2a6c9ba4b759cbbdede77a85b81c86fe131",
+          "alpha_bounds": [
+            81,
+            30,
+            278,
+            354
+          ]
+        },
+        {
+          "sha256": "ced3d2610a9be0888e164879816dfb7cf718a8a85404082f8f65374d4ea6b011",
+          "alpha_bounds": [
+            83,
+            51,
+            270,
+            333
+          ]
+        },
+        {
+          "sha256": "ac3baaa8b8839aa69f4f8f1426c031266ac4f61255548cc840a5a60ac8b23d0d",
+          "alpha_bounds": [
+            84,
+            67,
+            263,
+            317
+          ]
+        },
+        {
+          "sha256": "b1f4289dd6db9668ff52bd6eb70681f96a2f0d6d70a619e7fb43087db1bc00d8",
+          "alpha_bounds": [
+            86,
+            78,
+            258,
+            306
+          ]
+        },
+        {
+          "sha256": "0e228d5c37a32809befd190a74c63d99ed595c6d7df1ff1a2b7f4915ade2b938",
+          "alpha_bounds": [
+            87,
+            85,
+            255,
+            299
+          ]
+        },
+        {
+          "sha256": "ea762245dae33a7417fb9222f0905c352ff709c6b9476edeeddf819765904c8f",
+          "alpha_bounds": [
+            81,
+            87,
+            254,
+            297
+          ]
+        },
+        {
+          "sha256": "52bfaa39ee1d16f4f1ef2318128c23bd87ef15f3b658b5c165529c843f3969a3",
+          "alpha_bounds": [
+            87,
+            87,
+            254,
+            297
+          ]
+        },
+        {
+          "sha256": "677de09aca49223e3aabd5c59e9241078a0358d4f89b4cb70297e91362574b7b",
+          "alpha_bounds": [
+            87,
+            87,
+            254,
+            297
+          ]
+        },
+        {
+          "sha256": "096719281889618019c8dc08d61db755c7ac02948b7e7259ba8e211cfd016f7e",
+          "alpha_bounds": [
+            103,
+            103,
+            245,
+            281
+          ]
+        },
+        {
+          "sha256": "125d7ec37198b3a760c73d4312e9096e595deaea2d61afb689a723e6647ae66f",
+          "alpha_bounds": [
+            118,
+            118,
+            236,
+            266
+          ]
+        },
+        {
+          "sha256": "65caa9bde1053f816c2f2aae82118a7ca0a3c6584e0677678d9ce8f760b4cf23",
+          "alpha_bounds": [
+            134,
+            134,
+            227,
+            250
+          ]
+        },
+        {
+          "sha256": "42fee3f151e3498ccd31b6c783c662aef457c7fead888ae310b6b1423ba4ea90",
+          "alpha_bounds": [
+            149,
+            149,
+            217,
+            235
+          ]
+        },
+        {
+          "sha256": "6792cde245390c73237ca0077ecd1fb0ea551bb8ae7a50196545ce0039a63d7f",
+          "alpha_bounds": [
+            165,
+            165,
+            208,
+            219
+          ]
+        },
+        {
+          "sha256": "33009bcbb9667f8a9682c982398ce18e4af19474a9502c1f6940468f949182cf",
+          "alpha_bounds": [
+            180,
+            180,
+            199,
+            204
+          ]
+        }
+      ]
+    },
+    "token": {
+      "size": 384,
+      "frames": 1,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - token",
+      "columns": 6,
+      "rows": 1,
+      "sha256": "51084648f590738d3d11e88223eed682f364ec0c13cc01332dfab63d54dbdefd",
+      "rendered_frames": [
+        {
+          "sha256": "b928250b587253c1b8c6cd787c3dcf3c89223ac1fe3e0d74b27a1296a97b3907",
+          "alpha_bounds": [
+            91,
+            97,
+            290,
+            295
+          ]
+        }
+      ]
+    },
+    "slash": {
+      "size": 384,
+      "frames": 9,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - slash",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "b90b4492a56c5c2b0f461c33c341ed099767a197edfac7346f4ecf6c51f75001",
+      "rendered_frames": [
+        {
+          "sha256": "bf6535cec1aaa9e0ba898fbe82a76e8f86279ad57d34c1a4277563aaf05991f4",
+          "alpha_bounds": [
+            38,
+            166,
+            256,
+            248
+          ]
+        },
+        {
+          "sha256": "7306cc568efda0fa94a8916aa638373bb93f9b358439a9a800a8636555350243",
+          "alpha_bounds": [
+            39,
+            134,
+            267,
+            248
+          ]
+        },
+        {
+          "sha256": "eaa430c2ab1d249ce4f2d0838c9282da8f272c17fdf59f56dbbbe88575f9e2c4",
+          "alpha_bounds": [
+            39,
+            129,
+            345,
+            248
+          ]
+        },
+        {
+          "sha256": "9531356019fbe74018839d918dee7e356f96e67d2699dd99ade55b506cd06095",
+          "alpha_bounds": [
+            51,
+            132,
+            345,
+            248
+          ]
+        },
+        {
+          "sha256": "52981a9fa37a5d2a8b3c9b38af48975b1853920abc0eeda9c8a4ac1ec5243c3a",
+          "alpha_bounds": [
+            55,
+            136,
+            345,
+            248
+          ]
+        },
+        {
+          "sha256": "7676708034182a6aee00d976d51b67bef78ca94d783a8974feba561f2e75a918",
+          "alpha_bounds": [
+            173,
+            142,
+            345,
+            248
+          ]
+        },
+        {
+          "sha256": "0a671b404da3c822abefc8582afdd9b2dfe5c2a44dda5de410efc4a4effa833f",
+          "alpha_bounds": [
+            218,
+            150,
+            345,
+            248
+          ]
+        },
+        {
+          "sha256": "e755386c123cef650da57351e2550c7d7bac1a9c2064167b4a932ff64acd4def",
+          "alpha_bounds": [
+            262,
+            164,
+            345,
+            248
+          ]
+        },
+        {
+          "sha256": "36783ee0ed185e92bfabb761227fd16e0f8671cd96b63f497b904497f45dee24",
+          "alpha_bounds": [
+            286,
+            186,
+            345,
+            248
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - contact",
+      "columns": 6,
+      "rows": 2,
+      "sha256": "a3a356a883730af335241e288caca7dbb299db8670d890b6f06685f3fab3fb68",
+      "rendered_frames": [
+        {
+          "sha256": "ddca688610f04e24651fb2f26c924abfca3bca782ef760747030f80ab23bac07",
+          "alpha_bounds": [
+            141,
+            133,
+            245,
+            242
+          ]
+        },
+        {
+          "sha256": "2ba769681261b14dae420a9b9b2d7e66e40d55fad8c6f7bf3261ec3bfc6ee781",
+          "alpha_bounds": [
+            75,
+            99,
+            315,
+            291
+          ]
+        },
+        {
+          "sha256": "8edb6724a092320b8f6aeceb632eb8ec92dee9e1f4ef7c4ce02dd069f3f0955c",
+          "alpha_bounds": [
+            91,
+            112,
+            298,
+            277
+          ]
+        },
+        {
+          "sha256": "0a87bf4fa120d695e476ce93e81e1038cf4412a938a7dc914a46bf34e08c314c",
+          "alpha_bounds": [
+            108,
+            103,
+            276,
+            276
+          ]
+        },
+        {
+          "sha256": "0d52464d9def7efc3f3dc57f6b05ae927788bb0fdefda37da46646df325f6590",
+          "alpha_bounds": [
+            97,
+            92,
+            287,
+            287
+          ]
+        },
+        {
+          "sha256": "77a07cbd4b3d45d0ad769be6f43773513a9721f587ab10cb6ecb71f8ea296cbb",
+          "alpha_bounds": [
+            86,
+            82,
+            298,
+            298
+          ]
+        },
+        {
+          "sha256": "4317f3a9ac645bfb65a059b5e4f82b6eb8c3e14b31a77989e444c545f9d73b28",
+          "alpha_bounds": [
+            74,
+            72,
+            310,
+            310
+          ]
+        },
+        {
+          "sha256": "6658e713337f66b18c5096097fc2ea45eab28bb22a0873213de857a2335a98a7",
+          "alpha_bounds": [
+            63,
+            62,
+            321,
+            321
+          ]
+        }
+      ]
+    }
+  },
+  "blend_sha256": "38b6e49f37508d91d289cdccad1b288079a908c157217d2dd7184dfe0dc4b41d",
+  "script_sha256": "7ecd463debe7d245a90e76322f3753d901252689494859d1b5d2be3749001d92"
+}

@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "gestures": 7,
+  "views": 56,
+  "casts": 337,
+  "checks": 8534,
+  "suite": "artifacts/dev/20260929-014145-test-passe-rive-96a51e08/gut-strict-report.json",
+  "reports": [
+    {
+      "gesture": "kick",
+      "report": "artifacts/dev/passe-rive-kick-cards-20260928-223821/report.json",
+      "casts": 24,
+      "checks": 496
+    },
+    {
+      "gesture": "pull",
+      "report": "artifacts/dev/passe-rive-pull-cards-20260928-231451/report.json",
+      "casts": 16,
+      "checks": 427
+    },
+    {
+      "gesture": "incantation",
+      "report": "artifacts/dev/passe-rive-incantation-cards-20260928-233406/report.json",
+      "casts": 96,
+      "checks": 2139
+    },
+    {
+      "gesture": "guard",
+      "report": "artifacts/dev/passe-rive-guard-cards-20260929-001211/report.json",
+      "casts": 40,
+      "checks": 1241
+    },
+    {
+      "gesture": "drain",
+      "report": "artifacts/dev/passe-rive-drain-cards-20260929-004426/report.json",
+      "casts": 33,
+      "checks": 1018
+    },
+    {
+      "gesture": "spectral",
+      "report": "artifacts/dev/passe-rive-spectral-cards-20260929-010802/report.json",
+      "casts": 48,
+      "checks": 1265
+    },
+    {
+      "gesture": "renew",
+      "report": "artifacts/dev/passe-rive-renew-cards-20260929-013620/report.json",
+      "casts": 64,
+      "checks": 1569
+    },
+    {
+      "gesture": "incantation_stasis",
+      "report": "artifacts/dev/passe-rive-incantation-cards-20260928-234050/report.json",
+      "casts": 16,
+      "checks": 379
+    }
+  ]
+}

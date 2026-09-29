@@ -1,0 +1,11 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-drain-directions-20260929-004340",
+  "combat": "artifacts\\dev\\passe-rive-drain-cards-20260929-004426",
+  "casts": 33,
+  "checks": 1018,
+  "frames": 58,
+  "scope": "Eight authored directions; 33 genuine drain casts: base/upgrade, full HP and fully shielded in all eight facings, plus lethal SE. Diagnostic orange point in presentation only denotes hand. HP damage, actual healing, conditional siphon and glint verified.",
+  "same_release_ms": 330,
+  "same_duration_ms": 940,
+  "mirrors": false
+}

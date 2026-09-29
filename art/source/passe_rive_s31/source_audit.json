@@ -1,0 +1,413 @@
+{
+  "passed": true,
+  "gestures": 7,
+  "views": 56,
+  "details": {
+    "kick": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s24/kick_high.png",
+        "sha256": "5cf34d3bf662489c6efe183bedec695604174909c0d5790613376c302eb35d02",
+        "source_height": 393,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/E_W_v03.png",
+        "sha256": "bd5f92a654465b6563b8345b8fa5cbdc9c800ec055449c38586ec76eeaf77039",
+        "source_height": 298,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/E_W_v03.png",
+        "sha256": "bd5f92a654465b6563b8345b8fa5cbdc9c800ec055449c38586ec76eeaf77039",
+        "source_height": 290,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/NE_NW_v02.png",
+        "sha256": "96d569d1b74ff40ad62ff5c3ee7ea196c33b97873236235e53e1bce3fc221a1a",
+        "source_height": 253,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/NE_NW_v02.png",
+        "sha256": "96d569d1b74ff40ad62ff5c3ee7ea196c33b97873236235e53e1bce3fc221a1a",
+        "source_height": 248,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/S_N_v01.png",
+        "sha256": "adcb66f4ebcd5ae523457932505e85e523b79d86b2c1928611e62ebb58c54f39",
+        "source_height": 273,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/S_N_v01.png",
+        "sha256": "adcb66f4ebcd5ae523457932505e85e523b79d86b2c1928611e62ebb58c54f39",
+        "source_height": 272,
+        "frames": 8,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_kick/SW_v02.png",
+        "sha256": "a396eb5bcd22cc102f56ce63a188f4cdbc5ac8c31106580e4487d8a883ddc3a5",
+        "source_height": 377,
+        "frames": 8,
+        "inherited_status": null
+      }
+    },
+    "pull": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s25/pull.png",
+        "sha256": "bd42fed82e4daa9f4c72e7f288621e8070d72090336bf276674b96bf4fc7db12",
+        "source_height": 334,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/E_W_v02.png",
+        "sha256": "2d655469984d14ea4ed17da3dc8a3ddd979dd00d7af31f651e8ee07f9ee9fe8c",
+        "source_height": 237,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/E_W_v02.png",
+        "sha256": "2d655469984d14ea4ed17da3dc8a3ddd979dd00d7af31f651e8ee07f9ee9fe8c",
+        "source_height": 237,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/NE_NW_v01.png",
+        "sha256": "2eecce2e09691efbcdcdc2fbf3dc38fdb81998d90c9e00c411573dfd6e0df301",
+        "source_height": 225,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/NE_NW_v01.png",
+        "sha256": "2eecce2e09691efbcdcdc2fbf3dc38fdb81998d90c9e00c411573dfd6e0df301",
+        "source_height": 240,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/S_N_v01.png",
+        "sha256": "a4e432f0cfea301c130aaf6efc72a1d062a8ea1482b537fe28312f3a3fbb91d8",
+        "source_height": 241,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/S_N_v01.png",
+        "sha256": "a4e432f0cfea301c130aaf6efc72a1d062a8ea1482b537fe28312f3a3fbb91d8",
+        "source_height": 232,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_pull/SW_v02.png",
+        "sha256": "15d3ddcdcb98ca0d27c3ff87d98e52e3403fb6eabecf08a6ea80d07a54a76602",
+        "source_height": 335,
+        "frames": 12,
+        "inherited_status": null
+      }
+    },
+    "incantation": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s26/incantation.png",
+        "sha256": "bd263d169b46a1f1be625debc78b6b8a6b7a27c684361137c69f101ee904debf",
+        "source_height": 330,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/E_W_v01.png",
+        "sha256": "c047bbc8d6b4156203dfa30612a5057464e5c987a8b3a1ba75eb3bcd67a0ce13",
+        "source_height": 230,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/E_W_v01.png",
+        "sha256": "c047bbc8d6b4156203dfa30612a5057464e5c987a8b3a1ba75eb3bcd67a0ce13",
+        "source_height": 235,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/NE_NW_v01.png",
+        "sha256": "9ca18d9c188f2b5222b9862555f2103d35bee5d4c2824894b373a73a0c254262",
+        "source_height": 230,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/NE_NW_v01.png",
+        "sha256": "9ca18d9c188f2b5222b9862555f2103d35bee5d4c2824894b373a73a0c254262",
+        "source_height": 226,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/S_N_v01.png",
+        "sha256": "d4aad7c85bc55b067823c04c7b0825ca178c8cd15900fc98cf73f94a150deaf1",
+        "source_height": 240,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/S_N_v01.png",
+        "sha256": "d4aad7c85bc55b067823c04c7b0825ca178c8cd15900fc98cf73f94a150deaf1",
+        "source_height": 234,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_incantation/SW_v01.png",
+        "sha256": "1598c9fdb9fd81b0c192c3070f9d3b418e2f0a138d0f67089d6784945818ab34",
+        "source_height": 321,
+        "frames": 12,
+        "inherited_status": null
+      }
+    },
+    "guard": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s27/guard.png",
+        "sha256": "07142ab673c0f75bca23a00a77f143e55590f3354e349e335b810568f69b23bf",
+        "source_height": 336,
+        "frames": 12,
+        "inherited_status": "integrated-three-guard-cards-SE"
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/E_W_v01.png",
+        "sha256": "4dba4ca20752b034949c3f383fba0ef88d36cddbdc33b0fb1ab01ecbea5963b2",
+        "source_height": 239,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/E_W_v01.png",
+        "sha256": "4dba4ca20752b034949c3f383fba0ef88d36cddbdc33b0fb1ab01ecbea5963b2",
+        "source_height": 240,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/NE_NW_v01.png",
+        "sha256": "5bfbfbdf4686d166c1a5f9987aec1f189c2b8a316cf121bd10174af4afa5653e",
+        "source_height": 223,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/NE_NW_v01.png",
+        "sha256": "5bfbfbdf4686d166c1a5f9987aec1f189c2b8a316cf121bd10174af4afa5653e",
+        "source_height": 222,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/S_N_v01.png",
+        "sha256": "9f655a2b199b229606c547886e841a0e87b08f209c16fe68c83f858ee3bdfa7c",
+        "source_height": 244,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/S_N_v01.png",
+        "sha256": "9f655a2b199b229606c547886e841a0e87b08f209c16fe68c83f858ee3bdfa7c",
+        "source_height": 239,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_guard/SW_v01.png",
+        "sha256": "c6c2f8812b4da59bd8146d0cffc2440b8e78d648f3ef57e34a7259bca6b273de",
+        "source_height": 347,
+        "frames": 12,
+        "inherited_status": null
+      }
+    },
+    "drain": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s28/drain.png",
+        "sha256": "56a27eaaa2d3cfc860605191a25ea6c4bb003d4251bace8ce148f7f929a0c6f1",
+        "source_height": 343,
+        "frames": 12,
+        "inherited_status": "integrated-prelevement-SE"
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/E_W_v01.png",
+        "sha256": "a27def793cf342fe88a981bc2e96bf6b3269f4367cebea8689edcf0c19d51cd5",
+        "source_height": 231,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/W_v02.png",
+        "sha256": "671bd1606a5af5833c76ff9af065f2118991f6b55d37102a82548997196b52e9",
+        "source_height": 318,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/NE_v03.png",
+        "sha256": "6d6711afdb2111f4292e6532dd936a95a85c1e766d275ce2e1dccb6557f759c0",
+        "source_height": 329,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/NE_NW_v01.png",
+        "sha256": "f6ff2be61cfc7e6fd4489cb91a3580090d115f0154b1108b512f02d34cf4bbbd",
+        "source_height": 211,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/S_N_v01.png",
+        "sha256": "4233257137e3d64828e463aed4eaa4885cdd93c84fb03b47485d5da3627171f0",
+        "source_height": 233,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/S_N_v01.png",
+        "sha256": "4233257137e3d64828e463aed4eaa4885cdd93c84fb03b47485d5da3627171f0",
+        "source_height": 226,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/SW_v03.png",
+        "sha256": "559b5a6b4c725abd31307c2dd15411267681ed95955b93c84f35b7792e34bc17",
+        "source_height": 340,
+        "frames": 12,
+        "inherited_status": null
+      }
+    },
+    "spectral": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s29/passage.png",
+        "sha256": "a08fd55631307ec8013d87341e829c9d277d256af52e8ca990bd5258f95b0f27",
+        "source_height": 345,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/E_W_v01.png",
+        "sha256": "a27def793cf342fe88a981bc2e96bf6b3269f4367cebea8689edcf0c19d51cd5",
+        "source_height": 231,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/W_v02.png",
+        "sha256": "671bd1606a5af5833c76ff9af065f2118991f6b55d37102a82548997196b52e9",
+        "source_height": 318,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/NE_v03.png",
+        "sha256": "6d6711afdb2111f4292e6532dd936a95a85c1e766d275ce2e1dccb6557f759c0",
+        "source_height": 329,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/NE_NW_v01.png",
+        "sha256": "f6ff2be61cfc7e6fd4489cb91a3580090d115f0154b1108b512f02d34cf4bbbd",
+        "source_height": 211,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/S_N_v01.png",
+        "sha256": "4233257137e3d64828e463aed4eaa4885cdd93c84fb03b47485d5da3627171f0",
+        "source_height": 233,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/S_N_v01.png",
+        "sha256": "4233257137e3d64828e463aed4eaa4885cdd93c84fb03b47485d5da3627171f0",
+        "source_height": 226,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_drain/SW_v03.png",
+        "sha256": "559b5a6b4c725abd31307c2dd15411267681ed95955b93c84f35b7792e34bc17",
+        "source_height": 340,
+        "frames": 12,
+        "inherited_status": null
+      }
+    },
+    "renew": {
+      "SE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s30/renew.png",
+        "sha256": "3f27a2aed4ad04782018e5ae66ff45dd3c02f3996fd1553674b6c5a20cc420e7",
+        "source_height": 338,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "E": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/E_W_v02.png",
+        "sha256": "3b446bb198a28573b1c7c696bb33acbb1c93c628f78af7ba1baa574e0643d89c",
+        "source_height": 224,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "W": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/E_W_v02.png",
+        "sha256": "3b446bb198a28573b1c7c696bb33acbb1c93c628f78af7ba1baa574e0643d89c",
+        "source_height": 230,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NE": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/NE_NW_v02.png",
+        "sha256": "47cd263c20a631e68c7ea30e38115c4fa38dc0964c0ca05ed1902f56918030a3",
+        "source_height": 220,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "NW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/NE_NW_v02.png",
+        "sha256": "47cd263c20a631e68c7ea30e38115c4fa38dc0964c0ca05ed1902f56918030a3",
+        "source_height": 219,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "S": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/S_N_v01.png",
+        "sha256": "2564598e982bbbba28b156b2faabf1467ec3a0dc2efc6a23fe922e9751cafacf",
+        "source_height": 230,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "N": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/S_N_v01.png",
+        "sha256": "2564598e982bbbba28b156b2faabf1467ec3a0dc2efc6a23fe922e9751cafacf",
+        "source_height": 229,
+        "frames": 12,
+        "inherited_status": null
+      },
+      "SW": {
+        "texture": "res://assets/characters/PasseRive/sprites_s31_renew/SW_v01.png",
+        "sha256": "c72b61db4ed57c002b25745fa35d65fdc89151dcc14077328f110d280985a98e",
+        "source_height": 326,
+        "frames": 12,
+        "inherited_status": null
+      }
+    }
+  }
+}

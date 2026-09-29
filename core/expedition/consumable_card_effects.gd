@@ -38,7 +38,9 @@ static func apply_state(
 	return before != value
 
 
-static func guard(hero: Unit, coefficient: float, cards, extra_multiplier := 1.0) -> int:
+static func guard(
+	hero: Unit, coefficient: float, cards, extra_multiplier := 1.0, ability_id: StringName = &"",
+) -> int:
 	var mods := Math.equipment_mods(cards.equipped)
 	var bonus := float(mods.get("guard", 0)) + .05 * int(cards.attributes.get("resolve", 0))
 	var amount := Math.guard(
@@ -52,7 +54,7 @@ static func guard(hero: Unit, coefficient: float, cards, extra_multiplier := 1.0
 			&"cc2_guard",
 			hero.current_shield + amount,
 			hero,
-			{ "tags": [&"guard"], "expires_after_activations": 1 },
+			{ "tags": [&"guard"], "expires_after_activations": 1, "ability_id": ability_id },
 		)
 	return amount
 

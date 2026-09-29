@@ -1,0 +1,15 @@
+Use case: stylized-concept
+Asset type: isolated 2D game VFX sprite atlas for approved Passage spectral teleport, true transparent background, 4 columns by 2 rows of eight EQUAL SQUARE cells (e.g. 1536x768).
+Reference image: approved storyboard, use ONLY its indigo-violet ribbon effect and thin pale ivory edge. REMOVE all characters and scenery. No hood, face, clothing, boots, limbs, person or silhouette in this image. Draw only spectral ribbons, all crisp flat cel-painted curves and tapered diamond fragments. No blurry smoke, lighting bloom, soft glow, floor ring, portal oval or background. True alpha outside painted effects.
+
+Exactly 8 drawings of one short-lived spectral veil, in left-to-right, top-to-bottom order. Consistent centered foot anchor x=192 y=350 in each square cell. Effects stay inside 24px margins. Full-height phases occupy y=30..350, about one character height; slim width roughly 150px.
+1: a tiny curling wisp starting at foot anchor, rising about 60px; two small fragments, mostly emptycell.
+2: thin indigo ribbon winds from foot anchor upward to about waistheight, then curls to right; elegant taper.
+3: two narrow indigo ribbons form an open rising twist, curling around empty body-sized space, reach full character height; ivory edge on one side, still lots of transparent empty space.
+4: maximum effacement: same fullheight twist tighter and narrower, ribbon ends break into three sharp diamond fragments, no body or solid humanoid mass.
+5: absence: one very thin tall serpentine indigo filament rising from foot anchor, two small fragments, mostly transparent, NO body.
+6: reappearance: the fullheight ribbons UNWIND outwards, one curled accent above shoulder height and one near foot, center widely open empty.
+7: two separated small fading ribbon scraps near shoulder and foot, no fullheight linking line.
+8: only two tiny indigo diamond fragments just above the foot anchor.
+
+Restrained deep indigo (#343059 approximately), desaturated violet highlight and very thin warm ivory edge. Two tones, minimal soft shading, clean anti-aliased contours. Distinct readable shapes at 90px displayheight. No text, no grid, no labels, no weapons, no shadow, no environment, no broad background washes. This will overlay an existing separately-rendered sprite.

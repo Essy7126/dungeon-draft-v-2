@@ -128,6 +128,8 @@ static func make_spell(id: String, upgraded := false) -> Spell:
 	var modifier := preload("res://core/expedition/consumable_card_modifier.gd").new()
 	modifier.card = row
 	spell.modifiers.append(modifier)
+	if id == "t08":
+		spell.modifiers.append(preload("res://vfx/class_cards/convergence/facts.gd").new())
 	spell.icon = LegacyIcons.icon(str(ICONS[row.id]))
 	spell.description = str(row.get("upgradeText" if upgraded else "baseText", "")) + "\n" + (
 		"Hors deck." if row.get("fallback", false) else "Copie consommée pour cette traversée. Une fois par famille et par tour."

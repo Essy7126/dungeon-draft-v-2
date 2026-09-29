@@ -1,5 +1,7 @@
 # Passe-Rive S28 — Prélèvement
 
+Historique SE : les huit directions et leur validation actuelle sont dans [S31](../passe_rive_s31/drain/VALIDATION.md).
+
 La carte `cc2_t07` joue un geste dédié : viser, saisir, ramener vers le sternum et relâcher. Le même bras reste actif. Ce binding s'applique à la version de base et à l'amélioration.
 
 ## Production

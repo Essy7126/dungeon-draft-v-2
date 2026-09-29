@@ -15,12 +15,7 @@ static func stats_text() -> String:
 
 
 static func power_help() -> String:
-	var stats := Math.stats(1, { }, { })
-	var power_text := String.num(stats.power).replace(".", ",")
-	return "P = votre puissance (%s au départ). 0,5 P représente %d avant résistances et bonus conditionnels." % [
-		power_text,
-		Math.rounded(.5 * stats.power),
-	]
+	return "La Puissance renforce les dégâts, la garde et certains soins. Les cartes affichent leurs valeurs de base ; protections et bonus peuvent les modifier."
 
 
 static func category(id: String) -> String:
@@ -50,8 +45,4 @@ static func deck_text(families: Array) -> String:
 		parts.append("%d à %d PA" % [costs[ap], ap])
 	var family_counts := counts(families)
 	var cost_text := " · ".join(parts) if not parts.is_empty() else "deck vide"
-	return "%d copies · %d familles\nCoûts : %s" % [
-		families.size(),
-		family_counts.size(),
-		cost_text,
-	]
+	return "%d cartes · %d sorts\nCoûts : %s" % [families.size(), family_counts.size(), cost_text]

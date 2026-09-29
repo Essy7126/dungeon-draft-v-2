@@ -1,0 +1,17 @@
+Use case: stylized-concept. Production sprite atlas, transparent background.
+Using the attached approved four-pose concept as the exact character and choreography reference, draw a COMPLETE sequence of TWELVE full-body character-only animation poses. Output exactly 4 equal columns and 3 equal rows, twelve square cells, reading row-major. Each cell should be about 384x384 on a 1536x1152 canvas. All figures full-body, identical size and fixed elevated southeast three-quarter camera. Leave enough margin for the peak's raised hands. No text, grid lines, shadows, floor, glow, magic or VFX: body only, truly transparent background.
+Passe-Rive is a SLIM long-legged masked hooded humanoid. Keep the approved small ivory angular mask, dark teal hood and split tunic, SHORT sage shoulder mantle, one bronze clasp on his screen-left near shoulder, ivory waist wrap and long front sash, charcoal gloves/sleeves/trousers/boots, bronze cuffs/anklets. Slim arms and legs, small head, not bulky or childlike. No long cape, weapons, new armor or decoration. Match the approved contour and cel-painted finish and colors without any magical relighting.
+This is a self-restoration gesture: shallow torso inhalation then expansive rising opening of both arms then natural settling, not a squat. Feet planted at exactly the same local coordinates every frame, same camera, same anatomy and overall body height. Allow minor realistic head/body movement, NOT scale changes. Keep wrists straight and connected naturally to elbows.
+Pose 1 idle, hands relaxed down, exact approved top-left stance.
+Pose 2 chest tips forward just a little, shoulders dropping as hands turn outward beside hips.
+Pose 3 low gathering, palms open, hands just outside thighs; slight forward head and shoulders; approved top-right without effects.
+Pose 4 shoulders rise, hands sweep outward/up to waist height, elbows gently flexed.
+Pose 5 arms extend outward to chest height, torso starts to lengthen, head lifts.
+Pose 6 strong opening, both arms lifting above shoulder line, near arm lower than far.
+Pose 7 peak like approved bottom-left WITHOUT effects: wide asymmetrical V arms, near hand screen-left slightly lower, far hand high screen-right, palms facing upward, chest lifted, planted feet.
+Pose 8 peak settles by a few degrees, elbows relax; preserve the exact same limb lengths.
+Pose 9 arms descend outward to shoulder height, trunk returns softly.
+Pose 10 arms continue downward to waist level, hands open, mantle and sash follow by a small amount.
+Pose 11 hands near hips, torso almost at rest.
+Pose 12 exact same neutral body pose as frame 1 for a seamless return to original idle.
+Strict invariants: no mirroring, no swapping clasp sides, no chest-clutch gesture, no deep crouch, no floating, no enlarged mask or shortened legs, no crossed limbs, no cropped hands, no particles or bronze protection pieces baked into the body. Exactly twelve figures in four by three cells. Clear smooth progression between consecutive drawings rather than twelve unrelated poses.

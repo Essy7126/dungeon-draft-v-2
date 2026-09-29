@@ -1,4 +1,5 @@
 extends RefCounted
+const Language := preload("res://ui/expedition/card_player_language.gd")
 const Rules := preload("res://core/expedition/consumable_card_catalog.gd")
 const Spells := preload("res://core/expedition/consumable_card_spells.gd")
 const Ecology := preload("res://core/expedition/card_ecosystem_catalog.gd")
@@ -6,14 +7,14 @@ const CLASSES := {
 	"assassin": [
 		"Assassin",
 		"Isoler · marquer · exécuter",
-		"Premier impact sur une cible isolée : +0,25 P, une fois par tour.",
-		"Préparez une cible avant de dépenser vos copies offensives.",
+		Language.PASSIVES.assassin,
+		"Marquez une cible ou isolez-la avant de jouer vos attaques les plus fortes.",
 	],
 	"gardien": [
 		"Gardien",
 		"Protéger · déplacer · riposter",
-		"Première attaque ennemie absorbée par la garde : renvoie 0,25 P.",
-		"La garde expire au début de votre prochaine activation.",
+		Language.PASSIVES.gardien,
+		"La garde absorbe les dégâts avant vos PV et expire au début de votre prochain tour.",
 	],
 	"arpenteur": [
 		"Arpenteur",
@@ -24,8 +25,8 @@ const CLASSES := {
 	"thaumaturge": [
 		"Thaumaturge",
 		"Affaiblir · transformer · déchaîner",
-		"Première marque, brûlure, entrave ou transformation du tour : +0,20 P de garde.",
-		"Ces déclenchements partagent un seul compteur par tour.",
+		Language.PASSIVES.thaumaturge,
+		"Alternez les éléments et les effets. Le bonus de garde ne se déclenche qu’une fois par tour.",
 	],
 }
 
@@ -76,7 +77,7 @@ static func specs(id: String) -> Array:
 					spec,
 					str(spec).capitalize(),
 				),
-				Rules.data().specs[spec],
+				Language.SPECIALIZATIONS[spec],
 			]
 		)
 	return result

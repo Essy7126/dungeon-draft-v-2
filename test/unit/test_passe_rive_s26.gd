@@ -4,7 +4,7 @@ const Body := preload("res://characters/achilles/2d/passe_rive_incantation_body.
 const Bindings := preload("res://characters/achilles/2d/passe_rive_card_bindings.gd")
 const PROFILE := preload("res://data/visuals/achilles/passe_rive_autosprite_profile_v1.tres")
 const Spells := preload("res://core/expedition/consumable_card_spells.gd")
-const CARDS := ["g01", "g08", "l02", "a09", "t03", "t06", "t09"]
+const CARDS := ["g01", "g08", "a09", "t03", "t06", "t09"]
 
 
 func backend(factor := 1.0) -> Node2D:
@@ -67,8 +67,9 @@ func test_all_poses_keep_scale_ground_and_hand_registration_across_profile_sizes
 			assert_true(node.get_vfx_origin().is_equal_approx(node.incantation.hand_position()))
 			assert_false(
 				node.body.visible or node.kick.visible
-				or node.pull.visible or node.animated_sprite.visible
+				or node.pull.visible
 			)
+			assert_almost_eq(node.animated_sprite.self_modulate.a + node.incantation.self_modulate.a, 1.0, .00001)
 			edge += float(node.incantation.data.duration_ms[i]) / 1000.0
 		assert_almost_eq(
 			scale.y * float(node.incantation.data.source_height),
@@ -88,20 +89,14 @@ func test_other_directions_keep_their_directional_incantation_and_emit_once() ->
 	for facing in ["N", "NE", "E", "S", "SW", "W", "NW"]:
 		releases.clear()
 		node.play_action(facing, &"cast", { "spell_id": "cc2_t03" })
-		assert_false(node.incantation.visible, "Never paste a SE drawing over a back view")
-		assert_eq(node.get_runtime_state().gesture_binding.status, "pending_direction")
-		assert_eq(node.get_runtime_state().gesture_binding.fallback_reference, "t_mark")
+		assert_true(node.incantation.visible)
+		assert_eq(node.get_runtime_state().gesture_binding.status, "assigned")
 		node.advance_simulation(3.0)
 		assert_eq(releases.size(), 1)
-		assert_eq(releases[0].animation, "PR_SEAL")
-		assert_eq(releases[0].facing, facing)
-		if facing in ["E", "W"]:
-			assert_true(
-				node.body.atlases.has("PR_SEAL"),
-				"Side views use the base atlas and its existing mirror",
-			)
-		else:
-			assert_false(str(releases[0].directional_source).is_empty())
+		assert_eq(releases[0].animation, Body.CLIP)
+		assert_eq(releases[0].authored_direction, facing)
+		assert_false(releases[0].mirrored)
+		assert_almost_eq(float(releases[0].release_seconds), .59, .00001)
 		assert_eq(node.get_runtime_state().animation, "idle_" + facing)
 
 

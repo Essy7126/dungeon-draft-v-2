@@ -1,4 +1,5 @@
 extends RefCounted
+const Language := preload("res://ui/expedition/card_player_language.gd")
 const Catalog := preload("res://core/expedition/consumable_card_catalog.gd")
 const SPECS := {
 	"execution": "Exécution",
@@ -48,18 +49,18 @@ const REASONS := {
 	"choose_specialization": "Choisissez votre spécialisation avant de poursuivre.",
 	"write_failed": "Sauvegarde impossible. L'action est annulée. Réessayez avant de continuer.",
 	"checkpoint_unavailable": "La sauvegarde doit être réessayée.",
-	"preparation": "Préparation impossible : 30 copies au total, 3 par famille au maximum.",
-	"opening": "L'ouverture doit être une copie normale préparée.",
+	"preparation": "Préparation impossible : 30 cartes au total, 3 du même sort au maximum.",
+	"opening": "L'ouverture doit être une carte normale préparée.",
 	"insufficient_gold": "Or insuffisant.",
-	"family_or_choice_unavailable": "Famille déjà utilisée ce tour, ou choix à terminer.",
+	"family_or_choice_unavailable": "Sort déjà utilisé ce tour, ou choix à terminer.",
 	"choice_pending": "Terminez le choix de rétention ou de Relais.",
 	"movement": "Cette case n'est pas accessible avec vos PM.",
 	"mechanism_out_of_reach": "Approchez-vous du mécanisme et gardez les PA nécessaires.",
 	"mechanism_unavailable": "Mécanisme déjà utilisé ce tour ou PA insuffisants.",
-	"upgrade": "Aucun point disponible, ou famille déjà améliorée.",
+	"upgrade": "Aucun point disponible, ou sort déjà amélioré.",
 	"attribute": "Aucun point d'attribut disponible.",
 	"trade_unavailable": "Troc indisponible.",
-	"normal_copies_required": "Le troc demande trois copies normales.",
+	"normal_copies_required": "Le troc demande trois cartes normales.",
 	"sold_out": "Stock épuisé.",
 	"boss_cannot_swap": "Pâris ne peut pas être permuté.",
 	"requires_mark_without_stasis_immunity": "La cible doit être marquée et ne pas être immunisée à la Stase.",
@@ -78,8 +79,19 @@ static func reason(id: String) -> String:
 static func status_entries(unit: Unit) -> Array:
 	# Presentation copies only: never apply these StatusData to the simulation.
 	var result: Array = unit.get_active_statuses().duplicate()
-	var names := {"mark": "Marque", "slow": "Entrave", "burn": "Brûlure", "bleed": "Saignement", "weak": "Affaiblissement", "stasis": "Stase", "stasis_ward": "Immunité à la Stase", "parry": "Parade", "counter": "Riposte", "edict": "Édit"}
-	var effects: Dictionary = unit.get_meta("cc2_effects", {})
+	var names := {
+		"mark": "Marque",
+		"slow": "Entrave",
+		"burn": "Brûlure",
+		"bleed": "Saignement",
+		"weak": "Affaiblissement",
+		"stasis": "Stase",
+		"stasis_ward": "Immunité à la Stase",
+		"parry": "Parade",
+		"counter": "Riposte",
+		"edict": "Édit",
+	}
+	var effects: Dictionary = unit.get_meta("cc2_effects", { })
 	for key in effects:
 		var value: Dictionary = effects[key]
 		var amount := float(value.amount)
@@ -88,25 +100,51 @@ static func status_entries(unit: Unit) -> Array:
 		data.status_name = names.get(key, str(key))
 		data.color = Color("d7bd87")
 		match str(key):
-			"mark": data.description = "+%.1f dégâts sur le prochain impact direct, puis consommée." % amount
-			"slow": data.description = "−%d PM à la prochaine activation." % int(amount)
-			"burn", "bleed": data.description = "%.1f dégâts avant résistance à chaque début d'activation." % amount
-			"weak": data.description = "−%.0f %% de dégâts sur la prochaine attaque." % (amount * 100)
-			"stasis": data.description = "La prochaine activation est sautée ; l'attaque annoncée est annulée."
-			"stasis_ward": data.description = "Empêche une nouvelle Stase pendant les activations indiquées."
-			"parry": data.description = "Réduit le prochain impact physique de %.1f avant résistance." % amount
-			"counter": data.description = "Riposte de %.1f au prochain impact adjacent, avant la prochaine activation." % amount
-			"edict": data.description = "Empêche une mort jusqu'à la prochaine activation, sauf pression de fin de combat."
-		result.append({"data": data, "remaining": int(value.duration)})
+			"mark":
+				data.description = "+%.1f dégâts sur le prochain impact direct, puis consommée." % amount
+			"slow":
+				data.description = "−%d PM à la prochaine activation." % int(amount)
+			"burn", "bleed":
+				data.description = "%.1f dégâts avant résistance à chaque début d'activation." % amount
+			"weak":
+				data.description = "−%.0f %% de dégâts sur la prochaine attaque." % (amount * 100)
+			"stasis":
+				data.description = "La prochaine activation est sautée ; l'attaque annoncée est annulée."
+			"stasis_ward":
+				data.description = "Empêche une nouvelle Stase pendant les activations indiquées."
+			"parry":
+				data.description = "Réduit le prochain impact physique de %.1f avant résistance." % amount
+			"counter":
+				data.description = "Riposte de %.1f au prochain impact adjacent, avant la prochaine activation." % amount
+			"edict":
+				data.description = "Empêche une mort jusqu'à la prochaine activation, sauf pression de fin de combat."
+		result.append({ "data": data, "remaining": int(value.duration) })
 	var variant := str(unit.get_meta("cc2_variant", ""))
-	var rules: Dictionary = {"formation": ["Porteur de formation", "Au début de son activation, protège les alliés adjacents de 0,25 P si le héros n'est pas adjacent. La protection expire à sa prochaine activation."], "support": ["Soutien", "Une activation sur deux, protège un allié à trois cases avec ligne de vue au lieu d'attaquer : 0,40 P de garde."], "parry": ["Parade finie", "À chaque activation, prépare une réduction de 0,40 P contre le prochain impact physique direct. Les autres effets de la carte restent applicables."], "execution": ["Exécuteur", "Prépare une frappe au contact : la case annoncée est frappée à sa prochaine activation. Déplacez-vous ou interrompez-le."]}
+	var rules: Dictionary = {
+		"formation": [
+			"Porteur de formation",
+			"Au début de son activation, protège les alliés adjacents de 0,25 P si le héros n'est pas adjacent. La protection expire à sa prochaine activation.",
+		],
+		"support": [
+			"Soutien",
+			"Une activation sur deux, protège un allié à trois cases avec ligne de vue au lieu d'attaquer : 0,40 P de garde.",
+		],
+		"parry": [
+			"Parade finie",
+			"À chaque activation, prépare une réduction de 0,40 P contre le prochain impact physique direct. Les autres effets de la carte restent applicables.",
+		],
+		"execution": [
+			"Exécuteur",
+			"Prépare une frappe au contact : la case annoncée est frappée à sa prochaine activation. Déplacez-vous ou interrompez-le.",
+		],
+	}
 	if rules.has(variant):
 		var passive := StatusData.new()
 		passive.status_id = StringName("cc2_variant_" + variant)
 		passive.status_name = rules[variant][0]
-		passive.description = rules[variant][1]
+		passive.description = Language.plain(rules[variant][1])
 		passive.color = Color("d7bd87")
-		result.append({"data": passive, "remaining": -1})
+		result.append({ "data": passive, "remaining": -1 })
 	return result
 
 
@@ -120,10 +158,15 @@ static func item(id: String) -> Dictionary:
 
 static func item_text(row: Dictionary) -> String:
 	if row.has("rule"):
-		return row.rule
+		return Language.plain(row.rule)
 	var parts: Array[String] = []
 	for key in row.get("mods", { }):
 		var n := float(row.mods[key])
+		if key in ["openingShield", "firstHitReduction"]:
+			parts.append(
+				("%+.0f %% de Puissance · " % (n * 100)) + str(MODS[key]).replace(" (P)", "")
+			)
+			continue
 		parts.append(
 			("%+d " % int(n) if key in ["range", "mp", "hand"] else "%+.0f %% " % (n * 100))
 			+ str(MODS.get(key, key))

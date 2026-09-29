@@ -1,15 +1,16 @@
 extends RefCounted
 ## Read-only faces and explanations for the actual V2 Spell instance.
+const Language := preload("res://ui/expedition/card_player_language.gd")
 const D := preload("res://ui/expedition/player_dossier_skin.gd")
 const Text := preload("res://ui/expedition/catabase_card_text.gd")
 const Receipt := preload("res://ui/expedition/consumable_loot_receipt.gd")
 const CardModifier := preload("res://core/expedition/consumable_card_modifier.gd")
 const TERMS := {
 	"marque": "Marque : renforce le prochain impact direct puis est consommée.",
-	"garde": "Garde : absorbe les dégâts avant les PV ; la garde produite expire à votre prochaine activation.",
-	"brûlure": "Brûlure : dégâts au début des activations de la cible, avant résistance magique.",
-	"saignement": "Saignement : dégâts au début des activations de la cible, avant résistance physique.",
-	"stase": "Stase : saute la prochaine activation et annule l’attaque annoncée. La cible devient ensuite temporairement immunisée.",
+	"garde": "Garde : absorbe les dégâts avant les PV ; la garde produite expire à votre prochain tour.",
+	"brûlure": "Brûlure : dégâts au début des tours de la cible, avant résistance magique.",
+	"saignement": "Saignement : dégâts au début des tours de la cible, avant résistance physique.",
+	"stase": "Stase : saute la prochain tour et annule l’attaque annoncée. La cible devient ensuite temporairement immunisée.",
 }
 
 
@@ -125,10 +126,8 @@ static func hover(panel: PanelContainer, spell: Spell, actor: Unit, context: Str
 	)
 	var targeting := "Sur soi" if spell.can_target_self and spell.spell_range == 0 else "Ligne de vue requise" if spell.needs_line_of_sight else "Sans ligne de vue"
 	_fixed_label(box, targeting, 15, D.MUTED)
-	var description: String = preload("res://ui/expedition/consumable_card_description.gd").full_text(
-		row,
-		improved,
-	)
+	_fixed_label(box, Language.identity(row), 15, D.GOLD)
+	var description := Language.effect(row, actor.attack_power.get_value())
 	var effect := RichTextLabel.new()
 	effect.name = "SpellHoverEffects"
 	effect.custom_minimum_size.x = 338
@@ -146,20 +145,10 @@ static func hover(panel: PanelContainer, spell: Spell, actor: Unit, context: Str
 			highlighted = highlighted.replace(word, "[color=#dbb98f]" + word + "[/color]")
 	effect.text = highlighted
 	box.add_child(effect)
-	if "P" in description:
-		_fixed_label(
-			box,
-			"P = votre puissance : %s. Les résistances et les conditions modifient le résultat."
-			% snappedf(actor.attack_power.get_value(), .1),
-			15,
-			D.MUTED,
-		)
-	for term in TERMS:
-		if str(term) in description.to_lower():
-			_fixed_label(box, TERMS[term], 15, D.MUTED)
+	_fixed_label(box, Language.power_reference(actor.attack_power.get_value()), 15, D.MUTED)
 	_fixed_label(
 		box,
-		"Réutilisable · une fois par tour." if fallback else "Cette copie sera consommée pour la run.\nUne seule utilisation de cette famille par tour.",
+		"Réutilisable · une fois par tour." if fallback else Language.USE_RULE,
 		15,
 		D.GOLD,
 	)

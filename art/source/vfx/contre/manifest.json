@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "ink": "3a2528",
+    "shadow": "674139",
+    "bronze": "a36237",
+    "copper": "ca8542",
+    "honey": "efa84f",
+    "light": "ffd891",
+    "ivory": "fff4d1",
+    "ochre": "df9135"
+  },
+  "approval": "docs/design/vfx_avant_production_lot2_2026-09-27/f_contre_prepare.png",
+  "source_script": "tools/class_card_vfx/contre/build.py",
+  "assets": {
+    "arm": {
+      "size": 384,
+      "frames": 14,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - arm"
+    },
+    "token": {
+      "size": 384,
+      "frames": 1,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - token"
+    },
+    "slash": {
+      "size": 384,
+      "frames": 9,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - slash"
+    },
+    "contact": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Contre CEL - contact"
+    }
+  }
+}

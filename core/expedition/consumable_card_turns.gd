@@ -125,5 +125,5 @@ static func after_hit(
 			hero.grid_pos,
 			attacker.grid_pos,
 		) == 1:
-		Effects.hit(attacker, hero, float(effects.counter.amount))
+		Effects.hit(attacker, hero, float(effects.counter.amount), false, "indirect", false, &"cc2_counter")
 		effects.erase("counter")

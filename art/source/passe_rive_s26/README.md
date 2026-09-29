@@ -1,5 +1,7 @@
 # Passe-Rive — Incantation intégrée S26
 
+> Historique SE du 27 septembre. Depuis S31, les huit directions sont dessinées et Grâce du bronze utilise S30 : [état actuel et preuves](../passe_rive_s31/incantation/README.md).
+
 Le prototype approuvé est branché dans le backend public de Passe-Rive en mode Cartes. Sept liaisons explicites : `cc2_g01` Garde ferme, `cc2_g08` Bastion vivant, `cc2_l02` Grâce du bronze, `cc2_a09` Sommeil marqué, `cc2_t03` Sceau ombreux, `cc2_t06` Jardin de givre et `cc2_t09` Résonance du sceau. Les versions améliorées ont les mêmes identifiants de geste.
 
 ## Comportement

@@ -1,0 +1,308 @@
+{
+	"anchor": [
+		192,
+		192
+	],
+	"animation": "convergence_trail_E",
+	"baseline": {
+		"anchor": [
+			192,
+			192
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b58ad97882f4a272d1f3308fd3e99df6c730cf3a1796b634224e85b8dfb2986e",
+				"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0001.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f001",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b4cc5ec8698deb39febde653af8c63ef9839a6f03ec3226750a87df1e0954459",
+				"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0002.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f002",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "4d95829c1bfbeb9ea01c7ab9f51b7823679941cbb6caa6089240c5661257b9c8",
+				"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0003.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f003",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "11a9b83ec185f553136c6ee8639f0c861abfbd6ca852c3f4d1b7f80eb8f36d4c",
+				"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0004.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f004",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "0d77f118c32b4091cf06c92720ea854a1a6b581d4a74d9cf21ae68f31b3f9858",
+				"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0005.png"
+			},
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f005",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "ac5659104845f0f65995cf329cf13abaaa417ed8b3267328667e28c06bb7123e",
+				"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0006.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b58ad97882f4a272d1f3308fd3e99df6c730cf3a1796b634224e85b8dfb2986e",
+			"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0001.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f001",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b4cc5ec8698deb39febde653af8c63ef9839a6f03ec3226750a87df1e0954459",
+			"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0002.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f002",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "4d95829c1bfbeb9ea01c7ab9f51b7823679941cbb6caa6089240c5661257b9c8",
+			"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0003.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f003",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "11a9b83ec185f553136c6ee8639f0c861abfbd6ca852c3f4d1b7f80eb8f36d4c",
+			"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0004.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f004",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "0d77f118c32b4091cf06c92720ea854a1a6b581d4a74d9cf21ae68f31b3f9858",
+			"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0005.png"
+		},
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f005",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "ac5659104845f0f65995cf329cf13abaaa417ed8b3267328667e28c06bb7123e",
+			"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0006.png"
+		}
+	],
+	"id": "convergence_trail",
+	"intent": "Production de la planche J validée le 28 septembre. Pétales, lames cardinales, contact et traits de déplacement.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/convergence/provenance.json": "ee96347a8c34eebbd8f083c0fa6e8c47d5f62e7acfbcea789d279316777b4c85"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "ac5659104845f0f65995cf329cf13abaaa417ed8b3267328667e28c06bb7123e",
+		"source": "res://artifacts/dev/class_card_vfx/convergence/render/trail/frame_0006.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/convergence/trail.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Convergence — trail"
+}

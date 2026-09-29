@@ -1,0 +1,17 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-renew-directions-20260929-013504",
+  "combat": "artifacts\\dev\\passe-rive-renew-cards-20260929-013620",
+  "casts": 64,
+  "checks": 1569,
+  "frames": 132,
+  "scope": "Eight authored directions, long and compact variants. Pose grid confirms synthetic 20 HP / 10 guard; combat proves actual base, upgraded, full HP and guard cap results for both cards, plus rejection without AP. Automatic end turn only after native recovery.",
+  "releases_ms": [
+    450,
+    250
+  ],
+  "duration_ms": [
+    1120,
+    820
+  ],
+  "mirrors": false
+}

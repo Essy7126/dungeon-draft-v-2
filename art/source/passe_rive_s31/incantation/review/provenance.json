@@ -1,0 +1,11 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-incantation-directions-20260928-232930",
+  "combat": "artifacts\\dev\\passe-rive-incantation-cards-20260928-233406",
+  "casts": 96,
+  "checks": 2139,
+  "frames": 64,
+  "scope": "Eight authored directions;96 genuine casts (six cards, base/upgrade). Diagnostic red point in presentation only denotes active hand. Spell rules and their individual VFX remain authoritative.",
+  "same_release_ms": 590,
+  "same_duration_ms": 1150,
+  "mirrors": false
+}

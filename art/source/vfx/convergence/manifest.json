@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "blender": "5.1.2",
+  "palette_srgb": {
+    "ink": "29283f",
+    "shadow": "403165",
+    "violet": "7657b5",
+    "mid": "9867d4",
+    "lilac": "c8a6eb",
+    "rim": "e1c8ff",
+    "ivory": "fff0cc",
+    "warm": "ffcd88"
+  },
+  "approval": "docs/design/vfx_avant_production_lot3_2026-09-27/j_convergence.png",
+  "source_script": "tools/class_card_vfx/convergence/build.py",
+  "assets": {
+    "knot": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Convergence CEL - knot"
+    },
+    "blade": {
+      "size": 384,
+      "frames": 12,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Convergence CEL - blade"
+    },
+    "contact": {
+      "size": 384,
+      "frames": 8,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Convergence CEL - contact"
+    },
+    "trail": {
+      "size": 384,
+      "frames": 6,
+      "fps": 30,
+      "pivot": [
+        192,
+        192
+      ],
+      "scene": "Convergence CEL - trail"
+    }
+  }
+}

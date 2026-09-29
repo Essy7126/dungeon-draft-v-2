@@ -50,8 +50,11 @@ const ITEM_ART := {
 }
 
 
-static func encounter_index(session) -> int:
+static func encounter_index(session, node_id := "") -> int:
 	var current: Dictionary = session.route.get_current_node()
+	for node in session.route.nodes:
+		if str(node.id) == node_id:
+			current = node
 	var index := 1
 	for node in session.route.nodes:
 		if (
@@ -63,8 +66,8 @@ static func encounter_index(session) -> int:
 	return index
 
 
-static func commitment(session) -> Dictionary:
-	var index := encounter_index(session)
+static func commitment(session, node_id := "") -> Dictionary:
+	var index := encounter_index(session, node_id)
 	# JSON catalogue numbers stringify as "1.0"; older/manual states may use "1".
 	for key in session.cards.loot_commitments:
 		if str(key).is_valid_float() and int(float(str(key))) == index:
@@ -72,11 +75,11 @@ static func commitment(session) -> Dictionary:
 	return { }
 
 
-static func records_for(session) -> Array[Dictionary]:
+static func records_for(session, node_id := "") -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var groups := { }
 	var receipt: Dictionary = session.cards.battle_results.get(
-		str(session.route.current_node_id),
+		str(session.route.current_node_id) if node_id.is_empty() else node_id,
 		{ },
 	)
 	for family in receipt.get("card_families", []):
@@ -85,8 +88,8 @@ static func records_for(session) -> Array[Dictionary]:
 			groups[key] = card_record(str(family), str(family) in session.cards.upgraded_ids)
 		groups[key].count += 1
 	# The final encounter grants no items. Commitments may still exist for it.
-	if encounter_index(session) < 12:
-		for drop in commitment(session).values():
+	if encounter_index(session, node_id) < 12:
+		for drop in commitment(session, node_id).values():
 			if drop.get("forfeited", false):
 				continue
 			for kind in ["equipment", "relics"]:
@@ -100,6 +103,16 @@ static func records_for(session) -> Array[Dictionary]:
 	return result
 
 
+static func latest_records(session) -> Array[Dictionary]:
+	var latest := ""
+	var depth := -1
+	for node in session.route.nodes:
+		if session.cards.battle_results.has(str(node.id)) and int(node.depth) > depth:
+			latest = str(node.id)
+			depth = int(node.depth)
+	return records_for(session, latest) if not latest.is_empty() else []
+
+
 static func card_record(id: String, upgraded := false) -> Dictionary:
 	var row := Catalog.card(id, upgraded)
 	var spell: Spell = Spells.make_spell(id, upgraded)
@@ -110,7 +123,10 @@ static func card_record(id: String, upgraded := false) -> Dictionary:
 		"icon": spell.icon,
 		"rarity": row.rarity,
 		"category": "Toutes classes" if row.affinity == "shared" else str(row.affinity).capitalize(),
-		"body": preload("res://ui/expedition/consumable_card_description.gd").full_text(row, upgraded),
+		"body": preload("res://ui/expedition/consumable_card_description.gd").full_text(
+			row,
+			upgraded,
+		),
 		"upgraded": upgraded,
 		"row": row,
 		"count": 0,

@@ -1,5 +1,7 @@
 # Passe-Rive — Sceau de parade S27
 
+Historique SE : les huit directions et la validation actuelle sont dans [S31](../passe_rive_s31/guard/VALIDATION.md).
+
 Intégration du prototype accepté en une séquence de 12 poses SE, 720 ms, déclenchement unique à 240 ms (index de pose 5).
 
 ## Attribution explicite

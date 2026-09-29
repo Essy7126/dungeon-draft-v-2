@@ -1,0 +1,11 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-guard-directions-20260928-235649",
+  "combat": "artifacts\\dev\\passe-rive-guard-cards-20260929-001211",
+  "casts": 40,
+  "checks": 1241,
+  "frames": 52,
+  "scope": "Eight authored directions;40 genuine guard casts (two cards base/upgrade and fallback, eight facings). Diagnostic red point in presentation only denotes active hand. Confirmed guard arc, actual adjacent counter and fallback consumption verified.",
+  "same_release_ms": 240,
+  "same_duration_ms": 720,
+  "mirrors": false
+}

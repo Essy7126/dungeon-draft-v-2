@@ -1,0 +1,11 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-kick-directions-20260928-223621",
+  "combat": "artifacts\\dev\\passe-rive-kick-cards-20260928-223821",
+  "casts": 24,
+  "checks": 496,
+  "frames": 49,
+  "scope": "Eight authored views on the public backend; 24 real melee casts (3 cards x 2 variants x 4 legal cardinal grid directions). E/S/W/N are presentation views; diagonal grid cells are beyond these melee cards range.",
+  "same_release_ms": 310,
+  "same_duration_ms": 650,
+  "mirrors": false
+}

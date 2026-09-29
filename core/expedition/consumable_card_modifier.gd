@@ -279,6 +279,7 @@ func on_damage_resolved(ctx) -> void:
 			float(card.amount),
 			cards,
 			multiplier,
+			&"cc2_g05" if card.op == "counter" else &"",
 		)
 		if card.op == "counter":
 			Effects.apply_state(hero, "counter", power * float(card.counter), 1, hero)

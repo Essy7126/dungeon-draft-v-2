@@ -1,0 +1,279 @@
+{
+  "status": "calculs de conception, aucune simulation Godot ni mesure de taux de victoire",
+  "catalog_sha256": "f7858b253a6af464563e18b25fc55cc504bde2b0ef40e37859339639bdfe10df",
+  "source_sha256": {
+    "data/cards/consumable_v2/catalog.json": "f7858b253a6af464563e18b25fc55cc504bde2b0ef40e37859339639bdfe10df",
+    "docs/current/cards_v2.md": "67902b4b5485d99063e6bf5542c85871b5609042100df092c039779845c8e618",
+    "core/expedition/consumable_card_math.gd": "4510be68667da8d2d6b04d882503aa2a8cd50873e9451645216a46139e9a979c",
+    "core/expedition/consumable_card_modifier.gd": "cb321328bc49c1f10577ee2f25909d9d8d8f52dddbbbed69cac3cbe6f505dd1a",
+    "core/expedition/consumable_card_terrain.gd": "f49ff1ee37089cd092429c27dc6b50e9261d4277a0575cc225d6c764458afbcf"
+  },
+  "cards_examined": 48,
+  "normal_cards": 24,
+  "assumptions": {
+    "opening": "15 copies, 5 piochées, sans équipement, rôles disjoints ; accès aux fonctions seulement",
+    "damage": "P40, pas de résistance/garde/passif/équipement, arrondi final floor(x+.5) par impact",
+    "mastery": "paramètres fictifs 4% et 8% ; ni progression ni équilibrage approuvés",
+    "labels": "domaines proposés ; aucun champ élémentaire existant dans le catalogue"
+  },
+  "linear_80_20_fixed_budget_6": [
+    {
+      "water": 0,
+      "night": 6,
+      "damage_80_20": 43.84
+    },
+    {
+      "water": 1,
+      "night": 5,
+      "damage_80_20": 45.760000000000005
+    },
+    {
+      "water": 2,
+      "night": 4,
+      "damage_80_20": 47.68
+    },
+    {
+      "water": 3,
+      "night": 3,
+      "damage_80_20": 49.6
+    },
+    {
+      "water": 4,
+      "night": 2,
+      "damage_80_20": 51.52
+    },
+    {
+      "water": 5,
+      "night": 1,
+      "damage_80_20": 53.440000000000005
+    },
+    {
+      "water": 6,
+      "night": 0,
+      "damage_80_20": 55.36000000000001
+    }
+  ],
+  "two_lines_8_8_fixed_budget_200": {
+    "allocations": 201,
+    "min": 31.999999999999996,
+    "max": 32.0
+  },
+  "opening_probabilities": {
+    "one_copy_each": {
+      "probability": 0.09523809523809529,
+      "percent": 9.5238,
+      "enumerated_hands": 3003
+    },
+    "three_copies_each": {
+      "probability": 0.5144855144855145,
+      "percent": 51.4486,
+      "enumerated_hands": 3003
+    },
+    "forced_producer_three_consumer_copies": {
+      "probability": 0.6703296703296704,
+      "percent": 67.033,
+      "enumerated_hands": 1001
+    },
+    "six_producers_six_consumers": {
+      "probability": 0.916083916083916,
+      "percent": 91.6084,
+      "enumerated_hands": 3003
+    }
+  },
+  "combat_examples": [
+    {
+      "bonus_per_rank": 0.04,
+      "P": 40,
+      "mono_6_fire": {
+        "impact": 27,
+        "burn_tick": 9,
+        "total_two_ticks": 45,
+        "compression_one_tick_proposal": 16
+      },
+      "hybrid_3_fire_3_water": {
+        "normal_impact": 25,
+        "normal_burn_tick": 8,
+        "normal_total_two_ticks": 41,
+        "ebullition_by_extra_targets": [
+          25,
+          38,
+          51
+        ],
+        "splash_per_extra_target": 13
+      },
+      "wave_setup_three_targets": {
+        "ap": 5,
+        "copies": 2,
+        "minimum_turns": 2,
+        "mono_fire_wave_then_braise_three_targets": 99,
+        "hybrid_wave_then_ebullition_three_targets": 111
+      },
+      "night_marked_finisher": {
+        "mono_night_6": 97,
+        "hybrid_night_3_water_3": 87
+      },
+      "transfer_from_fixed_state": {
+        "normal_useful_hp_damage": 26,
+        "successful_transfer_useful_hp_damage": 46,
+        "failed_transfer_useful_hp_damage": 26,
+        "stored_mark_unrounded": 20.160000000000004,
+        "expected_by_crossing_probability": [
+          {
+            "q": 0,
+            "useful_damage": 26
+          },
+          {
+            "q": 0.25,
+            "useful_damage": 31.0
+          },
+          {
+            "q": 0.5,
+            "useful_damage": 36.0
+          },
+          {
+            "q": 0.75,
+            "useful_damage": 41.0
+          },
+          {
+            "q": 1,
+            "useful_damage": 46
+          }
+        ],
+        "scope": "état fixé après préparation, pas coût complet d'une rotation"
+      },
+      "earth_fire_sacrificial_eruption_proposal": {
+        "setup_guard_card_ap": 2,
+        "attack_card_ap": 2,
+        "hybrid_guard_generated": 52,
+        "guard_spent": 22,
+        "hybrid_direct_hit": 27,
+        "explosion_per_target": 33,
+        "total_for_zero_one_two_explosion_targets": [
+          27,
+          60,
+          93
+        ],
+        "hybrid_normal_g02_with_guard": 67,
+        "mono_earth_normal_g02_with_guard": 74,
+        "scope": "aucune mitigation ; S points de garde réellement sacrifiés, explosion différée, peut toucher le héros"
+      }
+    },
+    {
+      "bonus_per_rank": 0.08,
+      "P": 40,
+      "mono_6_fire": {
+        "impact": 33,
+        "burn_tick": 11,
+        "total_two_ticks": 55,
+        "compression_one_tick_proposal": 19
+      },
+      "hybrid_3_fire_3_water": {
+        "normal_impact": 27,
+        "normal_burn_tick": 9,
+        "normal_total_two_ticks": 45,
+        "ebullition_by_extra_targets": [
+          27,
+          42,
+          57
+        ],
+        "splash_per_extra_target": 15
+      },
+      "wave_setup_three_targets": {
+        "ap": 5,
+        "copies": 2,
+        "minimum_turns": 2,
+        "mono_fire_wave_then_braise_three_targets": 109,
+        "hybrid_wave_then_ebullition_three_targets": 123
+      },
+      "night_marked_finisher": {
+        "mono_night_6": 115,
+        "hybrid_night_3_water_3": 97
+      },
+      "transfer_from_fixed_state": {
+        "normal_useful_hp_damage": 26,
+        "successful_transfer_useful_hp_damage": 48,
+        "failed_transfer_useful_hp_damage": 26,
+        "stored_mark_unrounded": 22.32,
+        "expected_by_crossing_probability": [
+          {
+            "q": 0,
+            "useful_damage": 26
+          },
+          {
+            "q": 0.25,
+            "useful_damage": 31.5
+          },
+          {
+            "q": 0.5,
+            "useful_damage": 37.0
+          },
+          {
+            "q": 0.75,
+            "useful_damage": 42.5
+          },
+          {
+            "q": 1,
+            "useful_damage": 48
+          }
+        ],
+        "scope": "état fixé après préparation, pas coût complet d'une rotation"
+      },
+      "earth_fire_sacrificial_eruption_proposal": {
+        "setup_guard_card_ap": 2,
+        "attack_card_ap": 2,
+        "hybrid_guard_generated": 57,
+        "guard_spent": 25,
+        "hybrid_direct_hit": 30,
+        "explosion_per_target": 38,
+        "total_for_zero_one_two_explosion_targets": [
+          30,
+          68,
+          106
+        ],
+        "hybrid_normal_g02_with_guard": 74,
+        "mono_earth_normal_g02_with_guard": 89,
+        "scope": "aucune mitigation ; S points de garde réellement sacrifiés, explosion différée, peut toucher le héros"
+      }
+    }
+  ],
+  "bg3_conditional_hits_level_1_to_4": {
+    "two_rays_two_actions": 9.0,
+    "create_water_then_ray_two_actions_one_slot": 9.0,
+    "three_rays_three_actions": 13.5,
+    "create_water_then_two_rays_three_actions_one_slot": 18.0
+  },
+  "dos2_simplified_dual_armor": {
+    "target_hp": 100,
+    "physical_armor": 40,
+    "magic_armor": 40,
+    "40_physical_plus_40_magic_hp_loss": 0,
+    "80_physical_hp_loss": 40
+  },
+  "proposal_label_counts_overlapping": {
+    "Commun": 5,
+    "Terre": 12,
+    "Nuit": 16,
+    "Eau": 9,
+    "Vent": 15,
+    "Feu": 2,
+    "Soleil?": 5
+  },
+  "proposal_normal_label_counts_overlapping": {
+    "Commun": 5,
+    "Terre": 5,
+    "Nuit": 7,
+    "Eau": 4,
+    "Vent": 6,
+    "Feu": 1
+  },
+  "possible_unordered_pairs": {
+    "five_domains": 10,
+    "six_domains": 15
+  },
+  "loot_normal_existing": {
+    "native": 0.2333333333333333,
+    "shared": 0.4666666666666666,
+    "foreign": 0.3,
+    "one_specific_foreign_family_per_normal_copy": 0.024999999999999998
+  }
+}

@@ -6,6 +6,8 @@ var capture_prefix := "base_"
 var facts_before: Dictionary = { }
 var early_facts_unchanged := true
 var ward_seen := false
+var contre_arm_seen := false
+const ContrePlayer := preload("res://vfx/class_cards/contre/player.gd")
 
 
 func _review_cases() -> Array:
@@ -46,6 +48,7 @@ func _prepare_card_fixture(_id: String) -> void:
 	facts_before = _facts()
 	early_facts_unchanged = true
 	ward_seen = false
+	contre_arm_seen = false
 
 
 func _facts() -> Dictionary:
@@ -65,6 +68,9 @@ func _process(delta: float) -> void:
 				"ward_visible",
 				false,
 			)
+		for effect in router.effects:
+			if is_instance_valid(effect) and effect.get_script() == ContrePlayer:
+				contre_arm_seen = contre_arm_seen or (effect.mode == "arm" and not effect.closed)
 	super._process(delta)
 
 
@@ -75,11 +81,21 @@ func _play_current(id: String) -> void:
 	_check(hero.grid_pos == original_cell, id + " caster remains planted")
 	_check(hero.current_shield > 0, id + " actual shield granted")
 	_check(target.current_hp == int(facts_before.target_hp), id + " no immediate attack")
-	_check(ward_seen, id + " bronze arc follows confirmed shield grant")
+	if id == "g05":
+		_check(contre_arm_seen, "Confirmed counter uses dedicated arming effect")
+		_check(not ward_seen, "Counter does not duplicate the generic guard arc")
+		var hold: Dictionary = router.holds.get("%s:cc2_counter" % hero.get_instance_id(), { })
+		_check(
+			is_instance_valid(hold.get("fx")),
+			"Counter readiness token persists until incoming hit",
+		)
+	else:
+		_check(ward_seen, id + " bronze arc follows confirmed shield grant")
 	_check(not visual.sprite_backend.guard.visible, id + " guard body hidden on recovery")
 	_check(not visual.sprite_backend.guard.ward.visible, id + " bronze arc finishes")
 	casts.back()["shield_granted"] = hero.current_shield
 	casts.back()["ward_seen"] = ward_seen
+	casts.back()["contre_arm_seen"] = contre_arm_seen
 	if id == "fallback_guard":
 		_check(
 			battle.spell_caster.get_cast_failure_reason(
@@ -95,6 +111,15 @@ func _play_current(id: String) -> void:
 		CurrentTurns.Effects.hit(hero, target, 1.0, false, "attack")
 		_check(target.current_hp < hp, "Real incoming adjacent hit triggers the counter")
 		_check(not CurrentTurns.Effects.states(hero).has("counter"), "Counter consumed once on hit")
+		_check(not router.holds.has("%s:cc2_counter" % hero.get_instance_id()), "Consumed counter token removed")
+		var ripostes := 0
+		for effect in router.effects:
+			if (
+				is_instance_valid(effect) and effect.get_script() == ContrePlayer
+				and effect.mode == "riposte"
+			):
+				ripostes += 1
+		_check(ripostes == 1, "Actual incoming hit creates one dedicated riposte")
 		casts.back()["counter_damage"] = hp - target.current_hp
 		hp = target.current_hp
 		CurrentTurns.Effects.hit(hero, target, 1.0, false, "attack")

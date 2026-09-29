@@ -25,7 +25,7 @@ func test_current_deck_has_explicit_assignments_and_never_uses_icon_ids_as_gestu
 			var row := CurrentSpells.definition(id, upgraded)
 			if row.op in ["guard", "counter", "draw", "heal", "edict", "renew"]:
 				assert_true(
-					binding.reference in ["", "incantation", "guard"],
+					binding.reference in ["", "incantation", "guard", "renew"],
 					"Support stays unarmed: " + id,
 				)
 			if row.op == "move":
@@ -91,13 +91,14 @@ func test_current_shots_volleys_throwing_magic_and_kick_use_the_right_release_dr
 				and not backend.body.visible and not backend.kick.visible
 			)
 	backend.play_action("NW", &"cast:cc2_n04", { "spell_id": "cc2_n04" })
-	assert_false(backend.kick.visible, "Kick still has only the reviewed SE artwork")
+	assert_true(backend.kick.visible, "Kick has authored NW artwork")
+	assert_eq(backend.kick.facing, "NW")
 	backend.cancel_action()
 	backend.play_action("SE", &"cast:cc2_n03", { "spell_id": "cc2_n03" })
 	assert_eq(backend.get_runtime_state().animation, "dash_SE")
 	backend.cancel_action()
 	backend.play_action("SE", &"cast:cc2_r05", { "spell_id": "cc2_r05" })
-	assert_eq(backend.get_runtime_state().animation, "idle_SE")
+	assert_eq(backend.get_runtime_state().animation, Backend.SpectralBody.CLIP)
 
 
 func make_backend() -> Node2D:

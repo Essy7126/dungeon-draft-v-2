@@ -67,7 +67,12 @@ func test_all_poses_keep_scale_ground_and_hand_registration_across_profile_sizes
 			assert_true(node.get_vfx_origin().is_equal_approx(node.drain.hand_position()))
 			assert_false(
 				node.body.visible or node.kick.visible or node.pull.visible
-				or node.incantation.visible or node.guard.visible or node.animated_sprite.visible
+				or node.incantation.visible or node.guard.visible
+			)
+			assert_almost_eq(
+				node.animated_sprite.self_modulate.a + node.drain.self_modulate.a,
+				1.0,
+				.00001,
 			)
 			edge += float(node.drain.data.duration_ms[i]) / 1000.0
 		assert_almost_eq(
@@ -78,7 +83,7 @@ func test_all_poses_keep_scale_ground_and_hand_registration_across_profile_sizes
 		assert_almost_eq(scale.x / scale.y, .84, .0001, "One fixed width calibration")
 
 
-func test_other_directions_keep_directional_cast_and_release_once() -> void:
+func test_other_directions_use_authored_drain_and_release_once() -> void:
 	var node := backend()
 	var releases: Array = []
 	node.action_release_reached.connect(
@@ -88,12 +93,12 @@ func test_other_directions_keep_directional_cast_and_release_once() -> void:
 	for facing in ["N", "NE", "E", "S", "SW", "W", "NW"]:
 		releases.clear()
 		node.play_action(facing, &"cast", { "spell_id": "cc2_t07" })
-		assert_false(node.drain.visible)
-		assert_eq(node.get_runtime_state().gesture_binding.status, "pending_direction")
+		assert_true(node.drain.visible)
+		assert_eq(node.get_runtime_state().gesture_binding.status, "assigned")
 		node.advance_simulation(3.0)
 		assert_eq(releases.size(), 1)
-		assert_ne(releases[0].animation, Body.CLIP)
-		assert_eq(releases[0].gesture_binding.fallback_reference, "t_mark")
+		assert_eq(releases[0].animation, Body.CLIP)
+		assert_eq(releases[0].authored_direction, facing)
 		assert_eq(node.get_runtime_state().animation, "idle_" + facing)
 
 
@@ -163,12 +168,12 @@ func test_flow_requires_confirmed_hp_damage_and_glint_requires_actual_healing() 
 		)
 		assert_eq(node.drain.siphon.visible, amounts.x > 0)
 		assert_eq(node.drain.siphon.glint, amounts.y > 0)
-		assert_almost_eq(node.drain.to_global(node.drain.siphon.start), Vector2(500, 80), Vector2(
+		assert_almost_eq(node.drain.siphon.to_global(node.drain.siphon.start), Vector2(500, 80), Vector2(
 				.001,
 				.001,
 			))
 		assert_almost_eq(
-			node.drain.position + node.drain.siphon.finish * node.drain.scale,
+			node.to_local(node.drain.siphon.to_global(node.drain.siphon.finish)),
 			node.get_vfx_origin(),
 			Vector2(.001, .001),
 			"Flow arrives at the current registered hand",

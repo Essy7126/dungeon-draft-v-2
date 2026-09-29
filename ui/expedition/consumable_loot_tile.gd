@@ -1,5 +1,6 @@
 extends Button
 ## Miniature physical card in the loot row; the full sheet uses the same art.
+const Language := preload("res://ui/expedition/card_player_language.gd")
 const Receipt := preload("res://ui/expedition/consumable_loot_receipt.gd")
 const CardSkin := preload("res://ui/expedition/catabase_card_skin.gd")
 const P := preload("res://ui/expedition/class_card_presentation.gd")
@@ -97,7 +98,7 @@ static func detail(value: Dictionary, actor: Unit) -> PanelContainer:
 	)
 	var art := P.icon(body, value.icon, 90)
 	if value.get("upgraded", false):
-		var improved := P.label(body, "Famille améliorée · effet appliqué à cette copie", 14)
+		var improved := P.label(body, "Sort amélioré · bonus déjà inclus", 14)
 		improved.add_theme_color_override("font_color", accent)
 	art.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	if card:
@@ -119,11 +120,7 @@ static func detail(value: Dictionary, actor: Unit) -> PanelContainer:
 		}
 		P.label(
 			body,
-			"%s · %s"
-			% [
-				shapes.get(row.shape, str(row.shape)),
-				"Physique" if row.type == "physical" else "Magique",
-			],
+			"%s · %s" % [shapes.get(row.shape, str(row.shape)), Language.identity(row)],
 			15,
 		)
 	body.add_child(HSeparator.new())
@@ -136,7 +133,12 @@ static func detail(value: Dictionary, actor: Unit) -> PanelContainer:
 	rules.custom_minimum_size.x = 294
 	rules.add_theme_font_override("normal_font", CardSkin.FONT)
 	rules.add_theme_font_size_override("normal_font_size", 17)
-	var text := str(value.body).replace("[", "[lb]")
+	var description := (
+		Language.effect(value.row, actor.attack_power.get_value())
+		if card
+		else Language.plain(str(value.body))
+	)
+	var text := description.replace("[", "[lb]")
 	for word in [
 		"Marque",
 		"marque",
@@ -155,13 +157,8 @@ static func detail(value: Dictionary, actor: Unit) -> PanelContainer:
 	rules.text = text
 	body.add_child(rules)
 	if card:
-		P.label(
-			body,
-			"P = puissance du personnage : %.1f. Dégâts avant résistances et bonus conditionnels."
-			% actor.attack_power.get_value(),
-			14,
-		)
-		P.label(body, "Une copie consommée à l'utilisation. Une fois par famille et par tour.", 14)
+		P.label(body, Language.power_reference(actor.attack_power.get_value()), 14)
+		P.label(body, Language.USE_RULE, 14)
 	P.label(body, "×%d reçu%s · déjà ajouté%s à votre %s"
 	% [
 		int(value.count),

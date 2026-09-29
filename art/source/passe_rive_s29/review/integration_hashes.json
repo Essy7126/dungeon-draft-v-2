@@ -1,0 +1,13 @@
+{
+  "battle/battle.gd": "c8e07b753641e9853985608c7d3919cbfdf2a6eda7f1a1b45d48a5ecb940ad1b",
+  "characters/achilles/2d/passe_rive_spectral_body.gd": "cf7c47d9cf978df6f33ef2ac18f578db04430843b3798ebb63f2ede4843267b1",
+  "characters/achilles/2d/passe_rive_s19_backend.gd": "80cd5a7634c39c41e0d429cb08484cd8feda9a121d4a7d6ddd7468dc41aad002",
+  "characters/achilles/2d/passe_rive_card_bindings.gd": "5109609320cf741835006f69f79c5a944f57325138ae271aabf550d7fb96b6f8",
+  "vfx/class_cards/class_card_vfx_router.gd": "55691c8d206035d968e7946b488e26aa41bc1871e2a6e23cb689049ed5296416",
+  "assets/characters/PasseRive/sprites_s29/passage.png": "a08fd55631307ec8013d87341e829c9d277d256af52e8ca990bd5258f95b0f27",
+  "assets/characters/PasseRive/sprites_s29/veil.png": "acac1e3dc0513e3b30e69834027c32c0372f8e1260807dce24c5d4a0f5b319fe",
+  "assets/characters/PasseRive/sprites_s29/passage.json": "6a5f1f2343d873dbd3413d818354e6cecf512c4d9d39f8504df160ba5e81f13b",
+  "tools/class_card_vfx/passe_rive_s29/arena.gd": "ae3a37182e16b3a559291fa9c79637f2cbf9d26808c30c2420e265e75cbaca01",
+  "test/unit/test_passe_rive_s29.gd": "3ae748a086d905904372844ccc30c1a5bffd8b5e8d5a2699f8d9088689f80f6a",
+  "test/unit/test_unit_movement_presentation.gd": "1962e1bd5541b9ba38105963763c6b728581b988b7f9f2e883caa41ca4db67c9"
+}

@@ -123,6 +123,7 @@ var _enemy_turn: EnemyTurnRunner = null
 var _spell_impact_scheduler: SpellImpactScheduler = null
 var _spell_resolution_pending := false
 var _active_spell_movement_caster: Unit = null
+var _active_spell_movement_instant := false
 var _deferred_spell_reaction_context: CastContext = null
 var _spell_movement_feedback_unit: Unit = null
 var _spell_movement_feedback_tween: Tween = null
@@ -1216,6 +1217,14 @@ func _start_spell_movement_feedback(
 		return
 	var origin_local := grid_cell_to_parent_local(from_pos, parent)
 	var destination_local := grid_cell_to_parent_local(to_pos, parent)
+	if _active_spell_movement_instant:
+		view.position = destination_local
+		if view.has_method("synchronize_external_movement"):
+			view.synchronize_external_movement()
+		# VFX receives spell_cast after the relocation signal; publish arrival once
+		# that report has registered the destination effect, without cancelling cast.
+		_publish_instant_spell_arrival.call_deferred(unit, view, destination_local, _spell_movement_feedback_generation)
+		return
 	view.position = origin_local
 	if view.has_method("face_grid_direction"):
 		view.face_grid_direction(to_pos - from_pos)
@@ -2450,6 +2459,13 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	_active_spell_movement_caster = (
 		unit if spell_caster.spell_moves_caster(unit, spell) else null
 	)
+	# Current blink cards relocate through obstacles; their presentation must not
+	# traverse the route or cancel the body's reappearance with a dash landing.
+	_active_spell_movement_instant = (
+		str(spell.spell_id).begins_with("cc2_")
+		and spell.caster_movement == Spell.CasterMovement.TARGET_CELL
+		and not spell.movement_requires_clear_path
+	)
 	_trigger_sequence += 1
 	_active_trigger_sequence = _trigger_sequence
 	_begin_action_resolution(&"spell")
@@ -3133,3 +3149,12 @@ func _resolve_mastery_cell(cell: Vector2i) -> void:
 			"distance": maxi(0, resolved_path.size() - 1)}, &"", _next_action_id(&"mastery_move"))
 	_finish_outcome_deferral()
 	_mastery_choice_finished.emit()
+
+
+func _publish_instant_spell_arrival(unit: Unit, view: Node2D, destination: Vector2, generation: int) -> void:
+	if _closing or _battle_over or not is_instance_valid(unit) or not unit.is_alive:
+		return
+	if generation != _spell_movement_feedback_generation or not _spell_resolution_pending:
+		return
+	if is_instance_valid(view) and view.position.is_equal_approx(destination):
+		EventBus.unit_visual_movement_finished.emit(unit)

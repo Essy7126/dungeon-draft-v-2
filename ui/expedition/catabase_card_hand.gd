@@ -90,7 +90,7 @@ func _process(_delta: float) -> void:
 	top.add_child(piles)
 	piles.pressed.connect(func():
 		var dialog := AcceptDialog.new()
-		dialog.title = "Pioche, défausse et copies consommées" if consumable else "Pioche, défausse et cartes épuisées"
+		dialog.title = "Pioche, défausse et cartes consommées" if consumable else "Pioche, défausse et cartes épuisées"
 		var text := ""
 		var entries := [["Pioche · ordre masqué", cards.draw_pile], ["Défausse", cards.discard]]
 		if not consumable: entries.append(["Épuisées", cards.exhausted])
@@ -123,7 +123,7 @@ func _process(_delta: float) -> void:
 	help.text = "?"
 	help.custom_minimum_size.x = 26
 	help.tooltip_text = "Deux gestes d'arme fixes, hors pioche. Quatre manœuvres en main.\nGarder : conserver une carte au prochain tour.\n↻ 1 PA : recomposer une fois par tour.\nSurvolez un sort pour lire ses effets et conditions."
-	if consumable: help.tooltip_text = "Chaque copie jouée est consommée pour la run. Une même famille se joue une fois par tour.\nLes cartes non jouées sont défaussées puis repiochées. La rétention exige un effet de carte.\nDeux secours restent disponibles, une fois chacun par tour. Pression croissante après le tour 8 ; limite 24 tours."
+	if consumable: help.tooltip_text = "Chaque carte jouée disparaît de la run. Un même sort se joue une fois par tour.\nLes cartes non jouées sont défaussées puis repiochées. Certains sorts permettent de garder une carte au tour suivant.\nDeux secours restent disponibles, une fois chacun par tour. Pression croissante après le tour 8 ; limite 24 tours."
 	CardSkin.action(help, true)
 	top.add_child(help)
 	if consumable:

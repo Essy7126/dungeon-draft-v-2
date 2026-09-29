@@ -1,0 +1,11 @@
+{
+  "poses": "artifacts\\dev\\passe-rive-spectral-directions-20260929-005433",
+  "combat": "artifacts\\dev\\passe-rive-spectral-cards-20260929-010802",
+  "casts": 48,
+  "checks": 1265,
+  "frames": 58,
+  "scope": "Eight authored directions using registered shared body poses. Pose grid simulates arrival confirmation without relocation. Combat proves 48 actual blinks/swaps (three cards base/upgrade in eight facings), invisible marker and no route interpolation, plus rejection on occupied destination.",
+  "same_release_ms": 310,
+  "same_duration_ms": 860,
+  "mirrors": false
+}

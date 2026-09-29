@@ -1,0 +1,27 @@
+Use case: stylized-concept
+Asset type: production sprite animation atlas for the approved Passe-Rive spectral teleport body, 4 columns x 3 rows, twelve equal square cells, transparent background.
+Input image 1: approved six-key body concept, identity and gesture reference.
+Input image 2: approved teleport storyboard, concept only. DO NOT paint its spectral effects into this body atlas.
+Input image 3: canonical native idle sheet, SMALL HEAD and SLIM BODY proportions and exact southeast camera, ends matching this neutral posture.
+Generate twelve chronological drawings of the SAME character. Transparent background, no text, borders, floor, smoke, effects, glow, background haze or weapons. Every cell is a square, preferably 384x384 in a 1536x1152 atlas. Each character fully visible with head top around y=22 and foremost planted boot bottom around y=350. Character same height ~328px, slim anatomy and exactly same head size and limb lengths across all twelve cells, fixed isometric SE camera facing screen-right. Feet must not spread or shuffle: the same near boot anchors the movement. Upper body shoulder-led pivot, no repeated squat, no jump.
+Identity: same angular petroleum-teal hood and small ivory mask with dark lower face wrap; SHORT sage shoulder mantle, single bronze brooch on near/screen-left shoulder; thigh-length dark teal tunic tails; ivory waist sash to knee; charcoal sleeves gloves trousers boots; bronze cuffs and ankle bands. Cape stays SHORT. Near arm beneath bronze pin stays hanging down alongside near thigh, slight natural follow-through only. The FAR arm at SCREEN RIGHT does ALL the chest gesture, elbow always on the right side of the torso. Natural elbow and wrist alignment throughout, exactly two arms/two legs, no limb identity swap. Use original small head/slim long-legged shape, not chibi or broad superhero shoulders.
+
+Row 1:
+1. Native neutral matching image3: both arms down.
+2. Far/screen-right elbow bends gently, glove rises from thigh to waist, near arm stays down.
+3. Same far forearm rises diagonally inward from right elbow toward chest, glove halfway to bronze brooch; shoulder begins inward pivot; near arm down.
+4. Far glove catches short mantle at upper chest near brooch, forearm crosses chest naturally from right elbow; near arm remains down.
+
+Row 2:
+5. Closed departure pose, shoulders and head pivot 15 degrees further toward screen-right profile, torso narrows with rotation, far glove at chest; near arm down.
+6. Most closed departure, shoulders rotate another 10 degrees; chin slightly tucked, same foot anchor, no shrink. Entire body remains opaque in source, as disappearance will be done in-engine.
+7. Arrival begins from same closed pose6, chin starts rising, far fingers begin releasing mantle; body complete and opaque.
+8. Torso unwinds halfway back to normalSE, far hand releases and opens, elbow on screen-right of body; near arm still low.
+
+Row 3:
+9. Far hand sweeps gently outward and downward to right hip height, torso nearly originalSE orientation; no palm-up spellcasting.
+10. Arrival overshoot: small backward shoulder settle, far arm at side a little outward, ivory sash and short tunic tails lag opposite shoulder turn; no longcape.
+11. Arms ease down, clothing settles, body proportions and feet matching frame1.
+12. Neutral EXACT pose1, arms down, narrow stance, no effect.
+
+Style: crisp hand-painted 2D game sprites, thin dark contours and restrained two-tone cel shading. Match costume color tones of references. No rendered volumetric lighting, no rimlight, no soft drop shadow, no dark cloudy halos. Keep uniform grid, generous 20+px cell margins, visible fingers and boots. This is a usable body atlas, not a title card, not a storyboard and not a duplicated six-pose sheet.

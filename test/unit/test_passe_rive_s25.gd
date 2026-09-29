@@ -49,11 +49,12 @@ func test_pull_uses_fixed_scale_support_and_one_silhouette() -> void:
 		var support: Vector2 = node.pull.position + pivot * initial_scale
 		assert_almost_eq(support, Body.SUPPORT * PROFILE.display_scale, Vector2(.001, .001))
 		assert_eq(node.pull.scale, initial_scale)
-		assert_false(node.animated_sprite.visible or node.body.visible or node.kick.visible)
+		assert_false(node.body.visible or node.kick.visible)
+		assert_almost_eq(node.animated_sprite.self_modulate.a + node.pull.self_modulate.a, 1.0, .00001)
 		assert_true(node.get_vfx_origin().is_equal_approx(node.pull.hand_position()))
 
 
-func test_cancel_has_no_late_release_and_other_angles_remain_explicitly_pending() -> void:
+func test_cancel_has_no_late_release_and_nw_uses_authored_traction() -> void:
 	var node := backend()
 	watch_signals(node)
 	node.play_action("SE", &"cast:cc2_g04", { "spell_id": "cc2_g04" })
@@ -64,8 +65,9 @@ func test_cancel_has_no_late_release_and_other_angles_remain_explicitly_pending(
 	assert_signal_not_emitted(node, "action_release_reached")
 	assert_false(node.pull.visible)
 	node.play_action("NW", &"cast:cc2_g04", { "spell_id": "cc2_g04" })
-	assert_eq(node.get_runtime_state().gesture_binding.status, "pending_direction")
-	assert_eq(node.get_runtime_state().animation, "idle_NW")
+	assert_ne(node.get_runtime_state().gesture_binding.status, "pending_direction")
+	assert_eq(node.get_runtime_state().animation, Body.CLIP)
+	assert_eq(node.get_runtime_state().authored_direction, "NW")
 
 
 func test_tether_only_replays_confirmed_movement_and_cancellation_settles_visual() -> void:

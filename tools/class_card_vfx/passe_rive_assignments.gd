@@ -212,6 +212,10 @@ func _play_current(id: String) -> void:
 		expected = KickBackend.DrainBody.CLIP
 	elif binding.reference == "guard":
 		expected = KickBackend.GuardBody.CLIP
+	elif binding.reference == "renew":
+		expected = KickBackend.RenewBody.CLIP
+	elif binding.reference == "blink":
+		expected = KickBackend.SpectralBody.CLIP
 	elif binding.reference == "dash":
 		expected = "dash_SE"
 	elif GestureCatalog.Data.CARDS.has(binding.reference):
@@ -241,7 +245,7 @@ func _play_current(id: String) -> void:
 	if id == "g04":
 		_check(hero.grid_pos == original_cell, "Pull caster remains planted")
 		_check(
-			target.grid_pos == original_target - Vector2i.RIGHT * int(row.amount),
+			target.grid_pos == original_target - CurrentTurns.Effects.axis(original_cell, original_target) * int(row.amount),
 			"Real pull distance matches base/upgrade",
 		)
 		_check(

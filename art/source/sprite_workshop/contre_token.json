@@ -1,0 +1,108 @@
+{
+	"anchor": [
+		192,
+		192
+	],
+	"animation": "contre_token_E",
+	"baseline": {
+		"anchor": [
+			192,
+			192
+		],
+		"display_scale": 0.35,
+		"events": [],
+		"frames": [
+			{
+				"duration_ms": 33.3333333333333,
+				"id": "f000",
+				"offset": [
+					0,
+					0
+				],
+				"placement": [
+					0,
+					0
+				],
+				"region": [
+					0,
+					0,
+					384,
+					384
+				],
+				"sha256": "b928250b587253c1b8c6cd787c3dcf3c89223ac1fe3e0d74b27a1296a97b3907",
+				"source": "res://artifacts/dev/class_card_vfx/contre/render/token/frame_0001.png"
+			}
+		],
+		"playback": {
+			"mode": "once"
+		}
+	},
+	"canvas": [
+		384,
+		384
+	],
+	"direction": "E",
+	"display_scale": 0.35,
+	"events": [],
+	"frames": [
+		{
+			"duration_ms": 33.3333333333333,
+			"id": "f000",
+			"offset": [
+				0,
+				0
+			],
+			"placement": [
+				0,
+				0
+			],
+			"region": [
+				0,
+				0,
+				384,
+				384
+			],
+			"sha256": "b928250b587253c1b8c6cd787c3dcf3c89223ac1fe3e0d74b27a1296a97b3907",
+			"source": "res://artifacts/dev/class_card_vfx/contre/render/token/frame_0001.png"
+		}
+	],
+	"id": "contre_token",
+	"intent": "Production de la planche F validée. Assemblage bronze, jeton indépendant de la garde, revers et contact ivoire.",
+	"open_questions": [
+		"Revoir l'ancre, l'échelle, les événements, le dessin et la lecture en combat."
+	],
+	"playback": {
+		"mode": "once"
+	},
+	"provenance": {
+		"res://vfx/class_cards/contre/provenance.json": "d0bd3b4401137c25e605a04bde9a6cada8ebd1f684b808a2b87e9794c0d284a6"
+	},
+	"reference": {
+		"duration_ms": 100.0,
+		"id": "reference",
+		"offset": [
+			0,
+			0
+		],
+		"placement": [
+			0,
+			0
+		],
+		"region": [
+			0,
+			0,
+			384,
+			384
+		],
+		"sha256": "b928250b587253c1b8c6cd787c3dcf3c89223ac1fe3e0d74b27a1296a97b3907",
+		"source": "res://artifacts/dev/class_card_vfx/contre/render/token/frame_0001.png"
+	},
+	"review": {},
+	"runtime_mapping": {
+		"leading_transparent_frames": 0,
+		"runtime_atlas": "res://vfx/class_cards/contre/token.png",
+		"runtime_start_offset_ms": 0.0
+	},
+	"schema_version": 1,
+	"title": "Contre préparé — token"
+}

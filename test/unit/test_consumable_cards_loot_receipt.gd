@@ -119,6 +119,45 @@ func test_receipt_survives_sale_consumption_and_snapshot_restore() -> void:
 	assert_eq(identities(manager.expedition), expected)
 
 
+func test_latest_loot_remains_findable_after_leaving_the_reward_node() -> void:
+	assert_true(Receipt.latest_records(manager.expedition).is_empty())
+	fixture()
+	var expected := Receipt.latest_records(manager.expedition).map(
+		func(row):
+			return [row.id, row.kind, row.count],
+	)
+	var previous: String = manager.expedition.route.current_node_id
+	for node in manager.expedition.route.nodes:
+		if str(node.id) != previous:
+			manager.expedition.route.current_node_id = str(node.id)
+			break
+	var before: Dictionary = manager.get_expedition_snapshot()
+	assert_eq(
+		Receipt.latest_records(manager.expedition).map(
+			func(row):
+				return [row.id, row.kind, row.count],
+		),
+		expected,
+	)
+	assert_eq(
+		manager.get_expedition_snapshot(),
+		before,
+		"inspection never moves the route or edits rewards",
+	)
+	# Simulate inventory disappearance: receipt projection must not read any of it.
+	manager.expedition.cards.copies.clear()
+	manager.expedition.cards.equipment_copies.clear()
+	manager.expedition.cards.owned_relics.clear()
+	manager.expedition.cards.last_drops.clear()
+	assert_eq(
+		Receipt.latest_records(manager.expedition).map(
+			func(row):
+				return [row.id, row.kind, row.count],
+		),
+		expected,
+	)
+
+
 func test_all_card_and_item_definitions_have_art_and_complete_effect_text() -> void:
 	var rarities := { }
 	for row in Catalog.data().cards:

@@ -17,6 +17,10 @@ Une validation technique ou un concept généré ne vaut pas validation artistiq
 
 [Projets suivants à choisir : Contre préparé, Prélèvement, Convergence, Décret](../../docs/design/vfx_avant_production_lot3_2026-09-27/README.md).
 
+[Convergence — production de la planche J, sources et revue en combat](convergence/README.md).
+
+[Contre préparé — production de la planche F, jeton de riposte et revue en combat](contre/README.md).
+
 La production du 22 septembre remplace la DA éthérée par des poses dessinées.
 112 cartes, 17 séquences de six poses, compositions spécifiques aux cartes fortes.
 [Sources, prompts, règles et contrôles](../../vfx/class_cards/cel/README.md).

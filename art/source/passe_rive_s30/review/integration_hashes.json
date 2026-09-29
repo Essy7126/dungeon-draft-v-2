@@ -1,0 +1,11 @@
+{
+  "characters/achilles/2d/passe_rive_renew_body.gd": "13ac0e3996ec7a2c5f53354694b5f1982da783b59b109b08ae58967f8e139f3b",
+  "characters/achilles/2d/passe_rive_s19_backend.gd": "9f87e65b15611ac7612ce91e72d5d3c49edad1dd9be3a35c9bfa74d38f2b16f4",
+  "characters/achilles/2d/passe_rive_card_bindings.gd": "70a44e142b6a54f0807e42a833ca9f4743c321234a31a892a8a827f37904a040",
+  "vfx/class_cards/class_card_vfx_router.gd": "46c4b0c2e33e27634902e1465427de3635caa39745b53594839ae98197778083",
+  "assets/characters/PasseRive/sprites_s30/renew.png": "3f27a2aed4ad04782018e5ae66ff45dd3c02f3996fd1553674b6c5a20cc420e7",
+  "assets/characters/PasseRive/sprites_s30/vfx.png": "96ea94411ced2f47928741ca59dd36b105e246dd7031e2a76259fcf147fa7b8a",
+  "assets/characters/PasseRive/sprites_s30/renew.json": "75fedaff45481b24576f8ec6b2644b203f79a54cf9b451c6a044af0fecb74e8a",
+  "test/unit/test_passe_rive_s30.gd": "15e79f11fd09fc476a7166c8b333c98cd6464b70e888400677d3235f39ed6cb4",
+  "tools/class_card_vfx/passe_rive_s30/arena.gd": "28bbce16dd7d3042d523d504a52a3e20ac048162ef5d61847bbb7290eb6cbd4a"
+}

@@ -7,9 +7,23 @@ const PaintedGridViewScript = preload("res://battle/painted/painted_grid_view.gd
 const MAGE_ISO_SCENE = preload("res://test/fixtures/party_rules/iso_view.tscn")
 const SKELETON_MELEE_DATA = preload("res://data/units/ennemie/skeleton_melee.tres")
 const FOREST_VISUAL = preload("res://data/maps/painted/room_01_forest_visual.tres")
-const FOREST_PRESENTATION = preload(
-	"res://data/maps/painted/room_01_forest_presentation.tres"
-)
+const FOREST_PRESENTATION = preload("res://data/maps/painted/room_01_forest_presentation.tres")
+
+const Cleanup := preload("res://test/support/isolated_battlefield_cleanup.gd")
+var _fixture_grids: Array[GridData] = []
+
+
+func _grid_fixture(cols: int, rows: int) -> GridData:
+	var grid := GridData.new(cols, rows)
+	_fixture_grids.append(grid)
+	return grid
+
+
+func after_each() -> void:
+	# Isolated fixtures own their occupancy and terrain relay closures.
+	for grid in _fixture_grids:
+		Cleanup.dispose_grid(grid)
+	_fixture_grids.clear()
 
 
 class MovementView:
@@ -20,12 +34,15 @@ class MovementView:
 	var begin_position := Vector2.ZERO
 	var faced_directions: Array[Vector2i] = []
 
+
 	func begin_movement_feedback(_from_cell: Vector2i, _to_cell: Vector2i) -> void:
 		begin_count += 1
 		begin_position = position
 
+
 	func end_movement_feedback() -> void:
 		end_count += 1
+
 
 	func face_grid_direction(direction: Vector2i) -> void:
 		faced_directions.append(direction)
@@ -37,8 +54,10 @@ class MovementBattleFixture:
 	func _ready() -> void:
 		pass
 
+
 	func grid_cell_to_parent_local(cell: Vector2i, _parent: Node2D) -> Vector2:
 		return Vector2(cell.x * 64.0, cell.y * 32.0)
+
 
 	func _create_unit_view(unit: Unit) -> void:
 		var view := MovementView.new()
@@ -52,8 +71,10 @@ class FullPathMovementVisual:
 	var received_path: Array = []
 	var segment_duration_seconds := 0.4
 
+
 	func begin_path_movement_feedback(path: Array) -> void:
 		received_path = path.duplicate()
+
 
 	func get_movement_segment_duration(_path: Array) -> float:
 		return segment_duration_seconds
@@ -63,6 +84,7 @@ class FullPathUnitViewFixture:
 	extends UnitViewScript
 
 	var visual_spy: FullPathMovementVisual = null
+
 
 	func _instantiate_optional_visual() -> void:
 		visual_spy = FullPathMovementVisual.new()
@@ -78,11 +100,14 @@ class DeathVisualSpy:
 	var facing := Vector2i.ZERO
 	var facing_when_death_started := Vector2i.ZERO
 
+
 	func bind_unit(unit: Unit) -> void:
 		unit.died.connect(_on_bound_unit_died)
 
+
 	func set_facing(direction: Vector2i) -> void:
 		facing = direction
+
 
 	func _on_bound_unit_died(_unit: Unit) -> void:
 		facing_when_death_started = facing
@@ -93,6 +118,7 @@ class DeathUnitViewFixture:
 	extends UnitViewScript
 
 	var visual_spy: DeathVisualSpy = null
+
 
 	func _instantiate_optional_visual() -> void:
 		visual_spy = DeathVisualSpy.new()
@@ -110,7 +136,7 @@ func test_painted_presentation_hides_character_outlines_by_default() -> void:
 func test_legacy_two_argument_move_feedback_starts_before_motion_and_ends_on_arrival() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	var grid := GridData.new(3, 1)
+	var grid := _grid_fixture(3, 1)
 	var unit := Unit.new("Test")
 	var view := MovementView.new()
 	battle.add_child(view)
@@ -121,9 +147,7 @@ func test_legacy_two_argument_move_feedback_starts_before_motion_and_ends_on_arr
 	assert_true(grid.place_unit(unit, Vector2i.ZERO))
 	assert_false(view.has_method("begin_path_movement_feedback"))
 	assert_almost_eq(
-		battle._movement_segment_duration_for(
-			view, [Vector2i.ZERO, Vector2i.RIGHT]
-		),
+		battle._movement_segment_duration_for(view, [Vector2i.ZERO, Vector2i.RIGHT]),
 		MovementTiming.MOVE_SEGMENT_DURATION,
 		0.0001,
 	)
@@ -147,7 +171,7 @@ func test_legacy_two_argument_move_feedback_starts_before_motion_and_ends_on_arr
 func test_full_path_is_forwarded_from_battle_to_optional_visual() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	var grid := GridData.new(4, 1)
+	var grid := _grid_fixture(4, 1)
 	var unit := Unit.new("Test chemin complet")
 	var view := FullPathUnitViewFixture.new()
 	battle.add_child(view)
@@ -157,22 +181,13 @@ func test_full_path_is_forwarded_from_battle_to_optional_visual() -> void:
 	battle.terrain_effects = TerrainEffects.new(grid)
 	battle._unit_views[unit] = view
 	assert_true(grid.place_unit(unit, Vector2i.ZERO))
-	var path := [
-		Vector2i.ZERO,
-		Vector2i.RIGHT,
-		Vector2i(2, 0),
-		Vector2i(3, 0),
-	]
+	var path := [Vector2i.ZERO, Vector2i.RIGHT, Vector2i(2, 0), Vector2i(3, 0)]
 
 	battle._animate_move(unit, path)
 
 	assert_eq(view.visual_spy.received_path, path)
 	assert_almost_eq(view.get_movement_segment_duration(path), 0.4, 0.0001)
-	assert_almost_eq(
-		battle._movement_segment_duration_for(view, path),
-		0.4,
-		0.0001,
-	)
+	assert_almost_eq(battle._movement_segment_duration_for(view, path), 0.4, 0.0001)
 	var deadline := Time.get_ticks_msec() + 3000
 	while unit.grid_pos != path[-1] and Time.get_ticks_msec() < deadline:
 		await wait_process_frames(1)
@@ -182,7 +197,7 @@ func test_full_path_is_forwarded_from_battle_to_optional_visual() -> void:
 func test_hero_faces_nearest_enemy_as_soon_as_placed() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	battle.grid = GridData.new(6, 6)
+	battle.grid = _grid_fixture(6, 6)
 	var nearest_enemy := Unit.new("Ennemi proche")
 	nearest_enemy.team = 1
 	var farther_enemy := Unit.new("Ennemi lointain")
@@ -202,7 +217,7 @@ func test_hero_faces_nearest_enemy_as_soon_as_placed() -> void:
 func test_failed_placement_never_creates_a_phantom_unit_view() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	battle.grid = GridData.new(2, 1)
+	battle.grid = _grid_fixture(2, 1)
 	var occupant := Unit.new("Occupant")
 	var hero := Unit.new("Placement refusé")
 	assert_true(battle.grid.place_unit(occupant, Vector2i.ZERO))
@@ -215,7 +230,7 @@ func test_failed_placement_never_creates_a_phantom_unit_view() -> void:
 
 
 func test_grid_placement_failure_preserves_the_units_previous_cell() -> void:
-	var grid := GridData.new(2, 1)
+	var grid := _grid_fixture(2, 1)
 	var mover := Unit.new("Déjà placé")
 	var blocker := Unit.new("Destination occupée")
 	assert_true(grid.place_unit(mover, Vector2i.ZERO))
@@ -231,17 +246,14 @@ func test_grid_placement_failure_preserves_the_units_previous_cell() -> void:
 func test_missing_unit_view_does_not_cancel_logical_movement() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	var grid := GridData.new(3, 1)
+	var grid := _grid_fixture(3, 1)
 	var unit := Unit.new("Sans vue")
 	battle.grid = grid
 	battle.pathfinder = Pathfinder.new(grid)
 	battle.terrain_effects = TerrainEffects.new(grid)
 	assert_true(grid.place_unit(unit, Vector2i.ZERO))
 
-	battle._animate_move(
-		unit,
-		[Vector2i.ZERO, Vector2i.RIGHT, Vector2i(2, 0)],
-	)
+	battle._animate_move(unit, [Vector2i.ZERO, Vector2i.RIGHT, Vector2i(2, 0)])
 
 	assert_eq(unit.grid_pos, Vector2i(2, 0))
 	assert_same(grid.get_unit(Vector2i(2, 0)), unit)
@@ -250,7 +262,7 @@ func test_missing_unit_view_does_not_cancel_logical_movement() -> void:
 func test_enemy_faces_nearest_hero_after_movement_feedback_ends() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	var grid := GridData.new(6, 3)
+	var grid := _grid_fixture(6, 3)
 	var enemy := Unit.new("Ennemi")
 	enemy.team = 1
 	var hero := Unit.new("Heros")
@@ -277,7 +289,7 @@ func test_enemy_faces_nearest_hero_after_movement_feedback_ends() -> void:
 
 
 func test_movement_path_preview_uses_painted_grid_projection() -> void:
-	var grid := GridData.new(5, 4)
+	var grid := _grid_fixture(5, 4)
 	var grid_view := PaintedGridViewScript.new() as PaintedGridView
 	grid_view.visual_data = FOREST_VISUAL
 	grid_view.setup(grid)
@@ -285,11 +297,7 @@ func test_movement_path_preview_uses_painted_grid_projection() -> void:
 	var preview := MovementPathPreviewScript.new() as MovementPathPreview
 	grid_view.add_child(preview)
 	preview.setup(grid_view)
-	var path: Array[Vector2i] = [
-		Vector2i(1, 1),
-		Vector2i(2, 1),
-		Vector2i(2, 2),
-	]
+	var path: Array[Vector2i] = [Vector2i(1, 1), Vector2i(2, 1), Vector2i(2, 2)]
 
 	preview.set_path(path)
 
@@ -331,12 +339,9 @@ func test_movement_path_preview_has_regular_white_dots_and_centered_arrow_tip() 
 	add_child_autofree(preview)
 	# Les points intermediaires volontairement irreguliers verifient que le
 	# rythme des pointilles ne redemarre pas a chaque segment du chemin.
-	var points := PackedVector2Array([
-		Vector2(0.0, 0.0),
-		Vector2(17.0, 0.0),
-		Vector2(40.0, 0.0),
-		Vector2(73.0, 0.0),
-	])
+	var points := PackedVector2Array(
+		[Vector2(0.0, 0.0), Vector2(17.0, 0.0), Vector2(40.0, 0.0), Vector2(73.0, 0.0)]
+	)
 
 	var dots := preview.get_dot_centers(points)
 	assert_eq(dots.size(), 4)
@@ -353,10 +358,7 @@ func test_movement_path_preview_has_regular_white_dots_and_centered_arrow_tip() 
 	assert_almost_eq(MovementPathPreviewScript.ARROW_LENGTH, 14.0 * 0.85, 0.001)
 	assert_almost_eq(MovementPathPreviewScript.ARROW_HALF_WIDTH, 7.0 * 0.85, 0.001)
 	assert_almost_eq(MovementPathPreviewScript.ARROW_CORE_WIDTH, 4.0 * 0.85, 0.001)
-	for color in [
-		MovementPathPreviewScript.PATH_COLOR,
-		MovementPathPreviewScript.ORIGIN_COLOR,
-	]:
+	for color in [MovementPathPreviewScript.PATH_COLOR, MovementPathPreviewScript.ORIGIN_COLOR]:
 		assert_almost_eq(color.r, 1.0, 0.001)
 		assert_almost_eq(color.g, 1.0, 0.001)
 		assert_almost_eq(color.b, 1.0, 0.001)
@@ -365,7 +367,7 @@ func test_movement_path_preview_has_regular_white_dots_and_centered_arrow_tip() 
 func test_move_hover_previews_real_path_and_cancel_clears_it() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
-	battle.grid = GridData.new(5, 3)
+	battle.grid = _grid_fixture(5, 3)
 	battle.pathfinder = Pathfinder.new(battle.grid)
 	var grid_view := PaintedGridViewScript.new() as PaintedGridView
 	grid_view.visual_data = FOREST_VISUAL
@@ -399,7 +401,7 @@ func test_move_hover_previews_real_path_and_cancel_clears_it() -> void:
 
 
 func test_single_target_death_faces_the_attacker_before_animation_starts() -> void:
-	var grid := GridData.new(6, 3)
+	var grid := _grid_fixture(6, 3)
 	var attacker := Unit.new("Lanceur", 0)
 	var victim := Unit.new("Victime", 1)
 	assert_true(grid.place_unit(attacker, Vector2i(0, 1)))
@@ -415,7 +417,7 @@ func test_single_target_death_faces_the_attacker_before_animation_starts() -> vo
 
 
 func test_area_death_faces_the_spell_epicenter_before_animation_starts() -> void:
-	var grid := GridData.new(7, 5)
+	var grid := _grid_fixture(7, 5)
 	var attacker := Unit.new("Lanceur", 0)
 	var victim := Unit.new("Victime peripherique", 1)
 	assert_true(grid.place_unit(attacker, Vector2i(0, 2)))
@@ -433,11 +435,7 @@ func test_area_death_faces_the_spell_epicenter_before_animation_starts() -> void
 	spell.aoe_shape = Spell.AoeShape.CROSS
 	spell.aoe_size = 1
 	spell.damage = 999
-	var caster := SpellCaster.new(
-		grid,
-		Pathfinder.new(grid),
-		TerrainEffects.new(grid),
-	)
+	var caster := SpellCaster.new(grid, Pathfinder.new(grid), TerrainEffects.new(grid))
 
 	caster.cast(attacker, spell, Vector2i(4, 1))
 
@@ -446,14 +444,17 @@ func test_area_death_faces_the_spell_epicenter_before_animation_starts() -> void
 
 
 func test_real_skeleton_targeted_death_keeps_facing_the_attacker_after_grid_cleanup() -> void:
-	var grid := GridData.new(7, 5)
+	var grid := _grid_fixture(7, 5)
 	var attacker := Unit.new("Lanceur", 0)
 	var victim := Unit.from_data(SKELETON_MELEE_DATA)
 	assert_true(grid.place_unit(attacker, Vector2i(4, 0)))
 	assert_true(grid.place_unit(victim, Vector2i(4, 2)))
 	# Battle connecte son nettoyage avant de creer la vue : ce test reproduit
 	# cet ordre pour couvrir l'animation reelle, pas seulement une doublure.
-	victim.died.connect(func(dead_unit: Unit): grid.clear_unit(dead_unit.grid_pos))
+	victim.died.connect(
+		func(dead_unit: Unit):
+			grid.clear_unit(dead_unit.grid_pos),
+	)
 	var view := UnitViewScript.new()
 	add_child_autofree(view)
 	view.setup(victim)
@@ -472,12 +473,15 @@ func test_real_skeleton_targeted_death_keeps_facing_the_attacker_after_grid_clea
 
 
 func test_real_skeleton_area_death_keeps_facing_the_epicenter_after_grid_cleanup() -> void:
-	var grid := GridData.new(7, 5)
+	var grid := _grid_fixture(7, 5)
 	var attacker := Unit.new("Lanceur", 0)
 	var victim := Unit.from_data(SKELETON_MELEE_DATA)
 	assert_true(grid.place_unit(attacker, Vector2i(0, 2)))
 	assert_true(grid.place_unit(victim, Vector2i(4, 2)))
-	victim.died.connect(func(dead_unit: Unit): grid.clear_unit(dead_unit.grid_pos))
+	victim.died.connect(
+		func(dead_unit: Unit):
+			grid.clear_unit(dead_unit.grid_pos),
+	)
 	var view := UnitViewScript.new()
 	add_child_autofree(view)
 	view.setup(victim)
@@ -494,11 +498,7 @@ func test_real_skeleton_area_death_keeps_facing_the_epicenter_after_grid_cleanup
 	spell.aoe_shape = Spell.AoeShape.CROSS
 	spell.aoe_size = 1
 	spell.damage = 999
-	var caster := SpellCaster.new(
-		grid,
-		Pathfinder.new(grid),
-		TerrainEffects.new(grid),
-	)
+	var caster := SpellCaster.new(grid, Pathfinder.new(grid), TerrainEffects.new(grid))
 
 	caster.cast(attacker, spell, Vector2i(4, 1))
 

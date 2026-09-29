@@ -1,0 +1,23 @@
+Use case: stylized-concept
+Asset type: six key drawings for a hand-drawn isometric RPG character animation, transparent sprite concept sheet.
+Primary request: Design "Passage spectral" for the EXACT existing character Passe-Rive: a small elegant standing pivot into disappearance, then an unfurling reappearance. This is a teleport body gesture, unarmed. Show six full-body key poses in a clean 3-column by 2-row sheet, reading left to right then top to bottom. No labels or borders. Prefer wide 1536 x 1024 composition. Every figure has generous empty transparent padding, same camera, same scale and consistent foot baseline within each row.
+
+Input images:
+Image 1 = PRIMARY canonical model proportions, costume and southeast isometric camera. It is a grid of the SAME small native idle sprite, not many different characters. Match one of those slim full-body figures, its modest head size and shoulder width.
+Image 2 = SECONDARY reference for the current painted sprite finish and costume construction. Do not copy its reaching/grasping/draining gesture. If proportions disagree, use the slimmer proportions of image 1.
+
+Identity invariants: lean hooded humanoid, dark petroleum teal angular hood, small ivory angular mask with charcoal lower face covering, desaturated sage SHORT shoulder mantle diagonally over upper chest, single round bronze brooch on the near/screen-left shoulder, dark teal split tunic skirts ending at upper thighs, ivory waist wrap with long narrow front sash to knees, charcoal sleeves gloves leggings boots, muted bronze wrist cuffs and ankle bands. The mantle is SHORT and never becomes a long cloak. No large cape. Slim native silhouette, small mask, long slim legs, no bulky superhero chest. Preserve the exact same anatomy, limb lengths, clothing and palette in all six drawings.
+
+The action: feet stay compact, body remains largely upright, weight passes onto the back supporting foot. The near-side arm (the anatomical arm whose shoulder bears the bronze brooch and appears on screen-left in idle) sweeps across its own upper chest with its elbow down to lightly catch the opposite edge of the SHORT mantle. The other hand stays low near the waist. A modest shoulder-led pivot narrows the silhouette; arrival unwinds it. All wrists aligned naturally with their forearms, shoulders and elbows connected correctly; exactly two arms and two legs. No arms switching identities during the action, no cross-body impossible joints. Maintain one screen-right-facing southeast camera throughout; the body may turn only about 25 degrees, not turn fully away.
+
+Six key poses:
+1 TOP LEFT: exact calm unarmed idle matching image 1, arms relaxed down, narrow natural stance.
+2 TOP MIDDLE: anticipation, weight shifts subtly to rear leg, head still looking screen-right, near arm begins sweeping across upper chest; far hand remains low. No squat.
+3 TOP RIGHT: closed departure pose, pivot planted foot and shoulders about 25 degrees toward screen-right; near forearm lies naturally across upper chest, lightly gathering ONLY the short shoulder mantle; chin dipped slightly. No floating, no enlarged cloak, no FX.
+4 BOTTOM LEFT: closed arrival pose, same narrow planted support as pose 3, begins opposite unwind, fingers release short mantle; ivory sash trails slightly from the turn. Feet remain visibly separate and anatomically sound.
+5 BOTTOM MIDDLE: opening arrival, shoulders turn back toward original southeast orientation, near arm falls outward and downward in a restrained graceful arc, palm angled down at hip level; upper tunic and ivory sash show small follow-through. No raised spellcasting hand or attack.
+6 BOTTOM RIGHT: settled neutral, match pose 1 closely in silhouette, head size, foot placement, unarmed hands at sides, no wide guard.
+
+Style: authentic clean 2D painted game sprites like the supplied finished reference, thin dark crisp contours, flat restrained two-tone cel shading, readable large shapes, no glossy lighting, no 3D render, no photorealism, no texture noise. Orthographic slightly top-down isometric camera as native idle; consistent lights upper-left.
+
+Transparent background with true alpha. Character body only, all six figures fully opaque. NO spectral effects on this body sheet: no smoke, halo, glow, trails, particles, portals, floor rings, ground shadow, environment, arrows, numbers, text, grid lines, watermark. Full boots, hands and hood completely visible, no cropped extremities, no touching between cells. This is a six-pose model-consistent animation design, not six different costume variants.

@@ -18,6 +18,10 @@ const PermutationPlayer := preload("permutation/player.gd")
 const Braise := preload("braise/controller.gd")
 const BraisePlayer := preload("braise/player.gd")
 const BraiseSteam := preload("braise/steam.gd")
+const Convergence := preload("convergence/controller.gd")
+const ConvergencePlayer := preload("convergence/player.gd")
+const Contre := preload("contre/controller.gd")
+const ContrePlayer := preload("contre/player.gd")
 const FrostGarden := preload("approved/frost_ground.gd")
 const HeelContact := preload("passe_rive_heel_contact.gd")
 const STATUS_PRIORITY := [
@@ -27,6 +31,7 @@ const STATUS_PRIORITY := [
 	"cc2_burn",
 	"class_bleed",
 	"class_marked",
+	"cc2_counter",
 	"shield",
 ]
 var manager: Node
@@ -61,6 +66,7 @@ func _ready() -> void:
 	EventBus.attack_dodge_resolved.connect(_dodge)
 	EventBus.attack_immune.connect(_immune)
 	EventBus.hit_resolved.connect(_critical)
+	EventBus.hit_resolved.connect(_counter)
 	EventBus.unit_visual_movement_finished.connect(_arrived)
 	EventBus.unit_died.connect(_died)
 	EventBus.ability_telegraphed.connect(_telegraph)
@@ -132,11 +138,15 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 			and visual.sprite_backend.get_runtime_state().get("pull_visible", false)
 		):
 			return # The hand-bound tether observes the same confirmed cast, without a second impact.
+	if str(spell.spell_id) in ["cc2_i01", "cc2_l02"]:
+		var renewal := _renew_backend(caster)
+		if renewal != null and renewal.confirm_renew(str(spell.spell_id), int(report.get("healing_total", 0)), int(report.get("shield_increase_total", 0))):
+			return
 	if str(spell.spell_id) == "cc2_t07" and _confirm_drain(caster, report):
 		return
 	var heel_origin := _heel_origin(caster)
 	if (
-		str(spell.spell_id) in ["cc2_n02", "cc2_g05", "cc2_fallback_guard"]
+		str(spell.spell_id) in ["cc2_n02", "cc2_fallback_guard"]
 		and int(report.get("shield_increase_total", 0)) > 0
 	):
 		var guard_view: Node = manager._find_unit_view(caster)
@@ -147,6 +157,9 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 		):
 			if guard_visual.sprite_backend.has_method("confirm_guard_ward"):
 				guard_visual.sprite_backend.confirm_guard_ward()
+	if Contre.handles(entry):
+		Contre.resolve(self, caster)
+		return
 	if Orage.handles(entry):
 		Orage.resolve(self, caster, spell, report, prepared)
 		return
@@ -155,6 +168,9 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 		return
 	if Braise.handles(entry):
 		Braise.resolve(self, caster, spell, report, prepared)
+		return
+	if Convergence.handles(entry):
+		Convergence.resolve(self, caster, spell, report, prepared)
 		return
 	if heel_origin.is_finite() and not report.get("damaged_enemies", []).is_empty():
 		entry["heel_contact"] = true
@@ -181,6 +197,8 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 					_remove_hold("%s:class_marked" % target.get_instance_id(), false)
 					_ensure_hold(target, "class_marked", held)
 	if entry.movement:
+		if entry.effect == "blink" and _owns_spectral_feedback(caster):
+			return # The approved body veil replaces the older paired generic portals.
 		if report.has("caster_movement_from") and report.has("caster_movement_to") \
 				and report.caster_movement_from != report.caster_movement_to:
 			var start: Vector2 = manager._grid_cell_global(report.caster_movement_from)
@@ -346,6 +364,8 @@ func prepare_sentence(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 		return Permutation.prepare(self, caster, cell, entry)
 	if Braise.handles(entry):
 		return Braise.prepare(self, caster, cell, entry)
+	if Convergence.handles(entry):
+		return Convergence.prepare(self, caster, cell, entry)
 	if not _sentence_entry(entry):
 		return null
 	var old: Node = sentence_preparations.get(caster)
@@ -384,7 +404,11 @@ func _spawn(entry: Dictionary, point: Vector2, anchor: Node2D = null, hold := fa
 		oldest.cancel()
 		effects.erase(oldest)
 	var fx = (
-		BraisePlayer.new()
+		ContrePlayer.new()
+		if Contre.handles(entry) or entry.has("contre_mode")
+		else ConvergencePlayer.new()
+		if Convergence.handles(entry) and not hold
+		else BraisePlayer.new()
 		if Braise.handles(entry) or entry.get("braise_badge", false)
 		else PermutationPlayer.new()
 		if Permutation.handles(entry) and not hold
@@ -552,6 +576,7 @@ func _layout_holds() -> void:
 
 func _restore_unit_holds() -> void:
 	Braise.restore(self)
+	Contre.restore(self)
 	for unit: Unit in _units():
 		if not unit.is_alive:
 			continue
@@ -586,6 +611,9 @@ func _tick(fact: CombatEventFact) -> void:
 func _heal(fact: CombatEventFact) -> void:
 	if _in_scope(fact) and fact.amount_applied > 0:
 		if fact.source == fact.target and not fact.is_periodic:
+			var renewal := _renew_backend(fact.target)
+			if renewal != null and renewal.owns_renew_feedback():
+				return
 			var view: Node = manager._find_unit_view(fact.target)
 			var visual: Node = view.get("_optional_visual") if view != null else null
 			if visual is PasseRiveAutoSpriteView and is_instance_valid(visual.sprite_backend):
@@ -599,7 +627,9 @@ func _shield(fact: CombatEventFact) -> void:
 	if not _in_scope(fact) or fact.amount_applied <= 0:
 		return
 	var entry := _shield_entry(fact.target)
-	if not str(fact.ability_id).begins_with("class_"):
+	var renewal := _renew_backend(fact.target)
+	var renewal_owns: bool = fact.source == fact.target and renewal != null and renewal.owns_renew_feedback()
+	if not renewal_owns and fact.ability_id != &"cc2_g05" and not str(fact.ability_id).begins_with("class_"):
 		_at_unit(Profiles.state(Catalog.feedback("guard"), "shield"), fact.target)
 	_ensure_hold(fact.target, "shield", entry)
 
@@ -644,6 +674,10 @@ func _immune(fact: CombatEventFact) -> void:
 		_at_unit(Catalog.feedback("guard", "immune"), fact.target)
 
 
+func _counter(fact: CombatEventFact) -> void:
+	Contre.hit(self, fact)
+
+
 func _critical(fact: CombatEventFact) -> void:
 	if _in_scope(fact) and fact.is_critical and fact.amount_resolved > 0:
 		var entry := Catalog.feedback("pierce", "critical")
@@ -682,7 +716,8 @@ func _process(delta: float) -> void:
 		if not is_instance_valid(unit) or not unit.is_alive or not is_instance_valid(hold.fx):
 			_remove_hold(key, false)
 		elif (
-			not Braise.active(unit) if hold.status == "cc2_burn"
+			not Contre.active(unit) if hold.status == "cc2_counter"
+			else not Braise.active(unit) if hold.status == "cc2_burn"
 			else unit.current_shield <= 0
 			if hold.status == "shield"
 			else not unit.has_status(StringName(hold.status))
@@ -1053,3 +1088,19 @@ func _confirm_drain(caster: Unit, report: Dictionary) -> bool:
 		break
 	return visual.sprite_backend.confirm_drain(point, int(report.get("hp_damage_total", 0)),
 		int(report.get("healing_total", 0)))
+
+
+func _owns_spectral_feedback(caster: Unit) -> bool:
+	var view: Node = manager._find_unit_view(caster)
+	var visual: Node = view.get("_optional_visual") if view != null else null
+	if not visual is PasseRiveAutoSpriteView or not is_instance_valid(visual.sprite_backend):
+		return false
+	return visual.sprite_backend.has_method("owns_spectral_feedback") and visual.sprite_backend.owns_spectral_feedback()
+
+
+func _renew_backend(caster: Unit) -> Node:
+	var view: Node = manager._find_unit_view(caster)
+	var visual: Node = view.get("_optional_visual") if view != null else null
+	if not visual is PasseRiveAutoSpriteView or not is_instance_valid(visual.sprite_backend):
+		return null
+	return visual.sprite_backend if visual.sprite_backend.has_method("confirm_renew") else null

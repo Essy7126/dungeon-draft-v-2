@@ -5,10 +5,11 @@ const Body := preload("passe_rive_s19_body.gd")
 const Directions := preload("passe_rive_s20_directions.gd")
 var cards_mode := false
 var body: Node2D
-const HEIGHT := 94.16 # 214 reference pixels Ã— exploration profile scale 0.44.
+const HEIGHT := 94.16 # 214 reference pixels × exploration profile scale 0.44.
 const Cards := preload("res://core/expedition/class_card_catalog.gd")
 const Registration := preload("res://characters/achilles/2d/passe_rive_registration.gd")
 const Bindings := preload("res://characters/achilles/2d/passe_rive_card_bindings.gd")
+const KickBody := preload("passe_rive_kick_body.gd")
 const KICK := "PR_KICK_B_S24"
 const KICK_ATLAS := preload("res://assets/characters/PasseRive/sprites_s24/kick_high.png")
 const SUPPORT := Vector2(-18.3333584, 17.19648)
@@ -16,6 +17,11 @@ const PullBody := preload("passe_rive_pull_body.gd")
 const IncantationBody := preload("passe_rive_incantation_body.gd")
 const GuardBody := preload("passe_rive_guard_body.gd")
 const DrainBody := preload("passe_rive_drain_body.gd")
+const RenewBody := preload("passe_rive_renew_body.gd")
+var renew: Node2D
+const SpectralBody := preload("passe_rive_spectral_body.gd")
+var spectral: Node2D
+var spectral_origin := Vector2.ZERO
 var drain: Sprite2D
 var guard: Sprite2D
 var incantation: Sprite2D
@@ -51,6 +57,14 @@ func configure(profile: AchillesSpriteVisualProfile) -> bool:
 	drain.name = "Prelevement"
 	add_child(drain)
 	drain.configure(profile)
+	spectral = SpectralBody.new()
+	spectral.name = "PassageSpectral"
+	add_child(spectral)
+	spectral.configure(profile)
+	renew = RenewBody.new()
+	renew.name = "SecondeAurore"
+	add_child(renew)
+	renew.configure(profile)
 	return true
 
 
@@ -68,57 +82,53 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 	var id := str(presentation.get("spell_id", str(action_id).trim_prefix("cast:")))
 	gesture_binding = Bindings.resolve(id)
 	var reference := str(gesture_binding.reference)
-	if reference == "drain":
-		if _facing == "SE":
-			return {
-				"stem": DrainBody.CLIP,
-				"duration": DrainBody.DURATION,
-				"release_seconds": DrainBody.RELEASE,
-				"release_frame": DrainBody.RELEASE_FRAME,
-				"legacy_loop": false,
-				"speed": 1.0,
-			}
-		gesture_binding["status"] = "pending_direction"
-		gesture_binding["fallback_reference"] = "t_mark"
-		gesture_binding["reason"] += " · geste directionnel existant : " + _facing
-		reference = "t_mark"
-	if reference == "guard":
-		if _facing == "SE":
-			return {
-				"stem": GuardBody.CLIP,
-				"duration": GuardBody.DURATION,
-				"release_seconds": GuardBody.RELEASE,
-				"release_frame": GuardBody.RELEASE_FRAME,
-				"legacy_loop": false,
-				"speed": 1.0,
-			}
-		gesture_binding["status"] = "pending_direction"
-		gesture_binding["fallback_reference"] = "idle"
-		gesture_binding["reason"] += " · garde neutre : orientation non dessinée " + _facing
+	if reference == "renew":
+		var compact := id == "cc2_l02"
 		return {
-			"stem": "idle",
+			"stem": RenewBody.CLIP,
+			"duration": RenewBody.SHORT_DURATION if compact else RenewBody.DURATION,
+			"release_seconds": RenewBody.SHORT_RELEASE if compact else RenewBody.RELEASE,
+			"release_frame": 4 if compact else 6,
+			"legacy_loop": false,
+			"speed": 1.0,
+		}
+	if reference == "blink":
+		return {
+			"stem": SpectralBody.CLIP,
+			"duration": SpectralBody.DURATION,
+			"release_seconds": SpectralBody.RELEASE,
+			"release_frame": SpectralBody.RELEASE_FRAME,
+			"legacy_loop": false,
+			"speed": 1.0,
+		}
+	if reference == "drain":
+		return {
+			"stem": DrainBody.CLIP,
+			"duration": DrainBody.DURATION,
+			"release_seconds": DrainBody.RELEASE,
+			"release_frame": DrainBody.RELEASE_FRAME,
+			"legacy_loop": false,
+			"speed": 1.0,
+		}
+	if reference == "guard":
+		return {
+			"stem": GuardBody.CLIP,
 			"duration": GuardBody.DURATION,
 			"release_seconds": GuardBody.RELEASE,
-			"release_frame": 0,
+			"release_frame": GuardBody.RELEASE_FRAME,
 			"legacy_loop": false,
 			"speed": 1.0,
 		}
 	if reference == "incantation":
-		if _facing == "SE":
-			return {
-				"stem": IncantationBody.CLIP,
-				"duration": IncantationBody.DURATION,
-				"release_seconds": IncantationBody.RELEASE,
-				"release_frame": IncantationBody.RELEASE_FRAME,
-				"legacy_loop": false,
-				"speed": 1.0,
-			}
-		# Retain an authored directional cast until this new angle is drawn.
-		gesture_binding["status"] = "pending_direction"
-		gesture_binding["fallback_reference"] = "t_mark"
-		gesture_binding["reason"] += " · incantation directionnelle existante : " + _facing
-		reference = "t_mark"
-	if reference == "pull" and _facing == "SE":
+		return {
+			"stem": IncantationBody.CLIP,
+			"duration": IncantationBody.DURATION,
+			"release_seconds": IncantationBody.RELEASE,
+			"release_frame": IncantationBody.RELEASE_FRAME,
+			"legacy_loop": false,
+			"speed": 1.0,
+		}
+	if reference == "pull":
 		return {
 			"stem": PullBody.CLIP,
 			"duration": PullBody.DURATION,
@@ -131,7 +141,7 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 		var dash := presentation.duplicate(true)
 		dash["animation_stem"] = "dash"
 		return super._action_spec(action_id, dash)
-	if reference == "kick" and _facing == "SE":
+	if reference == "kick":
 		return {
 			"stem": KICK,
 			"duration": .65,
@@ -140,9 +150,6 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 			"legacy_loop": false,
 			"speed": 1.0,
 		}
-	if reference in ["kick", "pull"]:
-		gesture_binding["status"] = "pending_direction"
-		gesture_binding["reason"] += " · orientation non dessinée : " + _facing
 	var card := Catalog.card(id)
 	if card.is_empty():
 		card = Catalog.Data.CARDS.get(reference, { })
@@ -167,6 +174,12 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 
 
 func _show_native() -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	if is_instance_valid(drain):
 		drain.hide()
 	if is_instance_valid(guard):
@@ -186,6 +199,12 @@ func _show_native() -> void:
 
 
 func _show(clip: String, frame: int) -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	if is_instance_valid(drain):
 		drain.hide()
 	if is_instance_valid(guard):
@@ -210,18 +229,32 @@ func _show(clip: String, frame: int) -> void:
 
 
 func _select_clip(stem: String) -> void:
-	if stem == DrainBody.CLIP:
+	if stem == RenewBody.CLIP:
+		renew.reset(str(_presentation.get("spell_id", "")) == "cc2_l02")
+		super._select_clip("idle")
+		_show_renew(0.0)
+	elif stem == SpectralBody.CLIP:
+		spectral.reset()
+		spectral_origin = global_position
+		super._select_clip("idle")
+		_show_spectral(0.0)
+	elif stem == DrainBody.CLIP:
+		super._select_clip("idle")
 		drain.reset_siphon()
 		_show_drain(0.0)
 	elif stem == GuardBody.CLIP:
+		super._select_clip("idle")
 		guard.reset_ward()
 		_show_guard(0.0)
 	elif stem == IncantationBody.CLIP:
+		super._select_clip("idle")
 		_show_incantation(0.0)
 	elif stem == PullBody.CLIP:
+		super._select_clip("idle")
 		_show_pull(0.0)
 	elif stem == KICK:
-		_show_kick(0)
+		super._select_clip("idle")
+		_show_kick(0, 0.0)
 	elif cards_mode and Catalog.Data.CLIPS.has(stem) and stem not in ["PR_IDLE", "PR_WALK"]:
 		_show(stem, 0)
 	else:
@@ -235,6 +268,12 @@ func _sample_weighted_clip(clip: StringName, phase: float) -> void:
 
 
 func _sample_action_at(seconds: float) -> void:
+	if cards_mode and _stem == RenewBody.CLIP:
+		_show_renew(seconds)
+		return
+	if cards_mode and _stem == SpectralBody.CLIP:
+		_show_spectral(seconds)
+		return
 	if cards_mode and _stem == DrainBody.CLIP:
 		_show_drain(seconds)
 		return
@@ -256,9 +295,9 @@ func _sample_action_at(seconds: float) -> void:
 		for i in kick_data.duration_ms.size():
 			end_ms += float(kick_data.duration_ms[i])
 			if seconds * 1000.0 < end_ms - .001:
-				_show_kick(i)
+				_show_kick(i, seconds)
 				return
-		_show_kick(7)
+		_show_kick(7, seconds)
 		return
 	_show(_stem, Catalog.frame_at(_stem, seconds))
 	body.card = Catalog.card(str(_presentation.get("spell_id", "")))
@@ -267,7 +306,14 @@ func _sample_action_at(seconds: float) -> void:
 
 
 func cancel_action() -> void:
+	var was_spectral := _stem in [SpectralBody.CLIP, RenewBody.CLIP]
 	super.cancel_action()
+	if is_instance_valid(renew):
+		renew.reset()
+	if is_instance_valid(spectral):
+		spectral.reset()
+	if was_spectral and is_instance_valid(animated_sprite):
+		_hold_idle_pose()
 	if is_instance_valid(drain):
 		drain.reset_siphon()
 		drain.hide()
@@ -286,6 +332,8 @@ func cancel_action() -> void:
 
 
 func get_vfx_origin() -> Vector2:
+	if is_instance_valid(renew) and renew.visible:
+		return renew.hand_position()
 	if is_instance_valid(drain) and drain.visible:
 		return drain.hand_position()
 	if is_instance_valid(guard) and guard.visible:
@@ -295,8 +343,7 @@ func get_vfx_origin() -> Vector2:
 	if is_instance_valid(pull) and pull.visible:
 		return pull.hand_position()
 	if is_instance_valid(kick) and kick.visible:
-		var pivot: Array = kick_data.frames[4].pivot
-		return SUPPORT * _profile.display_scale + (Vector2(429, 196) - Vector2(pivot[0], pivot[1])) * kick.scale
+		return kick.heel_position()
 	if not cards_mode:
 		return super.get_vfx_origin()
 	var drawing_scale := (
@@ -318,12 +365,27 @@ func get_runtime_state() -> Dictionary:
 	state["painted_weight"] = body.modulate.a if is_instance_valid(body) and body.visible else 0.0
 	state["directional_source"] = "autosprite_v1/" + str(state.get("animation", ""))
 	state["gesture_binding"] = gesture_binding.duplicate()
+	state["spectral_visible"] = is_instance_valid(spectral) and spectral.visible
+	if state.spectral_visible:
+		state["animation"] = SpectralBody.CLIP
+		state["frame"] = spectral.source_frame
+		state["painted_visible"] = spectral.drawing.visible
+		state["painted_weight"] = spectral.drawing.self_modulate.a
+		state["authored_direction"] = spectral.facing
+		state["mirrored"] = false
+		state["spectral_alpha"] = spectral.body_alpha
+		state["spectral_native_weight"] = spectral.native_weight
+		state["arrival_confirmed"] = spectral.arrival_confirmed
+		state["veil_frame"] = spectral.veil_frame
+		state["drawing_scale"] = spectral.drawing.scale.x
+		state["drawing_scale_y"] = spectral.drawing.scale.y
+		state["directional_source"] = spectral.drawing.texture.resource_path if spectral.painted else "autosprite_v1/idle_" + _facing
 	state["drain_visible"] = is_instance_valid(drain) and drain.visible
 	if state.drain_visible:
 		state["animation"] = DrainBody.CLIP
 		state["frame"] = drain.source_frame
 		state["painted_visible"] = true
-		state["painted_weight"] = 1.0
+		state["painted_weight"] = drain.blend
 		state["directional_source"] = drain.texture.resource_path
 		state["drawing_scale"] = drain.scale.x
 		state["drawing_scale_y"] = drain.scale.y
@@ -332,47 +394,78 @@ func get_runtime_state() -> Dictionary:
 		state["healing_glint"] = drain.siphon.glint and drain.siphon.visible
 		state["drained_hp"] = drain.hp_damage
 		state["healed_hp"] = drain.hp_healing
+		state["authored_direction"] = drain.facing
+		state["mirrored"] = false
 	state["guard_visible"] = is_instance_valid(guard) and guard.visible
 	if state.guard_visible:
 		state["animation"] = GuardBody.CLIP
 		state["frame"] = guard.source_frame
 		state["painted_visible"] = true
-		state["painted_weight"] = 1.0
+		state["painted_weight"] = guard.blend
 		state["directional_source"] = guard.texture.resource_path
 		state["drawing_scale"] = guard.scale.x
 		state["drawing_scale_y"] = guard.scale.y
 		state["ward_confirmed"] = guard.ward_confirmed
 		state["ward_visible"] = guard.ward.visible
+		state["authored_direction"] = guard.facing
+		state["mirrored"] = false
 	state["incantation_visible"] = is_instance_valid(incantation) and incantation.visible
 	if state.incantation_visible:
 		state["animation"] = IncantationBody.CLIP
 		state["frame"] = incantation.source_frame
 		state["painted_visible"] = true
-		state["painted_weight"] = 1.0
+		state["painted_weight"] = incantation.blend
 		state["directional_source"] = incantation.texture.resource_path
 		state["drawing_scale"] = incantation.scale.x
 		state["drawing_scale_y"] = incantation.scale.y
+		state["authored_direction"] = incantation.facing
+		state["mirrored"] = false
 	state["pull_visible"] = is_instance_valid(pull) and pull.visible
 	if state.pull_visible:
 		state["animation"] = PullBody.CLIP
 		state["frame"] = pull.source_frame
 		state["painted_visible"] = true
-		state["painted_weight"] = 1.0
+		state["painted_weight"] = pull.blend
 		state["directional_source"] = pull.texture.resource_path
 		state["drawing_scale"] = pull.scale.x
+		state["drawing_scale_y"] = pull.scale.y
+		state["authored_direction"] = pull.facing
+		state["mirrored"] = false
 	state["s24_prototype"] = is_instance_valid(kick) and kick.visible
 	if state.s24_prototype:
 		state["animation"] = KICK
 		state["frame"] = kick_frame
 		state["painted_visible"] = true
 		state["painted_weight"] = 1.0
-		state["directional_source"] = KICK_ATLAS.resource_path
+		state["directional_source"] = kick.texture.resource_path
+		state["authored_direction"] = kick.facing
+		state["source_frame"] = kick.source_frame
+		state["painted_weight"] = kick.blend
+		state["mirrored"] = false
 		state["drawing_scale"] = kick.scale.x
 	if cards_mode and is_instance_valid(body) and body.visible:
 		state["animation"] = body.current_clip
 		state["frame"] = body.current_frame
 		state["mirrored"] = body.transform.x.x < 0
 		state["directional_source"] = Directions.source(body.current_clip, _facing)
+	state["renew_visible"] = is_instance_valid(renew) and renew.visible
+	if state.renew_visible:
+		state["animation"] = RenewBody.CLIP
+		state["authored_direction"] = renew.facing
+		state["mirrored"] = false
+		state["frame"] = renew.source_frame
+		state["renew_compact"] = renew.compact
+		state["renew_confirmed"] = renew.confirmed
+		state["renew_healing"] = renew.healing
+		state["renew_guard"] = renew.guard_gain
+		state["renew_heal_visible"] = renew.healing_visible
+		state["renew_guard_visible"] = renew.guard_visible
+		state["painted_weight"] = renew.blend
+		if renew.painted:
+			state["painted_visible"] = renew.drawing.visible
+			state["drawing_scale"] = renew.drawing.scale.x
+			state["drawing_scale_y"] = renew.drawing.scale.y
+			state["directional_source"] = renew.drawing.texture.resource_path
 	return state
 
 
@@ -382,23 +475,19 @@ func _configure_kick(profile: AchillesSpriteVisualProfile) -> void:
 			"res://assets/characters/PasseRive/sprites_s24/kick_high.json"
 		)
 	)
-	kick = Sprite2D.new()
+	kick = KickBody.new()
 	kick.name = "CoupDeTalonHigh"
-	kick.texture = KICK_ATLAS
-	kick.centered = false
-	kick.region_enabled = true
-	kick.region_filter_clip_enabled = true
-	kick.material = Appearance.material_for("")
-	for group in kick_data.palette:
-		for field in ["gain", "center"]:
-			var rgb: Array = kick_data.palette[group][field]
-			kick.material.set_shader_parameter(group + "_" + field, Vector3(rgb[0], rgb[1], rgb[2]))
-	kick.material.set_shader_parameter("display_scale", profile.display_scale)
 	add_child(kick)
-	kick.hide()
+	kick.configure(profile)
 
 
-func _show_kick(frame: int) -> void:
+func _show_kick(frame: int, seconds: float = -1.0) -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	if is_instance_valid(drain):
 		drain.hide()
 	if is_instance_valid(guard):
@@ -412,16 +501,18 @@ func _show_kick(frame: int) -> void:
 	kick_frame = frame
 	animated_sprite.hide()
 	body.hide()
-	kick.show()
-	var data: Dictionary = kick_data.frames[frame]
-	var region: Array = data.region
-	kick.region_rect = Rect2(region[0], region[1], region[2], region[3])
-	var factor := _profile.display_scale * Appearance.SOURCE_HEIGHT / float(kick_data.source_height)
-	kick.scale = Vector2.ONE * factor
-	kick.position = SUPPORT * _profile.display_scale - Vector2(data.pivot[0], data.pivot[1]) * factor
+	var native_weight: float = kick.sample_frame(frame, _facing, seconds)
+	animated_sprite.self_modulate.a = native_weight
+	animated_sprite.visible = native_weight > 0.0
 
 
 func _show_pull(seconds: float) -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	if is_instance_valid(drain):
 		drain.hide()
 	if is_instance_valid(guard):
@@ -431,10 +522,18 @@ func _show_pull(seconds: float) -> void:
 	animated_sprite.hide()
 	body.hide()
 	kick.hide()
-	pull.sample(seconds)
+	var native_weight: float = pull.sample(seconds, _facing)
+	animated_sprite.self_modulate.a = native_weight
+	animated_sprite.visible = native_weight > 0.0
 
 
 func _show_incantation(seconds: float) -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	if is_instance_valid(drain):
 		drain.hide()
 	if is_instance_valid(guard):
@@ -443,10 +542,18 @@ func _show_incantation(seconds: float) -> void:
 	body.hide()
 	kick.hide()
 	pull.hide()
-	incantation.sample(seconds)
+	var native_weight: float = incantation.sample(seconds, _facing)
+	animated_sprite.self_modulate.a = native_weight
+	animated_sprite.visible = native_weight > 0.0
 
 
 func _show_guard(seconds: float) -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	if is_instance_valid(drain):
 		drain.hide()
 	animated_sprite.hide()
@@ -454,7 +561,9 @@ func _show_guard(seconds: float) -> void:
 	kick.hide()
 	pull.hide()
 	incantation.hide()
-	guard.sample(seconds)
+	var native_weight: float = guard.sample(seconds, _facing)
+	animated_sprite.self_modulate.a = native_weight
+	animated_sprite.visible = native_weight > 0.0
 
 
 func confirm_guard_ward() -> void:
@@ -463,13 +572,21 @@ func confirm_guard_ward() -> void:
 
 
 func _show_drain(seconds: float) -> void:
+	if is_instance_valid(renew):
+		renew.hide()
+	if is_instance_valid(spectral):
+		spectral.hide()
+	if is_instance_valid(animated_sprite):
+		animated_sprite.self_modulate = Color.WHITE
 	animated_sprite.hide()
 	body.hide()
 	kick.hide()
 	pull.hide()
 	incantation.hide()
 	guard.hide()
-	drain.sample(seconds)
+	var native_weight: float = drain.sample(seconds, _facing)
+	animated_sprite.self_modulate.a = native_weight
+	animated_sprite.visible = native_weight > 0.0
 
 
 func confirm_drain(point: Vector2, damage: int, healing: int) -> bool:
@@ -487,3 +604,39 @@ func owns_drain_heal_feedback() -> bool:
 				and drain.seconds >= DrainBody.RELEASE
 		and not drain.siphon_confirmed
 	)
+
+
+func _show_spectral(seconds: float) -> void:
+	_show_native()
+	# Battle has already snapped the public UnitView to the resolved cell.
+	# Camera movement cannot change this world-space anchor.
+	if _release_emitted and global_position.distance_squared_to(spectral_origin) > .0001:
+		spectral.arrival_confirmed = true
+	animated_sprite.self_modulate.a = spectral.sample(seconds, _facing)
+
+
+func owns_spectral_feedback() -> bool:
+	return (
+		cards_mode and _action_pending and _stem == SpectralBody.CLIP
+		and is_instance_valid(spectral) and spectral.visible
+	)
+
+
+func _show_renew(seconds: float) -> void:
+	_show_native()
+	var native_weight: float = renew.sample(seconds, _facing)
+	animated_sprite.self_modulate.a = native_weight
+
+
+func owns_renew_feedback() -> bool:
+	return (
+		cards_mode and _action_pending and _stem == RenewBody.CLIP
+		and is_instance_valid(renew) and renew.visible and not renew.confirmed
+		and renew.seconds + .000001 >= renew.release_time()
+	)
+
+
+func confirm_renew(spell_id: String, healing: int, guard_gain: int) -> bool:
+	if not owns_renew_feedback() or str(_presentation.get("spell_id", "")) != spell_id:
+		return false
+	return renew.confirm_result(healing, guard_gain)

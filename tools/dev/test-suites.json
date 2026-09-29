@@ -6,6 +6,15 @@
       "test_passe_rive_s25.gd",
       "test_passe_rive_s27.gd",
       "test_passe_rive_s28.gd",
+      "test_passe_rive_s29.gd",
+      "test_passe_rive_s30.gd",
+      "test_passe_rive_kick_directions.gd",
+      "test_passe_rive_pull_directions.gd",
+      "test_passe_rive_incantation_directions.gd",
+      "test_passe_rive_guard_directions.gd",
+      "test_passe_rive_drain_directions.gd",
+      "test_passe_rive_spectral_directions.gd",
+        "test_passe_rive_renew_directions.gd",
       "test_passe_rive_s26.gd"
     ]
   },

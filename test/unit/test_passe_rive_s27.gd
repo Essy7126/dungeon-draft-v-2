@@ -67,8 +67,9 @@ func test_all_poses_keep_scale_ground_and_hand_registration_across_profile_sizes
 			assert_true(node.get_vfx_origin().is_equal_approx(node.guard.hand_position()))
 			assert_false(
 				node.body.visible or node.kick.visible or node.pull.visible
-				or node.incantation.visible or node.animated_sprite.visible
+				or node.incantation.visible
 			)
+			assert_almost_eq(node.animated_sprite.self_modulate.a + node.guard.self_modulate.a, 1.0, .00001)
 			edge += float(node.guard.data.duration_ms[i]) / 1000.0
 		assert_almost_eq(
 			scale.y * float(node.guard.data.source_height),
@@ -78,7 +79,7 @@ func test_all_poses_keep_scale_ground_and_hand_registration_across_profile_sizes
 		assert_almost_eq(scale.x / scale.y, .93, .0001, "One fixed width calibration")
 
 
-func test_other_directions_keep_native_guard_and_release_once() -> void:
+func test_other_directions_use_authored_guard_and_release_once() -> void:
 	var node := backend()
 	var releases: Array = []
 	node.action_release_reached.connect(
@@ -88,11 +89,12 @@ func test_other_directions_keep_native_guard_and_release_once() -> void:
 	for facing in ["N", "NE", "E", "S", "SW", "W", "NW"]:
 		releases.clear()
 		node.play_action(facing, &"cast", { "spell_id": "cc2_n02" })
-		assert_false(node.guard.visible)
-		assert_eq(node.get_runtime_state().gesture_binding.status, "pending_direction")
+		assert_true(node.guard.visible)
+		assert_eq(node.get_runtime_state().gesture_binding.status, "assigned")
 		node.advance_simulation(3.0)
 		assert_eq(releases.size(), 1)
-		assert_eq(releases[0].animation, "idle_" + facing)
+		assert_eq(releases[0].animation, Body.CLIP)
+		assert_eq(releases[0].authored_direction, facing)
 		assert_eq(node.get_runtime_state().animation, "idle_" + facing)
 
 

@@ -1,0 +1,207 @@
+{
+  "status": "Proposition non implementee ; arithmetique, pas equilibrage valide",
+  "observed_head": "5b3553c07472180d4af08ce4ebdd5ed42362766f",
+  "catalog_sha256": "f7858b253a6af464563e18b25fc55cc504bde2b0ef40e37859339639bdfe10df",
+  "source_sha256": {
+    "core\\expedition\\consumable_card_math.gd": "4510be68667da8d2d6b04d882503aa2a8cd50873e9451645216a46139e9a979c",
+    "core\\expedition\\consumable_card_economy.gd": "8cbd58c85e1290d8d7f5f8d967580bcd03456117ceeccc7a9e73c499adccbe7a"
+  },
+  "loot_assumptions": "Tirages independants par canal/copie ; un ennemi eligible, aucun abandon de butin ; boss final exclu.",
+  "classes": {
+    "assassin": {
+      "normal_counts": {
+        "native": 4,
+        "shared": 8,
+        "foreign": 12
+      },
+      "normal_native_probability": 0.2333333333333333,
+      "normal_shared_probability": 0.4666666666666666,
+      "normal_foreign_probability": 0.3,
+      "stages": [
+        {
+          "expected_copies": 3.105,
+          "expected_native_copies": 0.7734999999999999,
+          "probability_no_native": 0.44383967568163585
+        },
+        {
+          "expected_copies": 3.4160000000000004,
+          "expected_native_copies": 0.8971666666666666,
+          "probability_no_native": 0.3979197794633334
+        },
+        {
+          "expected_copies": 3.9043,
+          "expected_native_copies": 1.0966666666666667,
+          "probability_no_native": 0.33003718578
+        },
+        {
+          "expected_copies": 4.4517,
+          "expected_native_copies": 1.3346666666666667,
+          "probability_no_native": 0.26008101331200006
+        }
+      ],
+      "first_stage_one_enemy_after_guaranteed_native_replacement": 1.5401666666666665
+    },
+    "gardien": {
+      "normal_counts": {
+        "native": 4,
+        "shared": 8,
+        "foreign": 12
+      },
+      "normal_native_probability": 0.2333333333333333,
+      "normal_shared_probability": 0.4666666666666666,
+      "normal_foreign_probability": 0.3,
+      "stages": [
+        {
+          "expected_copies": 3.105,
+          "expected_native_copies": 0.7734999999999999,
+          "probability_no_native": 0.44383967568163585
+        },
+        {
+          "expected_copies": 3.4160000000000004,
+          "expected_native_copies": 0.8971666666666666,
+          "probability_no_native": 0.3979197794633334
+        },
+        {
+          "expected_copies": 3.9043,
+          "expected_native_copies": 1.0966666666666667,
+          "probability_no_native": 0.33003718578
+        },
+        {
+          "expected_copies": 4.4517,
+          "expected_native_copies": 1.3346666666666667,
+          "probability_no_native": 0.26008101331200006
+        }
+      ],
+      "first_stage_one_enemy_after_guaranteed_native_replacement": 1.5401666666666665
+    },
+    "arpenteur": {
+      "normal_counts": {
+        "native": 4,
+        "shared": 8,
+        "foreign": 12
+      },
+      "normal_native_probability": 0.2333333333333333,
+      "normal_shared_probability": 0.4666666666666666,
+      "normal_foreign_probability": 0.3,
+      "stages": [
+        {
+          "expected_copies": 3.105,
+          "expected_native_copies": 0.7734999999999999,
+          "probability_no_native": 0.44383967568163585
+        },
+        {
+          "expected_copies": 3.4160000000000004,
+          "expected_native_copies": 0.8971666666666666,
+          "probability_no_native": 0.3979197794633334
+        },
+        {
+          "expected_copies": 3.9043,
+          "expected_native_copies": 1.0966666666666667,
+          "probability_no_native": 0.33003718578
+        },
+        {
+          "expected_copies": 4.4517,
+          "expected_native_copies": 1.3346666666666667,
+          "probability_no_native": 0.26008101331200006
+        }
+      ],
+      "first_stage_one_enemy_after_guaranteed_native_replacement": 1.5401666666666665
+    },
+    "thaumaturge": {
+      "normal_counts": {
+        "native": 4,
+        "shared": 8,
+        "foreign": 12
+      },
+      "normal_native_probability": 0.2333333333333333,
+      "normal_shared_probability": 0.4666666666666666,
+      "normal_foreign_probability": 0.3,
+      "stages": [
+        {
+          "expected_copies": 3.105,
+          "expected_native_copies": 0.7734999999999999,
+          "probability_no_native": 0.44383967568163585
+        },
+        {
+          "expected_copies": 3.4160000000000004,
+          "expected_native_copies": 0.8971666666666666,
+          "probability_no_native": 0.3979197794633334
+        },
+        {
+          "expected_copies": 3.9043,
+          "expected_native_copies": 1.0966666666666667,
+          "probability_no_native": 0.33003718578
+        },
+        {
+          "expected_copies": 4.4517,
+          "expected_native_copies": 1.3346666666666667,
+          "probability_no_native": 0.26008101331200006
+        }
+      ],
+      "first_stage_one_enemy_after_guaranteed_native_replacement": 1.5401666666666665
+    }
+  },
+  "replacement_assumptions": "Une copie normale predesignee devient une normale native choisie ; nombre et rarete inchanges. Calcul pour un ennemi ; ne pas multiplier le gain par le nombre de monstres.",
+  "normal_four_copy_batch": {
+    "current_probability_no_native": 0.34548271604938263,
+    "alternative_50_percent_probability_no_native": 0.0625,
+    "note": "Lot fixe de 4 copies : distinct du nombre aleatoire de copies par ennemi."
+  },
+  "level_5_no_equipment_no_resistance_no_passive": {
+    "P": 40,
+    "fallback_current": 11,
+    "estoc_Force0": 22,
+    "estoc_Force4": 26,
+    "trait_court_Finesse0": 18,
+    "trait_court_Finesse4": 22,
+    "garde_ferme_Tenacite0": 46,
+    "garde_ferme_Tenacite4": 55,
+    "braise_impact_Esprit0": 22,
+    "braise_impact_Esprit4": 26,
+    "braise_tick_Esprit0": 7,
+    "braise_tick_Esprit4": 9
+  },
+  "basic_prototypes_P40_attributes0": {
+    "assassin": {
+      "impact": 9,
+      "impact_isolated_with_passive": 19,
+      "mark_for_next_card": 6
+    },
+    "gardien": {
+      "impact": 8,
+      "guard": 8,
+      "conditional_existing_retaliation": 10
+    },
+    "arpenteur": {
+      "impact": 11,
+      "range": [
+        2,
+        4
+      ],
+      "anchor_cost_mp": 1
+    },
+    "thaumaturge": {
+      "impact": 6,
+      "one_tick": 3,
+      "conditional_existing_passive_guard": 8
+    }
+  },
+  "multipliers": {
+    "base": 40,
+    "native_25_percent": 50.0,
+    "three_separate_25_percent_multipliers": 78.125,
+    "three_additive_25_percent_bonuses": 70.0
+  },
+  "mobility_discrete": {
+    "free_mp_increment_from_3_to_4_percent": 33.33333333333333,
+    "one_extra_cell_on_two_cell_movement_percent": 50
+  },
+  "budget": {
+    "proposed_innate_attribute_points": 3,
+    "existing_earned_points_at_level_12": 6,
+    "proposed_per_attribute_cap": 8,
+    "proposed_max_tagged_effect_bonus_percent": 40,
+    "proposed_Tenacite_max_hp_bonus_percent": 24
+  },
+  "arithmetic_checks": 18
+}

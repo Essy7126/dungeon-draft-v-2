@@ -7,11 +7,40 @@ les haltes de Catabase. Il n'existe plus de troisième variante publique.
 
 ## Jouer
 
+L'interface appelle **sort** une action nommée et **carte** un exemplaire utilisable
+une fois dans la run. Les noms techniques `family` et `copy` restent dans les données.
+Au départ, les classes présentent leur style, leur bonus et une combinaison à essayer.
+L'aide **Comprendre les cartes et les sorts** explique les règles de préparation.
+Les fiches affichent des effets chiffrés selon la Puissance actuelle ; **Lien avec
+la Puissance** expose les pourcentages à la demande. Les protections et bonus
+conditionnels peuvent modifier ces valeurs de base en combat.
+
 - **Sorts & deck** : préparer zéro à trente copies, trois au plus par famille ;
   laisser le reste en réserve ; choisir une copie normale d'ouverture facultative.
+  Deux collections distinctes affichent leurs propres exemplaires : **Deck préparé**
+  (piochable) et **Réserve** (hors pioche). Les boutons +1/−1 déplacent un exemplaire,
+  avec les mêmes limites et sauvegardes que les commandes existantes.
+  La fiche reste à droite ; recherche, rôle, affinité et rareté filtrent les deux
+  collections sans modifier le deck. Coût, quantité, affinité et rareté sont visibles
+  sur chaque pile ; la rareté possède aussi une bordure colorée.
+  L'aide **Les familles ?** distingue l'affinité de classe, le rôle, la rareté et
+  la famille de sort (tous les exemplaires d'un même sort). L'affinité détermine
+  le catalogue de départ, pas une interdiction d'emprunter des cartes en cours
+  de run. Le bonus de classe reste celui choisi au départ. Aucune famille
+  élémentaire indépendante n'est actuellement définie dans les règles.
 - **Classe & améliorations** : attributs tous les deux niveaux, spécialisation
   au niveau 4, améliorations de famille aux niveaux 4, 8 et 12.
 - **Inventaire** : six emplacements d'équipement et deux reliques distinctes.
+  La fiche compare les valeurs permanentes avant/après équipement ou retrait,
+  précise les plafonds et garde l'action accessible sous le détail défilant.
+  Recherche par nom, filtre d'emplacement et filtre **Dernier butin** permettent
+  de retrouver les objets encore possédés du dernier combat enregistré.
+- Dans **Sorts & deck**, le filtre **Dernier butin** retrouve également les familles
+  acquises. Les fiches distinguent quantités reçues et quantités encore disponibles.
+  Ces repères restent disponibles après reprise et changement de salle.
+- Dans **Caractéristiques**, **Origine des statistiques** détaille la base du
+  niveau, les attributs et l'apport effectif de l'équipement après arrondis/plafonds.
+  Les effets conditionnels restent séparés du total permanent.
 - En combat, utiliser la main dans le HUD habituel et cibler sur la vraie carte.
   Une famille ne se joue qu'une fois par tour. Chaque copie jouée disparaît de
   la traversée ; les copies non jouées sont défaussées puis repiochées.

@@ -104,7 +104,7 @@ func _ready() -> void:
 		P.label(loot, "Aucun objet obtenu", 16)
 	var hint := P.label(
 		self,
-		"Survolez un drop pour lire sa fiche. Les cartes rejoignent la réserve ; les objets restent dans l’inventaire.",
+		"Survolez un drop pour lire sa fiche. Cartes → réserve ; objets → inventaire. Retrouvez-les ensuite avec le filtre « Dernier butin ».",
 		14,
 	)
 	hint.add_theme_color_override("font_color", Color("abc0b5"))
