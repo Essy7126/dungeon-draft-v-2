@@ -190,6 +190,7 @@
   },
   "selection": {
     "patterns": [
+      "test_classic_selection_presentation.gd",
       "test_character_selection_screen.gd",
       "test_selection_quality_v2.gd",
       "test_philosopher_selection_layout.gd",
