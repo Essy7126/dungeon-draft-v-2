@@ -319,7 +319,8 @@ func _create_decision_window() -> void:
 		_decision_panel.add_theme_stylebox_override("panel", drawn)
 	center.add_child(_decision_panel)
 	if GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
-		_decision_panel.add_theme_stylebox_override("panel", DOSSIER_THEME.surface(false, 20))
+		_decision_panel.add_theme_stylebox_override("panel", DOSSIER_THEME.window_surface(20))
+		_decision_panel.theme = DOSSIER_THEME.interface_theme()
 	_body = VBoxContainer.new()
 	_body.add_theme_constant_override("separation", 12)
 	_decision_panel.add_child(_body)
@@ -344,7 +345,7 @@ func _create_decision_window() -> void:
 			var tab := _button(tabs, entry[1], _page == entry[0])
 			if GameManager.expedition.uses_consumable_cards() and entry[0] == "build": tab.text = "Classe & améliorations"
 			if GameManager.expedition.uses_consumable_cards():
-				DOSSIER_THEME.button(tab, _page == entry[0])
+				DOSSIER_THEME.navigation_button(tab, _page == entry[0])
 				tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			tab.pressed.connect(func(): _navigate(entry[0]))
 
@@ -1484,7 +1485,8 @@ func _button(parent: Control, value: String, primary: bool = false) -> Button:
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	ART_THEME.apply_button(button, primary)
 	if GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
-		DOSSIER_THEME.button(button, primary)
+		DOSSIER_THEME.button(button)
+		if primary: DOSSIER_THEME.primary_button(button)
 	parent.add_child(button)
 	return button
 

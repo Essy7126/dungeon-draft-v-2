@@ -209,3 +209,13 @@ func test_hover_tracks_scaled_sprite_head_and_ignores_transparent_margins() -> v
 		hover.pick_unit(Vector2(845, 200)),
 		"Les marges transparentes ne capturent pas le survol",
 	)
+
+
+func test_hover_ignores_freed_view_during_death_cleanup() -> void:
+	var battle := _battle()
+	var hover = _hover(battle)
+	var view := Node2D.new()
+	battle.add_child(view)
+	battle._unit_views[enemy] = view
+	view.free()
+	assert_null(hover.pick_unit(Vector2(-40, -40)))

@@ -10,8 +10,9 @@ func _ready() -> void:
 func _exercise() -> void:
 	capture_mode = false
 	await super._exercise()
-	await _scale_boards(true)
-	await _transitions()
+	if "--room-scale-only" not in OS.get_cmdline_user_args():
+		await _scale_boards(true)
+		await _transitions()
 	await _room_audit()
 	_finish()
 
@@ -113,8 +114,12 @@ func _room_audit() -> void:
 		await get_tree().process_frame
 		var actual: float = Appearance.SOURCE_HEIGHT * visual.sprite_profile.display_scale
 		actual *= visual.get_global_transform_with_canvas().y.length()
-		var expected: float = Appearance.screen_height(get_viewport().get_visible_rect().size)
-		_check(absf(actual - expected) < .1, "Same screen stature: " + path)
+		var owner: Node2D = battle._unit_views[hero]
+		var authored: Vector2 = owner._painted_optional_base_scale * owner.get_painted_visual_scale()
+		var expected: float = Appearance.SOURCE_HEIGHT * visual.sprite_profile.display_scale * authored.y
+		expected *= (visual.get_parent() as Node2D).get_global_transform_with_canvas().y.length()
+		_check(visual.scale.is_equal_approx(authored), "No per-hero framing compensation: " + path)
+		_check(absf(actual - expected) < .1, "Stature follows calibrated terrain: " + path)
 		results.append(
 			{ "room": path, "height": actual, "expected": expected, "view_scale": visual.scale.x }
 		)
@@ -134,10 +139,14 @@ func _room_audit() -> void:
 			await get_tree().process_frame
 			var resized: float = Appearance.SOURCE_HEIGHT * visual.sprite_profile.display_scale
 			resized *= visual.get_global_transform_with_canvas().y.length()
-			var resize_target: float = Appearance.screen_height(
-				get_viewport().get_visible_rect().size
+			var resize_target: float = Appearance.SOURCE_HEIGHT
+			resize_target *= visual.sprite_profile.display_scale
+			var parent_canvas := (visual.get_parent() as Node2D).get_global_transform_with_canvas()
+			resize_target *= authored.y * parent_canvas.y.length()
+			_check(
+				absf(resized - resize_target) < .1,
+				"Resize preserves terrain-relative stature: " + path,
 			)
-			_check(absf(resized - resize_target) < .1, "Resize recalibrates stature: " + path)
 			get_window().size = Vector2i(1440, 950)
 			get_tree().root.content_scale_size = Vector2i(1440, 950)
 			await get_tree().process_frame
@@ -176,8 +185,10 @@ func _room_audit() -> void:
 			await get_tree().process_frame
 			var actual: float = Appearance.SOURCE_HEIGHT * hall.player.display_scale
 			actual *= hall.player.get_global_transform_with_canvas().y.length()
-			var expected: float = Appearance.screen_height(get_viewport().get_visible_rect().size)
-			_check(absf(actual - expected) < .1, "Same halt stature: " + id)
+			var expected: float = Hall.ScaleReference.height_ratio(hall.definition)
+			expected *= Hall.ScaleReference.world_height(hall.definition)
+			expected *= hall.world.get_global_transform_with_canvas().y.length()
+			_check(absf(actual - expected) < .1, "Authored halt stature: " + id)
 			results.append(
 				{
 					"room": id,

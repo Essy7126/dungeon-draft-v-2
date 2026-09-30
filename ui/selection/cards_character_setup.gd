@@ -45,7 +45,7 @@ const HEADING := preload("res://asset/ui/character_selection/selection_title_fon
 func configure(value: Array[Dictionary]) -> void:
 	entries = value
 	hero = mini(2, entries.size() - 1)
-	theme = preload("res://ui/expedition/catabase_ui_theme.gd").get_theme()
+	theme = D.interface_theme(preload("res://ui/expedition/catabase_ui_theme.gd").get_theme())
 	add_theme_font_override("font", D.FONT)
 	add_theme_color_override("font_color", D.PAPER)
 	for side in ["left", "right", "top", "bottom"]:
@@ -85,7 +85,7 @@ func configure(value: Array[Dictionary]) -> void:
 	stage.add_theme_constant_override("separation", 8)
 	columns.add_child(stage)
 	var identity := PanelContainer.new()
-	identity.add_theme_stylebox_override("panel", D.surface(false, 12))
+	identity.add_theme_stylebox_override("panel", D.framed_surface(12))
 	stage.add_child(identity)
 	var title_row := HBoxContainer.new()
 	identity.add_child(title_row)
@@ -125,7 +125,7 @@ func configure(value: Array[Dictionary]) -> void:
 		_pose_buttons.append(pose_button)
 	_action(poses, "›", "SetupRotateRight").pressed.connect(_rotate.bind(1))
 	var summary_panel := PanelContainer.new()
-	summary_panel.add_theme_stylebox_override("panel", D.surface(false, 12))
+	summary_panel.add_theme_stylebox_override("panel", D.framed_surface(12))
 	stage.add_child(summary_panel)
 	var summary_body := VBoxContainer.new()
 	summary_body.add_theme_constant_override("separation", 8)
@@ -199,15 +199,7 @@ func _render() -> void:
 		for child in parent.get_children():
 			parent.remove_child(child)
 			child.queue_free()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("28221ef5")
-	style.border_color = GOLD.darkened(.3)
-	style.set_border_width_all(1)
-	style.border_width_top = 3
-	style.set_corner_radius_all(9)
-	for side in ["left", "right", "top", "bottom"]:
-		style.set("content_margin_" + side, 16.)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", D.window_surface(16))
 	_class_label.text = Catalog.CLASSES[selection.class_id][0] + "  ·  Niveau 1"
 	_class_label.modulate = _accent()
 	_crest.texture = Catalog.icon(selection.class_id)
@@ -232,13 +224,13 @@ func _render() -> void:
 			spell.spell_name,
 			spell.ap_cost,
 			_range(spell),
-			Language.effect(Catalog.Rules.card(id), float(Readability.Math.Progression.POWER[0]), _preview_cards()),
+			Language.effect(
+				Catalog.Rules.card(id),
+				float(Readability.Math.Progression.POWER[0]),
+				_preview_cards(),
+			),
 		]
-	CardSkin.icon_button(start_button, GOLD)
-	var launch_style := CardSkin.surface(GOLD, true, 10)
-	launch_style.bg_color = Color("584330")
-	start_button.add_theme_stylebox_override("normal", launch_style)
-	start_button.add_theme_font_size_override("font_size", 22)
+
 	for index in STEPS.size():
 		var button := Button.new()
 		button.name = "SetupStep_%d" % index
@@ -279,7 +271,12 @@ func _render() -> void:
 		D.button(button, button.button_pressed)
 		button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		button.add_theme_stylebox_override("hover_pressed", D.surface(true, 9))
-	start_button.add_theme_stylebox_override("normal", launch_style)
+	for nav_button in _nav.get_children():
+		D.navigation_button(nav_button, nav_button.button_pressed)
+	D.primary_button(start_button)
+	var add_card := find_child("ToggleStarter", true, false) as Button
+	if add_card != null:
+		D.primary_button(add_card)
 	start_button.add_theme_font_size_override("font_size", 22)
 	_restore_focus.call_deferred(focus_name)
 
@@ -442,7 +439,15 @@ func _render_cards() -> void:
 	PAGE.text(detail, "%d PA  ·  %s" % [selected_spell.ap_cost, _range(selected_spell)], 18)
 	var selected_row := Catalog.Rules.card(_inspected)
 	PAGE.text(detail, Language.identity(selected_row), 15).modulate = GOLD
-	PAGE.text(detail, Language.effect(selected_row, float(Readability.Math.Progression.POWER[0]), _preview_cards()), 17)
+	PAGE.text(
+		detail,
+		Language.effect(
+			selected_row,
+			float(Readability.Math.Progression.POWER[0]),
+			_preview_cards(),
+		),
+		17,
+	)
 	var scaling_toggle := _action(
 		detail,
 		"Lien avec la Puissance  " + ("−" if _show_scaling else "+"),
@@ -575,9 +580,14 @@ func _preview_cards():
 
 func _render_initial_masteries(parent: Node) -> void:
 	var rules = preload("res://core/expedition/consumable_progression_v1.gd")
-	if not selection.has("masteries"): selection.masteries = rules.empty_elements()
+	if not selection.has("masteries"):
+		selection.masteries = rules.empty_elements()
 	PAGE.text(parent, "Prototype v1 · 4 points élémentaires de départ", 21).modulate = GOLD
-	var remaining := PAGE.text(parent, "%d point(s) restant(s)" % (4 - rules.spent(selection.masteries)), 16)
+	var remaining := PAGE.text(
+		parent,
+		"%d point(s) restant(s)" % (4 - rules.spent(selection.masteries)),
+		16,
+	)
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -599,17 +609,29 @@ func _render_initial_masteries(parent: Node) -> void:
 		input.custom_minimum_size.x = 88
 		input.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(input)
-		input.value_changed.connect(func(value):
-			var available := 4 - rules.spent(selection.masteries) + int(selection.masteries[id])
-			selection.masteries[id] = mini(int(value), available)
-			input.set_value_no_signal(selection.masteries[id])
-			remaining.text = "%d point(s) restant(s) · +3 %% de maîtrise par point" % (4 - rules.spent(selection.masteries))
-			_refresh_mastery_preview()
+		input.value_changed.connect(
+			func(value):
+				var available := 4 - rules.spent(selection.masteries) + int(selection.masteries[id])
+				selection.masteries[id] = mini(int(value), available)
+				input.set_value_no_signal(selection.masteries[id])
+				remaining.text = "%d point(s) restant(s) · +3 %% de maîtrise par point" % (
+					4 - rules.spent(selection.masteries)
+				)
+				_refresh_mastery_preview(),
 		)
 	var basic := Catalog.Spells.definition("fallback_strike", false, selection.class_id)
-	var label := PAGE.text(parent, "Attaque permanente : " + str(basic.name) + "\n" + Language.effect(basic, float(rules.POWER[0]), _preview_cards()), 16)
+	var label := PAGE.text(
+		parent,
+		"Attaque permanente : " + str(basic.name) + "\n"
+		+ Language.effect(basic, float(rules.POWER[0]), _preview_cards()),
+		16,
+	)
 	label.name = "DepartureBasicAttack"
-	PAGE.text(parent, "Les points non dépensés restent disponibles après le combat. Les éléments renforcent seulement les composantes indiquées sur les sorts.", 14)
+	PAGE.text(
+		parent,
+		"Les points non dépensés restent disponibles après le combat. Les éléments renforcent seulement les composantes indiquées sur les sorts.",
+		14,
+	)
 
 
 func _refresh_mastery_preview() -> void:
@@ -618,11 +640,19 @@ func _refresh_mastery_preview() -> void:
 	var basic := Catalog.Spells.definition("fallback_strike", false, selection.class_id)
 	var label := find_child("DepartureBasicAttack", true, false) as Label
 	if label != null:
-		label.text = "Attaque permanente : " + str(basic.name) + "\n" + Language.effect(basic, power, cards)
+		label.text = "Attaque permanente : " + str(basic.name) + "\n" + Language.effect(
+			basic,
+			power,
+			cards,
+		)
 	for id in Readability.counts(selection.card_families):
 		var button := find_child("ReviewFamily_" + str(id), true, false) as Button
 		if button != null:
-			button.tooltip_text = Readability.category(id) + "\n" + Language.effect(Catalog.Rules.card(id), power, cards)
+			button.tooltip_text = Readability.category(id) + "\n" + Language.effect(
+				Catalog.Rules.card(id),
+				power,
+				cards,
+			)
 
 
 func _render_choice() -> void:

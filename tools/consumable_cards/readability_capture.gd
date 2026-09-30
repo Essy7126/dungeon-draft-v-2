@@ -12,6 +12,19 @@ func capture(label: String) -> void:
 	check(hand != null, "actual hand mounted")
 	if hand == null:
 		return
+	var captions: Array[Node] = scene.action_bar.find_children(
+		"CardUtilityCaption",
+		"Label",
+		true,
+		false,
+	)
+	check(captions.size() == 4, "all four HUD shortcuts have a visible name")
+	for caption: Label in captions:
+		check(caption.get_parent().get_global_rect().encloses(caption.get_global_rect()), "HUD name inside shortcut")
+		check(
+			caption.mouse_filter == Control.MOUSE_FILTER_IGNORE,
+			"HUD name leaves shortcut clickable",
+		)
 	_check_hand(hand, 5)
 	var button: Button = hand.find_children("Play_*", "Button", true, false)[0]
 	var hover = button.get_node("SpellHoverController")

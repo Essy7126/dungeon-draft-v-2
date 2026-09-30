@@ -22,7 +22,7 @@ func _ready() -> void:
 	masteries = session.cards.masteries.duplicate()
 	aptitudes = session.cards.aptitudes.duplicate()
 	read_only = read_only or not Integration.can_edit_progression(session)
-	add_theme_constant_override("separation", 10)
+	add_theme_constant_override("separation", 8)
 	D.label(self, "Développer mon personnage · niv. %d" % session.cards.level, 24, D.GOLD)
 	_budget = D.label(self, "", 18, D.GREEN)
 	var tabs := TabContainer.new()
@@ -59,7 +59,7 @@ func _ready() -> void:
 	_commit = Button.new()
 	_commit.name = "ApplyPrototypeAllocation"
 	_commit.text = "Appliquer cette répartition"
-	D.button(_commit)
+	D.primary_button(_commit)
 	add_child(_commit)
 	move_child(_commit, _preview.get_index())
 	_commit.pressed.connect(
@@ -131,9 +131,12 @@ func _refresh() -> void:
 		initial or returned == 0 or (returned <= 2 and Integration.correction_available(session))
 	)
 	allowed = allowed and (initial or Rules.refunded(cards.aptitudes, aptitudes) == 0)
-	_budget.text = "%d point(s) élémentaire(s) · %d aptitude(s) disponibles" % [
+	_budget.text = "%d point%s élémentaire%s · %d point%s d’aptitude" % [
 		elemental_left,
+		"s" if elemental_left > 1 else "",
+		"s" if elemental_left > 1 else "",
 		aptitude_left,
+		"s" if aptitude_left > 1 else "",
 	]
 	if not allowed:
 		_budget.text += "\nCette réaffectation nécessite une halte disponible ou une réorientation complète."

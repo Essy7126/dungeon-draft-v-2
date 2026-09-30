@@ -1,0 +1,624 @@
+{
+  "schema_version": "dd.prototype_v1.proposals.1",
+  "status": "proposal_not_loaded",
+  "defaults": {
+    "line_of_sight": true,
+    "friendly_fire": false,
+    "shape": "single",
+    "range_modifiable": true,
+    "mastery_scales_integer_utility": false,
+    "rounding": "half_up_once_per_resolved_packet",
+    "guard_cap_P": 2.5,
+    "rarity_changes_power_automatically": false,
+    "class_affinity_is_access_lock": false,
+    "duration_clock": "target_activation_start",
+    "periodic_first_tick": "next_target_activation_start",
+    "periodic_refresh": "replace_only_if_new_total_remaining_raw_is_higher; keep_entire_winning_packet",
+    "mark_refresh": "replace_only_if_new_amount_is_higher; keep_entire_winning_packet",
+    "mark_consumption": "next_consumable_direct_enemy_hit; permanent_attack_excluded",
+    "guard_expiry": "caster_next_activation_start_before_new_guard_grants",
+    "multi_effect_order": "array_order; actor_must_survive; self_effect_resolves_even_if_target_killed",
+    "class_trigger_scope": "once_per_cast_using_existing_runtime_limits",
+    "future_schema_note": "These records require an explicit adapter into Studio services and active catalog; no production loader reads this file."
+  },
+  "cards": [
+    {
+      "id": "pv1c_disque",
+      "name": "Disque d'aube",
+      "status": "proposal_not_loaded",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 2,
+      "range": [
+        2,
+        4
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "magic",
+          "coefficient": 0.8,
+          "weights": {
+            "sun": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "0": {
+          "coefficient": 0.95
+        }
+      },
+      "requires": [],
+      "purpose": "Donner au Soleil un dégât normal accessible à toutes les classes, sans en faire un élément réservé à la garde."
+    },
+    {
+      "id": "pv1c_fil",
+      "name": "Fil d'eau",
+      "status": "proposal_not_loaded",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "range": [
+        1,
+        3
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "magic",
+          "coefficient": 0.35,
+          "weights": {
+            "water": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "0": {
+          "coefficient": 0.45
+        }
+      },
+      "requires": [],
+      "purpose": "Un finisseur Eau à un PA : davantage de dégâts qu'Entrave légère, mais aucun ralentissement."
+    },
+    {
+      "id": "pv1c_tison",
+      "name": "Tison de poche",
+      "status": "proposal_not_loaded",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 1,
+      "range": [
+        1,
+        2
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "magic",
+          "coefficient": 0.3,
+          "weights": {
+            "fire": 1
+          }
+        },
+        {
+          "op": "burn",
+          "target": "enemy",
+          "kind": "magic",
+          "coefficient": 0.1,
+          "duration": 2,
+          "weights": {
+            "fire": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "0": {
+          "coefficient": 0.4
+        }
+      },
+      "requires": [
+        "coherent_periodic_refresh",
+        "flat_periodic_bonus_audit"
+      ],
+      "purpose": "Accès partagé à la brûlure ; rendement inférieur à Estoc, portée courte et rendement différé.",
+      "risk": "At P40 and Fire14, with two ticks and no defense: 25 damage alone, 45 with Embers and first Pyre trigger. Not ready for production until flat periodic bonuses are audited."
+    },
+    {
+      "id": "pv1c_pave",
+      "name": "Pavé levé",
+      "status": "proposal_not_loaded",
+      "affinity": "shared",
+      "rarity": "normal",
+      "ap": 2,
+      "range": [
+        2,
+        3
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "physical",
+          "coefficient": 0.85,
+          "weights": {
+            "earth": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "0": {
+          "coefficient": 1.0
+        }
+      },
+      "requires": [],
+      "purpose": "Terre à distance : puissance par copie, sans mobilité ni effet de contrôle ; inutilisable au contact."
+    },
+    {
+      "id": "pv1c_dette",
+      "name": "Dette de rive",
+      "status": "proposal_not_loaded",
+      "affinity": "assassin",
+      "rarity": "normal",
+      "ap": 2,
+      "range": [
+        1,
+        2
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "physical",
+          "coefficient": 0.6,
+          "weights": {
+            "night": 1
+          }
+        },
+        {
+          "op": "guard",
+          "target": "self",
+          "coefficient": 0.35,
+          "weights": {
+            "water": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "1": {
+          "coefficient": 0.5
+        }
+      },
+      "requires": [
+        "ordered_multi_effects"
+      ],
+      "purpose": "Nuit augmente l'attaque, Eau la protection. Les deux investissements servent des besoins différents au sein d'une même carte."
+    },
+    {
+      "id": "pv1c_talus",
+      "name": "Talus vivant",
+      "status": "proposal_not_loaded",
+      "affinity": "gardien",
+      "rarity": "normal",
+      "ap": 2,
+      "range": [
+        1,
+        2
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "physical",
+          "coefficient": 0.7,
+          "weights": {
+            "sun": 1
+          }
+        },
+        {
+          "op": "guard",
+          "target": "self",
+          "coefficient": 0.45,
+          "weights": {
+            "earth": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "1": {
+          "coefficient": 0.6
+        }
+      },
+      "requires": [
+        "ordered_multi_effects"
+      ],
+      "purpose": "Un Gardien Soleil offensif et Terre protecteur ; inversion volontaire du socle permanent Terre/Soleil."
+    },
+    {
+      "id": "pv1c_ressac",
+      "name": "Flèche de ressac",
+      "status": "proposal_not_loaded",
+      "affinity": "arpenteur",
+      "rarity": "normal",
+      "ap": 2,
+      "range": [
+        2,
+        4
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "physical",
+          "coefficient": 0.55,
+          "weights": {
+            "water": 1
+          }
+        },
+        {
+          "op": "push",
+          "target": "enemy",
+          "tiles": 1
+        },
+        {
+          "op": "guard",
+          "target": "self",
+          "coefficient": 0.3,
+          "weights": {
+            "wind": 1
+          },
+          "condition": "previous_push_moved_target_at_least_one_tile"
+        }
+      ],
+      "upgrade": {
+        "2": {
+          "coefficient": 0.45
+        }
+      },
+      "requires": [
+        "ordered_multi_effects",
+        "displacement_result_predicate"
+      ],
+      "purpose": "Eau pour le tir, Vent pour la sécurité obtenue par le placement. Un obstacle peut empêcher la garde ; pas de dégâts de collision supplémentaires."
+    },
+    {
+      "id": "pv1c_cendre",
+      "name": "Cendre blanche",
+      "status": "proposal_not_loaded",
+      "affinity": "thaumaturge",
+      "rarity": "normal",
+      "ap": 2,
+      "range": [
+        1,
+        3
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "magic",
+          "coefficient": 0.45,
+          "weights": {
+            "fire": 1
+          }
+        },
+        {
+          "op": "guard",
+          "target": "self",
+          "coefficient": 0.3,
+          "weights": {
+            "sun": 1
+          }
+        }
+      ],
+      "upgrade": {
+        "0": {
+          "coefficient": 0.6
+        }
+      },
+      "requires": [
+        "ordered_multi_effects"
+      ],
+      "purpose": "Alternative immédiate à Braise tenace, moins offensive ; aucun statut posé, donc pas de déclenchement automatique du passif Thaumaturge."
+    },
+    {
+      "id": "pv1c_revelateur",
+      "name": "Révélateur",
+      "status": "proposal_not_loaded",
+      "affinity": "shared",
+      "rarity": "elite",
+      "ap": 1,
+      "range": [
+        1,
+        3
+      ],
+      "copies_max": 3,
+      "uses_per_turn": 1,
+      "consume_copy": true,
+      "effects": [
+        {
+          "op": "damage",
+          "target": "enemy",
+          "kind": "magic",
+          "coefficient": 0.2,
+          "weights": {
+            "night": 1
+          }
+        },
+        {
+          "op": "exposure",
+          "target": "enemy",
+          "element": "sun",
+          "resistance_delta": -0.1,
+          "duration": 2,
+          "charges": 1,
+          "consume_on": "next_own_consumable_direct_hit_with_positive_sun_component",
+          "stacking": "refresh_duration_no_stack",
+          "boss_rule": "same_as_normal"
+        }
+      ],
+      "upgrade": {
+        "0": {
+          "coefficient": 0.35
+        }
+      },
+      "requires": [
+        "channel_damage_packets",
+        "exposure_status"
+      ],
+      "purpose": "La Nuit ouvre une possibilité Soleil ; l'effet reste utile même sans investir Nuit et sans imposer cette combinaison à une classe."
+    }
+  ],
+  "equipment": [
+    {
+      "id": "pv1e_scories",
+      "name": "Sceau des scories",
+      "status": "proposal_not_loaded",
+      "slot": "amulet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "mastery_earth": 0.08,
+        "mastery_fire": 0.08
+      },
+      "requires": []
+    },
+    {
+      "id": "pv1e_etincelles",
+      "name": "Sceau des étincelles",
+      "status": "proposal_not_loaded",
+      "slot": "amulet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "mastery_fire": 0.08,
+        "mastery_wind": 0.08
+      },
+      "requires": []
+    },
+    {
+      "id": "pv1e_ressac",
+      "name": "Sceau du ressac",
+      "status": "proposal_not_loaded",
+      "slot": "amulet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "mastery_wind": 0.08,
+        "mastery_water": 0.08
+      },
+      "requires": []
+    },
+    {
+      "id": "pv1e_lethe",
+      "name": "Sceau du Léthé",
+      "status": "proposal_not_loaded",
+      "slot": "amulet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "mastery_water": 0.08,
+        "mastery_night": 0.08
+      },
+      "requires": []
+    },
+    {
+      "id": "pv1e_eclipse",
+      "name": "Sceau de l'éclipse",
+      "status": "proposal_not_loaded",
+      "slot": "amulet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "mastery_night": 0.08,
+        "mastery_sun": 0.08
+      },
+      "requires": []
+    },
+    {
+      "id": "pv1e_argile",
+      "name": "Sceau d'argile claire",
+      "status": "proposal_not_loaded",
+      "slot": "amulet",
+      "stage": 2,
+      "price": 65,
+      "mods": {
+        "mastery_sun": 0.08,
+        "mastery_earth": 0.08
+      },
+      "requires": []
+    }
+  ],
+  "relics": [
+    {
+      "id": "pv1r_empreinte",
+      "name": "Empreinte de rive",
+      "status": "proposal_not_loaded",
+      "price": 95,
+      "requires": [
+        "committed_card_element_history"
+      ],
+      "trigger": "consume a card with one damage element of weight >= 0.5 when the previous qualifying consumed card this round has another family and another dominant damage element",
+      "dominant_tie": "ELEMENTS order earth,water,fire,wind,night,sun",
+      "cap": {
+        "count": 1,
+        "scope": "round"
+      },
+      "effect": {
+        "op": "guard",
+        "coefficient": 0.2,
+        "weights": {},
+        "scaling": "P only; no element, protection or equipment bonuses",
+        "guard_cap_P": 2.5
+      },
+      "order": "after all effects of the second card and successful consumption; dead actor gets nothing; no pair means no reward",
+      "recursive": false,
+      "history": "exclude permanent actions, neutral cards, reactions, DoTs; clear on round start; store last qualifying consumed card",
+      "purpose": "Récompense la diversité réellement jouée, sans exiger une classe ni augmenter encore les dégâts."
+    },
+    {
+      "id": "pv1r_surplus",
+      "name": "Vase du surplus",
+      "status": "proposal_not_loaded",
+      "price": 100,
+      "requires": [
+        "overguard_event_with_provenance"
+      ],
+      "trigger": "own consumed card creates guard above global 2.5P cap; excess >= rounded(0.20P)",
+      "cap": {
+        "count": 1,
+        "scope": "combat"
+      },
+      "effect": {
+        "op": "draw",
+        "count": 1,
+        "obey_hand_capacity": true,
+        "create_copy": false
+      },
+      "order": "compute excess after normal guard scaling; spend trigger only if a card is actually drawn; then finish cast",
+      "recursive": false,
+      "purpose": "Transformer un excès de protection en accès à une carte déjà possédée ; aucune duplication ni réduction de PA."
+    },
+    {
+      "id": "pv1r_balise",
+      "name": "Balise inverse",
+      "status": "proposal_not_loaded",
+      "price": 95,
+      "requires": [
+        "successful_displacement_event"
+      ],
+      "trigger": "own consumed card successfully pulls or pushes a living enemy by at least 1 cell",
+      "cap": {
+        "count": 1,
+        "scope": "round"
+      },
+      "effect": {
+        "op": "restore_mp",
+        "amount": 1,
+        "maximum": "current effective MP maximum",
+        "requires_spent_mp": true
+      },
+      "order": "after displacement; consume trigger only when MP increases; collisions without movement do not count",
+      "recursive": false,
+      "purpose": "Permet aux cartes de placement de soutenir un trajet sans rendre les distances de poussée proportionnelles à la maîtrise."
+    }
+  ],
+  "enemy_traits": [
+    {
+      "id": "pv1m_cendre",
+      "name": "Peau de cendre",
+      "status": "proposal_not_loaded",
+      "requires": [
+        "channel_damage_packets"
+      ],
+      "resistance_delta": {
+        "fire": 0.15,
+        "water": -0.1
+      },
+      "stacking": "one elemental skin per enemy",
+      "boss_rule": "same cap as normal",
+      "ui": "Feu +15 ; Eau -10 points de résistance"
+    },
+    {
+      "id": "pv1m_calcaire",
+      "name": "Croûte claire",
+      "status": "proposal_not_loaded",
+      "requires": [
+        "channel_damage_packets"
+      ],
+      "resistance_delta": {
+        "sun": 0.15,
+        "night": -0.1
+      },
+      "stacking": "one elemental skin per enemy",
+      "boss_rule": "same cap as normal",
+      "ui": "Soleil +15 ; Nuit -10 points de résistance"
+    },
+    {
+      "id": "pv1m_stable",
+      "name": "Appui stable",
+      "status": "proposal_not_loaded",
+      "requires": [
+        "displacement_resistance_budget"
+      ],
+      "effect": "reduce first incoming push_or_pull distance by 1 cell each enemy activation; spend only on a legal positive-distance attempt",
+      "integer_amount": 1,
+      "refresh": "enemy_activation_start",
+      "stacking": "maximum, not addition with existing forced-move resistance",
+      "excluded": [
+        "swap",
+        "voluntary_move",
+        "blink"
+      ],
+      "boss_rule": "apply after existing boss forced-move cap; never add this trait to bosses in first experiment"
+    },
+    {
+      "id": "pv1m_ventile",
+      "name": "Peau ventilée",
+      "status": "proposal_not_loaded",
+      "requires": [
+        "status_family_resistance"
+      ],
+      "effect": "multiply burn and bleed snapshot payload by 0.75 before target damage mitigation and final rounding",
+      "families": [
+        "burn",
+        "bleed"
+      ],
+      "stacking": "maximum resistance within family; no duration reduction",
+      "excluded": [
+        "firefield",
+        "direct_damage",
+        "mark",
+        "pressure"
+      ],
+      "boss_rule": "same rule as normal",
+      "ui": "Brûlure et saignement : dégâts -25 %, durée inchangée"
+    }
+  ]
+}

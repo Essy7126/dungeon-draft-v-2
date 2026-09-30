@@ -122,6 +122,39 @@ func _run() -> void:
 	dossier = scene.find_child("ConsumablePlayerDossier", true, false)
 	check(dossier.find_child("DeckFamily_n02", true, false) != null, "owned family visible")
 	_check_deck_partition(dossier, cards)
+	var sorting: OptionButton = dossier.find_child("DossierSort", true, false)
+	check(sorting != null, "deck sort available")
+	var state_before_sort: Dictionary = GameManager.get_expedition_snapshot()
+	if sorting != null:
+		for order in [1, 2, 0]:
+			sorting.select(order)
+			sorting.item_selected.emit(order)
+			for lane in ["PreparedDeckGallery", "ReserveGallery"]:
+				var gallery: GridContainer = dossier.find_child(lane, true, false)
+				var first: Button = gallery.get_child(0).get_child(0)
+				var first_row: Dictionary = Catalog.card(str(first.get_meta("family")))
+				for stack in gallery.get_children():
+					var tile: Button = stack.get_child(0)
+					var row: Dictionary = Catalog.card(str(tile.get_meta("family")))
+					if order == 0:
+						check(first_row.ap <= row.ap, "lowest cost first " + lane)
+					elif order == 1:
+						check(
+							str(first_row.name).naturalnocasecmp_to(str(row.name)) <= 0,
+							"alphabetical first " + lane,
+						)
+					else:
+						check(
+							Catalog.RARITIES.find(first_row.rarity) >= Catalog.RARITIES.find(
+								row.rarity
+							),
+							"highest rarity first " + lane,
+						)
+	check(
+		GameManager.get_expedition_snapshot() == state_before_sort,
+		"sorting never changes deck membership or save",
+	)
+
 	for tile in dossier._card_tiles:
 		for label in tile.find_children("*", "Label", true, false):
 			check(tile.get_global_rect().grow(1).encloses(label.get_global_rect()), "card labels fit inside "

@@ -5,58 +5,9 @@ var _stride_position := Vector2.ZERO
 var pull_tether: Node2D
 const PullTether := preload("res://vfx/class_cards/passe_rive_pull_tether.gd")
 const S19Backend := preload("res://characters/achilles/2d/passe_rive_s19_backend.gd")
-const Appearance := preload("res://characters/achilles/2d/passe_rive_appearance.gd")
-var _room_size_initialized := false
-var _room_viewport := Vector2.ZERO
-var _room_frame_owner: Node
-var _room_layout_signature := Vector3.ZERO
-
-
-func synchronize_room_size() -> void:
-	# Fit once after room framing (and again on resize), not every animation frame.
-	# An explicit inspection/user camera zoom still magnifies the whole scene.
-	if not uses_s19_cards() or sprite_profile == null or not get_parent() is Node2D:
-		return
-	var viewport_size := get_viewport_rect().size
-	var camera := get_viewport().get_camera_2d()
-	if camera != null:
-		camera.force_update_scroll()
-	var parent_canvas := (get_parent() as Node2D).get_global_transform_with_canvas()
-	scale = Vector2.ONE * Appearance.room_scale(
-		viewport_size,
-		parent_canvas.y.length(),
-		Appearance.SOURCE_HEIGHT * sprite_profile.display_scale,
-	)
-	_room_size_initialized = true
-	_room_viewport = viewport_size
-	_room_layout_signature = _layout_signature()
-
-
-func _layout_signature() -> Vector3:
-	if not is_instance_valid(_room_frame_owner):
-		_room_frame_owner = get_parent()
-		while (
-			_room_frame_owner != null
-			and not _room_frame_owner.has_method("grid_cell_to_parent_local")
-		):
-			_room_frame_owner = _room_frame_owner.get_parent()
-	var hand_top := -1.0
-	if _room_frame_owner != null:
-		if "_card_hand_top" in _room_frame_owner:
-			hand_top = float(_room_frame_owner.get("_card_hand_top"))
-		elif "_tactical_hand_top" in _room_frame_owner:
-			hand_top = float(_room_frame_owner.get("_tactical_hand_top"))
-	var parent_scale := (get_parent() as Node2D).global_scale
-	return Vector3(parent_scale.x, parent_scale.y, hand_top)
-
-
-func _process(delta: float) -> void:
-	if (
-		not _room_size_initialized or _room_viewport != get_viewport_rect().size
-		or _room_layout_signature != _layout_signature()
-	):
-		synchronize_room_size()
-	super._process(delta)
+# The Battle/painted-room wrapper owns terrain calibration and camera scaling.
+# Never cancel it here: doing so makes this actor grow relative to all enemies
+# when the card dock reduces the playable viewport.
 
 
 func uses_s19_cards() -> bool:

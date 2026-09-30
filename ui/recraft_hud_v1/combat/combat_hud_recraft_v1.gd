@@ -765,6 +765,8 @@ func mount_card_hand(view: Control) -> void:
 
 
 func clear_card_hand() -> void:
+	if is_node_ready():
+		preload("res://ui/expedition/card_hud_labels.gd").clear([_inventory_button, _skills_button, _attributes_button, _map_button])
 	if not is_instance_valid(_card_hand_view):
 		_card_hand_view = null
 		return
@@ -2611,9 +2613,10 @@ func _apply_card_hand_layout(viewport_width: float) -> void:
 	_set_control_rect(_end_btn, Rect2(3, 6, 156, 56))
 	_utility_dock.add_theme_constant_override("separation", 4)
 	for button in [_inventory_button, _skills_button, _attributes_button, _map_button]:
-		button.custom_minimum_size = Vector2(34, 34)
+		button.custom_minimum_size = Vector2(34, 54)
 		button.add_theme_constant_override("icon_max_width", 30)
-	_set_control_rect(_utility_dock, Rect2(7, 83, 148, 34))
+	preload("res://ui/expedition/card_hud_labels.gd").apply([_inventory_button, _skills_button, _attributes_button, _map_button])
+	_set_control_rect(_utility_dock, Rect2(7, 83, 148, 54))
 	_set_control_rect(_turn_anchor, Rect2(left + width - commands + 6, 50, commands - 12, 140))
 	for button in [_show_spells_button, _show_items_button]:
 		button.custom_minimum_size = Vector2(78, 30)

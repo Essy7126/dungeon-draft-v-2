@@ -1,25 +1,8 @@
 extends RefCounted
 ## Canonical character dimensions, independent of atlas canvases and room profiles.
 const SOURCE_HEIGHT := 214.0
-const HEIGHT_AT_900 := 100.0
-const REFERENCE_VIEWPORT := Vector2(1600, 900)
 const PALETTE_SHADER := preload("res://characters/achilles/2d/passe_rive_palette.gdshader")
 const Palette := preload("res://characters/achilles/2d/passe_rive_palette_data.gd")
-
-
-static func screen_height(viewport_size: Vector2) -> float:
-	return HEIGHT_AT_900 * minf(
-		viewport_size.x / REFERENCE_VIEWPORT.x,
-		viewport_size.y / REFERENCE_VIEWPORT.y,
-	)
-
-
-static func room_scale(
-	viewport_size: Vector2,
-	parent_canvas_scale: float,
-	source_height: float,
-) -> float:
-	return screen_height(viewport_size) / maxf(parent_canvas_scale * source_height, 0.001)
 
 
 static func material_for(source: String) -> ShaderMaterial:

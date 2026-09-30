@@ -9,6 +9,7 @@ const Math := preload("res://core/expedition/consumable_card_math.gd")
 const BuildPreview := preload("res://ui/expedition/consumable_build_preview.gd")
 const Symbols := preload("res://ui/expedition/player_stat_symbols.gd")
 const DeckInventory := preload("res://ui/expedition/consumable_deck_inventory.gd")
+var sort_order := 0
 var rarity_filter := 0
 var affinity_filter := 0
 var _card_tiles: Array[Button] = []
@@ -106,8 +107,7 @@ func _deck(cards) -> void:
 	search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	search.custom_minimum_size.y = 38
 	search.add_theme_font_override("font", D.FONT)
-	search.add_theme_font_size_override("font_size", 17)
-	search.add_theme_stylebox_override("normal", D.surface(false, 9))
+	search.add_theme_font_size_override("font_size", 16)
 	bar.add_child(search)
 	var filter := _deck_filter(
 		bar,
@@ -138,6 +138,14 @@ func _deck(cards) -> void:
 		"DossierRarityFilter",
 		["Toutes raretés"] + Receipt.RARITY_NAMES.values(),
 		rarity_filter,
+	)
+
+	var sorting := _deck_filter(bar, "DossierSort", ["Coût ↑", "Nom A–Z", "Rareté ↓"], sort_order)
+	sorting.tooltip_text = "Trier séparément le deck préparé et la réserve."
+	sorting.item_selected.connect(
+		func(index):
+			sort_order = index
+			_sort_card_lanes(),
 	)
 	var guide := _select(bar, "Les familles ?", _deck_guide)
 	guide.name = "DeckIdentityHelp"
@@ -232,6 +240,7 @@ func _deck(cards) -> void:
 			rarity_filter = index
 			update.call(),
 	)
+	_sort_card_lanes()
 	_show_family(cards)
 	update.call()
 	D.label(
@@ -241,6 +250,27 @@ func _deck(cards) -> void:
 		14,
 		D.MUTED,
 	)
+
+
+func _sort_card_lanes() -> void:
+	for lane in ["deck", "reserve"]:
+		var tiles := _card_tiles.filter(
+			func(tile):
+				return tile.get_meta("lane") == lane,
+		)
+		tiles.sort_custom(
+			func(a, b):
+				var left := Catalog.card(str(a.get_meta("family")))
+				var right := Catalog.card(str(b.get_meta("family")))
+				if sort_order == 2 and left.rarity != right.rarity:
+					return Catalog.RARITIES.find(left.rarity) > Catalog.RARITIES.find(right.rarity)
+				if sort_order == 0 and left.ap != right.ap:
+					return left.ap < right.ap
+				return str(left.name).naturalnocasecmp_to(str(right.name)) < 0,
+		)
+		for index in tiles.size():
+			var stack: Node = tiles[index].get_parent()
+			stack.get_parent().move_child(stack, index)
 
 
 func _deck_filter(parent: Node, node_name: String, titles: Array, selected: int) -> OptionButton:
@@ -260,7 +290,12 @@ func _deck_lane(parent: Node, cards, inventory: Dictionary, prepared: bool) -> v
 	body.get_parent().name = "PreparedDeckPanel" if prepared else "ReservePanel"
 	var heading := HBoxContainer.new()
 	body.add_child(heading)
-	var title := D.label(heading, "DECK PRÉPARÉ" if prepared else "RÉSERVE", 19, D.GOLD)
+	var title := D.label(
+		heading,
+		"DECK PRÉPARÉ" if prepared else "RÉSERVE",
+		19,
+		D.GOLD if prepared else Color("b1c1c8"),
+	)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var metric := D.label(
 		heading,
@@ -396,7 +431,8 @@ func _card_tile(parent: Node, record: Dictionary, cards, prepared: bool, count: 
 	node.set_meta("lane", "deck" if prepared else "reserve")
 	node.set_meta("count", count)
 	node.set_meta("rarity", record.rarity)
-	node.custom_minimum_size = Vector2(120, 86 if prepared else 184)
+	node.custom_minimum_size = Vector2(120, 86 if prepared else 198)
+	D.card_material(node)
 	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var box: BoxContainer = HBoxContainer.new() if prepared else VBoxContainer.new()
 	node.add_child(box)
@@ -406,7 +442,7 @@ func _card_tile(parent: Node, record: Dictionary, cards, prepared: bool, count: 
 	box.offset_top = 6
 	box.offset_bottom = -6
 	box.add_theme_constant_override("separation", 4)
-	D.image(box, record.icon, 52 if prepared else 54)
+	D.image(box, record.icon, 52 if prepared else 68)
 	var words: VBoxContainer = VBoxContainer.new() if prepared else box as VBoxContainer
 	if prepared:
 		box.add_child(words)
@@ -448,6 +484,9 @@ func _card_style(tile: Button, selected: bool) -> void:
 	var style := D.surface(selected, 6)
 	style.border_color = Color(Receipt.COLORS[tile.get_meta("rarity")])
 	style.border_width_left = 4
+	style.shadow_color = Color(0, 0, 0, .22)
+	style.shadow_size = 2
+	style.border_width_bottom = 2 if selected else 1
 	tile.add_theme_stylebox_override("normal", style)
 
 
@@ -865,7 +904,7 @@ func _show_item(cards) -> void:
 			15,
 			D.GREEN,
 		)
-		_button(
+		var relic_action := _button(
 			_quick_actions,
 			"Désactiver la relique" if active else "Activer la relique",
 			func():
@@ -878,6 +917,8 @@ func _show_item(cards) -> void:
 				return true,
 			not active and cards.active_relics.size() >= 2,
 		)
+		if not active:
+			D.primary_button(relic_action)
 		if not active and cards.active_relics.size() >= 2:
 			D.label(_detail, "Désactivez une relique pour libérer un emplacement.", 15, D.MUTED)
 	else:
@@ -891,7 +932,7 @@ func _show_item(cards) -> void:
 			D.label(_detail, str(Presenter.item(equipped).name), 18, D.GOLD)
 			D.label(_detail, Presenter.item_text(Presenter.item(equipped)), 16)
 			D.label(_detail, "L'ancien objet restera dans votre inventaire.", 14, D.MUTED)
-		_button(
+		var equip_action := _button(
 			_quick_actions,
 			"Retirer cet équipement" if active else "Équiper cet objet",
 			func():
@@ -901,6 +942,8 @@ func _show_item(cards) -> void:
 					cards.equipped[row.slot] = id
 				return true,
 		)
+		if not active:
+			D.primary_button(equip_action)
 	D.label(_detail, "Les modifications sont enregistrées immédiatement.", 14, D.MUTED)
 
 
@@ -915,6 +958,7 @@ func _comparison(cards, id: String) -> void:
 			row.title,
 			BuildPreview.value(row.key, row.before),
 			BuildPreview.value(row.key, row.after),
+			float(row.after) - float(row.before),
 		)
 	for effect in preview.effects:
 		var key: String = effect.key
@@ -930,6 +974,7 @@ func _comparison(cards, id: String) -> void:
 			"Bonus de portée" if key == "range" else Presenter.MODS.get(key, key),
 			(number_format % (float(effect.before) * factor)).replace(".", ","),
 			(number_format % (float(effect.after) * factor)).replace(".", ","),
+			float(effect.after) - float(effect.before),
 		)
 	if preview.rows.is_empty() and preview.effects.is_empty():
 		D.label(box, "Aucune variation de statistiques.", 15, D.MUTED)
@@ -943,13 +988,23 @@ func _comparison(cards, id: String) -> void:
 	)
 
 
-func _comparison_row(parent: Node, title: String, before: String, after: String) -> void:
+func _comparison_row(
+	parent: Node,
+	title: String,
+	before: String,
+	after: String,
+	delta: float,
+) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	parent.add_child(row)
 	var label := D.label(row, title, 15, D.MUTED)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var values := D.label(row, before + " → " + after, 18)
+	var tint := D.GAIN if delta > 0 else D.LOSS if delta < 0 else D.PAPER
+	var values := D.label(row, before + " → " + after, 18, tint)
+	values.tooltip_text = title + (
+		" : augmente" if delta > 0 else " : diminue" if delta < 0 else " : inchangé"
+	)
 	values.name = "ComparisonValue"
 	values.autowrap_mode = TextServer.AUTOWRAP_OFF
 	values.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -1145,13 +1200,14 @@ func _family_actions(cards, id: String, row: VBoxContainer) -> void:
 		func(copy):
 			return copy.id not in cards.active,
 	)
-	_button(
+	var add_action := _button(
 		_quick_actions,
 		"+1 au deck (%d/3)" % prepared.size(),
 		func():
 			return cards.move_card(str(reserved[0].id)),
 		reserved.is_empty() or prepared.size() >= 3 or cards.active.size() >= 30,
 	)
+	D.primary_button(add_action)
 	_button(
 		_quick_actions,
 		"−1 réserve",

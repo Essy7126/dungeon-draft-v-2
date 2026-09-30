@@ -8,6 +8,13 @@ les haltes de Catabase. Il n'existe plus de troisième variante publique.
 
 ## Jouer
 
+Les fenêtres Cartes partagent une matière brune sobre, des champs mats et des
+onglets actifs soulignés. Les actions principales utilisent un bouton bronze
+clair ; les comparaisons d’équipement distinguent gains et pertes par couleur
+et par valeurs avant/après. Les accès du HUD sont nommés **Sac**, **Deck**,
+**Stats** et **Carte**. L’[audit des interfaces du 30 septembre](../ai/PLAYER_INTERFACE_AUDIT_2026-09-30.md)
+précise les corrections, les parcours testés et leurs limites.
+
 L'interface appelle **sort** une action nommée et **carte** un exemplaire utilisable
 une fois dans la run. Les noms techniques `family` et `copy` restent dans les données.
 Au départ, les classes présentent leur style, leur bonus et une combinaison à essayer.

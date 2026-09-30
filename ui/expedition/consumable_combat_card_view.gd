@@ -31,6 +31,7 @@ static func face(button: Button, spell: Spell, actor: Unit, cost: int) -> void:
 	var rarity_id := str(row.get("rarity", "normal"))
 	var accent := Color(Receipt.COLORS.get(rarity_id, "b8c8b5"))
 	if not fallback:
+		D.card_material(button)
 		for state in ["normal", "hover", "pressed", "disabled"]:
 			var style := D.surface(state in ["hover", "pressed"], 6)
 			style.border_color = accent
@@ -64,7 +65,7 @@ static func face(button: Button, spell: Spell, actor: Unit, cost: int) -> void:
 	else:
 		var badges := HBoxContainer.new()
 		content.add_child(badges)
-		var price := D.label(badges, "%d PA" % cost, 16, D.GOLD)
+		var price := D.label(badges, "%d PA" % cost, 16, Symbols.COLORS.ap)
 		price.autowrap_mode = TextServer.AUTOWRAP_OFF
 		var reach := D.label(badges, reach_text, 14, D.PAPER)
 		reach.name = "CardRange"
@@ -113,7 +114,7 @@ static func hover(panel: PanelContainer, spell: Spell, actor: Unit, context: Str
 		not fallback and spell.description.get_slice("\n", 0) == str(row.get("upgradeText", ""))
 	)
 	panel.custom_minimum_size.x = 480
-	panel.add_theme_stylebox_override("panel", D.surface(true, 16))
+	panel.add_theme_stylebox_override("panel", D.framed_surface(16))
 	var box := VBoxContainer.new()
 	box.size = Vector2(448, 0)
 	box.add_theme_constant_override("separation", 6)

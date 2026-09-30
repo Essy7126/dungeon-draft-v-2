@@ -47,7 +47,7 @@ func _ready() -> void:
 			Color("c5bda5"),
 		)
 	var row_panel := PanelContainer.new()
-	row_panel.add_theme_stylebox_override("panel", D.surface(false, 0))
+	row_panel.add_theme_stylebox_override("panel", D.framed_surface(0))
 	add_child(row_panel)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 0)
@@ -104,7 +104,7 @@ func _ready() -> void:
 		P.label(loot, "Aucun objet obtenu", 16)
 	var hint := P.label(
 		self,
-		"Survolez un drop pour lire sa fiche. Cartes → réserve ; objets → inventaire. Retrouvez-les ensuite avec le filtre « Dernier butin ».",
+		"Survolez un butin pour lire ses effets. Cartes dans la réserve · objets dans l’inventaire. Filtre : « Dernier butin ».",
 		14,
 	)
 	hint.add_theme_color_override("font_color", Color("abc0b5"))

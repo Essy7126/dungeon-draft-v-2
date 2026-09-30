@@ -1,0 +1,5341 @@
+{
+  "scope": "Arithmetic audit, not human win-rate. Runtime observations are reported separately.",
+  "source_sha256": {
+    "data/cards/consumable_v2/catalog.json": "9973118a2bcc6d31ec22b371e6cf6501624b88a736b95dc2e020d97ecfbc8b7f",
+    "core/expedition/consumable_progression_v1.gd": "ac7cce21e31fa219e14ab90ae85d4f73a373ba2babed0e6c3a76f8d6d459b9e1",
+    "core/expedition/consumable_card_math.gd": "64fb383e8dd179f273464e92b38ee504a573fc0ddfe97dd2ca6b035a0efc28ba",
+    "core/expedition/consumable_card_economy.gd": "e49232ca3c9150b098ffd8cfb3bc60c1effc42a8773d710df3a164a63850b56f",
+    "core/expedition/consumable_card_effects.gd": "5ba2e8432e6d8fbd41d1851859b276afc56906f8f98011d044c98e910fc5e21c",
+    "core/expedition/consumable_cards_profile.gd": "0afdd4d8bd00d582525b47755befb7e7d29643379f6111ba671ef5ab3e9fdd50",
+    "core/expedition/consumable_card_spells.gd": "eb95da6b7067daeab1a60965b7b20e19fd6033e61b3243e7bca84677e951bb3c",
+    "tools/consumable_cards/prototype_v1_probe.gd": "14331510b455c0082f93c668b537d31d39c2ef9003d4c23ba59d29ad20978722",
+    "docs/design/prototype_v1_epreuve_2026-09-29/candidats.json": "8e8289cebe1381555cb1d26d3e4f09e93aabbcd59d15996d6d976698405e901a",
+    "docs/design/prototype_v1_epreuve_2026-09-29/analyse.py": "5574cc0d96c5c3cce336a7413e980af9bec0c055cc73039c027d03dbadb6c48e"
+  },
+  "catalog_counts": {
+    "cards": 48,
+    "classes": 4,
+    "equipment": 24,
+    "relics": 8
+  },
+  "hybrids": [
+    {
+      "weight_primary": 1,
+      "best_bonus": 0.38,
+      "optimal_allocations": [
+        [
+          26,
+          0
+        ]
+      ],
+      "mono_bonus": 0.38,
+      "13_13_bonus": 0.25
+    },
+    {
+      "weight_primary": 0.8,
+      "best_bonus": 0.30400000000000005,
+      "optimal_allocations": [
+        [
+          26,
+          0
+        ]
+      ],
+      "mono_bonus": 0.30400000000000005,
+      "13_13_bonus": 0.25
+    },
+    {
+      "weight_primary": 0.7,
+      "best_bonus": 0.274,
+      "optimal_allocations": [
+        [
+          22,
+          4
+        ]
+      ],
+      "mono_bonus": 0.26599999999999996,
+      "13_13_bonus": 0.25
+    },
+    {
+      "weight_primary": 0.6,
+      "best_bonus": 0.26,
+      "optimal_allocations": [
+        [
+          18,
+          8
+        ]
+      ],
+      "mono_bonus": 0.22799999999999998,
+      "13_13_bonus": 0.25
+    },
+    {
+      "weight_primary": 0.5,
+      "best_bonus": 0.25,
+      "optimal_allocations": [
+        [
+          8,
+          18
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          15,
+          11
+        ],
+        [
+          16,
+          10
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          18,
+          8
+        ]
+      ],
+      "mono_bonus": 0.19,
+      "13_13_bonus": 0.25
+    }
+  ],
+  "coverage": {
+    "earth": {
+      "normal_any_component_ge50": [
+        "n01",
+        "g01",
+        "g02",
+        "g03"
+      ],
+      "normal_damage_ge50": [
+        "n01",
+        "g02",
+        "g03"
+      ],
+      "all_any_component": [
+        "n01",
+        "a02",
+        "g01",
+        "g02",
+        "g03",
+        "a07",
+        "g05",
+        "g06",
+        "r06",
+        "r07",
+        "g08",
+        "g09",
+        "t08"
+      ]
+    },
+    "water": {
+      "normal_any_component_ge50": [
+        "n07",
+        "g04",
+        "r03",
+        "t01",
+        "t04"
+      ],
+      "normal_damage_ge50": [
+        "n07",
+        "g04",
+        "r03",
+        "t01",
+        "t04"
+      ],
+      "all_any_component": [
+        "n07",
+        "g04",
+        "r03",
+        "t01",
+        "t04",
+        "r07",
+        "t07",
+        "a08",
+        "l01"
+      ]
+    },
+    "fire": {
+      "normal_any_component_ge50": [
+        "n04",
+        "a03",
+        "g03",
+        "r02",
+        "t02"
+      ],
+      "normal_damage_ge50": [
+        "n04",
+        "a03",
+        "g03",
+        "r02",
+        "t02"
+      ],
+      "all_any_component": [
+        "n04",
+        "a03",
+        "g03",
+        "r02",
+        "t02",
+        "t05"
+      ]
+    },
+    "wind": {
+      "normal_any_component_ge50": [
+        "n05",
+        "a04",
+        "r01",
+        "r02",
+        "r04"
+      ],
+      "normal_damage_ge50": [
+        "n05",
+        "a04",
+        "r01",
+        "r02",
+        "r04"
+      ],
+      "all_any_component": [
+        "n05",
+        "a04",
+        "r01",
+        "r02",
+        "r04",
+        "g06",
+        "r06",
+        "t08",
+        "l01"
+      ]
+    },
+    "night": {
+      "normal_any_component_ge50": [
+        "n06",
+        "a01",
+        "a02",
+        "a03",
+        "t03"
+      ],
+      "normal_damage_ge50": [
+        "n06",
+        "a01",
+        "a02",
+        "a03",
+        "t03"
+      ],
+      "all_any_component": [
+        "n06",
+        "a01",
+        "a02",
+        "a03",
+        "a04",
+        "t03",
+        "t04",
+        "a06",
+        "t05",
+        "t07",
+        "a08",
+        "t09"
+      ]
+    },
+    "sun": {
+      "normal_any_component_ge50": [
+        "n02",
+        "r04"
+      ],
+      "normal_damage_ge50": [
+        "r04"
+      ],
+      "all_any_component": [
+        "n02",
+        "g02",
+        "r04",
+        "g05",
+        "g07",
+        "g08",
+        "r09",
+        "t09",
+        "l02",
+        "d01",
+        "i01"
+      ]
+    }
+  },
+  "drops_normal": [
+    {
+      "class": "assassin",
+      "element": "earth",
+      "p_aligned": 0.13333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.42375277914952
+    },
+    {
+      "class": "assassin",
+      "element": "water",
+      "p_aligned": 0.15833333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.35550095064173154
+    },
+    {
+      "class": "assassin",
+      "element": "fire",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "assassin",
+      "element": "wind",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "assassin",
+      "element": "night",
+      "p_aligned": 0.2583333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.16643802879084418
+    },
+    {
+      "class": "assassin",
+      "element": "sun",
+      "p_aligned": 0.08333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.5932921944658778
+    },
+    {
+      "class": "gardien",
+      "element": "earth",
+      "p_aligned": 0.2333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.20306706310013725
+    },
+    {
+      "class": "gardien",
+      "element": "water",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "gardien",
+      "element": "fire",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "gardien",
+      "element": "wind",
+      "p_aligned": 0.15833333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.35550095064173154
+    },
+    {
+      "class": "gardien",
+      "element": "night",
+      "p_aligned": 0.15833333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.35550095064173154
+    },
+    {
+      "class": "gardien",
+      "element": "sun",
+      "p_aligned": 0.08333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.5932921944658778
+    },
+    {
+      "class": "arpenteur",
+      "element": "earth",
+      "p_aligned": 0.13333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.42375277914952
+    },
+    {
+      "class": "arpenteur",
+      "element": "water",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "arpenteur",
+      "element": "fire",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "arpenteur",
+      "element": "wind",
+      "p_aligned": 0.2583333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.16643802879084418
+    },
+    {
+      "class": "arpenteur",
+      "element": "night",
+      "p_aligned": 0.15833333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.35550095064173154
+    },
+    {
+      "class": "arpenteur",
+      "element": "sun",
+      "p_aligned": 0.11666666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.4750591805769889
+    },
+    {
+      "class": "thaumaturge",
+      "element": "earth",
+      "p_aligned": 0.13333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.42375277914952
+    },
+    {
+      "class": "thaumaturge",
+      "element": "water",
+      "p_aligned": 0.22499999999999995,
+      "p_zero_aligned_after_6_normal_draws": 0.21667570336914066
+    },
+    {
+      "class": "thaumaturge",
+      "element": "fire",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "thaumaturge",
+      "element": "wind",
+      "p_aligned": 0.15833333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.35550095064173154
+    },
+    {
+      "class": "thaumaturge",
+      "element": "night",
+      "p_aligned": 0.19166666666666665,
+      "p_zero_aligned_after_6_normal_draws": 0.27896063908212504
+    },
+    {
+      "class": "thaumaturge",
+      "element": "sun",
+      "p_aligned": 0.08333333333333333,
+      "p_zero_aligned_after_6_normal_draws": 0.5932921944658778
+    }
+  ],
+  "early_gear": {
+    "eligible_count": 14,
+    "amulet_count": 6,
+    "mastery_seals": 6,
+    "slots": {
+      "weapon": 3,
+      "body": 1,
+      "head": 2,
+      "feet": 1,
+      "belt": 1,
+      "amulet": 6
+    }
+  },
+  "fallback_rounding": [
+    {
+      "class": "assassin",
+      "element": "earth",
+      "raw_without": 4.48,
+      "raw_with": 4.48,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "assassin",
+      "element": "water",
+      "raw_without": 4.48,
+      "raw_with": 4.48,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "assassin",
+      "element": "fire",
+      "raw_without": 4.48,
+      "raw_with": 4.48,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "assassin",
+      "element": "wind",
+      "raw_without": 4.48,
+      "raw_with": 4.48,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "assassin",
+      "element": "night",
+      "raw_without": 4.48,
+      "raw_with": 5.017600000000001,
+      "damage_without": 4,
+      "damage_with": 5
+    },
+    {
+      "class": "assassin",
+      "element": "sun",
+      "raw_without": 4.48,
+      "raw_with": 4.48,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "gardien",
+      "element": "earth",
+      "raw_without": 4.0,
+      "raw_with": 4.48,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "gardien",
+      "element": "water",
+      "raw_without": 4.0,
+      "raw_with": 4.0,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "gardien",
+      "element": "fire",
+      "raw_without": 4.0,
+      "raw_with": 4.0,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "gardien",
+      "element": "wind",
+      "raw_without": 4.0,
+      "raw_with": 4.0,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "gardien",
+      "element": "night",
+      "raw_without": 4.0,
+      "raw_with": 4.0,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "gardien",
+      "element": "sun",
+      "raw_without": 4.0,
+      "raw_with": 4.0,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "arpenteur",
+      "element": "earth",
+      "raw_without": 3.84,
+      "raw_with": 3.84,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "arpenteur",
+      "element": "water",
+      "raw_without": 3.84,
+      "raw_with": 3.84,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "arpenteur",
+      "element": "fire",
+      "raw_without": 3.84,
+      "raw_with": 3.84,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "arpenteur",
+      "element": "wind",
+      "raw_without": 3.84,
+      "raw_with": 4.300800000000001,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "arpenteur",
+      "element": "night",
+      "raw_without": 3.84,
+      "raw_with": 3.84,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "arpenteur",
+      "element": "sun",
+      "raw_without": 3.84,
+      "raw_with": 3.84,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "thaumaturge",
+      "element": "earth",
+      "raw_without": 3.52,
+      "raw_with": 3.52,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "thaumaturge",
+      "element": "water",
+      "raw_without": 3.52,
+      "raw_with": 3.8579200000000005,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "thaumaturge",
+      "element": "fire",
+      "raw_without": 3.52,
+      "raw_with": 3.52,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "thaumaturge",
+      "element": "wind",
+      "raw_without": 3.52,
+      "raw_with": 3.52,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "thaumaturge",
+      "element": "night",
+      "raw_without": 3.52,
+      "raw_with": 3.60448,
+      "damage_without": 4,
+      "damage_with": 4
+    },
+    {
+      "class": "thaumaturge",
+      "element": "sun",
+      "raw_without": 3.52,
+      "raw_with": 3.52,
+      "damage_without": 4,
+      "damage_with": 4
+    }
+  ],
+  "progression": [
+    {
+      "level": 1,
+      "power": 16,
+      "hp": 110,
+      "budget": 4,
+      "mono_multiplier": 1.12,
+      "power_gain_previous": null
+    },
+    {
+      "level": 2,
+      "power": 20,
+      "hp": 135,
+      "budget": 6,
+      "mono_multiplier": 1.16,
+      "power_gain_previous": 0.25
+    },
+    {
+      "level": 3,
+      "power": 23,
+      "hp": 165,
+      "budget": 8,
+      "mono_multiplier": 1.2,
+      "power_gain_previous": 0.1499999999999999
+    },
+    {
+      "level": 4,
+      "power": 28,
+      "hp": 200,
+      "budget": 10,
+      "mono_multiplier": 1.22,
+      "power_gain_previous": 0.21739130434782616
+    },
+    {
+      "level": 5,
+      "power": 34,
+      "hp": 240,
+      "budget": 12,
+      "mono_multiplier": 1.24,
+      "power_gain_previous": 0.2142857142857142
+    },
+    {
+      "level": 6,
+      "power": 40,
+      "hp": 290,
+      "budget": 14,
+      "mono_multiplier": 1.26,
+      "power_gain_previous": 0.17647058823529416
+    },
+    {
+      "level": 7,
+      "power": 47,
+      "hp": 350,
+      "budget": 16,
+      "mono_multiplier": 1.28,
+      "power_gain_previous": 0.17500000000000004
+    },
+    {
+      "level": 8,
+      "power": 57,
+      "hp": 420,
+      "budget": 18,
+      "mono_multiplier": 1.3,
+      "power_gain_previous": 0.2127659574468086
+    },
+    {
+      "level": 9,
+      "power": 66,
+      "hp": 500,
+      "budget": 20,
+      "mono_multiplier": 1.32,
+      "power_gain_previous": 0.1578947368421053
+    },
+    {
+      "level": 10,
+      "power": 82,
+      "hp": 600,
+      "budget": 22,
+      "mono_multiplier": 1.34,
+      "power_gain_previous": 0.24242424242424243
+    },
+    {
+      "level": 11,
+      "power": 86,
+      "hp": 635,
+      "budget": 24,
+      "mono_multiplier": 1.3599999999999999,
+      "power_gain_previous": 0.04878048780487809
+    },
+    {
+      "level": 12,
+      "power": 93,
+      "hp": 675,
+      "budget": 26,
+      "mono_multiplier": 1.38,
+      "power_gain_previous": 0.08139534883720922
+    }
+  ],
+  "copy_vs_ap": [
+    {
+      "id": "n01",
+      "ap": 1,
+      "direct_P_per_copy": 0.55,
+      "direct_P_per_AP": 0.55,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n02",
+      "ap": 1,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n03",
+      "ap": 1,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n04",
+      "ap": 1,
+      "direct_P_per_copy": 0.25,
+      "direct_P_per_AP": 0.25,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n05",
+      "ap": 1,
+      "direct_P_per_copy": 0.45,
+      "direct_P_per_AP": 0.45,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n06",
+      "ap": 1,
+      "direct_P_per_copy": 0.2,
+      "direct_P_per_AP": 0.2,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n07",
+      "ap": 1,
+      "direct_P_per_copy": 0.2,
+      "direct_P_per_AP": 0.2,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "n08",
+      "ap": 1,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a01",
+      "ap": 1,
+      "direct_P_per_copy": 0.35,
+      "direct_P_per_AP": 0.35,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a02",
+      "ap": 2,
+      "direct_P_per_copy": 0.95,
+      "direct_P_per_AP": 0.475,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a03",
+      "ap": 2,
+      "direct_P_per_copy": 0.7,
+      "direct_P_per_AP": 0.35,
+      "periodic_P_if_all_ticks": 0.3
+    },
+    {
+      "id": "a04",
+      "ap": 2,
+      "direct_P_per_copy": 1.05,
+      "direct_P_per_AP": 0.525,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g01",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g02",
+      "ap": 2,
+      "direct_P_per_copy": 1,
+      "direct_P_per_AP": 0.5,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g03",
+      "ap": 2,
+      "direct_P_per_copy": 0.8,
+      "direct_P_per_AP": 0.4,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g04",
+      "ap": 1,
+      "direct_P_per_copy": 0.2,
+      "direct_P_per_AP": 0.2,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r01",
+      "ap": 2,
+      "direct_P_per_copy": 0.8,
+      "direct_P_per_AP": 0.4,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r02",
+      "ap": 2,
+      "direct_P_per_copy": 0.7,
+      "direct_P_per_AP": 0.35,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r03",
+      "ap": 2,
+      "direct_P_per_copy": 0.6,
+      "direct_P_per_AP": 0.3,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r04",
+      "ap": 3,
+      "direct_P_per_copy": 0.6,
+      "direct_P_per_AP": 0.19999999999999998,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t01",
+      "ap": 2,
+      "direct_P_per_copy": 0.65,
+      "direct_P_per_AP": 0.325,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t02",
+      "ap": 2,
+      "direct_P_per_copy": 0.55,
+      "direct_P_per_AP": 0.275,
+      "periodic_P_if_all_ticks": 0.36
+    },
+    {
+      "id": "t03",
+      "ap": 1,
+      "direct_P_per_copy": 0.25,
+      "direct_P_per_AP": 0.25,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t04",
+      "ap": 3,
+      "direct_P_per_copy": 0.45,
+      "direct_P_per_AP": 0.15,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a05",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a06",
+      "ap": 3,
+      "direct_P_per_copy": 1.3,
+      "direct_P_per_AP": 0.43333333333333335,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a07",
+      "ap": 2,
+      "direct_P_per_copy": 0.9,
+      "direct_P_per_AP": 0.45,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g05",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g06",
+      "ap": 2,
+      "direct_P_per_copy": 0.65,
+      "direct_P_per_AP": 0.325,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g07",
+      "ap": 3,
+      "direct_P_per_copy": 1.2,
+      "direct_P_per_AP": 0.39999999999999997,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r05",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r06",
+      "ap": 3,
+      "direct_P_per_copy": 0.7,
+      "direct_P_per_AP": 0.2333333333333333,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r07",
+      "ap": 2,
+      "direct_P_per_copy": 0.55,
+      "direct_P_per_AP": 0.275,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t05",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t06",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t07",
+      "ap": 2,
+      "direct_P_per_copy": 0.75,
+      "direct_P_per_AP": 0.375,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a08",
+      "ap": 2,
+      "direct_P_per_copy": 0.7,
+      "direct_P_per_AP": 0.35,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "a09",
+      "ap": 3,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g08",
+      "ap": 3,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "g09",
+      "ap": 2,
+      "direct_P_per_copy": 0.7,
+      "direct_P_per_AP": 0.35,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r08",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "r09",
+      "ap": 3,
+      "direct_P_per_copy": 1.75,
+      "direct_P_per_AP": 0.5833333333333334,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t08",
+      "ap": 3,
+      "direct_P_per_copy": 0.8,
+      "direct_P_per_AP": 0.26666666666666666,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "t09",
+      "ap": 3,
+      "direct_P_per_copy": 0.9,
+      "direct_P_per_AP": 0.3,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "l01",
+      "ap": 3,
+      "direct_P_per_copy": 1.1,
+      "direct_P_per_AP": 0.3666666666666667,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "l02",
+      "ap": 2,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "d01",
+      "ap": 3,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    },
+    {
+      "id": "i01",
+      "ap": 4,
+      "direct_P_per_copy": 0,
+      "direct_P_per_AP": 0.0,
+      "periodic_P_if_all_ticks": 0
+    }
+  ],
+  "burn_synergies": [
+    {
+      "card": "Braise tenace",
+      "embers": false,
+      "pyre_first_application": false,
+      "ap": 2,
+      "raw_total_if_two_ticks": 45.864,
+      "rounded_total_no_defense": 46,
+      "rounded_per_AP": 23.0
+    },
+    {
+      "card": "Braise tenace",
+      "embers": true,
+      "pyre_first_application": false,
+      "ap": 2,
+      "raw_total_if_two_ticks": 55.944,
+      "rounded_total_no_defense": 56,
+      "rounded_per_AP": 28.0
+    },
+    {
+      "card": "Braise tenace",
+      "embers": true,
+      "pyre_first_application": true,
+      "ap": 2,
+      "raw_total_if_two_ticks": 66.024,
+      "rounded_total_no_defense": 66,
+      "rounded_per_AP": 33.0
+    },
+    {
+      "card": "Tison de poche candidat",
+      "embers": false,
+      "pyre_first_application": false,
+      "ap": 1,
+      "raw_total_if_two_ticks": 25.200000000000003,
+      "rounded_total_no_defense": 25,
+      "rounded_per_AP": 25.0
+    },
+    {
+      "card": "Tison de poche candidat",
+      "embers": true,
+      "pyre_first_application": false,
+      "ap": 1,
+      "raw_total_if_two_ticks": 35.28,
+      "rounded_total_no_defense": 35,
+      "rounded_per_AP": 35.0
+    },
+    {
+      "card": "Tison de poche candidat",
+      "embers": true,
+      "pyre_first_application": true,
+      "ap": 1,
+      "raw_total_if_two_ticks": 45.36000000000001,
+      "rounded_total_no_defense": 45,
+      "rounded_per_AP": 45.0
+    }
+  ],
+  "candidate_debt_tradeoff": [
+    {
+      "allocation": {
+        "night": 14
+      },
+      "damage": 30,
+      "guard": 14
+    },
+    {
+      "allocation": {
+        "night": 7,
+        "water": 7
+      },
+      "damage": 28,
+      "guard": 17
+    },
+    {
+      "allocation": {
+        "water": 14
+      },
+      "damage": 24,
+      "guard": 18
+    }
+  ],
+  "runtime_crosscheck": {
+    "path": "artifacts\\dev\\20260929-233559-prototype-v1-passe-rive-3ea96521\\observations.json",
+    "cases": 1728,
+    "mismatches": [],
+    "trials": [
+      {
+        "class": "assassin",
+        "allocation": "native",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 4,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 2,
+          "copies": 15,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 133,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 4,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            10,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 108,
+        "casts": 3,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "assassin",
+        "allocation": "native",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 12,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 10,
+          "copies": 33,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 243,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 12,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            1,
+            11
+          ],
+          "power": 40.0,
+          "round": 6
+        },
+        "combat_end_hp": 193,
+        "casts": 14,
+        "failed_casts": 0,
+        "enemy_casts": 7
+      },
+      {
+        "class": "assassin",
+        "allocation": "split",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 2,
+            "sun": 2,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 2,
+          "copies": 15,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 134,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 2,
+            "sun": 2,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            10,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 109,
+        "casts": 3,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "assassin",
+        "allocation": "split",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 6,
+            "sun": 6,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 10,
+          "copies": 33,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 241,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 6,
+            "sun": 6,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            1,
+            11
+          ],
+          "power": 40.0,
+          "round": 6
+        },
+        "combat_end_hp": 191,
+        "casts": 15,
+        "failed_casts": 0,
+        "enemy_casts": 8
+      },
+      {
+        "class": "assassin",
+        "allocation": "off_element",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 2,
+          "copies": 15,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 134,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            10,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 109,
+        "casts": 3,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "assassin",
+        "allocation": "off_element",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 10,
+          "copies": 33,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 243,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            1,
+            11
+          ],
+          "power": 40.0,
+          "round": 6
+        },
+        "combat_end_hp": 193,
+        "casts": 16,
+        "failed_casts": 0,
+        "enemy_casts": 9
+      },
+      {
+        "class": "gardien",
+        "allocation": "native",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 4,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 4,
+          "copies": 13,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 135,
+          "level": 2,
+          "masteries": {
+            "earth": 4,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            10,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 110,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "gardien",
+        "allocation": "native",
+        "depth": 6,
+        "outcome": "turn_limit",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 12,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 11,
+          "copies": 16,
+          "enemy_count": 1,
+          "enemy_hp": 5,
+          "guard": 0,
+          "hp": 126,
+          "level": 5,
+          "masteries": {
+            "earth": 12,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            2,
+            10
+          ],
+          "power": 34.0,
+          "round": 7
+        },
+        "combat_end_hp": 126,
+        "casts": 14,
+        "failed_casts": 0,
+        "enemy_casts": 12
+      },
+      {
+        "class": "gardien",
+        "allocation": "split",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 2,
+            "fire": 0,
+            "night": 0,
+            "sun": 2,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 4,
+          "copies": 13,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 135,
+          "level": 2,
+          "masteries": {
+            "earth": 2,
+            "fire": 0,
+            "night": 0,
+            "sun": 2,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            10,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 110,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "gardien",
+        "allocation": "split",
+        "depth": 6,
+        "outcome": "turn_limit",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 6,
+            "fire": 0,
+            "night": 0,
+            "sun": 6,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 11,
+          "copies": 16,
+          "enemy_count": 1,
+          "enemy_hp": 5,
+          "guard": 0,
+          "hp": 122,
+          "level": 5,
+          "masteries": {
+            "earth": 6,
+            "fire": 0,
+            "night": 0,
+            "sun": 6,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            2,
+            10
+          ],
+          "power": 34.0,
+          "round": 7
+        },
+        "combat_end_hp": 122,
+        "casts": 15,
+        "failed_casts": 0,
+        "enemy_casts": 12
+      },
+      {
+        "class": "gardien",
+        "allocation": "off_element",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 4,
+          "copies": 13,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 135,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            10,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 110,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "gardien",
+        "allocation": "off_element",
+        "depth": 6,
+        "outcome": "turn_limit",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 11,
+          "copies": 16,
+          "enemy_count": 1,
+          "enemy_hp": 29,
+          "guard": 0,
+          "hp": 138,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            2,
+            10
+          ],
+          "power": 34.0,
+          "round": 7
+        },
+        "combat_end_hp": 138,
+        "casts": 16,
+        "failed_casts": 0,
+        "enemy_casts": 12
+      },
+      {
+        "class": "arpenteur",
+        "allocation": "native",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 4
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 3,
+          "copies": 14,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 133,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 4
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            8,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 108,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "arpenteur",
+        "allocation": "native",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 12
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 6,
+          "copies": 37,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 197,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 0,
+            "wind": 12
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            1,
+            10
+          ],
+          "power": 40.0,
+          "round": 3
+        },
+        "combat_end_hp": 147,
+        "casts": 7,
+        "failed_casts": 0,
+        "enemy_casts": 4
+      },
+      {
+        "class": "arpenteur",
+        "allocation": "split",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 2,
+            "water": 0,
+            "wind": 2
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 3,
+          "copies": 14,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 134,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 2,
+            "water": 0,
+            "wind": 2
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            8,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 109,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "arpenteur",
+        "allocation": "split",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 6,
+            "water": 0,
+            "wind": 6
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 6,
+          "copies": 37,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 197,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 6,
+            "water": 0,
+            "wind": 6
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            1,
+            10
+          ],
+          "power": 40.0,
+          "round": 3
+        },
+        "combat_end_hp": 147,
+        "casts": 7,
+        "failed_casts": 0,
+        "enemy_casts": 4
+      },
+      {
+        "class": "arpenteur",
+        "allocation": "off_element",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 3,
+          "copies": 14,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 134,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            8,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 109,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "arpenteur",
+        "allocation": "off_element",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 6,
+          "copies": 37,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 165,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            1,
+            12
+          ],
+          "power": 40.0,
+          "round": 3
+        },
+        "combat_end_hp": 115,
+        "casts": 6,
+        "failed_casts": 0,
+        "enemy_casts": 5
+      },
+      {
+        "class": "thaumaturge",
+        "allocation": "native",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 4,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 3,
+          "copies": 14,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 135,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 4,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            8,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 110,
+        "casts": 4,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "thaumaturge",
+        "allocation": "native",
+        "depth": 6,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 12,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 9,
+          "copies": 34,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 126,
+          "level": 6,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 0,
+            "water": 12,
+            "wind": 0
+          },
+          "maximum": 290,
+          "mp": 3,
+          "position": [
+            3,
+            11
+          ],
+          "power": 40.0,
+          "round": 6
+        },
+        "combat_end_hp": 76,
+        "casts": 14,
+        "failed_casts": 0,
+        "enemy_casts": 8
+      },
+      {
+        "class": "thaumaturge",
+        "allocation": "split",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 2,
+            "water": 2,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 4,
+          "copies": 13,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 135,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 2,
+            "water": 2,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            8,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 110,
+        "casts": 5,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "thaumaturge",
+        "allocation": "split",
+        "depth": 6,
+        "outcome": "turn_limit",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 6,
+            "water": 6,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 10,
+          "copies": 17,
+          "enemy_count": 1,
+          "enemy_hp": 14,
+          "guard": 0,
+          "hp": 91,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 6,
+            "water": 6,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            3,
+            9
+          ],
+          "power": 34.0,
+          "round": 7
+        },
+        "combat_end_hp": 91,
+        "casts": 15,
+        "failed_casts": 0,
+        "enemy_casts": 10
+      },
+      {
+        "class": "thaumaturge",
+        "allocation": "off_element",
+        "depth": 1,
+        "outcome": "victory",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 15,
+          "enemy_count": 1,
+          "enemy_hp": 25,
+          "guard": 0,
+          "hp": 110,
+          "level": 1,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 110,
+          "mp": 3,
+          "position": [
+            7,
+            12
+          ],
+          "power": 16.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 0,
+            "vitality": 0
+          },
+          "consumed": 4,
+          "copies": 13,
+          "enemy_count": 0,
+          "enemy_hp": 0,
+          "guard": 0,
+          "hp": 135,
+          "level": 2,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 4,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 135,
+          "mp": 3,
+          "position": [
+            8,
+            10
+          ],
+          "power": 20.0,
+          "round": 2
+        },
+        "combat_end_hp": 110,
+        "casts": 5,
+        "failed_casts": 0,
+        "enemy_casts": 0
+      },
+      {
+        "class": "thaumaturge",
+        "allocation": "off_element",
+        "depth": 6,
+        "outcome": "turn_limit",
+        "start": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 0,
+          "copies": 27,
+          "enemy_count": 4,
+          "enemy_hp": 264,
+          "guard": 0,
+          "hp": 240,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 3,
+          "position": [
+            4,
+            11
+          ],
+          "power": 34.0,
+          "round": 1
+        },
+        "end": {
+          "ap": 4,
+          "aptitudes": {
+            "contact": 0,
+            "distance": 0,
+            "protection": 1,
+            "vitality": 0
+          },
+          "consumed": 11,
+          "copies": 16,
+          "enemy_count": 1,
+          "enemy_hp": 43,
+          "guard": 0,
+          "hp": 111,
+          "level": 5,
+          "masteries": {
+            "earth": 0,
+            "fire": 0,
+            "night": 0,
+            "sun": 12,
+            "water": 0,
+            "wind": 0
+          },
+          "maximum": 240,
+          "mp": 2,
+          "position": [
+            3,
+            9
+          ],
+          "power": 34.0,
+          "round": 7
+        },
+        "combat_end_hp": 111,
+        "casts": 16,
+        "failed_casts": 0,
+        "enemy_casts": 9
+      }
+    ]
+  },
+  "candidates": {
+    "passed": true,
+    "assertions": 246,
+    "counts": {
+      "cards": 9,
+      "equipment": 6,
+      "relics": 3,
+      "enemy_traits": 4
+    },
+    "card_values": [
+      {
+        "id": "pv1c_disque",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.8,
+            "rounded_no_defense": 13
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.8,
+            "rounded_no_defense": 13
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.8,
+            "rounded_no_defense": 13
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.8,
+            "rounded_no_defense": 13
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.8,
+            "rounded_no_defense": 13
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 14.336000000000002,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.0,
+            "rounded_no_defense": 32
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.0,
+            "rounded_no_defense": 32
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.0,
+            "rounded_no_defense": 32
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.0,
+            "rounded_no_defense": 32
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.0,
+            "rounded_no_defense": 32
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 40.32,
+            "rounded_no_defense": 40
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 74.4,
+            "rounded_no_defense": 74
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 74.4,
+            "rounded_no_defense": 74
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 74.4,
+            "rounded_no_defense": 74
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 74.4,
+            "rounded_no_defense": 74
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 74.4,
+            "rounded_no_defense": 74
+          }
+        ]
+      },
+      {
+        "id": "pv1c_disque",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 102.672,
+            "rounded_no_defense": 103
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 6.272,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 17.64,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 44.91899999999999,
+            "rounded_no_defense": 45
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_fil",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          },
+          {
+            "op": "burn",
+            "raw": 1.6,
+            "rounded_no_defense": 2
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          },
+          {
+            "op": "burn",
+            "raw": 1.6,
+            "rounded_no_defense": 2
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 5.376,
+            "rounded_no_defense": 5
+          },
+          {
+            "op": "burn",
+            "raw": 1.7920000000000003,
+            "rounded_no_defense": 2
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          },
+          {
+            "op": "burn",
+            "raw": 1.6,
+            "rounded_no_defense": 2
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          },
+          {
+            "op": "burn",
+            "raw": 1.6,
+            "rounded_no_defense": 2
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          },
+          {
+            "op": "burn",
+            "raw": 1.6,
+            "rounded_no_defense": 2
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          },
+          {
+            "op": "burn",
+            "raw": 4.0,
+            "rounded_no_defense": 4
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          },
+          {
+            "op": "burn",
+            "raw": 4.0,
+            "rounded_no_defense": 4
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 15.120000000000001,
+            "rounded_no_defense": 15
+          },
+          {
+            "op": "burn",
+            "raw": 5.04,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          },
+          {
+            "op": "burn",
+            "raw": 4.0,
+            "rounded_no_defense": 4
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          },
+          {
+            "op": "burn",
+            "raw": 4.0,
+            "rounded_no_defense": 4
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          },
+          {
+            "op": "burn",
+            "raw": 4.0,
+            "rounded_no_defense": 4
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "burn",
+            "raw": 9.3,
+            "rounded_no_defense": 9
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "burn",
+            "raw": 9.3,
+            "rounded_no_defense": 9
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 38.501999999999995,
+            "rounded_no_defense": 39
+          },
+          {
+            "op": "burn",
+            "raw": 12.834,
+            "rounded_no_defense": 13
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "burn",
+            "raw": 9.3,
+            "rounded_no_defense": 9
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "burn",
+            "raw": 9.3,
+            "rounded_no_defense": 9
+          }
+        ]
+      },
+      {
+        "id": "pv1c_tison",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "burn",
+            "raw": 9.3,
+            "rounded_no_defense": 9
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 15.232000000000001,
+            "rounded_no_defense": 15
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 13.6,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 13.6,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 13.6,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 13.6,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 13.6,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 42.84,
+            "rounded_no_defense": 43
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 34.0,
+            "rounded_no_defense": 34
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 34.0,
+            "rounded_no_defense": 34
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 34.0,
+            "rounded_no_defense": 34
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 34.0,
+            "rounded_no_defense": 34
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 34.0,
+            "rounded_no_defense": 34
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 109.08899999999998,
+            "rounded_no_defense": 109
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 79.05,
+            "rounded_no_defense": 79
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 79.05,
+            "rounded_no_defense": 79
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 79.05,
+            "rounded_no_defense": 79
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 79.05,
+            "rounded_no_defense": 79
+          }
+        ]
+      },
+      {
+        "id": "pv1c_pave",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 79.05,
+            "rounded_no_defense": 79
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 9.6,
+            "rounded_no_defense": 10
+          },
+          {
+            "op": "guard",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 9.6,
+            "rounded_no_defense": 10
+          },
+          {
+            "op": "guard",
+            "raw": 6.272,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 9.6,
+            "rounded_no_defense": 10
+          },
+          {
+            "op": "guard",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 9.6,
+            "rounded_no_defense": 10
+          },
+          {
+            "op": "guard",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 10.752,
+            "rounded_no_defense": 11
+          },
+          {
+            "op": "guard",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 9.6,
+            "rounded_no_defense": 10
+          },
+          {
+            "op": "guard",
+            "raw": 5.6,
+            "rounded_no_defense": 6
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 24.0,
+            "rounded_no_defense": 24
+          },
+          {
+            "op": "guard",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 24.0,
+            "rounded_no_defense": 24
+          },
+          {
+            "op": "guard",
+            "raw": 17.64,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 24.0,
+            "rounded_no_defense": 24
+          },
+          {
+            "op": "guard",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 24.0,
+            "rounded_no_defense": 24
+          },
+          {
+            "op": "guard",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 30.240000000000002,
+            "rounded_no_defense": 30
+          },
+          {
+            "op": "guard",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 24.0,
+            "rounded_no_defense": 24
+          },
+          {
+            "op": "guard",
+            "raw": 14.0,
+            "rounded_no_defense": 14
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 55.8,
+            "rounded_no_defense": 56
+          },
+          {
+            "op": "guard",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 55.8,
+            "rounded_no_defense": 56
+          },
+          {
+            "op": "guard",
+            "raw": 44.91899999999999,
+            "rounded_no_defense": 45
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 55.8,
+            "rounded_no_defense": 56
+          },
+          {
+            "op": "guard",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 55.8,
+            "rounded_no_defense": 56
+          },
+          {
+            "op": "guard",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 77.00399999999999,
+            "rounded_no_defense": 77
+          },
+          {
+            "op": "guard",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_dette",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 55.8,
+            "rounded_no_defense": 56
+          },
+          {
+            "op": "guard",
+            "raw": 32.55,
+            "rounded_no_defense": 33
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 11.2,
+            "rounded_no_defense": 11
+          },
+          {
+            "op": "guard",
+            "raw": 8.064000000000002,
+            "rounded_no_defense": 8
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 11.2,
+            "rounded_no_defense": 11
+          },
+          {
+            "op": "guard",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 11.2,
+            "rounded_no_defense": 11
+          },
+          {
+            "op": "guard",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 11.2,
+            "rounded_no_defense": 11
+          },
+          {
+            "op": "guard",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 11.2,
+            "rounded_no_defense": 11
+          },
+          {
+            "op": "guard",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 12.544,
+            "rounded_no_defense": 13
+          },
+          {
+            "op": "guard",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 28.0,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "guard",
+            "raw": 22.68,
+            "rounded_no_defense": 23
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 28.0,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "guard",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 28.0,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "guard",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 28.0,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "guard",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 28.0,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "guard",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 35.28,
+            "rounded_no_defense": 35
+          },
+          {
+            "op": "guard",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 65.1,
+            "rounded_no_defense": 65
+          },
+          {
+            "op": "guard",
+            "raw": 57.753,
+            "rounded_no_defense": 58
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 65.1,
+            "rounded_no_defense": 65
+          },
+          {
+            "op": "guard",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 65.1,
+            "rounded_no_defense": 65
+          },
+          {
+            "op": "guard",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 65.1,
+            "rounded_no_defense": 65
+          },
+          {
+            "op": "guard",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 65.1,
+            "rounded_no_defense": 65
+          },
+          {
+            "op": "guard",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          }
+        ]
+      },
+      {
+        "id": "pv1c_talus",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 89.83799999999998,
+            "rounded_no_defense": 90
+          },
+          {
+            "op": "guard",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.8,
+            "rounded_no_defense": 9
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 9.856000000000002,
+            "rounded_no_defense": 10
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.8,
+            "rounded_no_defense": 9
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.8,
+            "rounded_no_defense": 9
+          },
+          {
+            "op": "guard",
+            "raw": 5.376,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.8,
+            "rounded_no_defense": 9
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.8,
+            "rounded_no_defense": 9
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 22.0,
+            "rounded_no_defense": 22
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 27.72,
+            "rounded_no_defense": 28
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 22.0,
+            "rounded_no_defense": 22
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 22.0,
+            "rounded_no_defense": 22
+          },
+          {
+            "op": "guard",
+            "raw": 15.120000000000001,
+            "rounded_no_defense": 15
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 22.0,
+            "rounded_no_defense": 22
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 22.0,
+            "rounded_no_defense": 22
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 51.150000000000006,
+            "rounded_no_defense": 51
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 70.587,
+            "rounded_no_defense": 71
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 51.150000000000006,
+            "rounded_no_defense": 51
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 51.150000000000006,
+            "rounded_no_defense": 51
+          },
+          {
+            "op": "guard",
+            "raw": 38.501999999999995,
+            "rounded_no_defense": 39
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 51.150000000000006,
+            "rounded_no_defense": 51
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_ressac",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 51.150000000000006,
+            "rounded_no_defense": 51
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.064000000000002,
+            "rounded_no_defense": 8
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          },
+          {
+            "op": "guard",
+            "raw": 4.8,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 7.2,
+            "rounded_no_defense": 7
+          },
+          {
+            "op": "guard",
+            "raw": 5.376,
+            "rounded_no_defense": 5
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 22.68,
+            "rounded_no_defense": 23
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          },
+          {
+            "op": "guard",
+            "raw": 12.0,
+            "rounded_no_defense": 12
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.0,
+            "rounded_no_defense": 18
+          },
+          {
+            "op": "guard",
+            "raw": 15.120000000000001,
+            "rounded_no_defense": 15
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 57.753,
+            "rounded_no_defense": 58
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          },
+          {
+            "op": "guard",
+            "raw": 27.9,
+            "rounded_no_defense": 28
+          }
+        ]
+      },
+      {
+        "id": "pv1c_cendre",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 41.85,
+            "rounded_no_defense": 42
+          },
+          {
+            "op": "guard",
+            "raw": 38.501999999999995,
+            "rounded_no_defense": 39
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 1,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 3.2,
+            "rounded_no_defense": 3
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 1,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 3.2,
+            "rounded_no_defense": 3
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 1,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 3.2,
+            "rounded_no_defense": 3
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 1,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 3.2,
+            "rounded_no_defense": 3
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 1,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 3.5840000000000005,
+            "rounded_no_defense": 4
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 1,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 3.2,
+            "rounded_no_defense": 3
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 6,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.0,
+            "rounded_no_defense": 8
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 6,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.0,
+            "rounded_no_defense": 8
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 6,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.0,
+            "rounded_no_defense": 8
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 6,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.0,
+            "rounded_no_defense": 8
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 6,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 10.08,
+            "rounded_no_defense": 10
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 6,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 8.0,
+            "rounded_no_defense": 8
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 12,
+        "mono_element": "earth",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.6,
+            "rounded_no_defense": 19
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 12,
+        "mono_element": "water",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.6,
+            "rounded_no_defense": 19
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 12,
+        "mono_element": "fire",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.6,
+            "rounded_no_defense": 19
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 12,
+        "mono_element": "wind",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.6,
+            "rounded_no_defense": 19
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 12,
+        "mono_element": "night",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 25.668,
+            "rounded_no_defense": 26
+          }
+        ]
+      },
+      {
+        "id": "pv1c_revelateur",
+        "level": 12,
+        "mono_element": "sun",
+        "effects": [
+          {
+            "op": "damage",
+            "raw": 18.6,
+            "rounded_no_defense": 19
+          }
+        ]
+      }
+    ]
+  }
+}

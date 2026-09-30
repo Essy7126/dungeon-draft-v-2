@@ -38,6 +38,7 @@ func configure(value: Dictionary) -> void:
 	art.offset_top = 12 if card else 4
 	art.offset_bottom = -17 if card else -4
 	if card:
+		D.card_material(self)
 		var rim := Panel.new()
 		rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var frame := D.surface(false, 0)

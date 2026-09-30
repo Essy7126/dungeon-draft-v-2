@@ -74,3 +74,12 @@ Il ne déduit pas l'absence d'usage depuis une simple absence dans le menu.
   dépendances d’édition/tests ; conserver les sources et crédits nécessaires.
 - Après suppression : import, suite globale et scénarios concernés. Un graphe
   statique seul ne constitue pas une validation runtime.
+
+## Échelle de Passe-Rive — 29 septembre 2026
+
+La stature source reste 214 pixels. Le combat suit les calibrations du terrain et
+les multiplicateurs artistiques de salle, comme les autres unités ; la hauteur
+écran fixe qui compensait le cadrage du HUD a été retirée. Les haltes reprennent
+la hauteur humaine de leur manifeste Studio. Vérification ciblée :
+`./tools/class_card_vfx/play_passe_rive_s23.ps1 -RoomScaleOnly`.
+[Décisions et preuves](../ai/ROOM_SCALE_DECK_MATERIALS_2026-09-29.md).

@@ -91,11 +91,15 @@ func pick_unit(pointer: Vector2) -> Unit:
 	var picked: Unit = null
 	var depth := -INF
 	for actor: Unit in battle._unit_views:
-		var view: Node2D = battle._unit_views[actor]
 		if (
 			not is_instance_valid(actor) or not actor.is_alive
-			or not is_instance_valid(view) or not view.is_visible_in_tree()
+			or not is_instance_valid(battle._unit_views[actor])
 		):
+			continue
+		# A death animation may free its view before the registry entry is removed.
+		# Validate before assigning to a typed variable: a freed object cannot be cast.
+		var view: Node2D = battle._unit_views[actor]
+		if not view.is_visible_in_tree():
 			continue
 		var transform := view.get_global_transform_with_canvas()
 		if transform.origin.y > depth and _view_contains_pointer(view, pointer):

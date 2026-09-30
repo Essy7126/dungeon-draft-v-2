@@ -74,7 +74,7 @@ func _process(_delta: float) -> void:
 	var deck := Button.new()
 	deck.name = "OpenCombatDeck"
 	deck.text = "Mon deck · 10 cartes"
-	if consumable: deck.text = "Préparées · %d" % cards.active.size()
+	if consumable: deck.text = "Deck · %d" % cards.active.size()
 	deck.tooltip_text = "Voir toutes vos cartes et leurs effets. Consultation pendant le combat."
 	CardSkin.action(deck)
 	deck.add_theme_font_size_override("font_size", 16)

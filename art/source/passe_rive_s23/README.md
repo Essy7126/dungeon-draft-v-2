@@ -1,12 +1,14 @@
 # Passe-Rive — référence d’apparence S23
 
-Une même référence pilote désormais la taille à l’écran et la palette de Passe-Rive. Les dessins d’attaque approuvés et les cycles de déplacement natifs sont conservés. Les dernières preuves et les limites vérifiées sont dans `VALIDATION.md`.
+Une même référence pilote la stature source et la palette de Passe-Rive. Les dessins d’attaque approuvés et les cycles de déplacement natifs sont conservés. Les dernières preuves et les limites vérifiées sont dans `VALIDATION.md`.
 
 ## Échelle entre salles
 
-`passe_rive_appearance.gd` définit 214 pixels de stature source et une stature de lecture de 100 pixels à 1600 × 900. Elle devient 90 pixels dans le banc 1440 × 950, selon le facteur commun de mise à l’échelle de la fenêtre. Il s’agit de la stature de référence debout, pas de la hauteur d’une pose accroupie ou d’une arme levée.
+Correction du 29 septembre 2026 : `passe_rive_appearance.gd` conserve la stature source de 214 pixels. Le contrat historique de hauteur écran fixe (100 px à 900p) est retiré : il agrandissait le héros relativement aux ennemis dès que le HUD réduisait le terrain.
 
-En combat Cartes, le visuel compense les calibrations de grille, de salle et de caméra lors du cadrage initial, des changements de disposition du HUD et des redimensionnements. Le zoom volontaire reste un zoom de toute la scène. Les haltes et le seuil utilisent la même référence ; les réglages historiques de taille de leurs manifestes restent applicables aux autres personnages.
+En combat, la racine Battle conserve ses calibrations de grille et les multiplicateurs de présentation de la salle. Passe-Rive ne compense plus ces transformations. Le zoom, le redimensionnement et la place prise par la main affectent ensemble le terrain, le héros et les ennemis. En halte, sa stature mondiale reprend `player_height_ratio` du manifeste, converti depuis le gabarit humain du Studio vers ses 214 pixels source. Les pivots, proportions d’animation et palettes restent identiques.
+
+Vérification ciblée : `./tools/class_card_vfx/play_passe_rive_s23.ps1 -RoomScaleOnly` (neuf salles de combat et huit haltes). Les anciens rapports de hauteur fixe sont historiques.
 
 La cadence de marche suit toujours la distance au sol à l’échelle du personnage. La ruée garde son départ, son trajet et sa réception à l’arrivée réelle.
 

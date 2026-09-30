@@ -227,12 +227,11 @@ func _configure_player(actor: Player) -> void:
 
 
 func _passe_rive_display_scale() -> float:
-	var viewport_size := get_viewport_rect().size
-	var fitted_scale := minf(viewport_size.x / world_size.x, viewport_size.y / world_size.y)
-	return PasseRiveAppearance.room_scale(
-		viewport_size,
-		fitted_scale,
-		PasseRiveAppearance.SOURCE_HEIGHT,
+	# Use the same authored human stature as the Studio preview/reference hero.
+	# Only the source silhouette differs; viewport fitting belongs to world.scale.
+	return (
+		ScaleReference.height_ratio(definition) * ScaleReference.world_height(definition)
+		/ PasseRiveAppearance.SOURCE_HEIGHT
 	)
 
 
