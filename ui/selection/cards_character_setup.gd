@@ -114,6 +114,9 @@ func configure(value: Array[Dictionary]) -> void:
 			Rect2(232 + index * 204, 546, 198, 184),
 		)
 		var object := Socle.new()
+		# Hover and keyboard focus follow the illustrated silhouette in Object.
+		for style in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
+			button.add_theme_stylebox_override(style, StyleBoxEmpty.new())
 		object.kind = key
 		object.name = "Object"
 		object.size = Vector2(218, 153)

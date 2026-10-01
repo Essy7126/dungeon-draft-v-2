@@ -24,6 +24,7 @@ func _run() -> void:
 				[setup._hero_art, screen.start_button],
 			)
 		await _capture("main", dimensions, [setup._summary, screen.start_button])
+		await _review_hover(setup, dimensions)
 		_check_summary(setup, dimensions)
 		await _press(screen.find_child("Socle_class", true, false))
 		for id in ["assassin", "gardien", "arpenteur", "thaumaturge"]:
@@ -212,6 +213,55 @@ func _run() -> void:
 	)
 	report.close()
 	get_tree().quit(0 if passed else 1)
+
+
+func _review_hover(setup, dimensions: Vector2i) -> void:
+	for kind in ["class", "deck", "elements", "difficulty"]:
+		var button: Button = setup._socles[kind]
+		var object: Control = button.get_node("Object")
+		var shader_material := object.material as ShaderMaterial
+		for state in ["hover", "pressed", "focus"]:
+			_check(
+				button.get_theme_stylebox(state) is StyleBoxEmpty,
+				"no rectangular " + state + " frame for " + kind,
+				dimensions,
+			)
+		var focused := get_viewport().gui_get_focus_owner()
+		if focused != null:
+			focused.release_focus()
+		var motion := InputEventMouseMotion.new()
+		motion.position = button.get_global_rect().get_center()
+		get_viewport().push_input(motion)
+		await _settle()
+		_check(
+			bool(shader_material.get_shader_parameter("highlighted")),
+			"pointer highlights " + kind,
+			dimensions,
+		)
+		await super._capture("hover_" + kind, dimensions, [button])
+		motion.position = Vector2(2, 2)
+		get_viewport().push_input(motion)
+		await _settle()
+		_check(
+			not bool(shader_material.get_shader_parameter("highlighted")),
+			"pointer exit clears " + kind,
+			dimensions,
+		)
+		button.grab_focus()
+		await _settle()
+		_check(
+			bool(shader_material.get_shader_parameter("highlighted")),
+			"keyboard focus highlights " + kind,
+			dimensions,
+		)
+		await super._capture("focus_" + kind, dimensions, [button])
+		button.release_focus()
+		await _settle()
+		_check(
+			not bool(shader_material.get_shader_parameter("highlighted")),
+			"focus exit clears " + kind,
+			dimensions,
+		)
 
 
 func _escape() -> void:
