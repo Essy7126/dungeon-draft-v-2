@@ -21,7 +21,7 @@ var card_filter := 0
 var item_filter := 0
 var slot_filter := ""
 var item_query := ""
-var show_sources := false
+signal allocation_requested
 var _recent_cards: Dictionary = { }
 var _recent_items: Dictionary = { }
 var _content: Node
@@ -1010,176 +1010,24 @@ func _comparison_row(
 	values.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 
-func _reveal_sources(sources: Control) -> void:
-	await get_tree().process_frame
-	if is_instance_valid(sources) and sources.visible:
-		var scroller := sources.get_parent().get_parent() as ScrollContainer
-		if scroller != null:
-			scroller.scroll_vertical = int(sources.position.y)
-
-
 func _progression(cards) -> void:
+	if section == "attributes":
+		var stats := preload("res://ui/expedition/player_statistics_view.gd").new()
+		stats.session = GameManager.expedition
+		stats.read_only = read_only
+		stats.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		stats.allocation_requested.connect(
+			func():
+				allocation_requested.emit(),
+		)
+		add_child(stats)
+		return
+	if section in ["allocation", "progression"] and cards.prototype_revision == 1:
+		_attribute_choices(self, cards)
+		return
 	var columns := _columns()
-	var stats := D.column(columns, 300)
-	var hero: Unit = GameManager.expedition.character.unit
-	var identity := HBoxContainer.new()
-	stats.add_child(identity)
-	D.image(identity, Icons.icon(cards.primary_class), 40)
-	var names := VBoxContainer.new()
-	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	identity.add_child(names)
-	D.label(names, hero.unit_name, 22, D.GOLD)
-	D.label(
-		names,
-		"%s · Niveau %d" % [Catalog.class_row(cards.primary_class).name, cards.level],
-		16,
-	)
-	var life := ProgressBar.new()
-	life.custom_minimum_size.y = 12
-	life.max_value = hero.max_hp.get_int()
-	life.value = hero.current_hp
-	life.show_percentage = false
-	var fill := D.surface(false, 0)
-	fill.bg_color = Symbols.color("hp")
-	life.add_theme_stylebox_override("fill", fill)
-	life.add_theme_stylebox_override("background", D.surface(false, 0))
-	stats.add_child(life)
-	D.label(
-		stats,
-		"%d / %d points de vie" % [hero.current_hp, hero.max_hp.get_int()],
-		19,
-		Symbols.color("hp"),
-	)
-	var combat_grid := GridContainer.new()
-	combat_grid.columns = 2
-	combat_grid.add_theme_constant_override("h_separation", 8)
-	combat_grid.add_theme_constant_override("v_separation", 6)
-	stats.add_child(combat_grid)
-	var mods := Math.equipment_mods(cards.equipped)
-	for entry in [
-		[
-			"ap",
-			"Points d'action",
-			str(hero.max_ap.get_int()) + " PA",
-			"Budget pour jouer vos sorts à chaque tour.",
-		],
-		[
-			"mp",
-			"Mouvement",
-			str(hero.max_mp.get_int()) + " PM",
-			"Budget de déplacement à chaque tour.",
-		],
-		[
-			"power",
-			"Puissance",
-			BuildPreview.value("power", hero.attack_power.get_value()),
-			"Base des dégâts, de la garde et des soins de vos sorts.",
-		],
-		[
-			"hand",
-			"Taille de main",
-			"%d cartes" % cards.hand_capacity,
-			"Nombre de cartes rejointes en main au début du tour.",
-		],
-		[
-			"physical",
-			"Rés. physique",
-			"%.0f %%" % minf(40, hero.armure.get_value()),
-			"Réduit les dégâts physiques. Plafond : 40 %.",
-		],
-		[
-			"magic",
-			"Rés. magique",
-			"%.0f %%" % minf(40, hero.resist_magique.get_value()),
-			"Réduit les dégâts magiques. Plafond : 40 %.",
-		],
-	]:
-		Symbols.stat_tile(combat_grid, entry[0], entry[1], entry[2], entry[3])
-	if cards.prototype_revision == 1:
-		D.label(stats, "MAÎTRISES ÉLÉMENTAIRES", 13, D.GOLD)
-		D.label(
-			stats,
-			"Renforcent les effets du même élément, quelle que soit votre classe.",
-			14,
-			D.MUTED,
-		)
-		var elements := GridContainer.new()
-		elements.columns = 3
-		elements.add_theme_constant_override("h_separation", 8)
-		elements.add_theme_constant_override("v_separation", 6)
-		stats.add_child(elements)
-		for id in Math.Progression.ELEMENTS:
-			var trained := Math.Progression.mastery(int(cards.masteries[id]))
-			var equipped := float(mods.get("mastery_" + id, 0))
-			Symbols.stat_tile(
-				elements,
-				id,
-				Math.Progression.ELEMENT_NAMES[id],
-				"+%.0f %%" % ((trained + equipped) * 100),
-				"Points investis : %d · Maîtrise +%.0f %% · Équipement +%.0f %%"
-				% [cards.masteries[id], trained * 100, equipped * 100],
-			)
-	var sources := VBoxContainer.new()
-	sources.name = "StatSources"
-	sources.visible = show_sources
-	var disclosure := _select(
-		stats,
-		"Origine des statistiques  ▾" if show_sources else "Origine des statistiques  ▸",
-		func():
-			show_sources = not show_sources
-			sources.visible = show_sources
-			_reveal_sources(sources),
-	)
-	disclosure.name = "ToggleStatSources"
-	disclosure.pressed.connect(
-		func():
-			disclosure.text = "Origine des statistiques  ▾" if show_sources else "Origine des statistiques  ▸",
-	)
-	stats.add_child(sources)
-	D.label(
-		sources,
-		"Base du niveau + %s + équipement\nContributions effectives après arrondis et plafonds. Hors effets temporaires du combat."
-		% ("aptitudes" if cards.prototype_revision == 1 else "attributs"),
-		14,
-		D.MUTED,
-	)
-	for entry in BuildPreview.sources(cards):
-		D.label(
-			sources,
-			entry.title + " · " + BuildPreview.value(entry.key, entry.total),
-			17,
-			D.GOLD,
-		)
-		D.label(
-			sources,
-			"Base %s  ·  %s %s  ·  Équipement %s"
-			% [
-				BuildPreview.value(entry.key, entry.base),
-				"Aptitudes" if cards.prototype_revision == 1 else "Attributs",
-				BuildPreview.value(entry.key, entry.attributes),
-				BuildPreview.value(entry.key, entry.equipment),
-			],
-			14,
-		)
-	D.label(
-		sources,
-		"Plafonds : 40 % de résistance physique et magique, 5 PM, 7 cartes en main. Les bonus conditionnels ci-dessous s'appliquent lors de l'action.",
-		14,
-		D.MUTED,
-	)
-	D.label(stats, "BONUS D'ÉQUIPEMENT", 13, D.GOLD)
-	if mods.is_empty():
-		D.label(stats, "Aucun équipement actif.", 16, D.MUTED)
-	for key in mods:
-		D.label(stats, Presenter.item_text({ "mods": { key: mods[key] } }), 16, D.GREEN)
-	D.label(
-		stats,
-		"Valeurs actuelles, équipement inclus. Les bonus conditionnels s'appliquent lors de l'action.",
-		14,
-		D.MUTED,
-	)
 	var decisions := D.column(columns, 430)
-	if section in ["attributes", "progression"]:
+	if section in ["allocation", "progression"]:
 		_attribute_choices(decisions, cards)
 	else:
 		_class_choices(decisions, cards)
@@ -1331,8 +1179,6 @@ func _attribute_choices(parent: VBoxContainer, cards) -> void:
 		editor.read_only = read_only
 		editor.committed.connect(_commit)
 		parent.add_child(editor)
-		if section == "progression":
-			_class_choices(parent, cards)
 		return
 	D.label(parent, "Renforcer votre personnage", 25, D.GOLD)
 	D.label(
@@ -1405,6 +1251,15 @@ func _attribute_choices(parent: VBoxContainer, cards) -> void:
 
 
 func _class_choices(parent: VBoxContainer, cards) -> void:
+	var allocate := _select(
+		parent,
+		"Répartir mes points · %d disponibles" % cards.attribute_points(),
+		func():
+			allocation_requested.emit(),
+	)
+	allocate.name = "OpenStatAllocation"
+	allocate.disabled = read_only
+	D.primary_button(allocate)
 	var identity := HBoxContainer.new()
 	identity.add_theme_constant_override("separation", 14)
 	parent.add_child(identity)

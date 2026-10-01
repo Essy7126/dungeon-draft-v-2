@@ -11,6 +11,7 @@ Un import interrompu, zéro test ou un rapport absent reste un échec.
 | Classes, cartes, deck et VFX Cartes | `./dev.ps1 test cards` ; parcours préparation → combat → bilan → reprise |
 | Copies consommables | `./dev.ps1 test consumable-v2` ; inclus dans `cards`, `catabase` et `all`. `test_consumable_cards_integration.gd` utilise les douze scènes de combat réelles. `./tools/consumable_cards/verify_integration.ps1` capture le parcours intégré ; `capture.tscn` concerne seulement le prototype |
 | Progression Prototype v1 | `./dev.ps1 test test/unit/test_consumable_cards_prototype_v1.gd` ; inclus dans les suites Cartes. Vérifier allocation au départ et dans le dossier, calculs élémentaires, quotas, anciens combats et ratio de PV à la reprise. Contrat : [prototype_v1.md](prototype_v1.md) |
+| Profils numériques de campagne | `./dev.ps1 test test/unit/test_consumable_cards_progression_profile.gd` ; inclus par les sélections `test_consumable_cards*.gd`. Courbes complètes, rejets hors profil, budgets, XP Champion, calculs avec contexte prolongé et sauvegardes antérieures. Contrat et limites : [progression_profiles.md](progression_profiles.md) |
 | Probabilités et transactions des anciennes révisions Cartes | `./dev.ps1 test cards-audit` : simulations statistiques longues, également conservées dans `all` |
 | Expédition, progression, inventaire | `./dev.ps1 test catabase` ; tester reprise, récompenses et sauvegardes antérieures |
 | Monstres | `./dev.ps1 test monsters` ; comportement de combat et lecture des intentions |

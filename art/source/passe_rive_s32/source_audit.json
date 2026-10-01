@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "views": [
+    {
+      "direction": "SE",
+      "texture": "SE_v01.png",
+      "sha256": "cfa9fb014ce5399fb497ee63eb1a57fb4a5f0647fa68e02aeec6b803c58802a3",
+      "poses": 12,
+      "source_height": 328,
+      "maximum_stature_variation": 0.009146341463414531
+    },
+    {
+      "direction": "E",
+      "texture": "E_W_v01.png",
+      "sha256": "225a0d9f651a4e39ff02ce3ced0b4360a222accfdd296da9f826ec658df2b224",
+      "poses": 12,
+      "source_height": 214,
+      "maximum_stature_variation": 0.01869158878504673
+    },
+    {
+      "direction": "W",
+      "texture": "W_v02.png",
+      "sha256": "94c4fc5a2600b3a73b1508e552c6a02903446b73fc499292bed5967c0ced593f",
+      "poses": 12,
+      "source_height": 335,
+      "maximum_stature_variation": 0.005970149253731294
+    },
+    {
+      "direction": "NE",
+      "texture": "NE_v03.png",
+      "sha256": "b19bbe4467dd38b027592afec9222598b03b41cf4628f3760f2a9d436a4e6e23",
+      "poses": 12,
+      "source_height": 346,
+      "maximum_stature_variation": 0.014450867052023142
+    },
+    {
+      "direction": "NW",
+      "texture": "NW_v03.png",
+      "sha256": "93caee617d437e19f8ee4bd2c155c47ffd803ad663361f9cc58db4ad31e7b9c3",
+      "poses": 12,
+      "source_height": 276,
+      "maximum_stature_variation": 0.007246376811594235
+    },
+    {
+      "direction": "S",
+      "texture": "S_N_v01.png",
+      "sha256": "2a4ef2fb6bcd00b1cfb1bb10cbef21b9cc09baa6fd989a019fa9fdf55d7b072b",
+      "poses": 12,
+      "source_height": 191,
+      "maximum_stature_variation": 0.005235602094240788
+    },
+    {
+      "direction": "N",
+      "texture": "N_v02.png",
+      "sha256": "e9ca1c3dd487f79eed0c5783f41ea0d1547630b9075096145a0574dbaecd36bf",
+      "poses": 12,
+      "source_height": 346,
+      "maximum_stature_variation": 0.0028901734104046506
+    },
+    {
+      "direction": "SW",
+      "texture": "SW_v01.png",
+      "sha256": "5772197a1bc39aa4686e8c1af94c5d043e25b193fea6de436d853408feaad0eb",
+      "poses": 12,
+      "source_height": 330,
+      "maximum_stature_variation": 0.009090909090909038
+    }
+  ],
+  "frames": 96,
+  "mirrors": false,
+  "pixel_edits": false
+}

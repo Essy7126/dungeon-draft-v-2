@@ -376,7 +376,7 @@ func on_movement_resolved(ctx) -> void:
 func on_cast_complete(ctx) -> void:
 	var cards = CatabaseCards.for_actor(ctx.caster)
 	if card.op == "draw":
-		cards.draw_cards(int(card.amount))
+		ctx.report["cards_drawn"] = cards.draw_cards(int(card.amount))
 	var moved := int(ctx.get_meta("cc2_moved_before", 0))
 	if card.get("drawOnMoved", 0) > 0 and moved >= int(card.get("movementThreshold", 2)):
 		cards.draw_cards(int(card.drawOnMoved))

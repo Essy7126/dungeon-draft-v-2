@@ -10,6 +10,7 @@ var level := 1
 var experience := 0
 var attributes := { "power": 0, "vitality": 0, "resolve": 0 }
 var prototype_revision := 0 # Legacy until departure or a safe preparation migration.
+var progression_profile_id := Progression.profile_id()
 var masteries := Progression.empty_elements()
 var aptitudes := Progression.empty_aptitudes()
 var correction_visits: Array[String] = []
@@ -308,7 +309,7 @@ func spend_attribute(id: String) -> bool:
 		if combat_started: return false
 		if id in Progression.ELEMENTS and Progression.spent(masteries) < Progression.element_budget(level):
 			masteries[id] += 1
-		elif id in Progression.APTITUDES and Progression.spent(aptitudes) < Progression.aptitude_budget(level) and int(aptitudes[id]) < 3:
+		elif id in Progression.APTITUDES and Progression.spent(aptitudes) < Progression.aptitude_budget(level) and int(aptitudes[id]) < Progression.aptitude_rank_cap():
 			aptitudes[id] += 1
 		else: return false
 		changed.emit()
@@ -352,7 +353,7 @@ func eligible_pool() -> Array[String]:
 
 
 func points() -> int:
-	return (1 if level >= 4 else 0) + (1 if level >= 8 else 0) + (1 if level >= 12 else 0) - upgraded_ids.size()
+	return Progression.training_slots(level) - upgraded_ids.size()
 
 
 func upgrade_copy(id: String) -> bool:
@@ -385,7 +386,7 @@ func migrate_prototype() -> bool:
 
 func specialize(id: String) -> bool:
 	if (
-		combat_started or level < 4 or not specialization.is_empty()
+		combat_started or level < Progression.specialization_level() or not specialization.is_empty()
 		or id not in Catalog.class_row(primary_class).get("specs", [])
 	):
 		return false
@@ -426,6 +427,10 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 	# Validate a detached candidate. A rejected restore never mutates this object.
 	var candidate = get_script().new()
 	for key in _persistent_keys():
+		# Saves preceding the explicit contract used this same Pâris profile.
+		if key == "progression_profile_id" and not data.has(key):
+			candidate.progression_profile_id = Progression.LEGACY_PROFILE_ID
+			continue
 		if key in ["prototype_revision", "masteries", "aptitudes", "correction_visits", "full_reorientation_used"] and not data.has("prototype_revision"):
 			if data.has(key): return false
 			continue
@@ -490,6 +495,7 @@ func restore(data: Dictionary, _pending_start := false) -> bool:
 
 static func _persistent_keys() -> Array[String]:
 	return [
+		"progression_profile_id",
 		"prototype_revision", "masteries", "aptitudes", "correction_visits", "full_reorientation_used",
 		"bestiary_revision",
 		"primary_class",
@@ -543,20 +549,22 @@ static func _persistent_keys() -> Array[String]:
 
 func invariant_errors() -> Array[String]:
 	var errors: Array[String] = []
-	if prototype_revision not in [0, 1] or not Progression.valid_allocation(masteries, Progression.ELEMENTS, Progression.element_budget(level) if prototype_revision == 1 else 0, 26) or not Progression.valid_allocation(aptitudes, Progression.APTITUDES, Progression.aptitude_budget(level) if prototype_revision == 1 else 0, 3):
+	if progression_profile_id != Progression.profile_id():
+		errors.append("Profil de progression inconnu.")
+	if prototype_revision not in [0, 1] or not Progression.valid_allocation(masteries, Progression.ELEMENTS, Progression.element_budget(level) if prototype_revision == 1 else 0, Progression.element_point_cap()) or not Progression.valid_allocation(aptitudes, Progression.APTITUDES, Progression.aptitude_budget(level) if prototype_revision == 1 else 0, Progression.aptitude_rank_cap()):
 		errors.append("Progression Prototype v1 invalide.")
 	if correction_visits.size() > Progression.HALTS.size() or correction_visits.any(func(id): return id.is_empty() or correction_visits.count(id) != 1):
 		errors.append("Corrections de halte invalides.")
 	if (prototype_revision == 0 and (not correction_visits.is_empty() or full_reorientation_used)) or (full_reorientation_used and level < 8):
 		errors.append("Réorientation incompatible avec le profil.")
 	if (
-		bestiary_revision not in [0, 1] or primary_class not in Catalog.CLASSES or level < 1 or level > 12 or gold < 0
+		bestiary_revision not in [0, 1] or primary_class not in Catalog.CLASSES or not Progression.profile().contains_level(level) or gold < 0
 		or experience < 0 or round_index < 0 or serial < 0 or hand_capacity < 1 or hand_capacity > 7
 	):
 		errors.append("Profil ou ressources invalides.")
 	if (
 		not specialization.is_empty()
-		and (level < 4 or specialization not in Catalog.class_row(primary_class).get("specs", []))
+		and (level < Progression.specialization_level() or specialization not in Catalog.class_row(primary_class).get("specs", []))
 	):
 		errors.append("Spécialisation invalide.")
 	var seen := { }

@@ -142,6 +142,10 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 		var renewal := _renew_backend(caster)
 		if renewal != null and renewal.confirm_renew(str(spell.spell_id), int(report.get("healing_total", 0)), int(report.get("shield_increase_total", 0))):
 			return
+	if str(spell.spell_id) == "cc2_n08":
+		var centering := _recenter_backend(caster)
+		if centering != null and centering.confirm_recenter(str(spell.spell_id), int(report.get("cards_drawn", 0))):
+			return
 	if str(spell.spell_id) == "cc2_t07" and _confirm_drain(caster, report):
 		return
 	var heel_origin := _heel_origin(caster)
@@ -1104,3 +1108,11 @@ func _renew_backend(caster: Unit) -> Node:
 	if not visual is PasseRiveAutoSpriteView or not is_instance_valid(visual.sprite_backend):
 		return null
 	return visual.sprite_backend if visual.sprite_backend.has_method("confirm_renew") else null
+
+
+func _recenter_backend(caster: Unit) -> Node:
+	var view: Node = manager._find_unit_view(caster)
+	var visual: Node = view.get("_optional_visual") if view != null else null
+	if not visual is PasseRiveAutoSpriteView or not is_instance_valid(visual.sprite_backend):
+		return null
+	return visual.sprite_backend if visual.sprite_backend.has_method("confirm_recenter") else null

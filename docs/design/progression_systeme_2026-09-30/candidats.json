@@ -1,0 +1,104 @@
+{
+  "schema": "progression_design_candidates/1",
+  "status": "proposal_not_loaded",
+  "training": {
+    "levels": [4, 8, 12],
+    "slots": [1, 2, 3],
+    "one_form_per_family": true,
+    "element_prerequisites": [],
+    "consume_copies": true,
+    "sources": ["consumable_card"],
+    "active_battle_changes": false
+  },
+  "forms": [
+    {
+      "id": "ps30_braise_vive", "family": "t02", "name": "Braise vive",
+      "ap": 2, "range": [1, 3], "damage": 0.8, "tick": 0.1, "ticks": 2,
+      "weights": {"fire": 1}, "shape": "single", "max_targets": 1,
+      "tradeoff": "Davantage d'impact immédiat, moins de brûlure que la forme lente.",
+      "requires": ["versioned_family_forms", "whole_status_application"]
+    },
+    {
+      "id": "ps30_braise_lente", "family": "t02", "name": "Braise lente",
+      "ap": 2, "range": [1, 3], "damage": 0.4, "tick": 0.34, "ticks": 2,
+      "weights": {"fire": 1}, "shape": "single", "max_targets": 1,
+      "tradeoff": "Moins d'impact immédiat ; rendement complet réservé à une cible survivant deux activations.",
+      "requires": ["versioned_family_forms", "whole_status_application"]
+    },
+    {
+      "id": "ps30_trait_precis", "family": "n05", "name": "Trait précis",
+      "ap": 1, "range": [2, 4], "damage": 0.6,
+      "weights": {"wind": 1}, "shape": "single", "max_targets": 1,
+      "tradeoff": "Conserve l'amélioration actuelle ; meilleur impact sur une seule cible.",
+      "requires": ["versioned_family_forms"]
+    },
+    {
+      "id": "ps30_trait_traversant", "family": "n05", "name": "Trait traversant",
+      "ap": 1, "range": [2, 4], "damage": 0.35,
+      "weights": {"wind": 1}, "shape": "straight_two", "max_targets": 2,
+      "tradeoff": "Impact par cible inférieur ; seconde cible seulement sur la case suivante dans la même direction cardinale, sans obstacle.",
+      "requires": ["versioned_family_forms", "straight_two_geometry", "one_cast_shared_trigger_budget"]
+    },
+    {
+      "id": "ps30_garde_massive", "family": "g01", "name": "Garde massive",
+      "ap": 2, "range": [0, 0], "guard": 1.4,
+      "weights": {"earth": 1}, "max_targets": 1,
+      "carry_fraction": 0,
+      "tradeoff": "Conserve l'amélioration actuelle ; expire au début de la prochaine activation du héros.",
+      "requires": ["versioned_family_forms"]
+    },
+    {
+      "id": "ps30_garde_tissee", "family": "g01", "name": "Garde tissée",
+      "ap": 2, "range": [0, 0], "guard": 0.9,
+      "weights": {"earth": 1}, "max_targets": 1,
+      "carry_fraction": 0.5,
+      "tradeoff": "Moins de garde initiale ; conserve une seule fois la moitié de son propre reliquat au prochain début du héros. Ce reliquat expire au début suivant.",
+      "requires": ["versioned_family_forms", "sourced_guard_lifetime", "single_carry_no_rescaling"]
+    }
+  ],
+  "cards": [
+    {
+      "id": "ps30_suture_aube", "name": "Suture d'aube", "affinity": "shared", "rarity": "normal",
+      "ap": 2, "range": [0, 0], "copies_max": 3, "uses_per_turn": 1,
+      "effects": [
+        {"op": "heal", "target": "self", "coefficient": 0.45, "weights": {"water": 1}, "scaling": "original", "rounding": "half_up_final"},
+        {"op": "guard", "target": "self", "coefficient": 0.45, "weights": {"sun": 1}, "scaling": "original", "rounding": "half_up_final"}
+      ],
+      "upgrade": {"0": {"coefficient": 0.55}},
+      "order": ["heal_capped_at_missing_hp", "guard_capped_at_2_5P"],
+      "requires": ["multi_component_cards", "normal_heal_economy_review"]
+    },
+    {
+      "id": "ps30_lame_equinoxe", "name": "Lame d'équinoxe", "affinity": "shared", "rarity": "normal",
+      "ap": 2, "range": [1, 2], "copies_max": 3, "uses_per_turn": 1,
+      "effects": [
+        {"op": "damage", "target": "enemy", "coefficient": 0.65, "weights": {"sun": 1}, "damage_kind": "physical", "scaling": "original", "rounding": "half_up_final"},
+        {"op": "mark", "target": "enemy", "coefficient": 0.25, "weights": {"night": 1}, "duration": 2, "clock": "end_enemy_phase", "scaling": "captured_at_application", "rounding": "at_release"}
+      ],
+      "upgrade": {"0": {"coefficient": 0.8}},
+      "order": ["impact_and_release_existing_mark", "if_target_alive_apply_new_mark"],
+      "requires": ["multi_component_cards", "whole_status_application", "one_cast_shared_trigger_budget"]
+    },
+    {
+      "id": "ps30_jet_obsidienne", "name": "Jet d'obsidienne", "affinity": "shared", "rarity": "normal",
+      "ap": 2, "range": [2, 3], "copies_max": 3, "uses_per_turn": 1,
+      "effects": [
+        {"op": "damage", "target": "enemy", "coefficient": 0.5, "weights": {"earth": 1}, "damage_kind": "physical", "scaling": "original", "rounding": "half_up_final"},
+        {"op": "burn", "target": "enemy", "coefficient": 0.2, "weights": {"fire": 1}, "damage_kind": "magic", "duration": 2, "clock": "start_target_activation", "scaling": "captured_at_application", "rounding": "per_tick"}
+      ],
+      "upgrade": {"1": {"coefficient": 0.25}},
+      "order": ["impact_and_release_existing_mark", "if_target_alive_apply_burn"],
+      "requires": ["multi_component_cards", "whole_status_application", "pyre_embers_interaction_review"]
+    }
+  ],
+  "future_aptitudes": [
+    {"id": "periodic", "name": "Persistance", "gain_per_rank": 0.08, "rank_cap": 3,
+      "applies_to": ["original_burn", "original_bleed", "original_damaging_surface"],
+      "excludes": ["mark", "retaliation", "direct", "guard_conversion", "flat_P_class_or_relic_addition"],
+      "budget": "same_three_aptitude_points", "release_condition": "at_least_three_normal_sources_accessible_to_each_class_and_runtime_matrix_pass"},
+    {"id": "care", "name": "Soin", "gain_per_rank": 0.1, "rank_cap": 3,
+      "applies_to": ["original_heal", "derived_drain_heal_at_final_heal_step"],
+      "excludes": ["level_up", "refuge", "preboss", "percentage_max_hp_event", "revival"],
+      "budget": "same_three_aptitude_points", "release_condition": "at_least_three_normal_heals_accessible_to_each_class_and_campaign_heal_economy_pass"}
+  ]
+}

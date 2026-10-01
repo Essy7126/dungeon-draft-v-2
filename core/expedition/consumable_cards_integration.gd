@@ -11,12 +11,12 @@ static func enabled(session) -> bool:
 	return session != null and session.cards != null and session.cards.rules_revision == 4
 
 
-static func configure_profile(profile: ChampionProgressionProfile) -> void:
-	var rules: Dictionary = Catalog.data().rules
-	profile.level_cap = 12
-	profile.cumulative_xp_thresholds = PackedInt32Array(rules.xpThresholds)
-	profile.base_hp_by_level = PackedInt32Array(rules.hp)
-	profile.base_prowess_by_level = PackedInt32Array(rules.prowess)
+static func configure_profile(profile: ChampionProgressionProfile, selected_profile = null) -> void:
+	var numerical = Progression.profile() if selected_profile == null else selected_profile
+	profile.level_cap = numerical.level_cap()
+	profile.cumulative_xp_thresholds = PackedInt32Array(numerical.curve("xpThresholds"))
+	profile.base_hp_by_level = PackedInt32Array(numerical.curve("hp"))
+	profile.base_prowess_by_level = PackedInt32Array(numerical.curve("prowess"))
 	# Attribute allocation belongs to the saved cards profile; the shared
 	# progression still owns XP, levels and encounter receipts.
 	profile.attribute_point_levels = PackedInt32Array()
@@ -24,7 +24,7 @@ static func configure_profile(profile: ChampionProgressionProfile) -> void:
 	profile.wisdom_cap = 0
 	profile.purchased_mastery_cap = 0
 	for key in ["first_capstone_level", "second_capstone_level", "specialist_summit_level", "mythic_junction_level", "apotheosis_level"]:
-		profile.set(key, 12)
+		profile.set(key, numerical.level_cap())
 
 
 static func prepare(session, selection: Dictionary, inventory: RunInventory) -> Dictionary:
@@ -163,7 +163,7 @@ static func full_reorientation_available(session) -> bool:
 static func allocate_progression(session, masteries: Dictionary, aptitudes: Dictionary) -> bool:
 	if not can_edit_progression(session): return false
 	var cards = session.cards
-	if not Progression.valid_allocation(masteries, Progression.ELEMENTS, Progression.element_budget(cards.level), 26) or not Progression.valid_allocation(aptitudes, Progression.APTITUDES, Progression.aptitude_budget(cards.level), 3): return false
+	if not Progression.valid_allocation(masteries, Progression.ELEMENTS, Progression.element_budget(cards.level), Progression.element_point_cap()) or not Progression.valid_allocation(aptitudes, Progression.APTITUDES, Progression.aptitude_budget(cards.level), Progression.aptitude_rank_cap()): return false
 	var refund := Progression.refunded(cards.masteries, masteries)
 	var initial := before_first_combat(session)
 	if not initial and Progression.refunded(cards.aptitudes, aptitudes) > 0: return false

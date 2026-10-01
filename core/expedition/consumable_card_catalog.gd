@@ -59,7 +59,9 @@ static func validation_errors(value: Variant) -> Array[String]:
 		return errors
 	if value.rules.get("rulesetId") != RULESET or value.meta.get("id") != RULESET:
 		errors.append("Profil incompatible.")
-	for key in ["hp", "prowess", "xp", "xpThresholds"]:
+	errors.append_array(Progression.Profile.validation_errors(value.rules))
+	# Encounter XP is a route reward, not a character level curve.
+	for key in ["xp"]:
 		var curve: Variant = value.rules.get(key)
 		if not curve is Array or curve.size() != 12:
 			errors.append("Courbe invalide : " + key)
@@ -217,7 +219,7 @@ static func preset(class_id := "assassin") -> Dictionary:
 
 
 static func valid_departure(selection: Dictionary) -> bool:
-	if selection.has("masteries") and not Progression.valid_allocation(selection.masteries, Progression.ELEMENTS, 4, 4): return false
+	if selection.has("masteries") and not Progression.valid_allocation(selection.masteries, Progression.ELEMENTS, Progression.element_budget(1), Progression.element_budget(1)): return false
 	if (
 		selection.get("ruleset_id") != RULESET or selection.get("class_id") not in CLASSES
 		or selection.get("difficulty_id") not in ["normal", "easy", "standard_v2"]

@@ -17,8 +17,17 @@ const APTITUDE_NAMES := {
 	"contact": "Contact",
 	"distance": "Distance",
 }
-const APTITUDE_GAINS := { "vitality": .08, "protection": .10, "contact": .06, "distance": .06 }
-const POWER := [16, 20, 23, 28, 34, 40, 47, 57, 66, 82, 86, 93]
+const Profile := preload("res://core/expedition/consumable_progression_profile.gd")
+const PROFILE_PATH := "res://data/cards/consumable_v2/catalog.json"
+const LEGACY_PROFILE_ID := "paris_act_1_v1" # Frozen migration identity, not the current campaign default.
+static var _profile
+# Compatibility for existing presentation/probes; each access is detached.
+static var APTITUDE_GAINS: Dictionary:
+	get:
+		return profile().aptitude_gains()
+static var POWER: Array:
+	get:
+		return profile().curve("power")
 const HALTS := [4, 7, 9, 11, 14, 16, 18, 19]
 const FULL_RESET_DEPTHS := [11, 16, 19]
 const COMPONENTS := ["damage", "bonus", "amount", "counter", "shield", "collisionGuard"]
@@ -32,12 +41,51 @@ static func empty_aptitudes() -> Dictionary:
 	return { "vitality": 0, "protection": 0, "contact": 0, "distance": 0 }
 
 
+static func profile():
+	if _profile == null:
+		var source: Variant = JSON.parse_string(FileAccess.get_file_as_string(PROFILE_PATH))
+		if not source is Dictionary or not source.get("rules") is Dictionary:
+			push_error("Manifeste de progression absent.")
+			return null
+		_profile = Profile.from_rules(source.rules)
+		if _profile == null:
+			push_error(
+				"Profil de progression invalide : "
+				+ "; ".join(Profile.validation_errors(source.rules))
+			)
+	return _profile
+
+
+static func level_cap() -> int:
+	return profile().level_cap()
+
+
+static func profile_id() -> String:
+	return profile().id()
+
+
 static func element_budget(level: int) -> int:
-	return 4 + 2 * (clampi(level, 1, 12) - 1)
+	return profile().element_budget(level)
 
 
 static func aptitude_budget(level: int) -> int:
-	return (1 if level >= 3 else 0) + (1 if level >= 6 else 0) + (1 if level >= 9 else 0)
+	return profile().aptitude_budget(level)
+
+
+static func training_slots(level: int) -> int:
+	return profile().training_slots(level)
+
+
+static func element_point_cap() -> int:
+	return element_budget(level_cap())
+
+
+static func aptitude_rank_cap() -> int:
+	return profile().aptitude_rank_cap()
+
+
+static func specialization_level() -> int:
+	return profile().specialization_level()
 
 
 static func spent(values: Dictionary) -> int:
@@ -48,11 +96,11 @@ static func spent(values: Dictionary) -> int:
 
 
 static func mastery(points: int) -> float:
-	return .03 * mini(points, 4) + .02 * clampi(points - 4, 0, 4) + .01 * maxi(points - 8, 0)
+	return profile().mastery(points)
 
 
 static func valid_allocation(values: Variant, keys: Array, budget: int, cap: int) -> bool:
-	if not values is Dictionary or values.size() != keys.size():
+	if budget < 0 or cap < 0 or not values is Dictionary or values.size() != keys.size():
 		return false
 	var total := 0
 	for key in keys:
@@ -78,21 +126,29 @@ static func elemental_bonus(
 	component: String,
 	cards,
 	mods: Dictionary = { },
+	selected_profile = null,
 ) -> float:
 	if cards == null or cards.prototype_revision != 1:
 		return 0.0
 	var result := 0.0
+	var numerical = profile() if selected_profile == null else selected_profile
 	for element in card.get("elements", { }).get(component, { }):
 		var weight := float(card.elements[component][element])
-		result += weight * (mastery(int(cards.masteries.get(element, 0)))
-		+ float(mods.get("mastery_" + element, 0)))
+		result += weight * (
+			numerical.mastery(int(cards.masteries.get(element, 0))) + float(
+				mods.get("mastery_" + element, 0)
+			)
+		)
 	return result
 
 
-static func aptitude(cards, id: String) -> float:
-	return float(cards.aptitudes.get(id, 0)) * float(APTITUDE_GAINS.get(id, 0)) if (
-		cards != null and cards.prototype_revision == 1
-	) else 0.0
+static func aptitude(cards, id: String, selected_profile = null) -> float:
+	var numerical = profile() if selected_profile == null else selected_profile
+	return (
+		float(cards.aptitudes.get(id, 0)) * float(numerical.aptitude_gains().get(id, 0))
+		if (cards != null and cards.prototype_revision == 1)
+		else 0.0
+	)
 
 
 static func component_errors(card: Dictionary) -> Array[String]:

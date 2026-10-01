@@ -212,6 +212,8 @@ func _play_current(id: String) -> void:
 		expected = KickBackend.DrainBody.CLIP
 	elif binding.reference == "guard":
 		expected = KickBackend.GuardBody.CLIP
+	elif binding.reference == "recenter":
+		expected = KickBackend.RecenterBody.CLIP
 	elif binding.reference == "renew":
 		expected = KickBackend.RenewBody.CLIP
 	elif binding.reference == "blink":

@@ -9,7 +9,7 @@ const CURRENT := {
 	"n05": ["r_shot", "Trait court : tir à l’arc, malgré son ancienne icône de dague"],
 	"n06": ["r_shot", "Repérage : trait de marquage"],
 	"n07": ["r_shot", "Entrave légère : trait de contrôle"],
-	"n08": ["", "Recentrage : geste utilitaire à créer"],
+	"n08": ["recenter", "Recentrage : concentration à la tempe puis accueil de la pioche"],
 	"a01": ["a_dagger", "Ouvrir la garde : lancer de lame à courte portée"],
 	"a02": ["a_ambush", "Frapper la faille : frappe de lame"],
 	"a03": ["a_sweep", "Entaille tenace : entailles de dagues"],

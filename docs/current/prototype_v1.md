@@ -4,6 +4,10 @@ Cette configuration utilise la run publique Cartes, sa route de vingt profondeur
 ses douze combats, sa sélection et sa sauvegarde. Les nombres constituent le premier
 prototype jouable ; leur validation technique ne vaut pas validation d'équilibrage.
 
+Le [contrat de profils de progression](progression_profiles.md) fixe désormais
+la source des courbes et budgets. Il prépare une campagne de plusieurs actes ;
+la run publiée reste celle de Pâris et conserve les nombres décrits ci-dessous.
+
 ## Monter son personnage
 
 | Moment | Décision |

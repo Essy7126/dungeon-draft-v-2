@@ -19,6 +19,8 @@ const GuardBody := preload("passe_rive_guard_body.gd")
 const DrainBody := preload("passe_rive_drain_body.gd")
 const RenewBody := preload("passe_rive_renew_body.gd")
 var renew: Node2D
+const RecenterBody := preload("passe_rive_recenter_body.gd")
+var recenter: Node2D
 const SpectralBody := preload("passe_rive_spectral_body.gd")
 var spectral: Node2D
 var spectral_origin := Vector2.ZERO
@@ -65,6 +67,10 @@ func configure(profile: AchillesSpriteVisualProfile) -> bool:
 	renew.name = "SecondeAurore"
 	add_child(renew)
 	renew.configure(profile)
+	recenter = RecenterBody.new()
+	recenter.name = "Recentrage"
+	add_child(recenter)
+	recenter.configure(profile)
 	return true
 
 
@@ -82,6 +88,15 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 	var id := str(presentation.get("spell_id", str(action_id).trim_prefix("cast:")))
 	gesture_binding = Bindings.resolve(id)
 	var reference := str(gesture_binding.reference)
+	if reference == "recenter":
+		return {
+			"stem": RecenterBody.CLIP,
+			"duration": RecenterBody.DURATION,
+			"release_seconds": RecenterBody.RELEASE,
+			"release_frame": RecenterBody.RELEASE_FRAME,
+			"legacy_loop": false,
+			"speed": 1.0,
+		}
 	if reference == "renew":
 		var compact := id == "cc2_l02"
 		return {
@@ -174,6 +189,8 @@ func _action_spec(action_id: StringName, presentation: Dictionary) -> Dictionary
 
 
 func _show_native() -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -199,6 +216,8 @@ func _show_native() -> void:
 
 
 func _show(clip: String, frame: int) -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -229,7 +248,11 @@ func _show(clip: String, frame: int) -> void:
 
 
 func _select_clip(stem: String) -> void:
-	if stem == RenewBody.CLIP:
+	if stem == RecenterBody.CLIP:
+		recenter.reset()
+		super._select_clip("idle")
+		_show_recenter(0.0)
+	elif stem == RenewBody.CLIP:
 		renew.reset(str(_presentation.get("spell_id", "")) == "cc2_l02")
 		super._select_clip("idle")
 		_show_renew(0.0)
@@ -268,6 +291,9 @@ func _sample_weighted_clip(clip: StringName, phase: float) -> void:
 
 
 func _sample_action_at(seconds: float) -> void:
+	if cards_mode and _stem == RecenterBody.CLIP:
+		_show_recenter(seconds)
+		return
 	if cards_mode and _stem == RenewBody.CLIP:
 		_show_renew(seconds)
 		return
@@ -306,8 +332,10 @@ func _sample_action_at(seconds: float) -> void:
 
 
 func cancel_action() -> void:
-	var was_spectral := _stem in [SpectralBody.CLIP, RenewBody.CLIP]
+	var was_spectral := _stem in [SpectralBody.CLIP, RenewBody.CLIP, RecenterBody.CLIP]
 	super.cancel_action()
+	if is_instance_valid(recenter):
+		recenter.reset()
 	if is_instance_valid(renew):
 		renew.reset()
 	if is_instance_valid(spectral):
@@ -332,6 +360,8 @@ func cancel_action() -> void:
 
 
 func get_vfx_origin() -> Vector2:
+	if is_instance_valid(recenter) and recenter.visible:
+		return recenter.hand_position()
 	if is_instance_valid(renew) and renew.visible:
 		return renew.hand_position()
 	if is_instance_valid(drain) and drain.visible:
@@ -466,6 +496,20 @@ func get_runtime_state() -> Dictionary:
 			state["drawing_scale"] = renew.drawing.scale.x
 			state["drawing_scale_y"] = renew.drawing.scale.y
 			state["directional_source"] = renew.drawing.texture.resource_path
+	state["recenter_visible"] = is_instance_valid(recenter) and recenter.visible
+	if state.recenter_visible:
+		state["animation"] = RecenterBody.CLIP
+		state["frame"] = recenter.source_frame
+		state["authored_direction"] = recenter.facing
+		state["mirrored"] = false
+		state["recenter_confirmed"] = recenter.confirmed
+		state["cards_drawn"] = recenter.drawn
+		state["glyph_count"] = recenter.glyph_count
+		state["painted_visible"] = recenter.drawing.visible
+		state["painted_weight"] = recenter.blend
+		state["drawing_scale"] = recenter.drawing.scale.x
+		state["drawing_scale_y"] = recenter.drawing.scale.y
+		state["directional_source"] = recenter.drawing.texture.resource_path
 	return state
 
 
@@ -482,6 +526,8 @@ func _configure_kick(profile: AchillesSpriteVisualProfile) -> void:
 
 
 func _show_kick(frame: int, seconds: float = -1.0) -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -507,6 +553,8 @@ func _show_kick(frame: int, seconds: float = -1.0) -> void:
 
 
 func _show_pull(seconds: float) -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -528,6 +576,8 @@ func _show_pull(seconds: float) -> void:
 
 
 func _show_incantation(seconds: float) -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -548,6 +598,8 @@ func _show_incantation(seconds: float) -> void:
 
 
 func _show_guard(seconds: float) -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -572,6 +624,8 @@ func confirm_guard_ward() -> void:
 
 
 func _show_drain(seconds: float) -> void:
+	if is_instance_valid(recenter):
+		recenter.hide()
 	if is_instance_valid(renew):
 		renew.hide()
 	if is_instance_valid(spectral):
@@ -640,3 +694,17 @@ func confirm_renew(spell_id: String, healing: int, guard_gain: int) -> bool:
 	if not owns_renew_feedback() or str(_presentation.get("spell_id", "")) != spell_id:
 		return false
 	return renew.confirm_result(healing, guard_gain)
+
+
+func _show_recenter(seconds: float) -> void:
+	_show_native()
+	animated_sprite.self_modulate.a = recenter.sample(seconds, _facing)
+
+
+func confirm_recenter(spell_id: String, drawn: int) -> bool:
+	if not (
+		cards_mode and _action_pending and _stem == RecenterBody.CLIP
+		and spell_id == "cc2_n08" and str(_presentation.get("spell_id", "")) == spell_id
+	):
+		return false
+	return recenter.confirm_result(drawn)

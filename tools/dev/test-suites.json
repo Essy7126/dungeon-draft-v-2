@@ -26,8 +26,9 @@
       "test_passe_rive_guard_directions.gd",
       "test_passe_rive_drain_directions.gd",
       "test_passe_rive_spectral_directions.gd",
-        "test_passe_rive_renew_directions.gd",
-      "test_passe_rive_s26.gd"
+      "test_passe_rive_renew_directions.gd",
+      "test_passe_rive_s26.gd",
+      "test_passe_rive_s32.gd"
     ]
   },
   "smoke": {

@@ -1,0 +1,19 @@
+Use case: stylized-concept.
+Asset type: FOUR-POSE ANIMATION CONCEPT BOARD for the approved original game character Passe-Rive. This is a readable prototype for artistic approval, NOT a finished animation atlas.
+Input image 1 is the authoritative native southeast idle sprite sheet: identity, slim anatomy, exact costume, palette, planted feet and isometric camera. Input image 2 is supporting character drawing quality/costume reference only; DO NOT repeat its healing gestures or golden effects.
+
+Create ONE wide landscape board with EXACTLY FOUR full-body poses arranged left to right in one row, equal size and equal baseline, generous spacing, all feet/hands included. Quiet flat warm charcoal-grey backdrop, crisp clean drawings, modest typography. Fixed elevated isometric THREE-QUARTER FRONT SOUTH-EAST view, facing screen DOWN-RIGHT in every pose. Show the SAME single character four times, same proportions, hood size, leg lengths and stance. No camera rotation between poses.
+
+Character exactly from native: lean long-legged figure, small angular petroleum-blue hood, pale ivory angular face/mask and dark lower face, very SHORT sage shoulder mantle ending at ribs, one round bronze clasp on anatomical RIGHT FRONT shoulder (near side, screen-left), petroleum tunic ending upper thighs, narrow ivory sash tied in front, charcoal sleeves/gloves/pants/boots, bronze wrist/ankle cuffs. Consistent narrow silhouette, subdued painted flat shading and fine dark outline. No extra cape, backpack, bow, dagger or equipment. Do not give big head, muscular body or realistic 3D shading.
+
+Action concept: RECENTRAGE, a brief tactical concentration gesture used to draw cards. Thoughtful, precise, alert. Subtle chest breath and head lead, elbows soft, wrists anatomically natural. Feet remain firmly planted in the EXACT SAME position throughout, knees mostly straight; movement is carried by head, shoulders and hands.
+
+Pose 1, caption "1 · Préparation": chin dips slightly, anatomical RIGHT hand (near arm, screen-left shoulder) rises with two fingertips gently near the temple edge of the hood. Elbow angled softly outward. LEFT hand remains low near waist. Keep the pale face readable; never press across the eyes.
+Pose 2, caption "2 · Concentration": slight inward breath and short stillness, RIGHT fingertips remain at temple. LEFT forearm turns forward and palm opens at upper-waist level toward screen-right. Exactly TWO tiny pale-ivory angular glyph fragments with muted teal edges float just above the LEFT palm. Their visual scale is less than the palm width each, no readable text. A restrained thin curved wisp indicates gathering toward this palm. Keep body action compact.
+Pose 3, caption "3 · Recentrage": head starts to rise; RIGHT hand comes down toward sternum, while LEFT cupped palm is drawn gently inward toward lower chest, gathering the same two fragments. The inward motion is clear, hands remain separated and fully readable, exactly two arms and two hands. A small concentrated ivory-teal sparkle sits in the left palm; a delicate short inward arc suggests the collection. This is the gameplay draw moment. No body twist, no huge spread arms.
+Pose 4, caption "4 · Retour en garde": upright alert head and relaxed shoulders, both arms settle down beside the body, matching the native neutral idle. Residual light fully gone.
+
+Title above: "RECENTRAGE"
+Small subtitle: "Prototype · 4 poses · SE"
+Captions below each pose exactly as provided. No other prose.
+VFX only in poses 2 and 3: two discrete glyph fragments and a short gathering wisp. No healing vines, flames, rings on the ground, shield facets, wings, large halo, lightning, opaque smoke, UI cards or decorative borders. Do not copy the second image's choreography. Prioritize the four distinct key poses, recognizable native character, hand anatomy, identical costume and constant scale.

@@ -39,6 +39,11 @@ conditionnels peuvent modifier ces valeurs de base en combat.
 - **Caractéristiques / Classe & améliorations** : répartition des maîtrises et
   aptitudes, spécialisation au niveau 4, perfectionnements aux niveaux 4, 8 et 12.
   Les règles précises figurent dans le [contrat Prototype v1](prototype_v1.md).
+  **Caractéristiques** ouvre une fiche de consultation compacte : onglets
+  **Résumé** et **Détails**. **Répartir mes points** ouvre une autre fenêtre,
+  avec choix et aperçu avant confirmation. Fermer abandonne le brouillon non
+  validé et revient à la fenêtre d’origine. Les choix de classe restent dans
+  **Classe & améliorations**, qui propose aussi un accès à la répartition.
 - **Inventaire** : six emplacements d'équipement et deux reliques distinctes.
   La fiche compare les valeurs permanentes avant/après équipement ou retrait,
   précise les plafonds et garde l'action accessible sous le détail défilant.
@@ -47,12 +52,13 @@ conditionnels peuvent modifier ces valeurs de base en combat.
 - Dans **Sorts & deck**, le filtre **Dernier butin** retrouve également les familles
   acquises. Les fiches distinguent quantités reçues et quantités encore disponibles.
   Ces repères restent disponibles après reprise et changement de salle.
-- Dans **Caractéristiques**, **Origine des statistiques** détaille la base du
+- Dans **Caractéristiques**, l’onglet **Détails** présente la base du
   niveau, les aptitudes et l'apport effectif de l'équipement après arrondis/plafonds.
   Les effets conditionnels restent séparés du total permanent.
-  Les ressources et résistances occupent des tuiles distinctes ; les six maîtrises
-  utilisent les mêmes pictogrammes et couleurs que les cartes. La répartition
-  sépare **Éléments** et **Aptitudes** en onglets, avec aperçu avant confirmation.
+  Le résumé regroupe ressources, résistances et éléments dans des lignes alignées ;
+  les six maîtrises utilisent les mêmes pictogrammes et couleurs que les cartes.
+  La fenêtre de répartition sépare **Éléments** et **Aptitudes** en onglets,
+  avec aperçu avant confirmation et bouton de validation fixe.
   La main de combat affiche l'affinité de classe et le nom de rareté, un cadre
   de rareté et les symboles élémentaires. L'infobulle nomme les éléments et reste
   passive, hors de la zone de sélection. Les cartes neutres sont indiquées.
@@ -121,6 +127,13 @@ attente. Une reprise n'ajoute ni invocation gratuite ni tirage de butin.
 La victoire est enregistrée dès la fin de l'action, avant l'animation de sortie.
 Les changements d'équipement conservent le ratio de PV non arrondi, y compris
 après rechargement ; alterner deux objets ne procure pas de soin gratuit.
+
+L’aperçu de répartition compare des effets du deck préparé, avec leur distance
+explicite et les valeurs avant/après. Il privilégie les effets modifiés et
+annonce les limites de cette estimation. Les bonus d’aptitudes restent visibles
+même sans variation après arrondi. La réorientation complète exige une
+confirmation séparée : elle rend les points, efface la spécialisation et
+consomme son usage unique. Annuler ou Échap ne modifie pas la run.
 
 ## Vérifier
 

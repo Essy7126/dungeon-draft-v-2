@@ -240,12 +240,36 @@ func _run() -> void:
 	await capture("05_caracteristiques")
 	_bounds()
 	dossier = scene.find_child("ConsumablePlayerDossier", true, false)
-	var sources = dossier.find_child("ToggleStatSources", true, false)
-	sources.pressed.emit()
+	for value in dossier.find_children("Value", "Label", true, false):
+		check(value.get_line_count() == 1, "summary values stay on one line")
+		check(
+			value.get_global_rect().end.y
+			< dossier.find_child("OpenStatAllocation", true, false).global_position.y,
+			"all summary values visible above footer",
+		)
+	var inspected := GameManager.get_expedition_snapshot()
+	check(
+		dossier.find_child("Allocation_night", true, false) == null,
+		"summary contains no allocation controls",
+	)
+	var stat_tabs = dossier.find_child("StatisticsTabs", true, false)
+	check(stat_tabs.current_tab == 0, "summary is the default")
+	stat_tabs.current_tab = 1
 	await get_tree().process_frame
-	check(dossier.find_child("StatSources", true, false).visible, "stat source disclosure opens")
+	check(
+		dossier.find_child("StatSources", true, false).is_visible_in_tree(),
+		"details have a dedicated tab",
+	)
+	check(GameManager.get_expedition_snapshot() == inspected, "inspection never mutates stats")
 	await capture("05b_origine_statistiques")
-	var allocation = dossier.find_child("Allocation_night", true, false)
+	for id in ["vitality", "protection", "contact", "distance"]:
+		check(
+			dossier.find_child("Aptitude_" + id, true, false) != null,
+			"detailed aptitude remains inspectable: " + id,
+		)
+	stat_tabs.get_child(1).scroll_vertical = 10000
+	await capture("05d_details_complets")
+	stat_tabs.current_tab = 0
 	for id in [
 		"ap",
 		"mp",
@@ -264,6 +288,29 @@ func _run() -> void:
 			dossier.find_child("Stat_" + id, true, false) != null,
 			"stat has a dedicated visual tile: " + id,
 		)
+	var open_allocation = dossier.find_child("OpenStatAllocation", true, false)
+	check(get_viewport().get_visible_rect().encloses(open_allocation.get_global_rect()), "allocation access is always visible")
+	await _click_control(open_allocation)
+	await get_tree().process_frame
+	check(scene._page == "allocation", "allocation uses a dedicated window")
+	dossier = scene.find_child("ConsumablePlayerDossier", true, false)
+	check(
+		dossier.find_child("PlayerStatistics", true, false) == null,
+		"allocation does not repeat the statistics sheet",
+	)
+	var allocation = dossier.find_child("Allocation_night", true, false)
+	allocation.value = 2
+	await _click_control(scene.find_child("CloseDedicatedWindow", true, false))
+	await get_tree().process_frame
+	check(scene._page == "attributes", "closing allocation returns to statistics")
+	check(
+		GameManager.get_expedition_snapshot() == inspected,
+		"closing an unconfirmed draft spends no points",
+	)
+	scene.find_child("OpenStatAllocation", true, false).pressed.emit()
+	await get_tree().process_frame
+	dossier = scene.find_child("ConsumablePlayerDossier", true, false)
+	allocation = dossier.find_child("Allocation_night", true, false)
 	var categories = dossier.find_child("ProgressionCategories", true, false)
 	check(categories != null, "elements and aptitudes are separate tabs")
 	if categories != null:
@@ -279,6 +326,9 @@ func _run() -> void:
 	if allocation != null:
 		allocation.value = 4
 	check(apply != null and not apply.disabled, "allocation confirmation available")
+	check(get_viewport().get_visible_rect().encloses(apply.get_global_rect()), "allocation confirm stays visible")
+	await capture("05c_repartition")
+	_bounds()
 	if apply != null:
 		apply.pressed.emit()
 	await get_tree().process_frame
@@ -288,6 +338,56 @@ func _run() -> void:
 		int(saved.get("session", { }).get("cards_run", { }).get("masteries", { }).get("night", 0)) == 4,
 		"mastery persisted",
 	)
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.pressed = true
+	get_viewport().push_input(escape)
+	await get_tree().process_frame
+	check(scene._page == "attributes", "Escape returns from allocation to summary")
+	check(
+		scene.find_child("Stat_night", true, false).find_child("Value", true, false).text == "+12 %",
+		"summary refreshes confirmed mastery",
+	)
+	clear_scene()
+	_open("attributes", true)
+	await get_tree().process_frame
+	check(
+		scene.find_child("OpenStatAllocation", true, false).disabled,
+		"combat inspection cannot allocate",
+	)
+	check(
+		scene.find_child("StatisticsTabs", true, false) != null,
+		"combat inspection retains details",
+	)
+	clear_scene()
+	_open("advancement")
+	await get_tree().process_frame
+	scene.find_child("OpenStatAllocation", true, false).pressed.emit()
+	await get_tree().process_frame
+	scene._close_current_view()
+	await get_tree().process_frame
+	check(scene._page == "advancement", "allocation returns to pending level-up when opened there")
+	clear_scene()
+	var old_level: int = cards.level
+	cards.level = 4
+	_open("progression")
+	await get_tree().process_frame
+	var required_specialization = scene.find_child("OpenRequiredSpecialization", true, false)
+	check(
+		required_specialization != null,
+		"level four has access to separate specialization choices",
+	)
+	check(
+		scene.find_child("ConsumableProgressionContinue", true, false).disabled,
+		"specialization requirement is preserved",
+	)
+	required_specialization.pressed.emit()
+	await get_tree().process_frame
+	check(scene._page == "build", "specialization opens in its own page")
+	scene._close_current_view()
+	await get_tree().process_frame
+	check(scene._page == "progression", "specialization returns to allocation step")
+	cards.level = old_level
 	clear_scene()
 	_open("build")
 	await capture("06_progression")
@@ -376,3 +476,20 @@ func _check_deck_partition(dossier, cards) -> void:
 	var left: Control = dossier.find_child("PreparedDeckPanel", true, false)
 	var right: Control = dossier.find_child("ReservePanel", true, false)
 	check(not left.get_global_rect().intersects(right.get_global_rect()), "deck and reserve occupy separate panels")
+
+
+func _click_control(control: Control) -> void:
+	for frame in 3:
+		await get_tree().process_frame
+	var motion := InputEventMouseMotion.new()
+	motion.position = control.get_global_rect().get_center()
+	get_viewport().push_input(motion)
+	var click := InputEventMouseButton.new()
+	click.position = motion.position
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	get_viewport().push_input(click)
+	var release := click.duplicate()
+	release.pressed = false
+	get_viewport().push_input(release)
+	await get_tree().process_frame

@@ -4,6 +4,7 @@ extends RefCounted
 const Profile := preload("res://core/expedition/consumable_cards_profile.gd")
 const Cards := preload("res://core/expedition/consumable_cards_state.gd")
 const Catalog := preload("res://core/expedition/consumable_card_catalog.gd")
+const Progression := preload("res://core/expedition/consumable_progression_v1.gd")
 const MAX_BYTES := 2_000_000
 var path := Profile.SAVE_PATH
 var writer: Callable = ExpeditionSaveService.write_snapshot
@@ -190,7 +191,7 @@ static func validation_errors(candidate: Dictionary) -> Array[String]:
 				or n != floorf(float(n)) or n < 0
 			):
 				return ["Compteur de bilan invalide."]
-		if row.level < 1 or row.level > 12 or row.depth > 20:
+		if not Progression.profile().contains_level(int(row.level)) or row.depth > 20:
 			return ["Progression de bilan invalide."]
 		run_ids.append(row.run_id)
 	var cards := Cards.new()

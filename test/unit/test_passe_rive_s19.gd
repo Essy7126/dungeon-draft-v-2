@@ -25,7 +25,7 @@ func test_current_deck_has_explicit_assignments_and_never_uses_icon_ids_as_gestu
 			var row := CurrentSpells.definition(id, upgraded)
 			if row.op in ["guard", "counter", "draw", "heal", "edict", "renew"]:
 				assert_true(
-					binding.reference in ["", "incantation", "guard", "renew"],
+					binding.reference in ["", "incantation", "guard", "renew", "recenter"],
 					"Support stays unarmed: " + id,
 				)
 			if row.op == "move":
@@ -63,7 +63,7 @@ func test_current_shots_volleys_throwing_magic_and_kick_use_the_right_release_dr
 		"n04": Backend.KICK,
 		"n02": Backend.GuardBody.CLIP,
 		"g08": Backend.IncantationBody.CLIP,
-		"n08": "idle_SE",
+		"n08": Backend.RecenterBody.CLIP,
 	}
 	var backend := make_backend()
 	var releases: Array[Dictionary] = []

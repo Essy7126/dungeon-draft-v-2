@@ -22,7 +22,7 @@ const ATTRIBUTES_VIEW := preload("res://ui/expedition/expedition_attributes_view
 const TREE_CANVAS := preload("res://ui/expedition/expedition_tree_canvas.gd")
 const HUB_CANVAS := preload("res://ui/expedition/catabase_hub_canvas.gd")
 const DOSSIER_THEME := preload("res://ui/expedition/player_dossier_skin.gd")
-const DOSSIER_PAGES := ["gear", "attributes", "cards", "build", "progression", "advancement", "rewards", "level_up"]
+const DOSSIER_PAGES := ["allocation", "gear", "attributes", "cards", "build", "progression", "advancement", "rewards", "level_up"]
 
 var inspection_only := false
 var allow_attribute_edits := false
@@ -61,6 +61,7 @@ var _confirm_reward: Button
 var _reward_choices: Dictionary = {}
 var _reward_summary: Label
 var _reward_offers: Dictionary = {}
+var _allocation_return_page := "attributes"
 var _attributes_view: Control
 var _progression_continue: Button
 var _close_button: Button
@@ -226,7 +227,7 @@ func _render() -> void:
 		child.queue_free()
 	_body = _body_host
 	_decision_panel = null
-	if _page in ["departure", "level_up", "progression", "advancement", "learn_choice", "capacity", "rewards", "card_reward", "loot_received", "gear", "attributes", "cards", "build", "route_ready"]:
+	if _page in ["departure", "level_up", "progression", "advancement", "learn_choice", "capacity", "rewards", "card_reward", "loot_received", "allocation", "gear", "attributes", "cards", "build", "route_ready"]:
 		_create_decision_window()
 	var session := GameManager.expedition
 	_resource_strip.visible = session != null
@@ -258,7 +259,7 @@ func _render() -> void:
 		"advancement": _render_advancement()
 		"learn_choice": _render_learning_choice()
 		"loot_received": _render_loot_received()
-		"progression", "attributes": _render_progression()
+		"progression", "attributes", "allocation": _render_progression()
 		"capacity": _render_choice_screen(true)
 		"rewards": _render_choice_screen()
 		"card_reward": _render_card_reward()
@@ -327,17 +328,20 @@ func _create_decision_window() -> void:
 	var chrome := HBoxContainer.new()
 	chrome.add_theme_constant_override("separation", 12)
 	_body.add_child(chrome)
-	_icon(chrome, ART_THEME.icon("nav", {"gear": "equipment", "attributes": "attributes", "cards": "tree", "build": "tree", "rewards": "check", "level_up": "check"}.get(_page, "journal")), 32)
-	_window_title = _label(chrome, {"gear": "INVENTAIRE", "attributes": "CARACTÉRISTIQUES", "cards": "SORTS & DECK", "build": "CLASSE & MAÎTRISES", "rewards": "BILAN DU COMBAT", "level_up": "NIVEAU SUPÉRIEUR", "progression": "RÉPARTIR MES POINTS", "advancement": "DÉVELOPPER MES MAÎTRISES"}.get(_page, "CATABASE"), 24, GOLD, true)
+	_icon(chrome, ART_THEME.icon("nav", {"gear": "equipment", "attributes": "attributes", "allocation": "attributes", "cards": "tree", "build": "tree", "rewards": "check", "level_up": "check"}.get(_page, "journal")), 32)
+	_window_title = _label(chrome, {"gear": "INVENTAIRE", "attributes": "CARACTÉRISTIQUES", "allocation": "RÉPARTIR MES POINTS", "cards": "SORTS & DECK", "build": "CLASSE & MAÎTRISES", "rewards": "BILAN DU COMBAT", "level_up": "NIVEAU SUPÉRIEUR", "progression": "RÉPARTIR MES POINTS", "advancement": "DÉVELOPPER MES MAÎTRISES"}.get(_page, "CATABASE"), 24, GOLD, true)
 	if GameManager.expedition.uses_consumable_cards() and _page in ["build", "advancement"]: _window_title.text = "CLASSE & AMÉLIORATIONS"
 	_window_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var close := _button(chrome, "Fermer  ×")
 	close.name = "CloseDedicatedWindow"
 	close.tooltip_text = "Fermer cette fenêtre · Échap"
+	if _page == "allocation":
+		close.text = "Retour  ×"
+		close.tooltip_text = "Revenir à la fenêtre précédente. Les changements non validés sont annulés. · Échap"
 	close.pressed.connect(_close_current_view)
 	if GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
 		DOSSIER_THEME.button(close)
-	if _page in ["gear", "attributes", "cards", "build"]:
+	if _page in ["gear", "attributes", "cards", "build"] and not (GameManager.expedition.uses_consumable_cards() and _page == "attributes"):
 		var tabs := HBoxContainer.new()
 		_body.add_child(tabs)
 		for entry in [["gear", "Personnage & inventaire"], ["attributes", "Caractéristiques"], ["cards", "Sorts & deck"], ["build", "Maîtrises"]]:
@@ -507,6 +511,9 @@ func _render_loot_received() -> void:
 
 func _focus_page_action() -> void:
 	if not is_inside_tree(): return
+	if GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and _page in ["attributes", "allocation", "progression"]:
+		_restore_body_focus("CloseDedicatedWindow" if _page == "attributes" else "Allocation_earth")
+		return
 	if _page == "level_up":
 		_restore_body_focus("BeginLevelUp")
 		return
@@ -611,6 +618,13 @@ func _size_decision_window() -> void:
 	var height := 570 if _page == "level_up" else 560 if _page == "rewards" else 800
 	if GameManager.expedition.uses_consumable_cards() and _page in ["gear", "attributes", "cards", "build", "progression", "advancement"]:
 		width = 1240
+	if GameManager.expedition.uses_consumable_cards():
+		if _page == "attributes":
+			width = 720
+			height = 650
+		elif _page in ["allocation", "progression"]:
+			width = 980
+			height = 700
 	_decision_panel.custom_minimum_size = Vector2(minf(width, maxf(640, size.x - 100)), minf(height, size.y - 64))
 
 
@@ -650,6 +664,10 @@ func _navigate(page: String) -> void:
 
 
 func _close_current_view() -> void:
+	if _page == "allocation":
+		_page = _allocation_return_page
+		_render()
+		return
 	if inspection_only:
 		_close()
 	elif _page == "rewards" and GameManager.expedition.has_class_combat_receipt():
@@ -1462,17 +1480,22 @@ func _render_consumable_workshop(mode: String, required := false) -> void:
 	var view := preload("res://ui/expedition/consumable_player_dossier.gd").new()
 	view.mode = mode
 	view.section = _page
+	view.allocation_requested.connect(func(): _allocation_return_page = _page; _page = "allocation"; _render())
 	view.read_only = inspection_only and not allow_attribute_edits
 	view.transaction_completed.connect(_refresh_resources)
 	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_body.add_child(view)
 	if required:
+		if _page == "progression" and GameManager.expedition.cards.level >= 4 and GameManager.expedition.cards.specialization.is_empty():
+			var specialization := _button(_body, "Choisir ma spécialisation →")
+			specialization.name = "OpenRequiredSpecialization"
+			specialization.pressed.connect(func(): _navigate("build"))
 		var button := _button(_body, "Terminer ma montée de niveau →", true)
 		button.name = "ConsumableProgressionContinue"
 		var refresh := func():
 			var cards = GameManager.expedition.cards
 			button.disabled = inspection_only or (cards.level >= 4 and cards.specialization.is_empty())
-			button.text = "Choisissez votre spécialisation" if button.disabled else "Terminer ma montée de niveau →"
+			button.text = "Choisissez votre spécialisation" if button.disabled else "Continuer vers les améliorations →" if _page == "progression" else "Terminer ma montée de niveau →"
 		button.pressed.connect(_advance_level_window)
 		view.transaction_completed.connect(refresh)
 		refresh.call()

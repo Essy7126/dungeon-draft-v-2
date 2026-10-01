@@ -28,4 +28,4 @@ Une stature de référence fixe et des repères d'appui remplacent tout ajusteme
 
 Le SE approuvé est conservé pour chaque famille. Passage spectral partage les poses corrigées de Prélèvement dans ses sept nouvelles vues, avec son montage et son voile propres. Les dessins gardent des écarts mineurs de contour, de plis et d'occlusion ; cette V1 ne prétend pas à une identité pixel parfaite entre atlases.
 
-Recentrage (n08) et Décret du dernier souffle (d01) restent sans prototype approuvé et ne font pas partie de ce lot. Les anciens gestes S18/S20 déjà directionnels restent en place selon leur convention de cinq vues et trois miroirs.
+À la clôture de S31, Recentrage (n08) et Décret du dernier souffle (d01) restaient sans prototype approuvé et ne faisaient pas partie de ce lot. Recentrage a depuis été traité dans [S32](../passe_rive_s32/README.md). Les anciens gestes S18/S20 déjà directionnels restent en place selon leur convention de cinq vues et trois miroirs.

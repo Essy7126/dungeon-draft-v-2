@@ -18,6 +18,23 @@
     "collapseStart": 9,
     "collapseStep": 0.025,
     "turnLimit": 24,
+    "prototypeProgression": {
+      "schemaVersion": 1,
+      "id": "paris_act_1_v1",
+      "levelCap": 12,
+      "power": [16, 20, 23, 28, 34, 40, 47, 57, 66, 82, 86, 93],
+      "initialElementPoints": 4,
+      "elementPointsPerLevel": 2,
+      "aptitudeLevels": [3, 6, 9],
+      "aptitudeRankCap": 3,
+      "aptitudeGains": { "vitality": 0.08, "protection": 0.10, "contact": 0.06, "distance": 0.06 },
+      "masteryBands": [
+        { "upTo": 4, "gain": 0.03 },
+        { "upTo": 8, "gain": 0.02 },
+        { "upTo": 0, "gain": 0.01 }
+      ],
+      "specializationLevel": 4
+    },
     "hp": [
       110,
       135,
