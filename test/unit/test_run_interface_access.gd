@@ -133,3 +133,36 @@ func test_four_hud_utilities_do_not_overlap_at_small_resolutions() -> void:
 
 func _settle() -> void:
 	for frame in 5: await get_tree().process_frame
+
+
+func test_deck_hud_entry_opens_cards_and_returns_control_to_combat() -> void:
+	var integration := preload("res://core/expedition/consumable_cards_integration.gd")
+	GameManager.expedition.cards = integration.Cards.new()
+	GameManager.expedition.cards.initialize_deck(integration.Catalog.preset("assassin"))
+	integration.rebuild(GameManager.expedition)
+	var ui := GameManager.get_persistent_run_ui()
+	var context := CombatContext.new()
+	context.active_unit = GameManager.expedition.character.unit
+	add_child_autofree(context)
+	ui.bind_combat_context(context)
+	ui.set_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
+	var hud = ui.combat_hud
+	hud.update_info(context.active_unit)
+	hud.set_player_controls_enabled(true)
+	await _settle()
+	var before := GameManager.expedition.to_snapshot()
+	var button := hud.get_node("%SkillsButton") as Button
+	assert_false(button.disabled)
+	button.pressed.emit()
+	await _settle()
+	var inspection: Control = ui.get("_expedition_inspection")
+	assert_not_null(inspection)
+	assert_eq(str(inspection.get("_page")), "cards", "Deck icon must not open class upgrades")
+	assert_not_null(inspection.find_child("ShowPreparedDeck", true, false))
+	assert_true(context.external_locks.has(&"run_modal"))
+	assert_eq(GameManager.expedition.to_snapshot(), before, "opening deck changes no cards")
+	ui.call("_close_expedition_inspection")
+	await _settle()
+	assert_false(ui.has_active_modal())
+	assert_true(context.external_locks.is_empty())
+	assert_true(bool(ui.get("_hud_port").are_controls_enabled()))

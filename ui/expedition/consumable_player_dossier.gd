@@ -9,6 +9,14 @@ const Math := preload("res://core/expedition/consumable_card_math.gd")
 const BuildPreview := preload("res://ui/expedition/consumable_build_preview.gd")
 const Symbols := preload("res://ui/expedition/player_stat_symbols.gd")
 const DeckInventory := preload("res://ui/expedition/consumable_deck_inventory.gd")
+signal class_requested
+const HoverCard := preload("res://ui/expedition/spell_hover_card.gd")
+const CardView := preload("res://ui/expedition/consumable_combat_card_view.gd")
+var _deck_lane_active := "deck"
+var _filters_open := false
+var _card_window: AcceptDialog
+var _card_window_open := false
+var _card_detail_tab := 0
 var sort_order := 0
 var rarity_filter := 0
 var affinity_filter := 0
@@ -45,6 +53,7 @@ func _button(parent: Node, value: String, action: Callable, locked := false) -> 
 func _render() -> void:
 	name = "ConsumablePlayerDossier"
 	_content = null
+	_card_window = null
 	_tiles.clear()
 	_card_tiles.clear()
 	_recent_cards.clear()
@@ -109,8 +118,21 @@ func _deck(cards) -> void:
 	search.add_theme_font_override("font", D.FONT)
 	search.add_theme_font_size_override("font_size", 16)
 	bar.add_child(search)
-	var filter := _deck_filter(
+	var filters_toggle := _select(
 		bar,
+		"Filtres",
+		func():
+			_filters_open = not _filters_open
+			find_child("DeckAdvancedFilters", true, false).visible = _filters_open,
+	)
+	filters_toggle.name = "ToggleDeckFilters"
+	var filters := HBoxContainer.new()
+	filters.name = "DeckAdvancedFilters"
+	filters.visible = _filters_open
+	filters.add_theme_constant_override("separation", 8)
+	add_child(filters)
+	var filter := _deck_filter(
+		filters,
 		"DossierCardFilter",
 		[
 			"Tous les rôles",
@@ -128,13 +150,13 @@ func _deck(cards) -> void:
 		card_filter,
 	)
 	var affinity := _deck_filter(
-		bar,
+		filters,
 		"DossierAffinityFilter",
 		["Toutes affinités", "Commune", "Assassin", "Gardien", "Arpenteur", "Thaumaturge"],
 		affinity_filter,
 	)
 	var rarity := _deck_filter(
-		bar,
+		filters,
 		"DossierRarityFilter",
 		["Toutes raretés"] + Receipt.RARITY_NAMES.values(),
 		rarity_filter,
@@ -147,27 +169,37 @@ func _deck(cards) -> void:
 			sort_order = index
 			_sort_card_lanes(),
 	)
-	var guide := _select(bar, "Les familles ?", _deck_guide)
+	var guide := _select(filters, "Comprendre les cartes", _deck_guide)
 	guide.name = "DeckIdentityHelp"
+	var tabs := HBoxContainer.new()
+	tabs.name = "DeckCollectionTabs"
+	tabs.add_theme_constant_override("separation", 8)
+	add_child(tabs)
+	for lane in ["deck", "reserve"]:
+		var label := "Mon deck · %d / 30" % inventory.deck_count if lane == "deck" else "Réserve · %d" % inventory.reserve_count
+		var tab := _select(
+			tabs,
+			label,
+			func():
+				_switch_deck_lane(lane),
+			lane == _deck_lane_active,
+		)
+		tab.name = "ShowPreparedDeck" if lane == "deck" else "ShowCardReserve"
+		D.navigation_button(tab, lane == _deck_lane_active)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tabs.add_child(spacer)
+	var class_button := _select(
+		tabs,
+		"Classe & améliorations →",
+		func():
+			class_requested.emit(),
+	)
+	class_button.name = "OpenDeckClassProgression"
 	var columns := _columns()
 	_deck_lane(columns, cards, inventory, true)
 	_deck_lane(columns, cards, inventory, false)
-	var inspector := D.column(columns, 310, false)
-	inspector.get_parent().name = "DeckInspectorPanel"
-	var reading := ScrollContainer.new()
-	reading.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	reading.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	reading.follow_focus = true
-	inspector.add_child(reading)
-	_detail = VBoxContainer.new()
-	_detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_detail.add_theme_constant_override("separation", 8)
-	reading.add_child(_detail)
-	_detail.name = "CardInspector"
-	_quick_actions = HBoxContainer.new()
-	_quick_actions.name = "CardQuickActions"
-	_quick_actions.add_theme_constant_override("separation", 6)
-	inspector.add_child(_quick_actions)
+	_switch_deck_lane(_deck_lane_active)
 	var empty := D.label(
 		self,
 		"Aucun sort ne correspond aux filtres. Effacez la recherche ou changez les filtres.",
@@ -241,11 +273,12 @@ func _deck(cards) -> void:
 			update.call(),
 	)
 	_sort_card_lanes()
-	_show_family(cards)
 	update.call()
+	if _card_window_open and not selected_family.is_empty():
+		_show_family.call_deferred(cards)
 	D.label(
 		self,
-		"%d cartes en main · 3 exemplaires maximum du même sort · Une carte jouée disparaît de la run. La réserve ne rejoint pas la pioche."
+		"Survolez pour lire les effets · Cliquez pour examiner une carte · Main de %d cartes"
 		% cards.hand_capacity,
 		14,
 		D.MUTED,
@@ -313,7 +346,7 @@ func _deck_lane(parent: Node, cards, inventory: Dictionary, prepared: bool) -> v
 	if prepared:
 		D.label(body, DeckInventory.cost_summary(inventory.costs), 14, D.GOLD)
 	else:
-		D.label(body, "Ajoutez une carte avec le bouton +1.", 14, D.GOLD)
+		D.label(body, "Ajoutez les cartes que vous souhaitez piocher.", 14, D.GOLD)
 	var scroll := ScrollContainer.new()
 	scroll.name = "PreparedDeckScroll" if prepared else "ReserveScroll"
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -322,7 +355,11 @@ func _deck_lane(parent: Node, cards, inventory: Dictionary, prepared: bool) -> v
 	body.add_child(scroll)
 	var grid := GridContainer.new()
 	grid.name = "PreparedDeckGallery" if prepared else "ReserveGallery"
-	grid.columns = 1 if prepared else 2
+	grid.columns = 5
+	grid.resized.connect(
+		func():
+			grid.columns = maxi(2, int(grid.size.x / 195.0)),
+	)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
@@ -335,7 +372,7 @@ func _deck_lane(parent: Node, cards, inventory: Dictionary, prepared: bool) -> v
 			return left.ap < right.ap if left.ap != right.ap else str(left.name) < str(right.name),
 	)
 	for id in ids:
-		var stack: BoxContainer = HBoxContainer.new() if prepared else VBoxContainer.new()
+		var stack := VBoxContainer.new()
 		stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		stack.add_theme_constant_override("separation", 2)
 		grid.add_child(stack)
@@ -355,16 +392,14 @@ func _deck_lane(parent: Node, cards, inventory: Dictionary, prepared: bool) -> v
 		)
 		var transfer := _button(
 			stack,
-			"−1" if prepared else "+1 au deck",
+			"−1 vers la réserve" if prepared else "+1 au deck",
 			func():
 				return cards.move_card(uid),
 			full,
 		)
 		transfer.name = ("ReserveOne_" if prepared else "PrepareOne_") + str(id)
 		transfer.custom_minimum_size.y = 30
-		if prepared:
-			transfer.size_flags_horizontal = Control.SIZE_SHRINK_END
-			transfer.custom_minimum_size.x = 40
+		transfer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		transfer.add_theme_font_size_override("font_size", 14)
 		transfer.tooltip_text = "Le deck contient déjà 3 exemplaires de ce sort, ou 30 cartes au total." if full else "Retire un exemplaire du deck vers la réserve." if prepared else "Ajoute un exemplaire de la réserve au deck."
 		if selected_family.is_empty():
@@ -423,6 +458,7 @@ func _card_tile(parent: Node, record: Dictionary, cards, prepared: bool, count: 
 		"",
 		func():
 			selected_family = id
+			_card_detail_tab = 0
 			_show_family(cards),
 		id == selected_family,
 	)
@@ -431,10 +467,10 @@ func _card_tile(parent: Node, record: Dictionary, cards, prepared: bool, count: 
 	node.set_meta("lane", "deck" if prepared else "reserve")
 	node.set_meta("count", count)
 	node.set_meta("rarity", record.rarity)
-	node.custom_minimum_size = Vector2(120, 86 if prepared else 198)
+	node.custom_minimum_size = Vector2(176, 220)
 	D.card_material(node)
 	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var box: BoxContainer = HBoxContainer.new() if prepared else VBoxContainer.new()
+	var box := VBoxContainer.new()
 	node.add_child(box)
 	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	box.offset_left = 8
@@ -442,15 +478,12 @@ func _card_tile(parent: Node, record: Dictionary, cards, prepared: bool, count: 
 	box.offset_top = 6
 	box.offset_bottom = -6
 	box.add_theme_constant_override("separation", 4)
-	D.image(box, record.icon, 52 if prepared else 68)
-	var words: VBoxContainer = VBoxContainer.new() if prepared else box as VBoxContainer
-	if prepared:
-		box.add_child(words)
-		words.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	D.image(box, record.icon, 86)
+	var words := box
 	var title := D.label(words, str(record.title), 16)
-	title.max_lines_visible = 1 if prepared else 2
+	title.max_lines_visible = 2
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title.custom_minimum_size.y = 42 if not prepared else 0
+	title.custom_minimum_size.y = 42
 	D.label(
 		words,
 		"%d PA · %s" % [record.row.ap, Receipt.RARITY_NAMES[record.rarity]],
@@ -473,7 +506,17 @@ func _card_tile(parent: Node, record: Dictionary, cards, prepared: bool, count: 
 		count,
 		"le deck" if prepared else "la réserve",
 	]
-	node.tooltip_text = node.accessibility_name + "\n" + Language.role(record.row)
+	HoverCard.attach(
+		node,
+		cards.family_spell(id),
+		GameManager.expedition.character.unit,
+		node,
+		"Deck ×%d · Réserve ×%d"
+		% [
+			_copies(cards, id, true).size(),
+			_copies(cards, id, false).size() - _copies(cards, id, true).size(),
+		],
+	)
 	D.passive(box)
 	_card_style(node, id == selected_family)
 	return node
@@ -490,73 +533,84 @@ func _card_style(tile: Button, selected: bool) -> void:
 	tile.add_theme_stylebox_override("normal", style)
 
 
+func _switch_deck_lane(lane: String) -> void:
+	_deck_lane_active = lane
+	find_child("PreparedDeckPanel", true, false).visible = lane == "deck"
+	find_child("ReservePanel", true, false).visible = lane == "reserve"
+	for entry in [["ShowPreparedDeck", "deck"], ["ShowCardReserve", "reserve"]]:
+		D.navigation_button(find_child(entry[0], true, false), lane == entry[1])
+	for hover in get_tree().get_nodes_in_group("passive_spell_hover"):
+		hover._hide()
+
+
 func _show_family(cards) -> void:
-	for child in _quick_actions.get_children():
-		_quick_actions.remove_child(child)
-		child.queue_free()
-	for child in _detail.get_children():
-		_detail.remove_child(child)
-		child.queue_free()
-	for tile in _card_tiles:
-		_card_style(tile, str(tile.get_meta("family")) == selected_family)
 	if selected_family.is_empty():
-		D.label(_detail, "Aucune carte sélectionnée", 23, D.GOLD)
-		D.label(
-			_detail,
-			"Modifiez vos filtres pour retrouver vos cartes. Les nouvelles cartes rejoignent la réserve.",
-		)
 		return
-	var record := Receipt.card_record(selected_family, selected_family in cards.upgraded_ids)
-	var accent := Color(Receipt.COLORS[record.rarity])
-	var spell: Spell = cards.family_spell(selected_family)
-	var hero: Unit = GameManager.expedition.character.unit
-	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 12)
-	_detail.add_child(header)
-	D.image(header, record.icon, 64)
-	var titles := VBoxContainer.new()
-	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(titles)
-	D.label(titles, record.title, 23, D.GOLD)
-	D.label(
-		titles,
-		"Affinité : " + DeckInventory.affinity(record.row) + " · "
-		+ str(Receipt.RARITY_NAMES[record.rarity]) + (" · Améliorée" if record.upgraded else ""),
-		14,
-		accent,
+	if is_instance_valid(_card_window):
+		remove_child(_card_window)
+		_card_window.queue_free()
+	_card_window_open = true
+	_card_window = preload("res://ui/expedition/deck_card_window.gd").new()
+	_card_window.name = "DeckCardInspection"
+	_card_window.title = str(Catalog.card(selected_family).name)
+	_card_window.theme = D.interface_theme()
+	_card_window.ok_button_text = "Retour aux cartes"
+	D.button(_card_window.get_ok_button())
+	_card_window.confirmed.connect(
+		func():
+			_card_window_open = false,
 	)
-	var reach := preload("res://ui/expedition/catabase_card_text.gd").range_text(spell, hero)
-	D.label(_detail, "%d PA · Portée %s" % [hero.get_spell_ap_cost(spell), reach], 19, D.GOLD)
-	D.label(_detail, Language.identity(record.row), 15, D.MUTED)
-	Symbols.element_strip(_detail, record.row)
-	var prepared_count := _copies(cards, selected_family, true).size()
+	_card_window.canceled.connect(
+		func():
+			_card_window_open = false,
+	)
+	add_child(_card_window)
+	var tabs := TabContainer.new()
+	tabs.name = "CardInspectionTabs"
+	_card_window.add_child(tabs)
+	var card_page := VBoxContainer.new()
+	card_page.name = "Carte"
+	tabs.add_child(card_page)
+	var reading := D.column(card_page, 0)
+	reading.get_parent().get_parent().size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var panel := PanelContainer.new()
+	reading.add_child(panel)
+	var owned := _copies(cards, selected_family, false).size()
+	var prepared := _copies(cards, selected_family, true).size()
+	CardView.hover(
+		panel,
+		cards.family_spell(selected_family),
+		GameManager.expedition.character.unit,
+		"Deck ×%d · Réserve ×%d" % [prepared, owned - prepared],
+	)
+	var actions := VBoxContainer.new()
+	actions.name = "Organiser et améliorer"
+	tabs.add_child(actions)
+	_detail = D.column(actions)
+	_detail.get_parent().get_parent().size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_detail.name = "CardInspector"
+	_quick_actions = HBoxContainer.new()
+	_quick_actions.name = "CardQuickActions"
+	actions.add_child(_quick_actions)
+	_build_family_management(cards)
+	tabs.current_tab = _card_detail_tab
+	tabs.tab_changed.connect(
+		func(index):
+			_card_detail_tab = index,
+	)
+	_card_window.popup_centered(Vector2i(640, mini(640, int(get_viewport_rect().size.y) - 60)))
+	_card_window.get_ok_button().grab_focus()
+
+
+func _build_family_management(cards) -> void:
+	var record := Receipt.card_record(selected_family, selected_family in cards.upgraded_ids)
+	var hero: Unit = GameManager.expedition.character.unit
+	D.label(_detail, record.title, 23, D.GOLD)
 	D.label(
 		_detail,
-		"Deck ×%d  ·  Réserve ×%d"
-		% [prepared_count, _copies(cards, selected_family, false).size() - prepared_count],
+		"Choisissez ici comment utiliser vos exemplaires et vos points d’amélioration.",
 		15,
-		D.GOLD,
-	)
-	_rules(_detail, Language.effect(record.row, hero.attack_power.get_value(), cards))
-	D.label(_detail, Language.power_reference(hero.attack_power.get_value()), 14, D.MUTED)
-	if _recent_cards.has(selected_family):
-		D.label(
-			_detail,
-			"Dernier combat : +%d carte(s) reçue(s) en réserve." % _recent_cards[selected_family],
-			14,
-			D.GOLD,
-		)
-	var scaling := CheckButton.new()
-	scaling.text = "Lien avec la Puissance"
-	scaling.name = "DossierScalingToggle"
-	D.button(scaling)
-	_detail.add_child(scaling)
-	var scaling_body := D.column(_detail, 0, false)
-	scaling_body.get_parent().visible = false
-	_rules(scaling_body, Language.scaling(record.row))
-	scaling.toggled.connect(
-		func(value):
-			scaling_body.get_parent().visible = value,
+		D.MUTED,
 	)
 	if not record.upgraded:
 		var evolution := D.column(_detail, 0, false)
@@ -831,7 +885,6 @@ func _select_visible(cards, equipment: bool) -> void:
 			if first.is_empty():
 				first = id
 		selected_family = first
-		_show_family(cards)
 		return
 	var selected := selected_item if equipment else selected_family
 	if _tiles.has(selected) and _tiles[selected].visible:

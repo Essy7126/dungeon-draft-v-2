@@ -156,9 +156,66 @@ func _run() -> void:
 	)
 
 	for tile in dossier._card_tiles:
+		if not tile.is_visible_in_tree():
+			continue
 		for label in tile.find_children("*", "Label", true, false):
 			check(tile.get_global_rect().grow(1).encloses(label.get_global_rect()), "card labels fit inside "
 				+ tile.name)
+	check(
+		dossier.find_child("DeckInspectorPanel", true, false) == null,
+		"collection is not crowded by a permanent inspector",
+	)
+	check(
+		dossier.find_child("DeckCardInspection", true, false) == null,
+		"inspection opens only on demand",
+	)
+	var hover_tile = dossier.find_child("DeckFamily_n02", true, false)
+	var hover = hover_tile.find_child("SpellHoverController", true, false)
+	check(hover != null, "deck uses combat hover controller")
+	hover._pointer = true
+	hover._show()
+	await capture("04e_survol_combat")
+	check(hover._panel.find_child("SpellHoverEffects", true, false) != null, "hover shows rich effects")
+	check(
+		hover._panel.mouse_filter == Control.MOUSE_FILTER_IGNORE,
+		"hover never intercepts selection",
+	)
+	hover._pointer = false
+	hover._hide()
+	await _click_control(hover_tile)
+	await get_tree().process_frame
+	var inspection: AcceptDialog = dossier.find_child("DeckCardInspection", true, false)
+	check(inspection != null and inspection.visible, "card click opens dedicated examination")
+	check(
+		dossier.find_child("CardInspectionTabs", true, false).current_tab == 0,
+		"card effect is the default page",
+	)
+	await capture("04f_examen_carte")
+	var card_effects: RichTextLabel = inspection.find_child("SpellHoverEffects", true, false)
+	check(
+		card_effects != null and card_effects.is_visible_in_tree(),
+		"examined card effects visible",
+	)
+	var card_body: Control = card_effects.get_parent().get_parent()
+	var card_scroll: ScrollContainer = card_body.get_parent().get_parent()
+	check(card_scroll.size.y > 250, "inspection reading area has usable height")
+	check(card_scroll.get_global_rect().encloses(card_effects.get_global_rect()), "examined effects not clipped")
+	dossier.find_child("CardInspectionTabs", true, false).current_tab = 1
+	await capture("04h_gestion_separee")
+	check(dossier._quick_actions.is_visible_in_tree(), "management is a separate reachable tab")
+	var card_escape := InputEventKey.new()
+	card_escape.keycode = KEY_ESCAPE
+	card_escape.pressed = true
+	inspection.push_input(card_escape)
+	await get_tree().process_frame
+	check(not inspection.visible and scene._page == "cards", "Escape closes card but keeps deck")
+	dossier.find_child("ShowCardReserve", true, false).pressed.emit()
+	await capture("04g_reserve")
+	check(
+		not dossier.find_child("PreparedDeckPanel", true, false).visible,
+		"reserve has its own page",
+	)
+	dossier.find_child("ToggleDeckFilters", true, false).pressed.emit()
 	var affinity = dossier.find_child("DossierAffinityFilter", true, false)
 	affinity.select(2)
 	affinity.item_selected.emit(2)
@@ -232,7 +289,9 @@ func _run() -> void:
 		dossier._show_family(cards)
 		await get_tree().process_frame
 		check(
-			get_viewport().get_visible_rect().encloses(dossier._quick_actions.get_global_rect()),
+			dossier._card_window.get_visible_rect().encloses(
+				dossier._quick_actions.get_global_rect()
+			),
 			"actions remain visible for " + str(row.id),
 		)
 	clear_scene()
@@ -396,6 +455,8 @@ func _run() -> void:
 	_open("cards", true)
 	await get_tree().process_frame
 	dossier = scene.find_child("ConsumablePlayerDossier", true, false)
+	dossier.selected_family = "n02"
+	dossier._show_family(cards)
 	check(_button_containing(dossier, "+1 au deck (").disabled, "read-only preparation disabled")
 	check(
 		not dossier.find_child("DeckFamily_n02", true, false).disabled,
@@ -475,7 +536,7 @@ func _check_deck_partition(dossier, cards) -> void:
 	check(totals.deck + totals.reserve == cards.copies.size(), "no copy lost or counted twice")
 	var left: Control = dossier.find_child("PreparedDeckPanel", true, false)
 	var right: Control = dossier.find_child("ReservePanel", true, false)
-	check(not left.get_global_rect().intersects(right.get_global_rect()), "deck and reserve occupy separate panels")
+	check(left.visible != right.visible, "deck and reserve occupy separate pages")
 
 
 func _click_control(control: Control) -> void:

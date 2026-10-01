@@ -15,7 +15,7 @@ if (-not $RuntimeOnly) {
 try {
     $results = @()
     foreach ($resolution in @('1280x720', '1600x900')) {
-        foreach ($fixture in @(@{name='dossier'; count=14}, @{name='loot'; count=5}, @{name='reorientation'; count=3})) {
+        foreach ($fixture in @(@{name='dossier'; count=18}, @{name='loot'; count=5}, @{name='reorientation'; count=3}, @{name='level_up'; count=4})) {
             $label = $fixture.name + '-' + $resolution
             $captureRoot = Join-Path $dossierRun $label
             [IO.Directory]::CreateDirectory($captureRoot) | Out-Null

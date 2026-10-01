@@ -509,7 +509,7 @@ func _on_skill_tree_requested(
 		return
 	_hud_port.set_controls_enabled(false)
 	if GameManager.expedition != null:
-		_show_expedition_inspection("build")
+		_show_expedition_inspection("cards" if GameManager.expedition.cards != null else "build")
 		return
 	if not skill_tree_screen.open_for_character(
 			character_id,

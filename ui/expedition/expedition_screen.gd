@@ -330,7 +330,7 @@ func _create_decision_window() -> void:
 	_body.add_child(chrome)
 	_icon(chrome, ART_THEME.icon("nav", {"gear": "equipment", "attributes": "attributes", "allocation": "attributes", "cards": "tree", "build": "tree", "rewards": "check", "level_up": "check"}.get(_page, "journal")), 32)
 	_window_title = _label(chrome, {"gear": "INVENTAIRE", "attributes": "CARACTÉRISTIQUES", "allocation": "RÉPARTIR MES POINTS", "cards": "SORTS & DECK", "build": "CLASSE & MAÎTRISES", "rewards": "BILAN DU COMBAT", "level_up": "NIVEAU SUPÉRIEUR", "progression": "RÉPARTIR MES POINTS", "advancement": "DÉVELOPPER MES MAÎTRISES"}.get(_page, "CATABASE"), 24, GOLD, true)
-	if GameManager.expedition.uses_consumable_cards() and _page in ["build", "advancement"]: _window_title.text = "CLASSE & AMÉLIORATIONS"
+	if GameManager.expedition.uses_consumable_cards() and _page in ["build", "advancement"]: _window_title.text = "NIVEAU SUPÉRIEUR" if _page == "advancement" else "CLASSE & AMÉLIORATIONS"
 	_window_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var close := _button(chrome, "Fermer  ×")
 	close.name = "CloseDedicatedWindow"
@@ -341,7 +341,7 @@ func _create_decision_window() -> void:
 	close.pressed.connect(_close_current_view)
 	if GameManager.expedition.uses_consumable_cards() and _page in DOSSIER_PAGES:
 		DOSSIER_THEME.button(close)
-	if _page in ["gear", "attributes", "cards", "build"] and not (GameManager.expedition.uses_consumable_cards() and _page == "attributes"):
+	if _page in ["gear", "attributes", "cards", "build"] and not (GameManager.expedition.uses_consumable_cards() and _page in ["attributes", "cards"]):
 		var tabs := HBoxContainer.new()
 		_body.add_child(tabs)
 		for entry in [["gear", "Personnage & inventaire"], ["attributes", "Caractéristiques"], ["cards", "Sorts & deck"], ["build", "Maîtrises"]]:
@@ -440,7 +440,7 @@ func _render_learning_choice() -> void:
 
 func _render_cards_advancement() -> void:
 	if GameManager.expedition.uses_consumable_cards():
-		_render_consumable_workshop("progression", true)
+		_render_consumable_level_up()
 		return
 	if GameManager.expedition.cards.rules_revision == 3:
 		_render_class_progression(true)
@@ -511,6 +511,9 @@ func _render_loot_received() -> void:
 
 func _focus_page_action() -> void:
 	if not is_inside_tree(): return
+	if GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and _page == "advancement":
+		_restore_body_focus("OpenRequiredSpecialization" if preload("res://ui/expedition/consumable_level_summary.gd").read(GameManager.expedition.cards, GameManager.expedition.advancement_from_level).specialization_required else "OpenStatAllocation")
+		return
 	if GameManager.expedition != null and GameManager.expedition.uses_consumable_cards() and _page in ["attributes", "allocation", "progression"]:
 		_restore_body_focus("CloseDedicatedWindow" if _page == "attributes" else "Allocation_earth")
 		return
@@ -619,7 +622,10 @@ func _size_decision_window() -> void:
 	if GameManager.expedition.uses_consumable_cards() and _page in ["gear", "attributes", "cards", "build", "progression", "advancement"]:
 		width = 1240
 	if GameManager.expedition.uses_consumable_cards():
-		if _page == "attributes":
+		if _page == "advancement":
+			width = 1040
+			height = 660
+		elif _page == "attributes":
 			width = 720
 			height = 650
 		elif _page in ["allocation", "progression"]:
@@ -672,6 +678,8 @@ func _close_current_view() -> void:
 		_close()
 	elif _page == "rewards" and GameManager.expedition.has_class_combat_receipt():
 		_close_class_receipt()
+	elif _page == "advancement" and GameManager.expedition.uses_consumable_cards() and not preload("res://ui/expedition/consumable_level_summary.gd").read(GameManager.expedition.cards, GameManager.expedition.advancement_from_level).specialization_required:
+		_advance_level_window()
 	elif _page in ["level_up", "progression", "advancement"] and GameManager.expedition.build.class_mode:
 		_page = "pending_progression"
 		_return_page = ""
@@ -1476,10 +1484,23 @@ func _render_cards() -> void:
 	column.add_child(collection)
 
 
+func _render_consumable_level_up() -> void:
+	var view := preload("res://ui/expedition/consumable_level_up_view.gd").new()
+	view.session = GameManager.expedition
+	view.read_only = inspection_only
+	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	view.allocation_requested.connect(func(): _allocation_return_page = _page; _page = "allocation"; _render())
+	view.cards_requested.connect(func(): _navigate("cards"))
+	view.class_requested.connect(func(): _navigate("build"))
+	view.continue_requested.connect(_advance_level_window)
+	_body.add_child(view)
+
+
 func _render_consumable_workshop(mode: String, required := false) -> void:
 	var view := preload("res://ui/expedition/consumable_player_dossier.gd").new()
 	view.mode = mode
 	view.section = _page
+	view.class_requested.connect(func(): _navigate("build"))
 	view.allocation_requested.connect(func(): _allocation_return_page = _page; _page = "allocation"; _render())
 	view.read_only = inspection_only and not allow_attribute_edits
 	view.transaction_completed.connect(_refresh_resources)

@@ -33,11 +33,13 @@ conditionnels peuvent modifier ces valeurs de base en combat.
 
 - **Sorts & deck** : préparer zéro à trente copies, trois au plus par famille ;
   laisser le reste en réserve ; choisir une copie normale d'ouverture facultative.
-  Deux collections distinctes affichent leurs propres exemplaires : **Deck préparé**
-  (piochable) et **Réserve** (hors pioche). Les boutons +1/−1 déplacent un exemplaire,
-  avec les mêmes limites et sauvegardes que les commandes existantes.
-  La fiche reste à droite ; recherche, rôle, affinité et rareté filtrent les deux
-  collections sans modifier le deck. Coût, quantité, affinité et rareté sont visibles
+  Deux onglets exclusifs affichent leurs propres exemplaires : **Mon deck**
+  (piochable) et **Réserve** (hors pioche). Chacun occupe toute la galerie.
+  Les boutons +1/−1 déplacent un exemplaire avec les mêmes limites et sauvegardes.
+  Le survol utilise la même infobulle passive qu’en combat ; le clic ouvre une
+  fenêtre dédiée, avec **Carte** et **Organiser et améliorer** séparés.
+  La recherche reste visible ; rôle, affinité et rareté sont regroupés derrière
+  **Filtres**, sans modifier le deck. Coût, quantité, affinité et rareté sont visibles
   sur chaque pile ; la rareté possède aussi une bordure colorée.
   L'aide **Les familles ?** distingue l'affinité de classe, le rôle, la rareté et
   la famille de sort (tous les exemplaires d'un même sort). L'affinité détermine
@@ -52,6 +54,15 @@ conditionnels peuvent modifier ces valeurs de base en combat.
   avec choix et aperçu avant confirmation. Fermer abandonne le brouillon non
   validé et revient à la fenêtre d’origine. Les choix de classe restent dans
   **Classe & améliorations**, qui propose aussi un accès à la répartition.
+- **Montée de niveau** : le bilan du combat et son butin apparaissent en premier.
+  Après fermeture, une annonce dédiée présente le héros, le niveau atteint et
+  les gains de base en PV et Puissance déjà appliqués. Les niveaux gagnés ensemble
+  sont regroupés. Trois accès ouvrent séparément la répartition des points,
+  le deck et la classe ; leur fermeture revient à l'annonce.
+  Les gains du niveau sont distingués du total encore disponible. **Continuer**
+  (ou fermer l'annonce) conserve les points non dépensés ; la spécialisation
+  obligatoire reste à choisir avant de poursuivre. La reprise conserve l'annonce
+  en attente sans attribuer les gains une seconde fois.
 - **Inventaire** : six emplacements d'équipement et deux reliques distinctes.
   La fiche compare les valeurs permanentes avant/après équipement ou retrait,
   précise les plafonds et garde l'action accessible sous le détail défilant.
