@@ -66,6 +66,7 @@ var _zoom := 1.0
 var _replacement_dialog: ConfirmationDialog
 var _replacement_token := ""
 var _cards_setup: Control
+var _hero_art: TextureRect
 
 
 func _ready() -> void:
@@ -107,6 +108,10 @@ func _ready() -> void:
 
 
 func _build_screen() -> void:
+	if not include_archived_adventures:
+		preload("res://ui/selection/classic_selection_presentation.gd").new().build(self)
+		_wire_navigation()
+		return
 	var backdrop := BACKDROP.new()
 	add_child(backdrop)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -443,8 +448,8 @@ func select_character(index: int) -> bool:
 	_lore_body.text = entry["description"]
 	_appearance.text = entry.get("appearance", "APPARENCE ORIGINALE  ·  Tenue disponible en jeu")
 	var champion_mode := unit.progression_profile != null and unit.progression_profile.progression_model == CharacterProgressionProfile.ProgressionModel.CHAMPION_LEVEL_AND_MASTERY
-	stats_labels["prowess"].visible = champion_mode
-	stats_labels["level"].visible = champion_mode
+	stats_labels["prowess"].visible = champion_mode and include_archived_adventures
+	stats_labels["level"].visible = champion_mode and include_archived_adventures
 	stats_labels["prowess"].text = "Prouesse   %d" % unit.attack_power
 	stats_labels["level"].text = "Niveau 1"
 	stats_labels["hp"].text = str(unit.max_hp)
@@ -453,9 +458,13 @@ func select_character(index: int) -> bool:
 	stats_labels["initiative"].text = str(unit.initiative)
 	stats_labels["armor"].text = str(unit.armure).trim_suffix(".0")
 	start_button.text = "INCARNER %s   ›" % str(entry.get("display_name", unit.unit_name)).to_upper() if unit.get_effective_unit_id() == &"achilles" else "JOUER AVEC LE TRIO   ›"
+	if is_instance_valid(_hero_art):
+		start_button.text = "INCARNER PASSE-RIVE" if entry.id == &"achilles_passe_rive" else "INCARNER ACHILLE"
+		_hero_art.texture = preload("res://ui/selection/classic_selection_presentation.gd").illustration(entry.id)
 	start_button.tooltip_text = "Commencer %s\n%s" % [entry["chapter"], entry["party_note"]]
-	_preview.configure(unit)
-	_preview.set_showcase_zoom(_zoom)
+	if not is_instance_valid(_hero_art):
+		_preview.configure(unit)
+		_preview.set_showcase_zoom(_zoom)
 	for i in range(_roster_buttons.size()):
 		_mark_selected(_roster_buttons[i], i == index)
 	var hud_theme := CharacterHUDThemeCatalog.resolve_refined(unit)
@@ -567,6 +576,8 @@ func _clip_for_pose(pose: StringName) -> StringName:
 
 
 func _play_preview() -> bool:
+	if is_instance_valid(_hero_art):
+		return false
 	var clip := _clip_for_pose(_pose)
 	_orientation.text = "VUE %s" % ["NORD", "EST", "SUD", "OUEST"][orientation_index]
 	if not _preview.is_using_sprite_preview():
@@ -746,6 +757,9 @@ func _short_role(unit: UnitData) -> String:
 
 func _mark_selected(button: Button, selected: bool) -> void:
 	button.set_pressed_no_signal(selected)
+	if button.has_meta("classic_presentation"):
+		preload("res://ui/selection/classic_selection_presentation.gd").style_button(button, selected)
+		return
 	var accent: Color = button.get_meta("accent", GOLD)
 	var roster := StringName(button.get_meta("style_role", &"")) == &"roster"
 	var border := PALETTE.TEAL if selected else LINE
@@ -900,12 +914,13 @@ func _change_zoom(delta: float) -> void:
 func _animate_hero_entry() -> void:
 	if is_instance_valid(_hero_tween):
 		_hero_tween.kill()
-	_preview.modulate = Color.WHITE
+	var visual: Control = _hero_art if is_instance_valid(_hero_art) else _preview
+	visual.modulate = Color.WHITE
 	if GameManager.is_reduced_motion_enabled():
 		return
-	_preview.modulate.a = 0.0
+	visual.modulate.a = 0.0
 	_hero_tween = create_tween()
-	_hero_tween.tween_property(_preview, "modulate:a", 1.0, 0.18)
+	_hero_tween.tween_property(visual, "modulate:a", 1.0, 0.18)
 
 
 func _wire_navigation() -> void:

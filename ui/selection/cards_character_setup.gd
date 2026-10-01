@@ -1,5 +1,5 @@
-extends MarginContainer
-## Compose the class-owned deck before the cinematic and threshold.
+extends Control
+## Free preparation around the hero. Rules and departure remain catalog-owned.
 signal hero_selected(index: int)
 signal launch_requested
 signal back_requested
@@ -11,166 +11,178 @@ const CardSkin := preload("res://ui/expedition/catabase_card_skin.gd")
 const D := preload("res://ui/expedition/player_dossier_skin.gd")
 const Readability := preload("res://ui/selection/departure_readability.gd")
 const Language := preload("res://ui/expedition/card_player_language.gd")
-const STEPS := ["Apparence", "Classe", "Cartes", "Difficulté", "Départ"]
+const Art := preload("res://ui/selection/classic_selection_presentation.gd")
+const Symbols := preload("res://ui/expedition/player_stat_symbols.gd")
+const SanctuarySkin := preload("res://ui/selection/cards_sanctuary_skin.gd")
+const Socle := preload("res://ui/selection/cards_preparation_socle.gd")
+const GOLD := Art.GOLD
+const HEADING := Art.HEADING
 var selection := Catalog.preset()
 var difficulty := "normal"
-var step := 0
-var reached := 0
 var hero := 2
 var entries: Array[Dictionary] = []
 var start_button: Button
 var status: Label
-var _nav: HBoxContainer
 var _page: VBoxContainer
 var _preview: CharacterPreview3D
 var _hero_name: Label
-var _class_label: Label
-var _panel: PanelContainer
-var _stage: VBoxContainer
+var _hero_art: TextureRect
+var _hero_socle: TextureRect
+var _panel: Panel
+var _main: Control
+var _overlay: Control
+var _modal := ""
+var _origin := ""
 var _inspected := ""
 var _show_deck_help := false
 var _show_scaling := false
 var _show_class_details := false
 var _drafts: Dictionary = { }
-var _summary: Label
-var _crest: TextureRect
-var _deck_strip: HFlowContainer
-var _facing := 2
-var _pose := "idle"
-var _pose_buttons: Array[Button] = []
-const GOLD := Color("d7bd87")
-const HEADING := preload("res://asset/ui/character_selection/selection_title_font.tres")
+var _summary: VBoxContainer
+var _socles: Dictionary = { }
+var _portraits: Array[Button] = []
+var _main_focus: Dictionary = { }
+var _help_overlay: Control
+var _help_focus: Dictionary = { }
 
 
 func configure(value: Array[Dictionary]) -> void:
 	entries = value
 	hero = mini(2, entries.size() - 1)
+	selection.masteries = Symbols.Rules.empty_elements()
 	theme = D.interface_theme(preload("res://ui/expedition/catabase_ui_theme.gd").get_theme())
-	add_theme_font_override("font", D.FONT)
-	add_theme_color_override("font_color", D.PAPER)
-	for side in ["left", "right", "top", "bottom"]:
-		add_theme_constant_override("margin_" + side, 24)
-	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 12)
-	add_child(root)
-	var header := HBoxContainer.new()
-	root.add_child(header)
-	var brand := PAGE.text(header, "CATABASE", 30)
-	brand.add_theme_font_override("font", HEADING)
-	brand.modulate = GOLD
-	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var mode_label := PAGE.text(header, "NOUVELLE DESCENTE  /  CARTES", 14)
-	mode_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	mode_label.modulate = GOLD
-	var refuge := _action(header, "Sanctuaire", "SetupRefuge")
-	refuge.pressed.connect(
-		func():
-			refuge_requested.emit(),
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_main = Control.new()
+	_main.size = Vector2(1440, 810)
+	_main.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_main)
+	_image(_main, Art.DECOR, Rect2(0, 0, 1440, 810)).stretch_mode = TextureRect.STRETCH_SCALE
+	_label(_main, "C A T A B A S E", Rect2(190, 18, 820, 34), 23, GOLD, true).add_theme_font_override(
+		"font",
+		HEADING,
 	)
-	_nav = HBoxContainer.new()
-	_nav.add_theme_constant_override("separation", 8)
-	root.add_child(_nav)
-	var columns := HBoxContainer.new()
-	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	columns.add_theme_constant_override("separation", 16)
-	root.add_child(columns)
-	_panel = PanelContainer.new()
-	_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	columns.add_child(_panel)
-	_page = VBoxContainer.new()
-	_page.add_theme_constant_override("separation", 12)
-	_panel.add_child(_page)
-	var stage := VBoxContainer.new()
-	_stage = stage
-	stage.add_theme_constant_override("separation", 8)
-	columns.add_child(stage)
-	var identity := PanelContainer.new()
-	identity.add_theme_stylebox_override("panel", D.framed_surface(12))
-	stage.add_child(identity)
-	var title_row := HBoxContainer.new()
-	identity.add_child(title_row)
-	_crest = _art(title_row, null, 58)
-	var names := VBoxContainer.new()
-	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_row.add_child(names)
-	_hero_name = PAGE.text(names, "", 26)
-	_hero_name.add_theme_font_override("font", HEADING)
-	_class_label = PAGE.text(names, "", 16)
-	_preview = PREVIEW.instantiate()
-	_preview.custom_minimum_size = Vector2.ZERO
-	var pedestal := preload("res://ui/selection/selection_hero_stage.gd").new()
-	pedestal.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stage.add_child(pedestal)
-	pedestal.add_child(_preview)
-	_preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_preview.offset_bottom = -40
-	_preview.set_showcase_mode(true)
-	var poses := HBoxContainer.new()
-	poses.alignment = BoxContainer.ALIGNMENT_CENTER
-	stage.add_child(poses)
-	_action(poses, "‹", "SetupRotateLeft").pressed.connect(_rotate.bind(-1))
-	for index in 3:
-		var pose_button := _action(
-			poses,
-			["Repos", "Marche", "Attaque"][index],
-			"SetupPose_%d" % index,
+	_label(_main, "CARTES", Rect2(190, 52, 820, 25), 17, Art.TEXT, true).add_theme_font_override(
+		"font",
+		HEADING,
+	)
+	_fixed_action(_main, "Sanctuaire", "SetupRefuge", Rect2(1140, 27, 155, 44)).pressed.connect(
+		func():
+			emit_signal.call_deferred("refuge_requested"),
+	)
+	_fixed_action(_main, "← Retour", "SetupBack", Rect2(1295, 27, 120, 44)).pressed.connect(go_back)
+	for index in entries.size():
+		var button := _fixed_action(
+			_main,
+			"",
+			"Choice_%d" % index,
+			Rect2(34, 162 + index * 92, 78, 82),
 		)
-		pose_button.add_theme_font_size_override("font_size", 14)
-		pose_button.toggle_mode = true
-		pose_button.pressed.connect(
+		button.set_meta("classic_presentation", &"roster")
+		button.toggle_mode = true
+		button.tooltip_text = str(entries[index].display_name)
+		_image(button, Art.illustration(entries[index].id, true), Rect2(5, 4, 68, 74))
+		button.pressed.connect(
 			func():
-				_pose = ["idle", "walk", "attack"][index]
-				_play_pose(),
+				hero = index
+				_update_hero()
+				_refresh_summary(),
 		)
-		_pose_buttons.append(pose_button)
-	_action(poses, "›", "SetupRotateRight").pressed.connect(_rotate.bind(1))
-	var summary_panel := PanelContainer.new()
-	summary_panel.add_theme_stylebox_override("panel", D.framed_surface(12))
-	stage.add_child(summary_panel)
-	var summary_body := VBoxContainer.new()
-	summary_body.add_theme_constant_override("separation", 8)
-	summary_panel.add_child(summary_body)
-	PAGE.text(summary_body, "VOTRE DÉPART", 13).modulate = GOLD
-	_summary = PAGE.text(summary_body, "", 15)
-	_deck_strip = HFlowContainer.new()
-	_deck_strip.alignment = FlowContainer.ALIGNMENT_CENTER
-	summary_body.add_child(_deck_strip)
-	status = PAGE.text(root, "", 15)
+		_portraits.append(button)
+	_hero_name = _label(_main, "", Rect2(190, 83, 820, 40), 37, Art.TEXT, true)
+	_hero_name.add_theme_font_override("font", HEADING)
+	SanctuarySkin.rule(_main, Rect2(443, 127, 314, 10))
+	_hero_socle = _image(_main, SanctuarySkin.platform(), Rect2(306, 623, 614, 137))
+	_hero_art = _image(_main, null, Rect2(294, 150, 638, 500))
+	_hero_art.name = "CardsHeroIllustration"
+	# Compatibility with the shared screen API, with no animated preview loading.
+	_preview = PREVIEW.instantiate()
+	add_child(_preview)
+	_preview.hide()
+	var folio := _surface(_main, "CardsDepartureSummary", Rect2(1055, 115, 349, 615))
+	folio.add_theme_stylebox_override("panel", SanctuarySkin.frame())
+	_summary = VBoxContainer.new()
+	_summary.position = Vector2(23, 18)
+	_summary.size = Vector2(303, 579)
+	_summary.add_theme_constant_override("separation", 6)
+	folio.add_child(_summary)
+	for index in 4:
+		var key: String = ["class", "deck", "elements", "difficulty"][index]
+		var button := _fixed_action(
+			_main,
+			"",
+			"Socle_" + key,
+			Rect2(166 + index * 218, [544, 560, 556, 546][index], 218, 184),
+		)
+		var object := Socle.new()
+		object.kind = key
+		object.name = "Object"
+		object.size = Vector2(218, 153)
+		button.add_child(object)
+		var state := _label(button, "", Rect2(0, 153, 218, 27), 18, Art.TEXT, true)
+		state.name = "ChoiceState"
+		state.add_theme_font_override("font", HEADING)
+		button.pressed.connect(open_window.bind(key))
+		_socles[key] = button
+	status = _label(_main, "", Rect2(1055, 739, 349, 65), 16, GOLD)
 	status.name = "CardsSetupStatus"
-	var footer := HBoxContainer.new()
-	footer.add_theme_constant_override("separation", 12)
-	root.add_child(footer)
-	var back := Button.new()
-	back.name = "SetupBack"
-	back.text = "← Retour"
-	back.custom_minimum_size = Vector2(154, 46)
-	back.pressed.connect(go_back)
-	footer.add_child(back)
-	CardSkin.icon_button(back, GOLD)
-	start_button = Button.new()
-	start_button.name = "StartAdventure"
-	start_button.custom_minimum_size.y = 56
-	start_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	start_button = _fixed_action(
+		_main,
+		"FRANCHIR LE SEUIL",
+		"StartAdventure",
+		Rect2(385, 752, 430, 55),
+		true,
+	)
+	SanctuarySkin.primary(start_button)
 	start_button.pressed.connect(
 		func():
-			if step >= 2 and not Catalog.valid_departure(selection):
-				return
-			if step == 4:
-				launch_requested.emit()
-			else:
-				step += 1
-				reached = maxi(reached, step)
-				_render(),
+			if _modal.is_empty() and Catalog.valid_departure(payload()):
+				emit_signal.call_deferred("launch_requested"),
 	)
-	footer.add_child(start_button)
+	_overlay = Control.new()
+	_overlay.name = "PreparationOverlay"
+	_overlay.size = Vector2(1440, 810)
+	add_child(_overlay)
+	var shade := ColorRect.new()
+	shade.color = Color(0.005, 0.015, 0.02, .58)
+	shade.size = _overlay.size
+	_overlay.add_child(shade)
+	_panel = Panel.new()
+	_panel.name = "PreparationWindow"
+	_panel.add_theme_stylebox_override("panel", _window_style())
+	_overlay.add_child(_panel)
+	var header := HBoxContainer.new()
+	header.name = "WindowHeader"
+	_panel.add_child(header)
+	var title := PAGE.text(header, "", 26)
+	title.name = "WindowTitle"
+	title.add_theme_font_override("font", HEADING)
+	title.modulate = Art.TEXT
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_action(header, "×", "ClosePreparation").pressed.connect(close_window)
+	_page = VBoxContainer.new()
+	_page.add_theme_constant_override("separation", 12)
+	_page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_page.clip_contents = true
+	_panel.add_child(_page)
+	SanctuarySkin.rule(_panel, Rect2(30, 63, 980, 6)).name = "WindowRule"
+	var footer := HBoxContainer.new()
+	footer.name = "WindowFooter"
+	_panel.add_child(footer)
+	var counter := PAGE.text(footer, "", 18)
+	counter.name = "PreparationCounter"
+	counter.modulate = GOLD
+	counter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var confirm := _action(footer, "CONFIRMER", "ConfirmPreparation")
+	SanctuarySkin.primary(confirm)
+	confirm.custom_minimum_size = Vector2(180, 46)
+	confirm.pressed.connect(close_window)
+	_panel.resized.connect(_layout_window)
+	_overlay.hide()
 	_update_hero()
-	resized.connect(_resize_stage)
-	_resize_stage()
-	_render()
-
-
-func _resize_stage() -> void:
-	_stage.custom_minimum_size.x = clampf(size.x * .34, 340, 560)
+	_refresh_summary()
+	_restore_focus.call_deferred("Choice_%d" % hero)
 
 
 func payload() -> Dictionary:
@@ -181,10 +193,11 @@ func payload() -> Dictionary:
 
 
 func _update_hero() -> void:
-	var entry := entries[hero]
-	_hero_name.text = str(entry.display_name)
-	_preview.configure(entry.unit)
-	_play_pose()
+	_hero_name.text = str(entries[hero].display_name).to_upper()
+	_hero_art.texture = Art.illustration(entries[hero].id)
+	for index in _portraits.size():
+		_portraits[index].set_pressed_no_signal(index == hero)
+		Art.style_button(_portraits[index], index == hero)
 	hero_selected.emit(hero)
 
 
@@ -192,111 +205,293 @@ func _accent() -> Color:
 	return Catalog.Ecology.CLASS_COLORS[selection.class_id].lightened(.25)
 
 
-func _render() -> void:
-	var focused := get_viewport().gui_get_focus_owner()
-	var focus_name := str(focused.name) if focused != null and is_ancestor_of(focused) else ""
-	for parent in [_nav, _page]:
-		for child in parent.get_children():
-			parent.remove_child(child)
-			child.queue_free()
-	_panel.add_theme_stylebox_override("panel", D.window_surface(16))
-	_class_label.text = Catalog.CLASSES[selection.class_id][0] + "  ·  Niveau 1"
-	_class_label.modulate = _accent()
-	_crest.texture = Catalog.icon(selection.class_id)
-	_summary.text = "%s · %d / 15 cartes\n5 en main · chaque carte jouée est consommée" % [
-		"Difficulté normale" if difficulty == "normal" else "Difficulté facile",
-		selection.card_families.size(),
-	]
-	_summary.text += "\n" + Readability.stats_text()
-	for child in _deck_strip.get_children():
-		_deck_strip.remove_child(child)
-		child.queue_free()
-	var displayed := { }
+func _refresh_summary() -> void:
+	_clear(_summary)
+	if not selection.has("masteries"):
+		selection.masteries = Symbols.Rules.empty_elements()
+	PAGE.text(_summary, "VOTRE TRAVERSÉE", 20).add_theme_font_override("font", HEADING)
+	var identity := HBoxContainer.new()
+	_summary.add_child(identity)
+	_art(identity, Catalog.icon(selection.class_id), 42)
+	var class_title := PAGE.text(identity, Catalog.CLASSES[selection.class_id][0] + " · Niv. 1", 23)
+	class_title.modulate = GOLD
+	class_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_summary_heading("BONUS DE CLASSE")
+	var bonus := PAGE.text(_summary, Language.PASSIVES[selection.class_id].split(". ")[0] + ".", 17)
+	bonus.tooltip_text = Language.PASSIVES[selection.class_id]
+	_summary_heading("CARACTÉRISTIQUES INITIALES")
+	PAGE.text(_summary, Readability.stats_text(), 18)
+	_summary_heading("DECK PRÉPARÉ")
+	PAGE.text(_summary, Readability.deck_text(selection.card_families), 17)
+	var common := 0
 	for id in selection.card_families:
-		if displayed.has(id):
-			continue
-		displayed[id] = true
-		var card := _art(_deck_strip, Catalog.make_spell(id, 2).icon, 42)
-		card.mouse_filter = Control.MOUSE_FILTER_STOP
-		var spell := Catalog.make_spell(id, 2)
-		card.tooltip_text = "%d × %s · %d PA · %s\n%s" % [
-			selection.card_families.count(id),
-			spell.spell_name,
-			spell.ap_cost,
-			_range(spell),
-			Language.effect(
-				Catalog.Rules.card(id),
-				float(Readability.Math.Progression.POWER[0]),
-				_preview_cards(),
-			),
-		]
+		if Catalog.Rules.card(id).affinity == "shared":
+			common += 1
+	PAGE.text(
+		_summary,
+		"%d communes · %d de classe · 5 en main" % [common, selection.card_families.size() - common],
+		16,
+	)
+	_summary_heading("MAÎTRISES ÉLÉMENTAIRES")
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 5)
+	_summary.add_child(grid)
+	for id in Symbols.Rules.ELEMENTS:
+		var row := HBoxContainer.new()
+		grid.add_child(row)
+		_art(row, Symbols.icon(id), 23).tooltip_text = Symbols.Rules.ELEMENT_NAMES[id]
+		var amount := PAGE.text(row, "+%d %%" % roundi(100 * Symbols.Rules.mastery(
+					selection.masteries[id]
+				)), 16)
+		amount.modulate = Symbols.color(id)
+		amount.autowrap_mode = TextServer.AUTOWRAP_OFF
+	var remaining := 4 - Symbols.Rules.spent(selection.masteries)
+	PAGE.text(_summary, "%d point(s) disponible(s)" % remaining, 16).modulate = Art.MUTED
+	_summary_heading("DIFFICULTÉ")
+	PAGE.text(_summary, "Normale" if difficulty == "normal" else "Facile", 18)
+	(_socles["class"].get_node("ChoiceState") as Label).text = "Classe · " + Catalog.CLASSES[
+		selection.class_id
+	][0]
+	_socles["class"].get_node("Object").set("class_id", selection.class_id)
+	_socles["class"].get_node("Object").queue_redraw()
+	(_socles["deck"].get_node("ChoiceState") as Label).text = "Deck · %d / 15" % selection \
+			.card_families \
+			.size()
+	(_socles["elements"].get_node("ChoiceState") as Label).text = "Éléments · %d point(s)" % remaining
+	(_socles["difficulty"].get_node("ChoiceState") as Label).text = "Difficulté · " + (
+		"Normale" if difficulty == "normal" else "Facile"
+	)
+	start_button.disabled = not Catalog.valid_departure(payload())
+	status.text = "" if not start_button.disabled else "Préparez 15 cartes autorisées, avec au plus 3 exemplaires par sort."
 
-	for index in STEPS.size():
-		var button := Button.new()
-		button.name = "SetupStep_%d" % index
-		button.text = ("✓  " if index < reached else "%02d  " % (index + 1)) + STEPS[index]
-		button.custom_minimum_size.y = 43
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.toggle_mode = true
-		button.button_pressed = step == index
-		button.disabled = index > reached or (index > 2 and not Catalog.valid_departure(selection))
-		CardSkin.icon_button(button, _accent())
-		button.pressed.connect(
-			func():
-				step = index
-				_render(),
-		)
-		_nav.add_child(button)
-	start_button.text = (
-		"ENTRER DANS LES ENFERS  →"
-		if step == 4
-		else "Confirmer · " + STEPS[step + 1] + " →"
-	)
-	start_button.disabled = step >= 2 and not Catalog.valid_departure(selection)
-	status.text = (
-		"Choisissez 15 cartes pour continuer (%d / 15)." % selection.card_families.size()
-		if start_button.disabled
-		else "Étape %d / 5  ·  %s  ·  Vos choix restent modifiables avant le départ."
-		% [step + 1, STEPS[step]]
-	)
-	if step == 1:
-		_render_classes()
-	elif step == 2:
-		_render_cards()
-	elif step == 4:
-		_render_review()
-	else:
-		_render_choice()
-	for button in find_children("*", "Button", true, false):
-		D.button(button, button.button_pressed)
-		button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-		button.add_theme_stylebox_override("hover_pressed", D.surface(true, 9))
-	for nav_button in _nav.get_children():
-		D.navigation_button(nav_button, nav_button.button_pressed)
-	D.primary_button(start_button)
-	var add_card := find_child("ToggleStarter", true, false) as Button
-	if add_card != null:
-		D.primary_button(add_card)
-	start_button.add_theme_font_size_override("font_size", 22)
-	_restore_focus.call_deferred(focus_name)
+
+func _summary_heading(caption: String) -> void:
+	PAGE.text(_summary, caption, 13).modulate = GOLD
+
+
+func open_window(key: String) -> void:
+	if key not in _socles or not _modal.is_empty():
+		return
+	_modal = key
+	_hero_art.position.x = -64
+	_hero_socle.position.x = -52
+	_origin = "Socle_" + key
+	for control in _main.find_children("*", "Control", true, false):
+		if control.focus_mode != Control.FOCUS_NONE:
+			_main_focus[control] = control.focus_mode
+			control.focus_mode = Control.FOCUS_NONE
+	_overlay.show()
+	_render()
+	_restore_focus.call_deferred("ClosePreparation")
+
+
+func close_window() -> void:
+	if _show_deck_help:
+		return
+	_modal = ""
+	_hero_art.position.x = 294
+	_hero_socle.position.x = 306
+	_overlay.hide()
+	_clear(_page)
+	for control in _main_focus:
+		if is_instance_valid(control):
+			control.focus_mode = _main_focus[control]
+	_main_focus.clear()
+	_refresh_summary()
+	_restore_focus.call_deferred(_origin)
 
 
 func go_back() -> void:
-	if step == 0:
-		back_requested.emit()
+	if _show_deck_help:
+		_close_deck_help()
+	elif not _modal.is_empty():
+		close_window()
 	else:
-		step -= 1
-		_render()
+		emit_signal.call_deferred("back_requested")
+
+
+func _input(event: InputEvent) -> void:
+	if not _modal.is_empty() and event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		go_back()
+
+
+func _render() -> void:
+	_refresh_summary()
+	if _modal.is_empty():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	var focus_name := str(focused.name) if focused != null and _panel.is_ancestor_of(focused) else "ClosePreparation"
+	_clear(_page)
+	_panel.size = Vector2.ZERO
+	var rect: Rect2 = {
+		"class": Rect2(330, 120, 1040, 575),
+		"deck": Rect2(370, 136, 1040, 615),
+		"elements": Rect2(420, 155, 940, 520),
+		"difficulty": Rect2(620, 230, 725, 360),
+	}[_modal]
+	_panel.position = rect.position
+	_panel.size = rect.size
+	find_child("WindowTitle", true, false).text = {
+		"class": "CHOISIR UNE CLASSE",
+		"deck": "COMPOSER LE DECK",
+		"elements": "MAÎTRISES ÉLÉMENTAIRES",
+		"difficulty": "DIFFICULTÉ",
+	}[_modal]
+	find_child("PreparationCounter", true, false).text = (
+		"%d / 15 cartes"
+		% selection \
+				.card_families \
+				.size()
+		if _modal == "deck"
+		else "Vos choix sont conservés à la fermeture."
+	)
+	match _modal:
+		"class":
+			_render_classes()
+		"deck":
+			_render_cards()
+		"elements":
+			_render_initial_masteries(_scroll_body(_page, "ElementsScroll"))
+		"difficulty":
+			_render_difficulty()
+	for button in _page.find_children("*", "Button", true, false):
+		D.button(button, button.button_pressed)
+		button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	for button in _page.find_children("Starter_*", "Button", true, false):
+		button.add_theme_stylebox_override("normal", CardSkin.frame(button.button_pressed))
+		button.add_theme_stylebox_override("hover", CardSkin.frame(true))
+		button.add_theme_stylebox_override("pressed", CardSkin.frame(true))
+		button.add_theme_stylebox_override("hover_pressed", CardSkin.frame(true))
+	var add_card := find_child("ToggleStarter", true, false) as Button
+	if add_card != null:
+		SanctuarySkin.primary(add_card)
+	_restore_focus.call_deferred(focus_name)
+	_trap_focus.call_deferred()
+	_layout_window.call_deferred()
+
+
+func _layout_window() -> void:
+	var header := _panel.get_node("WindowHeader") as Control
+	header.position = Vector2(22, 16)
+	header.size = Vector2(_panel.size.x - 44, 44)
+	_page.position = Vector2(22, 76)
+	_page.size = Vector2(_panel.size.x - 44, _panel.size.y - 142)
+	var footer := _panel.get_node("WindowFooter") as Control
+	var divider := _panel.get_node("WindowRule") as Control
+	divider.position = Vector2(30, 63)
+	divider.size = Vector2(_panel.size.x - 60, 6)
+	divider.queue_redraw()
+	footer.position = Vector2(22, _panel.size.y - 56)
+	footer.size = Vector2(_panel.size.x - 44, 46)
+
+
+func _trap_focus() -> void:
+	var controls: Array[Control] = []
+	var scope: Control = _help_overlay if _show_deck_help else _panel
+	for control in scope.find_children("*", "Control", true, false):
+		if (
+			control.is_visible_in_tree() and control.focus_mode != Control.FOCUS_NONE
+			and not (control is BaseButton and control.disabled)
+		):
+			controls.append(control)
+	for i in controls.size():
+		var previous := controls[posmod(i - 1, controls.size())]
+		var next := controls[(i + 1) % controls.size()]
+		controls[i].focus_previous = controls[i].get_path_to(previous)
+		controls[i].focus_next = controls[i].get_path_to(next)
 
 
 func _restore_focus(node_name: String) -> void:
-	if node_name.is_empty():
-		return
 	var control := find_child(node_name, true, false) as Control
-	if control != null and not (control is BaseButton and control.disabled):
+	if (
+		control != null and control.is_visible_in_tree()
+		and control.focus_mode != Control.FOCUS_NONE
+		and not (control is BaseButton and control.disabled)
+	):
 		control.grab_focus()
-	else:
-		find_child("SetupBack", true, false).grab_focus()
+	elif _show_deck_help:
+		find_child("CloseDeckHelp", true, false).grab_focus()
+	elif not _modal.is_empty():
+		find_child("ClosePreparation", true, false).grab_focus()
+
+
+func _clear(parent: Node) -> void:
+	for child in parent.get_children():
+		parent.remove_child(child)
+		child.queue_free()
+
+
+func _window_style() -> StyleBoxTexture:
+	return SanctuarySkin.frame()
+
+
+func _surface(parent: Node, node_name: String, rect: Rect2) -> Panel:
+	var panel := Panel.new()
+	panel.name = node_name
+	parent.add_child(panel)
+	panel.position = rect.position
+	panel.size = rect.size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", Art._style(Color("08191ed9"), Color("9e8358")))
+	return panel
+
+
+func _fixed_action(
+	parent: Node,
+	caption: String,
+	node_name: String,
+	rect: Rect2,
+	primary := false,
+) -> Button:
+	var button := Button.new()
+	parent.add_child(button)
+	button.name = node_name
+	button.text = caption
+	button.position = rect.position
+	button.size = rect.size
+	button.set_meta("classic_presentation", &"primary" if primary else &"navigation")
+	button.add_theme_font_override("font", HEADING)
+	button.add_theme_font_size_override("font_size", 24 if primary else 17)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	Art.style_button(button)
+	return button
+
+
+func _label(
+	parent: Node,
+	caption: String,
+	rect: Rect2,
+	font_size: int,
+	color: Color,
+	centered := false,
+) -> Label:
+	var label := Label.new()
+	parent.add_child(label)
+	label.text = caption
+	label.position = rect.position
+	label.size = rect.size
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if centered else HORIZONTAL_ALIGNMENT_LEFT
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
+
+
+func _image(parent: Node, texture: Texture2D, rect: Rect2) -> TextureRect:
+	var image := TextureRect.new()
+	parent.add_child(image)
+	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	image.texture = texture
+	image.position = rect.position
+	image.size = rect.size
+	image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	image.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	return image
 
 
 func _render_classes() -> void:
@@ -368,6 +563,7 @@ func _scroll_body(parent: Control, node_name := "Details") -> VBoxContainer:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
 	parent.add_child(scroll)
 	var body := VBoxContainer.new()
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -377,67 +573,110 @@ func _scroll_body(parent: Control, node_name := "Details") -> VBoxContainer:
 
 
 func _render_cards() -> void:
-	PAGE.text(_page, "Composer votre deck", 27)
-	PAGE.text(
-		_page,
-		"15 cartes au départ · 3 exemplaires maximum du même sort. Une carte jouée est consommée pour toute la run.",
-		15,
-	)
-	var help_toggle := _action(_page, "Comprendre les cartes et les sorts", "DeckHelpToggle")
-	help_toggle.pressed.connect(_open_deck_help)
 	var columns := HBoxContainer.new()
-	columns.add_theme_constant_override("separation", 14)
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	columns.add_theme_constant_override("separation", 20)
 	_page.add_child(columns)
-	var list := _scroll_body(columns, "StarterCatalogue")
+	var hint := HBoxContainer.new()
+	_page.add_child(hint)
+	var rule := PAGE.text(
+		hint,
+		"15 cartes · 3 exemplaires par sort. Une carte jouée est consommée pour la traversée.",
+		14,
+	)
+	rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_action(hint, "Aide", "DeckHelpToggle").pressed.connect(_open_deck_help)
+	var scroll := ScrollContainer.new()
+	scroll.name = "StarterCatalogue"
+	scroll.custom_minimum_size.x = 566
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	columns.add_child(scroll)
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 12)
+	scroll.add_child(grid)
 	var pool := Catalog.starter_pool(selection.class_id)
 	if _inspected not in pool:
 		_inspected = pool[0]
-	for id in pool:
-		var spell := Catalog.make_spell(id, 2)
+	var ordered: Array[String] = []
+	for affinity in [selection.class_id, "shared"]:
+		for id in pool:
+			if Catalog.Rules.card(id).affinity == affinity:
+				ordered.append(id)
+	for id in ordered:
+		var row := Catalog.Rules.card(id)
+		var spell := Catalog.make_spell(id)
 		var button := Button.new()
 		button.name = "Starter_" + id
-		button.text = ("%d × " % selection.card_families.count(id)) + spell.spell_name + "\n%d PA  ·  %s  ·  %s" % [
-			spell.ap_cost,
-			_range(spell),
-			Language.role(Catalog.Rules.card(id)),
-		]
-		button.icon = spell.icon
-		button.expand_icon = true
-		button.add_theme_constant_override("icon_max_width", 42)
-		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		button.custom_minimum_size = Vector2(225, 72)
+		button.custom_minimum_size = Vector2(176, 200)
 		button.toggle_mode = true
 		button.button_pressed = _inspected == id
-		button.tooltip_text = "%d carte(s) préparée(s), maximum 3." % selection.card_families.count(
-			id
+		button.tooltip_text = spell.spell_name + "\n" + Readability.category(id) + "\n" + Language.effect(
+			row,
+			float(Readability.Math.Progression.POWER[0]),
+			_preview_cards(),
 		)
-		CardSkin.icon_button(button, _accent())
+		grid.add_child(button)
+		_image(button, spell.icon, Rect2(17, 26, 142, 96))
+		var medallion := Panel.new()
+		medallion.position = Vector2(8, 7)
+		medallion.size = Vector2(32, 32)
+		medallion.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var metal := Art._style(Color("dfbd77"), Color("765933"), 2)
+		metal.set_corner_radius_all(16)
+		medallion.add_theme_stylebox_override("panel", metal)
+		button.add_child(medallion)
+		_label(medallion, str(spell.ap_cost), Rect2(0, 0, 32, 32), 23, Color("1a201d"), true).add_theme_font_override(
+			"font",
+			HEADING,
+		)
+		_label(button, "◆", Rect2(142, 8, 24, 24), 17, GOLD, true)
+		var title := _label(button, spell.spell_name, Rect2(12, 124, 152, 37), 16, Art.TEXT, true)
+		title.add_theme_font_override("font", HEADING)
+		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_label(button, _range(spell), Rect2(8, 161, 160, 18), 12, GOLD, true)
+		_label(
+			button,
+			"%d / 3" % selection.card_families.count(id),
+			Rect2(8, 179, 83, 21),
+			17,
+			Art.TEXT,
+			true,
+		).add_theme_font_override("font", HEADING)
+		_label(
+			button,
+			"Commune" if row.affinity == "shared" else "Classe",
+			Rect2(89, 181, 80, 18),
+			12,
+			Art.MUTED,
+			true,
+		)
 		button.pressed.connect(
 			func():
 				_inspected = id
+				_show_scaling = false
 				_render(),
 		)
-		list.add_child(button)
 	var inspection := VBoxContainer.new()
-	inspection.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspection.add_theme_constant_override("separation", 10)
+	inspection.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(inspection)
 	var detail := _scroll_body(inspection, "ChoiceImpact")
-	var selected_spell := Catalog.make_spell(_inspected, 2)
-	var detail_header := HBoxContainer.new()
-	detail_header.add_theme_constant_override("separation", 12)
-	detail.add_child(detail_header)
-	_art(detail_header, selected_spell.icon, 74)
-	var detail_titles := VBoxContainer.new()
-	detail_titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail_header.add_child(detail_titles)
-	var category := PAGE.text(detail_titles, Readability.category(_inspected), 13)
+	var selected_spell := Catalog.make_spell(_inspected)
+	var category := PAGE.text(detail, Readability.category(_inspected), 15)
 	category.name = "StarterCategory"
 	category.modulate = GOLD
-	PAGE.text(detail_titles, selected_spell.spell_name, 23)
-	PAGE.text(detail, "%d PA  ·  %s" % [selected_spell.ap_cost, _range(selected_spell)], 18)
+	var heading := HBoxContainer.new()
+	detail.add_child(heading)
+	_art(heading, selected_spell.icon, 60)
+	PAGE.text(heading, selected_spell.spell_name, 24).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	PAGE.text(detail, "%d PA · %s" % [selected_spell.ap_cost, _range(selected_spell)], 19)
 	var selected_row := Catalog.Rules.card(_inspected)
+	Symbols.element_strip(detail, selected_row)
 	PAGE.text(detail, Language.identity(selected_row), 15).modulate = GOLD
 	PAGE.text(
 		detail,
@@ -446,54 +685,79 @@ func _render_cards() -> void:
 			float(Readability.Math.Progression.POWER[0]),
 			_preview_cards(),
 		),
-		17,
+		19,
 	)
-	var scaling_toggle := _action(
+	var scaling := _action(
 		detail,
-		"Lien avec la Puissance  " + ("−" if _show_scaling else "+"),
+		"Lien avec la Puissance " + ("−" if _show_scaling else "+"),
 		"CardScalingToggle",
 	)
-	scaling_toggle.pressed.connect(
+	scaling.pressed.connect(
 		func():
 			_show_scaling = not _show_scaling
 			_render(),
 	)
 	if _show_scaling:
-		var formula := PAGE.text(detail, Language.scaling(selected_row), 15)
-		formula.name = "CardPowerDetails"
-		_reveal_detail(formula)
-	PAGE.text(detail, Readability.power_help(), 15).modulate = GOLD
-	var toggle := Button.new()
-	toggle.name = "ToggleStarter"
-	var included: bool = _inspected in selection.card_families
-	toggle.text = "Ajouter une carte (%d / 3)" % selection.card_families.count(_inspected)
-	toggle.custom_minimum_size.y = 46
-	toggle.disabled = selection.card_families.size() >= 15 or selection.card_families.count(
-			_inspected
-		) >= 3
-	CardSkin.icon_button(toggle, _accent())
-	toggle.pressed.connect(
+		PAGE.text(detail, Language.scaling(selected_row), 16).name = "CardPowerDetails"
+	PAGE.text(detail, "Valeurs au départ, avant protections et bonus conditionnels.", 14)
+	var add := _action(
+		inspection,
+		"Ajouter un exemplaire (%d / 3)" % selection.card_families.count(_inspected),
+		"ToggleStarter",
+	)
+	add.disabled = selection.card_families.size() >= 15 or selection.card_families.count(_inspected) >= 3
+	add.pressed.connect(
 		func():
-			if selection.card_families.size() < 15 and selection.card_families.count(_inspected) < 3:
+			if (
+				selection.card_families.size() < 15 and selection.card_families.count(_inspected) < 3
+				and _inspected in Catalog.starter_pool(selection.class_id)
+			):
 				selection.card_families.append(_inspected)
 			_render(),
 	)
-	inspection.add_child(toggle)
-	var remove := _action(inspection, "Retirer une carte", "RemoveStarter")
-	remove.disabled = not included
+	var remove := _action(inspection, "Retirer un exemplaire", "RemoveStarter")
+	remove.disabled = _inspected not in selection.card_families
 	remove.pressed.connect(
 		func():
 			selection.card_families.erase(_inspected)
 			_render(),
 	)
-	if not included and selection.card_families.size() >= 15:
-		PAGE.text(inspection, "Deck complet : retirez une carte avant d'en ajouter une autre.", 14)
-	PAGE.text(
-		detail,
-		"Valeurs au départ, avant les protections de la cible et les bonus conditionnels.",
-		13,
+	if selection.card_families.size() >= 15:
+		PAGE \
+				.text(
+			inspection,
+			"Deck complet : retirez un exemplaire avant d'en ajouter un autre.",
+			15,
+		) \
+				.modulate = GOLD
+
+
+func _render_difficulty() -> void:
+	var page := PAGE.new()
+	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_page.add_child(page)
+	page.configure(
+		"",
+		"Choisissez la résistance de votre traversée.",
+		[
+			{
+				"id": "normal",
+				"title": "Normale",
+				"impact": "Ennemis à leur puissance habituelle. Soin au refuge : 30 %.",
+			},
+			{
+				"id": "easy",
+				"title": "Facile",
+				"impact": "Ennemis : −10 % PV et −20 % dégâts. Soin au refuge : 40 % au lieu de 30 %.",
+			},
+		],
+		difficulty,
 	)
-	PAGE.text(_page, Readability.deck_text(selection.card_families), 14).modulate = GOLD
+	page.chosen.connect(
+		func(id):
+			difficulty = id
+			_render(),
+	)
 
 
 func _range(spell: Spell) -> String:
@@ -501,72 +765,6 @@ func _range(spell: Spell) -> String:
 		"sur soi"
 		if spell.spell_range == 0
 		else "portée %d–%d" % [spell.minimum_range, spell.spell_range]
-	)
-
-
-func _deck_titles() -> String:
-	var titles: PackedStringArray = []
-	var seen := { }
-	for id in selection.card_families:
-		if seen.has(id):
-			continue
-		seen[id] = true
-		titles.append("%d × %s" % [selection.card_families.count(id), Catalog.row(id)[2]])
-	return "  /  ".join(titles)
-
-
-func _render_review() -> void:
-	PAGE.text(_page, "Prêt pour la descente", 27)
-	var body := _scroll_body(_page, "ChoiceImpact")
-	_render_initial_masteries(body)
-	PAGE.text(body, "%s · %s" % [entries[hero].display_name, Catalog.CLASSES[selection.class_id][0]], 23).modulate = _accent()
-	PAGE.text(
-		body,
-		"Difficulté %s · 15 cartes · 5 en main"
-		% ("normale" if difficulty == "normal" else "facile"),
-		17,
-	)
-	PAGE.text(
-		body,
-		Readability.stats_text() + "\nSans équipement · 2 actions de secours hors deck",
-		17,
-	)
-	PAGE.text(body, Readability.deck_text(selection.card_families), 16).modulate = GOLD
-	PAGE.text(body, "Cliquez un sort pour modifier ses cartes.", 14)
-	var counts := Readability.counts(selection.card_families)
-	for id in counts:
-		var spell := Catalog.make_spell(id, 2)
-		var button := _action(
-			body,
-			"%d × %s  ·  %d PA  ·  %s"
-			% [counts[id], spell.spell_name, spell.ap_cost, _range(spell)],
-			"ReviewFamily_" + str(id),
-		)
-		button.icon = spell.icon
-		button.expand_icon = true
-		button.add_theme_constant_override("icon_max_width", 42)
-		button.custom_minimum_size.y = 52
-		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		button.tooltip_text = Readability.category(id) + "\n" + Language.effect(
-			Catalog.Rules.card(id),
-			float(Readability.Math.Progression.POWER[0]),
-			_preview_cards(),
-		)
-		button.pressed.connect(
-			func():
-				_inspected = id
-				step = 2
-				_render(),
-		)
-	PAGE.text(
-		body,
-		"Votre deck est prêt. Il sera utilisé dès le premier combat, sans nouvelle sélection au seuil.",
-		18,
-	)
-	PAGE.text(
-		body,
-		"Pendant la run, les cartes tombent avec les objets et rejoignent votre réserve. Adaptez votre deck entre les combats.",
-		15,
 	)
 
 
@@ -582,7 +780,7 @@ func _render_initial_masteries(parent: Node) -> void:
 	var rules = preload("res://core/expedition/consumable_progression_v1.gd")
 	if not selection.has("masteries"):
 		selection.masteries = rules.empty_elements()
-	PAGE.text(parent, "Prototype v1 · 4 points élémentaires de départ", 21).modulate = GOLD
+	PAGE.text(parent, "4 points de départ · +3 % de maîtrise par point", 21).modulate = GOLD
 	var remaining := PAGE.text(
 		parent,
 		"%d point(s) restant(s)" % (4 - rules.spent(selection.masteries)),
@@ -598,7 +796,9 @@ func _render_initial_masteries(parent: Node) -> void:
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_theme_constant_override("separation", 12)
 		grid.add_child(row)
-		var label := PAGE.text(row, str(rules.ELEMENT_NAMES[id]), 16)
+		_art(row, Symbols.icon(id), 34)
+		var label := PAGE.text(row, str(rules.ELEMENT_NAMES[id]), 18)
+		label.modulate = Symbols.color(id)
 		label.autowrap_mode = TextServer.AUTOWRAP_OFF
 		label.custom_minimum_size.x = 80
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -617,7 +817,8 @@ func _render_initial_masteries(parent: Node) -> void:
 				remaining.text = "%d point(s) restant(s) · +3 %% de maîtrise par point" % (
 					4 - rules.spent(selection.masteries)
 				)
-				_refresh_mastery_preview(),
+				_refresh_mastery_preview()
+				_refresh_summary(),
 		)
 	var basic := Catalog.Spells.definition("fallback_strike", false, selection.class_id)
 	var label := PAGE.text(
@@ -645,128 +846,6 @@ func _refresh_mastery_preview() -> void:
 			power,
 			cards,
 		)
-	for id in Readability.counts(selection.card_families):
-		var button := find_child("ReviewFamily_" + str(id), true, false) as Button
-		if button != null:
-			button.tooltip_text = Readability.category(id) + "\n" + Language.effect(
-				Catalog.Rules.card(id),
-				power,
-				cards,
-			)
-
-
-func _render_choice() -> void:
-	if step == 0:
-		_render_appearances()
-		return
-	var options: Array = []
-	var current := str(hero) if step == 0 else difficulty
-	if step == 0:
-		for index in entries.size():
-			options.append(
-				{
-					"id": str(index),
-					"title": entries[index].display_name,
-					"impact": entries[index].appearance,
-					"details": "Cette apparence vous suit en combat, quelle que soit votre classe.",
-				}
-			)
-	else:
-		options = [
-			{ "id": "normal", "title": "Normale", "impact": "Ennemis à leur puissance habituelle." },
-			{
-				"id": "easy",
-				"title": "Facile",
-				"impact": "Ennemis : −10 % PV et −20 % dégâts. Soin au refuge : 40 % au lieu de 30 %.",
-			},
-		]
-	var page := PAGE.new()
-	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_page.add_child(page)
-	page.configure(
-		STEPS[step],
-		"Choisissez votre apparence." if step == 0 else "Choisissez la résistance de votre traversée.",
-		options,
-		current,
-	)
-	page.chosen.connect(
-		func(id):
-			if step == 0:
-				hero = int(id)
-				_update_hero()
-			else:
-				difficulty = id
-			_render(),
-	)
-
-
-func _render_appearances() -> void:
-	PAGE.text(_page, "Qui franchira le seuil ?", 29).add_theme_font_override("font", HEADING)
-	PAGE.text(
-		_page,
-		"Trois apparences pour votre héros. Choisissez ensuite sa classe et ses cartes.",
-		17,
-	)
-	var body := _scroll_body(_page, "ChoiceImpact")
-	var roster := HBoxContainer.new()
-	roster.add_theme_constant_override("separation", 12)
-	body.add_child(roster)
-	for index in entries.size():
-		var button := Button.new()
-		button.name = "Choice_%d" % index
-		button.custom_minimum_size.y = 212
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.toggle_mode = true
-		button.button_pressed = index == hero
-		button.tooltip_text = str(entries[index].appearance)
-		CardSkin.icon_button(button, GOLD)
-		roster.add_child(button)
-		var contents := VBoxContainer.new()
-		button.add_child(contents)
-		contents.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		contents.offset_left = 10
-		contents.offset_right = -10
-		contents.offset_top = 10
-		contents.offset_bottom = -10
-		contents.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var unit: UnitData = entries[index].unit
-		var portrait: Texture2D = unit.portrait_texture_override
-		if portrait == null and unit.preview_sprite_frames != null:
-			var frames := unit.preview_sprite_frames
-			if frames.has_animation(unit.preview_sprite_animation):
-				portrait = frames.get_frame_texture(unit.preview_sprite_animation, 0)
-		if portrait == null:
-			portrait = load(
-				"res://asset/ui/character_selection/portraits/achilles_illustrated_v2.png"
-			)
-		var art := _art(contents, portrait, 120)
-		art.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		var title := PAGE.text(contents, str(entries[index].display_name), 17)
-		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var tag := PAGE.text(contents, "SÉLECTIONNÉ" if hero == index else "APPARENCE", 12)
-		tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		tag.modulate = GOLD if hero == index else Color("a3b7ac")
-		tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		button.pressed.connect(
-			func():
-				hero = index
-				_update_hero()
-				_render(),
-		)
-	PAGE.text(body, entries[hero].display_name, 25).modulate = GOLD
-	PAGE.text(
-		body,
-		"Traversez les Enfers avec %s. Vos premiers combats vous apporteront l'équipement et les cartes qui feront évoluer votre façon de jouer."
-		% entries[hero].display_name,
-		17,
-	)
-	PAGE.text(body, "LIBRE DE CHOISIR VOTRE CLASSE", 13).modulate = GOLD
-	PAGE.text(
-		body,
-		"Assassin, Gardien, Arpenteur ou Thaumaturge : chaque apparence peut suivre chacune de ces voies. Ce choix visuel ne modifie pas vos statistiques.",
-		16,
-	)
 
 
 func _action(parent: Control, title: String, node_name: String) -> Button:
@@ -791,68 +870,64 @@ func _art(parent: Control, texture: Texture2D, side: int) -> TextureRect:
 	return art
 
 
-func _rotate(direction: int) -> void:
-	_facing = posmod(_facing + direction, 4)
-	_play_pose()
-
-
-func _clip(pose: String) -> StringName:
-	if _preview.is_using_sprite_preview():
-		return StringName(pose + "_" + ["N", "E", "S", "W"][_facing])
-	var unit: UnitData = entries[hero].unit
-	if unit.animation_set != null:
-		var action := CharacterVisual3D.ACTION_IDLE
-		if pose == "walk":
-			action = CharacterVisual3D.ACTION_WALK
-		elif pose == "attack":
-			action = CharacterVisual3D.ACTION_CAST
-		return unit.animation_set.get_animation_name(action)
-	return &""
-
-
-func _play_pose() -> void:
-	if not _preview.is_using_sprite_preview():
-		var visual := _preview.get_visual_instance()
-		if visual != null:
-			visual.rotation_degrees.y = (_facing - 1) * 90.0
-	if not _preview.has_clip(_clip(_pose)):
-		_pose = "idle"
-	if _preview.has_clip(_clip(_pose)):
-		_preview.play_clip(_clip(_pose))
-	for index in _pose_buttons.size():
-		var pose: String = ["idle", "walk", "attack"][index]
-		_pose_buttons[index].disabled = not _preview.has_clip(_clip(pose))
-		_pose_buttons[index].set_pressed_no_signal(_pose == pose)
-
-
 func _open_deck_help() -> void:
+	if _show_deck_help:
+		return
 	_show_deck_help = true
-	var dialog := AcceptDialog.new()
-	dialog.name = "DeckHelpDialog"
-	dialog.title = "Comprendre votre deck"
-	dialog.dialog_text = Language.DECK_HELP + "\n\nLes cartes non jouées reviennent dans la pioche.\n\nLa classe donne votre bonus et vos cartes de départ.\nLes cartes communes servent à toutes les classes.\n\nLes rôles indiquent à quoi sert un sort : attaquer, protéger,\ndéplacer ou contrôler. Feu, eau et givre peuvent transformer le terrain."
-	dialog.ok_button_text = "Compris · revenir aux cartes"
-	dialog.get_label().autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dialog.get_label().custom_minimum_size.x = 530
-	dialog.get_label().add_theme_font_size_override("font_size", 18)
-	dialog.confirmed.connect(
-		func():
-			_show_deck_help = false
-			dialog.queue_free(),
+	for control in _panel.find_children("*", "Control", true, false):
+		if control.focus_mode != Control.FOCUS_NONE:
+			_help_focus[control] = control.focus_mode
+			control.focus_mode = Control.FOCUS_NONE
+	_help_overlay = Control.new()
+	_help_overlay.name = "DeckHelpDialog"
+	_help_overlay.size = Vector2(1440, 810)
+	add_child(_help_overlay)
+	var shade := ColorRect.new()
+	shade.size = _help_overlay.size
+	shade.color = Color(0, 0, 0, .3)
+	_help_overlay.add_child(shade)
+	var panel := _surface(_help_overlay, "DeckHelpPanel", Rect2(470, 135, 750, 540))
+	panel.add_theme_stylebox_override("panel", Art._style(Color("10191c"), Color("9e8358")))
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_label(panel, "COMPRENDRE VOTRE DECK", Rect2(24, 20, 702, 38), 24, GOLD).add_theme_font_override(
+		"font",
+		HEADING,
 	)
-	dialog.canceled.connect(
-		func():
-			_show_deck_help = false
-			dialog.queue_free(),
+	var body := Control.new()
+	body.position = Vector2(24, 75)
+	body.size = Vector2(702, 375)
+	panel.add_child(body)
+	var scroll := ScrollContainer.new()
+	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	body.add_child(scroll)
+	var text := PAGE.text(
+		scroll,
+		Language.DECK_HELP
+		+ "\n\nLes cartes non jouées reviennent dans la pioche.\n\nLa classe donne votre bonus et vos cartes de départ. Les cartes communes servent à toutes les classes.\n\nLes rôles indiquent à quoi sert un sort : attaquer, protéger, déplacer ou contrôler. Feu, eau et givre peuvent transformer le terrain.",
+		20,
 	)
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(580, 390))
-	dialog.get_ok_button().grab_focus()
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var close := _fixed_action(
+		panel,
+		"Compris · revenir au deck",
+		"CloseDeckHelp",
+		Rect2(185, 470, 380, 46),
+		true,
+	)
+	close.add_theme_font_size_override("font_size", 18)
+	close.pressed.connect(_close_deck_help)
+	close.grab_focus.call_deferred()
+	_trap_focus.call_deferred()
 
 
-func _reveal_detail(control: Control) -> void:
-	await get_tree().process_frame
-	if is_instance_valid(control):
-		var scroll := control.get_parent().get_parent() as ScrollContainer
-		if scroll != null:
-			scroll.ensure_control_visible(control)
+func _close_deck_help() -> void:
+	_show_deck_help = false
+	remove_child(_help_overlay)
+	_help_overlay.queue_free()
+	for control in _help_focus:
+		if is_instance_valid(control):
+			control.focus_mode = _help_focus[control]
+	_help_focus.clear()
+	_restore_focus.call_deferred("DeckHelpToggle")
+	_trap_focus.call_deferred()
