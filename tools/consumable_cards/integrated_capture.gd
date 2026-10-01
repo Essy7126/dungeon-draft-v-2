@@ -25,7 +25,10 @@ class Manager:
 
 
 func _ready() -> void:
-	get_tree().create_timer(60).timeout.connect(func(): get_tree().quit(3))
+	get_tree().create_timer(60).timeout.connect(
+		func():
+			get_tree().quit(3),
+	)
 	_run.call_deferred()
 
 
@@ -44,18 +47,18 @@ func _run() -> void:
 	scene = load(GameManager.CHARACTER_SELECTION_SCREEN_PATH).instantiate()
 	add_child(scene)
 	scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	scene._cards_setup.step = 2
-	scene._cards_setup.reached = 4
-	scene._cards_setup._render()
+	scene._cards_setup.open_window("deck")
 	await capture("01_selection_cartes")
-	scene._cards_setup.step = 4
-	scene._cards_setup._render()
+	scene._cards_setup.close_window()
+	scene._cards_setup.open_window("elements")
 	var sun = scene.find_child("DepartureMastery_sun", true, false)
 	check(sun != null, "departure exposes initial allocation")
-	if sun != null: sun.value = 4
+	if sun != null:
+		sun.value = 4
 	await get_tree().process_frame
 	for allocation in scene.find_children("DepartureMastery_*", "SpinBox", true, false):
 		check(allocation.size.y < 70, "departure allocation rows stay compact")
+	scene._cards_setup.close_window()
 	await capture("02_depart")
 	var manager := Manager.new()
 	add_child(manager)
@@ -101,7 +104,10 @@ func _run() -> void:
 		if not scene._spell_resolution_pending:
 			break
 	check(opening in GameManager.expedition.cards.consumed, "real cast consumes copy")
-	check(GameManager.expedition.character.unit.current_shield == 8, "sun mastery scales the real guard cast at 16 power")
+	check(
+		GameManager.expedition.character.unit.current_shield == 8,
+		"sun mastery scales the real guard cast at 16 power",
+	)
 	await capture("04_combat_carte_consommee")
 	clear_scene()
 	# UI fixture for the postcombat windows, not a victory or balance simulation.

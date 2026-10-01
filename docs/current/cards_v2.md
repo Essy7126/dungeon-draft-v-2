@@ -1,8 +1,16 @@
 # Cartes — Prototype v1 dans Catabase
 
 Choisir **Cartes** au menu, puis **Nouvelle partie**. La galerie existante permet
-de choisir l'apparence, la classe, quinze copies normales, la difficulté et quatre
-points élémentaires sur l'écran de récapitulatif.
+de choisir l'apparence et de préparer la traversée depuis quatre socles libres :
+**Classe**, **Deck**, **Éléments** et **Difficulté**. Chaque socle ouvre une fenêtre
+superposée ; une synthèse Cartes reste à droite du personnage illustré.
+Préparer quinze copies normales et répartir jusqu'à quatre points élémentaires,
+puis **Franchir le seuil**. Les compositions personnalisées sont conservées par
+classe durant la préparation ; fermer ou confirmer une fenêtre conserve ses choix.
+Échap ferme d'abord l'aide, puis la préparation et restitue le focus au socle.
+La préparation reprend la composition de la référence avec ses socles peints,
+son personnage illustré, ses cadres et son bouton bronze. Les illustrations
+et cadres des cartes conservent leurs assets d'origine ; la synthèse reste à droite.
 Le parcours suit ensuite la cinématique, le Seuil des Ombres, les combats et
 les haltes de Catabase. Il n'existe plus de troisième variante publique.
 
@@ -128,6 +136,12 @@ après rechargement ; alterner deux objets ne procure pas de soin gratuit.
 `test_consumable_cards_integration.gd` : seuil réel, session, vingt étapes,
 compatibilité et scène Battle avec consommation/reprise. La suite `all` et les
 gates CI restent obligatoires pour les changements du moteur commun.
+
+`./tools/character_selection/verify_cards_preparation.ps1` exerce la sélection
+publique à la souris et au clavier, les quatre fenêtres, le deck, les maîtrises
+et le transfert de préparation. Il capture Cartes et Classique en 1280×720 et
+1920×1080, avec un rendu réel et des données utilisateur isolées. Les captures
+doivent aussi être inspectées visuellement.
 
 `./tools/consumable_cards/verify_integration.ps1` vérifie le départ public,
 joue une carte dans la vraie Battle puis capture les fenêtres existantes en
