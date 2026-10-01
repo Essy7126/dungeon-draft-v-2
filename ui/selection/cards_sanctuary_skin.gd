@@ -1,7 +1,7 @@
 extends RefCounted
 ## Painted presentation confined to Cards preparation. No gameplay definitions.
-const FRAME := preload("res://assets/catabase/cards_drawn_v1/card_frame.png")
-const PLATE := preload("res://assets/catabase/cards_sanctuary_v2/action_plate.png")
+const FRAME := preload("res://assets/catabase/cards_sanctuary_v2/quiet_panel.svg")
+const PLATE := FRAME
 const DAIS := preload("res://assets/catabase/cards_sanctuary_v2/hero_dais.png")
 const PROPS := {
 	"class": preload("res://assets/catabase/cards_sanctuary_v2/class_seal.png"),
@@ -74,30 +74,30 @@ static func frame(accent := Color.WHITE) -> StyleBoxTexture:
 	var style := StyleBoxTexture.new()
 	if _frame == null:
 		var image := FRAME.get_image()
-		image.resize(192, 288, Image.INTERPOLATE_LANCZOS)
+		image.resize(128, 128, Image.INTERPOLATE_LANCZOS)
 		_frame = ImageTexture.create_from_image(image)
 	style.texture = _frame
 	style.modulate_color = accent
 	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
-		style.set_texture_margin(side, 24)
+		style.set_texture_margin(side, 8)
 		style.set_content_margin(side, 24)
 	return style
 
 
 static func primary(button: Button) -> void:
 	if _plate == null:
-		var image := crop(PLATE, Rect2(38, 152, 2096, 390)).get_image()
-		image.resize(512, 95, Image.INTERPOLATE_LANCZOS)
+		var image := PLATE.get_image()
+		image.resize(128, 128, Image.INTERPOLATE_LANCZOS)
 		_plate = ImageTexture.create_from_image(image)
 	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
 		var style := StyleBoxTexture.new()
 		style.texture = _plate
 		style.modulate_color = Color("fff2cf") if state == "hover" else Color("bcb4a4") if state == "disabled" else Color.WHITE
 		for side in [SIDE_LEFT, SIDE_RIGHT]:
-			style.set_texture_margin(side, 20)
+			style.set_texture_margin(side, 8)
 			style.set_content_margin(side, 12)
 		for side in [SIDE_TOP, SIDE_BOTTOM]:
-			style.set_texture_margin(side, 7)
+			style.set_texture_margin(side, 8)
 			style.set_content_margin(side, 6)
 		button.add_theme_stylebox_override(state, style)
 	button.add_theme_font_override("font", FONT)

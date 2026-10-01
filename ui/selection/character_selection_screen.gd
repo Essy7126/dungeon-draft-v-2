@@ -75,7 +75,11 @@ func _ready() -> void:
 	theme.default_font_size = 18
 	_entries = CATALOG.get_entries(include_archived_adventures)
 	if GameManager.selected_run_variant == "cards" and not include_archived_adventures:
-		var backdrop := BACKDROP.new()
+		var backdrop := TextureRect.new()
+		backdrop.texture = preload("res://assets/catabase/cards_sanctuary_v2/sanctuary_reference_v3.png")
+		backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(backdrop)
 		backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		_cards_setup = preload("res://ui/selection/cards_character_setup.gd").new()

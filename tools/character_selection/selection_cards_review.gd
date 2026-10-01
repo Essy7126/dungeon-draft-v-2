@@ -166,6 +166,42 @@ func _run() -> void:
 		await _capture("classic", dimensions, [classic.start_button, classic._hero_art])
 		classic.queue_free()
 		await _settle()
+	for dimensions in [Vector2i(1200, 896), Vector2i(1280, 800), Vector2i(2560, 1080)]:
+		DisplayServer.window_set_size(dimensions)
+		get_tree().root.size = dimensions
+		GameManager.selected_run_variant = "cards"
+		var screen = load("res://ui/selection/CharacterSelectionScreen.tscn").instantiate()
+		add_child(screen)
+		await _settle()
+		var setup = screen._cards_setup
+		await _capture("main", dimensions, [setup._summary, screen.start_button])
+		_check_summary(setup, dimensions)
+		var controls: Array[Control] = [
+			screen.start_button,
+			setup.find_child("CardsDepartureSummary", true, false),
+		]
+		controls.append_array(setup._portraits)
+		controls.append_array(setup._socles.values())
+		var viewport := Rect2(Vector2.ZERO, Vector2(dimensions))
+		for control in controls:
+			_check(
+				viewport.encloses(control.get_global_rect()),
+				"complete control fits " + str(control.name),
+				dimensions,
+			)
+			for other in controls:
+				if control != other:
+					_check(
+						not control.get_global_rect().intersects(other.get_global_rect()),
+						"controls do not overlap",
+						dimensions,
+					)
+		for key in setup._socles:
+			await _press(setup._socles[key])
+			_check_window(setup, dimensions)
+			await _press(screen.find_child("ClosePreparation", true, false))
+		screen.queue_free()
+		await _settle()
 	var passed: bool = _checks.all(
 		func(c):
 			return c.passed,
@@ -184,6 +220,13 @@ func _escape() -> void:
 	event.pressed = true
 	get_viewport().push_input(event)
 	await _settle()
+
+
+func _capture(label: String, dimensions: Vector2i, controls: Array) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = Vector2(2, 2)
+	get_viewport().push_input(motion)
+	await super._capture(label, dimensions, controls)
 
 
 func _check_window(setup, dimensions: Vector2i) -> void:

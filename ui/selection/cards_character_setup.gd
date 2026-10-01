@@ -56,12 +56,11 @@ func configure(value: Array[Dictionary]) -> void:
 	_main.size = Vector2(1440, 810)
 	_main.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_main)
-	_image(_main, Art.DECOR, Rect2(0, 0, 1440, 810)).stretch_mode = TextureRect.STRETCH_SCALE
-	_label(_main, "C A T A B A S E", Rect2(190, 18, 820, 34), 23, GOLD, true).add_theme_font_override(
+	_label(_main, "C A T A B A S E", Rect2(310, 15, 820, 34), 23, GOLD, true).add_theme_font_override(
 		"font",
 		HEADING,
 	)
-	_label(_main, "CARTES", Rect2(190, 52, 820, 25), 17, Art.TEXT, true).add_theme_font_override(
+	_label(_main, "CARTES", Rect2(310, 49, 820, 25), 17, Art.TEXT, true).add_theme_font_override(
 		"font",
 		HEADING,
 	)
@@ -75,12 +74,12 @@ func configure(value: Array[Dictionary]) -> void:
 			_main,
 			"",
 			"Choice_%d" % index,
-			Rect2(34, 162 + index * 92, 78, 82),
+			Rect2(100, 132 + index * 94, 74, 82),
 		)
 		button.set_meta("classic_presentation", &"roster")
 		button.toggle_mode = true
 		button.tooltip_text = str(entries[index].display_name)
-		_image(button, Art.illustration(entries[index].id, true), Rect2(5, 4, 68, 74))
+		_image(button, Art.illustration(entries[index].id, true), Rect2(4, 4, 66, 74))
 		button.pressed.connect(
 			func():
 				hero = index
@@ -88,21 +87,22 @@ func configure(value: Array[Dictionary]) -> void:
 				_refresh_summary(),
 		)
 		_portraits.append(button)
-	_hero_name = _label(_main, "", Rect2(190, 83, 820, 40), 37, Art.TEXT, true)
+	_hero_name = _label(_main, "", Rect2(310, 82, 820, 43), 37, Art.TEXT, true)
 	_hero_name.add_theme_font_override("font", HEADING)
-	SanctuarySkin.rule(_main, Rect2(443, 127, 314, 10))
+	SanctuarySkin.rule(_main, Rect2(575, 124, 290, 10))
 	_hero_socle = _image(_main, SanctuarySkin.platform(), Rect2(306, 623, 614, 137))
-	_hero_art = _image(_main, null, Rect2(294, 150, 638, 500))
+	_hero_socle.hide()
+	_hero_art = _image(_main, null, Rect2(326, 150, 638, 465))
 	_hero_art.name = "CardsHeroIllustration"
 	# Compatibility with the shared screen API, with no animated preview loading.
 	_preview = PREVIEW.instantiate()
 	add_child(_preview)
 	_preview.hide()
-	var folio := _surface(_main, "CardsDepartureSummary", Rect2(1055, 115, 349, 615))
+	var folio := _surface(_main, "CardsDepartureSummary", Rect2(1070, 112, 330, 570))
 	folio.add_theme_stylebox_override("panel", SanctuarySkin.frame())
 	_summary = VBoxContainer.new()
-	_summary.position = Vector2(23, 18)
-	_summary.size = Vector2(303, 579)
+	_summary.position = Vector2(18, 18)
+	_summary.size = Vector2(294, 534)
 	_summary.add_theme_constant_override("separation", 6)
 	folio.add_child(_summary)
 	for index in 4:
@@ -111,29 +111,31 @@ func configure(value: Array[Dictionary]) -> void:
 			_main,
 			"",
 			"Socle_" + key,
-			Rect2(166 + index * 218, [544, 560, 556, 546][index], 218, 184),
+			Rect2(232 + index * 204, 546, 198, 184),
 		)
 		var object := Socle.new()
 		object.kind = key
 		object.name = "Object"
 		object.size = Vector2(218, 153)
+		object.position.x = -10
 		button.add_child(object)
-		var state := _label(button, "", Rect2(0, 153, 218, 27), 18, Art.TEXT, true)
+		var state := _label(button, "", Rect2(0, 153, 198, 27), 16, Art.TEXT, true)
 		state.name = "ChoiceState"
 		state.add_theme_font_override("font", HEADING)
 		button.pressed.connect(open_window.bind(key))
 		_socles[key] = button
-	status = _label(_main, "", Rect2(1055, 739, 349, 65), 16, GOLD)
+	status = _label(_main, "", Rect2(1070, 695, 330, 85), 16, GOLD)
 	status.name = "CardsSetupStatus"
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	start_button = _fixed_action(
 		_main,
 		"FRANCHIR LE SEUIL",
 		"StartAdventure",
-		Rect2(385, 752, 430, 55),
+		Rect2(537, 734, 366, 52),
 		true,
 	)
 	SanctuarySkin.primary(start_button)
+	SanctuarySkin.rule(_main, Rect2(702, 781, 36, 10))
 	start_button.pressed.connect(
 		func():
 			if _modal.is_empty() and Catalog.valid_departure(payload()):
@@ -198,6 +200,12 @@ func _update_hero() -> void:
 	for index in _portraits.size():
 		_portraits[index].set_pressed_no_signal(index == hero)
 		Art.style_button(_portraits[index], index == hero)
+		if index == hero:
+			for state in ["normal", "pressed", "hover_pressed"]:
+				_portraits[index].add_theme_stylebox_override(
+					state,
+					Art._style(Color("061315e8"), GOLD, 2),
+				)
 	hero_selected.emit(hero)
 
 
@@ -291,7 +299,7 @@ func close_window() -> void:
 	if _show_deck_help:
 		return
 	_modal = ""
-	_hero_art.position.x = 294
+	_hero_art.position.x = 326
 	_hero_socle.position.x = 306
 	_overlay.hide()
 	_clear(_page)
