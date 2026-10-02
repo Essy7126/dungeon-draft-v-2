@@ -1,0 +1,809 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dungeon-draft.local/schemas/observatory_snapshot.schema.json",
+  "title": "Dungeon Draft Observatory Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "primary_run_id",
+    "meta",
+    "scope",
+    "summary",
+    "contract",
+    "runtime_facts",
+    "characters",
+    "disciplines",
+    "spells",
+    "items",
+    "reward_pools",
+    "runs",
+    "rooms",
+    "waves",
+    "encounters",
+    "enemies",
+    "enemy_spells",
+    "ai_profiles",
+    "contract_checks",
+    "audit_results"
+  ],
+  "properties": {
+    "primary_run_id": {"type": "string", "minLength": 1},
+    "meta": {"$ref": "#/$defs/meta"},
+    "scope": {"$ref": "#/$defs/scope"},
+    "summary": {"$ref": "#/$defs/summary"},
+    "contract": {"$ref": "#/$defs/contract"},
+    "runtime_facts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/runtimeFact"}
+    },
+    "characters": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/character"}
+    },
+    "disciplines": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/discipline"}
+    },
+    "spells": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/spell"}
+    },
+    "items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "reward_pools": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/rewardPool"}
+    },
+    "runs": {"type": "array", "items": {"$ref": "#/$defs/run"}},
+    "rooms": {"type": "array", "items": {"$ref": "#/$defs/room"}},
+    "waves": {"type": "array", "items": {"$ref": "#/$defs/wave"}},
+    "encounters": {"type": "array", "items": {"$ref": "#/$defs/encounter"}},
+    "enemies": {"type": "array", "items": {"$ref": "#/$defs/enemy"}},
+    "enemy_spells": {"type": "array", "items": {"$ref": "#/$defs/enemySpell"}},
+    "ai_profiles": {"type": "array", "items": {"$ref": "#/$defs/aiProfile"}},
+    "contract_checks": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/contractCheck"}
+    },
+    "audit_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/auditResult"}
+    }
+  },
+  "$defs": {
+    "jsonValue": {
+      "anyOf": [
+        {"type": "null"},
+        {"type": "boolean"},
+        {"type": "number"},
+        {"type": "string"},
+        {"type": "array", "items": {"$ref": "#/$defs/jsonValue"}},
+        {
+          "type": "object",
+          "propertyNames": {"type": "string"},
+          "additionalProperties": {"$ref": "#/$defs/jsonValue"}
+        }
+      ]
+    },
+    "truthStatus": {
+      "enum": ["observed", "verified", "design_decision", "recommendation", "non_certified"]
+    },
+    "enumValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "name"],
+      "properties": {
+        "value": {"type": "integer"},
+        "name": {"type": "string"}
+      }
+    },
+    "resourceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_type", "resource_path"],
+      "properties": {
+        "resource_type": {"type": "string"},
+        "resource_path": {"type": "string", "pattern": "^(res://.*)?$"}
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "generator_version",
+        "generated_at_utc",
+        "source_game_commit",
+        "source_branch",
+        "source_worktree_dirty_before_export",
+        "source_git_available",
+        "source_generated_from_clean_checkout",
+        "godot_version",
+        "project_name",
+        "contract_version",
+        "manifest_version"
+      ],
+      "properties": {
+        "schema_version": {"type": "string", "minLength": 1},
+        "generator_version": {"type": "string", "minLength": 1},
+        "generated_at_utc": {"type": "string", "minLength": 1},
+        "source_game_commit": {"type": "string", "pattern": "^([0-9a-f]{40}|unknown)$"},
+        "source_branch": {"type": "string", "minLength": 1},
+        "source_worktree_dirty_before_export": {"type": "boolean"},
+        "source_git_available": {"type": "boolean"},
+        "source_generated_from_clean_checkout": {"type": "boolean"},
+        "godot_version": {"type": "string", "minLength": 1},
+        "project_name": {"type": "string", "minLength": 1},
+        "contract_version": {"type": "string", "minLength": 1},
+        "manifest_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "scopeDomain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domain", "reason"],
+      "properties": {
+        "domain": {"type": "string", "minLength": 1},
+        "status": {"type": "string"},
+        "path": {"type": "string"},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["included_domains", "deferred_domains", "excluded_domains"],
+      "properties": {
+        "included_domains": {"type": "array", "items": {"type": "string"}},
+        "deferred_domains": {"type": "array", "items": {"$ref": "#/$defs/scopeDomain"}},
+        "excluded_domains": {"type": "array", "items": {"$ref": "#/$defs/scopeDomain"}}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "characters",
+        "disciplines",
+        "spells",
+        "items",
+        "generic_rewards",
+        "reward_pools",
+        "runs",
+        "rooms",
+        "waves",
+        "authored_wave_profiles",
+        "selected_default_seed_wave_profiles",
+        "minimum_played_wave_profiles",
+        "maximum_played_wave_profiles",
+        "production_run_count",
+        "test_run_count",
+        "single_encounter_room_count",
+        "wave_chain_room_count",
+        "production_effective_combat_count",
+        "test_authored_wave_profile_count",
+        "test_selected_wave_profile_count",
+        "encounters",
+        "enemies",
+        "enemy_spells",
+        "ai_profiles",
+        "runtime_facts",
+        "eligible_first_run_equipment",
+        "contract_conform",
+        "contract_difference",
+        "contract_unknown",
+        "contract_not_evaluated",
+        "audit_info",
+        "audit_warning",
+        "audit_blocking"
+      ],
+      "properties": {
+        "characters": {"type": "integer", "minimum": 0},
+        "disciplines": {"type": "integer", "minimum": 0},
+        "spells": {"type": "integer", "minimum": 0},
+        "items": {"type": "integer", "minimum": 0},
+        "generic_rewards": {"type": "integer", "minimum": 0},
+        "reward_pools": {"type": "integer", "minimum": 0},
+        "runs": {"type": "integer", "minimum": 0},
+        "rooms": {"type": "integer", "minimum": 0},
+        "waves": {"type": "integer", "minimum": 0},
+        "authored_wave_profiles": {"type": "integer", "minimum": 0},
+        "selected_default_seed_wave_profiles": {"type": "integer", "minimum": 0},
+        "minimum_played_wave_profiles": {"type": "integer", "minimum": 0},
+        "maximum_played_wave_profiles": {"type": "integer", "minimum": 0},
+        "production_run_count": {"type": "integer", "minimum": 0},
+        "test_run_count": {"type": "integer", "minimum": 0},
+        "single_encounter_room_count": {"type": "integer", "minimum": 0},
+        "wave_chain_room_count": {"type": "integer", "minimum": 0},
+        "production_effective_combat_count": {"type": "integer", "minimum": 0},
+        "test_authored_wave_profile_count": {"type": "integer", "minimum": 0},
+        "test_selected_wave_profile_count": {"type": "integer", "minimum": 0},
+        "encounters": {"type": "integer", "minimum": 0},
+        "enemies": {"type": "integer", "minimum": 0},
+        "enemy_spells": {"type": "integer", "minimum": 0},
+        "ai_profiles": {"type": "integer", "minimum": 0},
+        "runtime_facts": {"type": "integer", "minimum": 0},
+        "eligible_first_run_equipment": {"type": "integer", "minimum": 0},
+        "contract_conform": {"type": "integer", "minimum": 0},
+        "contract_difference": {"type": "integer", "minimum": 0},
+        "contract_unknown": {"type": "integer", "minimum": 0},
+        "contract_not_evaluated": {"type": "integer", "minimum": 0},
+        "audit_info": {"type": "integer", "minimum": 0},
+        "audit_warning": {"type": "integer", "minimum": 0},
+        "audit_blocking": {"type": "integer", "minimum": 0}
+      }
+    },
+    "contractDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value", "status", "truth_status", "source", "rationale"],
+      "properties": {
+        "key": {"type": "string", "minLength": 1},
+        "value": {"$ref": "#/$defs/jsonValue"},
+        "status": {"enum": ["validated", "provisional", "unknown", "deprecated"]},
+        "truth_status": {"const": "design_decision"},
+        "source": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "decisions"],
+      "properties": {
+        "version": {"type": "string", "minLength": 1},
+        "decisions": {"type": "array", "items": {"$ref": "#/$defs/contractDecision"}}
+      }
+    },
+    "runtimeFact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value", "truth_status", "source_paths", "evidence", "notes"],
+      "properties": {
+        "key": {"type": "string", "minLength": 1},
+        "value": {"$ref": "#/$defs/jsonValue"},
+        "truth_status": {"$ref": "#/$defs/truthStatus"},
+        "source_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^res://"}},
+        "evidence": {"type": "string", "minLength": 1},
+        "notes": {"type": "string"}
+      }
+    },
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "description", "role", "presentation_summary",
+        "progression_summary", "presentation_badge", "team", "max_hp",
+        "initiative", "max_ap", "max_mp", "attack_power", "force", "armour",
+        "magic_resistance", "dodge", "resistances", "critical_chance",
+        "critical_multiplier", "basic_attack_enabled", "active_spell_slots",
+        "spell_ids", "discipline_ids", "visual_scene_path",
+        "preview_visual_scene_path", "source_path"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "role": {"type": "string"},
+        "presentation_summary": {"type": "string"},
+        "progression_summary": {"type": "string"},
+        "presentation_badge": {"type": "string"},
+        "team": {"type": "integer"},
+        "max_hp": {"type": "integer"},
+        "initiative": {"type": "integer"},
+        "max_ap": {"type": "integer"},
+        "max_mp": {"type": "integer"},
+        "attack_power": {"type": "integer"},
+        "force": {"type": "number"},
+        "armour": {"type": "number"},
+        "magic_resistance": {"type": "number"},
+        "dodge": {"type": "number"},
+        "resistances": {"$ref": "#/$defs/jsonValue"},
+        "critical_chance": {"type": "number"},
+        "critical_multiplier": {"type": "number"},
+        "basic_attack_enabled": {"type": "boolean"},
+        "active_spell_slots": {"type": "integer"},
+        "spell_ids": {"type": "array", "items": {"type": "string"}},
+        "discipline_ids": {"type": "array", "items": {"type": "string"}},
+        "visual_scene_path": {"type": "string"},
+        "preview_visual_scene_path": {"type": "string"},
+        "source_path": {"type": "string", "pattern": "^res://"}
+      }
+    },
+    "modifier": {
+      "type": "object",
+      "propertyNames": {"type": "string"},
+      "additionalProperties": {"$ref": "#/$defs/jsonValue"}
+    },
+    "spell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "discipline_id", "name", "description", "referenced_by_character_ids",
+        "ap_cost", "minimum_range", "range", "needs_line_of_sight",
+        "cooldown_activations", "initial_cooldown", "max_uses_per_combat",
+        "once_per_activation", "can_target_enemy", "can_target_ally",
+        "can_target_free_cell", "can_target_self", "aoe_shape", "aoe_size",
+        "line_from_caster", "damage", "heal", "shield_grant", "damage_type",
+        "element", "critical_chance", "terrain_effect", "applied_status",
+        "push_distance", "pull_distance", "collision_damage", "cluster_bonus_damage",
+        "ap_drain", "teleport_behind_target", "delayed_resolution", "summon",
+        "summon_type", "modifiers", "serialization_warnings", "icon_path",
+        "vfx_scene_path", "sound_path", "source_path"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "discipline_id": {"type": "string"},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "referenced_by_character_ids": {"type": "array", "items": {"type": "string"}},
+        "ap_cost": {"type": "integer"},
+        "minimum_range": {"type": "integer"},
+        "range": {"type": "integer"},
+        "needs_line_of_sight": {"type": "boolean"},
+        "cooldown_activations": {"type": "integer"},
+        "initial_cooldown": {"type": "integer"},
+        "max_uses_per_combat": {"type": "integer"},
+        "once_per_activation": {"type": "boolean"},
+        "can_target_enemy": {"type": "boolean"},
+        "can_target_ally": {"type": "boolean"},
+        "can_target_free_cell": {"type": "boolean"},
+        "can_target_self": {"type": "boolean"},
+        "aoe_shape": {"$ref": "#/$defs/enumValue"},
+        "aoe_size": {"type": "integer"},
+        "line_from_caster": {"type": "boolean"},
+        "damage": {"type": "integer"},
+        "heal": {"type": "integer"},
+        "shield_grant": {"type": "integer"},
+        "damage_type": {"$ref": "#/$defs/enumValue"},
+        "element": {"$ref": "#/$defs/enumValue"},
+        "critical_chance": {"type": "number"},
+        "terrain_effect": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/resourceReference"}]},
+        "applied_status": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/resourceReference"}]},
+        "push_distance": {"type": "integer"},
+        "pull_distance": {"type": "integer"},
+        "collision_damage": {"type": "integer"},
+        "cluster_bonus_damage": {"type": "integer"},
+        "ap_drain": {"type": "integer"},
+        "teleport_behind_target": {"type": "boolean"},
+        "delayed_resolution": {"$ref": "#/$defs/enumValue"},
+        "summon": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/resourceReference"}]},
+        "summon_type": {"type": "string"},
+        "modifiers": {"type": "array", "items": {"$ref": "#/$defs/modifier"}},
+        "serialization_warnings": {"type": "array", "items": {"type": "string"}},
+        "icon_path": {"type": "string"},
+        "vfx_scene_path": {"type": "string"},
+        "sound_path": {"type": "string"},
+        "source_path": {"type": "string", "pattern": "^res://"}
+      }
+    },
+    "choice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "upgrade_id", "name", "description", "discipline_id", "rank",
+        "target_spell_id", "prerequisite_ids", "excluded_ids", "modifiers", "source_path"
+      ],
+      "properties": {
+        "upgrade_id": {"type": "string", "minLength": 1},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "discipline_id": {"type": "string"},
+        "rank": {"type": "integer"},
+        "target_spell_id": {"type": "string"},
+        "prerequisite_ids": {"type": "array", "items": {"type": "string"}},
+        "excluded_ids": {"type": "array", "items": {"type": "string"}},
+        "modifiers": {"type": "array", "items": {"$ref": "#/$defs/modifier"}},
+        "source_path": {"type": "string"}
+      }
+    },
+    "rank": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rank", "required_total_xp", "choices", "source_path"],
+      "properties": {
+        "rank": {"type": "integer"},
+        "required_total_xp": {"type": "integer"},
+        "choices": {"type": "array", "items": {"$ref": "#/$defs/choice"}},
+        "source_path": {"type": "string"}
+      }
+    },
+    "discipline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "character_id", "name", "description", "presentation_color",
+        "rank_count", "total_choice_count", "ranks", "icon_path", "source_path"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "character_id": {"type": "string", "minLength": 1},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "presentation_color": {"$ref": "#/$defs/jsonValue"},
+        "rank_count": {"type": "integer", "minimum": 0},
+        "total_choice_count": {"type": "integer", "minimum": 0},
+        "ranks": {"type": "array", "items": {"$ref": "#/$defs/rank"}},
+        "icon_path": {"type": "string"},
+        "source_path": {"type": "string", "pattern": "^res://"}
+      }
+    },
+    "statModifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stat_id", "value", "modifier_type", "source_path"],
+      "properties": {
+        "stat_id": {"type": "string"},
+        "value": {"type": "number"},
+        "modifier_type": {"$ref": "#/$defs/enumValue"},
+        "source_path": {"type": "string"}
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "description", "rarity", "tags", "category",
+        "equipment_slot", "stack_limit", "compatible_character_ids",
+        "stat_modifiers", "spell_modifiers", "use_effect", "use_value",
+        "equippable", "consumable", "valid", "pool_ids", "reward_fx_profile",
+        "reward_audio_profile", "icon_path", "inventory_icon_path",
+        "card_texture_path", "source_path"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "rarity": {"type": "string"},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "category": {"$ref": "#/$defs/enumValue"},
+        "equipment_slot": {"$ref": "#/$defs/enumValue"},
+        "stack_limit": {"type": "integer"},
+        "compatible_character_ids": {"type": "array", "items": {"type": "string"}},
+        "stat_modifiers": {"type": "array", "items": {"$ref": "#/$defs/statModifier"}},
+        "spell_modifiers": {"type": "array", "items": {"$ref": "#/$defs/modifier"}},
+        "use_effect": {"$ref": "#/$defs/enumValue"},
+        "use_value": {"type": "number"},
+        "equippable": {"type": "boolean"},
+        "consumable": {"type": "boolean"},
+        "valid": {"type": "boolean"},
+        "pool_ids": {"type": "array", "items": {"type": "string"}},
+        "reward_fx_profile": {"type": "string"},
+        "reward_audio_profile": {"type": "string"},
+        "icon_path": {"type": "string"},
+        "inventory_icon_path": {"type": "string"},
+        "card_texture_path": {"type": "string"},
+        "source_path": {"type": "string", "pattern": "^res://"}
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "description", "reward_type", "target_policy", "value",
+        "valid", "usage_status", "icon_path", "source_path"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "reward_type": {"$ref": "#/$defs/enumValue"},
+        "target_policy": {"$ref": "#/$defs/enumValue"},
+        "value": {"type": "number"},
+        "valid": {"type": "boolean"},
+        "usage_status": {"type": "string"},
+        "icon_path": {"type": "string"},
+        "source_path": {"type": "string", "pattern": "^res://"}
+      }
+    },
+    "rewardPool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "kind", "mechanism", "status", "required_tag",
+        "minimum_options", "item_ids", "rewards", "source_path"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string"},
+        "kind": {"enum": ["generic_declared", "equipment_first_run"]},
+        "mechanism": {"type": "string"},
+        "status": {"type": "string"},
+        "required_tag": {"type": "string"},
+        "minimum_options": {"type": "integer", "minimum": 0},
+        "item_ids": {"type": "array", "items": {"type": "string"}},
+        "rewards": {"type": "array", "items": {"$ref": "#/$defs/reward"}},
+        "source_path": {"type": "string", "pattern": "^res://"}
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {"x": {"type": "integer"}, "y": {"type": "integer"}}
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "id_source", "identity_stability", "name", "source_path", "run_kind", "flow_mode", "is_primary", "default_seed", "target_duration_minutes", "extended_duration_minutes", "maximum_waves_per_room", "room_ids", "authored_room_count", "effective_combat_count", "authored_wave_profile_count", "selected_default_seed_wave_profile_count", "minimum_played_wave_profile_count", "maximum_played_wave_profile_count", "selected_health_multiplier_max", "selected_attack_multiplier_max", "selected_reward_multiplier_max", "validation_status", "validation_errors", "truth_status"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "id_source": {"enum": ["explicit", "manifest_alias", "resource_path", "ordered_parent_index"]},
+        "identity_stability": {"enum": ["stable", "derived", "runtime_only"]},
+        "name": {"type": "string"},
+        "source_path": {"type": "string", "pattern": "^res://"},
+        "run_kind": {"enum": ["production", "test", "debug", "legacy", "unknown"]},
+        "flow_mode": {"enum": ["single_encounter", "wave_chain", "unknown"]},
+        "is_primary": {"type": "boolean"},
+        "default_seed": {"type": "integer"},
+        "target_duration_minutes": {"type": "integer"},
+        "extended_duration_minutes": {"type": "integer"},
+        "maximum_waves_per_room": {"type": "integer", "minimum": 1},
+        "room_ids": {"type": "array", "items": {"type": "string"}},
+        "authored_room_count": {"type": "integer", "minimum": 0},
+        "effective_combat_count": {"type": "integer", "minimum": 0},
+        "authored_wave_profile_count": {"type": "integer", "minimum": 0},
+        "selected_default_seed_wave_profile_count": {"type": "integer", "minimum": 0},
+        "minimum_played_wave_profile_count": {"type": "integer", "minimum": 0},
+        "maximum_played_wave_profile_count": {"type": "integer", "minimum": 0},
+        "selected_health_multiplier_max": {"type": "number", "minimum": 0},
+        "selected_attack_multiplier_max": {"type": "number", "minimum": 0},
+        "selected_reward_multiplier_max": {"type": "number", "minimum": 0},
+        "validation_status": {"enum": ["valid", "invalid"]},
+        "validation_errors": {"type": "array", "items": {"type": "string"}},
+        "truth_status": {"$ref": "#/$defs/truthStatus"}
+      }
+    },
+    "room": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "id_source", "identity_stability", "run_id", "run_kind", "flow_mode", "index", "name", "source_path", "background_image_path", "particles_scene_path", "battle_scene_path", "arena_generation_profile_path", "arena_visual_profile_path", "grid_layout_path", "painted_map_visual_data_path", "map_kind", "grid_width", "grid_height", "grid_dimensions_status", "available_wave_count", "wave_profile_count", "effective_combat_count", "minimum_wave_count", "maximum_wave_count", "resolved_default_seed_wave_count", "wave_resolution_status", "wave_resolution_method", "wave_resolution_seed", "wave_ids", "default_encounter_id", "uses_encounter_fallback", "hero_spawn_cells", "enemy_spawn_cells", "hero_spawn_cell_count", "enemy_spawn_cell_count", "ultimate_reward_base_chance_percent", "ultimate_reward_min_gain_per_wave", "ultimate_reward_max_gain_per_wave", "legacy_enemy_ids", "validation_status", "validation_errors"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "id_source": {"enum": ["explicit", "manifest_alias", "resource_path", "ordered_parent_index"]},
+        "identity_stability": {"enum": ["stable", "derived", "runtime_only"]},
+        "run_id": {"type": "string"},
+        "run_kind": {"enum": ["production", "test", "debug", "legacy", "unknown"]},
+        "flow_mode": {"enum": ["single_encounter", "wave_chain", "unknown"]},
+        "index": {"type": "integer", "minimum": 1},
+        "name": {"type": "string"}, "source_path": {"type": "string", "pattern": "^res://"},
+        "background_image_path": {"type": "string"}, "particles_scene_path": {"type": "string"},
+        "battle_scene_path": {"type": "string"}, "arena_generation_profile_path": {"type": "string"},
+        "arena_visual_profile_path": {"type": "string"}, "grid_layout_path": {"type": "string"},
+        "painted_map_visual_data_path": {"type": "string"},
+        "map_kind": {"enum": ["painted", "generated", "legacy_scene", "unknown"]},
+        "grid_width": {"type": ["integer", "null"]}, "grid_height": {"type": ["integer", "null"]},
+        "grid_dimensions_status": {"enum": ["static_resource", "runtime_only"]},
+        "available_wave_count": {"type": "integer", "minimum": 0},
+        "wave_profile_count": {"type": "integer", "minimum": 0},
+        "effective_combat_count": {"type": "integer", "minimum": 0},
+        "minimum_wave_count": {"type": "integer", "minimum": 0},
+        "maximum_wave_count": {"type": "integer", "minimum": 0},
+        "resolved_default_seed_wave_count": {"type": ["integer", "null"]},
+        "wave_resolution_status": {"enum": ["exact_production_resolver", "runtime_only", "not_applicable"]},
+        "wave_resolution_method": {"type": "string"}, "wave_resolution_seed": {"type": "integer"},
+        "wave_ids": {"type": "array", "items": {"type": "string"}},
+        "default_encounter_id": {"type": "string"},
+        "uses_encounter_fallback": {"type": "boolean"},
+        "hero_spawn_cells": {"type": "array", "items": {"$ref": "#/$defs/cell"}},
+        "enemy_spawn_cells": {"type": "array", "items": {"$ref": "#/$defs/cell"}},
+        "hero_spawn_cell_count": {"type": "integer", "minimum": 0},
+        "enemy_spawn_cell_count": {"type": "integer", "minimum": 0},
+        "ultimate_reward_base_chance_percent": {"type": "integer"},
+        "ultimate_reward_min_gain_per_wave": {"type": "integer"},
+        "ultimate_reward_max_gain_per_wave": {"type": "integer"},
+        "legacy_enemy_ids": {"type": "array", "items": {"type": "string"}},
+        "validation_status": {"enum": ["valid", "invalid"]},
+        "validation_errors": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "scaledTotals": {
+      "type": "object", "additionalProperties": false,
+      "required": ["total_max_hp", "total_attack_power"],
+      "properties": {"total_max_hp": {"type": ["integer", "null"]}, "total_attack_power": {"type": ["integer", "null"]}}
+    },
+    "wave": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "id_source", "identity_stability", "run_id", "run_kind", "room_id", "index", "name", "source_path", "source_kind", "encounter_id", "enemy_health_multiplier", "enemy_attack_multiplier", "reward_multiplier", "is_mandatory_profile", "is_optional_profile", "is_selected_by_default_seed", "health_multiplier_runtime_target", "attack_multiplier_runtime_target", "attack_multiplier_effect_status", "attack_multiplier_effect_evidence", "scaled_initial_totals", "calculation_status", "calculation_evidence", "validation_status", "validation_errors"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "id_source": {"enum": ["explicit", "manifest_alias", "resource_path", "ordered_parent_index"]},
+        "identity_stability": {"enum": ["stable", "derived", "runtime_only"]},
+        "run_id": {"type": "string"},
+        "run_kind": {"enum": ["production", "test", "debug", "legacy", "unknown"]},
+        "room_id": {"type": "string"}, "index": {"type": "integer", "minimum": 1},
+        "name": {"type": "string"}, "source_path": {"type": "string"},
+        "source_kind": {"enum": ["resource", "subresource", "historical_fallback"]},
+        "encounter_id": {"type": "string"},
+        "enemy_health_multiplier": {"type": "number"}, "enemy_attack_multiplier": {"type": "number"},
+        "reward_multiplier": {"type": "number"}, "is_mandatory_profile": {"type": "boolean"},
+        "is_optional_profile": {"type": "boolean"}, "is_selected_by_default_seed": {"type": "boolean"},
+        "health_multiplier_runtime_target": {"type": "string"},
+        "attack_multiplier_runtime_target": {"type": "string"},
+        "attack_multiplier_effect_status": {"enum": ["effective", "partially_effective", "no_active_source_detected", "unknown"]},
+        "attack_multiplier_effect_evidence": {"type": "string"},
+        "scaled_initial_totals": {"$ref": "#/$defs/scaledTotals"},
+        "calculation_status": {"enum": ["exact_runtime_equivalent", "static_base_only", "runtime_dependent", "unknown"]},
+        "calculation_evidence": {"type": "string"},
+        "validation_status": {"enum": ["valid", "invalid"]},
+        "validation_errors": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "encounterRosterEntry": {
+      "type": "object", "additionalProperties": false, "required": ["enemy_id", "count"],
+      "properties": {"enemy_id": {"type": "string"}, "count": {"type": "integer"}}
+    },
+    "encounterBaseTotals": {
+      "type": "object", "additionalProperties": false,
+      "required": ["initial_enemy_count", "total_max_hp", "total_max_ap", "total_max_mp", "total_attack_power", "average_initiative", "maximum_initiative"],
+      "properties": {
+        "initial_enemy_count": {"type": "integer"}, "total_max_hp": {"type": "integer"},
+        "total_max_ap": {"type": "integer"}, "total_max_mp": {"type": "integer"},
+        "total_attack_power": {"type": "integer"}, "average_initiative": {"type": "number"},
+        "maximum_initiative": {"type": "integer"}
+      }
+    },
+    "encounter": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "id_source", "identity_stability", "source_path", "room_ids", "wave_ids", "declared_room_index", "roster", "roster_unit_entry_count", "roster_count_entry_count", "initial_enemy_count", "expanded_initial_enemy_ids", "allowed_spawn_groups", "formation_profiles", "living_enemy_cap", "shared_normal_summon_budget", "shared_chief_summon_budget", "disabled_ability_ids", "maximum_formation_attempts", "minimum_path_distance_by_role", "maximum_path_distance_by_role", "summon_free_neighbor_requirement", "forbidden_initial_spawn_cells", "forbidden_initial_spawn_cell_count", "base_totals", "role_counts", "faction_counts", "initial_enemy_spell_count", "summon_spell_count", "calculation_status", "calculation_evidence", "validation_status", "validation_errors"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "id_source": {"enum": ["explicit", "manifest_alias", "resource_path", "ordered_parent_index"]},
+        "identity_stability": {"enum": ["stable", "derived", "runtime_only"]},
+        "source_path": {"type": "string"}, "room_ids": {"type": "array", "items": {"type": "string"}},
+        "wave_ids": {"type": "array", "items": {"type": "string"}},
+        "declared_room_index": {"type": "integer"}, "roster": {"type": "array", "items": {"$ref": "#/$defs/encounterRosterEntry"}},
+        "roster_unit_entry_count": {"type": "integer"}, "roster_count_entry_count": {"type": "integer"},
+        "initial_enemy_count": {"type": "integer"}, "expanded_initial_enemy_ids": {"type": "array", "items": {"type": "string"}},
+        "allowed_spawn_groups": {"type": "array", "items": {"type": "string"}},
+        "formation_profiles": {"type": "array", "items": {"type": "string"}},
+        "living_enemy_cap": {"type": "integer"}, "shared_normal_summon_budget": {"type": "integer"},
+        "shared_chief_summon_budget": {"type": "integer"}, "disabled_ability_ids": {"type": "array", "items": {"type": "string"}},
+        "maximum_formation_attempts": {"type": "integer"},
+        "minimum_path_distance_by_role": {"$ref": "#/$defs/jsonValue"},
+        "maximum_path_distance_by_role": {"$ref": "#/$defs/jsonValue"},
+        "summon_free_neighbor_requirement": {"type": "integer"},
+        "forbidden_initial_spawn_cells": {"type": "array", "items": {"$ref": "#/$defs/cell"}},
+        "forbidden_initial_spawn_cell_count": {"type": "integer"},
+        "base_totals": {"$ref": "#/$defs/encounterBaseTotals"},
+        "role_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "faction_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "initial_enemy_spell_count": {"type": "integer"}, "summon_spell_count": {"type": "integer"},
+        "calculation_status": {"enum": ["exact_runtime_equivalent", "static_base_only", "runtime_dependent", "unknown"]},
+        "calculation_evidence": {"type": "string"}, "validation_status": {"enum": ["valid", "invalid"]},
+        "validation_errors": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "enemyReachability": {
+      "type": "object", "additionalProperties": false,
+      "required": ["initial_encounter_ids", "initial_room_ids", "summonable_by_spell_ids", "initial_roster", "summon_only"],
+      "properties": {
+        "initial_encounter_ids": {"type": "array", "items": {"type": "string"}},
+        "initial_room_ids": {"type": "array", "items": {"type": "string"}},
+        "summonable_by_spell_ids": {"type": "array", "items": {"type": "string"}},
+        "initial_roster": {"type": "boolean"}, "summon_only": {"type": "boolean"}
+      }
+    },
+    "enemy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "id_source", "identity_stability", "name", "description", "source_path", "reachability", "team", "max_hp", "initiative", "max_ap", "max_mp", "attack_power", "force", "armour", "magic_resistance", "dodge", "resistances", "critical_chance", "critical_multiplier", "basic_attack_enabled", "active_spell_slots", "spell_ids", "ai_behavior", "combat_style", "preferred_range", "minimum_range", "maximum_range", "keep_distance", "ai_profile_id", "faction_id", "tactical_role_id", "linked_commander_role_id", "proximity_armor_source", "proximity_armor_per_living_neighbor", "proximity_armor_max_neighbors", "first_forced_movement_reduction_per_activation", "visual_scene_path", "preview_visual_scene_path", "effect_tags", "validation_status", "validation_errors"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "id_source": {"enum": ["explicit", "resource_path"]},
+        "identity_stability": {"enum": ["stable", "derived", "runtime_only"]},
+        "name": {"type": "string"}, "description": {"type": "string"}, "source_path": {"type": "string"},
+        "reachability": {"$ref": "#/$defs/enemyReachability"}, "team": {"type": "integer"},
+        "max_hp": {"type": "integer"}, "initiative": {"type": "integer"}, "max_ap": {"type": "integer"},
+        "max_mp": {"type": "integer"}, "attack_power": {"type": "integer"}, "force": {"type": "number"},
+        "armour": {"type": "number"}, "magic_resistance": {"type": "number"}, "dodge": {"type": "number"},
+        "resistances": {"$ref": "#/$defs/jsonValue"}, "critical_chance": {"type": "number"},
+        "critical_multiplier": {"type": "number"}, "basic_attack_enabled": {"type": "boolean"},
+        "active_spell_slots": {"type": "integer"}, "spell_ids": {"type": "array", "items": {"type": "string"}},
+        "ai_behavior": {"$ref": "#/$defs/enumValue"}, "combat_style": {"$ref": "#/$defs/enumValue"},
+        "preferred_range": {"type": "integer"}, "minimum_range": {"type": "integer"},
+        "maximum_range": {"type": "integer"}, "keep_distance": {"type": "boolean"},
+        "ai_profile_id": {"type": "string"}, "faction_id": {"type": "string"},
+        "tactical_role_id": {"type": "string"}, "linked_commander_role_id": {"type": "string"},
+        "proximity_armor_source": {"type": "string"}, "proximity_armor_per_living_neighbor": {"type": "integer"},
+        "proximity_armor_max_neighbors": {"type": "integer"},
+        "first_forced_movement_reduction_per_activation": {"type": "integer"},
+        "visual_scene_path": {"type": "string"}, "preview_visual_scene_path": {"type": "string"},
+        "effect_tags": {"type": "array", "items": {"type": "string"}},
+        "validation_status": {"enum": ["valid", "invalid"]},
+        "validation_errors": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "enemySpell": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "discipline_id", "name", "description", "ap_cost", "minimum_range", "range", "needs_line_of_sight", "cooldown_activations", "initial_cooldown", "max_uses_per_combat", "once_per_activation", "can_target_enemy", "can_target_ally", "can_target_free_cell", "can_target_self", "aoe_shape", "aoe_size", "line_from_caster", "damage", "heal", "shield_grant", "damage_type", "element", "critical_chance", "terrain_effect", "applied_status", "push_distance", "pull_distance", "collision_damage", "cluster_bonus_damage", "ap_drain", "teleport_behind_target", "delayed_resolution", "summon", "summon_type", "modifiers", "serialization_warnings", "icon_path", "vfx_scene_path", "sound_path", "source_path", "referenced_by_enemy_ids", "summon_enemy_id", "summon_starting_hp", "summon_max_living_team", "summon_initial_cooldowns", "condition_hp_at_or_below", "requires_absent_unit_id", "encounter_enabled_in_ids", "encounter_disabled_in_ids", "effect_tags"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "discipline_id": {"type": "string"},
+        "name": {"type": "string"}, "description": {"type": "string"}, "ap_cost": {"type": "integer"},
+        "minimum_range": {"type": "integer"}, "range": {"type": "integer"}, "needs_line_of_sight": {"type": "boolean"},
+        "cooldown_activations": {"type": "integer"}, "initial_cooldown": {"type": "integer"},
+        "max_uses_per_combat": {"type": "integer"}, "once_per_activation": {"type": "boolean"},
+        "can_target_enemy": {"type": "boolean"}, "can_target_ally": {"type": "boolean"},
+        "can_target_free_cell": {"type": "boolean"}, "can_target_self": {"type": "boolean"},
+        "aoe_shape": {"$ref": "#/$defs/enumValue"}, "aoe_size": {"type": "integer"},
+        "line_from_caster": {"type": "boolean"}, "damage": {"type": "integer"}, "heal": {"type": "integer"},
+        "shield_grant": {"type": "integer"}, "damage_type": {"$ref": "#/$defs/enumValue"},
+        "element": {"$ref": "#/$defs/enumValue"}, "critical_chance": {"type": "number"},
+        "terrain_effect": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/resourceReference"}]},
+        "applied_status": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/resourceReference"}]},
+        "push_distance": {"type": "integer"}, "pull_distance": {"type": "integer"},
+        "collision_damage": {"type": "integer"}, "cluster_bonus_damage": {"type": "integer"},
+        "ap_drain": {"type": "integer"}, "teleport_behind_target": {"type": "boolean"},
+        "delayed_resolution": {"$ref": "#/$defs/enumValue"},
+        "summon": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/resourceReference"}]},
+        "summon_type": {"type": "string"}, "modifiers": {"type": "array", "items": {"$ref": "#/$defs/modifier"}},
+        "serialization_warnings": {"type": "array", "items": {"type": "string"}},
+        "icon_path": {"type": "string"}, "vfx_scene_path": {"type": "string"},
+        "sound_path": {"type": "string"}, "source_path": {"type": "string"},
+        "referenced_by_enemy_ids": {"type": "array", "items": {"type": "string"}},
+        "summon_enemy_id": {"type": "string"}, "summon_starting_hp": {"type": "integer"},
+        "summon_max_living_team": {"type": "integer"}, "summon_initial_cooldowns": {"$ref": "#/$defs/jsonValue"},
+        "condition_hp_at_or_below": {"type": "integer"}, "requires_absent_unit_id": {"type": "string"},
+        "encounter_enabled_in_ids": {"type": "array", "items": {"type": "string"}},
+        "encounter_disabled_in_ids": {"type": "array", "items": {"type": "string"}},
+        "effect_tags": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "aiProfile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "source_path", "strategy", "marked_status_id", "normal_role_id", "chief_role_id", "commander_role_id", "sentence_hp_ratio_threshold", "commander_emergency_hp", "summon_when_normals_below", "ideal_minimum_range", "ideal_maximum_range", "avoid_hero_adjacency", "prefer_living_neighbors", "protect_commander_paths", "commander_distance_penalty_per_cell", "commander_path_block_bonus", "referenced_by_enemy_ids"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "source_path": {"type": "string"},
+        "strategy": {"type": "object", "additionalProperties": false, "required": ["name", "value", "description"], "properties": {"name": {"type": "string"}, "value": {"type": "integer"}, "description": {"type": "string"}}},
+        "marked_status_id": {"type": "string"}, "normal_role_id": {"type": "string"},
+        "chief_role_id": {"type": "string"}, "commander_role_id": {"type": "string"},
+        "sentence_hp_ratio_threshold": {"type": "number"}, "commander_emergency_hp": {"type": "integer"},
+        "summon_when_normals_below": {"type": "integer"}, "ideal_minimum_range": {"type": "integer"},
+        "ideal_maximum_range": {"type": "integer"}, "avoid_hero_adjacency": {"type": "boolean"},
+        "prefer_living_neighbors": {"type": "boolean"}, "protect_commander_paths": {"type": "boolean"},
+        "commander_distance_penalty_per_cell": {"type": "integer"}, "commander_path_block_bonus": {"type": "integer"},
+        "referenced_by_enemy_ids": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "contractCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "target", "observed_value", "status", "truth_status", "affected_entity_type", "affected_entity_ids", "evidence", "message"],
+      "properties": {
+        "key": {"type": "string", "minLength": 1},
+        "target": {"$ref": "#/$defs/jsonValue"},
+        "observed_value": {"$ref": "#/$defs/jsonValue"},
+        "status": {"enum": ["conform", "difference", "unknown", "not_evaluated"]},
+        "truth_status": {"$ref": "#/$defs/truthStatus"},
+        "affected_entity_type": {"type": "string"},
+        "affected_entity_ids": {"type": "array", "items": {"type": "string"}},
+        "evidence": {"type": "string"},
+        "message": {"type": "string"}
+      }
+    },
+    "auditResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id", "severity", "status", "truth_status", "suggested_action_truth_status", "domain", "entity_type", "entity_id", "affected_entity_type", "affected_entity_ids",
+        "message", "source_path", "evidence", "suggested_action"
+      ],
+      "properties": {
+        "rule_id": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["info", "warning", "blocking"]},
+        "status": {"type": "string"},
+        "truth_status": {"$ref": "#/$defs/truthStatus"},
+        "suggested_action_truth_status": {"const": "recommendation"},
+        "domain": {"type": "string"},
+        "entity_type": {"type": "string"},
+        "entity_id": {"type": "string"},
+        "affected_entity_type": {"type": "string"},
+        "affected_entity_ids": {"type": "array", "items": {"type": "string"}},
+        "message": {"type": "string"},
+        "source_path": {"type": "string"},
+        "evidence": {"type": "string"},
+        "suggested_action": {"type": "string"}
+      }
+    }
+  }
+}

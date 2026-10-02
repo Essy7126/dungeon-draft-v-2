@@ -1,0 +1,39 @@
+{
+  "verified_at_commit": "34f54309cb666a9ed613dba8bf50fc77d8fa2caa",
+  "verified_at_utc": "2026-08-06T21:05:55Z",
+  "minimum_test_count": 849,
+  "test_identifiers": [
+    "test/unit/test_dark_pause_menu.gd::test_theme_uses_distinct_texture_states_and_focus_style",
+    "test/unit/test_dynamic_arena.gd::test_all_sixteen_final_capture_files_are_present_and_non_empty",
+    "test/unit/test_elf_archer_skill_tree.gd::test_archer_rank_two_resources_keep_their_contract",
+    "test/unit/test_elf_rank_two_disciplines.gd::test_cross_discipline_choices_install_independent_targeted_modifiers",
+    "test/unit/test_forest_arena_integration.gd::test_les_22_captures_contractuelles_sont_presentes",
+    "test/unit/test_forest_dynamic_grid.gd::test_onze_captures_contractuelles_sont_presentes",
+    "test/unit/test_mountain_pass_blueprint.gd::test_six_exports_png_sont_pixel_alignes_en_1920_par_1080",
+    "test/unit/test_mountain_pass_blueprint.gd::test_logic_export_distingue_chaque_type_sans_deplacer_les_cellules",
+    "test/unit/test_mountain_pass_blueprint.gd::test_foreground_est_transparent_et_ne_recouvre_aucune_cellule",
+    "test/unit/test_mountain_pass_blueprint.gd::test_reference_remplit_un_environnement_bleu_gris_non_studio",
+    "test/unit/test_painted_run_integration.gd::test_pool_et_copies_de_production_sont_bit_a_bit_identiques",
+    "test/unit/test_painted_unit_presence.gd::test_exports_de_validation_sont_presents_aux_trois_resolutions",
+    "test/unit/test_progression_lifecycle.gd::test_return_to_title_clears_each_new_rank_two_modifier",
+    "test/unit/test_start_hub_vertical_slice.gd::test_clic_libre_reste_exact_et_clic_obstacle_est_projete",
+    "test/unit/test_turn_order_timeline.gd::test_timeline_rotates_scales_animates_and_selects_units"
+  ],
+  "issue_classification": {
+    "test/unit/test_dark_pause_menu.gd::test_theme_uses_distinct_texture_states_and_focus_style": "historical_ui_theme_asset",
+    "test/unit/test_dynamic_arena.gd::test_all_sixteen_final_capture_files_are_present_and_non_empty": "historical_missing_validation_capture",
+    "test/unit/test_elf_archer_skill_tree.gd::test_archer_rank_two_resources_keep_their_contract": "historical_skill_tree_contract",
+    "test/unit/test_elf_rank_two_disciplines.gd::test_cross_discipline_choices_install_independent_targeted_modifiers": "historical_progression_modifier_count",
+    "test/unit/test_forest_arena_integration.gd::test_les_22_captures_contractuelles_sont_presentes": "historical_missing_validation_capture",
+    "test/unit/test_forest_dynamic_grid.gd::test_onze_captures_contractuelles_sont_presentes": "historical_missing_validation_capture",
+    "test/unit/test_mountain_pass_blueprint.gd::test_six_exports_png_sont_pixel_alignes_en_1920_par_1080": "historical_missing_validation_capture",
+    "test/unit/test_mountain_pass_blueprint.gd::test_logic_export_distingue_chaque_type_sans_deplacer_les_cellules": "historical_missing_validation_capture",
+    "test/unit/test_mountain_pass_blueprint.gd::test_foreground_est_transparent_et_ne_recouvre_aucune_cellule": "historical_missing_validation_capture",
+    "test/unit/test_mountain_pass_blueprint.gd::test_reference_remplit_un_environnement_bleu_gris_non_studio": "historical_missing_validation_capture",
+    "test/unit/test_painted_run_integration.gd::test_pool_et_copies_de_production_sont_bit_a_bit_identiques": "historical_painted_asset_mismatch",
+    "test/unit/test_painted_unit_presence.gd::test_exports_de_validation_sont_presents_aux_trois_resolutions": "historical_missing_validation_capture",
+    "test/unit/test_progression_lifecycle.gd::test_return_to_title_clears_each_new_rank_two_modifier": "historical_progression_cleanup",
+    "test/unit/test_start_hub_vertical_slice.gd::test_clic_libre_reste_exact_et_clic_obstacle_est_projete": "historical_hub_projection",
+    "test/unit/test_turn_order_timeline.gd::test_timeline_rotates_scales_animates_and_selects_units": "historical_float_precision"
+  }
+}
